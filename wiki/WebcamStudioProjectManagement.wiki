@@ -10,6 +10,6 @@ For all the teams, this where the coordination of the team members will occur
 Things you'll want to checkout:
 
   *  [Components Components]
-  *  [LinuxSupport Linux support]
-  *  [WindowsSupport Windows support]
-  *  [GUIDesign GUI design]
+  *  [LinuxSupport Linux Support]
+  *  [WindowsSupport Windows Support]
+  *  [GUIDesign GUI Design]
