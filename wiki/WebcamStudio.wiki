@@ -1,0 +1,10 @@
+#summary Why WebcamStudio?
+
+= Introduction =
+
+This is the name of the project called WebcamStudio
+
+
+= Details =
+
+It all started on a simple idea:  Being able to broadcast the desktop to a virtual webcam.
