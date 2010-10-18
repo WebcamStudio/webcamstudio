@@ -1,0 +1,12 @@
+#summary Linux Support and Stuff
+
+= Introduction =
+
+On Linux, GStreamer is mostly available from the package manager.  The virtual webcam module is the thing that is a little harder to deploy
+
+
+= Details =
+
+Under the Linux OS, the different solutions to create a virtual webcam is using a module like vloopback or v4l2loopback.  Mostly these modules works quite well, but requires the user to install those module and recompile them on each kernel update.
+
+WebcamStudio is installing a forked module of v4l2loopback (previously vloopback) renamed to webcamstudio.  On each boot, the module is recompile to ensure the availability of the module for the user.
