@@ -1,0 +1,10 @@
+#summary Porting to MS Windows
+
+= Introduction =
+
+Even if WebcamStudio is build in Java, the virtual webcam part is not working as it is in Linux
+
+
+= Details =
+
+For now, there is no solution to provide a virtual webcam for Windows.  The GUI is mostly working by installing the GStreamer port for Windows.
