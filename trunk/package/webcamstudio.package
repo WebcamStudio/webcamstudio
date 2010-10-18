@@ -1,0 +1,16 @@
+Package: webcamstudio
+Version: VERSION
+Section: video
+Priority: optional
+Architecture: all
+Essential: no
+Depends: openjdk-6-jre | sun-java6-jre, gstreamer0.10-plugins-good, gstreamer0.10-plugins-bad,build-essential, gstreamer0.10-plugins-ugly, libdbus-java
+Recommends: 
+Installed-Size: SIZE
+Maintainer: Patrick Balleux <patrick.balleux@gmail.com>
+Provides: webcamstudio
+Description: WebcamStudio For GNU/Linux
+ .
+ * Create your own TV Studio with your webcam to broadcast over the internet
+ * Compatible with flash site
+ * Website: http://ws4gl.org
