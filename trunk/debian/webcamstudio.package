@@ -1,0 +1,17 @@
+Package: webcamstudio
+Version: VERSION
+Section: video
+Priority: optional
+Architecture: all
+Essential: no
+Depends: sun-java6-jre, gstreamer0.10-plugins-good, gstreamer0.10-plugins-bad,gstreamer0.10-plugins-bad-multiverse,gstreamer0.10-plugins-ugly,gstreamer0.10-plugins-ugly-multiverse,build-essential
+Pre-Depends: 
+Recommends: 
+Suggests: 
+Installed-Size: SIZE
+Maintainer: Patrick Balleux <patrick.balleux@gmail.com>
+Conflicts: 
+Replaces: 
+Provides: webcamstudio
+Description: Create your own TV Studio with your webcam to broadcast over the internet.Compatible with flash site.Note:  You will need the vloopback module from the Flashcam project..
+
