@@ -1,0 +1,15 @@
+#summary Project Management
+
+= Introduction =
+
+For all the teams, this where the coordination of the team members will occur
+
+
+= Details =
+
+Things you'll want to checkout:
+
+* Components
+* Linux support
+* Windows support
+* GUI design
