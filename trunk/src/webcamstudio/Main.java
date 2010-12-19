@@ -294,20 +294,20 @@ public class Main extends javax.swing.JFrame implements InfoListener, Runnable, 
         root.add(nodeMovies);
 
         javax.swing.tree.DefaultMutableTreeNode nodeAnimations = new javax.swing.tree.DefaultMutableTreeNode(bundle.getString("ANIMATIONS"));
-        javax.swing.tree.DefaultMutableTreeNode nodeWS4GLAnimations = new javax.swing.tree.DefaultMutableTreeNode("WS4GL");
-        WS4GLAnimations wsa = new WS4GLAnimations();
-        try {
-            wsa.updateSourceList();
-        } catch (MalformedURLException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        for (VideoSource v : wsa.getSources()) {
-            nodeWS4GLAnimations.add(new javax.swing.tree.DefaultMutableTreeNode(v));
-        }
+//        javax.swing.tree.DefaultMutableTreeNode nodeWS4GLAnimations = new javax.swing.tree.DefaultMutableTreeNode("WS4GL");
+//        WS4GLAnimations wsa = new WS4GLAnimations();
+//        try {
+//            wsa.updateSourceList();
+//        } catch (MalformedURLException ex) {
+//            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (IOException ex) {
+//            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        for (VideoSource v : wsa.getSources()) {
+//            nodeWS4GLAnimations.add(new javax.swing.tree.DefaultMutableTreeNode(v));
+//        }
         root.add(nodeAnimations);
-        nodeAnimations.add(nodeWS4GLAnimations);
+//        nodeAnimations.add(nodeWS4GLAnimations);
 
         buildSourceAnimations();
         javax.swing.tree.DefaultMutableTreeNode nodeLocalAnimations = new javax.swing.tree.DefaultMutableTreeNode(bundle.getString("LOCAL"));
@@ -316,29 +316,29 @@ public class Main extends javax.swing.JFrame implements InfoListener, Runnable, 
         }
         nodeAnimations.add(nodeLocalAnimations);
 
-        final javax.swing.tree.DefaultMutableTreeNode nodeWidgets = new javax.swing.tree.DefaultMutableTreeNode(bundle.getString("WIDGETS") + " - " + bundle.getString("LOADING"));
-        new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-
-                WS4GLWidgets wsw = new WS4GLWidgets();
-                try {
-                    wsw.updateSourceList();
-                } catch (MalformedURLException ex) {
-                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (IOException ex) {
-                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                for (VideoSource v : wsw.getSources()) {
-                    nodeWidgets.add(new javax.swing.tree.DefaultMutableTreeNode(v));
-                }
-                nodeWidgets.setUserObject(bundle.getString("WIDGETS"));
-                treeSources.validate();
-                treeSources.repaint();
-            }
-        }).start();
-        root.add(nodeWidgets);
+//        final javax.swing.tree.DefaultMutableTreeNode nodeWidgets = new javax.swing.tree.DefaultMutableTreeNode(bundle.getString("WIDGETS") + " - " + bundle.getString("LOADING"));
+//        new Thread(new Runnable() {
+//
+//            @Override
+//            public void run() {
+//
+//                WS4GLWidgets wsw = new WS4GLWidgets();
+//                try {
+//                    wsw.updateSourceList();
+//                } catch (MalformedURLException ex) {
+//                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+//                } catch (IOException ex) {
+//                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//                for (VideoSource v : wsw.getSources()) {
+//                    nodeWidgets.add(new javax.swing.tree.DefaultMutableTreeNode(v));
+//                }
+//                nodeWidgets.setUserObject(bundle.getString("WIDGETS"));
+//                treeSources.validate();
+//                treeSources.repaint();
+//            }
+//        }).start();
+//        root.add(nodeWidgets);
 
         buildSourcePipelines();
         javax.swing.tree.DefaultMutableTreeNode nodePlugins = new javax.swing.tree.DefaultMutableTreeNode(bundle.getString("PIPELINES"));
@@ -537,6 +537,13 @@ public class Main extends javax.swing.JFrame implements InfoListener, Runnable, 
         }
         outputWidth = prefs.getInt("outputwidth", outputWidth);
         outputHeight = prefs.getInt("outputheight", outputHeight);
+        if (prefs.get("format","rgb24").equals("rgb24")){
+            mnurdPixelFormatRGB24.setSelected(true);
+            mnurdPixelFormatUYVY.setSelected(false);
+        } else if (prefs.get("format","uyvy").equals("uyvy")){
+            mnurdPixelFormatUYVY.setSelected(true);
+            mnurdPixelFormatRGB24.setSelected(false);
+        }
         String outputSize = outputWidth + "x" + outputHeight;
         java.util.Enumeration<javax.swing.AbstractButton> list = grpOutputSize.getElements();
         while (list.hasMoreElements()) {
@@ -581,6 +588,11 @@ public class Main extends javax.swing.JFrame implements InfoListener, Runnable, 
         prefs.put("fps", grpFramerate.getSelection().getActionCommand());
         prefs.putInt("outputwidth", outputWidth);
         prefs.putInt("outputheight", outputHeight);
+        if (mnurdPixelFormatRGB24.isSelected()){
+            prefs.put("format","rgb24");
+        }else if (mnurdPixelFormatUYVY.isSelected()){
+            prefs.put("format","uyvy");
+        }
         prefs.put("quality", grpQuality.getSelection().getActionCommand());
         prefs.putBoolean("showsplashbackground", mnuchkShowBackground.isSelected());
 
