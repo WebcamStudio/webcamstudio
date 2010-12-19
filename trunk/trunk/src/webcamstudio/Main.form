@@ -1222,7 +1222,7 @@
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="lblCurrentLayer" min="-2" pref="8" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="cboSelectedSource" pref="453" max="32767" attributes="0"/>
+                                  <Component id="cboSelectedSource" pref="459" max="32767" attributes="0"/>
                               </Group>
                               <Group type="102" alignment="0" attributes="0">
                                   <Component id="btnStartSource" min="-2" max="-2" attributes="0"/>
@@ -1240,7 +1240,7 @@
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                       </Group>
-                      <Component id="tabOptions" alignment="0" pref="596" max="32767" attributes="0"/>
+                      <Component id="tabOptions" alignment="0" pref="602" max="32767" attributes="0"/>
                   </Group>
                 </DimensionLayout>
                 <DimensionLayout dim="1">
@@ -1263,7 +1263,7 @@
                               <Component id="btnBackward" alignment="1" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="tabOptions" pref="271" max="32767" attributes="0"/>
+                          <Component id="tabOptions" pref="277" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -1444,16 +1444,16 @@
                       <Group type="102" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="jScrollPane2" alignment="0" pref="572" max="32767" attributes="0"/>
+                              <Component id="jScrollPane2" alignment="0" pref="578" max="32767" attributes="0"/>
                               <Group type="102" alignment="0" attributes="0">
                                   <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="txtTwitterUserName" pref="489" max="32767" attributes="0"/>
+                                  <Component id="txtTwitterUserName" pref="495" max="32767" attributes="0"/>
                               </Group>
                               <Group type="102" alignment="0" attributes="0">
                                   <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace type="separate" max="-2" attributes="0"/>
-                                  <Component id="txtTwitterPassword" pref="486" max="32767" attributes="0"/>
+                                  <Component id="txtTwitterPassword" pref="492" max="32767" attributes="0"/>
                               </Group>
                               <Group type="102" alignment="1" attributes="0">
                                   <Component id="lblTwitterCount" min="-2" max="-2" attributes="0"/>
@@ -1479,13 +1479,13 @@
                               <Component id="txtTwitterPassword" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jScrollPane2" pref="204" max="32767" attributes="0"/>
+                          <Component id="jScrollPane2" pref="207" max="32767" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="btnTwitterPost" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="lblTwitterCount" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace pref="44" max="32767" attributes="0"/>
+                          <EmptySpace pref="47" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
