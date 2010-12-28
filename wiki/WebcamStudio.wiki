@@ -12,6 +12,26 @@ Any thing that can provide an image, like a webcam, a jpeg, a movie is considere
 
 See the [Philosophy] page for more in-depth of the project's goal
 
+= Features =
+
+Also, one of the goal of WebcamStudio is to implements has much features as possible
+
+  * Webcam support
+  * DV support
+  * Text support
+  * Movies and/or audio files support
+  * On the fly video source manipulation without having to restart the output
+  * Local recording would be nice
+  * Twitther integration can be nice
+  * Soutcast support (Giis.tv) must be supported
+  * Desktop capture support
+  * Custom gstreamer pipelines support
+  * Animation support (thru ANM file of with animated Gifs)
+  * Special effects can be applied to any source
+  * Text effects support
+  * Running in the background support (icon in the notification bar?)
+  * Remote access to configuration would be nice like a webpage control
+  * More to come...
 
 = Details =
 
