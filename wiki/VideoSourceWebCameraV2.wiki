@@ -1,0 +1,10 @@
+#summary Video Source WebCamera V2 Description
+
+= Introduction =
+
+This source is dedicated to the application iWebCamera that can be found on the iPhone.
+
+
+= Details =
+
+If you have an iPhone and the application iWebCamera, you can then use your iPhone as a regular webcam inside WebcamStudio.  A class was built to provide the autodetection in the network of the application and when it is detected, the device will show up in the source browser.  For now, gstreamer framework is used to connect to iWebCamera to capture the jpeg stream that it provides.  A newer version of iWebcamera was provided late 2010, with a new protocol.  Some work has been done to support the new protocol but it was not a success.  Luckily, they still support the old protocol and WebcamStudio is still able to use that application as a remote ip webcam.
