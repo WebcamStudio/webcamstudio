@@ -1,0 +1,12 @@
+#summary Video Source V4L2 Description
+
+= Introduction =
+
+This video source is dedicated to the V4L2 webcam and devices
+
+
+= Details =
+
+Essentially, this video source is using the gstreamer framework to capture images from a V4L2 devices and output it as a buffered image.  Since the mechanism is exactly the same as VideoSourceV4L, this class just override the instanciation to replace the "vl4src" by "v4l2src" in the gstreamer pipeline.
+
+See VideoSourceV4L
