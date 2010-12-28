@@ -24,3 +24,15 @@ The Main.class has an internal vector list to hold the loaded VideoSources.  Thi
 Here is a list of all Video Sources and how they work:
   * VideoSourceDesktop
   * VideoSourceText
+  * VideoSourceIRC
+  * VideoSourceV4L
+  * VideoSourceV4L2
+  * VideoSourceMovie  
+  * VideoSourcePipeline
+  * VideoSourceAnimation
+  * VideoSourceImage
+  * VideoSourceWidtget
+  * VideoSourceConsole
+  * VideoSourceDV
+  * VideoSourceWebCameraV2
+  * VideoSourcePlaylist
