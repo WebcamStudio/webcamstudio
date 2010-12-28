@@ -1,0 +1,10 @@
+#summary VideoSourceDV
+
+= Introduction =
+
+A video source for /dev/raw1394 devices
+
+
+= Details =
+
+If you have a firewire webcam or camera, it can be used as a simple webcam.  Make sure that the user have access to read/write to the /dev/raw1394 device.  By default, the images will be resized to 320x240@15fps to lower the cpu usage.  The gstreamer framework is used to capture the images.
