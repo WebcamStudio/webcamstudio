@@ -1,0 +1,36 @@
+#summary Playlist Description
+
+= Introduction =
+
+A playlist is a file describing images and video source to be played in sequence
+
+
+= Details =
+
+Using a playlist, a user can have a dedicated source playing trailers of movies as part of his broadcast.  The playlist is a text file containing instruction on what video source to load and when to play them.
+
+Here is an example:
+
+{{{
+LOAD FILE, [KEY]
+POSITION X,Y
+SIZE WxH
+LOOP [TIMES]
+START AT HOUR[:MIN][:SEC]
+START IN HOUR[:MIN][:SEC]
+PLAY [FILE | KEY],[DURATION]
+OPACITY PERCENTVALUE
+ROTATION ANGLEVALUE
+PAUSE X Sec
+}}}
+
+  * LOAD set the full path to the file to load, optionally assign a key to that movie
+  * POSITION: Set the location where the output will be displayed
+  * SIZE: Sets the size of the output
+  * LOOP:  Specify that the play-list will loop forever or for that amount of TIMES (1,2,3)
+  * START AT:  Set the time at which the play-list will start playing
+  * START IN:  Count down on when the play-list will start plating
+  * PLAY:  By file name or key assigned, optionally set a maximum duration
+  * OPACITY:  Set the opacity of the output in percent (100=100%)
+  * ROTATION: Set the rotation in angle (45=45 degrees)
+  * PAUSE:  Trigger a pause of X second in the play-list playing
