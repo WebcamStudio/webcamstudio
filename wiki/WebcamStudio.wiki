@@ -9,11 +9,11 @@ This is the name of the project called WebcamStudio
 
 Things you'll want to checkout:
 
-    * Components
+    * [Components Components]
     * [LinuxSupport Linux Support]
     * [Windows Support Windows Support]
     * [GUIDesign GUI Design]
     * [VideoOuput  Video Output]
-    * VideoMixer
-    * Libraries
-    * Translations 
+    * [VideoMixer Video Mixer]
+    * [Libraries]
+    * [Translations Translations]
