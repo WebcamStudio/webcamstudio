@@ -1,4 +1,4 @@
-#summary One-sentence summary of this page.
+#summary Definitions of the components
 
 = Introduction =
 
@@ -22,5 +22,5 @@ All sources also have some specific methods releated to them and that do not app
 The Main.class has an internal vector list to hold the loaded VideoSources.  This list is then shared with the Mixer that will mix all active VideoSource in the order provided by the list.  The Mixer also keep a reference on the VideoOutput device to update the output image that will be sent to the virtual device (V4L2).
 
 Here is a list of all Video Sources and how they work:
-*  [VideoSourceDesktop VideoSourceDesktop]
-*  [VideoSourceText VideoSourceText]
+*  VideoSourceDesktop
+*  VideoSourceText VideoSourceText
