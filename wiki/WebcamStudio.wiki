@@ -7,4 +7,13 @@ This is the name of the project called WebcamStudio
 
 = Details =
 
-It all started on a simple idea:  Being able to broadcast the desktop to a virtual webcam.
+Things you'll want to checkout:
+
+    * Components
+    * [LinuxSupport Linux Support]
+    * [Windows Support Windows Support]
+    * [GUIDesign GUI Design]
+    * [VideoOuput  Video Output]
+    * VideoMixer
+    * Libraries
+    * Translations 
