@@ -1,0 +1,19 @@
+#summary Video Source Movie Description
+
+= Introduction =
+
+This source will attempt to play any movie format
+
+
+= Details =
+
+As for [VideoSourceV4L], this source is relying on the gstreamer framework to capture images from movies and output them in a single buffered image (updated on each frame).  By default, the movie is resized at 320x240@15fps.  This is to avoid overloading the CPU when the video mixer does it's job.
+
+At typical gstreamer pipeline for a "play-it-all" would look like this:
+{{{
+gst-launch filesrc location=XXXX.mov ! decodebin ! ffmpegcolorspace ! ximagesink
+}}}
+
+Of course, this pipeline does not handle the sound, but you get the idea.  So the video source movie has to used a "play-it-all" pipeline to be able to play any kind of movies (if all the plugins are installed in gstreamer).  The sound capture also has been implemented to output directly to the default audio output (pulseaudio).  A flag can be used to avoid loading the sound.
+
+Some components have been added to the audio pipeline to manage the sound volume and a seek component has been added so the user can seek into the movie while playing it.
