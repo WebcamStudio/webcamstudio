@@ -1,0 +1,12 @@
+#summary Video Source Console Description
+
+= Introduction =
+
+This source will display in a buffered image the result of any command line tool
+
+
+= Details =
+
+The main goal of the source is to execute on a console any command line too, grab the outputed text and render that text as a buffered image.  Optionally, this command can be executed on a specific interval.
+
+This can be useful to display the current CPU load, local ip adress, or what ever you may think from the console.  It is easier to create a BASH script that does the job and then invoke the script from the VideoSourceConsole.  This will give more power and flexibility and the output can be easily formated for your needs.
