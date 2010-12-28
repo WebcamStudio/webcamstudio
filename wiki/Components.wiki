@@ -1,0 +1,8 @@
+#summary One-sentence summary of this page.
+
+= Introduction =
+
+This page will focus on the internal architecture of WebcamStudio so you'll get a better understanding of how it works
+
+
+= Details =
