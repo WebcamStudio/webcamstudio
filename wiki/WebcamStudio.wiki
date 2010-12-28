@@ -4,6 +4,14 @@
 
 This is the name of the project called WebcamStudio
 
+= Goal =
+
+The main goal of WebcamStudio is to provide a user level application that is easy to use, and behave like a normal desktop application.  Overall, the user wants to get several video sources, mix them together and send that to a virtual webcam.  This virtual webcam will then be used by other software like Flash, Skype or Empathy to broadcast the mixed videos.
+
+Any thing that can provide an image, like a webcam, a jpeg, a movie is considered as a source.  If it shows up, it can be used!  That's the rule.
+
+See the [Philosophy] page for more in-depth of the project's goal
+
 
 = Details =
 
