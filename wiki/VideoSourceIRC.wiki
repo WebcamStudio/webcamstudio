@@ -1,0 +1,17 @@
+#summary Video Source IRC description
+= Introduction =
+
+This source will connect to any IRC chat room
+
+
+= Details =
+
+Using libraries, this source can connect to almost any IRC chat room, and display in a buffered image the text content from the chat room.  Emoticon has been implemented for some smylies but not all of them.
+
+At the base, an IRC server is required, a user name and a chat room name.  Password protected room/login are not supported for now.
+
+Even if it is possible to interact with the chat room thru that source, I have removed any mean of doing so as they're better IRC client out there and WS4GL is not meant to be an IRC client.
+
+The source is listening for incoming text, look for the sender and then create a text of line that will be displayed in the buffered image.  In the process, any smilies will be replaced by the according graphics from the icon list in the resources.
+
+The source will login when starting it and disconnect when stopping it.
