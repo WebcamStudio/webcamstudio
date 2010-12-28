@@ -1,0 +1,17 @@
+#summary What should WebcamStudio do!
+
+= Introduction =
+
+WebcamStudio can be several thing.  But the main goal is to provide an easy to use software to the users so they can build their own TV studio on their computer.
+
+
+= Details =
+
+Too many software developers are forgetting that in the end, a regular user will want to use their software.  Even if the command line can be fun and powerful, it is easier to simply point-and-click to execute some tasks.
+
+So with that in mind, a regular user must be able to do this:
+
+  # Download the package
+  # Install the package by double-clicking on it
+  # Start the application from the menu
+  # Use it right away without having to compile anything
