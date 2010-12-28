@@ -13,3 +13,7 @@ Things you'll want to checkout:
   *  [LinuxSupport Linux Support]
   *  [WindowsSupport Windows Support]
   *  [GUIDesign GUI Design]
+  *  [VideoOutput Video Output]
+  *  [VideoMixer VideoMixer]
+  *  [Libraries Libraries]
+  *  [Translations Translations]
