@@ -11,7 +11,7 @@ Things you'll want to checkout:
 
     * [Components Components]
     * [LinuxSupport Linux Support]
-    * [Windows Support Windows Support]
+    * [WindowsSupport Windows Support]
     * [GUIDesign GUI Design]
     * [VideoOuput  Video Output]
     * [VideoMixer Video Mixer]
