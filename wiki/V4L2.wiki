@@ -1,0 +1,10 @@
+#summary V4L2 description
+
+= Introduction =
+
+Description of the format V4L2
+
+
+= Details =
+
+In the Linux world, the input video is managed using the V4L and V4L2 format.  V4L2 is simply the next release of V4L, still used by older devices.
