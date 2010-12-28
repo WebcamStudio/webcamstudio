@@ -21,4 +21,4 @@ Here is an example
 </ws4gl>
 }}}
 
-Ising the tags, it is possible to build complex widget in which information can be display in a fancy way.
+Using the tags, it is possible to build complex widget in which information can be display in a fancy way.
