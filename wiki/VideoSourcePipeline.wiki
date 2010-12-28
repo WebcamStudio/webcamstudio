@@ -1,0 +1,26 @@
+#summary Video Source Pipeline
+
+= Introduction =
+
+A video source pipeline is used to have a user configurable video source based on gstreamer
+
+
+= Details =
+
+As with [VideoSourceV4L] and [VideoSourceMovie], the video source pipeline is relying on the gstreamer framework.  But in this one, we let the user puts what ever he wants based on a simple rule:  There must me an element name "tosink" that will provide a video feed to WS4GL in RGB format.
+
+This pipeline is saved in a file called youpipeline.wspl.  The content is quite simple:
+
+{{{
+pipeline=videotestsrc ! videoscale ! video/x-raw-rgb,width=320,height=240,framerate=15/1,bpp=24,depth=24 ! ffmpegcolorspace name=tosink
+}}}
+
+A pipeline can also be used to output to another device the result of the mixer.  In this case, some more information needs to be added to the wspl file:
+
+{{{
+name=Test Output
+type=sink
+pipeline=v4l2src device=FROMDEVICE ! ffmpegcolorspace ! ximagesink
+}}}
+
+Note that the pipeline has a tag "FROMDEVICE", this is needed to provide the v4l2src the used device (/dev/videox) that WS4GL is currently using.
