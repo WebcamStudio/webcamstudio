@@ -1,0 +1,14 @@
+#summary Video Source Animation Description
+
+= Introduction =
+
+This source will play a custom animation using PNG files
+
+
+= Details =
+
+The source Animation is build to play the .ANM files which is a series of PNG files inside a zip file.  An optional script can be integrated for more flexibility.
+
+Essentially, the result will be the same as GIF animation, but the number of colors supported by PNG greatly enhence the final results.  Also, using the scripting possibilities, it is possible to create some random sequence that will provide a better look on the animation (for example lightning).
+
+The source will unzip the file, load all images and the script.  Then the source will follow the script rules to display the images in the right order to a buffered image.
