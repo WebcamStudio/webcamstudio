@@ -1,0 +1,12 @@
+#summary Source Desktop description
+
+= Introduction =
+
+The Video Source Desktop is used to capture images from your current desktop
+
+
+= Details =
+
+To capture images from the desktop, WS4GL is relying on the feature of Java 6 thru the Robot class.  This class is mainly used for automated testing, but can capture at the specific location the content of the desktop and provided a buffered image as an output.
+
+The mouse cursor is monitor when this source is activated to the capture area can follow the mouse cursur if needed.
