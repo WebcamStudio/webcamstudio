@@ -1,0 +1,9 @@
+#summary One-sentence summary of this page.
+
+= Introduction =
+A Video Source is providing images to the mixer
+
+
+= Details =
+
+Each Video Source can produce a BufferedImage of whatever is capture.  IE, a webcam, a movie, the desktop, a text content, etc...
