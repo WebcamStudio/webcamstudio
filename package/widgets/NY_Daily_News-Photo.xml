@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ws4gl updatefrequency="60" width="320" height="240" bgalpha="#00" bgcolor="#0000ff" xmldataurl="http://www.nydailynews.com/news/photo_galleries/index_rss.xml">
+	<name>New York Daily News - Photo</name>
+	<description>New York Daily News - Photo</description>
+        <author>Patrick Balleux</author>
+	<image url="[rss.channel.item.enclosure.url]" x="0" y="0" width="320" height="240" />
+	<text x="5" y="25" fontsize="20" color="#000000" fontname="Arial" bold="false" italic="false">NY Daily News</text>
+	<text x="7" y="27" fontsize="20" color="#ffffff" fontname="Arial" bold="false" italic="false">NY Daily News</text>
+</ws4gl>
+

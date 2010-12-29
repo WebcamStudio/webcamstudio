@@ -14,7 +14,8 @@ mkdir package/usr/share/pixmaps
 mkdir package/usr/share/applications
 mkdir package/usr/share/webcamstudio
 mkdir package/usr/share/webcamstudio/webcamstudio-src
-mkdir package/usr/share/webcamstudio/microphone
+mkdir package/usr/share/webcamstudio/animations
+mkdir package/usr/share/webcamstudio/widgets
 mkdir package/DEBIAN
 mkdir package/etc
 
@@ -26,8 +27,9 @@ cp webcamstudio.desktop package/usr/share/applications
 cp ../trunk/dist/WebcamStudio.jar package/usr/lib/webcamstudio
 cp ../trunk/dist/lib/* package/usr/lib/webcamstudio/lib
 cp ../trunk/dist/README.TXT package/usr/lib/webcamstudio
-cp ../microphone/* package/usr/share/webcamstudio/microphone
 cp ../trunk/vloopback/* package/usr/share/webcamstudio/webcamstudio-src
+cp animations/*.anm package/usr/share/webcamstudio/animations
+cp widgets/*.xml package/usr/share/webcamstudio/widgets
 cp -R service/* package/etc
 rm -R -f package/etc/init.d/.svn
 rm -R -f package/etc/rc2.d/.svn
@@ -60,7 +62,6 @@ mkdir archive/webcamstudio/etc
 cp ../trunk/dist/WebcamStudio.jar archive/webcamstudio
 cp ../trunk/dist/lib/* archive/webcamstudio/lib
 cp ../trunk/dist/README.TXT archive/webcamstudio
-cp ../microphone/* archive/webcamstudio/microphone
 cp -R package/etc archive/webcamstudio
 cp ../trunk/vloopback/* archive/webcamstudio/usr/share/webcamstudio/webcamstudio-src
 cp webcamstudio.png archive/webcamstudio
