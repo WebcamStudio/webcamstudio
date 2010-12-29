@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ws4gl updatefrequency="1" width="210" height="40" bgalpha="#aa" bgcolor="#ffffff" >
+	<name>USA National Debt Clock</name>
+	<description>This will display the current national debt for the USA</description>
+        <author>Patrick Balleux</author>
+	<image url="http://www.brillig.com/debt_clock/debtiv.gif" x="0" y="0" width="210" height="20" />
+	<text x="11" y="36" fontsize="18" color="#ff0000" fontname="Monospaced" bold="false" italic="false">USA National Debt</text>
+	<text x="13" y="36" fontsize="18" color="#ffffff" fontname="Monospaced" bold="false" italic="false">USA National Debt</text>
+
+</ws4gl>
+

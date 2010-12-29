@@ -294,20 +294,20 @@ public class Main extends javax.swing.JFrame implements InfoListener, Runnable, 
         root.add(nodeMovies);
 
         javax.swing.tree.DefaultMutableTreeNode nodeAnimations = new javax.swing.tree.DefaultMutableTreeNode(bundle.getString("ANIMATIONS"));
-//        javax.swing.tree.DefaultMutableTreeNode nodeWS4GLAnimations = new javax.swing.tree.DefaultMutableTreeNode("WS4GL");
-//        WS4GLAnimations wsa = new WS4GLAnimations();
-//        try {
-//            wsa.updateSourceList();
-//        } catch (MalformedURLException ex) {
-//            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-//        } catch (IOException ex) {
-//            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        for (VideoSource v : wsa.getSources()) {
-//            nodeWS4GLAnimations.add(new javax.swing.tree.DefaultMutableTreeNode(v));
-//        }
+        javax.swing.tree.DefaultMutableTreeNode nodeWS4GLAnimations = new javax.swing.tree.DefaultMutableTreeNode("WS4GL");
+        WS4GLAnimations wsa = new WS4GLAnimations();
+        try {
+            wsa.updateSourceList();
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        for (VideoSource v : wsa.getSources()) {
+            nodeWS4GLAnimations.add(new javax.swing.tree.DefaultMutableTreeNode(v));
+        }
         root.add(nodeAnimations);
-//        nodeAnimations.add(nodeWS4GLAnimations);
+        nodeAnimations.add(nodeWS4GLAnimations);
 
         buildSourceAnimations();
         javax.swing.tree.DefaultMutableTreeNode nodeLocalAnimations = new javax.swing.tree.DefaultMutableTreeNode(bundle.getString("LOCAL"));
@@ -316,29 +316,29 @@ public class Main extends javax.swing.JFrame implements InfoListener, Runnable, 
         }
         nodeAnimations.add(nodeLocalAnimations);
 
-//        final javax.swing.tree.DefaultMutableTreeNode nodeWidgets = new javax.swing.tree.DefaultMutableTreeNode(bundle.getString("WIDGETS") + " - " + bundle.getString("LOADING"));
-//        new Thread(new Runnable() {
-//
-//            @Override
-//            public void run() {
-//
-//                WS4GLWidgets wsw = new WS4GLWidgets();
-//                try {
-//                    wsw.updateSourceList();
-//                } catch (MalformedURLException ex) {
-//                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-//                } catch (IOException ex) {
-//                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-//                }
-//                for (VideoSource v : wsw.getSources()) {
-//                    nodeWidgets.add(new javax.swing.tree.DefaultMutableTreeNode(v));
-//                }
-//                nodeWidgets.setUserObject(bundle.getString("WIDGETS"));
-//                treeSources.validate();
-//                treeSources.repaint();
-//            }
-//        }).start();
-//        root.add(nodeWidgets);
+        final javax.swing.tree.DefaultMutableTreeNode nodeWidgets = new javax.swing.tree.DefaultMutableTreeNode(bundle.getString("WIDGETS") + " - " + bundle.getString("LOADING"));
+        new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+
+                WS4GLWidgets wsw = new WS4GLWidgets();
+                try {
+                    wsw.updateSourceList();
+                } catch (MalformedURLException ex) {
+                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IOException ex) {
+                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                for (VideoSource v : wsw.getSources()) {
+                    nodeWidgets.add(new javax.swing.tree.DefaultMutableTreeNode(v));
+                }
+                nodeWidgets.setUserObject(bundle.getString("WIDGETS"));
+                treeSources.validate();
+                treeSources.repaint();
+            }
+        }).start();
+        root.add(nodeWidgets);
 
         buildSourcePipelines();
         javax.swing.tree.DefaultMutableTreeNode nodePlugins = new javax.swing.tree.DefaultMutableTreeNode(bundle.getString("PIPELINES"));

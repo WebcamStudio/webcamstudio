@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ws4gl updatefrequency="60" width="320" height="100" bgalpha="#00" bgcolor="#0000ff" xmldataurl="http://api.wxbug.net/getLiveWeatherRSS.aspx?ACode=A6453888564&amp;zipcode=10001&amp;unittype=0&amp;outputType=1">
+	<name>WeatherBug - New York</name>
+	<description>Get current weather for New York</description>
+        <author>Patrick Balleux</author>
+	<image url="[aws:weather.aws:ob.aws:current-condition.icon]" x="0" y="0" width="100" height="100" />
+	<image url="http://www.ws4gl.org/SPBugIcon3.gif" x="0" y="0" width="33" height="34" />
+	<text x="103" y="18" fontsize="20" color="#000000" fontname="Monospaced" bold="true" italic="false">[aws:weather.aws:ob.aws:city-state]</text>
+	<text x="105" y="20" fontsize="20" color="#ffffff" fontname="Monospaced" bold="true" italic="false">[aws:weather.aws:ob.aws:city-state]</text>
+	<text x="103" y="38" fontsize="18" color="#000000" fontname="Monospaced" bold="false" italic="false">[aws:weather.aws:ob.aws:current-condition]</text>
+	<text x="105" y="40" fontsize="18" color="#ffffaa" fontname="Monospaced" bold="false" italic="false">[aws:weather.aws:ob.aws:current-condition]</text>
+	<text x="103" y="58" fontsize="18" color="#000000" fontname="Monospaced" bold="false" italic="false">Temp: [aws:weather.aws:ob.aws:temp] F</text>
+	<text x="105" y="60" fontsize="18" color="#ffffaa" fontname="Monospaced" bold="false" italic="false">Temp: [aws:weather.aws:ob.aws:temp] F</text>
+	<text x="103" y="78" fontsize="18" color="#000000" fontname="Monospaced" bold="false" italic="false">Wind: [aws:weather.aws:ob.aws:wind-speed] [aws:weather.aws:ob.aws:wind-speed.units]</text>
+	<text x="105" y="80" fontsize="18" color="#ffffaa" fontname="Monospaced" bold="false" italic="false">Wind: [aws:weather.aws:ob.aws:wind-speed] [aws:weather.aws:ob.aws:wind-speed.units]</text>
+	
+</ws4gl>

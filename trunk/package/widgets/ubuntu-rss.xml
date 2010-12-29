@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ws4gl updatefrequency="60" width="320" height="70" bgalpha="#44" bgcolor="#000333" xmldataurl="http://www.osnews.com/files/recent.xml">
+	<name>Ubuntu RSS Feed</name>
+	<description>Get the last 4 news from Ubuntu</description>
+        <author>Patrick Balleux</author>
+	<text x="5" y="20" fontsize="24" color="#ff0000" fontname="Arial" bold="true" italic="false">Ubuntu News</text>
+	<text x="4" y="34" fontsize="10" color="#000000" fontname="Monospaced" bold="true" italic="false">[rss.channel.item.title]</text>
+	<text x="5" y="35" fontsize="10" color="#ffff00" fontname="Monospaced" bold="true" italic="false">[rss.channel.item.title]</text>
+	<text x="4" y="44" fontsize="10" color="#000000" fontname="Monospaced" bold="false" italic="false">[rss.channel.item.1.title]</text>
+	<text x="5" y="45" fontsize="10" color="#ffffff" fontname="Monospaced" bold="false" italic="false">[rss.channel.item.1.title]</text>
+	<text x="4" y="54" fontsize="10" color="#000000" fontname="Monospaced" bold="false" italic="false">[rss.channel.item.2.title]</text>
+	<text x="5" y="55" fontsize="10" color="#ffffff" fontname="Monospaced" bold="false" italic="false">[rss.channel.item.2.title]</text>
+	<text x="4" y="64" fontsize="10" color="#000000" fontname="Monospaced" bold="false" italic="false">[rss.channel.item.3.title]</text>
+	<text x="5" y="65" fontsize="10" color="#ffffff" fontname="Monospaced" bold="false" italic="false">[rss.channel.item.3.title]</text>
+</ws4gl>

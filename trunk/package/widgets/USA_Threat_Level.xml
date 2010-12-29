@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ws4gl updatefrequency="60" width="155" height="62" bgalpha="#ff" bgcolor="#ffffff" >
+	<name>USA Current Threat Level</name>
+	<description>Shows the current thread level for the USA</description>
+        <author>Patrick Balleux</author>
+	<image url="http://www.dhs.gov/threat_level/current_new.gif" x="0" y="0" width="155" height="62" />
+</ws4gl>
+

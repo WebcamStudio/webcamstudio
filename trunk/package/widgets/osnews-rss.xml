@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ws4gl updatefrequency="60" width="400" height="140" bgalpha="#99" bgcolor="#0000ff" xmldataurl="http://www.osnews.com/files/recent.xml">
+	<name>OSNews RSS Feed</name>
+	<description>Get the last 4 news from OSNews</description>
+        <author>Patrick Balleux</author>
+	<image url="[rss.channel.image.url]" width="160" height="60" x="0" y="0"/>
+	<text x="0" y="75" fontsize="14" color="#ffff00" fontname="Monospaced" bold="true" italic="false">[rss.channel.item.title]</text>
+	<text x="0" y="95" fontsize="14" color="#ffffff" fontname="Monospaced" bold="false" italic="false">[rss.channel.item.1.title]</text>
+	<text x="0" y="115" fontsize="14" color="#ffffff" fontname="Monospaced" bold="false" italic="false">[rss.channel.item.2.title]</text>
+	<text x="0" y="135" fontsize="14" color="#ffffff" fontname="Monospaced" bold="false" italic="false">[rss.channel.item.3.title]</text>
+</ws4gl>
