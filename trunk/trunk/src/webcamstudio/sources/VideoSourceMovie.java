@@ -19,6 +19,11 @@
  */
 package webcamstudio.sources;
 
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import org.gstreamer.*;
 import webcamstudio.controls.ControlAudio;
@@ -454,4 +459,38 @@ public class VideoSourceMovie extends VideoSource implements org.gstreamer.eleme
     private Element elementAudioConvert = ElementFactory.make(GST_AUDIOCONVERT, GST_AUDIOCONVERT + uuId);
     private Pipeline pipe = null;
     private long duration = 0;
+
+    @Override
+    public ImageIcon getThumbnail() {
+        ImageIcon icon = getCachedThumbnail();
+        if (icon == null) {
+            loadSound = false;
+            startSource();
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(VideoSourceMovie.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            pipe.seek(ClockTime.fromSeconds(300));
+            image = null;
+            while (image == null) {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(VideoSourceMovie.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            icon = new ImageIcon(image.getScaledInstance(32, 32, BufferedImage.SCALE_FAST));
+
+            stopSource();
+            loadSound = true;
+            try {
+                saveThumbnail(icon);
+            } catch (IOException ex) {
+                System.out.println(ex.getMessage());
+                Logger.getLogger(VideoSourceMovie.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return icon;
+    }
 }

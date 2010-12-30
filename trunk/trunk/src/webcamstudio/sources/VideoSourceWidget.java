@@ -349,4 +349,5 @@ public class VideoSourceWidget extends VideoSource {
         list.add(new webcamstudio.controls.ControlReload(this));
         return list;
     }
+
 }

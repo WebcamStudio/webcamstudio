@@ -7,10 +7,16 @@ package webcamstudio.sources;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
+import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import webcamstudio.components.GifDecoder;
 
@@ -204,16 +210,17 @@ public class VideoSourceImage extends VideoSource {
     public String toString() {
         return "Image: " + name;
     }
-    public Image getThumnail(){
+
+    public Image getThumnail() {
         return thumbnail;
     }
-
     private int index = 0;
     private java.util.Vector<String> locations = new java.util.Vector<String>();
     private int animatedIndex = 0;
     private java.util.Vector<BufferedImage> images = new java.util.Vector<BufferedImage>();
     private java.util.Vector<Integer> delays = new java.util.Vector<Integer>();
     private Image thumbnail = null;
+
     @Override
     public java.util.Collection<JPanel> getControls() {
         java.util.Vector<JPanel> list = new java.util.Vector<JPanel>();
@@ -223,5 +230,30 @@ public class VideoSourceImage extends VideoSource {
         list.add(new webcamstudio.controls.ControlLayout(this));
         list.add(new webcamstudio.controls.ControlReload(this));
         return list;
+    }
+
+    @Override
+    public ImageIcon getThumbnail() {
+        ImageIcon icon = getCachedThumbnail();
+        if (icon == null) {
+            try {
+                tempimage = javax.imageio.ImageIO.read(new URL(location));
+                if (tempimage != null) {
+                    icon = new ImageIcon(tempimage.getScaledInstance(32, 32, BufferedImage.SCALE_FAST));
+                } else {
+                    icon = super.getThumbnail();
+                }
+            } catch (IOException ex) {
+                Logger.getLogger(VideoSourceImage.class.getName()).log(Level.SEVERE, null, ex);
+                icon = super.getThumbnail();
+            }
+            try {
+                saveThumbnail(icon);
+            } catch (IOException ex) {
+                System.out.println(ex.getMessage());
+                Logger.getLogger(VideoSourceImage.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return icon;
     }
 }

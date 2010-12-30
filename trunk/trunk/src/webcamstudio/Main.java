@@ -11,7 +11,6 @@
 package webcamstudio;
 
 import java.awt.BorderLayout;
-import java.awt.event.KeyEvent;
 import webcamstudio.exporter.vloopback.VideoDevice;
 import webcamstudio.exporter.vloopback.V4L2Loopback;
 import java.awt.Component;
@@ -51,7 +50,7 @@ import winterwell.jtwitter.Twitter;
  *
  * @author pballeux
  */
-public class Main extends javax.swing.JFrame implements InfoListener, Runnable, SourceListListener, SourceListener {
+public class Main extends javax.swing.JFrame implements InfoListener, Runnable, SourceListListener, SourceListener, MediaListener {
 
     private VideoOutput output = null;
     private Mixer mixer = null;
@@ -75,11 +74,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, Runnable, 
     private java.util.Vector<String> dirToScan = new java.util.Vector<String>();
     private javax.swing.tree.DefaultTreeModel sourceDir = null;
     private javax.swing.tree.DefaultMutableTreeNode root = null;
-    private ImageIcon iconMovie = null;
-    private ImageIcon iconImage = null;
-    private ImageIcon iconDevice = null;
-    private ImageIcon iconAnimation = null;
-    private ImageIcon iconFolder = null;
     private javax.swing.tree.DefaultMutableTreeNode nodeDevices = null;
     private LayoutManager layoutManager = null;
     private String lastDriverOutput = "";
@@ -184,54 +178,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, Runnable, 
             }
         };
 
-        iconMovie = new ImageIcon(getToolkit().getImage(java.net.URLClassLoader.getSystemResource("webcamstudio/resources/tango/video-display.png")));
-        iconImage = new ImageIcon(getToolkit().getImage(java.net.URLClassLoader.getSystemResource("webcamstudio/resources/tango/image-x-generic.png")));
-        iconDevice = new ImageIcon(getToolkit().getImage(java.net.URLClassLoader.getSystemResource("webcamstudio/resources/tango/camera-video.png")));
-        iconAnimation = new ImageIcon(getToolkit().getImage(java.net.URLClassLoader.getSystemResource("webcamstudio/resources/tango/user-info.png")));
-        iconFolder = new ImageIcon(getToolkit().getImage(java.net.URLClassLoader.getSystemResource("webcamstudio/resources/tango/folder.png")));
-
-        javax.swing.tree.DefaultTreeCellRenderer treeRenderer = new javax.swing.tree.DefaultTreeCellRenderer() {
-
-            @Override
-            public Component getTreeCellRendererComponent(javax.swing.JTree tree, Object value, boolean sel, boolean expanded, boolean isleaf, int index, boolean hasFocus) {
-                Component retValue = super.getTreeCellRendererComponent(tree, value, sel, expanded, isleaf, index, hasFocus);
-                if (retValue instanceof JLabel) {
-                    JLabel label = (JLabel) retValue;
-
-                    if (((javax.swing.tree.DefaultMutableTreeNode) value).getUserObject() instanceof VideoSource) {
-                        VideoSource v = (VideoSource) ((javax.swing.tree.DefaultMutableTreeNode) value).getUserObject();
-                        if (v.isPlaying()) {
-                            label.setEnabled(false);
-                        }
-                        label.setText(v.getName());
-                        label.setToolTipText(v.getLocation());
-                        if (v instanceof VideoSourceImage) {
-                            VideoSourceImage source = (VideoSourceImage) v;
-                            if (source.getThumnail() == null) {
-                                label.setIcon(iconImage);
-                            } else {
-                                label.setIcon(new ImageIcon(source.getThumnail()));
-                            }
-
-                        } else if (v instanceof VideoSourceMovie) {
-                            label.setIcon(iconMovie);
-                        } else if (v instanceof VideoSourceV4L || v instanceof VideoSourceDV || v instanceof VideoSourcePipeline) {
-                            label.setIcon(iconDevice);
-                        } else if (v instanceof VideoSourceAnimation || v instanceof VideoSourceWidget) {
-                            label.setIcon(iconAnimation);
-                        }
-                    } else {
-                        label.setIcon(iconFolder);
-                    }
-                }
-                return retValue;
-            }
-        };
-
-        treeSources.setCellRenderer(treeRenderer);
-        root = new javax.swing.tree.DefaultMutableTreeNode(java.util.ResourceBundle.getBundle("webcamstudio/Languages").getString("LOADING"));
-        sourceDir = new javax.swing.tree.DefaultTreeModel(root);
-        treeSources.setModel(sourceDir);
         webcamera = new WebCamera(this);
         new Thread(new Runnable() {
 
@@ -269,32 +215,39 @@ public class Main extends javax.swing.JFrame implements InfoListener, Runnable, 
     private void initSourceDir() {
         final java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("webcamstudio/Languages");
         setCursor(new Cursor(Cursor.WAIT_CURSOR));
-        root = new javax.swing.tree.DefaultMutableTreeNode(bundle.getString("SOURCES"));
-        sourceDir = new javax.swing.tree.DefaultTreeModel(root);
+
+        MediaPanel mediaPanel = new MediaPanel();
+        
+        mediaPanel.setAutoscrolls(true);
+
+
         //Loading devices
         buildSourceDevices();
-        nodeDevices = new javax.swing.tree.DefaultMutableTreeNode(bundle.getString("DEVICES"));
+        MediaPanelList pdevices = new MediaPanelList(this);
+        pdevices.setPanelName(bundle.getString("DEVICES"));
         for (VideoSource v : devices.values()) {
-            nodeDevices.add(new javax.swing.tree.DefaultMutableTreeNode(v));
+            pdevices.addMedia(v);
         }
-        root.add(nodeDevices);
+        mediaPanel.addMedia(pdevices);
 
         buildSourceImages();
-        javax.swing.tree.DefaultMutableTreeNode nodeImages = new javax.swing.tree.DefaultMutableTreeNode(bundle.getString("IMAGES"));
+        MediaPanelList pImages = new MediaPanelList(this);
+        pImages.setPanelName(bundle.getString("IMAGES"));
         for (VideoSource v : images.values()) {
-            nodeImages.add(new javax.swing.tree.DefaultMutableTreeNode(v));
+            pImages.addMedia(v);
         }
-        root.add(nodeImages);
+        mediaPanel.addMedia(pImages);
 
         buildSourceMovies();
-        javax.swing.tree.DefaultMutableTreeNode nodeMovies = new javax.swing.tree.DefaultMutableTreeNode(bundle.getString("MOVIES"));
+        MediaPanelList pMovies = new MediaPanelList(this);
+        pMovies.setPanelName(bundle.getString("MOVIES"));
         for (VideoSource v : movies.values()) {
-            nodeMovies.add(new javax.swing.tree.DefaultMutableTreeNode(v));
+            pMovies.addMedia(v);
         }
-        root.add(nodeMovies);
+        mediaPanel.addMedia(pMovies);
 
-        javax.swing.tree.DefaultMutableTreeNode nodeAnimations = new javax.swing.tree.DefaultMutableTreeNode(bundle.getString("ANIMATIONS"));
-        javax.swing.tree.DefaultMutableTreeNode nodeWS4GLAnimations = new javax.swing.tree.DefaultMutableTreeNode("WS4GL");
+        MediaPanelList pAnm = new MediaPanelList(this);
+        pAnm.setPanelName(bundle.getString("ANIMATIONS"));
         WS4GLAnimations wsa = new WS4GLAnimations();
         try {
             wsa.updateSourceList();
@@ -304,59 +257,51 @@ public class Main extends javax.swing.JFrame implements InfoListener, Runnable, 
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
         for (VideoSource v : wsa.getSources()) {
-            nodeWS4GLAnimations.add(new javax.swing.tree.DefaultMutableTreeNode(v));
+            pAnm.addMedia(v);
         }
-        root.add(nodeAnimations);
-        nodeAnimations.add(nodeWS4GLAnimations);
-
         buildSourceAnimations();
-        javax.swing.tree.DefaultMutableTreeNode nodeLocalAnimations = new javax.swing.tree.DefaultMutableTreeNode(bundle.getString("LOCAL"));
+
         for (VideoSource v : animations.values()) {
-            nodeLocalAnimations.add(new javax.swing.tree.DefaultMutableTreeNode(v));
+            pAnm.addMedia(v);
         }
-        nodeAnimations.add(nodeLocalAnimations);
+        mediaPanel.addMedia(pAnm);
 
-        final javax.swing.tree.DefaultMutableTreeNode nodeWidgets = new javax.swing.tree.DefaultMutableTreeNode(bundle.getString("WIDGETS") + " - " + bundle.getString("LOADING"));
-        new Thread(new Runnable() {
 
-            @Override
-            public void run() {
+        MediaPanelList pwid = new MediaPanelList(this);
+        pwid.setPanelName(bundle.getString("WIDGETS"));
 
-                WS4GLWidgets wsw = new WS4GLWidgets();
-                try {
-                    wsw.updateSourceList();
-                } catch (MalformedURLException ex) {
-                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (IOException ex) {
-                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                for (VideoSource v : wsw.getSources()) {
-                    nodeWidgets.add(new javax.swing.tree.DefaultMutableTreeNode(v));
-                }
-                nodeWidgets.setUserObject(bundle.getString("WIDGETS"));
-                treeSources.validate();
-                treeSources.repaint();
-            }
-        }).start();
-        root.add(nodeWidgets);
+
+        WS4GLWidgets wsw = new WS4GLWidgets();
+        try {
+            wsw.updateSourceList();
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        for (VideoSource v : wsw.getSources()) {
+            pwid.addMedia(v);
+        }
+        mediaPanel.addMedia(pwid);
 
         buildSourcePipelines();
-        javax.swing.tree.DefaultMutableTreeNode nodePlugins = new javax.swing.tree.DefaultMutableTreeNode(bundle.getString("PIPELINES"));
+        MediaPanelList ppipes = new MediaPanelList(this);
+        ppipes.setPanelName(bundle.getString("PIPELINES"));
+        
         for (VideoSource v : pipelines.values()) {
-            nodePlugins.add(new javax.swing.tree.DefaultMutableTreeNode(v));
+            ppipes.addMedia(v);
         }
-        root.add(nodePlugins);
+        mediaPanel.addMedia(ppipes);
 
-        javax.swing.tree.DefaultMutableTreeNode nodeExporters = new javax.swing.tree.DefaultMutableTreeNode(bundle.getString("EXPORTERS"));
+        MediaPanelList pexp = new MediaPanelList(this);
+        pexp.setPanelName(bundle.getString("EXPORTERS"));
         for (VideoExporter v : exporters.values()) {
-            nodeExporters.add(new javax.swing.tree.DefaultMutableTreeNode(v));
+            pexp.addMedia(v);
         }
-        root.add(nodeExporters);
-
-        treeSources.setModel(sourceDir);
+        mediaPanel.addMedia(pexp);
         setCursor(Cursor.getDefaultCursor());
-
-
+        mediaPanel.revalidate();
+        panBrowser.add(mediaPanel,BorderLayout.CENTER);
     }
 
     private void buildSourceAnimations() {
@@ -422,9 +367,9 @@ public class Main extends javax.swing.JFrame implements InfoListener, Runnable, 
                                 }
                             } else if (type.toLowerCase().equals("sink")) {
                                 VideoExporterPipeline vp = null;
-                                if (output!=null){
-                                vp = new VideoExporterPipeline(f, output.getDevice());
-                                } else{
+                                if (output != null) {
+                                    vp = new VideoExporterPipeline(f, output.getDevice());
+                                } else {
                                     vp = new VideoExporterPipeline(f, "");
                                 }
                                 if (exporters.containsKey(vp.getName())) {
@@ -525,7 +470,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, Runnable, 
             }
             sourceDir.nodeChanged(nodeDevices);
             sourceDir.nodeStructureChanged(nodeDevices);
-            treeSources.revalidate();
+            
             System.out.println("Device update");
         }
     }
@@ -537,10 +482,10 @@ public class Main extends javax.swing.JFrame implements InfoListener, Runnable, 
         }
         outputWidth = prefs.getInt("outputwidth", outputWidth);
         outputHeight = prefs.getInt("outputheight", outputHeight);
-        if (prefs.get("format","rgb24").equals("rgb24")){
+        if (prefs.get("format", "rgb24").equals("rgb24")) {
             mnurdPixelFormatRGB24.setSelected(true);
             mnurdPixelFormatUYVY.setSelected(false);
-        } else if (prefs.get("format","uyvy").equals("uyvy")){
+        } else if (prefs.get("format", "uyvy").equals("uyvy")) {
             mnurdPixelFormatUYVY.setSelected(true);
             mnurdPixelFormatRGB24.setSelected(false);
         }
@@ -588,10 +533,10 @@ public class Main extends javax.swing.JFrame implements InfoListener, Runnable, 
         prefs.put("fps", grpFramerate.getSelection().getActionCommand());
         prefs.putInt("outputwidth", outputWidth);
         prefs.putInt("outputheight", outputHeight);
-        if (mnurdPixelFormatRGB24.isSelected()){
-            prefs.put("format","rgb24");
-        }else if (mnurdPixelFormatUYVY.isSelected()){
-            prefs.put("format","uyvy");
+        if (mnurdPixelFormatRGB24.isSelected()) {
+            prefs.put("format", "rgb24");
+        } else if (mnurdPixelFormatUYVY.isSelected()) {
+            prefs.put("format", "uyvy");
         }
         prefs.put("quality", grpQuality.getSelection().getActionCommand());
         prefs.putBoolean("showsplashbackground", mnuchkShowBackground.isSelected());
@@ -795,8 +740,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, Runnable, 
         txtTwitterContent = new javax.swing.JTextArea();
         btnTwitterPost = new javax.swing.JButton();
         lblTwitterCount = new javax.swing.JLabel();
-        treeScroller = new javax.swing.JScrollPane();
-        treeSources = new javax.swing.JTree();
+        panBrowser = new javax.swing.JPanel();
         menuBar = new javax.swing.JMenuBar();
         mnuStudios = new javax.swing.JMenu();
         mnuStudioNew = new javax.swing.JMenuItem();
@@ -910,7 +854,13 @@ public class Main extends javax.swing.JFrame implements InfoListener, Runnable, 
 
         getContentPane().add(panelStatus, java.awt.BorderLayout.SOUTH);
 
+        splitter.setDividerLocation(300);
+        splitter.setResizeWeight(1.0);
+        splitter.setContinuousLayout(true);
+        splitter.setLastDividerLocation(300);
         splitter.setName("splitter"); // NOI18N
+        splitter.setOneTouchExpandable(true);
+        splitter.setOpaque(true);
 
         tabControls.setName("tabControls"); // NOI18N
 
@@ -1010,7 +960,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, Runnable, 
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(lblCurrentLayer, javax.swing.GroupLayout.PREFERRED_SIZE, 8, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cboSelectedSource, 0, 453, Short.MAX_VALUE))
+                        .addComponent(cboSelectedSource, 0, 103, Short.MAX_VALUE))
                     .addGroup(panControlsLayout.createSequentialGroup()
                         .addComponent(btnStartSource)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1024,7 +974,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, Runnable, 
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnBackward)))
                 .addContainerGap())
-            .addComponent(tabOptions, javax.swing.GroupLayout.DEFAULT_SIZE, 596, Short.MAX_VALUE)
+            .addComponent(tabOptions, javax.swing.GroupLayout.DEFAULT_SIZE, 246, Short.MAX_VALUE)
         );
         panControlsLayout.setVerticalGroup(
             panControlsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1044,7 +994,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, Runnable, 
                     .addComponent(btnFoward, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(btnBackward, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(tabOptions, javax.swing.GroupLayout.DEFAULT_SIZE, 271, Short.MAX_VALUE))
+                .addComponent(tabOptions, javax.swing.GroupLayout.DEFAULT_SIZE, 283, Short.MAX_VALUE))
         );
 
         tabControls.addTab(bundle.getString("CONTROLS"), new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/document-properties.png")), panControls); // NOI18N
@@ -1093,15 +1043,15 @@ public class Main extends javax.swing.JFrame implements InfoListener, Runnable, 
             .addGroup(panTwitterLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(panTwitterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 572, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 222, Short.MAX_VALUE)
                     .addGroup(panTwitterLayout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtTwitterUserName, javax.swing.GroupLayout.DEFAULT_SIZE, 489, Short.MAX_VALUE))
+                        .addComponent(txtTwitterUserName, javax.swing.GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE))
                     .addGroup(panTwitterLayout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addGap(18, 18, 18)
-                        .addComponent(txtTwitterPassword, javax.swing.GroupLayout.DEFAULT_SIZE, 486, Short.MAX_VALUE))
+                        .addComponent(txtTwitterPassword, javax.swing.GroupLayout.DEFAULT_SIZE, 136, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panTwitterLayout.createSequentialGroup()
                         .addComponent(lblTwitterCount)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1120,35 +1070,21 @@ public class Main extends javax.swing.JFrame implements InfoListener, Runnable, 
                     .addComponent(jLabel2)
                     .addComponent(txtTwitterPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 204, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 196, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panTwitterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnTwitterPost)
                     .addComponent(lblTwitterCount))
-                .addContainerGap(44, Short.MAX_VALUE))
+                .addContainerGap(64, Short.MAX_VALUE))
         );
 
         tabControls.addTab("Twitter", panTwitter);
 
         splitter.setRightComponent(tabControls);
 
-        treeScroller.setName("treeScroller"); // NOI18N
-
-        treeSources.setDragEnabled(true);
-        treeSources.setName("treeSources"); // NOI18N
-        treeSources.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                treeSourcesMouseClicked(evt);
-            }
-        });
-        treeSources.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                treeSourcesKeyPressed(evt);
-            }
-        });
-        treeScroller.setViewportView(treeSources);
-
-        splitter.setLeftComponent(treeScroller);
+        panBrowser.setName("panBrowser"); // NOI18N
+        panBrowser.setLayout(new java.awt.BorderLayout());
+        splitter.setLeftComponent(panBrowser);
 
         getContentPane().add(splitter, java.awt.BorderLayout.CENTER);
 
@@ -2438,48 +2374,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, Runnable, 
         }
 }//GEN-LAST:event_mnuRemoveDirActionPerformed
 
-    private void treeSourcesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_treeSourcesMouseClicked
-        if (evt.getClickCount() >= 2) {
-
-            VideoSource source = null;
-            if (((javax.swing.tree.DefaultMutableTreeNode) treeSources.getSelectionPath().getLastPathComponent()).getUserObject() instanceof VideoSource) {
-                source = (VideoSource) ((javax.swing.tree.DefaultMutableTreeNode) treeSources.getSelectionPath().getLastPathComponent()).getUserObject();
-                if (!source.isPlaying()) {
-                    addSource(source);
-                }
-
-            } else if (((javax.swing.tree.DefaultMutableTreeNode) treeSources.getSelectionPath().getLastPathComponent()).getUserObject() instanceof VideoExporterPipeline) {
-                VideoExporterPipeline ex = (VideoExporterPipeline) ((javax.swing.tree.DefaultMutableTreeNode) treeSources.getSelectionPath().getLastPathComponent()).getUserObject();
-                Exporters d = new Exporters(this, false, ex);
-                d.pack();
-                d.setLocationRelativeTo(this);
-                d.setVisible(true);
-            }
-
-        }
-    }//GEN-LAST:event_treeSourcesMouseClicked
-
-    private void treeSourcesKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_treeSourcesKeyPressed
-        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-
-            VideoSource source = null;
-            if (((javax.swing.tree.DefaultMutableTreeNode) treeSources.getSelectionPath().getLastPathComponent()).getUserObject() instanceof VideoSource) {
-                source = (VideoSource) ((javax.swing.tree.DefaultMutableTreeNode) treeSources.getSelectionPath().getLastPathComponent()).getUserObject();
-                if (!source.isPlaying()) {
-                    addSource(source);
-                }
-
-            } else if (((javax.swing.tree.DefaultMutableTreeNode) treeSources.getSelectionPath().getLastPathComponent()).getUserObject() instanceof VideoExporterPipeline) {
-                VideoExporterPipeline ex = (VideoExporterPipeline) ((javax.swing.tree.DefaultMutableTreeNode) treeSources.getSelectionPath().getLastPathComponent()).getUserObject();
-                Exporters d = new Exporters(this, false, ex);
-                d.pack();
-                d.setLocationRelativeTo(this);
-                d.setVisible(true);
-            }
-
-        }
-    }//GEN-LAST:event_treeSourcesKeyPressed
-
     private void mnuReloadSourceTreeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuReloadSourceTreeActionPerformed
         initSourceDir();
     }//GEN-LAST:event_mnuReloadSourceTreeActionPerformed
@@ -2737,6 +2631,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, Runnable, 
     private javax.swing.JCheckBoxMenuItem mnuchkShowBackground;
     private javax.swing.JRadioButtonMenuItem mnurdPixelFormatRGB24;
     private javax.swing.JRadioButtonMenuItem mnurdPixelFormatUYVY;
+    private javax.swing.JPanel panBrowser;
     private javax.swing.JPanel panControls;
     private javax.swing.JPanel panLayouts;
     private javax.swing.JPanel panTwitter;
@@ -2744,8 +2639,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, Runnable, 
     private javax.swing.JSplitPane splitter;
     private javax.swing.JTabbedPane tabControls;
     private javax.swing.JTabbedPane tabOptions;
-    private javax.swing.JScrollPane treeScroller;
-    private javax.swing.JTree treeSources;
     private javax.swing.JTextArea txtTwitterContent;
     private javax.swing.JPasswordField txtTwitterPassword;
     private javax.swing.JTextField txtTwitterUserName;
