@@ -19,6 +19,7 @@
  */
 package webcamstudio.sources;
 
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 import webcamstudio.*;
 import java.util.jar.*;
@@ -43,6 +44,22 @@ public class Animator implements Runnable {
     public void setLoop(int nb) {
         loadedNbLoop = nb;
         nbLoop = loadedNbLoop;
+    }
+
+    public static Image getThumbnail(final java.io.File animationFile) throws Exception {
+
+        java.util.jar.JarFile jarFile = new java.util.jar.JarFile(animationFile);
+        java.awt.image.BufferedImage img = null;
+        java.util.Enumeration<java.util.jar.JarEntry> list = jarFile.entries();
+        String nameList = "";
+        while (list.hasMoreElements()) {
+            JarEntry entry = list.nextElement();
+            if (entry.getName().toLowerCase().endsWith(".png")) {
+                img = javax.imageio.ImageIO.read(jarFile.getInputStream(jarFile.getEntry(entry.getName())));
+            }
+        }
+        jarFile.close();
+        return img.getScaledInstance(32, 32, Image.SCALE_FAST);
     }
 
     public void loadAnimation(final java.io.File animationFile) {
@@ -171,13 +188,15 @@ public class Animator implements Runnable {
 
     public void setSpeed(int milli) {
         if (milli == 0) {
-            milli=100;
+            milli = 100;
         }
         timelapse = milli;
     }
-    public int getTimeLapse(){
+
+    public int getTimeLapse() {
         return timelapse;
     }
+
     public int getWidth() {
         return width;
     }

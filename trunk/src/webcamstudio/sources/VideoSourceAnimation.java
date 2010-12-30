@@ -5,11 +5,14 @@
 package webcamstudio.sources;
 
 import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
 /**
@@ -170,4 +173,23 @@ public class VideoSourceAnimation extends VideoSource {
         return list;
     }
     private Animator animator = null;
+
+    @Override
+    public ImageIcon getThumbnail() {
+        ImageIcon icon = getCachedThumbnail();
+        if (icon == null) {
+            try {
+                icon = new ImageIcon(Animator.getThumbnail(new File(location)));
+            } catch (Exception ex) {
+                Logger.getLogger(VideoSourceAnimation.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            try {
+                saveThumbnail(icon);
+            } catch (IOException ex) {
+                System.out.println(ex.getMessage());
+                Logger.getLogger(VideoSourceAnimation.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return icon;
+    }
 }

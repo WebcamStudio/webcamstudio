@@ -1170,7 +1170,13 @@
     </Container>
     <Container class="javax.swing.JSplitPane" name="splitter">
       <Properties>
+        <Property name="dividerLocation" type="int" value="300"/>
+        <Property name="resizeWeight" type="double" value="1.0"/>
+        <Property name="continuousLayout" type="boolean" value="true"/>
+        <Property name="lastDividerLocation" type="int" value="300"/>
         <Property name="name" type="java.lang.String" value="splitter" noResource="true"/>
+        <Property name="oneTouchExpandable" type="boolean" value="true"/>
+        <Property name="opaque" type="boolean" value="true"/>
       </Properties>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
@@ -1222,7 +1228,7 @@
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="lblCurrentLayer" min="-2" pref="8" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="cboSelectedSource" pref="461" max="32767" attributes="0"/>
+                                  <Component id="cboSelectedSource" pref="185" max="32767" attributes="0"/>
                               </Group>
                               <Group type="102" alignment="0" attributes="0">
                                   <Component id="btnStartSource" min="-2" max="-2" attributes="0"/>
@@ -1240,7 +1246,7 @@
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                       </Group>
-                      <Component id="tabOptions" alignment="0" pref="604" max="32767" attributes="0"/>
+                      <Component id="tabOptions" alignment="0" pref="328" max="32767" attributes="0"/>
                   </Group>
                 </DimensionLayout>
                 <DimensionLayout dim="1">
@@ -1444,16 +1450,16 @@
                       <Group type="102" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="jScrollPane2" alignment="0" pref="580" max="32767" attributes="0"/>
+                              <Component id="jScrollPane2" alignment="0" pref="304" max="32767" attributes="0"/>
                               <Group type="102" alignment="0" attributes="0">
                                   <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="txtTwitterUserName" pref="497" max="32767" attributes="0"/>
+                                  <Component id="txtTwitterUserName" pref="221" max="32767" attributes="0"/>
                               </Group>
                               <Group type="102" alignment="0" attributes="0">
                                   <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace type="separate" max="-2" attributes="0"/>
-                                  <Component id="txtTwitterPassword" pref="494" max="32767" attributes="0"/>
+                                  <Component id="txtTwitterPassword" pref="218" max="32767" attributes="0"/>
                               </Group>
                               <Group type="102" alignment="1" attributes="0">
                                   <Component id="lblTwitterCount" min="-2" max="-2" attributes="0"/>
@@ -1479,13 +1485,13 @@
                               <Component id="txtTwitterPassword" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jScrollPane2" pref="210" max="32767" attributes="0"/>
+                          <Component id="jScrollPane2" pref="196" max="32767" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="btnTwitterPost" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="lblTwitterCount" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace pref="50" max="32767" attributes="0"/>
+                          <EmptySpace pref="64" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -1562,32 +1568,17 @@
             </Container>
           </SubComponents>
         </Container>
-        <Container class="javax.swing.JScrollPane" name="treeScroller">
+        <Container class="javax.swing.JPanel" name="panBrowser">
           <Properties>
-            <Property name="name" type="java.lang.String" value="treeScroller" noResource="true"/>
+            <Property name="name" type="java.lang.String" value="panBrowser" noResource="true"/>
           </Properties>
-          <AuxValues>
-            <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
-          </AuxValues>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout$JSplitPaneConstraintsDescription">
               <JSplitPaneConstraints position="left"/>
             </Constraint>
           </Constraints>
 
-          <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
-          <SubComponents>
-            <Component class="javax.swing.JTree" name="treeSources">
-              <Properties>
-                <Property name="dragEnabled" type="boolean" value="true"/>
-                <Property name="name" type="java.lang.String" value="treeSources" noResource="true"/>
-              </Properties>
-              <Events>
-                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="treeSourcesMouseClicked"/>
-                <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="treeSourcesKeyPressed"/>
-              </Events>
-            </Component>
-          </SubComponents>
+          <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
         </Container>
       </SubComponents>
     </Container>

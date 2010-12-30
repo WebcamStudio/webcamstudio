@@ -19,17 +19,21 @@
  */
 package webcamstudio.sources;
 
+import java.net.MalformedURLException;
 import java.util.prefs.BackingStoreException;
 import webcamstudio.components.Shapes;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import webcamstudio.*;
 import webcamstudio.sources.effects.Effect;
@@ -41,6 +45,55 @@ public abstract class VideoSource implements InfoListener {
 
     public abstract void stopSource();
 
+    protected javax.swing.ImageIcon getCachedThumbnail() {
+        ImageIcon icon = null;
+        File img = new File(System.getenv("HOME") + "/.webcamstudio/thumbs/" + location.replaceAll("/", "_").replaceAll("file:","") + ".png");
+        if (img.exists()){
+            try {
+                icon = new ImageIcon(img.toURI().toURL());
+            } catch (MalformedURLException ex) {
+                Logger.getLogger(VideoSource.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return icon;
+    }
+    public javax.swing.ImageIcon getThumbnail() {
+        BufferedImage img = new BufferedImage(32, 32, BufferedImage.TRANSLUCENT);
+        Graphics2D g = img.createGraphics();
+        String n = name;
+        g.setColor(Color.GRAY);
+        g.fillRect(0, 0, 32, 32);
+        g.setColor(Color.BLACK);
+        int l = g.getFontMetrics().stringWidth(n);
+        g.setFont(new Font(Font.SANS_SERIF,Font.PLAIN,8));
+        g.drawString(n, 1, 7);
+        g.drawString(n, -32, 15);
+        g.drawString(n, -64, 23);
+        g.drawString(n, -96, 31);
+        g.dispose();
+        return new ImageIcon(img);
+    }
+
+    public void saveThumbnail(ImageIcon icon) throws IOException{
+
+        File dir = new File(System.getenv("HOME") + "/.webcamstudio");
+        if (!dir.exists()){
+            dir.mkdir();
+        }
+        File thumbs = new File(dir,"thumbs");
+        if (!thumbs.exists()){
+            thumbs.mkdir();
+        }
+        File img = new File(thumbs,location.replaceAll("/","_").replaceAll("file:","")+".png");
+        if (img.exists()){
+            img.delete();
+        }
+
+        BufferedImage i = new BufferedImage(32,32,BufferedImage.TRANSLUCENT);
+        i.getGraphics().drawImage(icon.getImage(), 0, 0, null);
+        javax.imageio.ImageIO.write((RenderedImage)i, "png", img);
+        System.out.println("Saving to " + img.getAbsolutePath());
+    }
     public abstract java.util.Collection<JPanel> getControls();
 
     public boolean hasSound() {
@@ -133,7 +186,7 @@ public abstract class VideoSource implements InfoListener {
             effect.applyStudioConfig(source.node("Effects").node(key));
         }
         source.putFloat("bgopacity", backgroundOpacity);
-        source.putInt("layer",layer);
+        source.putInt("layer", layer);
     }
 
     public abstract boolean canUpdateSource();
@@ -210,7 +263,7 @@ public abstract class VideoSource implements InfoListener {
         uuId = source.get("uuid", uuId);
         doRescale = source.getBoolean("rescale", doRescale);
         doReverseShapeMask = source.getBoolean("reverseshapemask", doReverseShapeMask);
-        ignoreLayoutTransition=source.getBoolean("ignorelayouttransition", ignoreLayoutTransition);
+        ignoreLayoutTransition = source.getBoolean("ignorelayouttransition", ignoreLayoutTransition);
         String[] effectIndexes;
         try {
             effectIndexes = source.node("Effects").childrenNames();
@@ -599,8 +652,8 @@ public abstract class VideoSource implements InfoListener {
             int[] data2 = ((java.awt.image.DataBufferInt) lastInputImage.getRaster().getDataBuffer()).getData();
             int nbDiffPixels = 0;
             int r1, r2, g1, g2, b1, b2, c1, c2;
-            for (int i = 0; i <
-                    data1.length; i++) {
+            for (int i = 0; i
+                    < data1.length; i++) {
                 c1 = data1[i];
                 c2 =
                         data2[i];
@@ -745,12 +798,15 @@ public abstract class VideoSource implements InfoListener {
             buffer.dispose();
         }
     }
-    public void ignoreLayoutTransition(boolean value){
-        ignoreLayoutTransition=value;
+
+    public void ignoreLayoutTransition(boolean value) {
+        ignoreLayoutTransition = value;
     }
-    public boolean isIgnoringLayoutTransition(){
+
+    public boolean isIgnoringLayoutTransition() {
         return ignoreLayoutTransition;
     }
+
     public void setFaceDetection(BufferedImage face) {
         if (face != null) {
             faceDetection = face.getScaledInstance(captureWidth, captureHeight, Image.SCALE_FAST);
@@ -758,6 +814,7 @@ public abstract class VideoSource implements InfoListener {
             faceDetection = null;
         }
     }
+
     /**
      * @return the backgroundOpacity
      */
@@ -772,10 +829,11 @@ public abstract class VideoSource implements InfoListener {
         this.backgroundOpacity = backgroundOpacity;
     }
 
-    public void setLayer(int l){
+    public void setLayer(int l) {
         layer = l;
     }
-    public int getLayer(){
+
+    public int getLayer() {
         return layer;
     }
     protected String location = null;
@@ -847,6 +905,4 @@ public abstract class VideoSource implements InfoListener {
     protected boolean ignoreLayoutTransition = false;
     protected float backgroundOpacity = 0;
     protected int layer = -1;
-
 }
-
