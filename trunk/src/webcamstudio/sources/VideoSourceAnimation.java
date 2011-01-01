@@ -179,13 +179,13 @@ public class VideoSourceAnimation extends VideoSource {
         ImageIcon icon = getCachedThumbnail();
         if (icon == null) {
             try {
-                icon = new ImageIcon(Animator.getThumbnail(new File(location)));
+                icon = new ImageIcon(Animator.getThumbnail(new File(location)).getScaledInstance(32, 32, BufferedImage.SCALE_FAST));
             } catch (Exception ex) {
                 Logger.getLogger(VideoSourceAnimation.class.getName()).log(Level.SEVERE, null, ex);
             }
             try {
-                saveThumbnail(icon);
-            } catch (IOException ex) {
+                saveThumbnail(new ImageIcon(Animator.getThumbnail(new File(location))));
+            } catch (Exception ex) {
                 System.out.println(ex.getMessage());
                 Logger.getLogger(VideoSourceAnimation.class.getName()).log(Level.SEVERE, null, ex);
             }

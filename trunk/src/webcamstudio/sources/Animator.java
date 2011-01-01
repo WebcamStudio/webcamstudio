@@ -59,7 +59,7 @@ public class Animator implements Runnable {
             }
         }
         jarFile.close();
-        return img.getScaledInstance(32, 32, Image.SCALE_FAST);
+        return img.getScaledInstance(128, 128, Image.SCALE_FAST);
     }
 
     public void loadAnimation(final java.io.File animationFile) {

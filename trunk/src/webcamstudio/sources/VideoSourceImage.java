@@ -248,7 +248,7 @@ public class VideoSourceImage extends VideoSource {
                 icon = super.getThumbnail();
             }
             try {
-                saveThumbnail(icon);
+                saveThumbnail(new ImageIcon(tempimage.getScaledInstance(128, 128, BufferedImage.SCALE_FAST)));
             } catch (IOException ex) {
                 System.out.println(ex.getMessage());
                 Logger.getLogger(VideoSourceImage.class.getName()).log(Level.SEVERE, null, ex);

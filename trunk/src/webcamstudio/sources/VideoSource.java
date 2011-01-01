@@ -50,7 +50,7 @@ public abstract class VideoSource implements InfoListener {
         File img = new File(System.getenv("HOME") + "/.webcamstudio/thumbs/" + location.replaceAll("/", "_").replaceAll("file:","") + ".png");
         if (img.exists()){
             try {
-                icon = new ImageIcon(img.toURI().toURL());
+                icon = new ImageIcon(new ImageIcon(img.toURI().toURL()).getImage().getScaledInstance(32, 32, BufferedImage.SCALE_FAST));
             } catch (MalformedURLException ex) {
                 Logger.getLogger(VideoSource.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -89,7 +89,7 @@ public abstract class VideoSource implements InfoListener {
             img.delete();
         }
 
-        BufferedImage i = new BufferedImage(32,32,BufferedImage.TRANSLUCENT);
+        BufferedImage i = new BufferedImage(icon.getIconWidth(),icon.getIconHeight(),BufferedImage.TRANSLUCENT);
         i.getGraphics().drawImage(icon.getImage(), 0, 0, null);
         javax.imageio.ImageIO.write((RenderedImage)i, "png", img);
         System.out.println("Saving to " + img.getAbsolutePath());
