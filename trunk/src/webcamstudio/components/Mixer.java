@@ -121,6 +121,7 @@ public class Mixer implements java.lang.Runnable {
         }
 
         BufferedImage img = null;
+        try{
         for (VideoSource source : LayerManager.getSources()) {
             if (((source.isVisibleWhenSelected() && source.isSelected()) || !source.isVisibleWhenSelected())
                     && (source.getActivityDetection() == 0 || (source.getActivityDetection() > 0 && source.activityDetected()))) {
@@ -144,6 +145,10 @@ public class Mixer implements java.lang.Runnable {
                 }
             }
 
+        }
+        }
+        catch(Exception e){
+            //In case something goes wrong...
         }
 
         if (paintImage != null) {
