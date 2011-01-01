@@ -27,7 +27,7 @@ public class VideoSourceDesktop extends VideoSource {
         }
         location = "";
         name = "Desktop";
-        frameRate = 3;
+        frameRate = 15;
         showMouseCursor = true;
     }
 
