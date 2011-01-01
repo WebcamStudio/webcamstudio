@@ -482,14 +482,16 @@ public class VideoSourceMovie extends VideoSource implements org.gstreamer.eleme
             }
             icon = new ImageIcon(image.getScaledInstance(32, 32, BufferedImage.SCALE_FAST));
 
-            stopSource();
-            loadSound = true;
+
+
             try {
-                saveThumbnail(icon);
+                saveThumbnail(new ImageIcon(image.getScaledInstance(128, 128, BufferedImage.SCALE_FAST)));
             } catch (IOException ex) {
                 System.out.println(ex.getMessage());
                 Logger.getLogger(VideoSourceMovie.class.getName()).log(Level.SEVERE, null, ex);
             }
+            stopSource();
+            loadSound = true;
         }
         return icon;
     }
