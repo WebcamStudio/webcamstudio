@@ -14,6 +14,7 @@ import java.net.URL;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -348,6 +349,19 @@ public class VideoSourceWidget extends VideoSource {
         list.add(new webcamstudio.controls.ControlLayout(this));
         list.add(new webcamstudio.controls.ControlReload(this));
         return list;
+    }
+    @Override
+        public javax.swing.ImageIcon getThumbnail() {
+        ImageIcon icon = super.getCachedThumbnail();
+        if (icon==null){
+            icon = super.getThumbnail();
+            try {
+                saveThumbnail(icon);
+            } catch (IOException ex) {
+                Logger.getLogger(VideoSourceWidget.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return icon;
     }
 
 }

@@ -43,7 +43,7 @@ public class MediaPanelList extends javax.swing.JPanel {
 
     public void addMedia(final VideoSource source) {
         ThreadedJButton media = new ThreadedJButton(source);
-        media.setToolTipText("<HTML><BODY><center><img src='file://" + System.getenv("HOME") + "/.webcamstudio/thumbs/" + source.getLocation().replaceAll("/", "_").replaceAll("file:","") + ".png'></center><br>"+source.getLocation()+"</BODY></HTML>");
+        media.setToolTipText("<HTML><BODY><center><img src='file://" + System.getenv("HOME") + "/.webcamstudio/thumbs/" + source.getLocation().replaceAll("/", "_").replaceAll("file:","") + ".png' width=128 height=128></center><br>"+source.getLocation()+"</BODY></HTML>");
         media.addActionListener(new ActionListener() {
 
             @Override

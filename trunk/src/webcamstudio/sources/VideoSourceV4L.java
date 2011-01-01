@@ -19,8 +19,10 @@
  */
 package webcamstudio.sources;
 
-import java.awt.Color;
-import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import org.gstreamer.*;
 import webcamstudio.controls.ControlRescale;
@@ -213,4 +215,18 @@ public class VideoSourceV4L extends VideoSource implements org.gstreamer.element
         list.add(new webcamstudio.controls.ControlLayout(this));
         return list;
     }
+    @Override
+        public javax.swing.ImageIcon getThumbnail() {
+        ImageIcon icon = getCachedThumbnail();
+        if (icon==null){
+            icon = new ImageIcon(java.net.URLClassLoader.getSystemResource("webcamstudio/resources/tango/camera-video.png"));
+            try {
+                saveThumbnail(icon);
+            } catch (IOException ex) {
+                Logger.getLogger(VideoSourceV4L.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return icon;
+    }
+
 }
