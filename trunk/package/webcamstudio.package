@@ -8,6 +8,7 @@ Depends: openjdk-6-jre | sun-java6-jre, gstreamer0.10-plugins-good, gstreamer0.1
 Recommends: 
 Installed-Size: SIZE
 Maintainer: Patrick Balleux <patrick.balleux@gmail.com>
+Homepage: http://www.ws4gl.org
 Provides: webcamstudio
 Description: WebcamStudio For GNU/Linux
  .
