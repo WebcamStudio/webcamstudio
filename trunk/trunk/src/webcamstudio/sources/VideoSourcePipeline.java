@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import webcamstudio.*;
 import org.gstreamer.*;
@@ -198,5 +199,18 @@ public class VideoSourcePipeline extends VideoSource implements org.gstreamer.el
     }
     private org.gstreamer.elements.RGBDataSink elementSink = null;
     private Pipeline pipe = null;
-    private VideoEffects objVideoEffects = new VideoEffects();
+
+    @Override
+    public javax.swing.ImageIcon getThumbnail() {
+        ImageIcon icon = super.getCachedThumbnail();
+        if (icon == null) {
+            icon = super.getThumbnail();
+            try {
+                saveThumbnail(icon);
+            } catch (IOException ex) {
+                Logger.getLogger(VideoSourceWidget.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return icon;
+    }
 }
