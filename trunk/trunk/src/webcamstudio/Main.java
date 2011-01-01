@@ -301,7 +301,9 @@ public class Main extends javax.swing.JFrame implements InfoListener, Runnable, 
         mediaPanel.addMedia(pexp);
         setCursor(Cursor.getDefaultCursor());
         mediaPanel.revalidate();
+        panBrowser.removeAll();
         panBrowser.add(mediaPanel,BorderLayout.CENTER);
+        panBrowser.revalidate();
     }
 
     private void buildSourceAnimations() {
