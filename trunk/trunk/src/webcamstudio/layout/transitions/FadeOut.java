@@ -24,7 +24,7 @@ public class FadeOut extends Transition {
         source.setOutputWidth(item.getWidth());
         source.setOutputHeight(item.getHeight());
         source.fireSourceUpdated();
-        for (int i = 10; i >= 10; i--) {
+        for (int i = 10; i >= 0; i--) {
             try {
                 source.setOpacity(i * 10);
                 source.fireSourceUpdated();
