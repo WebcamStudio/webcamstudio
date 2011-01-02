@@ -19,12 +19,19 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="slideSeek" alignment="0" pref="427" max="32767" attributes="2"/>
+                  <Component id="slideSeek" alignment="0" pref="418" max="32767" attributes="2"/>
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="btnMoveUp" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="14" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                       <Component id="btnMoveDown" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace pref="349" max="32767" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="btnPlay" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="btnPause" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="btnStop" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="btnRemove" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="1" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
@@ -33,18 +40,18 @@
                               <Component id="jLabel2" alignment="0" max="32767" attributes="1"/>
                               <Component id="jLabel1" alignment="0" min="-2" max="-2" attributes="1"/>
                           </Group>
-                          <Component id="jLabel4" alignment="0" pref="183" max="32767" attributes="1"/>
-                          <Component id="jLabel5" alignment="0" pref="183" max="32767" attributes="1"/>
-                          <Component id="jLabel6" alignment="0" pref="183" max="32767" attributes="1"/>
+                          <Component id="jLabel4" alignment="0" pref="179" max="32767" attributes="1"/>
+                          <Component id="jLabel5" alignment="0" pref="179" max="32767" attributes="1"/>
+                          <Component id="jLabel6" alignment="0" pref="179" max="32767" attributes="1"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="spinWidth" pref="232" max="32767" attributes="3"/>
-                          <Component id="spinY" pref="232" max="32767" attributes="3"/>
-                          <Component id="spinX" pref="232" max="32767" attributes="3"/>
-                          <Component id="cboTransOut" pref="232" max="32767" attributes="3"/>
-                          <Component id="cboTransIn" pref="232" max="32767" attributes="3"/>
-                          <Component id="spinHeight" alignment="0" pref="232" max="32767" attributes="3"/>
+                          <Component id="spinWidth" pref="227" max="32767" attributes="3"/>
+                          <Component id="spinY" pref="227" max="32767" attributes="3"/>
+                          <Component id="spinX" pref="227" max="32767" attributes="3"/>
+                          <Component id="cboTransOut" pref="227" max="32767" attributes="3"/>
+                          <Component id="cboTransIn" pref="227" max="32767" attributes="3"/>
+                          <Component id="spinHeight" alignment="0" pref="227" max="32767" attributes="3"/>
                       </Group>
                   </Group>
                   <Component id="lblSeek" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -91,8 +98,14 @@
               <Component id="slideSeek" min="-2" max="-2" attributes="0"/>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="btnMoveDown" min="-2" max="-2" attributes="0"/>
                   <Component id="btnMoveUp" min="-2" max="-2" attributes="0"/>
+                  <Component id="btnMoveDown" min="-2" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="btnPlay" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="btnPause" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="btnStop" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="btnRemove" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
               </Group>
               <EmptySpace max="32767" attributes="0"/>
           </Group>
@@ -256,6 +269,50 @@
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnMoveDownActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="btnPlay">
+      <Properties>
+        <Property name="icon" type="javax.swing.Icon" noResource="true" editor="org.netbeans.modules.form.editors2.IconEditor">
+          <Image iconType="3" name="/webcamstudio/resources/tango/media-playback-start.png"/>
+        </Property>
+        <Property name="name" type="java.lang.String" value="btnPlay" noResource="true"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnPlayActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="btnPause">
+      <Properties>
+        <Property name="icon" type="javax.swing.Icon" noResource="true" editor="org.netbeans.modules.form.editors2.IconEditor">
+          <Image iconType="3" name="/webcamstudio/resources/tango/media-playback-pause.png"/>
+        </Property>
+        <Property name="name" type="java.lang.String" value="btnPause" noResource="true"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnPauseActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="btnStop">
+      <Properties>
+        <Property name="icon" type="javax.swing.Icon" noResource="true" editor="org.netbeans.modules.form.editors2.IconEditor">
+          <Image iconType="3" name="/webcamstudio/resources/tango/media-playback-stop.png"/>
+        </Property>
+        <Property name="name" type="java.lang.String" value="btnStop" noResource="true"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnStopActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="btnRemove">
+      <Properties>
+        <Property name="icon" type="javax.swing.Icon" noResource="true" editor="org.netbeans.modules.form.editors2.IconEditor">
+          <Image iconType="3" name="/webcamstudio/resources/tango/edit-delete.png"/>
+        </Property>
+        <Property name="name" type="java.lang.String" value="btnRemove" noResource="true"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnRemoveActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>

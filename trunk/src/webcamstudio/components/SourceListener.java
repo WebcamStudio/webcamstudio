@@ -22,5 +22,5 @@ public interface SourceListener {
     public void sourceMoveDown(VideoSource source);
     public void sourceSetTransIn(VideoSource source,Transition in);
     public void sourceSetTransOut(VideoSource source,Transition out);
-    
+    public void sourceRemoved(VideoSource source);
 }

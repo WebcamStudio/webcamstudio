@@ -74,7 +74,7 @@ public class MediaPanelList extends javax.swing.JPanel {
 
         setBorder(javax.swing.BorderFactory.createTitledBorder("TEST"));
         setFocusable(false);
-        setLayout(new java.awt.GridLayout(0, 5));
+        setLayout(new java.awt.GridLayout(0, 4));
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables

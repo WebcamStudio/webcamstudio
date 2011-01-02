@@ -147,11 +147,17 @@ public class LayoutManager extends javax.swing.JPanel implements SourceListener 
         updateTree();
     }
 
+    @Override
     public void sourceRemoved(VideoSource s) {
+        s.stopSource();
+        LayerManager.remove(s);
         for (Layout layout : layouts) {
             layout.removeSource(s);
         }
+        currentLayoutItem = null;
         updateTree();
+        treeLayouts.setSelectionPath(new TreePath(root.getPath()));
+        tabControls.removeAll();
     }
 
     public void updateTree() {
@@ -204,7 +210,6 @@ public class LayoutManager extends javax.swing.JPanel implements SourceListener 
         btnAdd = new javax.swing.JButton();
         btnRemove = new javax.swing.JButton();
         btnApply = new javax.swing.JButton();
-        splitter = new javax.swing.JSplitPane();
         scroller = new javax.swing.JScrollPane();
         treeLayouts = new javax.swing.JTree();
         panSources = new javax.swing.JPanel();
@@ -254,9 +259,7 @@ public class LayoutManager extends javax.swing.JPanel implements SourceListener 
 
         add(panControls, java.awt.BorderLayout.NORTH);
 
-        splitter.setDividerLocation(300);
-        splitter.setName("splitter"); // NOI18N
-
+        scroller.setMinimumSize(new java.awt.Dimension(300, 25));
         scroller.setName("scroller"); // NOI18N
 
         treeLayouts.setMinimumSize(new java.awt.Dimension(300, 0));
@@ -268,7 +271,7 @@ public class LayoutManager extends javax.swing.JPanel implements SourceListener 
         });
         scroller.setViewportView(treeLayouts);
 
-        splitter.setLeftComponent(scroller);
+        add(scroller, java.awt.BorderLayout.CENTER);
 
         panSources.setName("panSources"); // NOI18N
 
@@ -282,6 +285,11 @@ public class LayoutManager extends javax.swing.JPanel implements SourceListener 
 
         cboHotkeys.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12" }));
         cboHotkeys.setName("cboHotkeys"); // NOI18N
+        cboHotkeys.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cboHotkeysActionPerformed(evt);
+            }
+        });
 
         jLabel7.setText(bundle.getString("HOTKEY")); // NOI18N
         jLabel7.setName("jLabel7"); // NOI18N
@@ -306,8 +314,8 @@ public class LayoutManager extends javax.swing.JPanel implements SourceListener 
                         .addComponent(jLabel7)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cboHotkeys, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addComponent(tabControls, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 303, Short.MAX_VALUE)
+                .addContainerGap(382, Short.MAX_VALUE))
+            .addComponent(tabControls, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 673, Short.MAX_VALUE)
         );
         panSourcesLayout.setVerticalGroup(
             panSourcesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -324,9 +332,7 @@ public class LayoutManager extends javax.swing.JPanel implements SourceListener 
                 .addComponent(tabControls, javax.swing.GroupLayout.DEFAULT_SIZE, 331, Short.MAX_VALUE))
         );
 
-        splitter.setRightComponent(panSources);
-
-        add(splitter, java.awt.BorderLayout.CENTER);
+        add(panSources, java.awt.BorderLayout.SOUTH);
     }// </editor-fold>//GEN-END:initComponents
 
     private void treeLayoutsValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN-FIRST:event_treeLayoutsValueChanged
@@ -427,6 +433,12 @@ public class LayoutManager extends javax.swing.JPanel implements SourceListener 
         currentLayout.setName(txtLayoutName.getText());
         treeLayouts.repaint();
     }//GEN-LAST:event_txtLayoutNameActionPerformed
+
+    private void cboHotkeysActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboHotkeysActionPerformed
+        currentLayout.setHotKey(cboHotkeys.getSelectedItem().toString());
+        
+    }//GEN-LAST:event_cboHotkeysActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
     private javax.swing.JButton btnApply;
@@ -437,7 +449,6 @@ public class LayoutManager extends javax.swing.JPanel implements SourceListener 
     private javax.swing.JPanel panControls;
     private javax.swing.JPanel panSources;
     private javax.swing.JScrollPane scroller;
-    private javax.swing.JSplitPane splitter;
     private javax.swing.JTabbedPane tabControls;
     private javax.swing.JTree treeLayouts;
     private javax.swing.JTextField txtLayoutName;
