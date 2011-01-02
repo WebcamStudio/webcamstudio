@@ -1,0 +1,16 @@
+#summary Controls Description
+
+= Introduction =
+
+A Control, is a panel that will manage some options related to a source
+
+
+= Details =
+
+Each video source has specific settings that needs to be applied.  Thats where the Controls show-up.
+
+Each source, can provide the required controls to manage it.  These Controls are simply JPanel, with an interface of Controls to be able to access them.
+
+For example, a movie will have controls like Position, Effects, and so on...  But the webcam will have Face Detection and Text will have the Text Format Control.
+
+This way, more controls can be created and only the affected sources needs to be modified to include the required controls.
