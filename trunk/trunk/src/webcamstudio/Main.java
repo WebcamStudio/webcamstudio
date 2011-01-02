@@ -2320,11 +2320,16 @@ public class Main extends javax.swing.JFrame implements InfoListener, Runnable,S
 
     @Override
     public void sourceSetTransIn(VideoSource source, Transition in) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        
     }
 
     @Override
     public void sourceSetTransOut(VideoSource source, Transition out) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        
+    }
+
+    @Override
+    public void sourceRemoved(VideoSource source) {
+
     }
 }
