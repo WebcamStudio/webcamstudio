@@ -11,6 +11,7 @@
 
 package webcamstudio.controls;
 
+import webcamstudio.components.SourceListener;
 import webcamstudio.sources.VideoSource;
 
 /**
@@ -20,6 +21,7 @@ import webcamstudio.sources.VideoSource;
 public class ControlAudio extends javax.swing.JPanel implements Controls{
     VideoSource source = null;
     String label = "Audio";
+    private SourceListener listener=null;
     /** Creates new form ControlAudio */
     public ControlAudio(VideoSource source) {
         initComponents();
@@ -120,6 +122,11 @@ public class ControlAudio extends javax.swing.JPanel implements Controls{
     @Override
     public void removeControl() {
         source=null;
+    }
+
+    @Override
+    public void setListener(SourceListener l) {
+        listener=l;
     }
 
 }

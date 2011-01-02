@@ -11,6 +11,7 @@
 package webcamstudio.controls;
 
 import java.awt.BorderLayout;
+import webcamstudio.components.SourceListener;
 import webcamstudio.sources.VideoSource;
 import webcamstudio.sources.effects.Effect;
 
@@ -23,7 +24,7 @@ public class ControlEffects extends javax.swing.JPanel implements Controls {
     VideoSource source = null;
     String label = "Audio";
     javax.swing.DefaultListModel lstModel = new javax.swing.DefaultListModel();
-
+    private SourceListener listener=null;
     /** Creates new form ControlEffects */
     public ControlEffects(VideoSource source) {
         initComponents();
@@ -240,5 +241,10 @@ public class ControlEffects extends javax.swing.JPanel implements Controls {
     @Override
     public void removeControl() {
         source=null;
+    }
+
+    @Override
+    public void setListener(SourceListener l) {
+        listener=l;
     }
 }

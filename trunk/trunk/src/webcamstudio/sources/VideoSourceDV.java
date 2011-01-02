@@ -151,7 +151,6 @@ public class VideoSourceDV extends VideoSource implements org.gstreamer.elements
     @Override
     public java.util.Collection<JPanel> getControls() {
         java.util.Vector<JPanel> list = new java.util.Vector<JPanel>();
-        list.add(new webcamstudio.controls.ControlPosition(this));
         list.add(new webcamstudio.controls.ControlRescale(this));
         list.add(new webcamstudio.controls.ControlShapes(this));
         list.add(new webcamstudio.controls.ControlEffects(this));

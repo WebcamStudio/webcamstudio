@@ -11,6 +11,7 @@
 
 package webcamstudio.controls;
 
+import webcamstudio.components.SourceListener;
 import webcamstudio.sources.VideoSource;
 
 /**
@@ -20,6 +21,7 @@ import webcamstudio.sources.VideoSource;
 public class ControlActivity extends javax.swing.JPanel implements Controls{
     private String label="";
     private VideoSource source = null;
+    private SourceListener listener=null;
     /** Creates new form ControlActivity */
     public ControlActivity(VideoSource source) {
         initComponents();
@@ -122,5 +124,10 @@ public class ControlActivity extends javax.swing.JPanel implements Controls{
     private javax.swing.JLabel jLabel1;
     private javax.swing.JSlider sliderThreshold;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void setListener(SourceListener l) {
+        listener=l;
+    }
 
 }

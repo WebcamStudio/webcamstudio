@@ -378,7 +378,6 @@ public class VideoSourcePlaylist extends VideoSource implements Runnable {
     @Override
     public java.util.Collection<JPanel> getControls() {
         java.util.Vector<JPanel> list = new java.util.Vector<JPanel>();
-        list.add(new webcamstudio.controls.ControlPosition(this));
         list.add(new webcamstudio.controls.ControlEffects(this));
         list.add(new webcamstudio.controls.ControlShapes(this));
         list.add(new webcamstudio.controls.ControlLayout(this));

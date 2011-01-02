@@ -146,7 +146,7 @@ public class Pulseaudio {
         Pulseaudio p = new Pulseaudio();
         p.start();
         try {
-            Thread.sleep(10000);
+            Thread.sleep(100000);
         } catch (InterruptedException ex) {
             Logger.getLogger(Pulseaudio.class.getName()).log(Level.SEVERE, null, ex);
         }

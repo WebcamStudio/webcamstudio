@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
+import webcamstudio.components.SourceListener;
 import webcamstudio.sources.VideoSourceIRC;
 import webcamstudio.sources.VideoSourceIRCListener;
 
@@ -25,7 +26,7 @@ public class ControlSpeech extends javax.swing.JPanel implements Controls, Video
 
     String label = "Speech";
     VideoSourceIRC source = null;
-
+    private SourceListener listener=null;
     /** Creates new form ControlSpeech */
     public ControlSpeech(VideoSourceIRC source) {
         initComponents();
@@ -158,5 +159,10 @@ public class ControlSpeech extends javax.swing.JPanel implements Controls, Video
     public void removeControl() {
         source.removeIRCListener(this);
         source = null;
+    }
+
+    @Override
+    public void setListener(SourceListener l) {
+        listener=l;
     }
 }

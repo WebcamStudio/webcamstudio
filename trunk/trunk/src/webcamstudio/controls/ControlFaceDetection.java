@@ -22,6 +22,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import webcamstudio.Main;
 import webcamstudio.components.Faces;
+import webcamstudio.components.SourceListener;
 import webcamstudio.sources.VideoSource;
 
 /**
@@ -33,7 +34,7 @@ public class ControlFaceDetection extends javax.swing.JPanel implements Controls
     private String label = "";
     private VideoSource source = null;
     private Faces faces = new Faces();
-
+    private SourceListener listener=null;
     /** Creates new form ControlActivity */
     public ControlFaceDetection(VideoSource source) {
         initComponents();
@@ -184,5 +185,10 @@ public class ControlFaceDetection extends javax.swing.JPanel implements Controls
         source=null;
         faces=null;
         
+    }
+
+    @Override
+    public void setListener(SourceListener l) {
+        listener=l;
     }
 }

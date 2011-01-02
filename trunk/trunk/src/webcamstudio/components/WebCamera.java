@@ -21,12 +21,11 @@ public class WebCamera {
     private java.net.DatagramPacket packet = null;
     private String name = "";
     private VideoSourcePipeline pipeline = null;
-    private SourceListener listener = null;
     private VideoSourcePipeline oldPipeLine = null;
 
-    public WebCamera(SourceListener l) {
+    public WebCamera() {
         System.out.println("Starting iWebcamera Detection...");
-        listener = l;
+        
         new Thread(new Runnable() {
 
             @Override
@@ -68,9 +67,6 @@ public class WebCamera {
                         pipeline.setName(name.split(":")[0].trim());
                         socket.close();
                         oldPipeLine = pipeline;
-                        if (listener != null) {
-                            listener.deviceUpdate();
-                        }
                         System.out.println("Adding Webcamera...");
                     }
                 }
@@ -79,9 +75,6 @@ public class WebCamera {
             pipeline = null;
             if (oldPipeLine != null) {
                 oldPipeLine = null;
-                if (listener != null) {
-                    listener.deviceUpdate();
-                }
                 System.out.println("Removing Webcamera...");
             }
         }

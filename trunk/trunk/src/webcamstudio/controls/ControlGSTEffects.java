@@ -10,6 +10,7 @@
  */
 package webcamstudio.controls;
 
+import webcamstudio.components.SourceListener;
 import webcamstudio.sources.VideoSource;
 
 /**
@@ -20,7 +21,7 @@ public class ControlGSTEffects extends javax.swing.JPanel implements Controls {
 
     VideoSource source = null;
     String label = "GSTEFFECT";
-
+    private SourceListener listener=null;
     /** Creates new form ControlGSTEffects */
     public ControlGSTEffects(VideoSource source) {
         initComponents();
@@ -112,5 +113,10 @@ public class ControlGSTEffects extends javax.swing.JPanel implements Controls {
     @Override
     public void removeControl() {
         source=null;
+    }
+
+    @Override
+    public void setListener(SourceListener l) {
+        listener=l;
     }
 }

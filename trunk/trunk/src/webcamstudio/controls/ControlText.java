@@ -12,6 +12,7 @@ package webcamstudio.controls;
 
 import java.awt.GraphicsEnvironment;
 import webcamstudio.components.ColorChooser;
+import webcamstudio.components.SourceListener;
 import webcamstudio.sources.VideoSourceText;
 
 /**
@@ -22,7 +23,7 @@ public class ControlText extends javax.swing.JPanel implements Controls {
 
     VideoSourceText source = null;
     String label = "Capture";
-
+    private SourceListener listener=null;
     /** Creates new form ControlText */
     public ControlText(VideoSourceText source) {
         initComponents();
@@ -363,5 +364,10 @@ public class ControlText extends javax.swing.JPanel implements Controls {
     @Override
     public void removeControl() {
         source=null;
+    }
+
+    @Override
+    public void setListener(SourceListener l) {
+        listener=l;
     }
 }

@@ -10,6 +10,7 @@
  */
 package webcamstudio.controls;
 
+import webcamstudio.components.SourceListener;
 import webcamstudio.sources.VideoSource;
 
 /**
@@ -20,7 +21,7 @@ public class ControlLayout extends javax.swing.JPanel implements Controls {
 
     VideoSource source = null;
     String label = "Capture";
-
+    private SourceListener listener=null;
     /** Creates new form ControlDesktop */
     public ControlLayout(VideoSource source) {
         initComponents();
@@ -83,5 +84,10 @@ public class ControlLayout extends javax.swing.JPanel implements Controls {
     @Override
     public void removeControl() {
         source=null;
+    }
+
+    @Override
+    public void setListener(SourceListener l) {
+        listener=l;
     }
 }

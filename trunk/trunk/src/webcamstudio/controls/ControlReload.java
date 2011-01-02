@@ -10,6 +10,7 @@
  */
 package webcamstudio.controls;
 
+import webcamstudio.components.SourceListener;
 import webcamstudio.sources.VideoSource;
 
 /**
@@ -20,7 +21,7 @@ public class ControlReload extends javax.swing.JPanel implements Controls {
 
     VideoSource source = null;
     String label = "Reload";
-
+    private SourceListener listener=null;
     /** Creates new form ControlDesktop */
     public ControlReload(VideoSource source) {
         initComponents();
@@ -99,5 +100,10 @@ public class ControlReload extends javax.swing.JPanel implements Controls {
     @Override
     public void removeControl() {
         source=null;
+    }
+
+    @Override
+    public void setListener(SourceListener l) {
+        listener=l;
     }
 }
