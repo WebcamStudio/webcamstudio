@@ -36,3 +36,7 @@ Here is a list of all Video Sources and how they work:
   * [VideoSourceDV]
   * [VideoSourceWebCameraV2]
   * [VideoSourcePlaylist]
+  * [Layout]
+  * [LayoutItem]
+  * [Controls]
+  * [Transition]
