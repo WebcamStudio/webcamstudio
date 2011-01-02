@@ -12,6 +12,7 @@ package webcamstudio.controls;
 
 import java.awt.GraphicsEnvironment;
 import webcamstudio.components.ColorChooser;
+import webcamstudio.components.SourceListener;
 import webcamstudio.sources.VideoSourceIRC;
 import webcamstudio.sources.VideoSourceIRCListener;
 
@@ -23,7 +24,7 @@ public class ControlIRC extends javax.swing.JPanel implements Controls, VideoSou
 
     VideoSourceIRC source = null;
     String label = "IRC";
-
+    private SourceListener listener=null;
     /** Creates new form ControlIRC */
     public ControlIRC(VideoSourceIRC source) {
         initComponents();
@@ -384,5 +385,10 @@ public class ControlIRC extends javax.swing.JPanel implements Controls, VideoSou
     public void removeControl() {
         source.removeIRCListener(this);
         source=null;
+    }
+
+    @Override
+    public void setListener(SourceListener l) {
+        listener=l;
     }
 }

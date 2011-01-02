@@ -12,6 +12,9 @@ package webcamstudio.controls;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import webcamstudio.components.SourceListener;
+import webcamstudio.layout.LayoutItem;
+import webcamstudio.layout.transitions.Transition;
 import webcamstudio.sources.VideoSource;
 import webcamstudio.sources.VideoSourceMovie;
 
@@ -21,36 +24,52 @@ import webcamstudio.sources.VideoSourceMovie;
  */
 public class ControlPosition extends javax.swing.JPanel implements Controls {
 
-    VideoSource source = null;
+    LayoutItem source = null;
     String label = "Capture";
-
+    private SourceListener listener=null;
     /** Creates new form ControlDesktop */
-    public ControlPosition(VideoSource src) {
+    public ControlPosition(LayoutItem src) {
         initComponents();
+        javax.swing.DefaultComboBoxModel transModelIn = new javax.swing.DefaultComboBoxModel(Transition.getTransitions().values().toArray());
+        javax.swing.DefaultComboBoxModel transModelOut = new javax.swing.DefaultComboBoxModel(Transition.getTransitions().values().toArray());
+        cboTransIn.setModel(transModelIn);
+        cboTransOut.setModel(transModelOut);
         this.source = src;
+        for (int i = 0 ; i<cboTransIn.getItemCount();i++){
+            if (cboTransIn.getItemAt(i).getClass().getName().equals(src.getTransitionIn().getClass().getName())){
+                cboTransIn.setSelectedIndex(i);
+                break;
+            }
+        }
+        for (int i = 0 ; i<cboTransOut.getItemCount();i++){
+            if (cboTransOut.getItemAt(i).getClass().getName().equals(src.getTransitionOut().getClass().getName())){
+                cboTransOut.setSelectedIndex(i);
+                break;
+            }
+        }
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("webcamstudio.Languages");
         label = bundle.getString("POSITION");
-        spinWidth.setValue(source.getOutputWidth());
-        spinHeight.setValue(source.getOutputHeight());
-        spinX.setValue(source.getShowAtX());
-        spinY.setValue(source.getShowAtY());
-        if (source instanceof VideoSourceMovie) {
+        spinWidth.setValue(source.getWidth());
+        spinHeight.setValue(source.getHeight());
+        spinX.setValue(source.getX());
+        spinY.setValue(source.getY());
+        if (source.getSource() instanceof VideoSourceMovie) {
             lblSeek.setVisible(true);
             slideSeek.setVisible(true);
-            slideSeek.setMaximum((int) ((VideoSourceMovie) source).getDuration());
+            slideSeek.setMaximum((int) ((VideoSourceMovie) source.getSource()).getDuration());
             slideSeek.setMinimum(0);
-            slideSeek.setValue((int) ((VideoSourceMovie) source).getSeekPosition());
+            slideSeek.setValue((int) ((VideoSourceMovie) source.getSource()).getSeekPosition());
             new Thread(new Runnable() {
 
                 @Override
                 public void run() {
                     while (source != null) {
-                        if (slideSeek.getMaximum() == 0 && (source.isPlaying() || source.isPaused())) {
-                            slideSeek.setMaximum((int) ((VideoSourceMovie) source).getDuration());
+                        if (slideSeek.getMaximum() == 0 && (source.getSource().isPlaying() || source.getSource().isPaused())) {
+                            slideSeek.setMaximum((int) ((VideoSourceMovie) source.getSource()).getDuration());
                             slideSeek.setMajorTickSpacing((slideSeek.getMaximum() / 5) / 60 * 60);
                             slideSeek.setMinorTickSpacing(0);
                         }
-                        int pos = (int) ((VideoSourceMovie) source).getSeekPosition();
+                        int pos = (int) ((VideoSourceMovie) source.getSource()).getSeekPosition();
                         if (!slideSeek.getValueIsAdjusting()) {
                             slideSeek.setValue(pos);
                         }
@@ -69,6 +88,10 @@ public class ControlPosition extends javax.swing.JPanel implements Controls {
 
 
     }
+    @Override
+    public void setListener(SourceListener l){
+        listener=l;
+    }
 
     /** This method is called from within the constructor to
      * initialize the form.
@@ -79,58 +102,24 @@ public class ControlPosition extends javax.swing.JPanel implements Controls {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        lblWidth = new javax.swing.JLabel();
-        spinWidth = new javax.swing.JSpinner();
-        lblHeight = new javax.swing.JLabel();
-        spinHeight = new javax.swing.JSpinner();
-        lblX = new javax.swing.JLabel();
-        spinX = new javax.swing.JSpinner();
-        lblY = new javax.swing.JLabel();
-        spinY = new javax.swing.JSpinner();
         lblSeek = new javax.swing.JLabel();
         slideSeek = new javax.swing.JSlider();
+        spinHeight = new javax.swing.JSpinner();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        cboTransOut = new javax.swing.JComboBox();
+        spinWidth = new javax.swing.JSpinner();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        spinX = new javax.swing.JSpinner();
+        cboTransIn = new javax.swing.JComboBox();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        spinY = new javax.swing.JSpinner();
+        btnMoveUp = new javax.swing.JButton();
+        btnMoveDown = new javax.swing.JButton();
 
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("webcamstudio/Languages"); // NOI18N
-        lblWidth.setText(bundle.getString("WIDTH")); // NOI18N
-        lblWidth.setName("lblWidth"); // NOI18N
-
-        spinWidth.setName("spinWidth"); // NOI18N
-        spinWidth.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                spinWidthStateChanged(evt);
-            }
-        });
-
-        lblHeight.setText(bundle.getString("HEIGHT")); // NOI18N
-        lblHeight.setName("lblHeight"); // NOI18N
-
-        spinHeight.setName("spinHeight"); // NOI18N
-        spinHeight.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                spinHeightStateChanged(evt);
-            }
-        });
-
-        lblX.setText(bundle.getString("X")); // NOI18N
-        lblX.setName("lblX"); // NOI18N
-
-        spinX.setName("spinX"); // NOI18N
-        spinX.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                spinXStateChanged(evt);
-            }
-        });
-
-        lblY.setText(bundle.getString("Y")); // NOI18N
-        lblY.setName("lblY"); // NOI18N
-
-        spinY.setName("spinY"); // NOI18N
-        spinY.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                spinYStateChanged(evt);
-            }
-        });
-
         lblSeek.setText(bundle.getString("SEEK")); // NOI18N
         lblSeek.setName("lblSeek"); // NOI18N
 
@@ -147,6 +136,86 @@ public class ControlPosition extends javax.swing.JPanel implements Controls {
             }
         });
 
+        spinHeight.setName("spinHeight"); // NOI18N
+        spinHeight.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                spinHeightStateChanged(evt);
+            }
+        });
+
+        jLabel1.setText(bundle.getString("TRANSITION_IN")); // NOI18N
+        jLabel1.setName("jLabel1"); // NOI18N
+
+        jLabel6.setText(bundle.getString("HEIGHT")); // NOI18N
+        jLabel6.setName("jLabel6"); // NOI18N
+
+        cboTransOut.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cboTransOut.setName("cboTransOut"); // NOI18N
+        cboTransOut.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cboTransOutActionPerformed(evt);
+            }
+        });
+
+        spinWidth.setName("spinWidth"); // NOI18N
+        spinWidth.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                spinWidthStateChanged(evt);
+            }
+        });
+
+        jLabel2.setText(bundle.getString("TRANSITION_OUT")); // NOI18N
+        jLabel2.setName("jLabel2"); // NOI18N
+
+        jLabel5.setText(bundle.getString("WIDTH")); // NOI18N
+        jLabel5.setName("jLabel5"); // NOI18N
+
+        spinX.setName("spinX"); // NOI18N
+        spinX.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                spinXStateChanged(evt);
+            }
+        });
+
+        cboTransIn.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cboTransIn.setName("cboTransIn"); // NOI18N
+        cboTransIn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cboTransInActionPerformed(evt);
+            }
+        });
+
+        jLabel3.setText(bundle.getString("POSITION_X")); // NOI18N
+        jLabel3.setName("jLabel3"); // NOI18N
+
+        jLabel4.setText(bundle.getString("POSITION_Y")); // NOI18N
+        jLabel4.setName("jLabel4"); // NOI18N
+
+        spinY.setName("spinY"); // NOI18N
+        spinY.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                spinYStateChanged(evt);
+            }
+        });
+
+        btnMoveUp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/go-up.png"))); // NOI18N
+        btnMoveUp.setToolTipText(bundle.getString("MOVE_UP")); // NOI18N
+        btnMoveUp.setName("btnMoveUp"); // NOI18N
+        btnMoveUp.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMoveUpActionPerformed(evt);
+            }
+        });
+
+        btnMoveDown.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/go-down.png"))); // NOI18N
+        btnMoveDown.setToolTipText(bundle.getString("MOVE_DOWN")); // NOI18N
+        btnMoveDown.setName("btnMoveDown"); // NOI18N
+        btnMoveDown.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMoveDownActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -154,86 +223,127 @@ public class ControlPosition extends javax.swing.JPanel implements Controls {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(slideSeek, javax.swing.GroupLayout.DEFAULT_SIZE, 427, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(lblWidth)
-                                .addGap(18, 18, 18)
-                                .addComponent(spinWidth, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(lblX)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(spinX, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(lblHeight)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(spinHeight, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(lblY)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(spinY, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(lblSeek)
+                        .addComponent(btnMoveUp)
+                        .addGap(14, 14, 14)
+                        .addComponent(btnMoveDown)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 349, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING))
+                            .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 183, Short.MAX_VALUE)
+                            .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, 183, Short.MAX_VALUE)
+                            .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, 183, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(slideSeek, javax.swing.GroupLayout.DEFAULT_SIZE, 420, Short.MAX_VALUE)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(spinWidth, javax.swing.GroupLayout.DEFAULT_SIZE, 232, Short.MAX_VALUE)
+                            .addComponent(spinY, javax.swing.GroupLayout.DEFAULT_SIZE, 232, Short.MAX_VALUE)
+                            .addComponent(spinX, javax.swing.GroupLayout.DEFAULT_SIZE, 232, Short.MAX_VALUE)
+                            .addComponent(cboTransOut, 0, 232, Short.MAX_VALUE)
+                            .addComponent(cboTransIn, 0, 232, Short.MAX_VALUE)
+                            .addComponent(spinHeight, javax.swing.GroupLayout.DEFAULT_SIZE, 232, Short.MAX_VALUE)))
+                    .addComponent(lblSeek))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblWidth)
-                    .addComponent(spinWidth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblHeight)
-                    .addComponent(spinHeight, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 13, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cboTransIn, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(16, 16, 16)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(cboTransOut, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblX)
-                    .addComponent(spinY, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblY)
+                    .addComponent(jLabel3)
                     .addComponent(spinX, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(spinY, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5)
+                    .addComponent(spinWidth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel6)
+                    .addComponent(spinHeight, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(16, 16, 16)
+                .addComponent(lblSeek)
+                .addGap(4, 4, 4)
+                .addComponent(slideSeek, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblSeek)
-                    .addComponent(slideSeek, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(121, Short.MAX_VALUE))
+                    .addComponent(btnMoveDown)
+                    .addComponent(btnMoveUp))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-
-    private void spinWidthStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinWidthStateChanged
-        source.setOutputWidth((Integer) spinWidth.getValue());
-
-    }//GEN-LAST:event_spinWidthStateChanged
-
-    private void spinHeightStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinHeightStateChanged
-        source.setOutputHeight((Integer) spinHeight.getValue());
-    }//GEN-LAST:event_spinHeightStateChanged
-
-    private void spinXStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinXStateChanged
-        source.setShowAtX((Integer) spinX.getValue());
-    }//GEN-LAST:event_spinXStateChanged
-
-    private void spinYStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinYStateChanged
-        source.setShowAtY((Integer) spinY.getValue());
-    }//GEN-LAST:event_spinYStateChanged
 
     private void slideSeekMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_slideSeekMouseDragged
     }//GEN-LAST:event_slideSeekMouseDragged
 
     private void slideSeekMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_slideSeekMouseReleased
-        if (source instanceof VideoSourceMovie) {
-            ((VideoSourceMovie) source).seek(slideSeek.getValue());
+        if (source.getSource() instanceof VideoSourceMovie) {
+            ((VideoSourceMovie) source.getSource()).seek(slideSeek.getValue());
         }
     }//GEN-LAST:event_slideSeekMouseReleased
+
+    private void btnMoveUpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMoveUpActionPerformed
+        if (listener!=null){
+            listener.sourceMoveUp(source.getSource());
+        }
+}//GEN-LAST:event_btnMoveUpActionPerformed
+
+    private void btnMoveDownActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMoveDownActionPerformed
+        if (listener!=null){
+            listener.sourceMoveDown(source.getSource());
+        }
+}//GEN-LAST:event_btnMoveDownActionPerformed
+
+    private void spinHeightStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinHeightStateChanged
+        source.setHeight((Integer)spinHeight.getValue());
+    }//GEN-LAST:event_spinHeightStateChanged
+
+    private void spinWidthStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinWidthStateChanged
+        source.setWidth((Integer)spinWidth.getValue());
+    }//GEN-LAST:event_spinWidthStateChanged
+
+    private void spinYStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinYStateChanged
+        source.setY((Integer)spinY.getValue());
+    }//GEN-LAST:event_spinYStateChanged
+
+    private void spinXStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinXStateChanged
+        source.setX((Integer)spinX.getValue());
+    }//GEN-LAST:event_spinXStateChanged
+
+    private void cboTransInActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboTransInActionPerformed
+        source.setTransitionIn((Transition)cboTransIn.getSelectedItem());
+    }//GEN-LAST:event_cboTransInActionPerformed
+
+    private void cboTransOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboTransOutActionPerformed
+        source.setTransitionOut((Transition)cboTransOut.getSelectedItem());
+    }//GEN-LAST:event_cboTransOutActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel lblHeight;
+    private javax.swing.JButton btnMoveDown;
+    private javax.swing.JButton btnMoveUp;
+    private javax.swing.JComboBox cboTransIn;
+    private javax.swing.JComboBox cboTransOut;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel lblSeek;
-    private javax.swing.JLabel lblWidth;
-    private javax.swing.JLabel lblX;
-    private javax.swing.JLabel lblY;
     private javax.swing.JSlider slideSeek;
     private javax.swing.JSpinner spinHeight;
     private javax.swing.JSpinner spinWidth;

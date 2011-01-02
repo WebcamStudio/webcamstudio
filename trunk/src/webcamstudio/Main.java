@@ -30,13 +30,12 @@ import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.JPanel;
 import javax.swing.UIManager;
 import org.gstreamer.*;
+import webcamstudio.layout.transitions.Transition;
 import webcamstudio.sources.*;
 import webcamstudio.components.*;
 import webcamstudio.components.LayoutManager;
-import webcamstudio.controls.Controls;
 import webcamstudio.exporter.VideoExporter;
 import webcamstudio.exporter.VideoExporterPipeline;
 import webcamstudio.exporter.vloopback.V4LLoopback;
@@ -44,13 +43,12 @@ import webcamstudio.exporter.vloopback.VideoOutput;
 import webcamstudio.layout.Layout;
 import webcamstudio.studio.Studio;
 import webcamstudio.visage.FaceDetector;
-import winterwell.jtwitter.Twitter;
 
 /**
  *
  * @author pballeux
  */
-public class Main extends javax.swing.JFrame implements InfoListener, Runnable, SourceListListener, SourceListener, MediaListener {
+public class Main extends javax.swing.JFrame implements InfoListener, Runnable,SourceListener, MediaListener {
 
     private VideoOutput output = null;
     private Mixer mixer = null;
@@ -140,26 +138,9 @@ public class Main extends javax.swing.JFrame implements InfoListener, Runnable, 
         } else {
             mnuStudioLoadLast.setEnabled(false);
         }
-        javax.swing.DefaultComboBoxModel model = new javax.swing.DefaultComboBoxModel(LayerManager.getSourcesReversed().toArray());
-        cboSelectedSource.setModel(model);
-        javax.swing.DefaultListCellRenderer renderer = new javax.swing.DefaultListCellRenderer() {
 
-            @Override
-            public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean hasFocus) {
-                Component comp = super.getListCellRendererComponent(list, value, index, isSelected, hasFocus);
-                JLabel label = (JLabel) comp;
-                if (value instanceof VideoSource) {
-                    VideoSource source = (VideoSource) value;
-                    label.setText(source.getName());
-                    label.setToolTipText(source.getName());
-                    if (source.getImage() != null) {
-                        label.setIcon(new ImageIcon(source.getImage().getScaledInstance(32, 32, BufferedImage.SCALE_FAST)));
-                    }
-                }
-                return comp;
-            }
-        };
-        cboSelectedSource.setRenderer(renderer);
+        this.add(layoutManager,BorderLayout.CENTER);
+
         javax.swing.DefaultListCellRenderer layoutrenderer = new javax.swing.DefaultListCellRenderer() {
 
             @Override
@@ -178,7 +159,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, Runnable, 
             }
         };
 
-        webcamera = new WebCamera(this);
+        webcamera = new WebCamera();
         new Thread(new Runnable() {
 
             @Override
@@ -187,9 +168,9 @@ public class Main extends javax.swing.JFrame implements InfoListener, Runnable, 
 
             }
         }).start();
-        panLayouts.add(layoutManager, BorderLayout.CENTER);
         pack();
         new Thread(this).start();
+
     }
 
     private void selectOutputDevice(VideoDevice dev) {
@@ -512,9 +493,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, Runnable, 
         if (prefs.get("lastloopback", null) != null) {
             lastLoopbackUsed = new File(prefs.get("lastloopback", "/dev/video1"));
         }
-        txtTwitterUserName.setText(prefs.get("twitterusername", ""));
-        txtTwitterPassword.setText(prefs.get("twitterpassword", ""));
-        txtTwitterContent.setText(prefs.get("twittercontent", ""));
         lastFolder = new File(prefs.get("lastfolder", "."));
         String[] dir = prefs.get("sb_dirtoscan", "").split(";");
         dirToScan.clear();
@@ -546,9 +524,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, Runnable, 
         if (lastLoopbackUsed != null) {
             prefs.put("lastloopback", lastLoopbackUsed.getAbsolutePath());
         }
-        prefs.put("twitterusername", txtTwitterUserName.getText());
-        prefs.put("twitterpassword", new String(txtTwitterPassword.getPassword()));
-        prefs.put("twittercontent", txtTwitterContent.getText());
         if (lastFolder != null) {
             prefs.put("lastfolder", lastFolder.getAbsolutePath());
         }
@@ -650,7 +625,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, Runnable, 
                     source.setListener(this);
                     addSourceToDesktop(source);
                     source.startSource();
-                    updateControls(source, false);
                 }
                 for (Layout l : studio.getLayouts()) {
                     layoutManager.addLayout(l);
@@ -692,14 +666,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, Runnable, 
         if (source.getOutputHeight() == 0) {
             source.setOutputHeight(outputHeight);
         }
-        javax.swing.DefaultComboBoxModel model = new javax.swing.DefaultComboBoxModel(LayerManager.getSourcesReversed().toArray());
-        cboSelectedSource.setModel(model);
-
-        cboSelectedSource.revalidate();
-        cboSelectedSource.repaint();
-        cboSelectedSource.setSelectedItem(source);
-        layoutManager.sourceAdded(source);
-        updateControls(source, true);
+        layoutManager.addSource(source);
     }
 
     /** This method is called from within the constructor to
@@ -718,30 +685,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, Runnable, 
         panelStatus = new javax.swing.JPanel();
         btnPreview = new javax.swing.JButton();
         cboVideoOutputs = new javax.swing.JComboBox();
-        splitter = new javax.swing.JSplitPane();
-        tabControls = new javax.swing.JTabbedPane();
-        panControls = new javax.swing.JPanel();
-        lblSelectedSource = new javax.swing.JLabel();
-        cboSelectedSource = new javax.swing.JComboBox();
-        lblLayer = new javax.swing.JLabel();
-        lblCurrentLayer = new javax.swing.JLabel();
-        btnFoward = new javax.swing.JButton();
-        btnBackward = new javax.swing.JButton();
-        btnStartSource = new javax.swing.JButton();
-        btnPauseSource = new javax.swing.JButton();
-        btnStopSource = new javax.swing.JButton();
-        btnRemoveSource = new javax.swing.JButton();
-        tabOptions = new javax.swing.JTabbedPane();
-        panLayouts = new javax.swing.JPanel();
-        panTwitter = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        txtTwitterUserName = new javax.swing.JTextField();
-        jLabel2 = new javax.swing.JLabel();
-        txtTwitterPassword = new javax.swing.JPasswordField();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        txtTwitterContent = new javax.swing.JTextArea();
-        btnTwitterPost = new javax.swing.JButton();
-        lblTwitterCount = new javax.swing.JLabel();
         panBrowser = new javax.swing.JPanel();
         menuBar = new javax.swing.JMenuBar();
         mnuStudios = new javax.swing.JMenu();
@@ -856,239 +799,9 @@ public class Main extends javax.swing.JFrame implements InfoListener, Runnable, 
 
         getContentPane().add(panelStatus, java.awt.BorderLayout.SOUTH);
 
-        splitter.setDividerLocation(300);
-        splitter.setResizeWeight(1.0);
-        splitter.setContinuousLayout(true);
-        splitter.setLastDividerLocation(300);
-        splitter.setName("splitter"); // NOI18N
-        splitter.setOneTouchExpandable(true);
-        splitter.setOpaque(true);
-
-        tabControls.setName("tabControls"); // NOI18N
-
-        panControls.setName("panControls"); // NOI18N
-
-        lblSelectedSource.setText("Source");
-        lblSelectedSource.setName("lblSelectedSource"); // NOI18N
-
-        cboSelectedSource.setFont(new java.awt.Font("DejaVu Sans", 0, 36));
-        cboSelectedSource.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        cboSelectedSource.setName("cboSelectedSource"); // NOI18N
-        cboSelectedSource.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cboSelectedSourceActionPerformed(evt);
-            }
-        });
-
-        lblLayer.setText(bundle.getString("LAYER")); // NOI18N
-        lblLayer.setName("lblLayer"); // NOI18N
-
-        lblCurrentLayer.setText("0");
-        lblCurrentLayer.setName("lblCurrentLayer"); // NOI18N
-
-        btnFoward.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/go-up.png"))); // NOI18N
-        btnFoward.setToolTipText(bundle.getString("MOVE_UP")); // NOI18N
-        btnFoward.setEnabled(false);
-        btnFoward.setName("btnFoward"); // NOI18N
-        btnFoward.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnFowardActionPerformed(evt);
-            }
-        });
-
-        btnBackward.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/go-down.png"))); // NOI18N
-        btnBackward.setToolTipText(bundle.getString("MOVE_DOWN")); // NOI18N
-        btnBackward.setEnabled(false);
-        btnBackward.setName("btnBackward"); // NOI18N
-        btnBackward.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnBackwardActionPerformed(evt);
-            }
-        });
-
-        btnStartSource.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-start.png"))); // NOI18N
-        btnStartSource.setToolTipText(bundle.getString("PLAY")); // NOI18N
-        btnStartSource.setEnabled(false);
-        btnStartSource.setName("btnStartSource"); // NOI18N
-        btnStartSource.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnStartSourceActionPerformed(evt);
-            }
-        });
-
-        btnPauseSource.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-pause.png"))); // NOI18N
-        btnPauseSource.setToolTipText(bundle.getString("PAUSE")); // NOI18N
-        btnPauseSource.setEnabled(false);
-        btnPauseSource.setName("btnPauseSource"); // NOI18N
-        btnPauseSource.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnPauseSourceActionPerformed(evt);
-            }
-        });
-
-        btnStopSource.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-stop.png"))); // NOI18N
-        btnStopSource.setToolTipText(bundle.getString("STOP")); // NOI18N
-        btnStopSource.setEnabled(false);
-        btnStopSource.setName("btnStopSource"); // NOI18N
-        btnStopSource.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnStopSourceActionPerformed(evt);
-            }
-        });
-
-        btnRemoveSource.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/process-stop.png"))); // NOI18N
-        btnRemoveSource.setToolTipText(bundle.getString("REMOVE")); // NOI18N
-        btnRemoveSource.setEnabled(false);
-        btnRemoveSource.setName("btnRemoveSource"); // NOI18N
-        btnRemoveSource.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnRemoveSourceActionPerformed(evt);
-            }
-        });
-
-        tabOptions.setName("tabOptions"); // NOI18N
-
-        javax.swing.GroupLayout panControlsLayout = new javax.swing.GroupLayout(panControls);
-        panControls.setLayout(panControlsLayout);
-        panControlsLayout.setHorizontalGroup(
-            panControlsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panControlsLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(panControlsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panControlsLayout.createSequentialGroup()
-                        .addComponent(lblSelectedSource)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblLayer)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblCurrentLayer, javax.swing.GroupLayout.PREFERRED_SIZE, 8, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cboSelectedSource, 0, 103, Short.MAX_VALUE))
-                    .addGroup(panControlsLayout.createSequentialGroup()
-                        .addComponent(btnStartSource)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnPauseSource)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnStopSource)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnRemoveSource)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnFoward)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnBackward)))
-                .addContainerGap())
-            .addComponent(tabOptions, javax.swing.GroupLayout.DEFAULT_SIZE, 246, Short.MAX_VALUE)
-        );
-        panControlsLayout.setVerticalGroup(
-            panControlsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panControlsLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(panControlsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE, false)
-                    .addComponent(lblSelectedSource)
-                    .addComponent(lblLayer)
-                    .addComponent(lblCurrentLayer)
-                    .addComponent(cboSelectedSource, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(panControlsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnStartSource)
-                    .addComponent(btnPauseSource)
-                    .addComponent(btnStopSource)
-                    .addComponent(btnRemoveSource)
-                    .addComponent(btnFoward, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(btnBackward, javax.swing.GroupLayout.Alignment.TRAILING))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(tabOptions, javax.swing.GroupLayout.DEFAULT_SIZE, 283, Short.MAX_VALUE))
-        );
-
-        tabControls.addTab(bundle.getString("CONTROLS"), new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/document-properties.png")), panControls); // NOI18N
-
-        panLayouts.setName("panLayouts"); // NOI18N
-        panLayouts.setLayout(new java.awt.BorderLayout());
-        tabControls.addTab(bundle.getString("LAYOUTS"), new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/image-x-generic.png")), panLayouts); // NOI18N
-
-        panTwitter.setName("panTwitter"); // NOI18N
-
-        jLabel1.setText(bundle.getString("TWITTERUSERNAME")); // NOI18N
-        jLabel1.setName("jLabel1"); // NOI18N
-
-        txtTwitterUserName.setName("txtTwitterUserName"); // NOI18N
-
-        jLabel2.setText(bundle.getString("PASSWORD")); // NOI18N
-        jLabel2.setName("jLabel2"); // NOI18N
-
-        txtTwitterPassword.setName("txtTwitterPassword"); // NOI18N
-
-        jScrollPane2.setName("jScrollPane2"); // NOI18N
-
-        txtTwitterContent.setColumns(20);
-        txtTwitterContent.setLineWrap(true);
-        txtTwitterContent.setRows(5);
-        txtTwitterContent.setWrapStyleWord(true);
-        txtTwitterContent.setName("txtTwitterContent"); // NOI18N
-        jScrollPane2.setViewportView(txtTwitterContent);
-
-        btnTwitterPost.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/list-add.png"))); // NOI18N
-        btnTwitterPost.setText(bundle.getString("TWITTERPOST")); // NOI18N
-        btnTwitterPost.setName("btnTwitterPost"); // NOI18N
-        btnTwitterPost.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnTwitterPostActionPerformed(evt);
-            }
-        });
-
-        lblTwitterCount.setText("140");
-        lblTwitterCount.setName("lblTwitterCount"); // NOI18N
-
-        javax.swing.GroupLayout panTwitterLayout = new javax.swing.GroupLayout(panTwitter);
-        panTwitter.setLayout(panTwitterLayout);
-        panTwitterLayout.setHorizontalGroup(
-            panTwitterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panTwitterLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(panTwitterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 222, Short.MAX_VALUE)
-                    .addGroup(panTwitterLayout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtTwitterUserName, javax.swing.GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE))
-                    .addGroup(panTwitterLayout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addGap(18, 18, 18)
-                        .addComponent(txtTwitterPassword, javax.swing.GroupLayout.DEFAULT_SIZE, 136, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panTwitterLayout.createSequentialGroup()
-                        .addComponent(lblTwitterCount)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnTwitterPost)))
-                .addContainerGap())
-        );
-        panTwitterLayout.setVerticalGroup(
-            panTwitterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panTwitterLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(panTwitterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(txtTwitterUserName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(panTwitterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(txtTwitterPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 196, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(panTwitterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnTwitterPost)
-                    .addComponent(lblTwitterCount))
-                .addContainerGap(64, Short.MAX_VALUE))
-        );
-
-        tabControls.addTab("Twitter", panTwitter);
-
-        splitter.setRightComponent(tabControls);
-
         panBrowser.setName("panBrowser"); // NOI18N
         panBrowser.setLayout(new java.awt.BorderLayout());
-        splitter.setLeftComponent(panBrowser);
-
-        getContentPane().add(splitter, java.awt.BorderLayout.CENTER);
+        getContentPane().add(panBrowser, java.awt.BorderLayout.WEST);
 
         menuBar.setName("menuBar"); // NOI18N
 
@@ -1846,9 +1559,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, Runnable, 
     }// </editor-fold>//GEN-END:initComponents
 
     private void mnuSourcesDesktopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuSourcesDesktopActionPerformed
-
         VideoSourceDesktop s = new VideoSourceDesktop();
-
         addSourceToDesktop(s);
     }//GEN-LAST:event_mnuSourcesDesktopActionPerformed
 
@@ -2263,86 +1974,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, Runnable, 
 
     }//GEN-LAST:event_mnuStudioNewActionPerformed
 
-    private void btnTwitterPostActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTwitterPostActionPerformed
-        Twitter twitter = new Twitter(txtTwitterUserName.getText(), new String(txtTwitterPassword.getPassword()));
-        twitter.updateStatus(txtTwitterContent.getText());
-    }//GEN-LAST:event_btnTwitterPostActionPerformed
-
-    private void btnRemoveSourceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveSourceActionPerformed
-        if (cboSelectedSource.getSelectedItem() != null) {
-            VideoSource source = (VideoSource) cboSelectedSource.getSelectedItem();
-            sourceRemoved(source);
-        }
-        System.gc();
-}//GEN-LAST:event_btnRemoveSourceActionPerformed
-
-    private void btnStopSourceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStopSourceActionPerformed
-        if (cboSelectedSource.getSelectedItem() != null) {
-            VideoSource source = (VideoSource) cboSelectedSource.getSelectedItem();
-            if (source.isPlaying()) {
-                source.stopSource();
-            }
-            updateControls(source, false);
-        }
-}//GEN-LAST:event_btnStopSourceActionPerformed
-
-    private void btnPauseSourceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPauseSourceActionPerformed
-        if (cboSelectedSource.getSelectedItem() != null) {
-            VideoSource source = (VideoSource) cboSelectedSource.getSelectedItem();
-            if (source.isPlaying()) {
-                source.pause();
-            }
-            updateControls(source, false);
-        }
-}//GEN-LAST:event_btnPauseSourceActionPerformed
-
-    private void btnStartSourceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStartSourceActionPerformed
-        if (cboSelectedSource.getSelectedItem() != null) {
-            VideoSource source = (VideoSource) cboSelectedSource.getSelectedItem();
-            if (source.isPaused()) {
-                source.play();
-            } else if (!source.isPlaying()) {
-                source.startSource();
-            }
-            updateControls(source, false);
-        }
-}//GEN-LAST:event_btnStartSourceActionPerformed
-
-    private void btnBackwardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackwardActionPerformed
-        if (cboSelectedSource.getSelectedItem() != null) {
-            VideoSource source = (VideoSource) cboSelectedSource.getSelectedItem();
-            LayerManager.moveDown(source);
-            javax.swing.DefaultComboBoxModel model = new javax.swing.DefaultComboBoxModel(LayerManager.getSourcesReversed().toArray());
-            cboSelectedSource.setModel(model);
-            cboSelectedSource.revalidate();
-            cboSelectedSource.repaint();
-            cboSelectedSource.setSelectedItem(source);
-            lblCurrentLayer.setText("" + (LayerManager.size() - cboSelectedSource.getSelectedIndex()));
-        }
-}//GEN-LAST:event_btnBackwardActionPerformed
-
-    private void btnFowardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFowardActionPerformed
-        //Find current index of source
-        if (cboSelectedSource.getSelectedItem() != null) {
-            VideoSource source = (VideoSource) cboSelectedSource.getSelectedItem();
-            LayerManager.moveUp(source);
-            javax.swing.DefaultComboBoxModel model = new javax.swing.DefaultComboBoxModel(LayerManager.getSourcesReversed().toArray());
-            cboSelectedSource.setModel(model);
-            cboSelectedSource.revalidate();
-            cboSelectedSource.repaint();
-            cboSelectedSource.setSelectedItem(source);
-            lblCurrentLayer.setText("" + (LayerManager.size() - cboSelectedSource.getSelectedIndex()));
-        }
-}//GEN-LAST:event_btnFowardActionPerformed
-
-    private void cboSelectedSourceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboSelectedSourceActionPerformed
-        if (cboSelectedSource.getSelectedItem() != null) {
-            VideoSource source = (VideoSource) cboSelectedSource.getSelectedItem();
-            lblCurrentLayer.setText("" + (LayerManager.size() - cboSelectedSource.getSelectedIndex()));
-            updateControls(source, true);
-        }
-}//GEN-LAST:event_cboSelectedSourceActionPerformed
-
     private void mnuchkShowBackgroundActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuchkShowBackgroundActionPerformed
         if (mnuchkShowBackground.isSelected()) {
             Image img = Toolkit.getDefaultToolkit().createImage(getClass().getResource("/webcamstudio/resources/splash.jpg"));
@@ -2468,32 +2099,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, Runnable, 
         }
     }//GEN-LAST:event_cboVideoOutputsActionPerformed
 
-    private void updateControls(VideoSource source, boolean removeControls) {
-        btnStartSource.setEnabled(source != null && (!source.isPlaying() || source.isPaused()));
-        btnPauseSource.setEnabled(source != null && source.isPlaying() && !source.isPaused());
-        btnStopSource.setEnabled(source != null && (source.isPaused() || source.isPlaying()));
-        btnRemoveSource.setEnabled(source != null);
-        btnBackward.setEnabled(source != null);
-        btnFoward.setEnabled(source != null);
-        if (removeControls) {
-            for (Component panel : tabOptions.getComponents()) {
-                if (panel instanceof Controls) {
-                    ((Controls) panel).removeControl();
-                }
-            }
-            tabOptions.removeAll();
-            source = (VideoSource) cboSelectedSource.getSelectedItem();
-            if (source != null) {
-                for (JPanel p : source.getControls()) {
-                    tabOptions.addTab(((Controls) p).getLabel(), p);
-                }
-                updateControls(source, false);
-            }
-            tabOptions.revalidate();
-
-        }
-
-    }
 
     /**
      * @param args the command line arguments
@@ -2536,30 +2141,15 @@ public class Main extends javax.swing.JFrame implements InfoListener, Runnable, 
         }
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnBackward;
-    private javax.swing.JButton btnFoward;
-    private javax.swing.JButton btnPauseSource;
     private javax.swing.JButton btnPreview;
-    private javax.swing.JButton btnRemoveSource;
-    private javax.swing.JButton btnStartSource;
-    private javax.swing.JButton btnStopSource;
-    private javax.swing.JButton btnTwitterPost;
-    private javax.swing.JComboBox cboSelectedSource;
     private javax.swing.JComboBox cboVideoOutputs;
     private javax.swing.ButtonGroup grpFramerate;
     private javax.swing.ButtonGroup grpOutputSize;
     private javax.swing.ButtonGroup grpPixelFormat;
     private javax.swing.ButtonGroup grpQuality;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
-    private javax.swing.JLabel lblCurrentLayer;
-    private javax.swing.JLabel lblLayer;
-    private javax.swing.JLabel lblSelectedSource;
-    private javax.swing.JLabel lblTwitterCount;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenu mnuAbout;
     private javax.swing.JMenuItem mnuAboutItem;
@@ -2634,16 +2224,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, Runnable, 
     private javax.swing.JRadioButtonMenuItem mnurdPixelFormatRGB24;
     private javax.swing.JRadioButtonMenuItem mnurdPixelFormatUYVY;
     private javax.swing.JPanel panBrowser;
-    private javax.swing.JPanel panControls;
-    private javax.swing.JPanel panLayouts;
-    private javax.swing.JPanel panTwitter;
     private javax.swing.JPanel panelStatus;
-    private javax.swing.JSplitPane splitter;
-    private javax.swing.JTabbedPane tabControls;
-    private javax.swing.JTabbedPane tabOptions;
-    private javax.swing.JTextArea txtTwitterContent;
-    private javax.swing.JPasswordField txtTwitterPassword;
-    private javax.swing.JTextField txtTwitterUserName;
     // End of variables declaration//GEN-END:variables
 
     @Override
@@ -2674,11 +2255,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, Runnable, 
         while (!stopMe) {
             try {
                 Thread.sleep(200);
-                int twittercount = 140 - txtTwitterContent.getText().length();
-                lblTwitterCount.setText("Left " + twittercount);
-
-                btnTwitterPost.setEnabled(twittercount >= 0);
-
 
                 if (singlePaint != null && !singlePaint.isVisible()) {
                     singlePaint.dispose();
@@ -2693,8 +2269,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, Runnable, 
                 if (preview != null) {
                     preview.setImage(mixer.getImage());
                 }
-                cboSelectedSource.revalidate();
-                cboSelectedSource.repaint();
                 layoutManager.repaint();
                 updateMenuLayoutNames();
 
@@ -2710,22 +2284,47 @@ public class Main extends javax.swing.JFrame implements InfoListener, Runnable, 
     }
 
     @Override
-    public void sourceRemoved(VideoSource source) {
-        cboSelectedSource.setSelectedIndex(-1);
-        updateControls(null, true);
-        source.stopSource();
-        LayerManager.remove(source);
-        javax.swing.DefaultComboBoxModel model = new javax.swing.DefaultComboBoxModel(LayerManager.getSourcesReversed().toArray());
-        cboSelectedSource.setModel(model);
-        cboSelectedSource.revalidate();
-        cboSelectedSource.repaint();
-        updateControls(null, true);
-        lblCurrentLayer.setText("" + (LayerManager.size() - cboSelectedSource.getSelectedIndex()));
-        layoutManager.sourceRemoved(source);
+    public void sourceUpdate(VideoSource source) {
+
     }
 
     @Override
-    public void deviceUpdate() {
-        updateNodeDevices();
+    public void sourceSetX(VideoSource source, int x) {
+
+    }
+
+    @Override
+    public void sourceSetY(VideoSource source, int y) {
+
+    }
+
+    @Override
+    public void sourceSetWidth(VideoSource source, int w) {
+
+    }
+
+    @Override
+    public void sourceSetHeight(VideoSource source, int h) {
+
+    }
+
+    @Override
+    public void sourceMoveUp(VideoSource source) {
+
+    }
+
+    @Override
+    public void sourceMoveDown(VideoSource source) {
+
+    }
+
+    @Override
+    public void sourceSetTransIn(VideoSource source, Transition in) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void sourceSetTransOut(VideoSource source, Transition out) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

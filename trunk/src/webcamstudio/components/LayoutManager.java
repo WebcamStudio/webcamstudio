@@ -16,11 +16,16 @@ import java.util.Collection;
 import java.util.Enumeration;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
+import webcamstudio.controls.ControlPosition;
+import webcamstudio.controls.Controls;
 import webcamstudio.layout.Layout;
 import webcamstudio.layout.LayoutItem;
 import webcamstudio.layout.transitions.None;
+import webcamstudio.layout.transitions.Start;
+import webcamstudio.layout.transitions.Stop;
 import webcamstudio.layout.transitions.Transition;
 import webcamstudio.sources.VideoSource;
 import webcamstudio.sources.VideoSourceAnimation;
@@ -37,14 +42,12 @@ import webcamstudio.sources.VideoSourceWidget;
  *
  * @author lgs
  */
-public class LayoutManager extends javax.swing.JPanel {
+public class LayoutManager extends javax.swing.JPanel implements SourceListener {
 
     private Collection<VideoSource> sources = null;
     private javax.swing.tree.DefaultMutableTreeNode root = null;
     private java.util.Vector<Layout> layouts = new java.util.Vector<Layout>();
     javax.swing.tree.DefaultTreeModel model = null;
-    javax.swing.DefaultComboBoxModel transModelIn = new javax.swing.DefaultComboBoxModel();
-    javax.swing.DefaultComboBoxModel transModelOut = new javax.swing.DefaultComboBoxModel();
     private Layout currentLayout = null;
     private Layout oldLayout = null;
     private LayoutItem currentLayoutItem = null;
@@ -68,20 +71,7 @@ public class LayoutManager extends javax.swing.JPanel {
         root = new javax.swing.tree.DefaultMutableTreeNode("Layouts");
         model = new javax.swing.tree.DefaultTreeModel(root);
         treeLayouts.setModel(model);
-        transModelIn = new javax.swing.DefaultComboBoxModel(Transition.getTransitions().values().toArray());
-        transModelOut = new javax.swing.DefaultComboBoxModel(Transition.getTransitions().values().toArray());
-        cboTransIn.setModel(transModelIn);
-        cboTransOut.setModel(transModelOut);
         txtLayoutName.setEnabled(false);
-        cboTransIn.setEnabled(false);
-        cboTransOut.setEnabled(false);
-        spinX.setEnabled(false);
-        spinY.setEnabled(false);
-        spinWidth.setEnabled(false);
-        spinHeight.setEnabled(false);
-        btnUpdateLayoutItem.setEnabled(false);
-        btnMoveDown.setEnabled(false);
-        btnMoveUp.setEnabled(false);
         javax.swing.tree.DefaultTreeCellRenderer treeRenderer = new javax.swing.tree.DefaultTreeCellRenderer() {
 
             @Override
@@ -127,13 +117,13 @@ public class LayoutManager extends javax.swing.JPanel {
         treeLayouts.setCellRenderer(treeRenderer);
     }
 
-    public void applyLayoutHotKey(String key){
+    public void applyLayoutHotKey(String key) {
         //Find Layout in tree...
         Enumeration en = root.children();
-        while (en.hasMoreElements()){
-            DefaultMutableTreeNode node = (DefaultMutableTreeNode)en.nextElement();
-            Layout l = (Layout)node.getUserObject();
-            if (l.getHotKey().equals(key)){
+        while (en.hasMoreElements()) {
+            DefaultMutableTreeNode node = (DefaultMutableTreeNode) en.nextElement();
+            Layout l = (Layout) node.getUserObject();
+            if (l.getHotKey().equals(key)) {
                 TreePath t = new TreePath(node.getPath());
                 treeLayouts.setSelectionPath(t);
                 treeLayouts.revalidate();
@@ -142,13 +132,17 @@ public class LayoutManager extends javax.swing.JPanel {
             }
         }
     }
+
     public Collection<Layout> getLayouts() {
         return layouts;
     }
 
-    public void sourceAdded(VideoSource s) {
+    public void addSource(VideoSource s) {
+        if (layouts.isEmpty()) {
+            btnAdd.doClick();
+        }
         for (Layout layout : layouts) {
-            layout.addSource(s, new None(), new None());
+            layout.addSource(s, new Start(), new Stop());
         }
         updateTree();
     }
@@ -161,13 +155,15 @@ public class LayoutManager extends javax.swing.JPanel {
     }
 
     public void updateTree() {
-        root.removeAllChildren();
         updateLayouts(root);
         model.reload();
         treeLayouts.revalidate();
-        for (int i = 0;i<treeLayouts.getRowCount();i++){
+        for (int i = 0; i < treeLayouts.getRowCount(); i++) {
             treeLayouts.expandRow(i);
         }
+        treeLayouts.revalidate();
+        treeLayouts.repaint();
+
     }
 
     public DefaultMutableTreeNode addLayout(Layout l) {
@@ -204,42 +200,21 @@ public class LayoutManager extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        scroller = new javax.swing.JScrollPane();
-        treeLayouts = new javax.swing.JTree();
         panControls = new javax.swing.JPanel();
         btnAdd = new javax.swing.JButton();
         btnRemove = new javax.swing.JButton();
         btnApply = new javax.swing.JButton();
+        splitter = new javax.swing.JSplitPane();
+        scroller = new javax.swing.JScrollPane();
+        treeLayouts = new javax.swing.JTree();
+        panSources = new javax.swing.JPanel();
         txtLayoutName = new javax.swing.JTextField();
-        lblName = new javax.swing.JLabel();
-        cboTransIn = new javax.swing.JComboBox();
-        jLabel1 = new javax.swing.JLabel();
-        cboTransOut = new javax.swing.JComboBox();
-        jLabel2 = new javax.swing.JLabel();
-        spinX = new javax.swing.JSpinner();
-        jLabel3 = new javax.swing.JLabel();
-        spinY = new javax.swing.JSpinner();
-        jLabel4 = new javax.swing.JLabel();
-        spinWidth = new javax.swing.JSpinner();
-        jLabel5 = new javax.swing.JLabel();
-        spinHeight = new javax.swing.JSpinner();
-        jLabel6 = new javax.swing.JLabel();
-        btnUpdateLayoutItem = new javax.swing.JButton();
-        btnMoveDown = new javax.swing.JButton();
-        btnMoveUp = new javax.swing.JButton();
         cboHotkeys = new javax.swing.JComboBox();
         jLabel7 = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
+        tabControls = new javax.swing.JTabbedPane();
 
-        scroller.setName("scroller"); // NOI18N
-
-        treeLayouts.setName("treeLayouts"); // NOI18N
-        treeLayouts.setRootVisible(false);
-        treeLayouts.addTreeSelectionListener(new javax.swing.event.TreeSelectionListener() {
-            public void valueChanged(javax.swing.event.TreeSelectionEvent evt) {
-                treeLayoutsValueChanged(evt);
-            }
-        });
-        scroller.setViewportView(treeLayouts);
+        setLayout(new java.awt.BorderLayout());
 
         panControls.setName("panControls"); // NOI18N
         panControls.setLayout(new javax.swing.BoxLayout(panControls, javax.swing.BoxLayout.LINE_AXIS));
@@ -277,67 +252,31 @@ public class LayoutManager extends javax.swing.JPanel {
         });
         panControls.add(btnApply);
 
+        add(panControls, java.awt.BorderLayout.NORTH);
+
+        splitter.setDividerLocation(300);
+        splitter.setName("splitter"); // NOI18N
+
+        scroller.setName("scroller"); // NOI18N
+
+        treeLayouts.setMinimumSize(new java.awt.Dimension(300, 0));
+        treeLayouts.setName("treeLayouts"); // NOI18N
+        treeLayouts.addTreeSelectionListener(new javax.swing.event.TreeSelectionListener() {
+            public void valueChanged(javax.swing.event.TreeSelectionEvent evt) {
+                treeLayoutsValueChanged(evt);
+            }
+        });
+        scroller.setViewportView(treeLayouts);
+
+        splitter.setLeftComponent(scroller);
+
+        panSources.setName("panSources"); // NOI18N
+
         txtLayoutName.setText("Layout Name...");
         txtLayoutName.setName("txtLayoutName"); // NOI18N
-
-        lblName.setText(bundle.getString("NAME")); // NOI18N
-        lblName.setName("lblName"); // NOI18N
-
-        cboTransIn.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        cboTransIn.setName("cboTransIn"); // NOI18N
-
-        jLabel1.setText(bundle.getString("TRANSITION_IN")); // NOI18N
-
-        cboTransOut.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        cboTransOut.setName("cboTransOut"); // NOI18N
-
-        jLabel2.setText(bundle.getString("TRANSITION_OUT")); // NOI18N
-        jLabel2.setName("jLabel2"); // NOI18N
-
-        spinX.setName("spinX"); // NOI18N
-
-        jLabel3.setText(bundle.getString("POSITION_X")); // NOI18N
-        jLabel3.setName("jLabel3"); // NOI18N
-
-        spinY.setName("spinY"); // NOI18N
-
-        jLabel4.setText(bundle.getString("POSITION_Y")); // NOI18N
-        jLabel4.setName("jLabel4"); // NOI18N
-
-        spinWidth.setName("spinWidth"); // NOI18N
-
-        jLabel5.setText(bundle.getString("WIDTH")); // NOI18N
-        jLabel5.setName("jLabel5"); // NOI18N
-
-        spinHeight.setName("spinHeight"); // NOI18N
-
-        jLabel6.setText(bundle.getString("HEIGHT")); // NOI18N
-        jLabel6.setName("jLabel6"); // NOI18N
-
-        btnUpdateLayoutItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/view-refresh.png"))); // NOI18N
-        btnUpdateLayoutItem.setToolTipText(bundle.getString("UPDATE")); // NOI18N
-        btnUpdateLayoutItem.setName("btnUpdateLayoutItem"); // NOI18N
-        btnUpdateLayoutItem.addActionListener(new java.awt.event.ActionListener() {
+        txtLayoutName.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnUpdateLayoutItemActionPerformed(evt);
-            }
-        });
-
-        btnMoveDown.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/go-down.png"))); // NOI18N
-        btnMoveDown.setToolTipText(bundle.getString("MOVE_DOWN")); // NOI18N
-        btnMoveDown.setName("btnMoveDown"); // NOI18N
-        btnMoveDown.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnMoveDownActionPerformed(evt);
-            }
-        });
-
-        btnMoveUp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/go-up.png"))); // NOI18N
-        btnMoveUp.setToolTipText(bundle.getString("MOVE_UP")); // NOI18N
-        btnMoveUp.setName("btnMoveUp"); // NOI18N
-        btnMoveUp.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnMoveUpActionPerformed(evt);
+                txtLayoutNameActionPerformed(evt);
             }
         });
 
@@ -347,127 +286,70 @@ public class LayoutManager extends javax.swing.JPanel {
         jLabel7.setText(bundle.getString("HOTKEY")); // NOI18N
         jLabel7.setName("jLabel7"); // NOI18N
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(scroller, javax.swing.GroupLayout.DEFAULT_SIZE, 205, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(btnMoveUp)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(btnMoveDown)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(btnUpdateLayoutItem))
-                        .addGroup(layout.createSequentialGroup()
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 89, Short.MAX_VALUE)
-                                .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(cboTransOut, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(spinX)
-                                .addComponent(spinY)
-                                .addComponent(spinWidth)
-                                .addComponent(spinHeight)
-                                .addComponent(cboTransIn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(lblName, javax.swing.GroupLayout.DEFAULT_SIZE, 89, Short.MAX_VALUE))
+        jLabel1.setText(bundle.getString("LAYOUTNAME")); // NOI18N
+        jLabel1.setName("jLabel1"); // NOI18N
+
+        tabControls.setName("tabControls"); // NOI18N
+
+        javax.swing.GroupLayout panSourcesLayout = new javax.swing.GroupLayout(panSources);
+        panSources.setLayout(panSourcesLayout);
+        panSourcesLayout.setHorizontalGroup(
+            panSourcesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panSourcesLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(panSourcesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panSourcesLayout.createSequentialGroup()
+                        .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(cboHotkeys, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(txtLayoutName, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 175, Short.MAX_VALUE))))
-                .addContainerGap())
-            .addComponent(panControls, javax.swing.GroupLayout.DEFAULT_SIZE, 505, Short.MAX_VALUE)
+                        .addComponent(txtLayoutName, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(panSourcesLayout.createSequentialGroup()
+                        .addComponent(jLabel7)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cboHotkeys, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(tabControls, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 303, Short.MAX_VALUE)
         );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(panControls, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+        panSourcesLayout.setVerticalGroup(
+            panSourcesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panSourcesLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(panSourcesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(txtLayoutName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtLayoutName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lblName, javax.swing.GroupLayout.PREFERRED_SIZE, 11, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(cboHotkeys, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel7))
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(19, 19, 19)
-                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 13, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(cboTransIn, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(cboTransOut, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel2))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(spinX, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel3))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(spinY, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel4))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(spinWidth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel5))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(spinHeight, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel6))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnUpdateLayoutItem)
-                            .addComponent(btnMoveDown)
-                            .addComponent(btnMoveUp))
-                        .addGap(80, 80, 80))
-                    .addComponent(scroller, javax.swing.GroupLayout.DEFAULT_SIZE, 377, Short.MAX_VALUE)))
+                .addGroup(panSourcesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel7)
+                    .addComponent(cboHotkeys, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(tabControls, javax.swing.GroupLayout.DEFAULT_SIZE, 331, Short.MAX_VALUE))
         );
+
+        splitter.setRightComponent(panSources);
+
+        add(splitter, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
     private void treeLayoutsValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN-FIRST:event_treeLayoutsValueChanged
         DefaultMutableTreeNode node = (DefaultMutableTreeNode) evt.getPath().getLastPathComponent();
         txtLayoutName.setText("");
         txtLayoutName.setEnabled(false);
-        cboTransIn.setEnabled(false);
-        cboTransOut.setEnabled(false);
-        spinX.setEnabled(false);
-        spinY.setEnabled(false);
-        spinWidth.setEnabled(false);
-        spinHeight.setEnabled(false);
-        btnUpdateLayoutItem.setEnabled(false);
-        btnMoveDown.setEnabled(false);
-        btnMoveUp.setEnabled(false);
         btnApply.setEnabled(false);
         btnRemove.setEnabled(false);
         cboHotkeys.setEnabled(false);
 
+
         Object obj = node.getUserObject();
         if (obj instanceof Layout) {
+            tabControls.removeAll();
+            tabControls.revalidate();
             currentLayout = (Layout) obj;
             btnApply.setEnabled(true);
             btnRemove.setEnabled(true);
             cboHotkeys.setEnabled(true);
             cboHotkeys.setSelectedItem(currentLayout.getHotKey());
-            
+
             txtLayoutName.setText(currentLayout.toString());
             txtLayoutName.setEnabled(true);
-            btnUpdateLayoutItem.setEnabled(true);
         } else if (obj instanceof LayoutItem) {
             currentLayoutItem = (LayoutItem) obj;
             if (evt.getPath().getParentPath() != null) {
@@ -476,30 +358,14 @@ public class LayoutManager extends javax.swing.JPanel {
                 cboHotkeys.setEnabled(true);
                 cboHotkeys.setSelectedItem(currentLayout.getHotKey());
                 txtLayoutName.setEnabled(true);
-                cboTransIn.setEnabled(true);
-                cboTransOut.setEnabled(true);
-                spinX.setEnabled(true);
-                spinY.setEnabled(true);
-                spinWidth.setEnabled(true);
-                spinHeight.setEnabled(true);
-                btnUpdateLayoutItem.setEnabled(true);
-                btnMoveDown.setEnabled(true);
-                btnMoveUp.setEnabled(true);
-                spinX.setValue(new Integer(currentLayoutItem.getX()));
-                spinY.setValue(new Integer(currentLayoutItem.getY()));
-                spinWidth.setValue(new Integer(currentLayoutItem.getWidth()));
-                spinHeight.setValue(new Integer(currentLayoutItem.getHeight()));
-                for (int i = 0; i < cboTransIn.getItemCount(); i++) {
-                    if (currentLayoutItem.getTransitionIn().getClass().getName().equals(cboTransIn.getItemAt(i).getClass().getName())) {
-                        cboTransIn.setSelectedIndex(i);
-                        break;
-                    }
-                }
-                for (int i = 0; i < cboTransOut.getItemCount(); i++) {
-                    if (currentLayoutItem.getTransitionOut().getClass().getName().equals(cboTransIn.getItemAt(i).getClass().getName())) {
-                        cboTransOut.setSelectedIndex(i);
-                        break;
-                    }
+                tabControls.removeAll();
+                ControlPosition ctrl = new ControlPosition(currentLayoutItem);
+                ctrl.setListener(this);
+                tabControls.add(ctrl.getLabel(), ctrl);
+                for (JPanel panel : currentLayoutItem.getSource().getControls()) {
+                    Controls c = (Controls) panel;
+                    tabControls.add(c.getLabel(), panel);
+                    c.setListener(this);
                 }
             }
         }
@@ -509,7 +375,7 @@ public class LayoutManager extends javax.swing.JPanel {
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
         Layout l = new Layout("New Layout");
         for (VideoSource s : sources) {
-            l.addSource(s, new None(), new None());
+            l.addSource(s, new Start(), new Stop());
         }
         layouts.add(l);
         DefaultMutableTreeNode node = addLayout(l);
@@ -523,23 +389,6 @@ public class LayoutManager extends javax.swing.JPanel {
 
 
     }//GEN-LAST:event_btnAddActionPerformed
-
-    private void btnUpdateLayoutItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateLayoutItemActionPerformed
-        if (currentLayout != null) {
-            currentLayout.setName(txtLayoutName.getText());
-            currentLayout.setHotKey(cboHotkeys.getSelectedItem().toString());
-        }
-        if (currentLayoutItem != null) {
-            currentLayoutItem.setTransitionIn((Transition) cboTransIn.getSelectedItem());
-            currentLayoutItem.setTransitionOut((Transition) cboTransOut.getSelectedItem());
-            currentLayoutItem.setX((Integer) spinX.getValue());
-            currentLayoutItem.setY((Integer) spinY.getValue());
-            currentLayoutItem.setWidth((Integer) spinWidth.getValue());
-            currentLayoutItem.setHeight((Integer) spinHeight.getValue());
-        }
-        treeLayouts.revalidate();
-        treeLayouts.repaint();
-    }//GEN-LAST:event_btnUpdateLayoutItemActionPerformed
 
     private void btnApplyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnApplyActionPerformed
         new Thread(new Runnable() {
@@ -560,59 +409,6 @@ public class LayoutManager extends javax.swing.JPanel {
 
     }//GEN-LAST:event_btnApplyActionPerformed
 
-    private void btnMoveDownActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMoveDownActionPerformed
-        if (currentLayoutItem != null) {
-            currentLayout.moveDownItem(currentLayoutItem);
-            Enumeration en = root.children();
-
-            while (en.hasMoreElements()) {
-                DefaultMutableTreeNode node = (DefaultMutableTreeNode) en.nextElement();
-                if (node.getUserObject().equals(currentLayout)) {
-                    updateItems(currentLayout, node);
-                    model.reload(node);
-                    DefaultMutableTreeNode selectedNode = null;
-                    Enumeration selEnum = node.children();
-                    while (selEnum.hasMoreElements()) {
-                        selectedNode = (DefaultMutableTreeNode) selEnum.nextElement();
-                        if (selectedNode.getUserObject().equals(currentLayoutItem)) {
-                            TreePath t = new TreePath(selectedNode.getPath());
-                            treeLayouts.setSelectionPath(t);
-                            break;
-                        }
-                    }
-                }
-            }
-            treeLayouts.revalidate();
-            treeLayouts.repaint();
-        }
-    }//GEN-LAST:event_btnMoveDownActionPerformed
-
-    private void btnMoveUpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMoveUpActionPerformed
-        if (currentLayoutItem != null) {
-            currentLayout.moveUpItem(currentLayoutItem);
-            Enumeration en = root.children();
-            while (en.hasMoreElements()) {
-                DefaultMutableTreeNode node = (DefaultMutableTreeNode) en.nextElement();
-                if (node.getUserObject().equals(currentLayout)) {
-                    updateItems(currentLayout, node);
-                    model.reload(node);
-                    DefaultMutableTreeNode selectedNode = null;
-                    Enumeration selEnum = node.children();
-                    while (selEnum.hasMoreElements()) {
-                        selectedNode = (DefaultMutableTreeNode) selEnum.nextElement();
-                        if (selectedNode.getUserObject().equals(currentLayoutItem)) {
-                            TreePath t = new TreePath(selectedNode.getPath());
-                            treeLayouts.setSelectionPath(t);
-                            break;
-                        }
-                    }
-                }
-            }
-            treeLayouts.revalidate();
-            treeLayouts.repaint();
-        }
-    }//GEN-LAST:event_btnMoveUpActionPerformed
-
     private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveActionPerformed
         if (currentLayout != null) {
             layouts.remove(currentLayout);
@@ -621,45 +417,110 @@ public class LayoutManager extends javax.swing.JPanel {
             updateTree();
             txtLayoutName.setText("");
             txtLayoutName.setEnabled(false);
-            cboTransIn.setEnabled(false);
-            cboTransOut.setEnabled(false);
-            spinX.setEnabled(false);
-            spinY.setEnabled(false);
-            spinWidth.setEnabled(false);
-            spinHeight.setEnabled(false);
-            btnUpdateLayoutItem.setEnabled(false);
-            btnMoveDown.setEnabled(false);
-            btnMoveUp.setEnabled(false);
             btnApply.setEnabled(false);
             btnRemove.setEnabled(false);
 
         }
     }//GEN-LAST:event_btnRemoveActionPerformed
+
+    private void txtLayoutNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtLayoutNameActionPerformed
+        currentLayout.setName(txtLayoutName.getText());
+        treeLayouts.repaint();
+    }//GEN-LAST:event_txtLayoutNameActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
     private javax.swing.JButton btnApply;
-    private javax.swing.JButton btnMoveDown;
-    private javax.swing.JButton btnMoveUp;
     private javax.swing.JButton btnRemove;
-    private javax.swing.JButton btnUpdateLayoutItem;
     private javax.swing.JComboBox cboHotkeys;
-    private javax.swing.JComboBox cboTransIn;
-    private javax.swing.JComboBox cboTransOut;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel lblName;
     private javax.swing.JPanel panControls;
+    private javax.swing.JPanel panSources;
     private javax.swing.JScrollPane scroller;
-    private javax.swing.JSpinner spinHeight;
-    private javax.swing.JSpinner spinWidth;
-    private javax.swing.JSpinner spinX;
-    private javax.swing.JSpinner spinY;
+    private javax.swing.JSplitPane splitter;
+    private javax.swing.JTabbedPane tabControls;
     private javax.swing.JTree treeLayouts;
     private javax.swing.JTextField txtLayoutName;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void sourceUpdate(VideoSource source) {
+        treeLayouts.revalidate();
+    }
+
+    @Override
+    public void sourceSetX(VideoSource source, int x) {
+        currentLayoutItem.setX(x);
+        treeLayouts.revalidate();
+    }
+
+    @Override
+    public void sourceSetY(VideoSource source, int y) {
+        currentLayoutItem.setY(y);
+        treeLayouts.revalidate();
+    }
+
+    @Override
+    public void sourceSetWidth(VideoSource source, int w) {
+        currentLayoutItem.setWidth(w);
+        treeLayouts.revalidate();
+    }
+
+    @Override
+    public void sourceSetHeight(VideoSource source, int h) {
+        currentLayoutItem.setHeight(h);
+        treeLayouts.revalidate();
+    }
+
+    @Override
+    public void sourceMoveUp(VideoSource source) {
+        currentLayout.moveUpItem(currentLayoutItem);
+        updateTree();
+        Enumeration l = root.children();
+        while (l.hasMoreElements()){
+            DefaultMutableTreeNode node = (DefaultMutableTreeNode)l.nextElement();
+            if (node.getUserObject().equals(currentLayout)){
+                Enumeration li = node.children();
+                while (li.hasMoreElements()){
+                    DefaultMutableTreeNode subnode = (DefaultMutableTreeNode)li.nextElement();
+                    if (subnode.getUserObject().equals(currentLayoutItem)){
+                        treeLayouts.setSelectionPath(new TreePath(subnode.getPath()));
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    public void sourceMoveDown(VideoSource source) {
+        currentLayout.moveDownItem(currentLayoutItem);
+        updateTree();
+        Enumeration l = root.children();
+        while (l.hasMoreElements()){
+            DefaultMutableTreeNode node = (DefaultMutableTreeNode)l.nextElement();
+            if (node.getUserObject().equals(currentLayout)){
+                Enumeration li = node.children();
+                while (li.hasMoreElements()){
+                    DefaultMutableTreeNode subnode = (DefaultMutableTreeNode)li.nextElement();
+                    if (subnode.getUserObject().equals(currentLayoutItem)){
+                        treeLayouts.setSelectionPath(new TreePath(subnode.getPath()));
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    public void sourceSetTransIn(VideoSource source, Transition in) {
+        currentLayoutItem.setTransitionIn(in);
+        treeLayouts.revalidate();
+    }
+
+    @Override
+    public void sourceSetTransOut(VideoSource source, Transition out) {
+        currentLayoutItem.setTransitionOut(out);
+        treeLayouts.revalidate();
+    }
 }

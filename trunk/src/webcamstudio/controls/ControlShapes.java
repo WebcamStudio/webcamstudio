@@ -20,6 +20,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import webcamstudio.components.Shapes;
+import webcamstudio.components.SourceListener;
 import webcamstudio.sources.VideoSource;
 
 /**
@@ -31,7 +32,7 @@ public class ControlShapes extends javax.swing.JPanel implements Controls {
     private VideoSource source = null;
     private String label = "Shapes";
     Shapes shapes = new Shapes();
-
+    private SourceListener listener=null;
     /** Creates new form ControlShapes */
     public ControlShapes(VideoSource source) {
         initComponents();
@@ -231,5 +232,10 @@ public class ControlShapes extends javax.swing.JPanel implements Controls {
     @Override
     public void removeControl() {
         source = null;
+    }
+
+    @Override
+    public void setListener(SourceListener l) {
+        listener=l;
     }
 }
