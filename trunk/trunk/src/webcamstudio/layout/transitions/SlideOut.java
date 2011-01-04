@@ -30,10 +30,10 @@ public class SlideOut extends Transition {
         } else {
             y = (source.getOutputHeight() * 2) + 10;
         }
-        int xDelta = (x - source.getShowAtX()) / 10;
-        int yDelta = (y - source.getShowAtY()) / 10;
+        int xDelta = (x - source.getShowAtX()) / 20;
+        int yDelta = (y - source.getShowAtY()) / 20;
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 20; i++) {
             try {
                 source.setShowAtX(source.getShowAtX() + xDelta);
                 source.setShowAtY(source.getShowAtY() + yDelta);

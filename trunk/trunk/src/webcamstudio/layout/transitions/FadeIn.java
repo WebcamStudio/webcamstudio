@@ -27,11 +27,11 @@ public class FadeIn extends Transition {
         source.setOutputWidth(item.getWidth());
         source.setOutputHeight(item.getHeight());
         source.fireSourceUpdated();
-        for (int i = 0; i <= 10; i++) {
+        for (int i = 0; i <= 20; i++) {
             try {
-                source.setOpacity(i * 10);
+                source.setOpacity(i * 5);
                 source.fireSourceUpdated();
-                Thread.sleep(200);
+                Thread.sleep(100);
             } catch (InterruptedException ex) {
                 Logger.getLogger(LayoutItem.class.getName()).log(Level.SEVERE, null, ex);
             }

@@ -20,7 +20,6 @@
 package webcamstudio.sources;
 
 import java.awt.Image;
-import java.awt.image.BufferedImage;
 import webcamstudio.*;
 import java.util.jar.*;
 
@@ -161,11 +160,15 @@ public class Animator implements Runnable {
                                 if (currentImage == null) {
                                     System.out.println("Image is null: " + list[i].trim());
                                 }
-                                Thread.sleep(timelapse);
+                                
                             }
                         }
                         //To prevent freezing with a bad animation file...
-                        Thread.sleep(1);
+                        if (timelapse>0){
+                        Thread.sleep(timelapse);
+                        } else{
+                            Thread.sleep(100);
+                        }
                     } catch (Exception e) {
                     }
                 }
