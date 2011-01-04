@@ -25,6 +25,8 @@ public abstract class Transition {
         retValue.put(SlideOut.class.getSimpleName(), new SlideOut());
         retValue.put(Start.class.getSimpleName(), new Start());
         retValue.put(Stop.class.getSimpleName(), new Stop());
+        retValue.put(ShrinkIn.class.getSimpleName(), new ShrinkIn());
+        retValue.put(ShrinkOut.class.getSimpleName(), new ShrinkOut());
         return retValue;
     }
 

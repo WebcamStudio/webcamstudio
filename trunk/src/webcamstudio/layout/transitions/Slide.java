@@ -21,11 +21,11 @@ public class Slide extends Transition {
         if (!source.isPlaying()) {
             source.startSource();
         }
-        int xDelta = (item.getX() - source.getShowAtX()) / 10;
-        int yDelta = (item.getY() - source.getShowAtY()) / 10;
-        int wDelta = (item.getWidth() - source.getOutputWidth()) / 10;
-        int hDelta = (item.getHeight() - source.getOutputHeight()) / 10;
-        for (int i = 0; i < 10; i++) {
+        int xDelta = (item.getX() - source.getShowAtX()) / 20;
+        int yDelta = (item.getY() - source.getShowAtY()) / 20;
+        int wDelta = (item.getWidth() - source.getOutputWidth()) / 20;
+        int hDelta = (item.getHeight() - source.getOutputHeight()) / 20;
+        for (int i = 0; i < 20; i++) {
             try {
                 source.setOutputWidth(source.getOutputWidth() + wDelta);
                 source.setOutputHeight(source.getOutputHeight() + hDelta);

@@ -10,9 +10,6 @@
  */
 package webcamstudio.components;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
  *
  * @author patrick
@@ -21,9 +18,11 @@ public class Preview extends javax.swing.JDialog implements Runnable{
 
     private Viewer viewer = new Viewer();
     private boolean stopMe=false;
+    private Mixer mixer = null;
     /** Creates new form Preview */
-    public Preview(java.awt.Frame parent, boolean modal) {
+    public Preview(java.awt.Frame parent, boolean modal,Mixer mixer) {
         super(parent, modal);
+        this.mixer = mixer;
         initComponents();
         setSize(320, 240);
         java.awt.Image img = getToolkit().getImage(java.net.URLClassLoader.getSystemResource(java.util.ResourceBundle.getBundle("webcamstudio/Languages").getString("WEBCAMSTUDIO/RESOURCES/ICON.PNG")));
@@ -37,6 +36,9 @@ public class Preview extends javax.swing.JDialog implements Runnable{
         viewer.img = img;
     }
 
+    public void stopMe(){
+        stopMe=true;
+    }
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -68,7 +70,7 @@ public class Preview extends javax.swing.JDialog implements Runnable{
         java.awt.EventQueue.invokeLater(new Runnable() {
 
             public void run() {
-                Preview dialog = new Preview(new javax.swing.JFrame(), true);
+                Preview dialog = new Preview(new javax.swing.JFrame(), true,new Mixer());
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
 
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -87,10 +89,12 @@ public class Preview extends javax.swing.JDialog implements Runnable{
     public void run() {
         while(!stopMe){
             try {
-                Thread.sleep(100);
+                Thread.sleep(1000/30);
             } catch (InterruptedException ex) {
             }
-            repaint();
+            viewer.img = mixer.getImage();
+            panViewer.repaint();
         }
+        mixer=null;
     }
 }

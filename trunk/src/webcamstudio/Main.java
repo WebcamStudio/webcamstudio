@@ -48,7 +48,7 @@ import webcamstudio.visage.FaceDetector;
  *
  * @author pballeux
  */
-public class Main extends javax.swing.JFrame implements InfoListener, Runnable,SourceListener, MediaListener {
+public class Main extends javax.swing.JFrame implements InfoListener,SourceListener, MediaListener {
 
     private VideoOutput output = null;
     private Mixer mixer = null;
@@ -169,7 +169,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, Runnable,S
             }
         }).start();
         pack();
-        new Thread(this).start();
 
     }
 
@@ -518,7 +517,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, Runnable,S
         } else if (mnurdPixelFormatUYVY.isSelected()) {
             prefs.put("format", "uyvy");
         }
-        prefs.put("quality", grpQuality.getSelection().getActionCommand());
+        
         prefs.putBoolean("showsplashbackground", mnuchkShowBackground.isSelected());
 
         if (lastLoopbackUsed != null) {
@@ -713,7 +712,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, Runnable,S
         mnuSourcesConsole = new javax.swing.JMenuItem();
         mnuOutput = new javax.swing.JMenu();
         mnuShowPreview = new javax.swing.JMenuItem();
-        mnuPaint = new javax.swing.JMenuItem();
         mnuVideoRecorder = new javax.swing.JMenuItem();
         mnuOutputSpnashot = new javax.swing.JMenuItem();
         mnuOutputFMEBroadcaster = new javax.swing.JMenuItem();
@@ -727,11 +725,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, Runnable,S
         mnuOutputSize4 = new javax.swing.JRadioButtonMenuItem();
         mnuOutputSize5 = new javax.swing.JRadioButtonMenuItem();
         mnuOutputSize6 = new javax.swing.JRadioButtonMenuItem();
-        mnuOutputQuality = new javax.swing.JMenu();
-        mnuQualityHigh = new javax.swing.JRadioButtonMenuItem();
-        mnuQualityGood = new javax.swing.JRadioButtonMenuItem();
-        mnuQualityNormal = new javax.swing.JRadioButtonMenuItem();
-        mnuQualityLow = new javax.swing.JRadioButtonMenuItem();
         mnuOutputFramerate = new javax.swing.JMenu();
         mnuOutput5FPS = new javax.swing.JRadioButtonMenuItem();
         mnuOutput10FPS = new javax.swing.JRadioButtonMenuItem();
@@ -1061,16 +1054,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, Runnable,S
         });
         mnuOutput.add(mnuShowPreview);
 
-        mnuPaint.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sp/icons/images/16x16_Logo.png"))); // NOI18N
-        mnuPaint.setText("SinglePaint"); // NOI18N
-        mnuPaint.setName("mnuPaint"); // NOI18N
-        mnuPaint.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuPaintActionPerformed(evt);
-            }
-        });
-        mnuOutput.add(mnuPaint);
-
         mnuVideoRecorder.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-record.png"))); // NOI18N
         mnuVideoRecorder.setText(bundle.getString("VIDEO_RECORDER")); // NOI18N
         mnuVideoRecorder.setName("mnuVideoRecorder"); // NOI18N
@@ -1189,57 +1172,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, Runnable,S
         mnuOutputSize.add(mnuOutputSize6);
 
         mnuOutput.add(mnuOutputSize);
-
-        mnuOutputQuality.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/utilities-system-monitor.png"))); // NOI18N
-        mnuOutputQuality.setText(bundle.getString("QUALITY")); // NOI18N
-        mnuOutputQuality.setName("mnuOutputQuality"); // NOI18N
-
-        grpQuality.add(mnuQualityHigh);
-        mnuQualityHigh.setText(bundle.getString("HIGH")); // NOI18N
-        mnuQualityHigh.setActionCommand("HIGH");
-        mnuQualityHigh.setName("mnuQualityHigh"); // NOI18N
-        mnuQualityHigh.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuQualityActionPerformed(evt);
-            }
-        });
-        mnuOutputQuality.add(mnuQualityHigh);
-
-        grpQuality.add(mnuQualityGood);
-        mnuQualityGood.setText(bundle.getString("GOOD")); // NOI18N
-        mnuQualityGood.setActionCommand("GOOD");
-        mnuQualityGood.setName("mnuQualityGood"); // NOI18N
-        mnuQualityGood.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuQualityActionPerformed(evt);
-            }
-        });
-        mnuOutputQuality.add(mnuQualityGood);
-
-        grpQuality.add(mnuQualityNormal);
-        mnuQualityNormal.setSelected(true);
-        mnuQualityNormal.setText(bundle.getString("NORMAL")); // NOI18N
-        mnuQualityNormal.setActionCommand("NORMAL");
-        mnuQualityNormal.setName("mnuQualityNormal"); // NOI18N
-        mnuQualityNormal.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuQualityActionPerformed(evt);
-            }
-        });
-        mnuOutputQuality.add(mnuQualityNormal);
-
-        grpQuality.add(mnuQualityLow);
-        mnuQualityLow.setText(bundle.getString("LOW")); // NOI18N
-        mnuQualityLow.setActionCommand("LOW");
-        mnuQualityLow.setName("mnuQualityLow"); // NOI18N
-        mnuQualityLow.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuQualityActionPerformed(evt);
-            }
-        });
-        mnuOutputQuality.add(mnuQualityLow);
-
-        mnuOutput.add(mnuOutputQuality);
 
         mnuOutputFramerate.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/video-display.png"))); // NOI18N
         mnuOutputFramerate.setText(bundle.getString("FRAMERATE")); // NOI18N
@@ -1367,6 +1299,11 @@ public class Main extends javax.swing.JFrame implements InfoListener, Runnable,S
         mnuLayout.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/image-x-generic.png"))); // NOI18N
         mnuLayout.setText(bundle.getString("LAYOUTS")); // NOI18N
         mnuLayout.setName("mnuLayout"); // NOI18N
+        mnuLayout.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                mnuLayoutMouseEntered(evt);
+            }
+        });
 
         mnuLayoutF1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, java.awt.event.InputEvent.SHIFT_MASK));
         mnuLayoutF1.setMnemonic('\u0001');
@@ -1740,17 +1677,14 @@ public class Main extends javax.swing.JFrame implements InfoListener, Runnable,S
             preview.dispose();
             preview = null;
         }
-        preview = new Preview(this, false);
+        preview = new Preview(this, false,mixer);
+        preview.addWindowListener(new java.awt.event.WindowAdapter() {
+                    public void windowClosing(java.awt.event.WindowEvent e) {
+                        preview.stopMe();
+                    }
+                });
         preview.setVisible(true);
     }//GEN-LAST:event_mnuShowPreviewActionPerformed
-
-    private void mnuPaintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuPaintActionPerformed
-        if (singlePaint == null) {
-            singlePaint = new SinglePaint(this, false);
-        }
-        singlePaint.setVisible(true);
-
-    }//GEN-LAST:event_mnuPaintActionPerformed
 
     private void mnuAboutItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuAboutItemActionPerformed
         webcamstudio.About about = new webcamstudio.About(this, true);
@@ -1906,18 +1840,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, Runnable,S
         anm.setLocationRelativeTo(this);
         anm.setVisible(true);
     }//GEN-LAST:event_mnuAnimationCreatorActionPerformed
-
-    private void mnuQualityActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuQualityActionPerformed
-        if (evt.getActionCommand().equals("HIGH")) {
-            mixer.setQuality(Mixer.MixerQuality.HIGH);
-        } else if (evt.getActionCommand().equals("GOOD")) {
-            mixer.setQuality(Mixer.MixerQuality.GOOD);
-        } else if (evt.getActionCommand().equals("NORMAL")) {
-            mixer.setQuality(Mixer.MixerQuality.NORMAL);
-        } else if (evt.getActionCommand().equals("LOW")) {
-            mixer.setQuality(Mixer.MixerQuality.LOW);
-        }
-    }//GEN-LAST:event_mnuQualityActionPerformed
 
     private void mnuSourcesDVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuSourcesDVActionPerformed
         VideoSourceDV s = new VideoSourceDV();
@@ -2099,6 +2021,10 @@ public class Main extends javax.swing.JFrame implements InfoListener, Runnable,S
         }
     }//GEN-LAST:event_cboVideoOutputsActionPerformed
 
+    private void mnuLayoutMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_mnuLayoutMouseEntered
+        updateMenuLayoutNames();
+    }//GEN-LAST:event_mnuLayoutMouseEntered
+
 
     /**
      * @param args the command line arguments
@@ -2181,7 +2107,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, Runnable,S
     private javax.swing.JCheckBoxMenuItem mnuOutputFlipImage;
     private javax.swing.JMenu mnuOutputFramerate;
     private javax.swing.JMenuItem mnuOutputGISSCaster;
-    private javax.swing.JMenu mnuOutputQuality;
     private javax.swing.JMenu mnuOutputSize;
     private javax.swing.JRadioButtonMenuItem mnuOutputSize1;
     private javax.swing.JRadioButtonMenuItem mnuOutputSize2;
@@ -2190,12 +2115,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, Runnable,S
     private javax.swing.JRadioButtonMenuItem mnuOutputSize5;
     private javax.swing.JRadioButtonMenuItem mnuOutputSize6;
     private javax.swing.JMenuItem mnuOutputSpnashot;
-    private javax.swing.JMenuItem mnuPaint;
     private javax.swing.JMenu mnuPixelFormat;
-    private javax.swing.JRadioButtonMenuItem mnuQualityGood;
-    private javax.swing.JRadioButtonMenuItem mnuQualityHigh;
-    private javax.swing.JRadioButtonMenuItem mnuQualityLow;
-    private javax.swing.JRadioButtonMenuItem mnuQualityNormal;
     private javax.swing.JMenuItem mnuReloadSourceTree;
     private javax.swing.JMenuItem mnuRemoveDir;
     private javax.swing.JMenuItem mnuSetFlashPermissions;
@@ -2242,40 +2162,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, Runnable,S
         System.out.println(line);
     }
 
-    @Override
-    public void run() {
-        java.io.FilenameFilter filter = new java.io.FilenameFilter() {
-
-            @Override
-            public boolean accept(File dir, String name) {
-                return name.startsWith("video");
-            }
-        };
-        int delay = 0;
-        while (!stopMe) {
-            try {
-                Thread.sleep(200);
-
-                if (singlePaint != null && !singlePaint.isVisible()) {
-                    singlePaint.dispose();
-                    singlePaint = null;
-                }
-                if (singlePaint != null) {
-                    singlePaint.setBackgroundImage(mixer.getImage());
-                    mixer.setPaintImage(singlePaint.getImage());
-                } else {
-                    mixer.setPaintImage(null);
-                }
-                if (preview != null) {
-                    preview.setImage(mixer.getImage());
-                }
-                layoutManager.repaint();
-                updateMenuLayoutNames();
-
-            } catch (Exception e) {
-            }
-        }
-    }
+    
 
     public void addSource(VideoSource source) {
         if (source != null) {

@@ -13,30 +13,30 @@ import webcamstudio.sources.VideoSource;
  *
  * @author pballeux
  */
-public class SlideIn extends Transition {
+public class ShrinkIn extends Transition {
 
     @Override
     public void doTransition(final LayoutItem item) {
         VideoSource source = item.getSource();
-        int x = 0;
-        int y = 0;
-        source.setOutputWidth(item.getWidth());
-        source.setOutputHeight(item.getHeight());
         if (!source.isPlaying()) {
             source.startSource();
         }
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(SlideIn.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        int xDelta = (0 - item.getX()) / 20;
-        int yDelta = (0 - item.getY()) / 20;
-        for (int i = 0; i < 20; i++) {
-            try {
-                source.setShowAtX(source.getShowAtX() + xDelta);
-                source.setShowAtY(source.getShowAtY() + yDelta);
+        
+        source.setOutputWidth(0);
+        source.setOutputHeight(0);
+        source.setOpacity(100);        
+        int deltaW = item.getWidth() / 20/2;
+        int deltaH = item.getHeight() / 20/2;
+        source.setShowAtX(item.getX()+(item.getWidth()/2) + deltaW);
+        source.setShowAtY(item.getY()+(item.getHeight()/2) + deltaH);
 
+        for (int i = 0; i <= 20; i++) {
+            try {
+                source.setShowAtX(source.getShowAtX()-deltaW);
+                source.setShowAtY(source.getShowAtY()-deltaH);
+                source.setOutputWidth(deltaW*i*2);
+                source.setOutputHeight(deltaH*i*2);
+                source.fireSourceUpdated();
                 Thread.sleep(100);
             } catch (InterruptedException ex) {
                 Logger.getLogger(LayoutItem.class.getName()).log(Level.SEVERE, null, ex);
