@@ -1,0 +1,24 @@
+#summary How to participate in the translation process
+#labels Phase-Implementation,Featured,Phase-Requirements
+
+= Introduction =
+
+Here are the steps required to participate in the translation of WS4GL
+
+
+= Details =
+
+  * Download and install Netbean (Latest version)
+  * Checkout the source code in a folder
+  * Open the project in Netbeans
+  * In the sources of the project, go to org.webcamstudio
+  * All Languages.properties files are in there
+  * Update the language file
+  * Rebuild and test
+  * Once everything is working, commit the modification 
+  * Important, set a comment saying what has chaged and why
+
+
+Note:  Make sure that you have the Commiter Access to the repository.  If not, juste send me an email requesting the access and for what use.
+
+Thanks
