@@ -25,11 +25,11 @@ package webcamstudio.sources;
  */
 public class VideoSourceV4L2 extends VideoSourceV4L {
 
-    public VideoSourceV4L2(String loc, String deviceName) {
+    public VideoSourceV4L2(String deviceName) {
         outputWidth = 320;
         outputHeight = 240;
         source="v4l2src";
-        location = loc;
+        location = getDeviceForName(deviceName).getAbsolutePath();
         name = deviceName;
         if (deviceName.length() == 0) {
             name = deviceName;

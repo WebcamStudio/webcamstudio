@@ -465,11 +465,11 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         for (int i = 0; i < v.length; i++) {
             switch (v[i].getVersion()) {
                 case V4L:
-                    webcam = new VideoSourceV4L(v[i].getFile().getAbsolutePath(), v[i].getName());
+                    webcam = new VideoSourceV4L(v[i].getName());
                     devices.put(webcam.getName() + webcam.getUUID(), webcam);
                     break;
                 case V4L2:
-                    webcam = new VideoSourceV4L2(v[i].getFile().getAbsolutePath(), v[i].getName());
+                    webcam = new VideoSourceV4L2(v[i].getName());
                     devices.put(webcam.getName() + webcam.getUUID(), webcam);
                     break;
             }
@@ -661,15 +661,14 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
                 for (VideoSource s : LayerManager.getSources()) {
                     s.stopSource();
                 }
+                LayerManager.clear();
                 Studio studio = new Studio();
                 studio.loadStudio(lastStudioFile);
-                for (VideoSource source : LayerManager.getSources()) {
-                    source.setListener(this);
-                    addSourceToDesktop(source);
-                    source.startSource();
-                }
                 for (Layout l : studio.getLayouts()) {
                     layoutManager.addLayout(l);
+                }
+                for (VideoSource source : LayerManager.getSources()) {
+                    source.setListener(this);
                 }
                 layoutManager.revalidate();
                 studio = null;
