@@ -28,19 +28,29 @@ public class Layout {
     private String name = "";
     private String layoutUUID = java.util.UUID.randomUUID().toString();
     private String hotKey = "F1";
+    private boolean isActive = false;
+    private boolean isEntering = false;
+    private boolean isExiting = false;
+
     public Layout(String name) {
         this.name = name;
+    }
+
+    public boolean isActive() {
+        return isActive;
     }
 
     public Layout() {
     }
 
-    public String getHotKey(){
+    public String getHotKey() {
         return hotKey;
     }
-    public void setHotKey(String key){
-        hotKey=key;
+
+    public void setHotKey(String key) {
+        hotKey = key;
     }
+
     public void moveUpItem(LayoutItem item) {
         if (items.higherKey(item.getLayer()) != null) {
             int highKey = items.higherKey(item.getLayer());
@@ -72,40 +82,47 @@ public class Layout {
     }
 
     public void enterLayout() {
-        
+        isEntering = true;
+
         for (LayoutItem item : items.values()) {
             item.getSource().setLayer(item.getLayer());
         }
         LayerManager.updateSourcesLayer();
-        java.util.concurrent.ExecutorService tp = java.util.concurrent.Executors.newFixedThreadPool(items.size());
+        java.util.concurrent.ExecutorService tp = java.util.concurrent.Executors.newCachedThreadPool();
         for (LayoutItem item : items.values()) {
             item.setTransitionToDo(item.getTransitionIn());
             tp.submit(item);
         }
         tp.shutdown();
+
         try {
-            while (tp.awaitTermination(100, TimeUnit.MILLISECONDS)) {
+            while (!tp.isTerminated()) {
+                Thread.sleep(100);
             }
         } catch (InterruptedException ex) {
             Logger.getLogger(Layout.class.getName()).log(Level.SEVERE, null, ex);
         }
+        isEntering = false;
+        isActive = true;
     }
 
     public void exitLayout() {
-        java.util.concurrent.ExecutorService tp = java.util.concurrent.Executors.newFixedThreadPool(items.size());
+        isExiting=true;
+        java.util.concurrent.ExecutorService tp = java.util.concurrent.Executors.newCachedThreadPool();
         for (LayoutItem item : items.values()) {
             item.setTransitionToDo(item.getTransitionOut());
             tp.submit(item);
         }
         tp.shutdown();
-        while (!tp.isTerminated()) {
-            try {
+        try {
+            while (!tp.isTerminated()) {
                 Thread.sleep(100);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(Layout.class.getName()).log(Level.SEVERE, null, ex);
             }
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Layout.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        isExiting=false;
+        isActive = false;
     }
 
     public Collection<LayoutItem> getItems() {
@@ -147,7 +164,19 @@ public class Layout {
             }
             buffer.drawRect(item.getX(), item.getY(), item.getWidth(), item.getHeight());
         }
-
+        if (isEntering){
+            buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC_OVER, 0.5F));
+            buffer.setColor(Color.YELLOW);
+            buffer.fillRect(0, 0, image.getWidth(), image.getHeight());
+        } else if (isExiting){
+            buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC_OVER, 0.5F));
+            buffer.setColor(Color.RED);
+            buffer.fillRect(0, 0, image.getWidth(), image.getHeight());
+        } else if (isActive) {
+            buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC_OVER, 0.5F));
+            buffer.setColor(Color.GREEN);
+            buffer.fillRect(0, 0, image.getWidth(), image.getHeight());
+        }
         buffer.dispose();
 
         return image;
