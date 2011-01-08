@@ -19,74 +19,128 @@
  */
 package webcamstudio.sound;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.gstreamer.*;
 
-public class AudioMixer implements Runnable {
+public class AudioMixer {
+    private int volume = 100;
+    private int low = 0;
+    private int middle = 0;
+    private int high = 0;
+    private boolean isActive = false;
+
     // gst-launch gconfaudiosrc ! audio/x-raw-int,rate=44100,channels=2,signed=true,width=16 ! 
     // audioconvert ! ladspa-delay-5s Delay=$DEFAULT_DELAY Dry-Wet-Balance=1.0 ! audioconvert ! 
     // audio/x-raw-int,rate=44100,signed=true,width=16,channels=2 ! filesink location=$DEFAULT_FIFO
-    // This class will play any sound at 44100 kh, 2 channles, bits 16
-
-    private java.io.File input = new java.io.File("/tmp/music.input");
-    private boolean stopMe = false;
-
     public AudioMixer() {
-        if (!input.exists()) {
-            try {
-                Process p = Runtime.getRuntime().exec("pactl load-module module-pipe-source rate=44100 format=s16 channels=1");
-                p.waitFor();
-                p.destroy();
-                p = null;
-            } catch (Exception ex) {
-                Logger.getLogger(AudioMixer.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
     }
 
-    public void stop(){
-        stopMe=true;
-    }
-    @Override
-    public void run() {
-        java.io.FileOutputStream fout = null;
-        byte[] buffer = new byte[44100];
-        double count = 0;
-        double ang = 44100 * Math.PI * 2;
-        for (int i = 0;i<buffer.length;i++){
-            buffer[i] = (byte)(0 + (i%35));
-        }
-        try {
-            fout = new java.io.FileOutputStream(input);
-            while (!stopMe && count !=-1) {
-                fout.write(buffer);
+    public void start() {
+        if (!isActive){
+        new Thread(new Runnable() {
+            public void run() {
                 try {
-                    Thread.sleep(500);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(AudioMixer.class.getName()).log(Level.SEVERE, null, ex);
+                    isActive=true;
+                    java.io.File input = new java.io.File("/tmp/music.input");
+                    if (!input.exists()) {
+                        Process p = Runtime.getRuntime().exec("pactl load-module module-pipe-source");
+                        p.waitFor();
+                        p.destroy();
+                        p = null;
+                    }
+                    elementSink.set("location", "/tmp/music.input");
+                    if (input.exists()) {
+                        pipe = new Pipeline("WebcamStudio Mixer");
+                        audioCaptureFilter.setCaps(Caps.fromString("audio/x-raw-int"));
+                        audioOutputFilter.setCaps(Caps.fromString("audio/x-raw-int,rate=44100,signed=true,width=16,channels=2"));
+                        pipe.addMany(elementSourceSystem,elementSourceMic,audioVolume,audioAdder, audioCaptureFilter, audioOutputFilter, audioConvert, audioConvert2, audioEqualizer, elementSink);
+                        Element.linkMany(elementSourceMic, audioCaptureFilter, audioConvert,audioVolume, audioEqualizer, audioAdder,audioConvert2, audioOutputFilter, elementSink);
+                        elementSourceSystem.link(audioAdder);
+                        pipe.getBus().connect(new Bus.ERROR() {
+
+                            public void errorMessage(GstObject arg0, int arg1, String arg2) {
+                                System.out.println("Error: " + arg0 + "," + arg1 + ", " + arg2);
+                                pipe.setState(State.NULL);
+                            }
+                        });
+
+                        pipe.setState(State.PLAYING);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(AudioMixer.class.getName()).log(Level.SEVERE, null, ex);
-            stopMe=true;
-        } catch (IOException ex) {
-            Logger.getLogger(AudioMixer.class.getName()).log(Level.SEVERE, null, ex);
-            stopMe=true;
-        } finally {
-            try {
-                fout.close();
-            } catch (IOException ex) {
-                Logger.getLogger(AudioMixer.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        }).start();
         }
+    }
+
+    public boolean isActive(){
+        return isActive;
+    }
+    public void setLowFilter(int f) {
+        low=f;
+        audioEqualizer.set("band0", (float) f);
+    }
+
+    public void setMiddleFilter(int f) {
+        middle=f;
+        audioEqualizer.set("band1", (float) f);
+    }
+
+    public void setHighFilter(int f) {
+        high=f;
+        audioEqualizer.set("band2", (float) f);
+    }
+    public int getLowFilter(){
+        return low;
+    }
+    public int getMiddleFilter(){
+        return middle;
+    }
+    public int getHighFilter(){
+        return high;
+    }
+    public void setVolume(int v) {
+        volume = v;
+        audioVolume.set("volume", (double) v / 100D);
 
     }
 
-    public static void main(String[] args) {
+    public int getVolume(){
+        return volume;
+    }
+    public void stop() {
+        if (pipe != null && pipe.getState()==State.PLAYING) {
+            pipe.stop();
+            pipe.removeMany(audioVolume,elementSourceSystem,elementSourceMic,audioAdder, audioCaptureFilter, audioConvert, audioConvert2, audioOutputFilter, elementSink);
+            pipe = null;
+        }
+        isActive=false;
+    }
+    java.io.File configurationFile = null;
+    Element elementSourceSystem = ElementFactory.make("pulsesrc", "pulsesrcSystem");
+    Element elementSourceMic = ElementFactory.make("pulsesrc", "pulsesrcMic");
+    Element elementSink = ElementFactory.make("filesink", "filesink");
+    Element audioCaptureFilter = ElementFactory.make("capsfilter", "audiocapturefilter");
+    Element audioOutputFilter = ElementFactory.make("capsfilter", "audiooutputfilter");
+    Element audioConvert = ElementFactory.make("audioconvert", "audioconvert");
+    Element audioConvert2 = ElementFactory.make("audioconvert", "audioconvert2");
+    Element audioEqualizer = ElementFactory.make("equalizer-3bands", "equalizer-3bands");
+    Element audioVolume = ElementFactory.make("volume", "volume");
+    Element audioAdder = ElementFactory.make("adder", "adder");
+    Pipeline pipe = null;
+
+    public static void main(String[] args){
+        Gst.init();
         AudioMixer p = new AudioMixer();
-        new Thread(p).start();
+        p.start();
+        try {
+            Thread.sleep(100000);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(AudioMixer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        p.stop();
+        p=null;
     }
 }

@@ -23,7 +23,7 @@ public class VideoExporterFLV extends VideoExporter {
         if (output!=null){
             sink=ElementFactory.make("filesink", "filesink");
             sink.set("location", output.getAbsolutePath());
-            vbitrate = 1000;
+            vbitrate = 10000;
         }
         else{
             sink=ElementFactory.make("tcpserversink","tcpserversink");
