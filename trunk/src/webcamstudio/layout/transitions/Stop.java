@@ -4,8 +4,6 @@
  */
 package webcamstudio.layout.transitions;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import webcamstudio.layout.LayoutItem;
 import webcamstudio.sources.VideoSource;
 
@@ -18,6 +16,7 @@ public class Stop extends Transition {
     @Override
     public void doTransition(final LayoutItem item) {
         VideoSource source = item.getSource();
+        source.setVolume(item.getVolume());
         source.setOpacity(0);
         source.setShowAtX(item.getX());
         source.setShowAtY(item.getY());

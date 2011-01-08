@@ -20,6 +20,7 @@ public class None extends Transition {
         source.setShowAtY(item.getY());
         source.setOutputWidth(item.getWidth());
         source.setOutputHeight(item.getHeight());
+        source.setVolume(item.getVolume());
         source.fireSourceUpdated();
 
     }

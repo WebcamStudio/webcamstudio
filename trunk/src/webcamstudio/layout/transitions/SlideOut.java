@@ -20,6 +20,7 @@ public class SlideOut extends Transition {
         VideoSource source = item.getSource();
         int x = 0;
         int y = 0;
+        source.setVolume(item.getVolume());
         if (source.getShowAtX() < source.getOutputWidth() / 2) {
             x = 0 - source.getOutputWidth() - 10;
         } else {

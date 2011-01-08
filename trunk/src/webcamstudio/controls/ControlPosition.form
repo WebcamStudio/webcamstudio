@@ -19,7 +19,6 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="slideSeek" alignment="0" pref="418" max="32767" attributes="2"/>
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="btnMoveUp" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
@@ -35,26 +34,36 @@
                   </Group>
                   <Group type="102" alignment="1" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
-                              <Component id="jLabel3" alignment="0" max="32767" attributes="1"/>
-                              <Component id="jLabel2" alignment="0" max="32767" attributes="1"/>
-                              <Component id="jLabel1" alignment="0" min="-2" max="-2" attributes="1"/>
+                          <Group type="102" attributes="0">
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
+                                      <Component id="jLabel3" alignment="0" max="32767" attributes="1"/>
+                                      <Component id="jLabel2" alignment="0" max="32767" attributes="1"/>
+                                      <Component id="jLabel1" alignment="0" min="-2" max="-2" attributes="1"/>
+                                  </Group>
+                                  <Component id="jLabel4" alignment="0" pref="116" max="32767" attributes="1"/>
+                                  <Component id="jLabel5" alignment="0" pref="116" max="32767" attributes="1"/>
+                                  <Component id="jLabel6" alignment="0" pref="116" max="32767" attributes="1"/>
+                              </Group>
+                              <EmptySpace max="-2" attributes="0"/>
                           </Group>
-                          <Component id="jLabel4" alignment="0" pref="179" max="32767" attributes="1"/>
-                          <Component id="jLabel5" alignment="0" pref="179" max="32767" attributes="1"/>
-                          <Component id="jLabel6" alignment="0" pref="179" max="32767" attributes="1"/>
+                          <Component id="lblSeek" min="-2" max="-2" attributes="0"/>
+                          <Component id="jLabel7" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="spinWidth" pref="227" max="32767" attributes="3"/>
-                          <Component id="spinY" pref="227" max="32767" attributes="3"/>
-                          <Component id="spinX" pref="227" max="32767" attributes="3"/>
-                          <Component id="cboTransOut" pref="227" max="32767" attributes="3"/>
-                          <Component id="cboTransIn" pref="227" max="32767" attributes="3"/>
-                          <Component id="spinHeight" alignment="0" pref="227" max="32767" attributes="3"/>
+                      <Group type="103" groupAlignment="1" attributes="0">
+                          <Component id="spinVolume" alignment="1" pref="290" max="32767" attributes="0"/>
+                          <Component id="spinWidth" alignment="0" pref="290" max="32767" attributes="3"/>
+                          <Component id="spinY" alignment="0" pref="290" max="32767" attributes="3"/>
+                          <Component id="spinX" alignment="0" pref="290" max="32767" attributes="3"/>
+                          <Component id="cboTransOut" alignment="0" pref="290" max="32767" attributes="3"/>
+                          <Component id="cboTransIn" alignment="0" pref="290" max="32767" attributes="3"/>
+                          <Component id="spinHeight" alignment="0" pref="290" max="32767" attributes="3"/>
+                          <Group type="102" alignment="1" attributes="0">
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="slideSeek" pref="290" max="32767" attributes="2"/>
+                          </Group>
                       </Group>
                   </Group>
-                  <Component id="lblSeek" alignment="0" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -92,11 +101,17 @@
                   <Component id="jLabel6" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="spinHeight" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace min="-2" pref="16" max="-2" attributes="0"/>
-              <Component id="lblSeek" min="-2" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
-              <Component id="slideSeek" min="-2" max="-2" attributes="0"/>
-              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="spinVolume" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jLabel7" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="lblSeek" min="-2" max="-2" attributes="0"/>
+                  <Component id="slideSeek" alignment="0" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="btnMoveUp" min="-2" max="-2" attributes="0"/>
                   <Component id="btnMoveDown" min="-2" max="-2" attributes="0"/>
@@ -325,6 +340,22 @@
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnRemoveActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JLabel" name="jLabel7">
+      <Properties>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="webcamstudio/Languages.properties" key="VOLUME" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+        </Property>
+        <Property name="name" type="java.lang.String" value="jLabel7" noResource="true"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JSpinner" name="spinVolume">
+      <Properties>
+        <Property name="name" type="java.lang.String" value="spinVolume" noResource="true"/>
+      </Properties>
+      <Events>
+        <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="spinVolumeStateChanged"/>
       </Events>
     </Component>
   </SubComponents>

@@ -68,6 +68,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
     private java.util.TreeMap<String, VideoSource> images = null;
     private java.util.TreeMap<String, VideoSource> animations = null;
     private java.util.TreeMap<String, VideoSource> pipelines = null;
+    private java.util.TreeMap<String, VideoSourceMusic> musics = null;
     private java.util.TreeMap<String, VideoExporter> exporters = null;
     private java.util.Vector<String> dirToScan = new java.util.Vector<String>();
     private javax.swing.tree.DefaultTreeModel sourceDir = null;
@@ -226,6 +227,14 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         }
         mediaPanel.addMedia(pMovies);
 
+        buildSourceMusics();
+        MediaPanelList pMusics = new MediaPanelList(this);
+        pMusics.setPanelName(bundle.getString("SONGS"));
+        for (VideoSource v : musics.values()) {
+            pMusics.addMedia(v);
+        }
+        mediaPanel.addMedia(pMusics);
+        
         MediaPanelList pAnm = new MediaPanelList(this);
         pAnm.setPanelName(bundle.getString("ANIMATIONS"));
         WS4GLAnimations wsa = new WS4GLAnimations();
@@ -325,6 +334,25 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
             }
         }
     }
+    private void buildSourceMusics() {
+        musics = new java.util.TreeMap<String, VideoSourceMusic>();
+        for (String d : dirToScan) {
+            File dir = new File(d);
+            if (dir.exists()) {
+                File[] fmusics = dir.listFiles();
+                for (File m : fmusics) {
+                    if (isMusic(m)) {
+                        VideoSourceMusic vm = new VideoSourceMusic(m);
+                        if (musics.containsKey(vm.getName())) {
+                            musics.put(vm.getName() + "-" + vm.getUUID(), vm);
+                        } else {
+                            musics.put(vm.getName(), vm);
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     private void buildSourcePipelines() {
         pipelines = new java.util.TreeMap<String, VideoSource>();
@@ -402,6 +430,18 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
                 || f.getName().endsWith(".mp4")
                 || f.getName().endsWith(".vob")
                 || f.getName().endsWith(".mpeg")) {
+            retValue = true;
+        }
+        return retValue;
+    }
+    private boolean isMusic(File f) {
+        boolean retValue = false;
+        if (f.getName().endsWith(".mp3")
+                || f.getName().endsWith(".MP3")
+                || f.getName().endsWith(".wav")
+                || f.getName().endsWith(".oga")
+                || f.getName().endsWith(".m4a")
+                || f.getName().endsWith(".mp2")) {
             retValue = true;
         }
         return retValue;
