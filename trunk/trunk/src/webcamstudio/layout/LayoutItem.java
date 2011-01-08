@@ -26,7 +26,14 @@ public class LayoutItem implements Runnable{
     private String layoutUUID = "";
     private int layer = 0;
     private int volume = 10;
+    private boolean isInActiveLayout = false;
 
+    public void setActive(boolean status){
+        isInActiveLayout = status;
+    }
+    public boolean isActive(){
+        return isInActiveLayout;
+    }
     public void setVolume(int v){
         volume=v;
     }

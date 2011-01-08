@@ -428,18 +428,30 @@ public class ControlPosition extends javax.swing.JPanel implements Controls {
 
     private void spinHeightStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinHeightStateChanged
         source.setHeight((Integer) spinHeight.getValue());
+        if (source.isActive()){
+            source.getSource().setOutputHeight(source.getHeight());
+        }
     }//GEN-LAST:event_spinHeightStateChanged
 
     private void spinWidthStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinWidthStateChanged
         source.setWidth((Integer) spinWidth.getValue());
+        if (source.isActive()){
+            source.getSource().setOutputWidth(source.getWidth());
+        }
     }//GEN-LAST:event_spinWidthStateChanged
 
     private void spinYStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinYStateChanged
         source.setY((Integer) spinY.getValue());
+        if (source.isActive()){
+            source.getSource().setShowAtY(source.getY());
+        }
     }//GEN-LAST:event_spinYStateChanged
 
     private void spinXStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinXStateChanged
         source.setX((Integer) spinX.getValue());
+        if (source.isActive()){
+            source.getSource().setShowAtX(source.getX());
+        }
     }//GEN-LAST:event_spinXStateChanged
 
     private void cboTransInActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboTransInActionPerformed

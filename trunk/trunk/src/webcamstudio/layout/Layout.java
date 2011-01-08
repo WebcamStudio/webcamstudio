@@ -9,7 +9,6 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.util.Collection;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
@@ -119,6 +118,7 @@ public class Layout {
         java.util.concurrent.ExecutorService tp = java.util.concurrent.Executors.newCachedThreadPool();
         for (LayoutItem item : items.values()) {
             item.setTransitionToDo(item.getTransitionIn());
+            item.setActive(true);
             tp.submit(item);
         }
         tp.shutdown();
@@ -139,6 +139,7 @@ public class Layout {
         java.util.concurrent.ExecutorService tp = java.util.concurrent.Executors.newCachedThreadPool();
         for (LayoutItem item : items.values()) {
             item.setTransitionToDo(item.getTransitionOut());
+            item.setActive(false);
             tp.submit(item);
         }
         tp.shutdown();
