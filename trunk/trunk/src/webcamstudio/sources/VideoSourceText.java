@@ -4,7 +4,9 @@
  */
 package webcamstudio.sources;
 
+import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import javax.swing.JPanel;
 import webcamstudio.*;
 import webcamstudio.dbus.Rhythmbox;
@@ -98,11 +100,11 @@ public class VideoSourceText extends VideoSource {
 
             @Override
             public void run() {
-                if (rhythmbox!=null){
+                if (rhythmbox != null) {
                     rhythmbox.disconnect();
-                    rhythmbox=null;
+                    rhythmbox = null;
                 }
-                rhythmbox=new Rhythmbox();
+                rhythmbox = new Rhythmbox();
                 long lastTimeStamp = System.currentTimeMillis();
                 if (outputWidth == 0 || outputHeight == 0) {
                     outputWidth = 320;
@@ -384,27 +386,71 @@ public class VideoSourceText extends VideoSource {
 //        track-number
 //        year
         String retValue = text + "";
-
+        String tmp = "";
         if (text.indexOf("#RHYTHMBOX:TITLE") != -1) {
-            retValue = retValue.replaceFirst("#RHYTHMBOX:TITLE", rhythmbox.getCurrentSongTitle());
+            retValue = retValue.replaceAll("#RHYTHMBOX:TITLE", rhythmbox.getCurrentSongTitle());
         }
         if (text.indexOf("#RHYTHMBOX:ALBUM") != -1) {
-            retValue = retValue.replaceFirst("#RHYTHMBOX:ALBUM", rhythmbox.getCurrentSongProperties("album"));
+            retValue = retValue.replaceAll("#RHYTHMBOX:ALBUM", rhythmbox.getCurrentSongProperties("album"));
         }
         if (text.indexOf("#RHYTHMBOX:ARTIST") != -1) {
-            retValue = retValue.replaceFirst("#RHYTHMBOX:ARTIST", rhythmbox.getCurrentSongProperties("artist"));
+            retValue = retValue.replaceAll("#RHYTHMBOX:ARTIST", rhythmbox.getCurrentSongProperties("artist"));
         }
         if (text.indexOf("#RHYTHMBOX:DURATION") != -1) {
-            retValue = retValue.replaceFirst("#RHYTHMBOX:DURATION", rhythmbox.getCurrentSongProperties("duration"));
+            retValue = retValue.replaceAll("#RHYTHMBOX:DURATION", rhythmbox.getCurrentSongProperties("duration"));
         }
         if (text.indexOf("#RHYTHMBOX:GENRE") != -1) {
-            retValue = retValue.replaceFirst("#RHYTHMBOX:GENRE", rhythmbox.getCurrentSongProperties("genre"));
+            retValue = retValue.replaceAll("#RHYTHMBOX:GENRE", rhythmbox.getCurrentSongProperties("genre"));
         }
         if (text.indexOf("#RHYTHMBOX:YEAR") != -1) {
-            retValue = retValue.replaceFirst("#RHYTHMBOX:YEAR", rhythmbox.getCurrentSongProperties("year"));
+            retValue = retValue.replaceAll("#RHYTHMBOX:YEAR", rhythmbox.getCurrentSongProperties("year"));
         }
         if (text.indexOf("#NOW") != -1) {
-            retValue = retValue.replaceFirst("#NOW", new Date().toString());
+            retValue = retValue.replaceAll("#NOW", new Date().toString());
+        }
+        if (text.indexOf("#HOUR") != -1) {
+            tmp = Calendar.getInstance().get(Calendar.HOUR_OF_DAY) + "";
+            if (tmp.length() == 1) {
+                tmp = "0" + tmp;
+            }
+            retValue = retValue.replaceAll("#HOUR", tmp);
+        }
+        if (text.indexOf("#MINUTE") != -1) {
+            tmp = Calendar.getInstance().get(Calendar.MINUTE) + "";
+            if (tmp.length() == 1) {
+                tmp = "0" + tmp;
+            }
+            retValue = retValue.replaceAll("#MINUTE",tmp);
+        }
+        if (text.indexOf("#SECOND") != -1) {
+            tmp = Calendar.getInstance().get(Calendar.SECOND) + "";
+            if (tmp.length() == 1) {
+                tmp = "0" + tmp;
+            }
+            retValue = retValue.replaceAll("#SECOND", tmp);
+        }
+        if (text.indexOf("#MONTHNAME") != -1) {
+            retValue = retValue.replaceAll("#MONTHNAME", Calendar.getInstance().getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault()));
+        }
+        if (text.indexOf("#DAY") != -1) {
+            retValue = retValue.replaceAll("#DAY", Calendar.getInstance().getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault()));
+        }
+        if (text.indexOf("#MONTH") != -1) {
+            tmp = (Calendar.getInstance().get(Calendar.MONTH) +1)+ "";
+            if (tmp.length() == 1) {
+                tmp = "0" + tmp;
+            }
+            retValue = retValue.replaceAll("#MONTH", tmp);
+        }
+        if (text.indexOf("#YEAR") != -1) {
+            retValue = retValue.replaceAll("#YEAR", Calendar.getInstance().get(Calendar.YEAR) + "");
+        }
+        if (text.indexOf("#DATE") != -1) {
+            tmp = Calendar.getInstance().get(Calendar.DATE) + "";
+            if (tmp.length() == 1) {
+                tmp = "0" + tmp;
+            }
+            retValue = retValue.replaceAll("#DATE",tmp);
         }
 
         return retValue;
