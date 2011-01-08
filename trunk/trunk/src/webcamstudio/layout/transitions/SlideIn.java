@@ -22,6 +22,7 @@ public class SlideIn extends Transition {
         int y = 0;
         source.setOutputWidth(item.getWidth());
         source.setOutputHeight(item.getHeight());
+        source.setVolume(item.getVolume());
         if (!source.isPlaying()) {
             source.startSource();
         }

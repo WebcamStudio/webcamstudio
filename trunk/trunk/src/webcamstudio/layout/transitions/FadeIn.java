@@ -26,6 +26,7 @@ public class FadeIn extends Transition {
         source.setShowAtY(item.getY());
         source.setOutputWidth(item.getWidth());
         source.setOutputHeight(item.getHeight());
+        source.setVolume(item.getVolume());
         source.fireSourceUpdated();
         for (int i = 0; i <= 20; i++) {
             try {

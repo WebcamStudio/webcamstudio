@@ -19,7 +19,7 @@ public class ShrinkOut extends Transition {
     public void doTransition(final LayoutItem item) {
         VideoSource source = item.getSource();
         source.setOpacity(100);
-        
+        source.setVolume(item.getVolume());
         source.fireSourceUpdated();
         int deltaW = source.getOutputWidth() / 20 /2 ;
         int deltaH = source.getOutputHeight() / 20 /2;

@@ -21,6 +21,7 @@ public class Start extends Transition {
         if (!source.isPlaying()) {
             source.startSource();
         }
+        source.setVolume(item.getVolume());
         source.setOpacity(100);
         source.setShowAtX(item.getX());
         source.setShowAtY(item.getY());

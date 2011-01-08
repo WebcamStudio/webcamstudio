@@ -25,7 +25,14 @@ public class LayoutItem implements Runnable{
     private Transition transToDo = transIn;
     private String layoutUUID = "";
     private int layer = 0;
+    private int volume = 10;
 
+    public void setVolume(int v){
+        volume=v;
+    }
+    public int getVolume(){
+        return volume;
+    }
     public void setTransitionIn(Transition in) {
         transIn = in;
     }
@@ -119,6 +126,7 @@ public class LayoutItem implements Runnable{
         }
         prefs.put("layoutuuid", layoutUUID);
         prefs.putInt("layer", layer);
+        prefs.putInt("volume", volume);
     }
 
     public void loadFromStudioConfig(java.util.prefs.Preferences prefs) throws BackingStoreException {
@@ -130,6 +138,7 @@ public class LayoutItem implements Runnable{
         transOut = getTransitionByName(prefs.get("transitionout", "None"));
         layoutUUID = prefs.get("layoutuuid", layoutUUID);
         layer = prefs.getInt("layer", layer);
+        volume = prefs.getInt("volume", volume);
     }
     @Override
     public String toString(){
@@ -144,6 +153,7 @@ public class LayoutItem implements Runnable{
             source.setShowAtY(y);
             source.setOutputWidth(width);
             source.setOutputHeight(height);
+            source.setVolume(volume);
             source.fireSourceUpdated();
         } else {
             transToDo.doTransition(this);

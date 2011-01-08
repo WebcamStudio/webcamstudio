@@ -12,11 +12,12 @@ package webcamstudio.controls;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.SpinnerNumberModel;
 import webcamstudio.components.SourceListener;
 import webcamstudio.layout.LayoutItem;
 import webcamstudio.layout.transitions.Transition;
-import webcamstudio.sources.VideoSource;
 import webcamstudio.sources.VideoSourceMovie;
+import webcamstudio.sources.VideoSourceMusic;
 
 /**
  *
@@ -26,23 +27,31 @@ public class ControlPosition extends javax.swing.JPanel implements Controls {
 
     LayoutItem source = null;
     String label = "Capture";
-    private SourceListener listener=null;
+    private SourceListener listener = null;
+
     /** Creates new form ControlDesktop */
     public ControlPosition(LayoutItem src) {
         initComponents();
+        this.source = src;
         javax.swing.DefaultComboBoxModel transModelIn = new javax.swing.DefaultComboBoxModel(Transition.getTransitions().values().toArray());
         javax.swing.DefaultComboBoxModel transModelOut = new javax.swing.DefaultComboBoxModel(Transition.getTransitions().values().toArray());
+        spinVolume.setModel(new SpinnerNumberModel(10,0,100,1));
+        spinVolume.setEnabled(source.getSource().hasSound());
+        spinVolume.setValue(new Integer(source.getVolume()));
+        if (source.getSource() instanceof VideoSourceMusic) {
+            transModelIn = new javax.swing.DefaultComboBoxModel(Transition.getAudioTransitions().values().toArray());
+            transModelOut = new javax.swing.DefaultComboBoxModel(Transition.getAudioTransitions().values().toArray());
+        }
         cboTransIn.setModel(transModelIn);
         cboTransOut.setModel(transModelOut);
-        this.source = src;
-        for (int i = 0 ; i<cboTransIn.getItemCount();i++){
-            if (cboTransIn.getItemAt(i).getClass().getName().equals(src.getTransitionIn().getClass().getName())){
+        for (int i = 0; i < cboTransIn.getItemCount(); i++) {
+            if (cboTransIn.getItemAt(i).getClass().getName().equals(src.getTransitionIn().getClass().getName())) {
                 cboTransIn.setSelectedIndex(i);
                 break;
             }
         }
-        for (int i = 0 ; i<cboTransOut.getItemCount();i++){
-            if (cboTransOut.getItemAt(i).getClass().getName().equals(src.getTransitionOut().getClass().getName())){
+        for (int i = 0; i < cboTransOut.getItemCount(); i++) {
+            if (cboTransOut.getItemAt(i).getClass().getName().equals(src.getTransitionOut().getClass().getName())) {
                 cboTransOut.setSelectedIndex(i);
                 break;
             }
@@ -81,6 +90,38 @@ public class ControlPosition extends javax.swing.JPanel implements Controls {
                     }
                 }
             }).start();
+        } else if (source.getSource() instanceof VideoSourceMusic) {
+            spinHeight.setEnabled(false);
+            spinWidth.setEnabled(false);
+            spinX.setEnabled(false);
+            spinY.setEnabled(false);
+            lblSeek.setVisible(true);
+            slideSeek.setVisible(true);
+            slideSeek.setMaximum((int) ((VideoSourceMusic) source.getSource()).getDuration());
+            slideSeek.setMinimum(0);
+            slideSeek.setValue((int) ((VideoSourceMusic) source.getSource()).getSeekPosition());
+            new Thread(new Runnable() {
+
+                @Override
+                public void run() {
+                    while (source != null) {
+                        if (slideSeek.getMaximum() == 0 && (source.getSource().isPlaying() || source.getSource().isPaused())) {
+                            slideSeek.setMaximum((int) ((VideoSourceMusic) source.getSource()).getDuration());
+                            slideSeek.setMajorTickSpacing((slideSeek.getMaximum() / 5) / 60 * 60);
+                            slideSeek.setMinorTickSpacing(0);
+                        }
+                        int pos = (int) ((VideoSourceMusic) source.getSource()).getSeekPosition();
+                        if (!slideSeek.getValueIsAdjusting()) {
+                            slideSeek.setValue(pos);
+                        }
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(ControlPosition.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                }
+            }).start();
         } else {
             lblSeek.setVisible(false);
             slideSeek.setVisible(false);
@@ -88,9 +129,10 @@ public class ControlPosition extends javax.swing.JPanel implements Controls {
 
 
     }
+
     @Override
-    public void setListener(SourceListener l){
-        listener=l;
+    public void setListener(SourceListener l) {
+        listener = l;
     }
 
     /** This method is called from within the constructor to
@@ -122,6 +164,8 @@ public class ControlPosition extends javax.swing.JPanel implements Controls {
         btnPause = new javax.swing.JButton();
         btnStop = new javax.swing.JButton();
         btnRemove = new javax.swing.JButton();
+        jLabel7 = new javax.swing.JLabel();
+        spinVolume = new javax.swing.JSpinner();
 
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("webcamstudio/Languages"); // NOI18N
         lblSeek.setText(bundle.getString("SEEK")); // NOI18N
@@ -256,6 +300,16 @@ public class ControlPosition extends javax.swing.JPanel implements Controls {
             }
         });
 
+        jLabel7.setText(bundle.getString("VOLUME")); // NOI18N
+        jLabel7.setName("jLabel7"); // NOI18N
+
+        spinVolume.setName("spinVolume"); // NOI18N
+        spinVolume.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                spinVolumeStateChanged(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -263,7 +317,6 @@ public class ControlPosition extends javax.swing.JPanel implements Controls {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(slideSeek, javax.swing.GroupLayout.DEFAULT_SIZE, 418, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnMoveUp)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -278,22 +331,29 @@ public class ControlPosition extends javax.swing.JPanel implements Controls {
                         .addComponent(btnRemove))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING))
-                            .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 179, Short.MAX_VALUE)
-                            .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, 179, Short.MAX_VALUE)
-                            .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, 179, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(spinWidth, javax.swing.GroupLayout.DEFAULT_SIZE, 227, Short.MAX_VALUE)
-                            .addComponent(spinY, javax.swing.GroupLayout.DEFAULT_SIZE, 227, Short.MAX_VALUE)
-                            .addComponent(spinX, javax.swing.GroupLayout.DEFAULT_SIZE, 227, Short.MAX_VALUE)
-                            .addComponent(cboTransOut, 0, 227, Short.MAX_VALUE)
-                            .addComponent(cboTransIn, 0, 227, Short.MAX_VALUE)
-                            .addComponent(spinHeight, javax.swing.GroupLayout.DEFAULT_SIZE, 227, Short.MAX_VALUE)))
-                    .addComponent(lblSeek))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                        .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING))
+                                    .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 116, Short.MAX_VALUE)
+                                    .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, 116, Short.MAX_VALUE)
+                                    .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, 116, Short.MAX_VALUE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
+                            .addComponent(lblSeek)
+                            .addComponent(jLabel7))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(spinVolume, javax.swing.GroupLayout.DEFAULT_SIZE, 290, Short.MAX_VALUE)
+                            .addComponent(spinWidth, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 290, Short.MAX_VALUE)
+                            .addComponent(spinY, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 290, Short.MAX_VALUE)
+                            .addComponent(spinX, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 290, Short.MAX_VALUE)
+                            .addComponent(cboTransOut, javax.swing.GroupLayout.Alignment.LEADING, 0, 290, Short.MAX_VALUE)
+                            .addComponent(cboTransIn, javax.swing.GroupLayout.Alignment.LEADING, 0, 290, Short.MAX_VALUE)
+                            .addComponent(spinHeight, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 290, Short.MAX_VALUE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(slideSeek, javax.swing.GroupLayout.DEFAULT_SIZE, 290, Short.MAX_VALUE)))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -322,11 +382,15 @@ public class ControlPosition extends javax.swing.JPanel implements Controls {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
                     .addComponent(spinHeight, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(16, 16, 16)
-                .addComponent(lblSeek)
-                .addGap(4, 4, 4)
-                .addComponent(slideSeek, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(spinVolume, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel7))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblSeek)
+                    .addComponent(slideSeek, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(10, 10, 10)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnMoveUp)
                     .addComponent(btnMoveDown)
@@ -345,73 +409,79 @@ public class ControlPosition extends javax.swing.JPanel implements Controls {
     private void slideSeekMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_slideSeekMouseReleased
         if (source.getSource() instanceof VideoSourceMovie) {
             ((VideoSourceMovie) source.getSource()).seek(slideSeek.getValue());
+        } else if (source.getSource() instanceof VideoSourceMusic) {
+            ((VideoSourceMusic) source.getSource()).seek(slideSeek.getValue());
         }
     }//GEN-LAST:event_slideSeekMouseReleased
 
     private void btnMoveUpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMoveUpActionPerformed
-        if (listener!=null){
+        if (listener != null) {
             listener.sourceMoveUp(source.getSource());
         }
 }//GEN-LAST:event_btnMoveUpActionPerformed
 
     private void btnMoveDownActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMoveDownActionPerformed
-        if (listener!=null){
+        if (listener != null) {
             listener.sourceMoveDown(source.getSource());
         }
 }//GEN-LAST:event_btnMoveDownActionPerformed
 
     private void spinHeightStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinHeightStateChanged
-        source.setHeight((Integer)spinHeight.getValue());
+        source.setHeight((Integer) spinHeight.getValue());
     }//GEN-LAST:event_spinHeightStateChanged
 
     private void spinWidthStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinWidthStateChanged
-        source.setWidth((Integer)spinWidth.getValue());
+        source.setWidth((Integer) spinWidth.getValue());
     }//GEN-LAST:event_spinWidthStateChanged
 
     private void spinYStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinYStateChanged
-        source.setY((Integer)spinY.getValue());
+        source.setY((Integer) spinY.getValue());
     }//GEN-LAST:event_spinYStateChanged
 
     private void spinXStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinXStateChanged
-        source.setX((Integer)spinX.getValue());
+        source.setX((Integer) spinX.getValue());
     }//GEN-LAST:event_spinXStateChanged
 
     private void cboTransInActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboTransInActionPerformed
-        source.setTransitionIn((Transition)cboTransIn.getSelectedItem());
+        source.setTransitionIn((Transition) cboTransIn.getSelectedItem());
     }//GEN-LAST:event_cboTransInActionPerformed
 
     private void cboTransOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboTransOutActionPerformed
-        source.setTransitionOut((Transition)cboTransOut.getSelectedItem());
+        source.setTransitionOut((Transition) cboTransOut.getSelectedItem());
     }//GEN-LAST:event_cboTransOutActionPerformed
 
     private void btnPlayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPlayActionPerformed
-        if (!source.getSource().isPlaying() || source.getSource().isPaused()){
-            if (source.getSource().isPaused()){
+        if (!source.getSource().isPlaying() || source.getSource().isPaused()) {
+            if (source.getSource().isPaused()) {
                 source.getSource().play();
             } else {
-            source.getSource().startSource();
+                source.getSource().startSource();
             }
         }
     }//GEN-LAST:event_btnPlayActionPerformed
 
     private void btnPauseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPauseActionPerformed
-        if (source.getSource().isPlaying()){
+        if (source.getSource().isPlaying()) {
             source.getSource().pause();
         }        // TODO add your handling code here:
     }//GEN-LAST:event_btnPauseActionPerformed
 
     private void btnStopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStopActionPerformed
-        if (source.getSource().isPaused() || source.getSource().isPlaying()){
+        if (source.getSource().isPaused() || source.getSource().isPlaying()) {
             source.getSource().stopSource();
         }
     }//GEN-LAST:event_btnStopActionPerformed
 
     private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveActionPerformed
-        if (listener!=null){
+        if (listener != null) {
             listener.sourceRemoved(source.getSource());
-            listener=null;
+            listener = null;
         }
     }//GEN-LAST:event_btnRemoveActionPerformed
+
+    private void spinVolumeStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinVolumeStateChanged
+        source.setVolume((Integer)spinVolume.getValue());
+    }//GEN-LAST:event_spinVolumeStateChanged
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnMoveDown;
@@ -428,9 +498,11 @@ public class ControlPosition extends javax.swing.JPanel implements Controls {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel lblSeek;
     private javax.swing.JSlider slideSeek;
     private javax.swing.JSpinner spinHeight;
+    private javax.swing.JSpinner spinVolume;
     private javax.swing.JSpinner spinWidth;
     private javax.swing.JSpinner spinX;
     private javax.swing.JSpinner spinY;

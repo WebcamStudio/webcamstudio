@@ -21,6 +21,7 @@ public class Slide extends Transition {
         if (!source.isPlaying()) {
             source.startSource();
         }
+        source.setVolume(item.getVolume());
         int xDelta = (item.getX() - source.getShowAtX()) / 20;
         int yDelta = (item.getY() - source.getShowAtY()) / 20;
         int wDelta = (item.getWidth() - source.getOutputWidth()) / 20;

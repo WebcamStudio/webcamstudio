@@ -21,7 +21,7 @@ public class ShrinkIn extends Transition {
         if (!source.isPlaying()) {
             source.startSource();
         }
-        
+        source.setVolume(item.getVolume());
         source.setOutputWidth(0);
         source.setOutputHeight(0);
         source.setOpacity(100);        
