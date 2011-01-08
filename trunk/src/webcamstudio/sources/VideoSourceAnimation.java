@@ -168,7 +168,6 @@ public class VideoSourceAnimation extends VideoSource {
         java.util.Vector<JPanel> list = new java.util.Vector<JPanel>();
         list.add(new webcamstudio.controls.ControlShapes(this));
         list.add(new webcamstudio.controls.ControlEffects(this));
-        list.add(new webcamstudio.controls.ControlLayout(this));
         return list;
     }
     private Animator animator = null;

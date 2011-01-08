@@ -321,7 +321,6 @@ public class VideoSourceText extends VideoSource {
         list.add(new webcamstudio.controls.ControlText(this));
         list.add(new webcamstudio.controls.ControlEffects(this));
         list.add(new webcamstudio.controls.ControlShapes(this));
-        list.add(new webcamstudio.controls.ControlLayout(this));
         list.add(new webcamstudio.controls.ControlReload(this));
         return list;
     }

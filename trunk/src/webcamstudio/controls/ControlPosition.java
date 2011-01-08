@@ -221,6 +221,7 @@ public class ControlPosition extends javax.swing.JPanel implements Controls {
         });
 
         btnPlay.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-start.png"))); // NOI18N
+        btnPlay.setToolTipText(bundle.getString("PLAY")); // NOI18N
         btnPlay.setName("btnPlay"); // NOI18N
         btnPlay.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -229,6 +230,7 @@ public class ControlPosition extends javax.swing.JPanel implements Controls {
         });
 
         btnPause.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-pause.png"))); // NOI18N
+        btnPause.setToolTipText(bundle.getString("PAUSE")); // NOI18N
         btnPause.setName("btnPause"); // NOI18N
         btnPause.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -237,6 +239,7 @@ public class ControlPosition extends javax.swing.JPanel implements Controls {
         });
 
         btnStop.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-stop.png"))); // NOI18N
+        btnStop.setToolTipText(bundle.getString("STOP")); // NOI18N
         btnStop.setName("btnStop"); // NOI18N
         btnStop.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -245,6 +248,7 @@ public class ControlPosition extends javax.swing.JPanel implements Controls {
         });
 
         btnRemove.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/edit-delete.png"))); // NOI18N
+        btnRemove.setToolTipText(bundle.getString("REMOVE")); // NOI18N
         btnRemove.setName("btnRemove"); // NOI18N
         btnRemove.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

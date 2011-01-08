@@ -125,6 +125,8 @@ public class Layout {
         Graphics2D buffer = image.createGraphics();
         buffer.setBackground(Color.DARK_GRAY);
         buffer.setStroke(new java.awt.BasicStroke(10f));
+        buffer.setColor(Color.BLACK);
+        buffer.drawRect(0, 0, image.getWidth(), image.getHeight());
         for (LayoutItem item : items.values()) {
             buffer.setColor(Color.WHITE);
             if (item.getSource() instanceof VideoSourceV4L || item.getSource() instanceof VideoSourceDV) {

@@ -211,7 +211,6 @@ public class VideoSourceV4L extends VideoSource implements org.gstreamer.element
         list.add(new webcamstudio.controls.ControlGSTEffects(this));
         list.add(new webcamstudio.controls.ControlActivity(this));
         list.add(new webcamstudio.controls.ControlFaceDetection(this));
-        list.add(new webcamstudio.controls.ControlLayout(this));
         return list;
     }
     @Override
