@@ -49,7 +49,6 @@ public class VideoSourcePipeline extends VideoSource implements org.gstreamer.el
                 plugin.load(pluginFile.toURI().toURL().openStream());
                 gstPipeline = plugin.getProperty("pipeline");
                 hasSound = false;
-                System.out.println("Plugin Loaded: " + gstPipeline);
             } catch (IOException ex) {
                 Logger.getLogger(VideoSourcePipeline.class.getName()).log(Level.SEVERE, null, ex);
             }
