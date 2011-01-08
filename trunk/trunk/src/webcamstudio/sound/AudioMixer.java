@@ -113,7 +113,7 @@ public class AudioMixer {
     public void stop() {
         if (pipe != null && pipe.getState()==State.PLAYING) {
             pipe.stop();
-            pipe.removeMany(audioVolume,elementSourceSystem,elementSourceMic,audioAdder, audioCaptureFilter, audioConvert, audioConvert2, audioOutputFilter, elementSink);
+            pipe.removeMany(audioEqualizer,audioVolume,elementSourceSystem,elementSourceMic,audioAdder, audioCaptureFilter, audioConvert, audioConvert2, audioOutputFilter, elementSink);
             pipe = null;
         }
         isActive=false;
