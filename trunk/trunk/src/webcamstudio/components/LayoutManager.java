@@ -11,7 +11,6 @@
 package webcamstudio.components;
 
 import java.awt.Component;
-import java.awt.Font;
 import java.awt.image.BufferedImage;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -29,6 +28,7 @@ import webcamstudio.layout.LayoutItem;
 import webcamstudio.layout.transitions.Start;
 import webcamstudio.layout.transitions.Stop;
 import webcamstudio.layout.transitions.Transition;
+import webcamstudio.sound.AudioMixer;
 import webcamstudio.sources.VideoSource;
 import webcamstudio.sources.VideoSourceAnimation;
 import webcamstudio.sources.VideoSourceDV;
@@ -60,10 +60,12 @@ public class LayoutManager extends javax.swing.JPanel implements SourceListener 
     private ImageIcon iconFolder = null;
     private ImageIcon iconText = null;
     private boolean stopMe = false;
-
+    private AudioMixer audioMixer = null;
+    private String micLabel = "Microphone";
     /** Creates new form LayoutManager */
-    public LayoutManager() {
+    public LayoutManager(AudioMixer mixer) {
         initComponents();
+        audioMixer=mixer;
         iconMovie = new ImageIcon(getToolkit().getImage(java.net.URLClassLoader.getSystemResource("webcamstudio/resources/tango/video-display.png")));
         iconImage = new ImageIcon(getToolkit().getImage(java.net.URLClassLoader.getSystemResource("webcamstudio/resources/tango/image-x-generic.png")));
         iconDevice = new ImageIcon(getToolkit().getImage(java.net.URLClassLoader.getSystemResource("webcamstudio/resources/tango/camera-video.png")));
@@ -72,6 +74,7 @@ public class LayoutManager extends javax.swing.JPanel implements SourceListener 
         iconText = new ImageIcon(getToolkit().getImage(java.net.URLClassLoader.getSystemResource("webcamstudio/resources/tango/format-text-bold.png")));
         sources = LayerManager.getSources();
         root = new javax.swing.tree.DefaultMutableTreeNode(java.util.ResourceBundle.getBundle("webcamstudio/Languages").getString("LAYOUTS"));
+        micLabel = java.util.ResourceBundle.getBundle("webcamstudio/Languages").getString("MICROPHONE");
         model = new javax.swing.tree.DefaultTreeModel(root);
         treeLayouts.setModel(model);
         txtLayoutName.setEnabled(false);
@@ -379,7 +382,9 @@ public class LayoutManager extends javax.swing.JPanel implements SourceListener 
             btnRemove.setEnabled(true);
             cboHotkeys.setEnabled(true);
             cboHotkeys.setSelectedItem(currentLayout.getHotKey());
-
+            AudioMixerPanel mixerPanel = new AudioMixerPanel((Layout)obj);
+            tabControls.add(micLabel, mixerPanel);
+            mixerPanel.setEnabled(audioMixer.isActive());
             txtLayoutName.setText(currentLayout.toString());
             txtLayoutName.setEnabled(true);
         } else if (obj instanceof LayoutItem) {
@@ -432,6 +437,10 @@ public class LayoutManager extends javax.swing.JPanel implements SourceListener 
                     if (oldLayout != null) {
                         oldLayout.exitLayout();
                     }
+                    audioMixer.setVolume(currentLayout.getMicVolume());
+                    audioMixer.setLowFilter(currentLayout.getMicLow());
+                    audioMixer.setMiddleFilter(currentLayout.getMicMiddle());
+                    audioMixer.setHighFilter(currentLayout.getMicHigh());
                     currentLayout.enterLayout();
                     oldLayout = currentLayout;
                 }

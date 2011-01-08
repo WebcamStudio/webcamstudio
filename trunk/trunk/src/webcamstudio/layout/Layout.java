@@ -31,7 +31,35 @@ public class Layout {
     private boolean isActive = false;
     private boolean isEntering = false;
     private boolean isExiting = false;
+    private int micVolume = 100;
+    private int micLow = 0;
+    private int micMiddle = 0;
+    private int micHigh = 0;
 
+    public int getMicVolume(){
+        return micVolume;
+    }
+    public int getMicLow(){
+        return micLow;
+    }
+    public int getMicMiddle(){
+        return micMiddle;
+    }
+    public int getMicHigh(){
+        return micHigh;
+    }
+    public void setMicVolume(int v){
+        micVolume=v;
+    }
+    public void setMicLow(int l){
+        micLow=l;
+    }
+    public void setMicMiddle(int m){
+        micMiddle=m;
+    }
+    public void setMicHigh(int h){
+        micHigh=h;
+    }
     public Layout(String name) {
         this.name = name;
     }
@@ -215,6 +243,10 @@ public class Layout {
         layout.put("name", name);
         layout.put("uuid", layoutUUID);
         layout.put("hotkey", hotKey);
+        layout.putInt("micvolume",micVolume);
+        layout.putInt("miclow",micLow);
+        layout.putInt("micmiddle",micMiddle);
+        layout.putInt("michigh",micHigh);
         for (LayoutItem item : items.values()) {
             item.applyStudioConfig(layout.node("Items").node("" + item.getLayer()));
         }
@@ -225,6 +257,10 @@ public class Layout {
         name = layout.get("name", name);
         layoutUUID = layout.get("uuid", layoutUUID);
         hotKey = layout.get("hotkey", hotKey);
+        micVolume = layout.getInt("micvolume",micVolume);
+        micLow = layout.getInt("miclow",micLow);
+        micMiddle = layout.getInt("micmiddle",micMiddle);
+        micHigh = layout.getInt("michigh",micHigh);
         String[] itemIndexes = layout.node("Items").childrenNames();
         for (String itemIndex : itemIndexes) {
             LayoutItem item = new LayoutItem(LayerManager.getByUUID(layout.node("Items").node(itemIndex).get("uuid", "")), layoutUUID, 0);
