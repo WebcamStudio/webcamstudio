@@ -19,6 +19,7 @@
  */
 package webcamstudio.sources;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,6 +27,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import org.gstreamer.*;
 import webcamstudio.controls.ControlRescale;
+import webcamstudio.exporter.vloopback.VideoDevice;
 
 /**
  *
@@ -45,11 +47,11 @@ public class VideoSourceV4L extends VideoSource implements org.gstreamer.element
 
     }
 
-    public VideoSourceV4L(String loc, String deviceName) {
+    public VideoSourceV4L(String deviceName) {
         outputWidth = 320;
         outputHeight = 240;
 
-        location = loc;
+        location =getDeviceForName(deviceName).getAbsolutePath();
         name = deviceName;
         if (deviceName.length() == 0) {
             name = deviceName;
@@ -61,6 +63,15 @@ public class VideoSourceV4L extends VideoSource implements org.gstreamer.element
 
     }
 
+    protected File getDeviceForName(String deviceName){
+        File f = new File("/dev/video0");
+        for (VideoDevice v : VideoDevice.getDevices()){
+            if (v.getName().equals(deviceName)){
+                f = v.getFile();
+            }
+        }
+        return f;
+    }
     @Override
     public boolean canUpdateSource() {
         return false;
@@ -84,6 +95,7 @@ public class VideoSourceV4L extends VideoSource implements org.gstreamer.element
     @Override
     public void startSource() {
         isPlaying = true;
+        location =getDeviceForName(name).getAbsolutePath();
         try {
             elementSink = new org.gstreamer.elements.RGBDataSink("RGBDataSink" + uuId, this);
             String rescaling = "";

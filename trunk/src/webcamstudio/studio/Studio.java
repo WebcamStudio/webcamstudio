@@ -112,9 +112,9 @@ public class Studio {
         } else if (currentClass.equals(VideoSourceAnimation.class.getName()) || currentClass.equals(VideoSourceAnimation.class.getName().replace(".sources", ""))) {
             source = new VideoSourceAnimation(new java.io.File("."));
         } else if (currentClass.equals(VideoSourceV4L.class.getName()) || currentClass.equals(VideoSourceV4L.class.getName().replace(".sources", ""))) {
-            source = new VideoSourceV4L("", "");
+            source = new VideoSourceV4L("");
         } else if (currentClass.equals(VideoSourceV4L2.class.getName()) || currentClass.equals(VideoSourceV4L2.class.getName().replace(".sources", ""))) {
-            source = new VideoSourceV4L2("", "");
+            source = new VideoSourceV4L2("");
         } else if (currentClass.equals(VideoSourceText.class.getName()) || currentClass.equals(VideoSourceText.class.getName().replace(".sources", ""))) {
             source = new VideoSourceText(new java.io.File("."));
         } else if (currentClass.equals(VideoSourceDV.class.getName()) || currentClass.equals(VideoSourceDV.class.getName().replace(".sources", ""))) {
@@ -127,7 +127,10 @@ public class Studio {
             source = new VideoSourceWidget();
         } else if (currentClass.equals(VideoSourceConsole.class.getName()) || currentClass.equals(VideoSourceConsole.class.getName().replace(".sources", ""))) {
             source = new VideoSourceConsole("");
+        } else if (currentClass.equals(VideoSourceMusic.class.getName()) || currentClass.equals(VideoSourceMusic.class.getName().replace(".sources", ""))) {
+            source = new VideoSourceMusic("");
         }
+
         return source;
     }
 
