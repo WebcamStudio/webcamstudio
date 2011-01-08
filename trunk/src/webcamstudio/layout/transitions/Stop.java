@@ -14,7 +14,7 @@ import webcamstudio.sources.VideoSource;
 public class Stop extends Transition {
 
     @Override
-    public void doTransition(final LayoutItem item) {
+    public void doTransition(LayoutItem item) {
         VideoSource source = item.getSource();
         source.setVolume(item.getVolume());
         source.setOpacity(0);
@@ -26,6 +26,5 @@ public class Stop extends Transition {
         if (source.isPlaying()) {
             source.stopSource();
         }
-
     }
 }

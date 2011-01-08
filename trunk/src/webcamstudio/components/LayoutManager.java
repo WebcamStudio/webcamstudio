@@ -11,9 +11,12 @@
 package webcamstudio.components;
 
 import java.awt.Component;
+import java.awt.Font;
 import java.awt.image.BufferedImage;
 import java.util.Collection;
 import java.util.Enumeration;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -23,7 +26,6 @@ import webcamstudio.controls.ControlPosition;
 import webcamstudio.controls.Controls;
 import webcamstudio.layout.Layout;
 import webcamstudio.layout.LayoutItem;
-import webcamstudio.layout.transitions.None;
 import webcamstudio.layout.transitions.Start;
 import webcamstudio.layout.transitions.Stop;
 import webcamstudio.layout.transitions.Transition;
@@ -57,6 +59,7 @@ public class LayoutManager extends javax.swing.JPanel implements SourceListener 
     private ImageIcon iconAnimation = null;
     private ImageIcon iconFolder = null;
     private ImageIcon iconText = null;
+    private boolean stopMe = false;
 
     /** Creates new form LayoutManager */
     public LayoutManager() {
@@ -106,15 +109,38 @@ public class LayoutManager extends javax.swing.JPanel implements SourceListener 
                         Layout l = ((Layout) ((javax.swing.tree.DefaultMutableTreeNode) value).getUserObject());
                         label.setText(l.toString());
                         label.setIcon(new ImageIcon(l.getPreview().getScaledInstance(32, 32, BufferedImage.SCALE_FAST)));
+
                     } else {
                         label.setIcon(iconFolder);
                     }
+                    label.setDisabledIcon(label.getIcon());
                 }
                 return retValue;
             }
         };
 
         treeLayouts.setCellRenderer(treeRenderer);
+        Thread t = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+
+                while (!stopMe) {
+                    repaint();
+                    try {
+                        Thread.sleep(200);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(LayoutManager.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+        });
+        t.setPriority(Thread.MIN_PRIORITY);
+        t.start();
+    }
+
+    public void quitting() {
+        stopMe = true;
     }
 
     public void applyLayoutHotKey(String key) {
@@ -398,10 +424,10 @@ public class LayoutManager extends javax.swing.JPanel implements SourceListener 
 
     private void btnApplyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnApplyActionPerformed
         new Thread(new Runnable() {
-
             @Override
             public void run() {
                 btnApply.setEnabled(false);
+                treeLayouts.setEnabled(false);
                 if (currentLayout != null) {
                     if (oldLayout != null) {
                         oldLayout.exitLayout();
@@ -409,6 +435,7 @@ public class LayoutManager extends javax.swing.JPanel implements SourceListener 
                     currentLayout.enterLayout();
                     oldLayout = currentLayout;
                 }
+                treeLayouts.setEnabled(true);
                 btnApply.setEnabled(true);
             }
         }).start();
@@ -436,9 +463,8 @@ public class LayoutManager extends javax.swing.JPanel implements SourceListener 
 
     private void cboHotkeysActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboHotkeysActionPerformed
         currentLayout.setHotKey(cboHotkeys.getSelectedItem().toString());
-        
-    }//GEN-LAST:event_cboHotkeysActionPerformed
 
+    }//GEN-LAST:event_cboHotkeysActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
     private javax.swing.JButton btnApply;
@@ -488,13 +514,13 @@ public class LayoutManager extends javax.swing.JPanel implements SourceListener 
         currentLayout.moveUpItem(currentLayoutItem);
         updateTree();
         Enumeration l = root.children();
-        while (l.hasMoreElements()){
-            DefaultMutableTreeNode node = (DefaultMutableTreeNode)l.nextElement();
-            if (node.getUserObject().equals(currentLayout)){
+        while (l.hasMoreElements()) {
+            DefaultMutableTreeNode node = (DefaultMutableTreeNode) l.nextElement();
+            if (node.getUserObject().equals(currentLayout)) {
                 Enumeration li = node.children();
-                while (li.hasMoreElements()){
-                    DefaultMutableTreeNode subnode = (DefaultMutableTreeNode)li.nextElement();
-                    if (subnode.getUserObject().equals(currentLayoutItem)){
+                while (li.hasMoreElements()) {
+                    DefaultMutableTreeNode subnode = (DefaultMutableTreeNode) li.nextElement();
+                    if (subnode.getUserObject().equals(currentLayoutItem)) {
                         treeLayouts.setSelectionPath(new TreePath(subnode.getPath()));
                         break;
                     }
@@ -508,13 +534,13 @@ public class LayoutManager extends javax.swing.JPanel implements SourceListener 
         currentLayout.moveDownItem(currentLayoutItem);
         updateTree();
         Enumeration l = root.children();
-        while (l.hasMoreElements()){
-            DefaultMutableTreeNode node = (DefaultMutableTreeNode)l.nextElement();
-            if (node.getUserObject().equals(currentLayout)){
+        while (l.hasMoreElements()) {
+            DefaultMutableTreeNode node = (DefaultMutableTreeNode) l.nextElement();
+            if (node.getUserObject().equals(currentLayout)) {
                 Enumeration li = node.children();
-                while (li.hasMoreElements()){
-                    DefaultMutableTreeNode subnode = (DefaultMutableTreeNode)li.nextElement();
-                    if (subnode.getUserObject().equals(currentLayoutItem)){
+                while (li.hasMoreElements()) {
+                    DefaultMutableTreeNode subnode = (DefaultMutableTreeNode) li.nextElement();
+                    if (subnode.getUserObject().equals(currentLayoutItem)) {
                         treeLayouts.setSelectionPath(new TreePath(subnode.getPath()));
                         break;
                     }
