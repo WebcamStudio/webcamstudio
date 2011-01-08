@@ -48,7 +48,7 @@ import webcamstudio.visage.FaceDetector;
  *
  * @author pballeux
  */
-public class Main extends javax.swing.JFrame implements InfoListener,SourceListener, MediaListener {
+public class Main extends javax.swing.JFrame implements InfoListener, SourceListener, MediaListener {
 
     private VideoOutput output = null;
     private Mixer mixer = null;
@@ -139,7 +139,7 @@ public class Main extends javax.swing.JFrame implements InfoListener,SourceListe
             mnuStudioLoadLast.setEnabled(false);
         }
 
-        this.add(layoutManager,BorderLayout.CENTER);
+        this.add(layoutManager, BorderLayout.CENTER);
 
         javax.swing.DefaultListCellRenderer layoutrenderer = new javax.swing.DefaultListCellRenderer() {
 
@@ -197,7 +197,7 @@ public class Main extends javax.swing.JFrame implements InfoListener,SourceListe
         setCursor(new Cursor(Cursor.WAIT_CURSOR));
 
         MediaPanel mediaPanel = new MediaPanel();
-        
+
         mediaPanel.setAutoscrolls(true);
 
 
@@ -267,7 +267,7 @@ public class Main extends javax.swing.JFrame implements InfoListener,SourceListe
         buildSourcePipelines();
         MediaPanelList ppipes = new MediaPanelList(this);
         ppipes.setPanelName(bundle.getString("PIPELINES"));
-        
+
         for (VideoSource v : pipelines.values()) {
             ppipes.addMedia(v);
         }
@@ -282,7 +282,7 @@ public class Main extends javax.swing.JFrame implements InfoListener,SourceListe
         setCursor(Cursor.getDefaultCursor());
         mediaPanel.revalidate();
         panBrowser.removeAll();
-        panBrowser.add(mediaPanel,BorderLayout.CENTER);
+        panBrowser.add(mediaPanel, BorderLayout.CENTER);
         panBrowser.revalidate();
     }
 
@@ -452,7 +452,7 @@ public class Main extends javax.swing.JFrame implements InfoListener,SourceListe
             }
             sourceDir.nodeChanged(nodeDevices);
             sourceDir.nodeStructureChanged(nodeDevices);
-            
+
             System.out.println("Device update");
         }
     }
@@ -500,6 +500,8 @@ public class Main extends javax.swing.JFrame implements InfoListener,SourceListe
         }
         lastDriverOutput = prefs.get("lastdriveroutput", lastDriverOutput);
         lastDriverOutputPath = prefs.get("lastdriverpath", lastDriverOutputPath);
+        mnuSourceschkShowBrowser.setSelected(prefs.getBoolean("showbrowser", mnuSourceschkShowBrowser.isSelected()));
+        panBrowser.setVisible(mnuSourceschkShowBrowser.isSelected());
 
         prefs = null;
     }
@@ -517,7 +519,7 @@ public class Main extends javax.swing.JFrame implements InfoListener,SourceListe
         } else if (mnurdPixelFormatUYVY.isSelected()) {
             prefs.put("format", "uyvy");
         }
-        
+
         prefs.putBoolean("showsplashbackground", mnuchkShowBackground.isSelected());
 
         if (lastLoopbackUsed != null) {
@@ -540,6 +542,7 @@ public class Main extends javax.swing.JFrame implements InfoListener,SourceListe
             }
             prefs.put("lastdriverpath", output.getDevice());
         }
+        prefs.putBoolean("showbrowser", mnuSourceschkShowBrowser.isSelected());
         prefs = null;
     }
 
@@ -694,6 +697,7 @@ public class Main extends javax.swing.JFrame implements InfoListener,SourceListe
         jSeparator2 = new javax.swing.JSeparator();
         mnuAnimationCreator = new javax.swing.JMenuItem();
         mnuSources = new javax.swing.JMenu();
+        mnuSourceschkShowBrowser = new javax.swing.JCheckBoxMenuItem();
         mnuReloadSourceTree = new javax.swing.JMenuItem();
         mnuAddDir = new javax.swing.JMenuItem();
         mnuRemoveDir = new javax.swing.JMenuItem();
@@ -867,6 +871,18 @@ public class Main extends javax.swing.JFrame implements InfoListener,SourceListe
         mnuSources.setText(bundle.getString("SOURCES")); // NOI18N
         mnuSources.setName("mnuSources"); // NOI18N
         mnuSources.setPreferredSize(new java.awt.Dimension(100, 23));
+
+        mnuSourceschkShowBrowser.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F2, 0));
+        mnuSourceschkShowBrowser.setSelected(true);
+        mnuSourceschkShowBrowser.setText(bundle.getString("SHOW_BROWSER")); // NOI18N
+        mnuSourceschkShowBrowser.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/folder.png"))); // NOI18N
+        mnuSourceschkShowBrowser.setName("mnuSourceschkShowBrowser"); // NOI18N
+        mnuSourceschkShowBrowser.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnuSourceschkShowBrowserActionPerformed(evt);
+            }
+        });
+        mnuSources.add(mnuSourceschkShowBrowser);
 
         mnuReloadSourceTree.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F5, 0));
         mnuReloadSourceTree.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/folder.png"))); // NOI18N
@@ -1677,12 +1693,13 @@ public class Main extends javax.swing.JFrame implements InfoListener,SourceListe
             preview.dispose();
             preview = null;
         }
-        preview = new Preview(this, false,mixer);
+        preview = new Preview(this, false, mixer);
         preview.addWindowListener(new java.awt.event.WindowAdapter() {
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        preview.stopMe();
-                    }
-                });
+
+            public void windowClosing(java.awt.event.WindowEvent e) {
+                preview.stopMe();
+            }
+        });
         preview.setVisible(true);
     }//GEN-LAST:event_mnuShowPreviewActionPerformed
 
@@ -2025,6 +2042,9 @@ public class Main extends javax.swing.JFrame implements InfoListener,SourceListe
         updateMenuLayoutNames();
     }//GEN-LAST:event_mnuLayoutMouseEntered
 
+    private void mnuSourceschkShowBrowserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuSourceschkShowBrowserActionPerformed
+        panBrowser.setVisible(mnuSourceschkShowBrowser.isSelected());
+    }//GEN-LAST:event_mnuSourceschkShowBrowserActionPerformed
 
     /**
      * @param args the command line arguments
@@ -2133,6 +2153,7 @@ public class Main extends javax.swing.JFrame implements InfoListener,SourceListe
     private javax.swing.JMenuItem mnuSourcesPlayList;
     private javax.swing.JMenuItem mnuSourcesStream;
     private javax.swing.JMenuItem mnuSourcesWidget;
+    private javax.swing.JCheckBoxMenuItem mnuSourceschkShowBrowser;
     private javax.swing.JMenuItem mnuStudioLoadLast;
     private javax.swing.JMenuItem mnuStudioNew;
     private javax.swing.JMenu mnuStudios;
@@ -2162,8 +2183,6 @@ public class Main extends javax.swing.JFrame implements InfoListener,SourceListe
         System.out.println(line);
     }
 
-    
-
     public void addSource(VideoSource source) {
         if (source != null) {
             addSourceToDesktop(source);
@@ -2172,51 +2191,41 @@ public class Main extends javax.swing.JFrame implements InfoListener,SourceListe
 
     @Override
     public void sourceUpdate(VideoSource source) {
-
     }
 
     @Override
     public void sourceSetX(VideoSource source, int x) {
-
     }
 
     @Override
     public void sourceSetY(VideoSource source, int y) {
-
     }
 
     @Override
     public void sourceSetWidth(VideoSource source, int w) {
-
     }
 
     @Override
     public void sourceSetHeight(VideoSource source, int h) {
-
     }
 
     @Override
     public void sourceMoveUp(VideoSource source) {
-
     }
 
     @Override
     public void sourceMoveDown(VideoSource source) {
-
     }
 
     @Override
     public void sourceSetTransIn(VideoSource source, Transition in) {
-        
     }
 
     @Override
     public void sourceSetTransOut(VideoSource source, Transition out) {
-        
     }
 
     @Override
     public void sourceRemoved(VideoSource source) {
-
     }
 }
