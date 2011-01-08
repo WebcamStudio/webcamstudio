@@ -442,7 +442,6 @@ public class VideoSourceIRC extends VideoSource {
         list.add(new webcamstudio.controls.ControlEffects(this));
         list.add(new webcamstudio.controls.ControlActivity(this));
         list.add(new webcamstudio.controls.ControlSpeech(this));
-        list.add(new webcamstudio.controls.ControlLayout(this));
         return list;
     }
 }

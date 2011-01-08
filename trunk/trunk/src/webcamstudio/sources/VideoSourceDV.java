@@ -156,7 +156,6 @@ public class VideoSourceDV extends VideoSource implements org.gstreamer.elements
         list.add(new webcamstudio.controls.ControlEffects(this));
         list.add(new webcamstudio.controls.ControlActivity(this));
         list.add(new webcamstudio.controls.ControlFaceDetection(this));
-        list.add(new webcamstudio.controls.ControlLayout(this));
         return list;
     }
     private org.gstreamer.elements.RGBDataSink elementSink = null;

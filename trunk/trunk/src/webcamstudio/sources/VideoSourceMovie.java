@@ -419,7 +419,6 @@ public class VideoSourceMovie extends VideoSource implements org.gstreamer.eleme
         list.add(new webcamstudio.controls.ControlGSTEffects(this));
         list.add(new webcamstudio.controls.ControlActivity(this));
         list.add(new webcamstudio.controls.ControlFaceDetection(this));
-        list.add(new webcamstudio.controls.ControlLayout(this));
         list.add(new ControlAudio(this));
         return list;
     }

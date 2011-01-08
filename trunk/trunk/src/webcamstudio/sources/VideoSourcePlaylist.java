@@ -380,7 +380,6 @@ public class VideoSourcePlaylist extends VideoSource implements Runnable {
         java.util.Vector<JPanel> list = new java.util.Vector<JPanel>();
         list.add(new webcamstudio.controls.ControlEffects(this));
         list.add(new webcamstudio.controls.ControlShapes(this));
-        list.add(new webcamstudio.controls.ControlLayout(this));
         return list;
     }
 }

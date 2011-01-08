@@ -345,7 +345,6 @@ public class VideoSourceWidget extends VideoSource {
         java.util.Vector<JPanel> list = new java.util.Vector<JPanel>();
         list.add(new webcamstudio.controls.ControlEffects(this));
         list.add(new webcamstudio.controls.ControlShapes(this));
-        list.add(new webcamstudio.controls.ControlLayout(this));
         list.add(new webcamstudio.controls.ControlReload(this));
         return list;
     }

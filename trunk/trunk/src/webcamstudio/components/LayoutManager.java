@@ -68,7 +68,7 @@ public class LayoutManager extends javax.swing.JPanel implements SourceListener 
         iconFolder = new ImageIcon(getToolkit().getImage(java.net.URLClassLoader.getSystemResource("webcamstudio/resources/tango/folder.png")));
         iconText = new ImageIcon(getToolkit().getImage(java.net.URLClassLoader.getSystemResource("webcamstudio/resources/tango/format-text-bold.png")));
         sources = LayerManager.getSources();
-        root = new javax.swing.tree.DefaultMutableTreeNode("Layouts");
+        root = new javax.swing.tree.DefaultMutableTreeNode(java.util.ResourceBundle.getBundle("webcamstudio/Languages").getString("LAYOUTS"));
         model = new javax.swing.tree.DefaultTreeModel(root);
         treeLayouts.setModel(model);
         txtLayoutName.setEnabled(false);

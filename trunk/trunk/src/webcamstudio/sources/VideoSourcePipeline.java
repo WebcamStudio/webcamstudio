@@ -191,7 +191,6 @@ public class VideoSourcePipeline extends VideoSource implements org.gstreamer.el
         list.add(new webcamstudio.controls.ControlEffects(this));
         list.add(new webcamstudio.controls.ControlActivity(this));
         list.add(new webcamstudio.controls.ControlFaceDetection(this));
-        list.add(new webcamstudio.controls.ControlLayout(this));
 
         return list;
     }
