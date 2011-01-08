@@ -27,7 +27,7 @@ public class AudioFadeOut extends Transition {
                 volume-=deltaAudio;
                 source.setVolume((int)volume);
                 source.fireSourceUpdated();
-                Thread.sleep(100);
+                Thread.sleep(200);
             } catch (InterruptedException ex) {
                 Logger.getLogger(LayoutItem.class.getName()).log(Level.SEVERE, null, ex);
             }
