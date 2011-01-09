@@ -112,9 +112,15 @@ public class AudioMixer {
     }
     public void stop() {
         if (pipe != null && pipe.getState()==State.PLAYING) {
+            //To be able to stop the pipeline, we must make sure that something as recorded
+            // from the fifo_input
+            Pipeline monitor = Pipeline.launch("pulsesrc device=fifo_input ! fakesink");
+            monitor.play();
             pipe.stop();
             pipe.removeMany(audioEqualizer,audioVolume,elementSourceSystem,elementSourceMic,audioAdder, audioCaptureFilter, audioConvert, audioConvert2, audioOutputFilter, elementSink);
             pipe = null;
+            monitor.stop();
+            monitor=null;
         }
         isActive=false;
     }
