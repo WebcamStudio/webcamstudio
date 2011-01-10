@@ -55,7 +55,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
     private Mixer mixer = null;
     private boolean stopMe = false;
     private Preview preview = null;
-    private SinglePaint singlePaint = null;
     private int outputWidth = 320;
     private int outputHeight = 240;
     private File lastStudioFile = null;
@@ -763,7 +762,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         mnuVideoRecorder = new javax.swing.JMenuItem();
         mnuOutputSpnashot = new javax.swing.JMenuItem();
         mnuOutputFMEBroadcaster = new javax.swing.JMenuItem();
-        mnuBroadcaster = new javax.swing.JMenuItem();
         mnuOutputGISSCaster = new javax.swing.JMenuItem();
         mnuOutputSize = new javax.swing.JMenu();
         mnuOutputSize1 = new javax.swing.JRadioButtonMenuItem();
@@ -1144,16 +1142,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
             }
         });
         mnuOutput.add(mnuOutputFMEBroadcaster);
-
-        mnuBroadcaster.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-record.png"))); // NOI18N
-        mnuBroadcaster.setText(bundle.getString("BROADCASTER")); // NOI18N
-        mnuBroadcaster.setName("mnuBroadcaster"); // NOI18N
-        mnuBroadcaster.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuBroadcasterActionPerformed(evt);
-            }
-        });
-        mnuOutput.add(mnuBroadcaster);
 
         mnuOutputGISSCaster.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/gisstv2-16x16.png"))); // NOI18N
         mnuOutputGISSCaster.setText(bundle.getString("GISSCASTER")); // NOI18N
@@ -1841,15 +1829,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         }
     }//GEN-LAST:event_mnuSetFlashPermissionsActionPerformed
 
-    private void mnuBroadcasterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuBroadcasterActionPerformed
-        Broadcaster broadcaster = new Broadcaster(mixer, this, false);
-        broadcaster.pack();
-        broadcaster.setIconImage(((ImageIcon) mnuBroadcaster.getIcon()).getImage());
-        broadcaster.setLocationRelativeTo(this);
-        broadcaster.setVisible(true);
-
-    }//GEN-LAST:event_mnuBroadcasterActionPerformed
-
     private void mnuSourcesStreamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuSourcesStreamActionPerformed
         OpenURL url = new OpenURL(this, true);
         url.pack();
@@ -2171,7 +2150,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
     private javax.swing.JMenuItem mnuAboutItem;
     private javax.swing.JMenuItem mnuAddDir;
     private javax.swing.JMenuItem mnuAnimationCreator;
-    private javax.swing.JMenuItem mnuBroadcaster;
     private javax.swing.JMenuItem mnuGoToWebsite;
     private javax.swing.JMenu mnuLayout;
     private javax.swing.JMenuItem mnuLayoutF1;
