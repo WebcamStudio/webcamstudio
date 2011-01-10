@@ -19,8 +19,7 @@
  */
 package webcamstudio.sound;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Vector;
 import org.gstreamer.*;
 
 public class AudioMixer {
@@ -29,6 +28,9 @@ public class AudioMixer {
     private int middle = 0;
     private int high = 0;
     private boolean isActive = false;
+    private int micIndex = 0;
+    private int auxIndex = 1;
+    private Vector<String> audioDevices = new Vector<String>();
 
     // gst-launch gconfaudiosrc ! audio/x-raw-int,rate=44100,channels=2,signed=true,width=16 ! 
     // audioconvert ! ladspa-delay-5s Delay=$DEFAULT_DELAY Dry-Wet-Balance=1.0 ! audioconvert ! 
@@ -36,6 +38,30 @@ public class AudioMixer {
     public AudioMixer() {
     }
 
+    public void setMicInput(int index){
+        micIndex=index;
+        stop();
+        start();
+    }
+    public void setAuxInput(int index){
+        auxIndex=index;
+        stop();
+        start();
+    }
+    public int getMicInput(){
+        return micIndex;
+    }
+    public int getAuxInput(){
+        return auxIndex;
+    }
+    public String[] getInputDevices(){
+        String[] retValue = new String[audioDevices.size()];
+        int index = 0;
+        for (String d : audioDevices){
+            retValue[index++] = d;
+        }
+        return retValue;
+    }
     public void start() {
         if (!isActive){
         new Thread(new Runnable() {
@@ -52,6 +78,8 @@ public class AudioMixer {
                     elementSink.set("location", "/tmp/music.input");
                     if (input.exists()) {
                         pipe = new Pipeline("WebcamStudio Mixer");
+                        elementSourceMic.set("device", micIndex);
+                        elementSourceSystem.set("device", auxIndex);
                         audioCaptureFilter.setCaps(Caps.fromString("audio/x-raw-int"));
                         audioOutputFilter.setCaps(Caps.fromString("audio/x-raw-int,rate=44100,signed=true,width=16,channels=2"));
                         pipe.addMany(elementSourceSystem,elementSourceMic,audioVolume,audioAdder, audioCaptureFilter, audioOutputFilter, audioConvert, audioConvert2, audioEqualizer, elementSink);
@@ -65,7 +93,8 @@ public class AudioMixer {
                             }
                         });
 
-                        pipe.setState(State.PLAYING);
+                        pipe.play();
+                        updateAudioInput();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -124,6 +153,30 @@ public class AudioMixer {
         }
         isActive=false;
     }
+
+    private void updateAudioInput(){
+        
+        Element dev = ElementFactory.make("pulsesrc", "pulsesrc");
+        Element sink = ElementFactory.make("fakesink", "fakesink");
+        Pipeline p = new Pipeline("WebcamStudio Input Monitor");
+        audioDevices.clear();
+        p.addMany(dev,sink);
+        p.linkMany(dev,sink);
+        p.play();
+        String name = "";
+        int index = 0;
+        dev.set("device", index);
+        while (dev.get("device-name")!=null){
+            name = dev.get("device-name").toString();
+            audioDevices.add(name);
+            index++;
+            p.stop();
+            dev.set("device", index);
+            p.play();
+        }
+        p.stop();
+    }
+
     java.io.File configurationFile = null;
     Element elementSourceSystem = ElementFactory.make("pulsesrc", "pulsesrcSystem");
     Element elementSourceMic = ElementFactory.make("pulsesrc", "pulsesrcMic");
@@ -139,14 +192,6 @@ public class AudioMixer {
 
     public static void main(String[] args){
         Gst.init();
-        AudioMixer p = new AudioMixer();
-        p.start();
-        try {
-            Thread.sleep(100000);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(AudioMixer.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        p.stop();
-        p=null;
+        
     }
 }

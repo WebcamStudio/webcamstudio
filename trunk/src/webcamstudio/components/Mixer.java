@@ -162,6 +162,7 @@ public class Mixer implements java.lang.Runnable {
 
     @Override
     public void run() {
+        graphicConfiguration = java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
         while (!stopMe) {
             try {
                 drawImage();
