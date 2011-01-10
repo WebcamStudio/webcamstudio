@@ -11,6 +11,7 @@
 package webcamstudio.components;
 
 import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.image.BufferedImage;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -366,6 +367,7 @@ public class LayoutManager extends javax.swing.JPanel implements SourceListener 
     }// </editor-fold>//GEN-END:initComponents
 
     private void treeLayoutsValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN-FIRST:event_treeLayoutsValueChanged
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         DefaultMutableTreeNode node = (DefaultMutableTreeNode) evt.getPath().getLastPathComponent();
         txtLayoutName.setText("");
         txtLayoutName.setEnabled(false);
@@ -408,6 +410,7 @@ public class LayoutManager extends javax.swing.JPanel implements SourceListener 
                 }
             }
         }
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 
     }//GEN-LAST:event_treeLayoutsValueChanged
 
