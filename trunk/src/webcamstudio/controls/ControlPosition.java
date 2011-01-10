@@ -25,20 +25,20 @@ import webcamstudio.sources.VideoSourceMusic;
  */
 public class ControlPosition extends javax.swing.JPanel implements Controls {
 
-    LayoutItem source = null;
+    LayoutItem layout = null;
     String label = "Capture";
     private SourceListener listener = null;
 
     /** Creates new form ControlDesktop */
     public ControlPosition(LayoutItem src) {
         initComponents();
-        this.source = src;
+        this.layout = src;
         javax.swing.DefaultComboBoxModel transModelIn = new javax.swing.DefaultComboBoxModel(Transition.getTransitions().values().toArray());
         javax.swing.DefaultComboBoxModel transModelOut = new javax.swing.DefaultComboBoxModel(Transition.getTransitions().values().toArray());
         spinVolume.setModel(new SpinnerNumberModel(10,0,100,1));
-        spinVolume.setEnabled(source.getSource().hasSound());
-        spinVolume.setValue(new Integer(source.getVolume()));
-        if (source.getSource() instanceof VideoSourceMusic) {
+        spinVolume.setEnabled(layout.getSource().hasSound());
+        spinVolume.setValue(new Integer(layout.getVolume()));
+        if (layout.getSource() instanceof VideoSourceMusic) {
             transModelIn = new javax.swing.DefaultComboBoxModel(Transition.getAudioTransitions().values().toArray());
             transModelOut = new javax.swing.DefaultComboBoxModel(Transition.getAudioTransitions().values().toArray());
         }
@@ -58,27 +58,27 @@ public class ControlPosition extends javax.swing.JPanel implements Controls {
         }
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("webcamstudio.Languages");
         label = bundle.getString("POSITION");
-        spinWidth.setValue(source.getWidth());
-        spinHeight.setValue(source.getHeight());
-        spinX.setValue(source.getX());
-        spinY.setValue(source.getY());
-        if (source.getSource() instanceof VideoSourceMovie) {
+        spinWidth.setValue(layout.getWidth());
+        spinHeight.setValue(layout.getHeight());
+        spinX.setValue(layout.getX());
+        spinY.setValue(layout.getY());
+        if (layout.getSource() instanceof VideoSourceMovie) {
             lblSeek.setVisible(true);
             slideSeek.setVisible(true);
-            slideSeek.setMaximum((int) ((VideoSourceMovie) source.getSource()).getDuration());
+            slideSeek.setMaximum((int) ((VideoSourceMovie) layout.getSource()).getDuration());
             slideSeek.setMinimum(0);
-            slideSeek.setValue((int) ((VideoSourceMovie) source.getSource()).getSeekPosition());
+            slideSeek.setValue((int) ((VideoSourceMovie) layout.getSource()).getSeekPosition());
             new Thread(new Runnable() {
 
                 @Override
                 public void run() {
-                    while (source != null) {
-                        if (slideSeek.getMaximum() == 0 && (source.getSource().isPlaying() || source.getSource().isPaused())) {
-                            slideSeek.setMaximum((int) ((VideoSourceMovie) source.getSource()).getDuration());
+                    while (layout != null) {
+                        if (slideSeek.getMaximum() == 0 && (layout.getSource().isPlaying() || layout.getSource().isPaused())) {
+                            slideSeek.setMaximum((int) ((VideoSourceMovie) layout.getSource()).getDuration());
                             slideSeek.setMajorTickSpacing((slideSeek.getMaximum() / 5) / 60 * 60);
                             slideSeek.setMinorTickSpacing(0);
                         }
-                        int pos = (int) ((VideoSourceMovie) source.getSource()).getSeekPosition();
+                        int pos = (int) ((VideoSourceMovie) layout.getSource()).getSeekPosition();
                         if (!slideSeek.getValueIsAdjusting()) {
                             slideSeek.setValue(pos);
                         }
@@ -90,27 +90,27 @@ public class ControlPosition extends javax.swing.JPanel implements Controls {
                     }
                 }
             }).start();
-        } else if (source.getSource() instanceof VideoSourceMusic) {
+        } else if (layout.getSource() instanceof VideoSourceMusic) {
             spinHeight.setEnabled(false);
             spinWidth.setEnabled(false);
             spinX.setEnabled(false);
             spinY.setEnabled(false);
             lblSeek.setVisible(true);
             slideSeek.setVisible(true);
-            slideSeek.setMaximum((int) ((VideoSourceMusic) source.getSource()).getDuration());
+            slideSeek.setMaximum((int) ((VideoSourceMusic) layout.getSource()).getDuration());
             slideSeek.setMinimum(0);
-            slideSeek.setValue((int) ((VideoSourceMusic) source.getSource()).getSeekPosition());
+            slideSeek.setValue((int) ((VideoSourceMusic) layout.getSource()).getSeekPosition());
             new Thread(new Runnable() {
 
                 @Override
                 public void run() {
-                    while (source != null) {
-                        if (slideSeek.getMaximum() == 0 && (source.getSource().isPlaying() || source.getSource().isPaused())) {
-                            slideSeek.setMaximum((int) ((VideoSourceMusic) source.getSource()).getDuration());
+                    while (layout != null) {
+                        if (slideSeek.getMaximum() == 0 && (layout.getSource().isPlaying() || layout.getSource().isPaused())) {
+                            slideSeek.setMaximum((int) ((VideoSourceMusic) layout.getSource()).getDuration());
                             slideSeek.setMajorTickSpacing((slideSeek.getMaximum() / 5) / 60 * 60);
                             slideSeek.setMinorTickSpacing(0);
                         }
-                        int pos = (int) ((VideoSourceMusic) source.getSource()).getSeekPosition();
+                        int pos = (int) ((VideoSourceMusic) layout.getSource()).getSeekPosition();
                         if (!slideSeek.getValueIsAdjusting()) {
                             slideSeek.setValue(pos);
                         }
@@ -407,92 +407,112 @@ public class ControlPosition extends javax.swing.JPanel implements Controls {
     }//GEN-LAST:event_slideSeekMouseDragged
 
     private void slideSeekMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_slideSeekMouseReleased
-        if (source.getSource() instanceof VideoSourceMovie) {
-            ((VideoSourceMovie) source.getSource()).seek(slideSeek.getValue());
-        } else if (source.getSource() instanceof VideoSourceMusic) {
-            ((VideoSourceMusic) source.getSource()).seek(slideSeek.getValue());
+        if (layout.getSource() instanceof VideoSourceMovie) {
+            ((VideoSourceMovie) layout.getSource()).seek(slideSeek.getValue());
+        } else if (layout.getSource() instanceof VideoSourceMusic) {
+            ((VideoSourceMusic) layout.getSource()).seek(slideSeek.getValue());
         }
     }//GEN-LAST:event_slideSeekMouseReleased
 
     private void btnMoveUpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMoveUpActionPerformed
         if (listener != null) {
-            listener.sourceMoveUp(source.getSource());
+            listener.sourceMoveUp(layout.getSource());
         }
 }//GEN-LAST:event_btnMoveUpActionPerformed
 
     private void btnMoveDownActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMoveDownActionPerformed
         if (listener != null) {
-            listener.sourceMoveDown(source.getSource());
+            listener.sourceMoveDown(layout.getSource());
         }
 }//GEN-LAST:event_btnMoveDownActionPerformed
 
     private void spinHeightStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinHeightStateChanged
-        source.setHeight((Integer) spinHeight.getValue());
-        if (source.isActive()){
-            source.getSource().setOutputHeight(source.getHeight());
+        layout.setHeight((Integer) spinHeight.getValue());
+        if (listener!=null){
+            listener.sourceUpdate(layout.getSource());
+        }
+        if (layout.isActive()){
+            layout.getSource().setOutputHeight(layout.getHeight());
         }
     }//GEN-LAST:event_spinHeightStateChanged
 
     private void spinWidthStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinWidthStateChanged
-        source.setWidth((Integer) spinWidth.getValue());
-        if (source.isActive()){
-            source.getSource().setOutputWidth(source.getWidth());
+        layout.setWidth((Integer) spinWidth.getValue());
+        if (listener!=null){
+            listener.sourceUpdate(layout.getSource());
+        }
+        if (layout.isActive()){
+            layout.getSource().setOutputWidth(layout.getWidth());
         }
     }//GEN-LAST:event_spinWidthStateChanged
 
     private void spinYStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinYStateChanged
-        source.setY((Integer) spinY.getValue());
-        if (source.isActive()){
-            source.getSource().setShowAtY(source.getY());
+        layout.setY((Integer) spinY.getValue());
+        if (listener!=null){
+            listener.sourceUpdate(layout.getSource());
+        }
+        if (layout.isActive()){
+            layout.getSource().setShowAtY(layout.getY());
         }
     }//GEN-LAST:event_spinYStateChanged
 
     private void spinXStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinXStateChanged
-        source.setX((Integer) spinX.getValue());
-        if (source.isActive()){
-            source.getSource().setShowAtX(source.getX());
+        layout.setX((Integer) spinX.getValue());
+        if (listener!=null){
+            listener.sourceUpdate(layout.getSource());
+        }
+        if (layout.isActive()){
+            layout.getSource().setShowAtX(layout.getX());
         }
     }//GEN-LAST:event_spinXStateChanged
 
     private void cboTransInActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboTransInActionPerformed
-        source.setTransitionIn((Transition) cboTransIn.getSelectedItem());
+        layout.setTransitionIn((Transition) cboTransIn.getSelectedItem());
+        if (listener!=null){
+            listener.sourceUpdate(layout.getSource());
+        }
+
     }//GEN-LAST:event_cboTransInActionPerformed
 
     private void cboTransOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboTransOutActionPerformed
-        source.setTransitionOut((Transition) cboTransOut.getSelectedItem());
+        layout.setTransitionOut((Transition) cboTransOut.getSelectedItem());
+        if (listener!=null){
+            listener.sourceUpdate(layout.getSource());
+        }
+
     }//GEN-LAST:event_cboTransOutActionPerformed
 
     private void btnPlayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPlayActionPerformed
-        if (!source.getSource().isPlaying() || source.getSource().isPaused()) {
-            if (source.getSource().isPaused()) {
-                source.getSource().play();
+        if (!layout.getSource().isPlaying() || layout.getSource().isPaused()) {
+            if (layout.getSource().isPaused()) {
+                layout.getSource().play();
             } else {
-                source.getSource().startSource();
+                layout.getSource().startSource();
             }
         }
     }//GEN-LAST:event_btnPlayActionPerformed
 
     private void btnPauseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPauseActionPerformed
-        if (source.getSource().isPlaying()) {
-            source.getSource().pause();
+        if (layout.getSource().isPlaying()) {
+            layout.getSource().pause();
         }        // TODO add your handling code here:
     }//GEN-LAST:event_btnPauseActionPerformed
 
     private void btnStopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStopActionPerformed
-        if (source.getSource().isPaused() || source.getSource().isPlaying()) {
-            source.getSource().stopSource();
+        if (layout.getSource().isPaused() || layout.getSource().isPlaying()) {
+            layout.getSource().stopSource();
         }
     }//GEN-LAST:event_btnStopActionPerformed
 
     private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveActionPerformed
         if (listener != null) {
-            listener.sourceRemoved(source.getSource());
+            listener.sourceRemoved(layout.getSource());
             listener = null;
         }
     }//GEN-LAST:event_btnRemoveActionPerformed
 
     private void spinVolumeStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinVolumeStateChanged
-        source.setVolume((Integer)spinVolume.getValue());
+        layout.setVolume((Integer)spinVolume.getValue());
     }//GEN-LAST:event_spinVolumeStateChanged
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -527,6 +547,6 @@ public class ControlPosition extends javax.swing.JPanel implements Controls {
 
     @Override
     public void removeControl() {
-        source = null;
+        layout = null;
     }
 }

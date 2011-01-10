@@ -10,6 +10,7 @@
  */
 package webcamstudio.components;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.image.BufferedImage;
@@ -87,10 +88,14 @@ public class LayoutManager extends javax.swing.JPanel implements SourceListener 
                 Component retValue = super.getTreeCellRendererComponent(tree, value, sel, expanded, isleaf, index, hasFocus);
                 if (retValue instanceof JLabel) {
                     JLabel label = (JLabel) retValue;
+                    label.setForeground(Color.BLACK);
                     if (((javax.swing.tree.DefaultMutableTreeNode) value).getUserObject() instanceof LayoutItem) {
                         VideoSource v = ((LayoutItem) ((javax.swing.tree.DefaultMutableTreeNode) value).getUserObject()).getSource();
                         label.setText(v.getName());
                         label.setToolTipText(v.getLocation());
+                        if (!v.isPlaying()) {
+                            label.setForeground(Color.GRAY);
+                        }
                         if (v instanceof VideoSourceImage) {
                             VideoSourceImage source = (VideoSourceImage) v;
                             if (source.getThumnail() == null) {
@@ -116,7 +121,7 @@ public class LayoutManager extends javax.swing.JPanel implements SourceListener 
                         label.setIcon(new ImageIcon(l.getPreview().getScaledInstance(32, 32, BufferedImage.SCALE_FAST)));
 
                     } else {
-                        label.setIcon(iconFolder);
+                        label.setIcon(null);
                     }
                     label.setDisabledIcon(label.getIcon());
                 }
@@ -225,7 +230,15 @@ public class LayoutManager extends javax.swing.JPanel implements SourceListener 
         for (LayoutItem li : l.getItems()) {
             DefaultMutableTreeNode liNode = new DefaultMutableTreeNode(li);
             node.add(liNode);
+            updateItemDetails(li,liNode);
         }
+    }
+
+    private void updateItemDetails (LayoutItem li,DefaultMutableTreeNode node){
+        node.removeAllChildren();
+        node.add(new DefaultMutableTreeNode(li.getX() + "," + li.getY()));
+        node.add(new DefaultMutableTreeNode(li.getWidth() + "x" + li.getHeight()));
+        node.add(new DefaultMutableTreeNode(li.getTransitionIn().toString() + " - " + li.getTransitionOut().toString()));
     }
 
     /** This method is called from within the constructor to
@@ -374,12 +387,11 @@ public class LayoutManager extends javax.swing.JPanel implements SourceListener 
         btnApply.setEnabled(false);
         btnRemove.setEnabled(false);
         cboHotkeys.setEnabled(false);
-
+        tabControls.removeAll();
+        tabControls.revalidate();
 
         Object obj = node.getUserObject();
         if (obj instanceof Layout) {
-            tabControls.removeAll();
-            tabControls.revalidate();
             currentLayout = (Layout) obj;
             btnApply.setEnabled(true);
             btnRemove.setEnabled(true);
@@ -399,7 +411,7 @@ public class LayoutManager extends javax.swing.JPanel implements SourceListener 
                 cboHotkeys.setEnabled(true);
                 cboHotkeys.setSelectedItem(currentLayout.getHotKey());
                 txtLayoutName.setEnabled(true);
-                tabControls.removeAll();
+                
                 ControlPosition ctrl = new ControlPosition(currentLayoutItem);
                 ctrl.setListener(this);
                 tabControls.add(ctrl.getLabel(), ctrl);
@@ -497,6 +509,22 @@ public class LayoutManager extends javax.swing.JPanel implements SourceListener 
 
     @Override
     public void sourceUpdate(VideoSource source) {
+        Enumeration l = root.children();
+        while (l.hasMoreElements()) {
+            DefaultMutableTreeNode node = (DefaultMutableTreeNode) l.nextElement();
+            if (node.getUserObject().equals(currentLayout)) {
+                Enumeration li = node.children();
+                while (li.hasMoreElements()) {
+                    DefaultMutableTreeNode subnode = (DefaultMutableTreeNode) li.nextElement();
+                    if (subnode.getUserObject().equals(currentLayoutItem)) {
+                        updateItemDetails(currentLayoutItem, subnode);
+                        model.reload(subnode);
+                        treeLayouts.setSelectionPath(new TreePath(subnode.getPath()));
+                        break;
+                    }
+                }
+            }
+        }
         treeLayouts.revalidate();
     }
 
