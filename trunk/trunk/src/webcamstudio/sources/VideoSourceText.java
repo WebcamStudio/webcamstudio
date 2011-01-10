@@ -408,6 +408,10 @@ public class VideoSourceText extends VideoSource {
         if (text.indexOf("#NOW") != -1) {
             retValue = retValue.replaceAll("#NOW", new Date().toString());
         }
+        if (text.indexOf("#RHYTHMBOX:STREAMTITLE") != -1) {
+            retValue = retValue.replaceAll("#RHYTHMBOX:STREAMTITLE", rhythmbox.getCurrentSongProperties("rb:stream-song-title"));
+        }
+
         if (text.indexOf("#HOUR") != -1) {
             tmp = Calendar.getInstance().get(Calendar.HOUR_OF_DAY) + "";
             if (tmp.length() == 1) {
@@ -420,7 +424,7 @@ public class VideoSourceText extends VideoSource {
             if (tmp.length() == 1) {
                 tmp = "0" + tmp;
             }
-            retValue = retValue.replaceAll("#MINUTE",tmp);
+            retValue = retValue.replaceAll("#MINUTE", tmp);
         }
         if (text.indexOf("#SECOND") != -1) {
             tmp = Calendar.getInstance().get(Calendar.SECOND) + "";
@@ -436,7 +440,7 @@ public class VideoSourceText extends VideoSource {
             retValue = retValue.replaceAll("#DAY", Calendar.getInstance().getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault()));
         }
         if (text.indexOf("#MONTH") != -1) {
-            tmp = (Calendar.getInstance().get(Calendar.MONTH) +1)+ "";
+            tmp = (Calendar.getInstance().get(Calendar.MONTH) + 1) + "";
             if (tmp.length() == 1) {
                 tmp = "0" + tmp;
             }
@@ -450,7 +454,7 @@ public class VideoSourceText extends VideoSource {
             if (tmp.length() == 1) {
                 tmp = "0" + tmp;
             }
-            retValue = retValue.replaceAll("#DATE",tmp);
+            retValue = retValue.replaceAll("#DATE", tmp);
         }
 
         return retValue;
