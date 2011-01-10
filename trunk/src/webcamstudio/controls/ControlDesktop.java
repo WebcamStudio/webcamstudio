@@ -30,8 +30,8 @@ public class ControlDesktop extends javax.swing.JPanel implements Controls {
         this.source=source;
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("webcamstudio.Languages");
         label = bundle.getString("FORMAT");
-        spinX.setValue(source.getShowAtX());
-        spinY.setValue(source.getShowAtY());
+        spinX.setValue(source.getCaptureAtX());
+        spinY.setValue(source.getCaptureAtY());
         spinWidth.setValue(source.getCaptureWidth());
         spinHeight.setValue(source.getCaptureHeight());
         chkShowMouseCursor.setSelected(source.isShowMouseCursor());
