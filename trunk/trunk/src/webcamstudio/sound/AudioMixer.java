@@ -19,18 +19,15 @@
  */
 package webcamstudio.sound;
 
-import java.util.Vector;
 import org.gstreamer.*;
 
 public class AudioMixer {
+
     private int volume = 100;
     private int low = 0;
     private int middle = 0;
     private int high = 0;
     private boolean isActive = false;
-    private int micIndex = 0;
-    private int auxIndex = 1;
-    private Vector<String> audioDevices = new Vector<String>();
 
     // gst-launch gconfaudiosrc ! audio/x-raw-int,rate=44100,channels=2,signed=true,width=16 ! 
     // audioconvert ! ladspa-delay-5s Delay=$DEFAULT_DELAY Dry-Wet-Balance=1.0 ! audioconvert ! 
@@ -38,160 +35,119 @@ public class AudioMixer {
     public AudioMixer() {
     }
 
-    public void setMicInput(int index){
-        micIndex=index;
-        stop();
-        start();
-    }
-    public void setAuxInput(int index){
-        auxIndex=index;
-        stop();
-        start();
-    }
-    public int getMicInput(){
-        return micIndex;
-    }
-    public int getAuxInput(){
-        return auxIndex;
-    }
-    public String[] getInputDevices(){
-        String[] retValue = new String[audioDevices.size()];
-        int index = 0;
-        for (String d : audioDevices){
-            retValue[index++] = d;
-        }
-        return retValue;
-    }
+
     public void start() {
-        if (!isActive){
-        new Thread(new Runnable() {
-            public void run() {
-                try {
-                    isActive=true;
-                    java.io.File input = new java.io.File("/tmp/music.input");
-                    if (!input.exists()) {
-                        Process p = Runtime.getRuntime().exec("pactl load-module module-pipe-source");
-                        p.waitFor();
-                        p.destroy();
-                        p = null;
-                    }
-                    elementSink.set("location", "/tmp/music.input");
-                    if (input.exists()) {
-                        pipe = new Pipeline("WebcamStudio Mixer");
-                        elementSourceMic.set("device", micIndex);
-                        elementSourceSystem.set("device", auxIndex);
-                        audioCaptureFilter.setCaps(Caps.fromString("audio/x-raw-int"));
-                        audioOutputFilter.setCaps(Caps.fromString("audio/x-raw-int,rate=44100,signed=true,width=16,channels=2"));
-                        pipe.addMany(elementSourceSystem,elementSourceMic,audioVolume,audioAdder, audioCaptureFilter, audioOutputFilter, audioConvert, audioConvert2, audioEqualizer, elementSink);
-                        Element.linkMany(elementSourceMic, audioCaptureFilter, audioConvert,audioVolume, audioEqualizer, audioAdder,audioConvert2, audioOutputFilter, elementSink);
-                        elementSourceSystem.link(audioAdder);
-                        pipe.getBus().connect(new Bus.ERROR() {
+        if (!isActive) {
+            new Thread(new Runnable() {
 
-                            public void errorMessage(GstObject arg0, int arg1, String arg2) {
-                                System.out.println("Error: " + arg0 + "," + arg1 + ", " + arg2);
-                                pipe.setState(State.NULL);
-                            }
-                        });
+                public void run() {
+                    try {
+                        isActive = true;
+                        java.io.File input = new java.io.File("/tmp/music.input");
+                        if (!input.exists()) {
+                            Runtime.getRuntime().exec("pulseaudio -k");
+                            Process p = Runtime.getRuntime().exec("pactl load-module module-pipe-source");
+                            p.waitFor();
+                            p.destroy();
+                            p = null;
+                        }
+                        elementSink.set("location", "/tmp/music.input");
+                        if (input.exists()) {
+                            pipe = new Pipeline("WebcamStudio Mixer");
+                            audioCaptureFilter.setCaps(Caps.fromString("audio/x-raw-int"));
+                            audioOutputFilter.setCaps(Caps.fromString("audio/x-raw-int,rate=44100,signed=true,width=16,channels=2"));
+                            pipe.addMany(elementSourceSystem, elementSourceMic, audioVolume, audioAdder, audioCaptureFilter, audioOutputFilter, audioConvert, audioConvert2, audioEqualizer, elementSink);
+                            Element.linkMany(elementSourceMic, audioCaptureFilter, audioConvert, audioVolume, audioEqualizer, audioAdder, audioConvert2, audioOutputFilter, elementSink);
+                            elementSourceSystem.link(audioAdder);
+                            pipe.getBus().connect(new Bus.ERROR() {
 
-                        pipe.play();
-                        updateAudioInput();
+                                public void errorMessage(GstObject arg0, int arg1, String arg2) {
+                                    System.out.println("Error: " + arg0 + "," + arg1 + ", " + arg2);
+                                    pipe.setState(State.NULL);
+                                }
+                            });
+
+                            pipe.play();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
                 }
-            }
-        }).start();
+            }).start();
         }
     }
 
-    public boolean isActive(){
+    public boolean isActive() {
         return isActive;
     }
+
     public void setLowFilter(int f) {
-        low=f;
+        low = f;
         audioEqualizer.set("band0", (float) f);
     }
 
     public void setMiddleFilter(int f) {
-        middle=f;
+        middle = f;
         audioEqualizer.set("band1", (float) f);
     }
 
     public void setHighFilter(int f) {
-        high=f;
+        high = f;
         audioEqualizer.set("band2", (float) f);
     }
-    public int getLowFilter(){
+
+    public int getLowFilter() {
         return low;
     }
-    public int getMiddleFilter(){
+
+    public int getMiddleFilter() {
         return middle;
     }
-    public int getHighFilter(){
+
+    public int getHighFilter() {
         return high;
     }
+
     public void setVolume(int v) {
         volume = v;
         audioVolume.set("volume", (double) v / 100D);
 
     }
 
-    public int getVolume(){
+    public int getVolume() {
         return volume;
     }
+
     public void stop() {
-        if (pipe != null && pipe.getState()==State.PLAYING) {
+        if (pipe != null && pipe.getState() == State.PLAYING) {
             //To be able to stop the pipeline, we must make sure that something as recorded
             // from the fifo_input
             Pipeline monitor = Pipeline.launch("pulsesrc device=fifo_input ! fakesink");
             monitor.play();
             pipe.stop();
-            pipe.removeMany(audioEqualizer,audioVolume,elementSourceSystem,elementSourceMic,audioAdder, audioCaptureFilter, audioConvert, audioConvert2, audioOutputFilter, elementSink);
+            pipe.removeMany(audioEqualizer, audioVolume, elementSourceSystem, elementSourceMic, audioAdder, audioCaptureFilter, audioConvert, audioConvert2, audioOutputFilter, elementSink);
             pipe = null;
             monitor.stop();
-            monitor=null;
+            monitor = null;
         }
-        isActive=false;
+        isActive = false;
     }
 
-    private void updateAudioInput(){
-        
-        Element dev = ElementFactory.make("pulsesrc", "pulsesrc");
-        Element sink = ElementFactory.make("fakesink", "fakesink");
-        Pipeline p = new Pipeline("WebcamStudio Input Monitor");
-        audioDevices.clear();
-        p.addMany(dev,sink);
-        p.linkMany(dev,sink);
-        p.play();
-        String name = "";
-        int index = 0;
-        dev.set("device", index);
-        while (dev.get("device-name")!=null){
-            name = dev.get("device-name").toString();
-            audioDevices.add(name);
-            index++;
-            p.stop();
-            dev.set("device", index);
-            p.play();
-        }
-        p.stop();
-    }
+    private java.io.File configurationFile = null;
+    private Element elementSourceSystem = ElementFactory.make("pulsesrc", "pulsesrcSystem");
+    private Element elementSourceMic = ElementFactory.make("pulsesrc", "pulsesrcMic");
+    private Element elementSink = ElementFactory.make("filesink", "filesink");
+    private Element audioCaptureFilter = ElementFactory.make("capsfilter", "audiocapturefilter");
+    private Element audioOutputFilter = ElementFactory.make("capsfilter", "audiooutputfilter");
+    private Element audioConvert = ElementFactory.make("audioconvert", "audioconvert");
+    private Element audioConvert2 = ElementFactory.make("audioconvert", "audioconvert2");
+    private Element audioEqualizer = ElementFactory.make("equalizer-3bands", "equalizer-3bands");
+    private Element audioVolume = ElementFactory.make("volume", "volume");
+    private Element audioAdder = ElementFactory.make("adder", "adder");
+    private Pipeline pipe = null;
 
-    java.io.File configurationFile = null;
-    Element elementSourceSystem = ElementFactory.make("pulsesrc", "pulsesrcSystem");
-    Element elementSourceMic = ElementFactory.make("pulsesrc", "pulsesrcMic");
-    Element elementSink = ElementFactory.make("filesink", "filesink");
-    Element audioCaptureFilter = ElementFactory.make("capsfilter", "audiocapturefilter");
-    Element audioOutputFilter = ElementFactory.make("capsfilter", "audiooutputfilter");
-    Element audioConvert = ElementFactory.make("audioconvert", "audioconvert");
-    Element audioConvert2 = ElementFactory.make("audioconvert", "audioconvert2");
-    Element audioEqualizer = ElementFactory.make("equalizer-3bands", "equalizer-3bands");
-    Element audioVolume = ElementFactory.make("volume", "volume");
-    Element audioAdder = ElementFactory.make("adder", "adder");
-    Pipeline pipe = null;
-
-    public static void main(String[] args){
+    public static void main(String[] args) {
         Gst.init();
-        
+
     }
 }

@@ -1779,6 +1779,9 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         layoutManager.quitting();
+        if (audioMixer.isActive()){
+            audioMixer.stop();
+        }
         savePrefs();
     }//GEN-LAST:event_formWindowClosing
 

@@ -34,21 +34,7 @@ public class Layout {
     private int micLow = 0;
     private int micMiddle = 0;
     private int micHigh = 0;
-    private int micIndex = 0;
-    private int auxIndex = 1;
 
-    public void setMicInput(int index){
-        micIndex=index;
-    }
-    public void setAuxInput(int index){
-        auxIndex=index;
-    }
-    public int getMicInput(){
-        return micIndex;
-    }
-    public int getAuxInput(){
-        return auxIndex;
-    }
 
     public int getMicVolume(){
         return micVolume;
@@ -263,8 +249,6 @@ public class Layout {
         layout.putInt("miclow",micLow);
         layout.putInt("micmiddle",micMiddle);
         layout.putInt("michigh",micHigh);
-        layout.putInt("micindex",micIndex);
-        layout.putInt("auxindex",auxIndex);
         for (LayoutItem item : items.values()) {
             item.applyStudioConfig(layout.node("Items").node("" + item.getLayer()));
         }
@@ -279,8 +263,6 @@ public class Layout {
         micLow = layout.getInt("miclow",micLow);
         micMiddle = layout.getInt("micmiddle",micMiddle);
         micHigh = layout.getInt("michigh",micHigh);
-        micIndex = layout.getInt("micindex",micIndex);
-        auxIndex = layout.getInt("auxindex",auxIndex);
         String[] itemIndexes = layout.node("Items").childrenNames();
         for (String itemIndex : itemIndexes) {
             LayoutItem item = new LayoutItem(LayerManager.getByUUID(layout.node("Items").node(itemIndex).get("uuid", "")), layoutUUID, 0);
