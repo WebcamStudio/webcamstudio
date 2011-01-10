@@ -11,7 +11,9 @@
 
 package webcamstudio.components;
 
+import javax.swing.DefaultComboBoxModel;
 import webcamstudio.layout.Layout;
+import webcamstudio.sound.AudioMixer;
 
 /**
  *
@@ -20,15 +22,17 @@ import webcamstudio.layout.Layout;
 public class AudioMixerPanel extends javax.swing.JPanel {
     
     Layout layout = null;
+    AudioMixer audioMixer = null;
     /** Creates new form AudioMixerPanel */
-    public AudioMixerPanel(Layout l) {
+    public AudioMixerPanel(Layout l,AudioMixer mixer) {
         initComponents();
         layout = l;
+        audioMixer=mixer;
         sliderVolume.setValue(layout.getMicVolume());
         sliderLow.setValue(layout.getMicLow());
         sliderMiddle.setValue(layout.getMicMiddle());
         sliderHigh.setValue(layout.getMicHigh());
-        
+
     }
 
     /** This method is called from within the constructor to
@@ -49,10 +53,6 @@ public class AudioMixerPanel extends javax.swing.JPanel {
         sliderLow = new javax.swing.JSlider();
         sliderMiddle = new javax.swing.JSlider();
         sliderHigh = new javax.swing.JSlider();
-        jLabel6 = new javax.swing.JLabel();
-        cboMicIndex = new javax.swing.JComboBox();
-        jLabel7 = new javax.swing.JLabel();
-        cboAuxIndex = new javax.swing.JComboBox();
 
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("webcamstudio/Languages"); // NOI18N
         jLabel1.setText(bundle.getString("MICROPHONE")); // NOI18N
@@ -115,18 +115,6 @@ public class AudioMixerPanel extends javax.swing.JPanel {
             }
         });
 
-        jLabel6.setText(bundle.getString("MIC_INPUT")); // NOI18N
-        jLabel6.setName("jLabel6"); // NOI18N
-
-        cboMicIndex.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        cboMicIndex.setName("cboMicIndex"); // NOI18N
-
-        jLabel7.setText(bundle.getString("AUX_INPUT")); // NOI18N
-        jLabel7.setName("jLabel7"); // NOI18N
-
-        cboAuxIndex.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        cboAuxIndex.setName("cboAuxIndex"); // NOI18N
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -138,13 +126,9 @@ public class AudioMixerPanel extends javax.swing.JPanel {
                     .addComponent(jLabel5)
                     .addComponent(jLabel4)
                     .addComponent(jLabel3)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel6)
-                    .addComponent(jLabel7))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(jLabel2))
+                .addGap(49, 49, 49)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(cboAuxIndex, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cboMicIndex, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(sliderLow, javax.swing.GroupLayout.DEFAULT_SIZE, 240, Short.MAX_VALUE)
                     .addComponent(sliderVolume, javax.swing.GroupLayout.DEFAULT_SIZE, 240, Short.MAX_VALUE)
                     .addComponent(sliderMiddle, javax.swing.GroupLayout.DEFAULT_SIZE, 240, Short.MAX_VALUE)
@@ -176,45 +160,45 @@ public class AudioMixerPanel extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(sliderHigh, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel5))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel6)
-                    .addComponent(cboMicIndex, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel7)
-                    .addComponent(cboAuxIndex, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(86, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void sliderVolumeStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sliderVolumeStateChanged
         layout.setMicVolume(sliderVolume.getValue());
+        if (layout.isActive()){
+            audioMixer.setVolume(sliderVolume.getValue());
+        }
     }//GEN-LAST:event_sliderVolumeStateChanged
 
     private void sliderLowStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sliderLowStateChanged
         layout.setMicLow(sliderLow.getValue());
+        if (layout.isActive()){
+            audioMixer.setLowFilter(sliderLow.getValue());
+        }
     }//GEN-LAST:event_sliderLowStateChanged
 
     private void sliderMiddleStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sliderMiddleStateChanged
         layout.setMicMiddle(sliderMiddle.getValue());
+        if (layout.isActive()){
+            audioMixer.setMiddleFilter(sliderMiddle.getValue());
+        }
     }//GEN-LAST:event_sliderMiddleStateChanged
 
     private void sliderHighStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sliderHighStateChanged
        layout.setMicHigh(sliderHigh.getValue());
+        if (layout.isActive()){
+            audioMixer.setHighFilter(sliderHigh.getValue());
+        }
     }//GEN-LAST:event_sliderHighStateChanged
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox cboAuxIndex;
-    private javax.swing.JComboBox cboMicIndex;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
     private javax.swing.JSlider sliderHigh;
     private javax.swing.JSlider sliderLow;
     private javax.swing.JSlider sliderMiddle;

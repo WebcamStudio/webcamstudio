@@ -62,10 +62,11 @@ public class LayoutManager extends javax.swing.JPanel implements SourceListener 
     private boolean stopMe = false;
     private AudioMixer audioMixer = null;
     private String micLabel = "Microphone";
+
     /** Creates new form LayoutManager */
     public LayoutManager(AudioMixer mixer) {
         initComponents();
-        audioMixer=mixer;
+        audioMixer = mixer;
         iconMovie = new ImageIcon(getToolkit().getImage(java.net.URLClassLoader.getSystemResource("webcamstudio/resources/tango/video-display.png")));
         iconImage = new ImageIcon(getToolkit().getImage(java.net.URLClassLoader.getSystemResource("webcamstudio/resources/tango/image-x-generic.png")));
         iconDevice = new ImageIcon(getToolkit().getImage(java.net.URLClassLoader.getSystemResource("webcamstudio/resources/tango/camera-video.png")));
@@ -382,9 +383,10 @@ public class LayoutManager extends javax.swing.JPanel implements SourceListener 
             btnRemove.setEnabled(true);
             cboHotkeys.setEnabled(true);
             cboHotkeys.setSelectedItem(currentLayout.getHotKey());
-            AudioMixerPanel mixerPanel = new AudioMixerPanel((Layout)obj);
-            tabControls.add(micLabel, mixerPanel);
-            mixerPanel.setEnabled(audioMixer.isActive());
+            if (audioMixer.isActive()) {
+                AudioMixerPanel mixerPanel = new AudioMixerPanel((Layout) obj, audioMixer);
+                tabControls.add(micLabel, mixerPanel);
+            }
             txtLayoutName.setText(currentLayout.toString());
             txtLayoutName.setEnabled(true);
         } else if (obj instanceof LayoutItem) {
@@ -429,6 +431,7 @@ public class LayoutManager extends javax.swing.JPanel implements SourceListener 
 
     private void btnApplyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnApplyActionPerformed
         new Thread(new Runnable() {
+
             @Override
             public void run() {
                 btnApply.setEnabled(false);
