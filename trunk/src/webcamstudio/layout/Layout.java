@@ -12,7 +12,6 @@ import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
-import webcamstudio.components.LayerManager;
 import webcamstudio.layout.transitions.Transition;
 import webcamstudio.sources.*;
 import webcamstudio.studio.Studio;
@@ -34,32 +33,43 @@ public class Layout {
     private int micLow = 0;
     private int micMiddle = 0;
     private int micHigh = 0;
+    private static Layout activeLayout = null;
 
-
-    public int getMicVolume(){
+    public static Layout getActiveLayout(){
+        return activeLayout;
+    }
+    public int getMicVolume() {
         return micVolume;
     }
-    public int getMicLow(){
+
+    public int getMicLow() {
         return micLow;
     }
-    public int getMicMiddle(){
+
+    public int getMicMiddle() {
         return micMiddle;
     }
-    public int getMicHigh(){
+
+    public int getMicHigh() {
         return micHigh;
     }
-    public void setMicVolume(int v){
-        micVolume=v;
+
+    public void setMicVolume(int v) {
+        micVolume = v;
     }
-    public void setMicLow(int l){
-        micLow=l;
+
+    public void setMicLow(int l) {
+        micLow = l;
     }
-    public void setMicMiddle(int m){
-        micMiddle=m;
+
+    public void setMicMiddle(int m) {
+        micMiddle = m;
     }
-    public void setMicHigh(int h){
-        micHigh=h;
+
+    public void setMicHigh(int h) {
+        micHigh = h;
     }
+
     public Layout(String name) {
         this.name = name;
     }
@@ -111,11 +121,10 @@ public class Layout {
 
     public void enterLayout() {
         isEntering = true;
-
+        activeLayout=this;
         for (LayoutItem item : items.values()) {
             item.getSource().setLayer(item.getLayer());
         }
-        LayerManager.updateSourcesLayer();
         java.util.concurrent.ExecutorService tp = java.util.concurrent.Executors.newCachedThreadPool();
         for (LayoutItem item : items.values()) {
             item.setTransitionToDo(item.getTransitionIn());
@@ -136,7 +145,7 @@ public class Layout {
     }
 
     public void exitLayout() {
-        isExiting=true;
+        isExiting = true;
         java.util.concurrent.ExecutorService tp = java.util.concurrent.Executors.newCachedThreadPool();
         for (LayoutItem item : items.values()) {
             item.setTransitionToDo(item.getTransitionOut());
@@ -151,11 +160,21 @@ public class Layout {
         } catch (InterruptedException ex) {
             Logger.getLogger(Layout.class.getName()).log(Level.SEVERE, null, ex);
         }
-        isExiting=false;
+        isExiting = false;
         isActive = false;
     }
-
     public Collection<LayoutItem> getItems() {
+        java.util.Vector<LayoutItem> retValues = new java.util.Vector<LayoutItem>();
+        if (items.size() > 0) {
+            Integer key = items.firstKey();
+            while (key != null) {
+                retValues.add(items.get(key));
+                key = items.higherKey(key);
+            }
+        }
+        return retValues;
+    }
+    public Collection<LayoutItem> getReversedItems() {
         java.util.Vector<LayoutItem> retValues = new java.util.Vector<LayoutItem>();
         if (items.size() > 0) {
             Integer key = items.lastKey();
@@ -194,11 +213,11 @@ public class Layout {
             }
             buffer.drawRect(item.getX(), item.getY(), item.getWidth(), item.getHeight());
         }
-        if (isEntering){
+        if (isEntering) {
             buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC_OVER, 0.5F));
             buffer.setColor(Color.YELLOW);
             buffer.fillRect(0, 0, image.getWidth(), image.getHeight());
-        } else if (isExiting){
+        } else if (isExiting) {
             buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC_OVER, 0.5F));
             buffer.setColor(Color.RED);
             buffer.fillRect(0, 0, image.getWidth(), image.getHeight());
@@ -234,7 +253,12 @@ public class Layout {
     }
 
     public void addSource(VideoSource source, Transition transIn, Transition transOut) {
-        LayoutItem item = new LayoutItem(source, layoutUUID, source.getLayer());
+        int index = 0;
+        if (items.size()!=0){
+            index = items.lastKey()+1;
+        }
+        LayoutItem item = new LayoutItem(source,  index);
+        System.out.println(index);
         item.setTransitionIn(transIn);
         item.setTransitionOut(transOut);
         items.put(item.getLayer(), item);
@@ -245,10 +269,10 @@ public class Layout {
         layout.put("name", name);
         layout.put("uuid", layoutUUID);
         layout.put("hotkey", hotKey);
-        layout.putInt("micvolume",micVolume);
-        layout.putInt("miclow",micLow);
-        layout.putInt("micmiddle",micMiddle);
-        layout.putInt("michigh",micHigh);
+        layout.putInt("micvolume", micVolume);
+        layout.putInt("miclow", micLow);
+        layout.putInt("micmiddle", micMiddle);
+        layout.putInt("michigh", micHigh);
         for (LayoutItem item : items.values()) {
             item.applyStudioConfig(layout.node("Items").node("" + item.getLayer()));
         }
@@ -259,13 +283,13 @@ public class Layout {
         name = layout.get("name", name);
         layoutUUID = layout.get("uuid", layoutUUID);
         hotKey = layout.get("hotkey", hotKey);
-        micVolume = layout.getInt("micvolume",micVolume);
-        micLow = layout.getInt("miclow",micLow);
-        micMiddle = layout.getInt("micmiddle",micMiddle);
-        micHigh = layout.getInt("michigh",micHigh);
+        micVolume = layout.getInt("micvolume", micVolume);
+        micLow = layout.getInt("miclow", micLow);
+        micMiddle = layout.getInt("micmiddle", micMiddle);
+        micHigh = layout.getInt("michigh", micHigh);
         String[] itemIndexes = layout.node("Items").childrenNames();
         for (String itemIndex : itemIndexes) {
-            LayoutItem item = new LayoutItem(LayerManager.getByUUID(layout.node("Items").node(itemIndex).get("uuid", "")), layoutUUID, 0);
+            LayoutItem item = new LayoutItem(null,0);
             item.loadFromStudioConfig(layout.node("Items").node(itemIndex));
             items.put(item.getLayer(), item);
         }

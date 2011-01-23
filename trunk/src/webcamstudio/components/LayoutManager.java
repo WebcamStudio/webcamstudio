@@ -27,6 +27,7 @@ import webcamstudio.controls.ControlPosition;
 import webcamstudio.controls.Controls;
 import webcamstudio.layout.Layout;
 import webcamstudio.layout.LayoutItem;
+import webcamstudio.layout.transitions.None;
 import webcamstudio.layout.transitions.Start;
 import webcamstudio.layout.transitions.Stop;
 import webcamstudio.layout.transitions.Transition;
@@ -48,7 +49,7 @@ import webcamstudio.sources.VideoSourceWidget;
  */
 public class LayoutManager extends javax.swing.JPanel implements SourceListener {
 
-    private Collection<VideoSource> sources = null;
+//    private Collection<VideoSource> sources = null;
     private javax.swing.tree.DefaultMutableTreeNode root = null;
     private java.util.Vector<Layout> layouts = new java.util.Vector<Layout>();
     javax.swing.tree.DefaultTreeModel model = null;
@@ -75,7 +76,7 @@ public class LayoutManager extends javax.swing.JPanel implements SourceListener 
         iconAnimation = new ImageIcon(getToolkit().getImage(java.net.URLClassLoader.getSystemResource("webcamstudio/resources/tango/user-info.png")));
         iconFolder = new ImageIcon(getToolkit().getImage(java.net.URLClassLoader.getSystemResource("webcamstudio/resources/tango/folder.png")));
         iconText = new ImageIcon(getToolkit().getImage(java.net.URLClassLoader.getSystemResource("webcamstudio/resources/tango/format-text-bold.png")));
-        sources = LayerManager.getSources();
+//        sources = LayerManager.getSources();
         root = new javax.swing.tree.DefaultMutableTreeNode(java.util.ResourceBundle.getBundle("webcamstudio/Languages").getString("LAYOUTS"));
         micLabel = java.util.ResourceBundle.getBundle("webcamstudio/Languages").getString("MICROPHONE");
         model = new javax.swing.tree.DefaultTreeModel(root);
@@ -177,8 +178,8 @@ public class LayoutManager extends javax.swing.JPanel implements SourceListener 
         if (layouts.isEmpty()) {
             btnAdd.doClick();
         }
-        for (Layout layout : layouts) {
-            layout.addSource(s, new Start(), new Stop());
+        if (currentLayout != null){
+            currentLayout.addSource(s, new Start(), new None());
         }
         updateTree();
     }
@@ -186,7 +187,7 @@ public class LayoutManager extends javax.swing.JPanel implements SourceListener 
     @Override
     public void sourceRemoved(VideoSource s) {
         s.stopSource();
-        LayerManager.remove(s);
+        //LayerManager.remove(s);
         for (Layout layout : layouts) {
             layout.removeSource(s);
         }
@@ -209,6 +210,7 @@ public class LayoutManager extends javax.swing.JPanel implements SourceListener 
     }
 
     public DefaultMutableTreeNode addLayout(Layout l) {
+        layouts.add(l);
         DefaultMutableTreeNode node = new DefaultMutableTreeNode(l);
         root.add(node);
         updateItems(l, node);
@@ -227,7 +229,7 @@ public class LayoutManager extends javax.swing.JPanel implements SourceListener 
 
     private void updateItems(Layout l, DefaultMutableTreeNode node) {
         node.removeAllChildren();
-        for (LayoutItem li : l.getItems()) {
+        for (LayoutItem li : l.getReversedItems()) {
             DefaultMutableTreeNode liNode = new DefaultMutableTreeNode(li);
             node.add(liNode);
             updateItemDetails(li,liNode);
@@ -428,10 +430,9 @@ public class LayoutManager extends javax.swing.JPanel implements SourceListener 
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
         Layout l = new Layout("New Layout");
-        for (VideoSource s : sources) {
-            l.addSource(s, new Start(), new Stop());
-        }
-        layouts.add(l);
+//        for (VideoSource s : sources) {
+//            l.addSource(s, new Start(), new Stop());
+//        }
         DefaultMutableTreeNode node = addLayout(l);
         model.reload();
         TreePath t = new TreePath(node.getPath());
@@ -439,9 +440,6 @@ public class LayoutManager extends javax.swing.JPanel implements SourceListener 
         treeLayouts.expandPath(t);
         treeLayouts.revalidate();
         treeLayouts.repaint();
-
-
-
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void btnApplyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnApplyActionPerformed

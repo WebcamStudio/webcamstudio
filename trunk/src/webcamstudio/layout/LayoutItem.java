@@ -8,6 +8,7 @@ import java.util.prefs.BackingStoreException;
 import webcamstudio.layout.transitions.None;
 import webcamstudio.layout.transitions.Transition;
 import webcamstudio.sources.VideoSource;
+import webcamstudio.studio.Studio;
 
 /**
  *
@@ -23,7 +24,6 @@ public class LayoutItem implements Runnable{
     private Transition transIn = new None();
     private Transition transOut = new None();
     private Transition transToDo = transIn;
-    private String layoutUUID = "";
     private int layer = 0;
     private int volume = 10;
     private boolean isInActiveLayout = false;
@@ -74,13 +74,8 @@ public class LayoutItem implements Runnable{
     public int getLayer(){
         return layer;
     }
-    public LayoutItem(VideoSource source,String layoutUUID,int layer) {
+    public LayoutItem(VideoSource source,int layer) {
         this.source = source;
-        x = source.getShowAtX();
-        y = source.getShowAtY();
-        width = source.getOutputWidth();
-        height = source.getOutputHeight();
-        this.layoutUUID = layoutUUID;
         this.layer = layer;
     }
 
@@ -131,9 +126,9 @@ public class LayoutItem implements Runnable{
         if (transOut != null) {
             prefs.put("transitionout", transOut.getName());
         }
-        prefs.put("layoutuuid", layoutUUID);
         prefs.putInt("layer", layer);
         prefs.putInt("volume", volume);
+        source.applyStudioConfig(prefs.node("source"),layer);
     }
 
     public void loadFromStudioConfig(java.util.prefs.Preferences prefs) throws BackingStoreException {
@@ -143,8 +138,9 @@ public class LayoutItem implements Runnable{
         height = prefs.getInt("height", height);
         transIn = getTransitionByName(prefs.get("transitionin", "None"));
         transOut = getTransitionByName(prefs.get("transitionout", "None"));
-        layoutUUID = prefs.get("layoutuuid", layoutUUID);
         layer = prefs.getInt("layer", layer);
+        source = Studio.getSourceFromClassName(prefs.node("source").get("class",null));
+        source.loadFromStudioConfig(prefs.node("source"));
         volume = prefs.getInt("volume", volume);
     }
     @Override
