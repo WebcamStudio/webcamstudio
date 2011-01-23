@@ -130,111 +130,107 @@ public abstract class VideoSource implements InfoListener {
 
     public void applyStudioConfig(java.util.prefs.Preferences prefs, int order) {
 
-        java.util.prefs.Preferences source = prefs.node(Studio.getKeyIndex(order));
-
-        source.put("class", this.getClass().getName());
-        source.put("location", location);
-        source.putInt("outputWidth", outputWidth);
-        source.putInt("outputHeight", outputHeight);
-        source.putInt("showAtX", showAtX);
-        source.putInt("showAtY", showAtY);
-        source.putInt("captureAtX", captureAtX);
-        source.putInt("captureAtY", captureAtY);
-        source.putInt("captureWidth", captureWidth);
-        source.putInt("captureHeight", captureHeight);
-        source.put("activeEffect", activeEffect);
-        source.put("name", name);
-        source.putInt("videoeffect", videoEffect);
-        source.putInt("effectsSensitivityLow", effectsSensitivityLow);
-        source.putInt("effectsSensitivityHigh", effectsSensitivityHigh);
-        source.putInt("fontsize", fontSize);
-        source.put("username", username);
-        source.putBoolean("followmousecursor", followMouseCursor);
-        source.putBoolean("visibleOnlyWhenSelected", visibleOnlyWhenSelected);
+        prefs.put("class", this.getClass().getName());
+        prefs.put("location", location);
+        prefs.putInt("outputWidth", outputWidth);
+        prefs.putInt("outputHeight", outputHeight);
+        prefs.putInt("showAtX", showAtX);
+        prefs.putInt("showAtY", showAtY);
+        prefs.putInt("captureAtX", captureAtX);
+        prefs.putInt("captureAtY", captureAtY);
+        prefs.putInt("captureWidth", captureWidth);
+        prefs.putInt("captureHeight", captureHeight);
+        prefs.put("activeEffect", activeEffect);
+        prefs.put("name", name);
+        prefs.putInt("videoeffect", videoEffect);
+        prefs.putInt("effectsSensitivityLow", effectsSensitivityLow);
+        prefs.putInt("effectsSensitivityHigh", effectsSensitivityHigh);
+        prefs.putInt("fontsize", fontSize);
+        prefs.put("username", username);
+        prefs.putBoolean("followmousecursor", followMouseCursor);
+        prefs.putBoolean("visibleOnlyWhenSelected", visibleOnlyWhenSelected);
         switch (colorFormat) {
             case RGB:
-                source.put("colorformat", "rgb");
+                prefs.put("colorformat", "rgb");
                 break;
             case YUV:
-                source.put("colorformat", "yuv");
+                prefs.put("colorformat", "yuv");
                 break;
         }
-        source.putLong("updatetimelapse", updateTimeLaspe);
-        source.put("shapename", shapeName);
-        source.put("audiosink", audioSink);
-        source.putInt("activitythreshold", activityThreshold);
-        source.putInt("scrollDirection", scrollDirection);
-        source.putInt("frameRate", frameRate);
-        source.put("fontname", fontName);
-        source.put("nick", nick);
-        source.put("customtext", customText);
-        source.putBoolean("forvieweronly", forViewerOnly);
-        source.put("virtualhostkeywords", virtualHostKeywords);
-        source.put("customshapefilename", customShapeFileName);
-        source.putBoolean("showmousecursor", isShowMouseCursor());
-        source.putInt("foreground", foregroundColor.getRGB());
-        source.putInt("background", backgroundColor.getRGB());
-        source.putInt("volume", volume);
-        source.put("uuid", uuId);
-        source.putBoolean("rescale", doRescale);
-        source.putBoolean("reverseshapemask", doReverseShapeMask);
-        source.putBoolean("ignorelayouttransition", ignoreLayoutTransition);
+        prefs.putLong("updatetimelapse", updateTimeLaspe);
+        prefs.put("shapename", shapeName);
+        prefs.put("audiosink", audioSink);
+        prefs.putInt("activitythreshold", activityThreshold);
+        prefs.putInt("scrollDirection", scrollDirection);
+        prefs.putInt("frameRate", frameRate);
+        prefs.put("fontname", fontName);
+        prefs.put("nick", nick);
+        prefs.put("customtext", customText);
+        prefs.putBoolean("forvieweronly", forViewerOnly);
+        prefs.put("virtualhostkeywords", virtualHostKeywords);
+        prefs.put("customshapefilename", customShapeFileName);
+        prefs.putBoolean("showmousecursor", isShowMouseCursor());
+        prefs.putInt("foreground", foregroundColor.getRGB());
+        prefs.putInt("background", backgroundColor.getRGB());
+        prefs.putInt("volume", volume);
+        prefs.put("uuid", uuId);
+        prefs.putBoolean("rescale", doRescale);
+        prefs.putBoolean("reverseshapemask", doReverseShapeMask);
+        prefs.putBoolean("ignorelayouttransition", ignoreLayoutTransition);
         int index = 0;
         for (Effect effect : effects) {
             String key = Studio.getKeyIndex(index++);
-            source.node("Effects").node(key).put("name", effect.getName());
-            effect.applyStudioConfig(source.node("Effects").node(key));
+            prefs.node("Effects").node(key).put("name", effect.getName());
+            effect.applyStudioConfig(prefs.node("Effects").node(key));
         }
-        source.putFloat("bgopacity", backgroundOpacity);
-        source.putInt("layer", layer);
+        prefs.putFloat("bgopacity", backgroundOpacity);
+        prefs.putInt("layer", layer);
     }
 
     public abstract boolean canUpdateSource();
 
     public void loadFromStudioConfig(java.util.prefs.Preferences prefs) {
-        java.util.prefs.Preferences source = prefs;
-
-        location = source.get("location", ""); //source.put("location", location);
-        outputWidth = source.getInt("outputWidth", 320); //source.putInt("outputWidth", outputWidth);
-        outputHeight = source.getInt("outputHeight", 240); //source.putInt("outputHeight",outputHeight);
+        location = prefs.get("location", ""); //source.put("location", location);
+        outputWidth = prefs.getInt("outputWidth", 320); //source.putInt("outputWidth", outputWidth);
+        outputHeight = prefs.getInt("outputHeight", 240); //source.putInt("outputHeight",outputHeight);
         setOutputWidth(outputWidth);
         setOutputHeight(outputHeight);
 
-        showAtX = source.getInt("showAtX", 0);  //source.putInt("showAtX",showAtX);
-        showAtY = source.getInt("showAtY", 0);  //source.putInt("showAtY",showAtY);
+        showAtX = prefs.getInt("showAtX", 0);  //source.putInt("showAtX",showAtX);
+        showAtY = prefs.getInt("showAtY", 0);  //source.putInt("showAtY",showAtY);
         setShowAtX(showAtX);
         setShowAtY(showAtY);
 
-        captureAtX = source.getInt("captureAtX", 0); //source.putInt("captureAtX",captureAtX);
-        captureAtY = source.getInt("captureAtY", 0); //source.putInt("captureAtY",captureAtY);
+        captureAtX = prefs.getInt("captureAtX", 0); //source.putInt("captureAtX",captureAtX);
+        captureAtY = prefs.getInt("captureAtY", 0); //source.putInt("captureAtY",captureAtY);
         setCaptureAtX(captureAtX);
         setCaptureAtY(captureAtY);
 
-        captureWidth = source.getInt("captureWidth", 320); //source.putInt("captureWidth",captureWidth);
-        captureHeight = source.getInt("captureHeight", 240); //source.putInt("captureHeight",captureHeight);
+        captureWidth = prefs.getInt("captureWidth", 320); //source.putInt("captureWidth",captureWidth);
+        captureHeight = prefs.getInt("captureHeight", 240); //source.putInt("captureHeight",captureHeight);
         setCaptureWidth(captureWidth);
         setCaptureHeight(captureHeight);
 
-        activeEffect = source.get("activeEffect", "");
+        activeEffect = prefs.get("activeEffect", "");
         setEffect(activeEffect);
 
-        name = source.get("name", "");
-        videoEffect = source.getInt("videoeffect", VideoEffects.NONE);
-        effectsSensitivityHigh = source.getInt("effectsSensitivityHigh", 100);
-        effectsSensitivityLow = source.getInt("effectsSensitivityLow", 0);
-        username = source.get("username", username);
-        fontSize = source.getInt("fontsize", fontSize);
-        followMouseCursor = source.getBoolean("followmousecursor", followMouseCursor);
-        visibleOnlyWhenSelected = source.getBoolean("visibleOnlyWhenSelected", visibleOnlyWhenSelected);
-        String temp = source.get("colorformat", "yuv");
+        name = prefs.get("name", "");
+        videoEffect = prefs.getInt("videoeffect", VideoEffects.NONE);
+        effectsSensitivityHigh = prefs.getInt("effectsSensitivityHigh", 100);
+        effectsSensitivityLow = prefs.getInt("effectsSensitivityLow", 0);
+        username = prefs.get("username", username);
+        fontSize = prefs.getInt("fontsize", fontSize);
+        followMouseCursor = prefs.getBoolean("followmousecursor", followMouseCursor);
+        visibleOnlyWhenSelected = prefs.getBoolean("visibleOnlyWhenSelected", visibleOnlyWhenSelected);
+        String temp = prefs.get("colorformat", "yuv");
         if (temp.equals("yuv")) {
             colorFormat = ColorFormat.YUV;
         } else if (temp.equals("rgb")) {
             colorFormat = ColorFormat.RGB;
         }
-        updateTimeLaspe = source.getLong("updatetimelapse", updateTimeLaspe);
-        shapeName = source.get("shapename", shapeName);
-        customShapeFileName = source.get("customshapefilename", customShapeFileName);
+        updateTimeLaspe = prefs.getLong("updatetimelapse", updateTimeLaspe);
+        shapeName = prefs.get("shapename", shapeName);
+        customShapeFileName = prefs.get("customshapefilename", customShapeFileName);
         if (shapeName != null && shapeName.length() > 0) {
             if (shapeName.equals("custom")) {
                 try {
@@ -248,30 +244,30 @@ public abstract class VideoSource implements InfoListener {
                 shape = new Shapes().getImage(shapeName);
             }
         }
-        audioSink = source.get("audiosink", audioSink);
-        activityThreshold = source.getInt("activitythreshold", activityThreshold);
-        scrollDirection = source.getInt("scrollDirection", scrollDirection);
-        frameRate = source.getInt("frameRate", frameRate);
-        fontName = source.get("fontname", fontName);
-        nick = source.get("nick", nick);
-        customText = source.get("customtext", customText);
-        forViewerOnly = source.getBoolean("forvieweronly", forViewerOnly);
-        virtualHostKeywords = source.get("virtualhostkeywords", virtualHostKeywords);
-        foregroundColor = new Color(source.getInt("foreground", foregroundColor.getRGB()));
-        backgroundColor = new Color(source.getInt("background", backgroundColor.getRGB()));
-        volume = source.getInt("volume", volume);
-        uuId = source.get("uuid", uuId);
-        doRescale = source.getBoolean("rescale", doRescale);
-        doReverseShapeMask = source.getBoolean("reverseshapemask", doReverseShapeMask);
-        ignoreLayoutTransition = source.getBoolean("ignorelayouttransition", ignoreLayoutTransition);
+        audioSink = prefs.get("audiosink", audioSink);
+        activityThreshold = prefs.getInt("activitythreshold", activityThreshold);
+        scrollDirection = prefs.getInt("scrollDirection", scrollDirection);
+        frameRate = prefs.getInt("frameRate", frameRate);
+        fontName = prefs.get("fontname", fontName);
+        nick = prefs.get("nick", nick);
+        customText = prefs.get("customtext", customText);
+        forViewerOnly = prefs.getBoolean("forvieweronly", forViewerOnly);
+        virtualHostKeywords = prefs.get("virtualhostkeywords", virtualHostKeywords);
+        foregroundColor = new Color(prefs.getInt("foreground", foregroundColor.getRGB()));
+        backgroundColor = new Color(prefs.getInt("background", backgroundColor.getRGB()));
+        volume = prefs.getInt("volume", volume);
+        uuId = prefs.get("uuid", uuId);
+        doRescale = prefs.getBoolean("rescale", doRescale);
+        doReverseShapeMask = prefs.getBoolean("reverseshapemask", doReverseShapeMask);
+        ignoreLayoutTransition = prefs.getBoolean("ignorelayouttransition", ignoreLayoutTransition);
         String[] effectIndexes;
         try {
-            effectIndexes = source.node("Effects").childrenNames();
+            effectIndexes = prefs.node("Effects").childrenNames();
             java.util.TreeMap<String, Effect> list = Effect.getEffects();
             for (String effectIndex : effectIndexes) {
-                Effect e = list.get(source.node("Effects").node(effectIndex).get("name", ""));
+                Effect e = list.get(prefs.node("Effects").node(effectIndex).get("name", ""));
                 if (e != null) {
-                    e.loadFromStudioConfig(source.node("Effects").node(effectIndex));
+                    e.loadFromStudioConfig(prefs.node("Effects").node(effectIndex));
                     effects.add(e);
                 }
             }
@@ -279,8 +275,8 @@ public abstract class VideoSource implements InfoListener {
         } catch (BackingStoreException ex) {
             Logger.getLogger(VideoSource.class.getName()).log(Level.SEVERE, null, ex);
         }
-        backgroundOpacity = source.getFloat("bgopacity", backgroundOpacity);
-        layer = source.getInt("layer", layer);
+        backgroundOpacity = prefs.getFloat("bgopacity", backgroundOpacity);
+        layer = prefs.getInt("layer", layer);
     }
 
     public String getNick() {

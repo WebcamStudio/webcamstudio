@@ -10,6 +10,8 @@ import webcamstudio.sources.*;
 import webcamstudio.VirtualHost;
 import java.awt.image.*;
 import webcamstudio.exporter.vloopback.VideoOutput;
+import webcamstudio.layout.Layout;
+import webcamstudio.layout.LayoutItem;
 
 /**
  *
@@ -29,8 +31,6 @@ public class Mixer implements java.lang.Runnable {
     private boolean stopMe = false;
     private java.awt.image.BufferedImage paintImage = null;
     private VideoOutput outputDevice = null;
-    private int[] outputPixels = null;
-    private int[] workingPixels = null;
     private Image background = Toolkit.getDefaultToolkit().createImage(getClass().getResource("/webcamstudio/resources/splash.jpg"));
 
     public enum MixerQuality {
@@ -121,28 +121,31 @@ public class Mixer implements java.lang.Runnable {
 
         BufferedImage img = null;
         try {
-            for (VideoSource source : LayerManager.getSources()) {
-                if (source.getActivityDetection() == 0 || (source.getActivityDetection() > 0 && source.activityDetected())) {
-                    virtualHost.put(source.getKeywords(), source);
-                    img = source.getImage();
-                    if (img != null) {
-                        //Don't do anything if there is no rotation to do...
+            Layout activeLayout = Layout.getActiveLayout();
+            if (activeLayout != null) {
+                for (LayoutItem item : activeLayout.getItems()) {
+                    VideoSource source = item.getSource();
+                    if (source.getActivityDetection() == 0 || (source.getActivityDetection() > 0 && source.activityDetected())) {
+                        virtualHost.put(source.getKeywords(), source);
+                        img = source.getImage();
+                        if (img != null) {
+                            //Don't do anything if there is no rotation to do...
 
-                        x1 = source.getShowAtX();
-                        y1 = source.getShowAtY();
-                        x2 = x1 + source.getOutputWidth();
-                        y2 = y1 + source.getOutputHeight();
-                        x3 = 0;
-                        y3 = 0;
-                        x4 = source.getCaptureWidth();
-                        y4 = source.getCaptureHeight();
-                        float opacity = (float) source.getOpacity();
-                        buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC_OVER, opacity / 100F));
-                        //buffer.setClip(x1, y1, source.getOutputWidth(), source.getOutputHeight());
-                        buffer.drawImage(img, x1, y1, x2, y2, x3, y3, x4, y4, null);
+                            x1 = source.getShowAtX();
+                            y1 = source.getShowAtY();
+                            x2 = x1 + source.getOutputWidth();
+                            y2 = y1 + source.getOutputHeight();
+                            x3 = 0;
+                            y3 = 0;
+                            x4 = source.getCaptureWidth();
+                            y4 = source.getCaptureHeight();
+                            float opacity = (float) source.getOpacity();
+                            buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC_OVER, opacity / 100F));
+                            //buffer.setClip(x1, y1, source.getOutputWidth(), source.getOutputHeight());
+                            buffer.drawImage(img, x1, y1, x2, y2, x3, y3, x4, y4, null);
+                        }
                     }
                 }
-
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -156,9 +159,6 @@ public class Mixer implements java.lang.Runnable {
         outputDevice = o;
     }
 
-    public int[] getPixels() {
-        return outputPixels;
-    }
 
     @Override
     public void run() {
@@ -169,7 +169,7 @@ public class Mixer implements java.lang.Runnable {
                 if (outputDevice != null) {
                     outputDevice.write(outputImage);
                 }
-                Thread.sleep(1000/frameRate);
+                Thread.sleep(1000 / frameRate);
             } catch (Exception e) {
                 e.printStackTrace();
             }

@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.InvalidPreferencesFormatException;
 import javax.xml.parsers.ParserConfigurationException;
-import webcamstudio.components.LayerManager;
 import webcamstudio.layout.Layout;
 import webcamstudio.sources.*;
 
@@ -20,25 +19,17 @@ import webcamstudio.sources.*;
  */
 public class Studio {
 
-    java.util.Vector<VideoSource> sources = new java.util.Vector<VideoSource>();
     java.util.Vector<Layout> layouts = new java.util.Vector<Layout>();
 
     public Studio() {
     }
 
-    public void setSources(java.util.Collection<VideoSource> list) {
-        sources.clear();
-        sources.addAll(list);
-    }
 
     public void setLayouts(java.util.Vector<Layout> list) {
         layouts.clear();
         layouts.addAll(list);
     }
 
-    public java.util.Vector<VideoSource> getSources() {
-        return sources;
-    }
 
     public java.util.Vector<Layout> getLayouts() {
         return layouts;
@@ -51,31 +42,13 @@ public class Studio {
         prefs.flush();
         prefs.sync();
         java.util.prefs.Preferences.importPreferences(studio.toURI().toURL().openStream());
-        String[] sourcesName = prefs.node("Sources").childrenNames();
-        String currentClass = "";
         VideoSource source = null;
-        LayerManager.clear();
-        for (int i = 0; i < sourcesName.length; i++) {
-            currentClass = prefs.node("Sources").node(sourcesName[i]).get("class", null);
-            if (currentClass != null) {
-                source = getSourceFromClassName(currentClass);
-                if (source != null) {
-                    source.loadFromStudioConfig(prefs.node("Sources").node(sourcesName[i]));
-                    System.out.println(source.getUUID());
-                    sources.add(source);
-                    LayerManager.add(source);
-                }
-            }
-        }
-        
         String[] layoutsName = prefs.node("Layouts").childrenNames();
         Layout layout = null;
         for (int i = 0; i < layoutsName.length; i++) {
             layout = new Layout();
             layout.loadFromStudioConfig(prefs.node("Layouts").node(layoutsName[i]));
             layouts.add(layout);
-
-
         }
     }
 
@@ -86,11 +59,6 @@ public class Studio {
         prefs.node("Layouts").removeNode();
         prefs.flush();
         prefs.sync();
-        VideoSource source = null;
-        for (int i = 0; i < sources.size(); i++) {
-            source = sources.get(i);
-            source.applyStudioConfig(prefs.node("Sources"), i);
-        }
         Layout layout = null;
         for (int i = 0; i < layouts.size(); i++) {
             layout = layouts.get(i);

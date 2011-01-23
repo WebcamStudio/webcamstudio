@@ -618,7 +618,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
                     studio.delete();
                 }
                 Studio outStudio = new Studio();
-                outStudio.setSources(LayerManager.getSources());
                 java.util.Vector<Layout> layouts = new java.util.Vector<Layout>();
                 for (Object l : layoutManager.getLayouts()) {
                     layouts.add((Layout) l);
@@ -662,17 +661,10 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
                 lastStudioFile = currentStudioFile;
                 mnuStudioLoadLast.setEnabled(true);
                 mnuStudioLoadLast.setToolTipText(lastStudioFile.getAbsolutePath());
-                for (VideoSource s : LayerManager.getSources()) {
-                    s.stopSource();
-                }
-                LayerManager.clear();
                 Studio studio = new Studio();
                 studio.loadStudio(lastStudioFile);
                 for (Layout l : studio.getLayouts()) {
                     layoutManager.addLayout(l);
-                }
-                for (VideoSource source : LayerManager.getSources()) {
-                    source.setListener(this);
                 }
                 layoutManager.revalidate();
                 studio = null;
@@ -702,9 +694,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
     }
 
     private void addSourceToDesktop(VideoSource source) {
-        if (!LayerManager.isLoaded(source)) {
-            LayerManager.add(source);
-        }
         if (source.getOutputWidth() == 0) {
             source.setOutputWidth(outputWidth);
         }
@@ -1943,10 +1932,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
     }//GEN-LAST:event_mnuSourcesWidgetActionPerformed
 
     private void mnuStudioNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuStudioNewActionPerformed
-        for (VideoSource s : LayerManager.getSources()) {
-            s.stopSource();
-        }
-        LayerManager.clear();
 
     }//GEN-LAST:event_mnuStudioNewActionPerformed
 
