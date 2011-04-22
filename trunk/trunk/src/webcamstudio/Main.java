@@ -755,7 +755,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         mnuShowPreview = new javax.swing.JMenuItem();
         mnuVideoRecorder = new javax.swing.JMenuItem();
         mnuOutputSpnashot = new javax.swing.JMenuItem();
-        mnuOutputFMEBroadcaster = new javax.swing.JMenuItem();
         mnuOutputGISSCaster = new javax.swing.JMenuItem();
         mnuOutputSize = new javax.swing.JMenu();
         mnuOutputSize1 = new javax.swing.JRadioButtonMenuItem();
@@ -1126,16 +1125,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
             }
         });
         mnuOutput.add(mnuOutputSpnashot);
-
-        mnuOutputFMEBroadcaster.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-record.png"))); // NOI18N
-        mnuOutputFMEBroadcaster.setText(bundle.getString("FMEBROADCASTER")); // NOI18N
-        mnuOutputFMEBroadcaster.setName("mnuOutputFMEBroadcaster"); // NOI18N
-        mnuOutputFMEBroadcaster.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuOutputFMEBroadcasterActionPerformed(evt);
-            }
-        });
-        mnuOutput.add(mnuOutputFMEBroadcaster);
 
         mnuOutputGISSCaster.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/gisstv2-16x16.png"))); // NOI18N
         mnuOutputGISSCaster.setText(bundle.getString("GISSCASTER")); // NOI18N
@@ -1907,13 +1896,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
 
     }//GEN-LAST:event_mnuOutputGISSCasterActionPerformed
 
-    private void mnuOutputFMEBroadcasterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuOutputFMEBroadcasterActionPerformed
-        FMEBroadcaster fme = new FMEBroadcaster(mixer, this, false);
-        fme.pack();
-        fme.setLocationRelativeTo(this);
-        fme.setVisible(true);
-    }//GEN-LAST:event_mnuOutputFMEBroadcasterActionPerformed
-
     private void mnuSourcesWidgetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuSourcesWidgetActionPerformed
         javax.swing.JFileChooser chooser = new javax.swing.JFileChooser(lastFolder);
         chooser.setToolTipText(java.util.ResourceBundle.getBundle("webcamstudio/Languages").getString("SELECT_YOUR_WIDGET_FILE"));
@@ -2161,7 +2143,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
     private javax.swing.JRadioButtonMenuItem mnuOutput30FPS;
     private javax.swing.JRadioButtonMenuItem mnuOutput5FPS;
     private javax.swing.JCheckBoxMenuItem mnuOutputAudioMixer;
-    private javax.swing.JMenuItem mnuOutputFMEBroadcaster;
     private javax.swing.JCheckBoxMenuItem mnuOutputFlipImage;
     private javax.swing.JMenu mnuOutputFramerate;
     private javax.swing.JMenuItem mnuOutputGISSCaster;
