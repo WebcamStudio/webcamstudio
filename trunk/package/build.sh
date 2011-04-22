@@ -19,6 +19,7 @@ mkdir package/usr/share/webcamstudio/widgets
 mkdir package/DEBIAN
 mkdir package/etc
 
+
 sed -e "s/VERSION/$VALUE/" webcamstudio >package/usr/bin/webcamstudio
 chmod 755 package/usr/bin/webcamstudio
 cp webcamstudio.png package/usr/share/pixmaps
