@@ -10,6 +10,7 @@
  */
 package webcamstudio.components;
 
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
@@ -84,6 +85,8 @@ class ThreadedJButton extends JButton implements Runnable{
     VideoSource source = null;
     public ThreadedJButton(VideoSource source){
         this.source=source;
+        this.setIconTextGap(0);
+        this.setMargin(new Insets(0,0,0,0));
     }
     @Override
     public void run() {
