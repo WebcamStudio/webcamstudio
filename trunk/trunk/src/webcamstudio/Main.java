@@ -78,6 +78,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
     private String lastDriverOutput = "";
     private String lastDriverOutputPath = "";
     private AudioMixer audioMixer = null;
+    private SystemMonitor monitor = null;
 
     /** Creates new form Main */
     public Main() {
@@ -176,6 +177,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
 
             }
         }).start();
+        monitor = new SystemMonitor(pgCPUUsage);
         pack();
 
     }
@@ -723,6 +725,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         grpPixelFormat = new javax.swing.ButtonGroup();
         panelStatus = new javax.swing.JPanel();
         btnPreview = new javax.swing.JButton();
+        pgCPUUsage = new javax.swing.JProgressBar();
         cboVideoOutputs = new javax.swing.JComboBox();
         panBrowser = new javax.swing.JPanel();
         menuBar = new javax.swing.JMenuBar();
@@ -820,6 +823,11 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
             }
         });
         panelStatus.add(btnPreview);
+
+        pgCPUUsage.setToolTipText(bundle.getString("CPUUSAGE")); // NOI18N
+        pgCPUUsage.setName("pgCPUUsage"); // NOI18N
+        pgCPUUsage.setStringPainted(true);
+        panelStatus.add(pgCPUUsage);
 
         cboVideoOutputs.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         cboVideoOutputs.setName("cboVideoOutputs"); // NOI18N
@@ -1753,6 +1761,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         if (audioMixer.isActive()) {
             audioMixer.stop();
         }
+        monitor.stopMe();
         savePrefs();
     }//GEN-LAST:event_formWindowClosing
 
@@ -2185,6 +2194,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
     private javax.swing.JRadioButtonMenuItem mnurdPixelFormatUYVY;
     private javax.swing.JPanel panBrowser;
     private javax.swing.JPanel panelStatus;
+    private javax.swing.JProgressBar pgCPUUsage;
     // End of variables declaration//GEN-END:variables
 
     @Override
