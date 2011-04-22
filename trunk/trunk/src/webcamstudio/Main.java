@@ -129,7 +129,12 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         mixer = new Mixer();
         mixer.setSize(outputWidth, outputHeight);
         mixer.setOutput(output);
-
+        if (mnuchkShowBackground.isSelected()) {
+            Image img = Toolkit.getDefaultToolkit().createImage(getClass().getResource("/webcamstudio/resources/splash.jpg"));
+            mixer.setBackground(img);
+        } else {
+            mixer.setBackground(null);
+        }
         setTitle(java.util.ResourceBundle.getBundle("webcamstudio/Languages").getString("WEBCAMSTUDIO_FOR_GNU/LINUX_") + " " + webcamstudio.Version.version + " (Build: " + new webcamstudio.Version().getBuild() + ")");
         java.awt.Image img = getToolkit().getImage(java.net.URLClassLoader.getSystemResource("webcamstudio/resources/icon.png"));
 
@@ -1756,7 +1761,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         layoutManager.quitting();
-        if (audioMixer.isActive()){
+        if (audioMixer.isActive()) {
             audioMixer.stop();
         }
         savePrefs();
@@ -1932,7 +1937,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
     }//GEN-LAST:event_mnuSourcesWidgetActionPerformed
 
     private void mnuStudioNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuStudioNewActionPerformed
-
     }//GEN-LAST:event_mnuStudioNewActionPerformed
 
     private void mnuchkShowBackgroundActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuchkShowBackgroundActionPerformed
