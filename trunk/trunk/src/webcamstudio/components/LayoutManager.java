@@ -14,8 +14,11 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.image.BufferedImage;
+import java.lang.String;
 import java.util.Collection;
 import java.util.Enumeration;
+import java.util.TreeMap;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
@@ -211,6 +214,8 @@ public class LayoutManager extends javax.swing.JPanel implements SourceListener 
 
     public DefaultMutableTreeNode addLayout(Layout l) {
         layouts.add(l);
+        l.setHotKey("F" + (layouts.size()));
+
         DefaultMutableTreeNode node = new DefaultMutableTreeNode(l);
         root.add(node);
         updateItems(l, node);
@@ -260,10 +265,10 @@ public class LayoutManager extends javax.swing.JPanel implements SourceListener 
         treeLayouts = new javax.swing.JTree();
         panSources = new javax.swing.JPanel();
         txtLayoutName = new javax.swing.JTextField();
-        cboHotkeys = new javax.swing.JComboBox();
         jLabel7 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         tabControls = new javax.swing.JTabbedPane();
+        lblHotKEy = new javax.swing.JLabel();
 
         setLayout(new java.awt.BorderLayout());
 
@@ -329,14 +334,6 @@ public class LayoutManager extends javax.swing.JPanel implements SourceListener 
             }
         });
 
-        cboHotkeys.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12" }));
-        cboHotkeys.setName("cboHotkeys"); // NOI18N
-        cboHotkeys.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cboHotkeysActionPerformed(evt);
-            }
-        });
-
         jLabel7.setText(bundle.getString("HOTKEY")); // NOI18N
         jLabel7.setName("jLabel7"); // NOI18N
 
@@ -344,6 +341,9 @@ public class LayoutManager extends javax.swing.JPanel implements SourceListener 
         jLabel1.setName("jLabel1"); // NOI18N
 
         tabControls.setName("tabControls"); // NOI18N
+
+        lblHotKEy.setText("...");
+        lblHotKEy.setName("lblHotKEy"); // NOI18N
 
         javax.swing.GroupLayout panSourcesLayout = new javax.swing.GroupLayout(panSources);
         panSources.setLayout(panSourcesLayout);
@@ -359,8 +359,8 @@ public class LayoutManager extends javax.swing.JPanel implements SourceListener 
                     .addGroup(panSourcesLayout.createSequentialGroup()
                         .addComponent(jLabel7)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cboHotkeys, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(382, Short.MAX_VALUE))
+                        .addComponent(lblHotKEy)))
+                .addContainerGap(383, Short.MAX_VALUE))
             .addComponent(tabControls, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 673, Short.MAX_VALUE)
         );
         panSourcesLayout.setVerticalGroup(
@@ -373,7 +373,7 @@ public class LayoutManager extends javax.swing.JPanel implements SourceListener 
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panSourcesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
-                    .addComponent(cboHotkeys, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(lblHotKEy))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(tabControls, javax.swing.GroupLayout.DEFAULT_SIZE, 331, Short.MAX_VALUE))
         );
@@ -388,7 +388,7 @@ public class LayoutManager extends javax.swing.JPanel implements SourceListener 
         txtLayoutName.setEnabled(false);
         btnApply.setEnabled(false);
         btnRemove.setEnabled(false);
-        cboHotkeys.setEnabled(false);
+        
         tabControls.removeAll();
         tabControls.revalidate();
 
@@ -397,8 +397,8 @@ public class LayoutManager extends javax.swing.JPanel implements SourceListener 
             currentLayout = (Layout) obj;
             btnApply.setEnabled(true);
             btnRemove.setEnabled(true);
-            cboHotkeys.setEnabled(true);
-            cboHotkeys.setSelectedItem(currentLayout.getHotKey());
+            
+            lblHotKEy.setText(currentLayout.getHotKey());
             if (audioMixer.isActive()) {
                 AudioMixerPanel mixerPanel = new AudioMixerPanel((Layout) obj, audioMixer);
                 tabControls.add(micLabel, mixerPanel);
@@ -410,8 +410,8 @@ public class LayoutManager extends javax.swing.JPanel implements SourceListener 
             if (evt.getPath().getParentPath() != null) {
                 currentLayout = (Layout) ((DefaultMutableTreeNode) evt.getPath().getParentPath().getLastPathComponent()).getUserObject();
                 txtLayoutName.setText(currentLayout.toString());
-                cboHotkeys.setEnabled(true);
-                cboHotkeys.setSelectedItem(currentLayout.getHotKey());
+                
+                lblHotKEy.setText(currentLayout.getHotKey());
                 txtLayoutName.setEnabled(true);
                 
                 ControlPosition ctrl = new ControlPosition(currentLayoutItem);
@@ -486,17 +486,13 @@ public class LayoutManager extends javax.swing.JPanel implements SourceListener 
         treeLayouts.repaint();
     }//GEN-LAST:event_txtLayoutNameActionPerformed
 
-    private void cboHotkeysActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboHotkeysActionPerformed
-        currentLayout.setHotKey(cboHotkeys.getSelectedItem().toString());
-
-    }//GEN-LAST:event_cboHotkeysActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
     private javax.swing.JButton btnApply;
     private javax.swing.JButton btnRemove;
-    private javax.swing.JComboBox cboHotkeys;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel lblHotKEy;
     private javax.swing.JPanel panControls;
     private javax.swing.JPanel panSources;
     private javax.swing.JScrollPane scroller;
