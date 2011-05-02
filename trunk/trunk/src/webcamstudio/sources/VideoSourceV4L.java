@@ -19,6 +19,7 @@
  */
 package webcamstudio.sources;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -51,7 +52,7 @@ public class VideoSourceV4L extends VideoSource implements org.gstreamer.element
         outputWidth = 320;
         outputHeight = 240;
 
-        location =getDeviceForName(deviceName).getAbsolutePath();
+        location = getDeviceForName(deviceName).getAbsolutePath();
         name = deviceName;
         if (deviceName.length() == 0) {
             name = deviceName;
@@ -63,15 +64,16 @@ public class VideoSourceV4L extends VideoSource implements org.gstreamer.element
 
     }
 
-    protected File getDeviceForName(String deviceName){
+    protected File getDeviceForName(String deviceName) {
         File f = new File("/dev/video0");
-        for (VideoDevice v : VideoDevice.getDevices()){
-            if (v.getName().equals(deviceName)){
+        for (VideoDevice v : VideoDevice.getDevices()) {
+            if (v.getName().equals(deviceName)) {
                 f = v.getFile();
             }
         }
         return f;
     }
+
     @Override
     public boolean canUpdateSource() {
         return false;
@@ -95,7 +97,7 @@ public class VideoSourceV4L extends VideoSource implements org.gstreamer.element
     @Override
     public void startSource() {
         isPlaying = true;
-        location =getDeviceForName(name).getAbsolutePath();
+        location = getDeviceForName(name).getAbsolutePath();
         try {
             elementSink = new org.gstreamer.elements.RGBDataSink("RGBDataSink" + uuId, this);
             String rescaling = "";
@@ -157,59 +159,80 @@ public class VideoSourceV4L extends VideoSource implements org.gstreamer.element
     public void rgbFrame(int w, int h, java.nio.IntBuffer buffer) {
         captureWidth = w;
         captureHeight = h;
-        if (!isRendering) {
-            isRendering = true;
-            int[] array = buffer.array();
-            tempimage = graphicConfiguration.createCompatibleImage(captureWidth, captureHeight, java.awt.image.BufferedImage.TRANSLUCENT);
-            if (activeEffect.equals("vertigotv") || activeEffect.equals("shagadelictv")) {
-                for (int i = 0; i < array.length; i++) {
-                    array[i] = array[i] | 0xFF000000;
+        int[] array = buffer.array();
+        final BufferedImage temp = graphicConfiguration.createCompatibleImage(captureWidth, captureHeight, java.awt.image.BufferedImage.TRANSLUCENT);
+        if (activeEffect.equals("vertigotv") || activeEffect.equals("shagadelictv")) {
+            for (int i = 0; i < array.length; i++) {
+                array[i] = array[i] | 0xFF000000;
+            }
+        }
+        temp.setRGB(0, 0, captureWidth, captureHeight, array, 0, captureWidth);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if (!isRendering) {
+                    isRendering = true;
+                    tempimage = temp;
+                    applyFaceDetection(tempimage);
+                    detectActivity(tempimage);
+                    applyEffects(tempimage);
+                    applyShape(tempimage);
+                    image = tempimage;
+                    isRendering = false;
                 }
             }
-            tempimage.setRGB(0, 0, captureWidth, captureHeight, array, 0, captureWidth);
-            applyFaceDetection(tempimage);
-            detectActivity(tempimage);
-            applyEffects(tempimage);
-            applyShape(tempimage);
-            image = tempimage;
-            isRendering = false;
-        }
-
+        }).start();
     }
 
     @Override
     public boolean isPlaying() {
         return isPlaying;
+
+
     }
 
     @Override
     public void pause() {
         if (pipe != null) {
             pipe.pause();
+
+
         }
     }
 
     public void play() {
         if (pipe != null) {
             pipe.play();
+
+
         }
     }
 
     public boolean isPaused() {
         boolean retValue = false;
+
+
         if (pipe != null) {
             retValue = (pipe.getState() == State.PAUSED);
+
+
         }
         return retValue;
+
+
     }
 
     public boolean hasText() {
         return false;
+
+
     }
 
     @Override
     public String toString() {
         return name + " (" + captureAtX + "," + captureAtY + ":" + captureWidth + "x" + captureHeight + ")";
+
+
     }
     private org.gstreamer.elements.RGBDataSink elementSink = null;
     private Pipeline pipe = null;
@@ -223,20 +246,34 @@ public class VideoSourceV4L extends VideoSource implements org.gstreamer.element
         list.add(new webcamstudio.controls.ControlGSTEffects(this));
         list.add(new webcamstudio.controls.ControlActivity(this));
         list.add(new webcamstudio.controls.ControlFaceDetection(this));
+
+
         return list;
+
+
     }
+
     @Override
-        public javax.swing.ImageIcon getThumbnail() {
+    public javax.swing.ImageIcon getThumbnail() {
         ImageIcon icon = getCachedThumbnail();
-        if (icon==null){
+
+
+        if (icon == null) {
             icon = new ImageIcon(java.net.URLClassLoader.getSystemResource("webcamstudio/resources/tango/camera-video.png"));
+
+
             try {
                 saveThumbnail(icon);
+
+
+
             } catch (IOException ex) {
                 Logger.getLogger(VideoSourceV4L.class.getName()).log(Level.SEVERE, null, ex);
             }
+
+
         }
         return icon;
-    }
 
+    }
 }

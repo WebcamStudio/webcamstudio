@@ -126,7 +126,6 @@ public class Mixer implements java.lang.Runnable {
                 for (LayoutItem item : activeLayout.getItems()) {
                     VideoSource source = item.getSource();
                     if (source.getActivityDetection() == 0 || (source.getActivityDetection() > 0 && source.activityDetected())) {
-                        virtualHost.put(source.getKeywords(), source);
                         img = source.getImage();
                         if (img != null) {
                             //Don't do anything if there is no rotation to do...
