@@ -686,18 +686,90 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         for (Layout l : layoutManager.getLayouts()) {
             ls.put(l.getHotKey(), l.toString());
         }
-        mnuLayoutF1.setText(ls.get("F1"));
-        mnuLayoutF2.setText(ls.get("F2"));
-        mnuLayoutF3.setText(ls.get("F3"));
-        mnuLayoutF4.setText(ls.get("F4"));
-        mnuLayoutF5.setText(ls.get("F5"));
-        mnuLayoutF6.setText(ls.get("F6"));
-        mnuLayoutF7.setText(ls.get("F7"));
-        mnuLayoutF8.setText(ls.get("F8"));
-        mnuLayoutF9.setText(ls.get("F9"));
-        mnuLayoutF10.setText(ls.get("F10"));
-        mnuLayoutF11.setText(ls.get("F11"));
-        mnuLayoutF12.setText(ls.get("F12"));
+        if (ls.get("F1") != null) {
+            mnuLayoutF1.setText(ls.get("F1"));
+            mnuLayoutF1.setVisible(true);
+        } else {
+            mnuLayoutF1.setText("...");
+            mnuLayoutF1.setVisible(false);
+        }
+        if (ls.get("F2") != null) {
+            mnuLayoutF2.setText(ls.get("F2"));
+            mnuLayoutF2.setVisible(true);
+        } else {
+            mnuLayoutF2.setText("...");
+            mnuLayoutF2.setVisible(false);
+        }
+        if (ls.get("F3") != null) {
+            mnuLayoutF3.setText(ls.get("F3"));
+            mnuLayoutF3.setVisible(true);
+        } else {
+            mnuLayoutF3.setText("...");
+            mnuLayoutF3.setVisible(false);
+        }
+        if (ls.get("F4") != null) {
+            mnuLayoutF4.setText(ls.get("F4"));
+            mnuLayoutF4.setVisible(true);
+        } else {
+            mnuLayoutF4.setText("...");
+            mnuLayoutF4.setVisible(false);
+        }
+        if (ls.get("F5") != null) {
+            mnuLayoutF5.setText(ls.get("F5"));
+            mnuLayoutF5.setVisible(true);
+        } else {
+            mnuLayoutF5.setText("...");
+            mnuLayoutF5.setVisible(false);
+        }
+        if (ls.get("F6") != null) {
+            mnuLayoutF6.setText(ls.get("F6"));
+            mnuLayoutF6.setVisible(true);
+        } else {
+            mnuLayoutF6.setText("...");
+            mnuLayoutF6.setVisible(false);
+        }
+        if (ls.get("F7") != null) {
+            mnuLayoutF7.setText(ls.get("F7"));
+            mnuLayoutF7.setVisible(true);
+        } else {
+            mnuLayoutF7.setText("...");
+            mnuLayoutF7.setVisible(false);
+        }
+        if (ls.get("F8") != null) {
+            mnuLayoutF8.setText(ls.get("F8"));
+            mnuLayoutF8.setVisible(true);
+        } else {
+            mnuLayoutF8.setText("...");
+            mnuLayoutF8.setVisible(false);
+        }
+        if (ls.get("F9") != null) {
+            mnuLayoutF9.setText(ls.get("F9"));
+            mnuLayoutF9.setVisible(true);
+        } else {
+            mnuLayoutF9.setText("...");
+            mnuLayoutF9.setVisible(false);
+        }
+        if (ls.get("F10") != null) {
+            mnuLayoutF10.setText(ls.get("F10"));
+            mnuLayoutF10.setVisible(true);
+        } else {
+            mnuLayoutF10.setText("...");
+            mnuLayoutF10.setVisible(false);
+        }
+        if (ls.get("F11") != null) {
+            mnuLayoutF11.setText(ls.get("F11"));
+            mnuLayoutF11.setVisible(true);
+        } else {
+            mnuLayoutF11.setText("...");
+            mnuLayoutF11.setVisible(false);
+        }
+        if (ls.get("F12") != null) {
+            mnuLayoutF12.setText(ls.get("F12"));
+            mnuLayoutF12.setVisible(true);
+        } else {
+            mnuLayoutF12.setText("...");
+            mnuLayoutF12.setVisible(false);
+        }
     }
 
     private void addSourceToDesktop(VideoSource source) {
