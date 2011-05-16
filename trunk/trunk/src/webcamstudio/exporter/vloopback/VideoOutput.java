@@ -29,6 +29,9 @@ abstract public class VideoOutput {
         flipImage = flip;
     }
 
+    public int getPixFormat(){
+        return pixFormat;
+    }
     protected byte[] img2rgb24(BufferedImage bi) {
         int[] data = ((java.awt.image.DataBufferInt) bi.getRaster().getDataBuffer()).getData();
         byte[] rgbs = new byte[data.length * 3];

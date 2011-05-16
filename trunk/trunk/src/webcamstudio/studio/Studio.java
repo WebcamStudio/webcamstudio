@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.InvalidPreferencesFormatException;
 import javax.xml.parsers.ParserConfigurationException;
+import webcamstudio.components.Mixer;
+import webcamstudio.exporter.vloopback.VideoOutput;
 import webcamstudio.layout.Layout;
 import webcamstudio.sources.*;
 
@@ -20,11 +22,26 @@ import webcamstudio.sources.*;
 public class Studio {
 
     java.util.Vector<Layout> layouts = new java.util.Vector<Layout>();
-
+    private int outputWidth = 320;
+    private int outputHeight = 240;
+    private String device = "/dev/video1";
+    private int pixFormat = VideoOutput.RGB24;
     public Studio() {
     }
 
 
+    public int getWidth(){
+        return outputWidth;
+    }
+    public int getHeight(){
+        return outputHeight;
+    }
+    public int getPixFormat(){
+        return pixFormat;
+    }
+    public String getDevice(){
+        return device;
+    }
     public void setLayouts(java.util.Vector<Layout> list) {
         layouts.clear();
         layouts.addAll(list);
@@ -39,6 +56,10 @@ public class Studio {
         java.util.prefs.Preferences prefs = java.util.prefs.Preferences.userNodeForPackage(this.getClass());
         prefs.node("Sources").removeNode();
         prefs.node("Layouts").removeNode();
+        outputWidth=prefs.getInt("width", outputWidth);
+        outputHeight = prefs.getInt("height", outputHeight);
+        device = prefs.get("device",device);
+        pixFormat = prefs.getInt("pixformat",pixFormat);
         prefs.flush();
         prefs.sync();
         java.util.prefs.Preferences.importPreferences(studio.toURI().toURL().openStream());
@@ -52,9 +73,18 @@ public class Studio {
         }
     }
 
-    public void saveStudio(File studio) throws ParserConfigurationException, BackingStoreException, FileNotFoundException, IOException {
+    public void saveStudio(File studio,Mixer mixer) throws ParserConfigurationException, BackingStoreException, FileNotFoundException, IOException {
         java.util.prefs.Preferences prefs = java.util.prefs.Preferences.userNodeForPackage(this.getClass());
         java.io.FileOutputStream fout = new java.io.FileOutputStream(studio);
+        outputWidth=mixer.getImage().getWidth();
+        outputHeight = mixer.getImage().getHeight();
+        device = mixer.getDevice().getDevice();
+        pixFormat = mixer.getDevice().getPixFormat();
+        prefs.putInt("width", outputWidth);
+        prefs.putInt("height", outputHeight);
+        prefs.put("device",device);
+        prefs.putInt("pixformat",pixFormat);
+
         prefs.node("Sources").removeNode();
         prefs.node("Layouts").removeNode();
         prefs.flush();

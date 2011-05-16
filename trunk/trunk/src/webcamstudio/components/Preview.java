@@ -14,20 +14,21 @@ package webcamstudio.components;
  *
  * @author patrick
  */
-public class Preview extends javax.swing.JDialog implements Runnable{
+public class Preview extends javax.swing.JDialog implements Runnable {
 
     private Viewer viewer = new Viewer();
-    private boolean stopMe=false;
+    private boolean stopMe = false;
     private Mixer mixer = null;
+
     /** Creates new form Preview */
-    public Preview(java.awt.Frame parent, boolean modal,Mixer mixer) {
+    public Preview(java.awt.Frame parent, boolean modal, Mixer mixer) {
         super(parent, modal);
         this.mixer = mixer;
         initComponents();
         setSize(320, 240);
         java.awt.Image img = getToolkit().getImage(java.net.URLClassLoader.getSystemResource(java.util.ResourceBundle.getBundle("webcamstudio/Languages").getString("WEBCAMSTUDIO/RESOURCES/ICON.PNG")));
         this.setIconImage(img);
-        panViewer.add(viewer,java.awt.BorderLayout.CENTER);
+        panViewer.add(viewer, java.awt.BorderLayout.CENTER);
         new Thread(this).start();
 
     }
@@ -36,9 +37,10 @@ public class Preview extends javax.swing.JDialog implements Runnable{
         viewer.img = img;
     }
 
-    public void stopMe(){
-        stopMe=true;
+    public void stopMe() {
+        stopMe = true;
     }
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -70,7 +72,7 @@ public class Preview extends javax.swing.JDialog implements Runnable{
         java.awt.EventQueue.invokeLater(new Runnable() {
 
             public void run() {
-                Preview dialog = new Preview(new javax.swing.JFrame(), true,new Mixer());
+                Preview dialog = new Preview(new javax.swing.JFrame(), true, new Mixer());
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
 
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -87,14 +89,16 @@ public class Preview extends javax.swing.JDialog implements Runnable{
 
     @Override
     public void run() {
-        while(!stopMe){
+        while (!stopMe) {
             try {
-                Thread.sleep(1000/30);
+                Thread.sleep(1000 / 30);
             } catch (InterruptedException ex) {
             }
-            viewer.img = mixer.getImage();
-            panViewer.repaint();
+            if (mixer != null) {
+                viewer.img = mixer.getImage();
+                panViewer.repaint();
+            }
         }
-        mixer=null;
+        mixer = null;
     }
 }
