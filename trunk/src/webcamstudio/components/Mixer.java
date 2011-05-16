@@ -159,6 +159,9 @@ public class Mixer implements java.lang.Runnable {
     }
 
 
+    public VideoOutput getDevice(){
+        return outputDevice;
+    }
     @Override
     public void run() {
         graphicConfiguration = java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();

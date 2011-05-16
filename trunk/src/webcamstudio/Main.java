@@ -630,7 +630,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
                     layouts.add((Layout) l);
                 }
                 outStudio.setLayouts(layouts);
-                outStudio.saveStudio(studio);
+                outStudio.saveStudio(studio,mixer);
                 lastStudioFile = studio;
                 mnuStudioLoadLast.setEnabled(true);
                 mnuStudioLoadLast.setToolTipText(lastStudioFile.getAbsolutePath());
@@ -837,6 +837,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         mnuOutputSize3 = new javax.swing.JRadioButtonMenuItem();
         jSeparator3 = new javax.swing.JSeparator();
         mnuOutputSize4 = new javax.swing.JRadioButtonMenuItem();
+        mnuOutputSize7 = new javax.swing.JRadioButtonMenuItem();
         mnuOutputSize5 = new javax.swing.JRadioButtonMenuItem();
         mnuOutputSize6 = new javax.swing.JRadioButtonMenuItem();
         mnuOutputFramerate = new javax.swing.JMenu();
@@ -1262,6 +1263,16 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
             }
         });
         mnuOutputSize.add(mnuOutputSize4);
+
+        grpOutputSize.add(mnuOutputSize7);
+        mnuOutputSize7.setText("720x480");
+        mnuOutputSize7.setName("mnuOutputSize7"); // NOI18N
+        mnuOutputSize7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnuOutputSizeActionPerformed(evt);
+            }
+        });
+        mnuOutputSize.add(mnuOutputSize7);
 
         grpOutputSize.add(mnuOutputSize5);
         mnuOutputSize5.setText("960x540");
@@ -2234,6 +2245,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
     private javax.swing.JRadioButtonMenuItem mnuOutputSize4;
     private javax.swing.JRadioButtonMenuItem mnuOutputSize5;
     private javax.swing.JRadioButtonMenuItem mnuOutputSize6;
+    private javax.swing.JRadioButtonMenuItem mnuOutputSize7;
     private javax.swing.JMenuItem mnuOutputSpnashot;
     private javax.swing.JMenu mnuPixelFormat;
     private javax.swing.JMenuItem mnuReloadSourceTree;
