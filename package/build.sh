@@ -21,9 +21,12 @@ mkdir package/etc
 
 
 sed -e "s/VERSION/$VALUE/" webcamstudio >package/usr/bin/webcamstudio
+sed -e "s/VERSION/$VALUE/" webcamstudioConsole >package/usr/bin/webcamstudioConsole
 chmod 755 package/usr/bin/webcamstudio
+chmod 755 package/usr/bin/webcamstudioConsole
 cp webcamstudio.png package/usr/share/pixmaps
 cp webcamstudio.desktop package/usr/share/applications
+cp webcamstudioConsole.desktop package/usr/share/applications
 #cp webcamstudio-vloopback-installer.desktop package/usr/share/applications
 cp ../trunk/dist/WebcamStudio.jar package/usr/lib/webcamstudio
 cp ../trunk/dist/lib/* package/usr/lib/webcamstudio/lib

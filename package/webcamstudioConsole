@@ -1,0 +1,43 @@
+#!/bin/bash
+# WebcamStudio for GNU/Linux Launcher
+# Patrick Balleux 2009
+# Version VERSION
+INSTALLDIR=/usr/lib/webcamstudio
+JAVA_DIR=/usr/lib/jvm/java-6-openjdk/bin
+if [ -f $JAVA_DIR/java ]
+then
+    JAVA_DIR=/usr/lib/jvm/java-6-openjdk/bin
+else
+    JAVA_DIR=/usr/lib/jvm/java-6-sun/bin
+fi
+echo "Using JRE: $JAVA_DIR"
+
+PADSP=
+if [ -f /usr/bin/padsp ] 
+then
+	PADSP="/usr/bin/padsp"
+else
+	PADSP=""
+fi
+if [ -e /dev/raw1394 ] 
+then
+	if [ ! -w /dev/raw1394 ]
+	then
+		gksudo --description "You have a Firewire device available but it is not readable.  Enter you password to make it readable." chmod 444 /dev/raw1394
+	fi
+fi
+# check if module is available...
+lsmod | grep webcamstudio >/dev/null
+if [ "$?" == "1" ] 
+then
+    echo "Module webcamstudio is not loaded..."
+    zenity --warning --text "The module webcamstudio is not loaded.  Virtual webcam will not be available..."
+fi
+#groups | grep video > /dev/null
+#if [ "$?" == "1" ] 
+#then
+#    echo "You are not part of the video group"
+#    zenity --warning --text "You are not part of the video group!  Make sure that your user is part of the video group for access to the virtual webcam device..."
+#fi
+$PADSP $JAVA_DIR/java -cp $INSTALLDIR/WebcamStudio.jar webcamstudio.MainConsole $1 $2 $3 $4 $5 $6 $7 $8 $9
+
