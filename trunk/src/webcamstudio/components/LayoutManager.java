@@ -453,7 +453,8 @@ public class LayoutManager extends javax.swing.JPanel implements SourceListener 
                     if (oldLayout != null) {
                         oldLayout.exitLayout();
                     }
-                    audioMixer.setVolume(currentLayout.getMicVolume());
+                    audioMixer.setMicVolume(currentLayout.getMicVolume());
+                    audioMixer.setSysVolume(currentLayout.getSysVolume());
                     audioMixer.setLowFilter(currentLayout.getMicLow());
                     audioMixer.setMiddleFilter(currentLayout.getMicMiddle());
                     audioMixer.setHighFilter(currentLayout.getMicHigh());

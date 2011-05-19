@@ -30,6 +30,7 @@ public class Layout {
     private boolean isEntering = false;
     private boolean isExiting = false;
     private int micVolume = 100;
+    private int sysVolume = 100;
     private int micLow = 0;
     private int micMiddle = 0;
     private int micHigh = 0;
@@ -40,6 +41,9 @@ public class Layout {
     }
     public int getMicVolume() {
         return micVolume;
+    }
+    public int getSysVolume() {
+        return sysVolume;
     }
 
     public int getMicLow() {
@@ -56,6 +60,9 @@ public class Layout {
 
     public void setMicVolume(int v) {
         micVolume = v;
+    }
+    public void setSysVolume(int v) {
+        sysVolume = v;
     }
 
     public void setMicLow(int l) {
@@ -270,6 +277,7 @@ public class Layout {
         layout.put("uuid", layoutUUID);
         layout.put("hotkey", hotKey);
         layout.putInt("micvolume", micVolume);
+        layout.putInt("sysvolume", sysVolume);
         layout.putInt("miclow", micLow);
         layout.putInt("micmiddle", micMiddle);
         layout.putInt("michigh", micHigh);
@@ -284,6 +292,7 @@ public class Layout {
         layoutUUID = layout.get("uuid", layoutUUID);
         hotKey = layout.get("hotkey", hotKey);
         micVolume = layout.getInt("micvolume", micVolume);
+        micVolume = layout.getInt("sysvolume", sysVolume);
         micLow = layout.getInt("miclow", micLow);
         micMiddle = layout.getInt("micmiddle", micMiddle);
         micHigh = layout.getInt("michigh", micHigh);
