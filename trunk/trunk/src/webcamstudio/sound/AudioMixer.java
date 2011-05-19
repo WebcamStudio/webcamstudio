@@ -23,7 +23,8 @@ import org.gstreamer.*;
 
 public class AudioMixer {
 
-    private int volume = 100;
+    private int micVolume = 100;
+    private int sysVolume = 100;
     private int low = 0;
     private int middle = 0;
     private int high = 0;
@@ -43,22 +44,18 @@ public class AudioMixer {
                 public void run() {
                     try {
                         isActive = true;
-                        java.io.File input = new java.io.File("/tmp/music.input");
-                        if (!input.exists()) {
-                            Runtime.getRuntime().exec("pulseaudio -k");
-                            Process p = Runtime.getRuntime().exec("pactl load-module module-pipe-source");
-                            p.waitFor();
-                            p.destroy();
-                            p = null;
-                        }
-                        elementSink.set("location", "/tmp/music.input");
+                        java.io.File input = new java.io.File("/tmp/webcamstudio_audio");
+                        elementSink.set("location", input.getAbsolutePath());
                         if (input.exists()) {
                             pipe = new Pipeline("WebcamStudio Mixer");
                             audioCaptureFilter.setCaps(Caps.fromString("audio/x-raw-int"));
-                            audioOutputFilter.setCaps(Caps.fromString("audio/x-raw-int,rate=44100,signed=true,width=16,channels=2"));
-                            pipe.addMany(elementSourceSystem, elementSourceMic, audioVolume, audioAdder, audioCaptureFilter, audioOutputFilter, audioConvert, audioConvert2, audioEqualizer, elementSink);
-                            Element.linkMany(elementSourceMic, audioCaptureFilter, audioConvert, audioVolume, audioEqualizer, audioAdder, audioConvert2, audioOutputFilter, elementSink);
-                            elementSourceSystem.link(audioAdder);
+                            audioOutputFilter.setCaps(Caps.fromString("audio/x-raw-int,rate=22050,signed=true,width=16,channels=1"));
+                            elementSourceSystem.set("device", 1);
+                            elementSourceMic.set("device", 0);
+                            pipe.addMany(elementSourceSystem, elementSourceMic, audioMicVolume,audioSysVolume, audioAdder, audioCaptureFilter, audioOutputFilter, audioConvert, audioConvert2, audioEqualizer, elementSink);
+                            Element.linkMany(elementSourceMic, audioCaptureFilter, audioConvert, audioMicVolume, audioEqualizer, audioAdder, audioConvert2, audioOutputFilter, elementSink);
+                            elementSourceSystem.link(audioSysVolume);
+                            audioSysVolume.link(audioAdder);
                             pipe.getBus().connect(new Bus.ERROR() {
 
                                 public void errorMessage(GstObject arg0, int arg1, String arg2) {
@@ -108,14 +105,22 @@ public class AudioMixer {
         return high;
     }
 
-    public void setVolume(int v) {
-        volume = v;
-        audioVolume.set("volume", (double) v / 100D);
+    public void setMicVolume(int v) {
+        micVolume = v;
+        audioMicVolume.set("volume", (double) v / 100D);
+
+    }
+    public void setSysVolume(int v) {
+        sysVolume = v;
+        audioSysVolume.set("volume", (double) v / 100D);
 
     }
 
-    public int getVolume() {
-        return volume;
+    public int getMicVolume() {
+        return micVolume;
+    }
+    public int getSysVolume(){
+        return sysVolume;
     }
 
     public void stop() {
@@ -125,7 +130,7 @@ public class AudioMixer {
             Pipeline monitor = Pipeline.launch("pulsesrc device=fifo_input ! fakesink");
             monitor.play();
             pipe.stop();
-            pipe.removeMany(audioEqualizer, audioVolume, elementSourceSystem, elementSourceMic, audioAdder, audioCaptureFilter, audioConvert, audioConvert2, audioOutputFilter, elementSink);
+            pipe.removeMany(audioEqualizer, audioMicVolume,audioSysVolume, elementSourceSystem, elementSourceMic, audioAdder, audioCaptureFilter, audioConvert, audioConvert2, audioOutputFilter, elementSink);
             pipe = null;
             monitor.stop();
             monitor = null;
@@ -133,7 +138,7 @@ public class AudioMixer {
         isActive = false;
     }
 
-    private java.io.File configurationFile = null;
+    
     private Element elementSourceSystem = ElementFactory.make("pulsesrc", "pulsesrcSystem");
     private Element elementSourceMic = ElementFactory.make("pulsesrc", "pulsesrcMic");
     private Element elementSink = ElementFactory.make("filesink", "filesink");
@@ -142,7 +147,8 @@ public class AudioMixer {
     private Element audioConvert = ElementFactory.make("audioconvert", "audioconvert");
     private Element audioConvert2 = ElementFactory.make("audioconvert", "audioconvert2");
     private Element audioEqualizer = ElementFactory.make("equalizer-3bands", "equalizer-3bands");
-    private Element audioVolume = ElementFactory.make("volume", "volume");
+    private Element audioMicVolume = ElementFactory.make("volume", "micvolume");
+    private Element audioSysVolume = ElementFactory.make("volume", "sysvolume");
     private Element audioAdder = ElementFactory.make("adder", "adder");
     private Pipeline pipe = null;
 

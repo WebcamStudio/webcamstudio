@@ -26,10 +26,17 @@ public class Studio {
     private int outputHeight = 240;
     private String device = "/dev/video1";
     private int pixFormat = VideoOutput.RGB24;
+    private boolean enabledAudioMixer = false;
     public Studio() {
     }
 
 
+    public boolean isAudioMixerActive(){
+        return enabledAudioMixer;
+    }
+    public void setEnabledAudioMixer(boolean active){
+        enabledAudioMixer=active;
+    }
     public int getWidth(){
         return outputWidth;
     }
@@ -60,6 +67,7 @@ public class Studio {
         outputHeight = prefs.getInt("height", outputHeight);
         device = prefs.get("device",device);
         pixFormat = prefs.getInt("pixformat",pixFormat);
+        enabledAudioMixer=prefs.getBoolean("enabledaudiomixer", enabledAudioMixer);
         prefs.flush();
         prefs.sync();
         java.util.prefs.Preferences.importPreferences(studio.toURI().toURL().openStream());
@@ -84,7 +92,7 @@ public class Studio {
         prefs.putInt("height", outputHeight);
         prefs.put("device",device);
         prefs.putInt("pixformat",pixFormat);
-
+        prefs.putBoolean("enabledaudiomixer", enabledAudioMixer);
         prefs.node("Sources").removeNode();
         prefs.node("Layouts").removeNode();
         prefs.flush();

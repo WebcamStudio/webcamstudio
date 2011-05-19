@@ -630,6 +630,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
                     layouts.add((Layout) l);
                 }
                 outStudio.setLayouts(layouts);
+                outStudio.setEnabledAudioMixer(audioMixer.isActive());
                 outStudio.saveStudio(studio,mixer);
                 lastStudioFile = studio;
                 mnuStudioLoadLast.setEnabled(true);
@@ -672,6 +673,13 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
                 studio.loadStudio(lastStudioFile);
                 for (Layout l : studio.getLayouts()) {
                     layoutManager.addLayout(l);
+                }
+                audioMixer.stop();
+                mnuOutputAudioMixer.setSelected(false);
+
+                if (studio.isAudioMixerActive()){
+                    audioMixer.start();
+                    mnuOutputAudioMixer.setSelected(true);
                 }
                 layoutManager.revalidate();
                 studio = null;

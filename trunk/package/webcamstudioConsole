@@ -39,5 +39,13 @@ fi
 #    echo "You are not part of the video group"
 #    zenity --warning --text "You are not part of the video group!  Make sure that your user is part of the video group for access to the virtual webcam device..."
 #fi
+# Loading pulseaudio module for virtual mic
+pactl load-module module-pipe-source source_name=webcamstudio source_properties=device.description=WebcamStudio rate=22050 channels=1  file=/tmp/webcamstudio_audio >/tmp/webcamstudio_audio_index
 $PADSP $JAVA_DIR/java -cp $INSTALLDIR/WebcamStudio.jar webcamstudio.MainConsole $1 $2 $3 $4 $5 $6 $7 $8 $9
+INDEX=$( cat /tmp/webcamstudio_audio_index )
+echo $INDEX
+pactl unload-module $INDEX
+rm /tmp/webcamstudio_audio_index
+
+
 
