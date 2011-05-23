@@ -33,8 +33,8 @@ public class ControlPosition extends javax.swing.JPanel implements Controls {
     public ControlPosition(LayoutItem src) {
         initComponents();
         this.layout = src;
-        javax.swing.DefaultComboBoxModel transModelIn = new javax.swing.DefaultComboBoxModel(Transition.getTransitions().values().toArray());
-        javax.swing.DefaultComboBoxModel transModelOut = new javax.swing.DefaultComboBoxModel(Transition.getTransitions().values().toArray());
+        javax.swing.DefaultComboBoxModel transModelIn = new javax.swing.DefaultComboBoxModel(Transition.getTransitionIns().values().toArray());
+        javax.swing.DefaultComboBoxModel transModelOut = new javax.swing.DefaultComboBoxModel(Transition.getTransitionOuts().values().toArray());
         spinVolume.setModel(new SpinnerNumberModel(10,0,100,1));
         spinVolume.setEnabled(layout.getSource().hasSound());
         spinVolume.setValue(new Integer(layout.getVolume()));
