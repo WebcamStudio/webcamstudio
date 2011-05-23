@@ -31,8 +31,10 @@ public class SlideIn extends Transition {
         } catch (InterruptedException ex) {
             Logger.getLogger(SlideIn.class.getName()).log(Level.SEVERE, null, ex);
         }
-        int xDelta = (0 - item.getX()) / 20;
-        int yDelta = (0 - item.getY()) / 20;
+        int xDelta = ((item.getX()+item.getWidth())) / 20;
+        int yDelta = ((item.getY()+item.getHeight())) / 20;
+        source.setShowAtX(0-xDelta*20);
+        source.setShowAtY(0-yDelta*20);
         for (int i = 0; i < 20; i++) {
             try {
                 source.setShowAtX(source.getShowAtX() + xDelta);
