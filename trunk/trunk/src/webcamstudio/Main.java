@@ -518,6 +518,9 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         } else if (prefs.get("format", "uyvy").equals("uyvy")) {
             mnurdPixelFormatUYVY.setSelected(true);
             mnurdPixelFormatRGB24.setSelected(false);
+            mnuOutputSize.setEnabled(false);
+            outputWidth=640;
+            outputHeight=480;
         }
         String outputSize = outputWidth + "x" + outputHeight;
         java.util.Enumeration<javax.swing.AbstractButton> list = grpOutputSize.getElements();
@@ -2040,8 +2043,10 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
     private void mnurdPixelFormatRGB24ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnurdPixelFormatRGB24ActionPerformed
         output.close();
         if (mnurdPixelFormatRGB24.isSelected()) {
+            mnuOutputSize.setEnabled(true);
             output.open(output.getDevice(), outputWidth, outputHeight, V4L2Loopback.RGB24);
         } else {
+            mnuOutputSize.setEnabled(false);
             output.open(output.getDevice(), outputWidth, outputHeight, V4L2Loopback.UYVY);
         }
         mixer.setSize(outputWidth, outputHeight);
@@ -2049,10 +2054,16 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
 
     private void mnurdPixelFormatUYVYActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnurdPixelFormatUYVYActionPerformed
         output.close();
+        
         if (mnurdPixelFormatRGB24.isSelected()) {
             output.open(output.getDevice(), outputWidth, outputHeight, V4L2Loopback.RGB24);
+            mnuOutputSize.setEnabled(true);
         } else {
+            mnuOutputSize3.setSelected(true);
+            outputWidth = 640;
+            outputHeight = 480;
             output.open(output.getDevice(), outputWidth, outputHeight, V4L2Loopback.UYVY);
+            mnuOutputSize.setEnabled(false);
         }
         mixer.setSize(outputWidth, outputHeight);
     }//GEN-LAST:event_mnurdPixelFormatUYVYActionPerformed

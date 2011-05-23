@@ -161,7 +161,7 @@ public class VideoSourceText extends VideoSource {
                             case SCROLL_BOTTOMTOTOP:
                                 if (interLine <= 0) {
                                     interLine = fontSize;
-                                    index += 3;
+                                    index += 1;
                                 }
                                 if (index >= lines.size()) {
                                     index = 0;
@@ -173,9 +173,6 @@ public class VideoSourceText extends VideoSource {
                                     if (lineIndex >= lines.size()) {
                                         lineIndex = 0;
                                     }
-                                    //buffer.setColor(backgroundColor);
-                                    //buffer.fillRect(0, 0, tempimage.getWidth(), tempimage.getHeight());
-                                    //buffer.drawString(lines.get(lineIndex), x + 1, y + 1);
                                     buffer.setColor(foregroundColor);
                                     buffer.drawString(translateTags(lines.get(lineIndex)), x, y);
                                     lineIndex++;
@@ -185,7 +182,7 @@ public class VideoSourceText extends VideoSource {
                             case SCROLL_TOPTOBOTTOM:
                                 if (interLine >= fontSize) {
                                     interLine = 0;
-                                    index -= 3;
+                                    index -= 1;
                                 }
                                 if (index < 0) {
                                     index = lines.size() - 1;
@@ -197,9 +194,6 @@ public class VideoSourceText extends VideoSource {
                                     if (lineIndex >= lines.size()) {
                                         lineIndex = 0;
                                     }
-                                    //buffer.setColor(backgroundColor);
-                                    //buffer.fillRect(0, 0, tempimage.getWidth(), tempimage.getHeight());
-                                    //buffer.drawString(lines.get(lineIndex), x + 1, y + 1);
                                     buffer.setColor(foregroundColor);
                                     buffer.drawString(translateTags(lines.get(lineIndex)), x, y);
                                     lineIndex++;
@@ -212,7 +206,7 @@ public class VideoSourceText extends VideoSource {
                                     if (index < 0) {
                                         index = lines.size() - 1;
                                     }
-                                    x = 0 - buffer.getFontMetrics().stringWidth(translateTags(lines.get(lineIndex)));
+                                    x = 0 - buffer.getFontMetrics().stringWidth(translateTags(lines.get(index)));
                                 }
                                 x += 3;
                                 y = fontSize + 10;
@@ -224,9 +218,6 @@ public class VideoSourceText extends VideoSource {
                                         lineIndex = 0;
                                     }
                                 }
-                                //buffer.setColor(backgroundColor);
-                                //buffer.fillRect(0, 0, tempimage.getWidth(), tempimage.getHeight());
-                                //buffer.drawString(text, x + 1, y + 1);
                                 buffer.setColor(foregroundColor);
                                 buffer.drawString(text, x, y);
                                 break;
@@ -248,9 +239,6 @@ public class VideoSourceText extends VideoSource {
                                         lineIndex = 0;
                                     }
                                 }
-                                //buffer.setColor(backgroundColor);
-                                //buffer.fillRect(0, 0, tempimage.getWidth(), tempimage.getHeight());
-                                //buffer.drawString(text, x + 1, y + 1);
                                 buffer.setColor(foregroundColor);
                                 buffer.drawString(text, x, y);
                                 break;
