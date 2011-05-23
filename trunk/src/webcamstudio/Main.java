@@ -41,7 +41,6 @@ import webcamstudio.exporter.VideoExporterPipeline;
 import webcamstudio.exporter.vloopback.V4LLoopback;
 import webcamstudio.exporter.vloopback.VideoOutput;
 import webcamstudio.layout.Layout;
-import webcamstudio.sound.AudioMixer;
 import webcamstudio.studio.Studio;
 import webcamstudio.visage.FaceDetector;
 
@@ -77,7 +76,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
     private LayoutManager layoutManager = null;
     private String lastDriverOutput = "";
     private String lastDriverOutputPath = "";
-    private AudioMixer audioMixer = null;
     private SystemMonitor monitor = null;
 
     /** Creates new form Main */
@@ -91,7 +89,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         javax.swing.DefaultComboBoxModel cboDevOuts = new javax.swing.DefaultComboBoxModel(vds);
         cboVideoOutputs.setModel(cboDevOuts);
         loadPrefs();
-        audioMixer = new AudioMixer();
         VideoDevice selectedVd = null;
         for (VideoDevice vd : vds) {
             if (vd.getVersion() == VideoDevice.Version.V4L2 && lastDriverOutput.equals("v4l2")) {
@@ -124,7 +121,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
             cboVideoOutputs.setSelectedItem(selectedVd);
             selectOutputDevice(selectedVd);
         }
-        layoutManager = new LayoutManager(audioMixer);
+        layoutManager = new LayoutManager();
 
 
         mixer = new Mixer();
@@ -630,7 +627,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
                     layouts.add((Layout) l);
                 }
                 outStudio.setLayouts(layouts);
-                outStudio.setEnabledAudioMixer(audioMixer.isActive());
                 outStudio.saveStudio(studio,mixer);
                 lastStudioFile = studio;
                 mnuStudioLoadLast.setEnabled(true);
@@ -673,13 +669,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
                 studio.loadStudio(lastStudioFile);
                 for (Layout l : studio.getLayouts()) {
                     layoutManager.addLayout(l);
-                }
-                audioMixer.stop();
-                mnuOutputAudioMixer.setSelected(false);
-
-                if (studio.isAudioMixerActive()){
-                    audioMixer.start();
-                    mnuOutputAudioMixer.setSelected(true);
                 }
                 layoutManager.revalidate();
                 studio = null;
@@ -860,7 +849,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         mnurdPixelFormatRGB24 = new javax.swing.JRadioButtonMenuItem();
         mnurdPixelFormatUYVY = new javax.swing.JRadioButtonMenuItem();
         mnuOutputFlipImage = new javax.swing.JCheckBoxMenuItem();
-        mnuOutputAudioMixer = new javax.swing.JCheckBoxMenuItem();
         mnuLayout = new javax.swing.JMenu();
         mnuLayoutF1 = new javax.swing.JMenuItem();
         mnuLayoutF2 = new javax.swing.JMenuItem();
@@ -1425,16 +1413,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         });
         mnuOutput.add(mnuOutputFlipImage);
 
-        mnuOutputAudioMixer.setText(bundle.getString("ACTIVATE_AUDIOMIXER")); // NOI18N
-        mnuOutputAudioMixer.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/audio-input-microphone.png"))); // NOI18N
-        mnuOutputAudioMixer.setName("mnuOutputAudioMixer"); // NOI18N
-        mnuOutputAudioMixer.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuOutputAudioMixerActionPerformed(evt);
-            }
-        });
-        mnuOutput.add(mnuOutputAudioMixer);
-
         menuBar.add(mnuOutput);
 
         mnuLayout.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/image-x-generic.png"))); // NOI18N
@@ -1849,9 +1827,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         layoutManager.quitting();
-        if (audioMixer.isActive()) {
-            audioMixer.stop();
-        }
         monitor.stopMe();
         savePrefs();
     }//GEN-LAST:event_formWindowClosing
@@ -2154,18 +2129,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         panBrowser.setVisible(mnuSourceschkShowBrowser.isSelected());
     }//GEN-LAST:event_mnuSourceschkShowBrowserActionPerformed
 
-    private void mnuOutputAudioMixerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuOutputAudioMixerActionPerformed
-        if (mnuOutputAudioMixer.isSelected()) {
-            if (!audioMixer.isActive()) {
-                audioMixer.start();
-            }
-        } else {
-            if (audioMixer.isActive()) {
-                audioMixer.stop();
-            }
-        }
-    }//GEN-LAST:event_mnuOutputAudioMixerActionPerformed
-
     /**
      * @param args the command line arguments
      */
@@ -2242,7 +2205,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
     private javax.swing.JRadioButtonMenuItem mnuOutput25FPS;
     private javax.swing.JRadioButtonMenuItem mnuOutput30FPS;
     private javax.swing.JRadioButtonMenuItem mnuOutput5FPS;
-    private javax.swing.JCheckBoxMenuItem mnuOutputAudioMixer;
     private javax.swing.JCheckBoxMenuItem mnuOutputFlipImage;
     private javax.swing.JMenu mnuOutputFramerate;
     private javax.swing.JMenuItem mnuOutputGISSCaster;

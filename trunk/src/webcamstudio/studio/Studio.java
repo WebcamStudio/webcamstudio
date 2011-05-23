@@ -135,8 +135,10 @@ public class Studio {
             source = new VideoSourceConsole("");
         } else if (currentClass.equals(VideoSourceMusic.class.getName()) || currentClass.equals(VideoSourceMusic.class.getName().replace(".sources", ""))) {
             source = new VideoSourceMusic("");
+        }   else if (currentClass.equals(VideoSourcePipeline.class.getName()) || currentClass.equals(VideoSourcePipeline.class.getName().replace(".sources", ""))) {
+            source = new VideoSourcePipeline();
         }
-
+        //webcamstudio.sources.VideoSourcePipeline
         return source;
     }
 

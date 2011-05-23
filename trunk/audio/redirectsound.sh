@@ -1,0 +1,1 @@
+gst-launch-0.10 pulsesrc device=0 ! audioconvert ! adder name=mix ! audioconvert ! audio/x-raw-int,channel=1,width=16,depth=16,signed=true,rate=22050 ! level ! filesink location=/tmp/webcamstudio_audio pulsesrc device=1 ! audioconvert ! mix.

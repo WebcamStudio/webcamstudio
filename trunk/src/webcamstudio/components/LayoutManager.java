@@ -32,9 +32,7 @@ import webcamstudio.layout.Layout;
 import webcamstudio.layout.LayoutItem;
 import webcamstudio.layout.transitions.None;
 import webcamstudio.layout.transitions.Start;
-import webcamstudio.layout.transitions.Stop;
 import webcamstudio.layout.transitions.Transition;
-import webcamstudio.sound.AudioMixer;
 import webcamstudio.sources.VideoSource;
 import webcamstudio.sources.VideoSourceAnimation;
 import webcamstudio.sources.VideoSourceDV;
@@ -66,13 +64,12 @@ public class LayoutManager extends javax.swing.JPanel implements SourceListener 
     private ImageIcon iconFolder = null;
     private ImageIcon iconText = null;
     private boolean stopMe = false;
-    private AudioMixer audioMixer = null;
     private String micLabel = "Microphone";
 
     /** Creates new form LayoutManager */
-    public LayoutManager(AudioMixer mixer) {
+    public LayoutManager() {
         initComponents();
-        audioMixer = mixer;
+        
         iconMovie = new ImageIcon(getToolkit().getImage(java.net.URLClassLoader.getSystemResource("webcamstudio/resources/tango/video-display.png")));
         iconImage = new ImageIcon(getToolkit().getImage(java.net.URLClassLoader.getSystemResource("webcamstudio/resources/tango/image-x-generic.png")));
         iconDevice = new ImageIcon(getToolkit().getImage(java.net.URLClassLoader.getSystemResource("webcamstudio/resources/tango/camera-video.png")));
@@ -399,12 +396,10 @@ public class LayoutManager extends javax.swing.JPanel implements SourceListener 
             btnRemove.setEnabled(true);
             
             lblHotKEy.setText(currentLayout.getHotKey());
-            if (audioMixer.isActive()) {
-                AudioMixerPanel mixerPanel = new AudioMixerPanel((Layout) obj, audioMixer);
-                tabControls.add(micLabel, mixerPanel);
-            }
             txtLayoutName.setText(currentLayout.toString());
             txtLayoutName.setEnabled(true);
+            PulseAudioInputSelecter p = new PulseAudioInputSelecter(currentLayout);
+            tabControls.add("Audio", p);
         } else if (obj instanceof LayoutItem) {
             currentLayoutItem = (LayoutItem) obj;
             if (evt.getPath().getParentPath() != null) {
@@ -453,11 +448,6 @@ public class LayoutManager extends javax.swing.JPanel implements SourceListener 
                     if (oldLayout != null) {
                         oldLayout.exitLayout();
                     }
-                    audioMixer.setMicVolume(currentLayout.getMicVolume());
-                    audioMixer.setSysVolume(currentLayout.getSysVolume());
-                    audioMixer.setLowFilter(currentLayout.getMicLow());
-                    audioMixer.setMiddleFilter(currentLayout.getMicMiddle());
-                    audioMixer.setHighFilter(currentLayout.getMicHigh());
                     currentLayout.enterLayout();
                     oldLayout = currentLayout;
                 }

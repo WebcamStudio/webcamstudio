@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
+import webcamstudio.components.PulseAudioManager;
 import webcamstudio.layout.transitions.Transition;
 import webcamstudio.sources.*;
 import webcamstudio.studio.Studio;
@@ -29,52 +30,24 @@ public class Layout {
     private boolean isActive = false;
     private boolean isEntering = false;
     private boolean isExiting = false;
-    private int micVolume = 100;
-    private int sysVolume = 100;
-    private int micLow = 0;
-    private int micMiddle = 0;
-    private int micHigh = 0;
     private static Layout activeLayout = null;
+    private String inputSource ="";
+    private String inputSourceApp = "";
 
+    public void setAudioSource(String source){
+        inputSource = source;
+    }
+    public void setAudioApp(String app){
+        inputSourceApp = app;
+    }
+    public String getAudioSource(){
+        return inputSource;
+    }
+    public String getAudioApp(){
+        return inputSourceApp;
+    }
     public static Layout getActiveLayout(){
         return activeLayout;
-    }
-    public int getMicVolume() {
-        return micVolume;
-    }
-    public int getSysVolume() {
-        return sysVolume;
-    }
-
-    public int getMicLow() {
-        return micLow;
-    }
-
-    public int getMicMiddle() {
-        return micMiddle;
-    }
-
-    public int getMicHigh() {
-        return micHigh;
-    }
-
-    public void setMicVolume(int v) {
-        micVolume = v;
-    }
-    public void setSysVolume(int v) {
-        sysVolume = v;
-    }
-
-    public void setMicLow(int l) {
-        micLow = l;
-    }
-
-    public void setMicMiddle(int m) {
-        micMiddle = m;
-    }
-
-    public void setMicHigh(int h) {
-        micHigh = h;
     }
 
     public Layout(String name) {
@@ -129,6 +102,10 @@ public class Layout {
     public void enterLayout() {
         isEntering = true;
         activeLayout=this;
+        if (inputSourceApp.length()>0){
+            PulseAudioManager p = new PulseAudioManager();
+            p.setSoundInput(inputSourceApp, inputSource);
+        }
         for (LayoutItem item : items.values()) {
             item.getSource().setLayer(item.getLayer());
         }
@@ -276,11 +253,8 @@ public class Layout {
         layout.put("name", name);
         layout.put("uuid", layoutUUID);
         layout.put("hotkey", hotKey);
-        layout.putInt("micvolume", micVolume);
-        layout.putInt("sysvolume", sysVolume);
-        layout.putInt("miclow", micLow);
-        layout.putInt("micmiddle", micMiddle);
-        layout.putInt("michigh", micHigh);
+        layout.put("inputsource",inputSource);
+        layout.put("inputsourceapp",inputSourceApp);
         for (LayoutItem item : items.values()) {
             item.applyStudioConfig(layout.node("Items").node("" + item.getLayer()));
         }
@@ -291,11 +265,8 @@ public class Layout {
         name = layout.get("name", name);
         layoutUUID = layout.get("uuid", layoutUUID);
         hotKey = layout.get("hotkey", hotKey);
-        micVolume = layout.getInt("micvolume", micVolume);
-        micVolume = layout.getInt("sysvolume", sysVolume);
-        micLow = layout.getInt("miclow", micLow);
-        micMiddle = layout.getInt("micmiddle", micMiddle);
-        micHigh = layout.getInt("michigh", micHigh);
+        inputSource=layout.get("inputsource",inputSource);
+        inputSourceApp=layout.get("inputsourceapp",inputSourceApp);
         String[] itemIndexes = layout.node("Items").childrenNames();
         for (String itemIndex : itemIndexes) {
             LayoutItem item = new LayoutItem(null,0);
