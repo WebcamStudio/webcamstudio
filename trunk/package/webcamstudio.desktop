@@ -6,5 +6,5 @@ Type=Application
 Categories=Application;AudioVideo;
 Terminal=false
 Icon=/usr/share/pixmaps/webcamstudio.png
-Exec=/usr/bin/webcamstudio -native
+Exec=/usr/bin/webcamstudio
 Comment=WebcamStudio for GNU/Linux

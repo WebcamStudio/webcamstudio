@@ -23,7 +23,6 @@ import webcamstudio.components.Preview;
 import webcamstudio.exporter.vloopback.V4L2Loopback;
 import webcamstudio.exporter.vloopback.VideoOutput;
 import webcamstudio.layout.Layout;
-import webcamstudio.sound.AudioMixer;
 import webcamstudio.studio.Studio;
 
 /**
@@ -41,7 +40,6 @@ public class MainConsole extends javax.swing.JFrame implements InfoListener {
     private String device = "/dev/video1";
     private Layout currentLayout = null;
     private Preview preview = null;
-    private AudioMixer audioMixer = null;
 
     /** Creates new form MainConsole */
     public MainConsole() {
@@ -86,7 +84,6 @@ public class MainConsole extends javax.swing.JFrame implements InfoListener {
 
             }
         }).start();
-        audioMixer = new AudioMixer();
 
     }
 
@@ -134,10 +131,6 @@ public class MainConsole extends javax.swing.JFrame implements InfoListener {
                 mixer.setSize(width, height);
                 mixer.setOutput(output);
                 mixer.setFramerate(30);
-                audioMixer.stop();
-                if (studio.isAudioMixerActive()) {
-                    audioMixer.start();
-                }
                 for (Layout l : studio.getLayouts()) {
                     l.enterLayout();
                     currentLayout = l;
@@ -249,12 +242,6 @@ public class MainConsole extends javax.swing.JFrame implements InfoListener {
                     currentLayout.exitLayout();
                 }
                 currentLayout = (Layout) cboLayouts.getSelectedItem();
-                audioMixer.setMicVolume(currentLayout.getMicVolume());
-                audioMixer.setSysVolume(currentLayout.getSysVolume());
-                audioMixer.setLowFilter(currentLayout.getMicLow());
-                audioMixer.setMiddleFilter(currentLayout.getMicMiddle());
-                audioMixer.setHighFilter(currentLayout.getMicHigh());
-
                 currentLayout.enterLayout();
                 cboLayouts.setEnabled(true);
             }

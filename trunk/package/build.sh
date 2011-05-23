@@ -22,8 +22,10 @@ mkdir package/etc
 
 sed -e "s/VERSION/$VALUE/" webcamstudio >package/usr/bin/webcamstudio
 sed -e "s/VERSION/$VALUE/" webcamstudioConsole >package/usr/bin/webcamstudioConsole
+cp ws4gl-pulseaudio-* package/usr/bin/webcamstudio
 chmod 755 package/usr/bin/webcamstudio
 chmod 755 package/usr/bin/webcamstudioConsole
+chmod 755 package/usr/bin/ws4gl-pulseaudio*
 cp webcamstudio.png package/usr/share/pixmaps
 cp webcamstudio.desktop package/usr/share/applications
 cp webcamstudioConsole.desktop package/usr/share/applications

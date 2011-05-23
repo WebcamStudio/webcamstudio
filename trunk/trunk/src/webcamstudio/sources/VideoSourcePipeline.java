@@ -40,21 +40,31 @@ public class VideoSourcePipeline extends VideoSource implements org.gstreamer.el
 
         location = pluginFile.getAbsolutePath();
         name = pluginFile.getName();
-        frameRate = 1;
+        frameRate = 15;
         outputWidth = 320;
         outputHeight = 240;
+    }
+    public VideoSourcePipeline() {
+        frameRate = 15;
+        outputWidth = 320;
+        outputHeight = 240;
+    }
+
+    private String getPipeline(){
+        String retValue = "";
+        File pluginFile = new File(location);
         if (pluginFile.exists()) {
             try {
                 java.util.Properties plugin = new java.util.Properties();
                 plugin.load(pluginFile.toURI().toURL().openStream());
-                gstPipeline = plugin.getProperty("pipeline");
+                retValue = plugin.getProperty("pipeline");
                 hasSound = false;
             } catch (IOException ex) {
                 Logger.getLogger(VideoSourcePipeline.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        return retValue;
     }
-
     public void setName(String n) {
         name = n;
     }
@@ -99,6 +109,7 @@ public class VideoSourcePipeline extends VideoSource implements org.gstreamer.el
     public void startSource() {
         isPlaying = true;
         try {
+            gstPipeline = getPipeline();
             elementSink = new org.gstreamer.elements.RGBDataSink("RGBDataSink" + uuId, this);
             System.out.println(gstPipeline);
             pipe = Pipeline.launch(gstPipeline);
