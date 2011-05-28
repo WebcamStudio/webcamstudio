@@ -19,17 +19,29 @@
  */
 package webcamstudio.sources;
 
+import java.io.File;
+
 /**
  *
  * @author pballeux
  */
 public class VideoSourceV4L2 extends VideoSourceV4L {
 
-    public VideoSourceV4L2(String deviceName) {
+    public VideoSourceV4L2() {
+        outputWidth = 320;
+        outputHeight = 240;
+        frameRate = 15;
+        captureWidth = 320;
+        captureHeight = 240;
+        doRescale = true;
+        source="v4l2src";
+
+    }
+    public VideoSourceV4L2(String deviceName,File fallbackDevice) {
         outputWidth = 320;
         outputHeight = 240;
         source="v4l2src";
-        location = getDeviceForName(deviceName).getAbsolutePath();
+        location = getDeviceForName(deviceName,fallbackDevice).getAbsolutePath();
         name = deviceName;
         if (deviceName.length() == 0) {
             name = deviceName;

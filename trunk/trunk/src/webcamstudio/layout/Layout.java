@@ -33,7 +33,19 @@ public class Layout {
     private static Layout activeLayout = null;
     private String inputSource ="";
     private String inputSourceApp = "";
-
+    private int duration = 0;
+    private String nextLayoutName = "";
+    public long timeStamp = 0;
+    public void setDuration(int sec,String nextLayout){
+        duration = sec;
+        nextLayoutName=nextLayout;
+    }
+    public int getDuration(){
+        return duration;
+    }
+    public String getNextLayout(){
+        return nextLayoutName;
+    }
     public void setAudioSource(String source){
         inputSource = source;
     }
@@ -236,15 +248,20 @@ public class Layout {
         }
     }
 
-    public void addSource(VideoSource source, Transition transIn, Transition transOut) {
+    public void addSource(VideoSource source) {
         int index = 0;
         if (items.size()!=0){
             index = items.lastKey()+1;
         }
-        LayoutItem item = new LayoutItem(source,  index);
-        System.out.println(index);
-        item.setTransitionIn(transIn);
-        item.setTransitionOut(transOut);
+        VideoSource tempSource = source;
+        if (VideoSource.loadedSources.containsKey(source.getLocation())){
+            tempSource = VideoSource.loadedSources.get(source.getLocation());
+            System.out.println("Same source" + source.getLocation());
+        } else {
+            VideoSource.loadedSources.put(source.getLocation(), source);
+            System.out.println("Not same source" + source.getLocation());
+        }
+        LayoutItem item = new LayoutItem(tempSource,  index);
         items.put(item.getLayer(), item);
     }
 
@@ -255,6 +272,8 @@ public class Layout {
         layout.put("hotkey", hotKey);
         layout.put("inputsource",inputSource);
         layout.put("inputsourceapp",inputSourceApp);
+        layout.putInt("duration",duration);
+        layout.put("nextlayout",nextLayoutName);
         for (LayoutItem item : items.values()) {
             item.applyStudioConfig(layout.node("Items").node("" + item.getLayer()));
         }
@@ -267,6 +286,8 @@ public class Layout {
         hotKey = layout.get("hotkey", hotKey);
         inputSource=layout.get("inputsource",inputSource);
         inputSourceApp=layout.get("inputsourceapp",inputSourceApp);
+        duration = layout.getInt("duration",duration);
+        nextLayoutName = layout.get("nextlayout",nextLayoutName);
         String[] itemIndexes = layout.node("Items").childrenNames();
         for (String itemIndex : itemIndexes) {
             LayoutItem item = new LayoutItem(null,0);

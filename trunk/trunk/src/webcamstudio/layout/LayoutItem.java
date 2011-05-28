@@ -5,7 +5,8 @@
 package webcamstudio.layout;
 
 import java.util.prefs.BackingStoreException;
-import webcamstudio.layout.transitions.None;
+import webcamstudio.layout.transitions.Start;
+import webcamstudio.layout.transitions.Stop;
 import webcamstudio.layout.transitions.Transition;
 import webcamstudio.sources.VideoSource;
 import webcamstudio.studio.Studio;
@@ -21,8 +22,8 @@ public class LayoutItem implements Runnable{
     private int y = 0;
     private int width = 320;
     private int height = 240;
-    private Transition transIn = new None();
-    private Transition transOut = new None();
+    private Transition transIn = new Start();
+    private Transition transOut = new Stop();
     private Transition transToDo = transIn;
     private int layer = 0;
     private int volume = 10;
@@ -136,11 +137,18 @@ public class LayoutItem implements Runnable{
         y = prefs.getInt("Y", y);
         width = prefs.getInt("width", width);
         height = prefs.getInt("height", height);
-        transIn = getTransitionByName(prefs.get("transitionin", "None"));
-        transOut = getTransitionByName(prefs.get("transitionout", "None"));
+        transIn = getTransitionByName(prefs.get("transitionin", "Start"));
+        transOut = getTransitionByName(prefs.get("transitionout", "Stop"));
         layer = prefs.getInt("layer", layer);
         source = Studio.getSourceFromClassName(prefs.node("source").get("class",null));
         source.loadFromStudioConfig(prefs.node("source"));
+        System.out.println("Source Location is " + source.getLocation());
+        if (VideoSource.loadedSources.containsKey(source.getLocation())){
+            source = VideoSource.loadedSources.get(source.getLocation());
+            System.out.println("Replacing source");
+        } else {
+            VideoSource.loadedSources.put(source.getLocation(), source);
+        }
         volume = prefs.getInt("volume", volume);
     }
     @Override

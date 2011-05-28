@@ -25,8 +25,9 @@ public class VideoSourceText extends VideoSource {
 
     public VideoSourceText(String txt) {
         frameRate = 1;
-        location = "";
+        
         name = "Text";
+        location = name;
         captureWidth = 320;
         captureHeight = 240;
     }
@@ -312,6 +313,7 @@ public class VideoSourceText extends VideoSource {
         list.add(new webcamstudio.controls.ControlEffects(this));
         list.add(new webcamstudio.controls.ControlShapes(this));
         list.add(new webcamstudio.controls.ControlReload(this));
+        list.add(new webcamstudio.controls.ControlIdentity(this));
         return list;
     }
     protected java.util.Vector<String> lines = new java.util.Vector<String>();

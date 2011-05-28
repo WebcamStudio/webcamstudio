@@ -12,7 +12,6 @@ import java.util.logging.Logger;
 import webcamstudio.sources.*;
 import webcamstudio.VirtualHost;
 import java.awt.image.*;
-import webcamstudio.exporter.vloopback.VideoOutput;
 import webcamstudio.layout.Layout;
 import webcamstudio.layout.LayoutItem;
 
@@ -20,7 +19,7 @@ import webcamstudio.layout.LayoutItem;
  *
  * @author pballeux
  */
-public class Mixer implements java.lang.Runnable {
+public class MixerWin32 implements java.lang.Runnable {
 
     protected int frameRate = 15;
     protected int outputWidth = 320;
@@ -33,9 +32,8 @@ public class Mixer implements java.lang.Runnable {
     private VirtualHost virtualHost = new VirtualHost();
     private boolean stopMe = false;
     private java.awt.image.BufferedImage paintImage = null;
-    private VideoOutput outputDevice = null;
     private Image background = Toolkit.getDefaultToolkit().createImage(getClass().getResource("/webcamstudio/resources/splash.jpg"));
-    
+    private NetworkStream ns = null;
     public enum MixerQuality {
 
         HIGH,
@@ -49,13 +47,27 @@ public class Mixer implements java.lang.Runnable {
     }
     private MixerQuality quality = MixerQuality.NORMAL;
 
-    public Mixer() {
+    public MixerWin32() {
         new Thread(this).start();
     }
 
     public void setSize(int w, int h) {
         outputWidth = w;
         outputHeight = h;
+        if (ns !=null){
+            ns.stop();
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(MixerWin32.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            try {
+                ns.start();
+            } catch (IOException ex) {
+                Logger.getLogger(MixerWin32.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
     }
 
     public void setFramerate(int fps) {
@@ -157,14 +169,6 @@ public class Mixer implements java.lang.Runnable {
         isDrawing = false;
     }
 
-    public void setOutput(VideoOutput o) {
-        outputDevice = o;
-    }
-
-
-    public VideoOutput getDevice(){
-        return outputDevice;
-    }
     public int getWidth(){
         return outputWidth;
     }
@@ -174,26 +178,23 @@ public class Mixer implements java.lang.Runnable {
     @Override
     public void run() {
         graphicConfiguration = java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
-        
-//        NetworkStream ns = new NetworkStream(this);
-//        try {
-//            ns.start();
-//
-//        } catch (IOException ex) {
-//            Logger.getLogger(Mixer.class.getName()).log(Level.SEVERE, null, ex);
-//        }
+        ns = new NetworkStream(this);
+        NetworkStreamAudio nsa = new NetworkStreamAudio();
+        try {
+            ns.start();
+            nsa.start();
+        } catch (IOException ex) {
+            Logger.getLogger(MixerWin32.class.getName()).log(Level.SEVERE, null, ex);
+        }
         while (!stopMe) {
             try {
                 drawImage();
-                if (outputDevice != null) {
-                    outputDevice.write(outputImage);
-                }
                 Thread.sleep(1000 / frameRate);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-//        ns.stop();
-        
+        ns.stop();
+        nsa.stop();
     }
 }

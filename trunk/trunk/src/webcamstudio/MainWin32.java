@@ -11,8 +11,6 @@
 package webcamstudio;
 
 import java.awt.BorderLayout;
-import webcamstudio.exporter.vloopback.VideoDevice;
-import webcamstudio.exporter.vloopback.V4L2Loopback;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Image;
@@ -35,34 +33,29 @@ import org.gstreamer.*;
 import webcamstudio.layout.transitions.Transition;
 import webcamstudio.sources.*;
 import webcamstudio.components.*;
-import webcamstudio.components.LayoutManager;
 import webcamstudio.exporter.VideoExporter;
 import webcamstudio.exporter.VideoExporterPipeline;
-import webcamstudio.exporter.vloopback.V4LLoopback;
-import webcamstudio.exporter.vloopback.VideoOutput;
 import webcamstudio.layout.Layout;
 import webcamstudio.studio.Studio;
+import webcamstudio.studio.StudioWin32;
 import webcamstudio.visage.FaceDetector;
 
 /**
  *
  * @author pballeux
  */
-public class Main extends javax.swing.JFrame implements InfoListener, SourceListener, MediaListener {
+public class MainWin32 extends javax.swing.JFrame implements InfoListener, SourceListener, MediaListener {
 
-    private VideoOutput output = null;
-    private Mixer mixer = null;
+    
+    private MixerWin32 mixer = null;
     private boolean stopMe = false;
-    private Preview preview = null;
+    private PreviewWin32 preview = null;
     private int outputWidth = 320;
     private int outputHeight = 240;
     private File lastStudioFile = null;
     private File lastFolder = null;
-    private File lastLoopbackUsed = null;
-    public static int DesktopTaskbarHeight = 0;
     public static FaceDetector MainFaceDetector = new FaceDetector();
     private WebCamera webcamera = null;
-    private java.util.TreeMap<String, VideoSource> devices = null;
     private java.util.TreeMap<String, VideoSource> movies = null;
     private java.util.TreeMap<String, VideoSource> images = null;
     private java.util.TreeMap<String, VideoSource> animations = null;
@@ -73,67 +66,31 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
     private javax.swing.tree.DefaultTreeModel sourceDir = null;
     private javax.swing.tree.DefaultMutableTreeNode root = null;
     private javax.swing.tree.DefaultMutableTreeNode nodeDevices = null;
-    private LayoutManager layoutManager = null;
+    private LayoutManagerWin32 layoutManager = null;
     private String lastDriverOutput = "";
     private String lastDriverOutputPath = "";
     private SystemMonitor monitor = null;
 
     /** Creates new form Main */
-    public Main() {
+    public MainWin32() {
         Gst.init(java.util.ResourceBundle.getBundle("webcamstudio/Languages").getString("WEBCAMSTUDIO"), new String[0]);
 
         initComponents();
 
-        output = null;
-        VideoDevice[] vds = VideoDevice.getInputDevices();
-        javax.swing.DefaultComboBoxModel cboDevOuts = new javax.swing.DefaultComboBoxModel(vds);
-        cboVideoOutputs.setModel(cboDevOuts);
+        
         loadPrefs();
-        VideoDevice selectedVd = null;
-        for (VideoDevice vd : vds) {
-            if (vd.getVersion() == VideoDevice.Version.V4L2 && lastDriverOutput.equals("v4l2")) {
-                if (vd.getFile().getName().equals(lastDriverOutputPath)) {
-                    selectedVd = vd;
-                    break;
-                }
-            } else if (vd.getVersion() == VideoDevice.Version.V4L && lastDriverOutput.equals("v4l")) {
-                if (vd.getFile().getName().equals(lastDriverOutputPath)) {
-                    selectedVd = vd;
-                    break;
-                }
-            }
-        }
-        if (selectedVd == null) {
-            for (VideoDevice vd : vds) {
-                if (vd.getVersion() == VideoDevice.Version.V4L2 && lastDriverOutput.equals("v4l2")) {
-                    selectedVd = vd;
-                    break;
-                } else if (vd.getVersion() == VideoDevice.Version.V4L && lastDriverOutput.equals("v4l")) {
-                    selectedVd = vd;
-                    break;
-                }
-            }
-        }
-        if (selectedVd == null && vds.length > 0) {
-            selectedVd = vds[0];
-        }
-        if (selectedVd != null) {
-            cboVideoOutputs.setSelectedItem(selectedVd);
-            selectOutputDevice(selectedVd);
-        }
-        layoutManager = new LayoutManager();
+        layoutManager = new LayoutManagerWin32();
 
 
-        mixer = new Mixer();
+        mixer = new MixerWin32();
         mixer.setSize(outputWidth, outputHeight);
-        mixer.setOutput(output);
         if (mnuchkShowBackground.isSelected()) {
             Image img = Toolkit.getDefaultToolkit().createImage(getClass().getResource("/webcamstudio/resources/splash.jpg"));
             mixer.setBackground(img);
         } else {
             mixer.setBackground(null);
         }
-        setTitle(java.util.ResourceBundle.getBundle("webcamstudio/Languages").getString("WEBCAMSTUDIO_FOR_GNU/LINUX_") + " " + webcamstudio.Version.version + " (Build: " + new webcamstudio.Version().getBuild() + ")");
+        setTitle(java.util.ResourceBundle.getBundle("webcamstudio/Languages").getString("WEBCAMSTUDIO_FOR_WIN32") + " " + webcamstudio.Version.version + " (Build: " + new webcamstudio.Version().getBuild() + ")");
         java.awt.Image img = getToolkit().getImage(java.net.URLClassLoader.getSystemResource("webcamstudio/resources/icon.png"));
 
         setIconImage(img);
@@ -179,26 +136,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
 
     }
 
-    private void selectOutputDevice(VideoDevice dev) {
-
-        if (output != null) {
-            output.close();
-        }
-        if (dev.getVersion() == VideoDevice.Version.V4L2) {
-            output = new V4L2Loopback(this);
-        } else if (dev.getVersion() == VideoDevice.Version.V4L) {
-            output = new V4LLoopback(this);
-        }
-        int pixFmt = VideoOutput.RGB24;
-        if (mnurdPixelFormatRGB24.isSelected()) {
-            pixFmt = VideoOutput.RGB24;
-        } else if (mnurdPixelFormatUYVY.isSelected()) {
-            pixFmt = VideoOutput.UYVY;
-        }
-        output.open(dev.getFile().getAbsolutePath(), outputWidth, outputHeight, pixFmt);
-        System.out.println("DEBUG: " + dev.getName());
-    }
-
     private void initSourceDir() {
         final java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("webcamstudio/Languages");
         setCursor(new Cursor(Cursor.WAIT_CURSOR));
@@ -207,15 +144,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
 
         mediaPanel.setAutoscrolls(true);
 
-
-        //Loading devices
-        buildSourceDevices();
-        MediaPanelList pdevices = new MediaPanelList(this);
-        pdevices.setPanelName(bundle.getString("DEVICES"));
-        for (VideoSource v : devices.values()) {
-            pdevices.addMedia(v);
-        }
-        mediaPanel.addMedia(pdevices);
 
         buildSourceImages();
         MediaPanelList pImages = new MediaPanelList(this);
@@ -247,9 +175,9 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         try {
             wsa.updateSourceList();
         } catch (MalformedURLException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(MainWin32.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(MainWin32.class.getName()).log(Level.SEVERE, null, ex);
         }
         for (VideoSource v : wsa.getSources()) {
             pAnm.addMedia(v);
@@ -270,9 +198,9 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         try {
             wsw.updateSourceList();
         } catch (MalformedURLException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(MainWin32.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(MainWin32.class.getName()).log(Level.SEVERE, null, ex);
         }
         for (VideoSource v : wsw.getSources()) {
             pwid.addMedia(v);
@@ -384,11 +312,8 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
                                 }
                             } else if (type.toLowerCase().equals("sink")) {
                                 VideoExporterPipeline vp = null;
-                                if (output != null) {
-                                    vp = new VideoExporterPipeline(f, output.getDevice());
-                                } else {
-                                    vp = new VideoExporterPipeline(f, "");
-                                }
+                                vp = new VideoExporterPipeline(f, "");
+                                
                                 if (exporters.containsKey(vp.getName())) {
                                     exporters.put(vp.getName() + " - " + new java.util.Random().nextInt(), vp);
                                 } else {
@@ -397,7 +322,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
 
                             }
                         } catch (IOException ex) {
-                            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                            Logger.getLogger(MainWin32.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     }
                 }
@@ -466,44 +391,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         return retValue;
     }
 
-    private void buildSourceDevices() {
-        devices = new java.util.TreeMap<String, VideoSource>();
-        VideoDevice[] v = VideoDevice.getOutputDevices();
-        VideoSourceV4L webcam = null;
-        for (int i = 0; i < v.length; i++) {
-            switch (v[i].getVersion()) {
-                case V4L:
-                    webcam = new VideoSourceV4L(v[i].getName(),v[i].getFile());
-                    devices.put(webcam.getName() + webcam.getUUID(), webcam);
-                    break;
-                case V4L2:
-                    webcam = new VideoSourceV4L2(v[i].getName(),v[i].getFile());
-                    devices.put(webcam.getName() + webcam.getUUID(), webcam);
-                    break;
-            }
-        }
-        if (new File("/dev/fw1").exists()) {
-            VideoSourceDV dv = new VideoSourceDV();
-            devices.put(dv.getName() + dv.getUUID(), dv);
-        }
-        if (webcamera.getSource() != null) {
-            devices.put(webcamera.getSource().getName(), webcamera.getSource());
-        }
-    }
-
-    public void updateNodeDevices() {
-        if (nodeDevices != null) {
-            buildSourceDevices();
-            nodeDevices.removeAllChildren();
-            for (VideoSource v : devices.values()) {
-                nodeDevices.add(new javax.swing.tree.DefaultMutableTreeNode(v));
-            }
-            sourceDir.nodeChanged(nodeDevices);
-            sourceDir.nodeStructureChanged(nodeDevices);
-
-            System.out.println("Device update");
-        }
-    }
+    
 
     private void loadPrefs() {
         Preferences prefs = Preferences.userRoot().node("webcamstudio");
@@ -512,16 +400,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         }
         outputWidth = prefs.getInt("outputwidth", outputWidth);
         outputHeight = prefs.getInt("outputheight", outputHeight);
-        if (prefs.get("format", "rgb24").equals("rgb24")) {
-            mnurdPixelFormatRGB24.setSelected(true);
-            mnurdPixelFormatUYVY.setSelected(false);
-        } else if (prefs.get("format", "uyvy").equals("uyvy")) {
-            mnurdPixelFormatUYVY.setSelected(true);
-            mnurdPixelFormatRGB24.setSelected(false);
-            mnuOutputSize.setEnabled(false);
-            outputWidth=640;
-            outputHeight=480;
-        }
         String outputSize = outputWidth + "x" + outputHeight;
         java.util.Enumeration<javax.swing.AbstractButton> list = grpOutputSize.getElements();
         while (list.hasMoreElements()) {
@@ -539,9 +417,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         while (list.hasMoreElements()) {
             javax.swing.AbstractButton button = list.nextElement();
             button.setSelected(button.getActionCommand().equals(prefs.get("fps", "15")));
-        }
-        if (prefs.get("lastloopback", null) != null) {
-            lastLoopbackUsed = new File(prefs.get("lastloopback", "/dev/video1"));
         }
         lastFolder = new File(prefs.get("lastfolder", "."));
         String[] dir = prefs.get("sb_dirtoscan", "").split(";");
@@ -565,17 +440,9 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         prefs.put("fps", grpFramerate.getSelection().getActionCommand());
         prefs.putInt("outputwidth", outputWidth);
         prefs.putInt("outputheight", outputHeight);
-        if (mnurdPixelFormatRGB24.isSelected()) {
-            prefs.put("format", "rgb24");
-        } else if (mnurdPixelFormatUYVY.isSelected()) {
-            prefs.put("format", "uyvy");
-        }
 
         prefs.putBoolean("showsplashbackground", mnuchkShowBackground.isSelected());
 
-        if (lastLoopbackUsed != null) {
-            prefs.put("lastloopback", lastLoopbackUsed.getAbsolutePath());
-        }
         if (lastFolder != null) {
             prefs.put("lastfolder", lastFolder.getAbsolutePath());
         }
@@ -585,14 +452,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         }
         allDirs = allDirs.substring(0, allDirs.length() - 1);
         prefs.put("sb_dirtoscan", allDirs);
-        if (output != null) {
-            if (output instanceof V4L2Loopback) {
-                prefs.put("lastdriveroutput", "v4l2");
-            } else if (output instanceof V4LLoopback) {
-                prefs.put("lastdriveroutput", "v4l");
-            }
-            prefs.put("lastdriverpath", output.getDevice());
-        }
         prefs.putBoolean("showbrowser", mnuSourceschkShowBrowser.isSelected());
         prefs = null;
     }
@@ -624,7 +483,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
                 if (studio.exists()) {
                     studio.delete();
                 }
-                Studio outStudio = new Studio();
+                StudioWin32 outStudio = new StudioWin32();
                 java.util.Vector<Layout> layouts = new java.util.Vector<Layout>();
                 for (Object l : layoutManager.getLayouts()) {
                     layouts.add((Layout) l);
@@ -798,7 +657,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         panelStatus = new javax.swing.JPanel();
         btnPreview = new javax.swing.JButton();
         pgCPUUsage = new javax.swing.JProgressBar();
-        cboVideoOutputs = new javax.swing.JComboBox();
         panBrowser = new javax.swing.JPanel();
         menuBar = new javax.swing.JMenuBar();
         mnuStudios = new javax.swing.JMenu();
@@ -828,9 +686,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         mnuSourcesConsole = new javax.swing.JMenuItem();
         mnuOutput = new javax.swing.JMenu();
         mnuShowPreview = new javax.swing.JMenuItem();
-        mnuVideoRecorder = new javax.swing.JMenuItem();
         mnuOutputSpnashot = new javax.swing.JMenuItem();
-        mnuOutputGISSCaster = new javax.swing.JMenuItem();
         mnuOutputSize = new javax.swing.JMenu();
         mnuOutputSize1 = new javax.swing.JRadioButtonMenuItem();
         mnuOutputSize2 = new javax.swing.JRadioButtonMenuItem();
@@ -848,10 +704,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         mnuOutput25FPS = new javax.swing.JRadioButtonMenuItem();
         mnuOutput30FPS = new javax.swing.JRadioButtonMenuItem();
         mnuchkShowBackground = new javax.swing.JCheckBoxMenuItem();
-        mnuPixelFormat = new javax.swing.JMenu();
-        mnurdPixelFormatRGB24 = new javax.swing.JRadioButtonMenuItem();
-        mnurdPixelFormatUYVY = new javax.swing.JRadioButtonMenuItem();
-        mnuOutputFlipImage = new javax.swing.JCheckBoxMenuItem();
         mnuLayout = new javax.swing.JMenu();
         mnuLayoutF1 = new javax.swing.JMenuItem();
         mnuLayoutF2 = new javax.swing.JMenuItem();
@@ -900,15 +752,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         pgCPUUsage.setName("pgCPUUsage"); // NOI18N
         pgCPUUsage.setStringPainted(true);
         panelStatus.add(pgCPUUsage);
-
-        cboVideoOutputs.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        cboVideoOutputs.setName("cboVideoOutputs"); // NOI18N
-        cboVideoOutputs.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cboVideoOutputsActionPerformed(evt);
-            }
-        });
-        panelStatus.add(cboVideoOutputs);
 
         getContentPane().add(panelStatus, java.awt.BorderLayout.SOUTH);
 
@@ -1186,16 +1029,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         });
         mnuOutput.add(mnuShowPreview);
 
-        mnuVideoRecorder.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-record.png"))); // NOI18N
-        mnuVideoRecorder.setText(bundle.getString("VIDEO_RECORDER")); // NOI18N
-        mnuVideoRecorder.setName("mnuVideoRecorder"); // NOI18N
-        mnuVideoRecorder.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuVideoRecorderActionPerformed(evt);
-            }
-        });
-        mnuOutput.add(mnuVideoRecorder);
-
         mnuOutputSpnashot.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/camera-photo.png"))); // NOI18N
         mnuOutputSpnashot.setText(bundle.getString("SNAPSHOT")); // NOI18N
         mnuOutputSpnashot.setName("mnuOutputSpnashot"); // NOI18N
@@ -1205,16 +1038,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
             }
         });
         mnuOutput.add(mnuOutputSpnashot);
-
-        mnuOutputGISSCaster.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/gisstv2-16x16.png"))); // NOI18N
-        mnuOutputGISSCaster.setText(bundle.getString("GISSCASTER")); // NOI18N
-        mnuOutputGISSCaster.setName("mnuOutputGISSCaster"); // NOI18N
-        mnuOutputGISSCaster.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuOutputGISSCasterActionPerformed(evt);
-            }
-        });
-        mnuOutput.add(mnuOutputGISSCaster);
 
         mnuOutputSize.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/zoom-fit-best.png"))); // NOI18N
         mnuOutputSize.setText(bundle.getString("OUTPUT_SIZE")); // NOI18N
@@ -1378,43 +1201,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
             }
         });
         mnuOutput.add(mnuchkShowBackground);
-
-        mnuPixelFormat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/utilities-system-monitor.png"))); // NOI18N
-        mnuPixelFormat.setText(bundle.getString("PIXEL_FORMAT")); // NOI18N
-        mnuPixelFormat.setName("mnuPixelFormat"); // NOI18N
-
-        grpPixelFormat.add(mnurdPixelFormatRGB24);
-        mnurdPixelFormatRGB24.setText("RGB24");
-        mnurdPixelFormatRGB24.setName("mnurdPixelFormatRGB24"); // NOI18N
-        mnurdPixelFormatRGB24.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnurdPixelFormatRGB24ActionPerformed(evt);
-            }
-        });
-        mnuPixelFormat.add(mnurdPixelFormatRGB24);
-
-        grpPixelFormat.add(mnurdPixelFormatUYVY);
-        mnurdPixelFormatUYVY.setSelected(true);
-        mnurdPixelFormatUYVY.setText("UYVY");
-        mnurdPixelFormatUYVY.setName("mnurdPixelFormatUYVY"); // NOI18N
-        mnurdPixelFormatUYVY.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnurdPixelFormatUYVYActionPerformed(evt);
-            }
-        });
-        mnuPixelFormat.add(mnurdPixelFormatUYVY);
-
-        mnuOutput.add(mnuPixelFormat);
-
-        mnuOutputFlipImage.setText(bundle.getString("FLIP_IMAGE")); // NOI18N
-        mnuOutputFlipImage.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/image-x-generic.png"))); // NOI18N
-        mnuOutputFlipImage.setName("mnuOutputFlipImage"); // NOI18N
-        mnuOutputFlipImage.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuOutputFlipImageActionPerformed(evt);
-            }
-        });
-        mnuOutput.add(mnuOutputFlipImage);
 
         menuBar.add(mnuOutput);
 
@@ -1799,7 +1585,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
             preview.dispose();
             preview = null;
         }
-        preview = new Preview(this, false, mixer);
+        preview = new PreviewWin32(this, false, mixer);
         preview.addWindowListener(new java.awt.event.WindowAdapter() {
 
             public void windowClosing(java.awt.event.WindowEvent e) {
@@ -1837,13 +1623,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
     private void mnuStudioLoadLastActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuStudioLoadLastActionPerformed
         loadStudioFromFile(lastStudioFile);
     }//GEN-LAST:event_mnuStudioLoadLastActionPerformed
-
-    private void mnuVideoRecorderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuVideoRecorderActionPerformed
-        VideoRecorder recorder = new VideoRecorder(mixer, this, false);
-        recorder.pack();
-        recorder.setLocationRelativeTo(this);
-        recorder.setVisible(true);
-    }//GEN-LAST:event_mnuVideoRecorderActionPerformed
 
     private void mnuOutputSpnashotActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuOutputSpnashotActionPerformed
 
@@ -1918,16 +1697,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         String outputSize = evt.getActionCommand();
         outputWidth = new Integer(outputSize.split("x")[0]);
         outputHeight = new Integer(outputSize.split("x")[1]);
-        output.close();
-        if (mnurdPixelFormatRGB24.isSelected()) {
-            output.open(output.getDevice(), outputWidth, outputHeight, V4L2Loopback.RGB24);
-        } else {
-            output.open(output.getDevice(), outputWidth, outputHeight, V4L2Loopback.UYVY);
-        }
-
         mixer.setSize(outputWidth, outputHeight);
-        mixer.setOutput(output);
-
 
     }//GEN-LAST:event_mnuOutputSizeActionPerformed
 
@@ -1966,14 +1736,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         mixer.setFramerate(new Integer(evt.getActionCommand()));
     }//GEN-LAST:event_mnuOutputFPSActionPerformed
 
-    private void mnuOutputGISSCasterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuOutputGISSCasterActionPerformed
-        GISScaster g = new GISScaster(mixer, this, false);
-        g.pack();
-        g.setLocationRelativeTo(this);
-        g.setVisible(true);
-
-    }//GEN-LAST:event_mnuOutputGISSCasterActionPerformed
-
     private void mnuSourcesWidgetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuSourcesWidgetActionPerformed
         javax.swing.JFileChooser chooser = new javax.swing.JFileChooser(lastFolder);
         chooser.setToolTipText(java.util.ResourceBundle.getBundle("webcamstudio/Languages").getString("SELECT_YOUR_WIDGET_FILE"));
@@ -1989,7 +1751,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
                 source = new VideoSourceWidget(f.toURI().toURL());
                 lastFolder = f.getParentFile();
             } catch (MalformedURLException ex) {
-                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(MainWin32.class.getName()).log(Level.SEVERE, null, ex);
             }
 
             addSourceToDesktop(source);
@@ -2039,38 +1801,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
     private void btnPreviewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPreviewActionPerformed
         mnuShowPreview.doClick();
     }//GEN-LAST:event_btnPreviewActionPerformed
-
-    private void mnurdPixelFormatRGB24ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnurdPixelFormatRGB24ActionPerformed
-        output.close();
-        if (mnurdPixelFormatRGB24.isSelected()) {
-            mnuOutputSize.setEnabled(true);
-            output.open(output.getDevice(), outputWidth, outputHeight, V4L2Loopback.RGB24);
-        } else {
-            mnuOutputSize.setEnabled(false);
-            output.open(output.getDevice(), outputWidth, outputHeight, V4L2Loopback.UYVY);
-        }
-        mixer.setSize(outputWidth, outputHeight);
-    }//GEN-LAST:event_mnurdPixelFormatRGB24ActionPerformed
-
-    private void mnurdPixelFormatUYVYActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnurdPixelFormatUYVYActionPerformed
-        output.close();
-        
-        if (mnurdPixelFormatRGB24.isSelected()) {
-            output.open(output.getDevice(), outputWidth, outputHeight, V4L2Loopback.RGB24);
-            mnuOutputSize.setEnabled(true);
-        } else {
-            mnuOutputSize3.setSelected(true);
-            outputWidth = 640;
-            outputHeight = 480;
-            output.open(output.getDevice(), outputWidth, outputHeight, V4L2Loopback.UYVY);
-            mnuOutputSize.setEnabled(false);
-        }
-        mixer.setSize(outputWidth, outputHeight);
-    }//GEN-LAST:event_mnurdPixelFormatUYVYActionPerformed
-
-    private void mnuOutputFlipImageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuOutputFlipImageActionPerformed
-        output.setFlipImage(mnuOutputFlipImage.isSelected());
-    }//GEN-LAST:event_mnuOutputFlipImageActionPerformed
 
     private void mnuLayoutF1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuLayoutF1ActionPerformed
         layoutManager.applyLayoutHotKey("F1");
@@ -2125,13 +1855,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         addSourceToDesktop(s);
     }//GEN-LAST:event_mnuSourcesConsoleActionPerformed
 
-    private void cboVideoOutputsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboVideoOutputsActionPerformed
-        VideoDevice vd = (VideoDevice) cboVideoOutputs.getSelectedItem();
-        if (vd != null) {
-            selectOutputDevice(vd);
-        }
-    }//GEN-LAST:event_cboVideoOutputsActionPerformed
-
     private void mnuLayoutMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_mnuLayoutMouseEntered
         updateMenuLayoutNames();
     }//GEN-LAST:event_mnuLayoutMouseEntered
@@ -2165,7 +1888,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
                 nogui = true;
             }
         }
-        Main m = new Main();
+        MainWin32 m = new MainWin32();
         if (studio != null) {
             m.loadStudioFromFile(new File(studio));
         }
@@ -2182,7 +1905,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnPreview;
-    private javax.swing.JComboBox cboVideoOutputs;
     private javax.swing.ButtonGroup grpFramerate;
     private javax.swing.ButtonGroup grpOutputSize;
     private javax.swing.ButtonGroup grpPixelFormat;
@@ -2216,9 +1938,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
     private javax.swing.JRadioButtonMenuItem mnuOutput25FPS;
     private javax.swing.JRadioButtonMenuItem mnuOutput30FPS;
     private javax.swing.JRadioButtonMenuItem mnuOutput5FPS;
-    private javax.swing.JCheckBoxMenuItem mnuOutputFlipImage;
     private javax.swing.JMenu mnuOutputFramerate;
-    private javax.swing.JMenuItem mnuOutputGISSCaster;
     private javax.swing.JMenu mnuOutputSize;
     private javax.swing.JRadioButtonMenuItem mnuOutputSize1;
     private javax.swing.JRadioButtonMenuItem mnuOutputSize2;
@@ -2228,7 +1948,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
     private javax.swing.JRadioButtonMenuItem mnuOutputSize6;
     private javax.swing.JRadioButtonMenuItem mnuOutputSize7;
     private javax.swing.JMenuItem mnuOutputSpnashot;
-    private javax.swing.JMenu mnuPixelFormat;
     private javax.swing.JMenuItem mnuReloadSourceTree;
     private javax.swing.JMenuItem mnuRemoveDir;
     private javax.swing.JMenuItem mnuSetFlashPermissions;
@@ -2253,10 +1972,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
     private javax.swing.JMenuItem mnuStudiosLoad;
     private javax.swing.JMenuItem mnuStudiosSave;
     private javax.swing.JMenuItem mnuVideoInfo;
-    private javax.swing.JMenuItem mnuVideoRecorder;
     private javax.swing.JCheckBoxMenuItem mnuchkShowBackground;
-    private javax.swing.JRadioButtonMenuItem mnurdPixelFormatRGB24;
-    private javax.swing.JRadioButtonMenuItem mnurdPixelFormatUYVY;
     private javax.swing.JPanel panBrowser;
     private javax.swing.JPanel panelStatus;
     private javax.swing.JProgressBar pgCPUUsage;

@@ -13,9 +13,6 @@ package webcamstudio.components;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -23,7 +20,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
-import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
@@ -31,6 +27,8 @@ import webcamstudio.controls.ControlPosition;
 import webcamstudio.controls.Controls;
 import webcamstudio.layout.Layout;
 import webcamstudio.layout.LayoutItem;
+import webcamstudio.layout.transitions.None;
+import webcamstudio.layout.transitions.Start;
 import webcamstudio.layout.transitions.Transition;
 import webcamstudio.sources.VideoSource;
 import webcamstudio.sources.VideoSourceAnimation;
@@ -47,7 +45,7 @@ import webcamstudio.sources.VideoSourceWidget;
  *
  * @author lgs
  */
-public class LayoutManager extends javax.swing.JPanel implements SourceListener {
+public class LayoutManagerWin32 extends javax.swing.JPanel implements SourceListener {
 
 //    private Collection<VideoSource> sources = null;
     private javax.swing.tree.DefaultMutableTreeNode root = null;
@@ -63,13 +61,12 @@ public class LayoutManager extends javax.swing.JPanel implements SourceListener 
     private ImageIcon iconFolder = null;
     private ImageIcon iconText = null;
     private boolean stopMe = false;
-    private LayoutEventsManager eventsManager = null;
-
+    private String micLabel = "Microphone";
 
     /** Creates new form LayoutManager */
-    public LayoutManager() {
+    public LayoutManagerWin32() {
         initComponents();
-
+        
         iconMovie = new ImageIcon(getToolkit().getImage(java.net.URLClassLoader.getSystemResource("webcamstudio/resources/tango/video-display.png")));
         iconImage = new ImageIcon(getToolkit().getImage(java.net.URLClassLoader.getSystemResource("webcamstudio/resources/tango/image-x-generic.png")));
         iconDevice = new ImageIcon(getToolkit().getImage(java.net.URLClassLoader.getSystemResource("webcamstudio/resources/tango/camera-video.png")));
@@ -78,6 +75,7 @@ public class LayoutManager extends javax.swing.JPanel implements SourceListener 
         iconText = new ImageIcon(getToolkit().getImage(java.net.URLClassLoader.getSystemResource("webcamstudio/resources/tango/format-text-bold.png")));
 //        sources = LayerManager.getSources();
         root = new javax.swing.tree.DefaultMutableTreeNode(java.util.ResourceBundle.getBundle("webcamstudio/Languages").getString("LAYOUTS"));
+        micLabel = java.util.ResourceBundle.getBundle("webcamstudio/Languages").getString("MICROPHONE");
         model = new javax.swing.tree.DefaultTreeModel(root);
         treeLayouts.setModel(model);
         txtLayoutName.setEnabled(false);
@@ -140,18 +138,16 @@ public class LayoutManager extends javax.swing.JPanel implements SourceListener 
                     try {
                         Thread.sleep(200);
                     } catch (InterruptedException ex) {
-                        Logger.getLogger(LayoutManager.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(LayoutManagerWin32.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
             }
         });
         t.setPriority(Thread.MIN_PRIORITY);
         t.start();
-        eventsManager = new LayoutEventsManager(layouts);
     }
 
     public void quitting() {
-        eventsManager.stop();
         stopMe = true;
     }
 
@@ -179,7 +175,7 @@ public class LayoutManager extends javax.swing.JPanel implements SourceListener 
         if (layouts.isEmpty()) {
             btnAdd.doClick();
         }
-        if (currentLayout != null) {
+        if (currentLayout != null){
             currentLayout.addSource(s);
         }
         updateTree();
@@ -188,7 +184,10 @@ public class LayoutManager extends javax.swing.JPanel implements SourceListener 
     @Override
     public void sourceRemoved(VideoSource s) {
         s.stopSource();
-        currentLayout.removeSource(s);
+        //LayerManager.remove(s);
+        for (Layout layout : layouts) {
+            layout.removeSource(s);
+        }
         currentLayoutItem = null;
         updateTree();
         treeLayouts.setSelectionPath(new TreePath(root.getPath()));
@@ -232,11 +231,11 @@ public class LayoutManager extends javax.swing.JPanel implements SourceListener 
         for (LayoutItem li : l.getReversedItems()) {
             DefaultMutableTreeNode liNode = new DefaultMutableTreeNode(li);
             node.add(liNode);
-            updateItemDetails(li, liNode);
+            updateItemDetails(li,liNode);
         }
     }
 
-    private void updateItemDetails(LayoutItem li, DefaultMutableTreeNode node) {
+    private void updateItemDetails (LayoutItem li,DefaultMutableTreeNode node){
         node.removeAllChildren();
         node.add(new DefaultMutableTreeNode(li.getX() + "," + li.getY()));
         node.add(new DefaultMutableTreeNode(li.getWidth() + "x" + li.getHeight()));
@@ -252,9 +251,6 @@ public class LayoutManager extends javax.swing.JPanel implements SourceListener 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        popItems = new javax.swing.JPopupMenu();
-        popItemsDuplicateIn = new javax.swing.JMenu();
-        popItemsRemove = new javax.swing.JMenuItem();
         panControls = new javax.swing.JPanel();
         btnAdd = new javax.swing.JButton();
         btnRemove = new javax.swing.JButton();
@@ -268,28 +264,13 @@ public class LayoutManager extends javax.swing.JPanel implements SourceListener 
         tabControls = new javax.swing.JTabbedPane();
         lblHotKEy = new javax.swing.JLabel();
 
-        popItems.setName("popItems"); // NOI18N
-
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("webcamstudio/Languages"); // NOI18N
-        popItemsDuplicateIn.setText(bundle.getString("DUPLICATE_IN_LAYOUT")); // NOI18N
-        popItemsDuplicateIn.setName("popItemsDuplicateIn"); // NOI18N
-        popItems.add(popItemsDuplicateIn);
-
-        popItemsRemove.setText(bundle.getString("REMOVE")); // NOI18N
-        popItemsRemove.setName("popItemsRemove"); // NOI18N
-        popItemsRemove.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                popItemsRemoveActionPerformed(evt);
-            }
-        });
-        popItems.add(popItemsRemove);
-
         setLayout(new java.awt.BorderLayout());
 
         panControls.setName("panControls"); // NOI18N
         panControls.setLayout(new javax.swing.BoxLayout(panControls, javax.swing.BoxLayout.LINE_AXIS));
 
         btnAdd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/list-add.png"))); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("webcamstudio/Languages"); // NOI18N
         btnAdd.setToolTipText(bundle.getString("ADD")); // NOI18N
         btnAdd.setName("btnAdd"); // NOI18N
         btnAdd.addActionListener(new java.awt.event.ActionListener() {
@@ -328,11 +309,6 @@ public class LayoutManager extends javax.swing.JPanel implements SourceListener 
 
         treeLayouts.setMinimumSize(new java.awt.Dimension(300, 0));
         treeLayouts.setName("treeLayouts"); // NOI18N
-        treeLayouts.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                treeLayoutsMouseClicked(evt);
-            }
-        });
         treeLayouts.addTreeSelectionListener(new javax.swing.event.TreeSelectionListener() {
             public void valueChanged(javax.swing.event.TreeSelectionEvent evt) {
                 treeLayoutsValueChanged(evt);
@@ -406,7 +382,7 @@ public class LayoutManager extends javax.swing.JPanel implements SourceListener 
         txtLayoutName.setEnabled(false);
         btnApply.setEnabled(false);
         btnRemove.setEnabled(false);
-
+        
         tabControls.removeAll();
         tabControls.revalidate();
 
@@ -415,23 +391,19 @@ public class LayoutManager extends javax.swing.JPanel implements SourceListener 
             currentLayout = (Layout) obj;
             btnApply.setEnabled(true);
             btnRemove.setEnabled(true);
-
+            
             lblHotKEy.setText(currentLayout.getHotKey());
             txtLayoutName.setText(currentLayout.toString());
             txtLayoutName.setEnabled(true);
-            PulseAudioInputSelecter p = new PulseAudioInputSelecter(currentLayout);
-            tabControls.add("Audio", p);
-            LayoutEventsControl eventsControl = new LayoutEventsControl(currentLayout, layouts);
-            tabControls.add("Events", eventsControl);
         } else if (obj instanceof LayoutItem) {
             currentLayoutItem = (LayoutItem) obj;
             if (evt.getPath().getParentPath() != null) {
                 currentLayout = (Layout) ((DefaultMutableTreeNode) evt.getPath().getParentPath().getLastPathComponent()).getUserObject();
                 txtLayoutName.setText(currentLayout.toString());
-
+                
                 lblHotKEy.setText(currentLayout.getHotKey());
                 txtLayoutName.setEnabled(true);
-
+                
                 ControlPosition ctrl = new ControlPosition(currentLayoutItem);
                 ctrl.setListener(this);
                 tabControls.add(ctrl.getLabel(), ctrl);
@@ -500,60 +472,6 @@ public class LayoutManager extends javax.swing.JPanel implements SourceListener 
         treeLayouts.repaint();
     }//GEN-LAST:event_txtLayoutNameActionPerformed
 
-    private void treeLayoutsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_treeLayoutsMouseClicked
-        if (evt.getButton() == MouseEvent.BUTTON3) {
-            if (treeLayouts.getSelectionPath() != null) {
-                updatePopItemMenu();
-                popItems.show(treeLayouts, evt.getX(), evt.getY());
-            }
-        }
-    }//GEN-LAST:event_treeLayoutsMouseClicked
-
-    private void popItemsRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_popItemsRemoveActionPerformed
-        DefaultMutableTreeNode node = (DefaultMutableTreeNode) treeLayouts.getSelectionPath().getLastPathComponent();
-        Object obj = node.getUserObject();
-        if (obj instanceof LayoutItem) {
-            LayoutItem layoutItem = (LayoutItem) obj;
-            VideoSource source = layoutItem.getSource();
-            sourceRemoved(source);
-        }
-    }//GEN-LAST:event_popItemsRemoveActionPerformed
-
-    private void updatePopItemMenu() {
-
-        DefaultMutableTreeNode node = (DefaultMutableTreeNode) treeLayouts.getSelectionPath().getLastPathComponent();
-        Object obj = node.getUserObject();
-        popItemsDuplicateIn.removeAll();
-        if (obj instanceof LayoutItem) {
-            popItemsDuplicateIn.setEnabled(true);
-            popItemsRemove.setEnabled(true);
-            for (int i = 0; i < layouts.size(); i++) {
-                JMenuItem menu = new JMenuItem(layouts.get(i).toString(), i);
-                popItemsDuplicateIn.add(menu);
-                ActionListener a = new ActionListener() {
-
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        int index = ((JMenuItem) e.getSource()).getMnemonic();
-                        DefaultMutableTreeNode node = (DefaultMutableTreeNode) treeLayouts.getSelectionPath().getLastPathComponent();
-                        Object obj = node.getUserObject();
-                        LayoutItem layoutItem = (LayoutItem) obj;
-                        VideoSource source = layoutItem.getSource();
-                        Layout layout = layouts.get(index);
-                        layout.addSource(source);
-                        updateTree();
-                    }
-                };
-                menu.addActionListener(a);
-
-            }
-        } else {
-            popItemsDuplicateIn.setEnabled(false);
-            popItemsRemove.setEnabled(false);
-        }
-
-
-    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
     private javax.swing.JButton btnApply;
@@ -563,9 +481,6 @@ public class LayoutManager extends javax.swing.JPanel implements SourceListener 
     private javax.swing.JLabel lblHotKEy;
     private javax.swing.JPanel panControls;
     private javax.swing.JPanel panSources;
-    private javax.swing.JPopupMenu popItems;
-    private javax.swing.JMenu popItemsDuplicateIn;
-    private javax.swing.JMenuItem popItemsRemove;
     private javax.swing.JScrollPane scroller;
     private javax.swing.JTabbedPane tabControls;
     private javax.swing.JTree treeLayouts;

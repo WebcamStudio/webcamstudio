@@ -19,6 +19,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import org.gstreamer.Gst;
+import webcamstudio.components.LayoutEventsManager;
 import webcamstudio.components.Preview;
 import webcamstudio.exporter.vloopback.V4L2Loopback;
 import webcamstudio.exporter.vloopback.VideoOutput;
@@ -40,7 +41,7 @@ public class MainConsole extends javax.swing.JFrame implements InfoListener {
     private String device = "/dev/video1";
     private Layout currentLayout = null;
     private Preview preview = null;
-
+    private LayoutEventsManager eventsManager = null;
     /** Creates new form MainConsole */
     public MainConsole() {
         Gst.init(java.util.ResourceBundle.getBundle("webcamstudio/Languages").getString("WEBCAMSTUDIO"), new String[0]);
@@ -137,6 +138,10 @@ public class MainConsole extends javax.swing.JFrame implements InfoListener {
                     break;
                 }
                 javax.swing.DefaultComboBoxModel model = new javax.swing.DefaultComboBoxModel(studio.getLayouts());
+                if (eventsManager!=null){
+                    eventsManager.stop();
+                }
+                eventsManager = new LayoutEventsManager(studio.getLayouts());
                 cboLayouts.setModel(model);
 
             } catch (Exception e) {
