@@ -39,5 +39,5 @@ fi
 #    echo "You are not part of the video group"
 #    zenity --warning --text "You are not part of the video group!  Make sure that your user is part of the video group for access to the virtual webcam device..."
 #fi
-$PADSP $JAVA_DIR/java -jar $INSTALLDIR/WebcamStudio.jar $1 $2 $3 $4 $5 $6 $7 $8 $9
+exec -a webcamstudio $JAVA_DIR/java -jar $INSTALLDIR/WebcamStudio.jar $1 $2 $3 $4 $5 $6 $7 $8 $9
 
