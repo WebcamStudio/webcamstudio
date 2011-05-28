@@ -42,21 +42,24 @@ import webcamstudio.studio.Studio;
 
 public abstract class VideoSource implements InfoListener {
 
-    public static java.util.TreeMap<String,VideoSource> loadedSources = new TreeMap<String,VideoSource>();
+    public static java.util.TreeMap<String, VideoSource> loadedSources = new TreeMap<String, VideoSource>();
+
     public abstract void startSource();
 
     public abstract void stopSource();
 
-    public void setName(String n){
-        name=n;
+    public void setName(String n) {
+        name = n;
     }
-    public void setLocation(String l){
-        location=l;
+
+    public void setLocation(String l) {
+        location = l;
     }
+
     protected javax.swing.ImageIcon getCachedThumbnail() {
         ImageIcon icon = null;
-        File img = new File(System.getenv("HOME") + "/.webcamstudio/thumbs/" + location.replaceAll("/", "_").replaceAll("file:","") + ".png");
-        if (img.exists()){
+        File img = new File(System.getenv("HOME") + "/.webcamstudio/thumbs/" + location.replaceAll("/", "_").replaceAll("file:", "") + ".png");
+        if (img.exists()) {
             try {
                 icon = new ImageIcon(new ImageIcon(img.toURI().toURL()).getImage().getScaledInstance(32, 32, BufferedImage.SCALE_FAST));
             } catch (MalformedURLException ex) {
@@ -65,6 +68,7 @@ public abstract class VideoSource implements InfoListener {
         }
         return icon;
     }
+
     public javax.swing.ImageIcon getThumbnail() {
         BufferedImage img = new BufferedImage(32, 32, BufferedImage.TRANSLUCENT);
         Graphics2D g = img.createGraphics();
@@ -73,7 +77,7 @@ public abstract class VideoSource implements InfoListener {
         g.fillRect(0, 0, 32, 32);
         g.setColor(Color.BLACK);
         int l = g.getFontMetrics().stringWidth(n);
-        g.setFont(new Font(Font.SANS_SERIF,Font.PLAIN,8));
+        g.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 8));
         g.drawString(n, 1, 7);
         g.drawString(n, -32, 15);
         g.drawString(n, -64, 23);
@@ -82,26 +86,27 @@ public abstract class VideoSource implements InfoListener {
         return new ImageIcon(img);
     }
 
-    public void saveThumbnail(ImageIcon icon) throws IOException{
+    public void saveThumbnail(ImageIcon icon) throws IOException {
 
         File dir = new File(System.getenv("HOME"), ".webcamstudio");
-        if (!dir.exists()){
+        if (!dir.exists()) {
             dir.mkdir();
         }
-        File thumbs = new File(dir,"thumbs");
-        if (!thumbs.exists()){
+        File thumbs = new File(dir, "thumbs");
+        if (!thumbs.exists()) {
             thumbs.mkdir();
         }
-        File img = new File(thumbs,location.replaceAll("/","_").replaceAll("file:","")+".png");
-        if (img.exists()){
+        File img = new File(thumbs, location.replaceAll("/", "_").replaceAll("file:", "") + ".png");
+        if (img.exists()) {
             img.delete();
         }
 
-        BufferedImage i = new BufferedImage(icon.getIconWidth(),icon.getIconHeight(),BufferedImage.TRANSLUCENT);
+        BufferedImage i = new BufferedImage(icon.getIconWidth(), icon.getIconHeight(), BufferedImage.TRANSLUCENT);
         i.getGraphics().drawImage(icon.getImage(), 0, 0, null);
-        javax.imageio.ImageIO.write((RenderedImage)i, "png", img);
+        javax.imageio.ImageIO.write((RenderedImage) i, "png", img);
         System.out.println("Saving to " + img.getAbsolutePath());
     }
+
     public abstract java.util.Collection<JPanel> getControls();
 
     public boolean hasSound() {
@@ -185,6 +190,7 @@ public abstract class VideoSource implements InfoListener {
         prefs.putBoolean("rescale", doRescale);
         prefs.putBoolean("reverseshapemask", doReverseShapeMask);
         prefs.putBoolean("ignorelayouttransition", ignoreLayoutTransition);
+        prefs.put("password", encrypt(password));
         int index = 0;
         for (Effect effect : effects) {
             String key = Studio.getKeyIndex(index++);
@@ -268,6 +274,7 @@ public abstract class VideoSource implements InfoListener {
         doRescale = prefs.getBoolean("rescale", doRescale);
         doReverseShapeMask = prefs.getBoolean("reverseshapemask", doReverseShapeMask);
         ignoreLayoutTransition = prefs.getBoolean("ignorelayouttransition", ignoreLayoutTransition);
+        password = decrypt(prefs.get("password", password));
         String[] effectIndexes;
         try {
             effectIndexes = prefs.node("Effects").childrenNames();
@@ -297,6 +304,39 @@ public abstract class VideoSource implements InfoListener {
 
     public void setKeywords(String keywords) {
         virtualHostKeywords = keywords;
+    }
+
+    protected String encrypt(String text) {
+        StringBuilder sb = new StringBuilder(text);
+
+        int lenStr = text.length();
+        int lenKey = key.length();
+
+        //
+        // For each character in our string, encrypt it...
+        for (int i = 0, j = 0; i < lenStr; i++, j++) {
+            if (j >= lenKey) {
+                j = 0;  // Wrap 'round to beginning of key string.
+            }
+            //
+            // XOR the chars together. Must cast back to char to avoid compile error.
+            //
+            sb.setCharAt(i, (char) (text.charAt(i) ^ key.charAt(j)));
+        }
+
+        return sb.toString();
+    }
+
+    protected String decrypt(String encoded) {
+        return encrypt(encoded);
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public boolean hasNewKeywords() {
@@ -909,4 +949,6 @@ public abstract class VideoSource implements InfoListener {
     protected boolean ignoreLayoutTransition = false;
     protected float backgroundOpacity = 0;
     protected int layer = -1;
+    protected String password = "";
+    private static final String key = "WS4GL"; // The key for 'encrypting' and 'decrypting'
 }

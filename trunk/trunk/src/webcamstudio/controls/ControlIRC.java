@@ -47,6 +47,7 @@ public class ControlIRC extends javax.swing.JPanel implements Controls, VideoSou
         txtPort.setText(port);
         txtChatRoom.setText(room);
         txtNickName.setText(source.getNick());
+        txtPassword.setText(source.getPassword());
         spinOpacity.setValue(new Integer((int)(source.getBackgroundOpacity()*100)));
 
     }
@@ -81,6 +82,8 @@ public class ControlIRC extends javax.swing.JPanel implements Controls, VideoSou
         txtPort = new javax.swing.JFormattedTextField();
         jLabel5 = new javax.swing.JLabel();
         spinOpacity = new javax.swing.JSpinner();
+        jLabel6 = new javax.swing.JLabel();
+        txtPassword = new javax.swing.JPasswordField();
 
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("webcamstudio/Languages"); // NOI18N
         lblWidth.setText(bundle.getString("WIDTH")); // NOI18N
@@ -202,6 +205,17 @@ public class ControlIRC extends javax.swing.JPanel implements Controls, VideoSou
             }
         });
 
+        jLabel6.setText(bundle.getString("PASSWORD")); // NOI18N
+        jLabel6.setName("jLabel6"); // NOI18N
+
+        txtPassword.setText("jPasswordField1");
+        txtPassword.setName("txtPassword"); // NOI18N
+        txtPassword.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtPasswordFocusLost(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -209,7 +223,7 @@ public class ControlIRC extends javax.swing.JPanel implements Controls, VideoSou
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 519, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 553, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(lblWidth)
                         .addGap(18, 18, 18)
@@ -225,7 +239,7 @@ public class ControlIRC extends javax.swing.JPanel implements Controls, VideoSou
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(spinOpacity, javax.swing.GroupLayout.DEFAULT_SIZE, 194, Short.MAX_VALUE))
+                        .addComponent(spinOpacity, javax.swing.GroupLayout.DEFAULT_SIZE, 196, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(lblTextSize)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -241,15 +255,19 @@ public class ControlIRC extends javax.swing.JPanel implements Controls, VideoSou
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtPort, javax.swing.GroupLayout.DEFAULT_SIZE, 178, Short.MAX_VALUE))
+                        .addComponent(txtPort, javax.swing.GroupLayout.DEFAULT_SIZE, 205, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtChatRoom, javax.swing.GroupLayout.DEFAULT_SIZE, 436, Short.MAX_VALUE))
+                        .addComponent(txtChatRoom, javax.swing.GroupLayout.DEFAULT_SIZE, 466, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtNickName, javax.swing.GroupLayout.DEFAULT_SIZE, 437, Short.MAX_VALUE)))
+                        .addComponent(txtNickName, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel6)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtPassword, javax.swing.GroupLayout.DEFAULT_SIZE, 173, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -286,7 +304,9 @@ public class ControlIRC extends javax.swing.JPanel implements Controls, VideoSou
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(txtNickName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtNickName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel6)
+                    .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 210, Short.MAX_VALUE)
                 .addContainerGap())
@@ -347,6 +367,10 @@ public class ControlIRC extends javax.swing.JPanel implements Controls, VideoSou
         source.setBackgroundOpacity(((Integer)spinOpacity.getValue()).floatValue()/100f);
     }//GEN-LAST:event_spinOpacityStateChanged
 
+    private void txtPasswordFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtPasswordFocusLost
+        source.setPassword(new String(txtPassword.getPassword()));
+    }//GEN-LAST:event_txtPasswordFocusLost
+
     @Override
     public String getLabel() {
         return label;
@@ -361,6 +385,7 @@ public class ControlIRC extends javax.swing.JPanel implements Controls, VideoSou
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblFontName;
     private javax.swing.JLabel lblHeight;
@@ -372,6 +397,7 @@ public class ControlIRC extends javax.swing.JPanel implements Controls, VideoSou
     private javax.swing.JTextField txtChatRoom;
     private javax.swing.JTextArea txtContent;
     private javax.swing.JTextField txtNickName;
+    private javax.swing.JPasswordField txtPassword;
     private javax.swing.JFormattedTextField txtPort;
     private javax.swing.JTextField txtServer;
     // End of variables declaration//GEN-END:variables
