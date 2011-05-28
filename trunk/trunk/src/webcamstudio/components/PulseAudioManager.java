@@ -29,8 +29,7 @@ public class PulseAudioManager {
         sources.clear();
         for (String s : ssources) {
             if (s != null && s.length() > 0) {
-            sources.add(s);
-            System.out.println(s);
+                sources.add(s);
             }
         }
         in.close();
@@ -44,7 +43,6 @@ public class PulseAudioManager {
         for (String s : ssources) {
             if (s != null && s.length() > 0) {
                 apps.put(s.split(",")[1], s.split(",")[0]);
-                System.out.println(s);
             }
         }
         in.close();
