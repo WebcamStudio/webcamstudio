@@ -19,6 +19,10 @@
  */
 package webcamstudio.sources;
 
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import webcamstudio.*;
 import org.gstreamer.*;
@@ -158,6 +162,21 @@ public class VideoSourceDV extends VideoSource implements org.gstreamer.elements
         list.add(new webcamstudio.controls.ControlFaceDetection(this));
         return list;
     }
+    @Override
+    public javax.swing.ImageIcon getThumbnail() {
+        ImageIcon icon = getCachedThumbnail();
+        if (icon == null) {
+            icon = new ImageIcon(java.net.URLClassLoader.getSystemResource("webcamstudio/resources/tango/camera-video.png"));
+            try {
+                saveThumbnail(icon);
+            } catch (IOException ex) {
+                Logger.getLogger(VideoSourceV4L.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return icon;
+
+    }
+
     private org.gstreamer.elements.RGBDataSink elementSink = null;
     private Pipeline pipe = null;
     private VideoEffects objVideoEffects = new VideoEffects();

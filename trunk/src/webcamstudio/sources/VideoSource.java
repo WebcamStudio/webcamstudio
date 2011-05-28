@@ -31,6 +31,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
@@ -41,10 +42,17 @@ import webcamstudio.studio.Studio;
 
 public abstract class VideoSource implements InfoListener {
 
+    public static java.util.TreeMap<String,VideoSource> loadedSources = new TreeMap<String,VideoSource>();
     public abstract void startSource();
 
     public abstract void stopSource();
 
+    public void setName(String n){
+        name=n;
+    }
+    public void setLocation(String l){
+        location=l;
+    }
     protected javax.swing.ImageIcon getCachedThumbnail() {
         ImageIcon icon = null;
         File img = new File(System.getenv("HOME") + "/.webcamstudio/thumbs/" + location.replaceAll("/", "_").replaceAll("file:","") + ".png");
@@ -76,7 +84,7 @@ public abstract class VideoSource implements InfoListener {
 
     public void saveThumbnail(ImageIcon icon) throws IOException{
 
-        File dir = new File(System.getenv("HOME") + "/.webcamstudio");
+        File dir = new File(System.getenv("HOME"), ".webcamstudio");
         if (!dir.exists()){
             dir.mkdir();
         }

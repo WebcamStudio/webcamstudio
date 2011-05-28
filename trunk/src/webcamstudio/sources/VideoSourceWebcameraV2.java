@@ -24,12 +24,9 @@ public class VideoSourceWebcameraV2 extends VideoSource {
     public VideoSourceWebcameraV2(String url) {
 
         stopMe = false;
+        location = url.toString();
         webcamURL = url;
 
-    }
-
-    public void setName(String n) {
-        name = n;
     }
 
     private void listen() {
@@ -56,24 +53,15 @@ public class VideoSourceWebcameraV2 extends VideoSource {
         dout.writeBytes("GET /stream/v2 HTTP/1.0\r\n");
         byte[] buffer = new byte[1024];
         int count = din.read(buffer);
-        System.out.println("Count is " + count);
-        System.out.println(new String(buffer, 0, count));
         count = din.read(buffer);
-        System.out.println("Count is " + count);
-        System.out.println(new String(buffer, 0, count));
         int version = 2;
         count = din.read(buffer);
-        System.out.println("Count is " + count);
         for (int i = 0; i < count; i++) {
             System.out.println("Data : " + buffer[i]);
         }
 
         int audio = 0;
         count = din.read(buffer);
-        System.out.println("Count is " + count);
-        for (int i = 0; i < count; i++) {
-            System.out.println("Data : " + buffer[i]);
-        }
 
         System.out.println("iWebCamera: Version = " + version + ", has audio = " + audio);
 

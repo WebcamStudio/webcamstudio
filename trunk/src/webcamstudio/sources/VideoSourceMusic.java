@@ -125,20 +125,6 @@ public class VideoSourceMusic extends VideoSource {
                         elementSource.set("port", 4888);
                         break;
                 }
-            } else if (location.toLowerCase().indexOf(":") >= 0) {
-                System.out.println("Connection with TCP");
-                elementSource = ElementFactory.make(GST_TCPCLIENTSRC, GST_TCPCLIENTSRC + uuId);
-                String[] addr = location.split(":");
-                switch (addr.length) {
-                    case 2:
-                        elementSource.set("host", addr[0]);
-                        elementSource.set("port", new Integer(addr[1]).intValue());
-                        break;
-                    case 1:
-                        elementSource.set("host", addr[0]);
-                        elementSource.set("port", 4888);
-                        break;
-                }
             } else {
                 elementSource = ElementFactory.make(GST_FILESRC, GST_FILESRC + uuId);
                 elementSource.set("location", location);

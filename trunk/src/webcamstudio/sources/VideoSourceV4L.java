@@ -38,7 +38,7 @@ public class VideoSourceV4L extends VideoSource implements org.gstreamer.element
 
     protected String source = "v4lsrc";
 
-    protected VideoSourceV4L() {
+    public VideoSourceV4L() {
         outputWidth = 320;
         outputHeight = 240;
         frameRate = 15;
@@ -48,14 +48,15 @@ public class VideoSourceV4L extends VideoSource implements org.gstreamer.element
 
     }
 
-    public VideoSourceV4L(String deviceName) {
+    public VideoSourceV4L(String deviceName, File fallbackDevice) {
         outputWidth = 320;
         outputHeight = 240;
-
-        location = getDeviceForName(deviceName).getAbsolutePath();
         name = deviceName;
+        location = getDeviceForName(deviceName, fallbackDevice).getAbsolutePath();
+        //If the name has changed, it will be reaffected...
+        
         if (deviceName.length() == 0) {
-            name = deviceName;
+            name = "???";
         }
         frameRate = 15;
         captureWidth = 320;
@@ -64,13 +65,24 @@ public class VideoSourceV4L extends VideoSource implements org.gstreamer.element
 
     }
 
-    protected File getDeviceForName(String deviceName) {
-        File f = new File("/dev/video0");
+    protected File getDeviceForName(String deviceName, File fallbackDevice) {
+        File f = null;
         for (VideoDevice v : VideoDevice.getDevices()) {
             if (v.getName().equals(deviceName)) {
                 f = v.getFile();
+                break;
             }
         }
+        if (f == null) {
+            f = fallbackDevice;
+            for (VideoDevice v : VideoDevice.getDevices()) {
+                if (f.getAbsolutePath().equals(v.getFile().getAbsoluteFile())) {
+                    name=v.getName();
+                    break;
+                }
+            }
+        }
+
         return f;
     }
 
@@ -97,7 +109,7 @@ public class VideoSourceV4L extends VideoSource implements org.gstreamer.element
     @Override
     public void startSource() {
         isPlaying = true;
-        location = getDeviceForName(name).getAbsolutePath();
+        location = getDeviceForName(name, new File(location)).getAbsolutePath();
         try {
             elementSink = new org.gstreamer.elements.RGBDataSink("RGBDataSink" + uuId, this);
             String rescaling = "";
@@ -168,6 +180,7 @@ public class VideoSourceV4L extends VideoSource implements org.gstreamer.element
         }
         temp.setRGB(0, 0, captureWidth, captureHeight, array, 0, captureWidth);
         new Thread(new Runnable() {
+
             @Override
             public void run() {
                 if (!isRendering) {
@@ -256,22 +269,13 @@ public class VideoSourceV4L extends VideoSource implements org.gstreamer.element
     @Override
     public javax.swing.ImageIcon getThumbnail() {
         ImageIcon icon = getCachedThumbnail();
-
-
         if (icon == null) {
             icon = new ImageIcon(java.net.URLClassLoader.getSystemResource("webcamstudio/resources/tango/camera-video.png"));
-
-
             try {
                 saveThumbnail(icon);
-
-
-
             } catch (IOException ex) {
                 Logger.getLogger(VideoSourceV4L.class.getName()).log(Level.SEVERE, null, ex);
             }
-
-
         }
         return icon;
 

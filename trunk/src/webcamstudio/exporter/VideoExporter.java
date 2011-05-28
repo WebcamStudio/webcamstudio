@@ -101,6 +101,7 @@ public abstract class VideoExporter {
         mixer = m;
         captureWidth = mixer.getImage().getWidth();
         captureHeight = mixer.getImage().getHeight();
+        rate = mixer.getFramerate();
     }
 
     public int getVideoBitrate() {

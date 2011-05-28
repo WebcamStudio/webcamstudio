@@ -25,8 +25,8 @@ public class VideoSourceDesktop extends VideoSource {
         } catch (AWTException ex) {
             Logger.getLogger(VideoSourceDesktop.class.getName()).log(Level.SEVERE, null, ex);
         }
-        location = "";
         name = "Desktop";
+        location = name;
         frameRate = 15;
         showMouseCursor = true;
     }
@@ -152,6 +152,7 @@ public class VideoSourceDesktop extends VideoSource {
         list.add(new webcamstudio.controls.ControlShapes(this));
         list.add(new webcamstudio.controls.ControlEffects(this));
         list.add(new webcamstudio.controls.ControlActivity(this));
+        list.add(new webcamstudio.controls.ControlIdentity(this));
         return list;
     }
 }
