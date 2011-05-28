@@ -155,6 +155,7 @@ public class VideoSourceIRC extends VideoSource {
                         charWidth = buffer.getFontMetrics().charWidth('M');
                         buffer.clearRect(0, 0, tempimage.getWidth(), tempimage.getHeight());
                         buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC, backgroundOpacity));
+                        buffer.setColor(backgroundColor);
                         buffer.fillRect(0, 0, tempimage.getWidth(), tempimage.getHeight());
                         buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC, 1F));
                         //draw Line
