@@ -67,7 +67,7 @@ public class VideoSourceIRC extends VideoSource {
         state = new ClientState();
         state.addChannel(channel);
         connection = new IRCConnection(state);
-        new AutoRegister(connection, nick, nick + "_" + new java.util.Random().nextInt(), nick + "_" + new java.util.Random().nextInt());
+        new AutoRegister(connection, nick, nick + "_" + new java.util.Random().nextInt(), nick + "_" + new java.util.Random().nextInt(),password);
         autoReconnect = new AutoReconnect(connection);
         new AutoJoin(connection, channel, null);
         messageMonitor = new MessageMonitor(this);
