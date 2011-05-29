@@ -1,3 +1,8 @@
+if [ $USER != "root" ]; then
+	echo "Execute with root privileges: sudo $0"
+	exit 1
+fi
+
 echo What is the version of this package?
 read VALUE
 
@@ -49,10 +54,30 @@ TOTAL=$( du -k -c package | grep total | cut -d t -f 1 );
 sed -e "s/VERSION/$VALUE/" -e "s/SIZE/$TOTAL/" webcamstudio.package >package/DEBIAN/control
 cp postinst package/DEBIAN
 chmod 755 package/DEBIAN/postinst
-
+# Creating md5sums
+cd package
+md5sum etc/init.d/webcamstudio > DEBIAN/md5sums
+md5sum etc/rc2.d/S99webcamstudio>> DEBIAN/md5sums
+md5sum etc/rc3.d/S99webcamstudio>> DEBIAN/md5sums
+md5sum etc/rc4.d/S99webcamstudio>> DEBIAN/md5sums
+md5sum etc/rc5.d/S99webcamstudio>> DEBIAN/md5sums
+md5sum usr/bin/webcamstudio>> DEBIAN/md5sums
+md5sum usr/bin/webcamstudioConsole>> DEBIAN/md5sums
+md5sum usr/bin/ws4gl-pulseaudio-getapps.sh>> DEBIAN/md5sums
+md5sum usr/bin/ws4gl-pulseaudio-getsources.sh>> DEBIAN/md5sums
+md5sum usr/lib/webcamstudio/README.TXT>> DEBIAN/md5sums
+md5sum usr/lib/webcamstudio/WebcamStudio.jar>> DEBIAN/md5sums
+md5sum usr/lib/webcamstudio/lib/*>> DEBIAN/md5sums
+md5sum usr/share/applications/*>> DEBIAN/md5sums
+md5sum usr/share/pixmaps/*>> DEBIAN/md5sums
+md5sum usr/share/webcamstudio/animations/*>> DEBIAN/md5sums
+md5sum usr/share/webcamstudio/webcamstudio-src/*>> DEBIAN/md5sums
+md5sum usr/share/webcamstudio/widgets/*>> DEBIAN/md5sums
+cd ..
 echo creating deb package...
 dpkg -b package
 mv package.deb webcamstudio_"$VALUE"_all.deb
+rm -r package
 
 # creating the tar.gz
 rm -R archive
