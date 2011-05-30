@@ -34,12 +34,12 @@ public class VideoExporterStream extends VideoExporter {
             streamServer.close();
             streamServer = null;
         }
-        streamServer = new ServerSocket(port);
-        streamServer.setSoTimeout(1000);
-
         System.out.println("NetworkStream available on port " + port);
         System.out.println("You can use FFMPEG to connect to this stream...");
         System.out.println("ffmpeg -f ogg -i tcp://127.0.0.1:" + port + " test.ogg");
+        streamServer = new ServerSocket(port);
+        streamServer.setSoTimeout(1000);
+
         new Thread(new Runnable() {
 
             @Override
@@ -101,21 +101,13 @@ public class VideoExporterStream extends VideoExporter {
 
         pipe.addMany(audioSource, audioCaps, audioConvert, aEncoder, aqueue);
         Element.linkMany(audioSource, audioCaps, audioConvert, aEncoder, aqueue, muxer);
-        source.set("signal-handoffs", true);
-        source.set("sizemax", captureWidth * captureHeight * 4);
-        source.set("sizetype", 2);
-        source.set("sync", true);
-        source.set("is-live", true);
-        source.set("filltype", 1); // Don't fill the buffer before handoff
-        source.connect(new Element.HANDOFF() {
+        source.connect("handoff", new Closure() {
 
-            @Override
-            public void handoff(Element element, org.gstreamer.Buffer buffer, Pad pad) {
-                data = ((java.awt.image.DataBufferInt) mixer.getImage().getRaster().getDataBuffer()).getData();
-                ByteBuffer bytes = buffer.getByteBuffer();
-                IntBuffer b = bytes.asIntBuffer();
-                buffer.setDuration(ClockTime.fromMillis(1000 / rate));
-                b.put(data);
+            @SuppressWarnings("unused")
+            public void invoke(Element element, Buffer buffer, Pad pad) {
+//                        System.out.println("Closure: Element=" + element.getNativeAddress()
+//                                + " buffer=" + buffer.getNativeAddress()
+//                                + " pad=" + pad.getNativeAddress());
             }
         });
         source.set("signal-handoffs", true);
@@ -135,6 +127,7 @@ public class VideoExporterStream extends VideoExporter {
                 b.put(data);
             }
         });
+        
         sink.connect("handoff", new Closure() {
 
             @SuppressWarnings("unused")

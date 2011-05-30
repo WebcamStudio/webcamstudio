@@ -9,15 +9,12 @@ import java.util.Date;
 import java.util.Locale;
 import javax.swing.JPanel;
 import webcamstudio.*;
-import webcamstudio.dbus.Rhythmbox;
 
 /**
  *
  * @author pballeux
  */
 public class VideoSourceText extends VideoSource {
-
-    private Rhythmbox rhythmbox = null;
 
     protected VideoSourceText() {
         frameRate = 1;
@@ -101,11 +98,6 @@ public class VideoSourceText extends VideoSource {
 
             @Override
             public void run() {
-                if (rhythmbox != null) {
-                    rhythmbox.disconnect();
-                    rhythmbox = null;
-                }
-                rhythmbox = new Rhythmbox();
                 long lastTimeStamp = System.currentTimeMillis();
                 if (outputWidth == 0 || outputHeight == 0) {
                     outputWidth = 320;
@@ -267,10 +259,6 @@ public class VideoSourceText extends VideoSource {
 
     @Override
     public void stopSource() {
-        if (rhythmbox != null) {
-            rhythmbox.disconnect();
-            rhythmbox = null;
-        }
         isPlaying = false;
         stopMe = true;
         image = null;
@@ -377,31 +365,9 @@ public class VideoSourceText extends VideoSource {
 //        year
         String retValue = text + "";
         String tmp = "";
-        if (text.indexOf("#RHYTHMBOX:TITLE") != -1) {
-            retValue = retValue.replaceAll("#RHYTHMBOX:TITLE", rhythmbox.getCurrentSongTitle());
-        }
-        if (text.indexOf("#RHYTHMBOX:ALBUM") != -1) {
-            retValue = retValue.replaceAll("#RHYTHMBOX:ALBUM", rhythmbox.getCurrentSongProperties("album"));
-        }
-        if (text.indexOf("#RHYTHMBOX:ARTIST") != -1) {
-            retValue = retValue.replaceAll("#RHYTHMBOX:ARTIST", rhythmbox.getCurrentSongProperties("artist"));
-        }
-        if (text.indexOf("#RHYTHMBOX:DURATION") != -1) {
-            retValue = retValue.replaceAll("#RHYTHMBOX:DURATION", rhythmbox.getCurrentSongProperties("duration"));
-        }
-        if (text.indexOf("#RHYTHMBOX:GENRE") != -1) {
-            retValue = retValue.replaceAll("#RHYTHMBOX:GENRE", rhythmbox.getCurrentSongProperties("genre"));
-        }
-        if (text.indexOf("#RHYTHMBOX:YEAR") != -1) {
-            retValue = retValue.replaceAll("#RHYTHMBOX:YEAR", rhythmbox.getCurrentSongProperties("year"));
-        }
         if (text.indexOf("#NOW") != -1) {
             retValue = retValue.replaceAll("#NOW", new Date().toString());
         }
-        if (text.indexOf("#RHYTHMBOX:STREAMTITLE") != -1) {
-            retValue = retValue.replaceAll("#RHYTHMBOX:STREAMTITLE", rhythmbox.getCurrentSongProperties("rb:stream-song-title"));
-        }
-
         if (text.indexOf("#HOUR") != -1) {
             tmp = Calendar.getInstance().get(Calendar.HOUR_OF_DAY) + "";
             if (tmp.length() == 1) {
