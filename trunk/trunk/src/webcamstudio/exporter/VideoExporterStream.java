@@ -30,15 +30,9 @@ public class VideoExporterStream extends VideoExporter {
     }
 
     public void listen() throws IOException {
-        if (streamServer != null) {
-            streamServer.close();
-            streamServer = null;
-        }
         System.out.println("NetworkStream available on port " + port);
         System.out.println("You can use FFMPEG to connect to this stream...");
         System.out.println("ffmpeg -f ogg -i tcp://127.0.0.1:" + port + " test.ogg");
-        streamServer = new ServerSocket(port);
-        streamServer.setSoTimeout(1000);
 
         new Thread(new Runnable() {
 
@@ -46,15 +40,16 @@ public class VideoExporterStream extends VideoExporter {
             public void run() {
                 while (!stopMe) {
                     try {
-                        final Socket connection = streamServer.accept();
-                        System.out.println("Accepting connection from " + connection.getLocalSocketAddress().toString());
-                        new Thread(new Runnable() {
+                        if (streamServer == null) {
+                            streamServer = new ServerSocket(port);
+                            streamServer.setSoTimeout(1000);
+                        }
 
-                            @Override
-                            public void run() {
-                                feedConnection(connection);
-                            }
-                        }).start();
+                        Socket connection = streamServer.accept();
+                        System.out.println("Accepting connection from " + connection.getLocalSocketAddress().toString());
+                        streamServer.close();
+                        streamServer = null;
+                        feedConnection(connection);
                     } catch (java.net.SocketTimeoutException ex) {
                         continue;
                     } catch (IOException ex) {
@@ -70,8 +65,10 @@ public class VideoExporterStream extends VideoExporter {
         dataStream = new java.util.Vector<byte[]>();
         stopMe = false;
         //Video
+        System.out.println("Initializing stream...");
         Element source = ElementFactory.make("fakesrc", "source");
         Element sink = ElementFactory.make("fakesink", "sink");
+        System.out.println("Initializing Sink stream...");
 
         Element videoRate = ElementFactory.make("videorate", "videorate");
         Element capsRate = ElementFactory.make("capsfilter", "capsrate");
@@ -87,6 +84,7 @@ public class VideoExporterStream extends VideoExporter {
         vEncoder.set("quality", 63);
         Element queue = ElementFactory.make("queue", "queue");
         //Audio
+        System.out.println("Initializing Audio stream...");
         Element audioSource = ElementFactory.make("autoaudiosrc", "autoaudiosrc");
         Element audioCaps = ElementFactory.make("capsfilter", "audiocaps");
         audioCaps.setCaps(Caps.fromString("audio/x-raw-int,rate=44100,channels=2"));
@@ -101,6 +99,7 @@ public class VideoExporterStream extends VideoExporter {
 
         pipe.addMany(audioSource, audioCaps, audioConvert, aEncoder, aqueue);
         Element.linkMany(audioSource, audioCaps, audioConvert, aEncoder, aqueue, muxer);
+        System.out.println("Setting source stream...");
         source.connect("handoff", new Closure() {
 
             @SuppressWarnings("unused")
@@ -127,7 +126,7 @@ public class VideoExporterStream extends VideoExporter {
                 b.put(data);
             }
         });
-        
+        System.out.println("Setting sink stream...");
         sink.connect("handoff", new Closure() {
 
             @SuppressWarnings("unused")
@@ -166,6 +165,7 @@ public class VideoExporterStream extends VideoExporter {
                 System.out.println("Stream Export Info: " + arg0 + "," + arg1 + ", " + arg2);
             }
         });
+        System.out.println("Sending stream...");
         pipe.play();
         try {
             listen();
