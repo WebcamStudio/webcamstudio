@@ -27,6 +27,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
+import webcamstudio.Main;
 import webcamstudio.controls.ControlPosition;
 import webcamstudio.controls.Controls;
 import webcamstudio.layout.Layout;
@@ -64,7 +65,6 @@ public class LayoutManager extends javax.swing.JPanel implements SourceListener 
     private ImageIcon iconText = null;
     private boolean stopMe = false;
     private LayoutEventsManager eventsManager = null;
-
 
     /** Creates new form LayoutManager */
     public LayoutManager() {
@@ -419,8 +419,10 @@ public class LayoutManager extends javax.swing.JPanel implements SourceListener 
             lblHotKEy.setText(currentLayout.getHotKey());
             txtLayoutName.setText(currentLayout.toString());
             txtLayoutName.setEnabled(true);
-            PulseAudioInputSelecter p = new PulseAudioInputSelecter(currentLayout);
-            tabControls.add("Audio", p);
+            if (!Main.XMODE) {
+                PulseAudioInputSelecter p = new PulseAudioInputSelecter(currentLayout);
+                tabControls.add("Audio", p);
+            }
             LayoutEventsControl eventsControl = new LayoutEventsControl(currentLayout, layouts);
             tabControls.add("Events", eventsControl);
         } else if (obj instanceof LayoutItem) {

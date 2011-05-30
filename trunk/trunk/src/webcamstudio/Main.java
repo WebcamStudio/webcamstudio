@@ -37,7 +37,6 @@ import webcamstudio.sources.*;
 import webcamstudio.components.*;
 import webcamstudio.components.LayoutManager;
 import webcamstudio.exporter.VideoExporter;
-import webcamstudio.exporter.VideoExporterPipeline;
 import webcamstudio.exporter.VideoExporterStream;
 import webcamstudio.exporter.vloopback.V4LLoopback;
 import webcamstudio.exporter.vloopback.VideoOutput;
@@ -80,49 +79,24 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
     private SystemMonitor monitor = null;
     private VideoExporterStream outputStream = null;
     private int outputStreamPort = 4888;
+    //Flag to validate if we are in XMode or in Linux
+    public static boolean XMODE = false;
 
     /** Creates new form Main */
     public Main() {
         Gst.init(java.util.ResourceBundle.getBundle("webcamstudio/Languages").getString("WEBCAMSTUDIO"), new String[0]);
 
         initComponents();
-
+        // if XMODE is already try, override OS Detection
+        XMODE = !isLinux() || XMODE;
+        if (XMODE){
+            System.out.println ("X Mode activated");
+            updateGUIForXmode();
+        }
         output = null;
-        VideoDevice[] vds = VideoDevice.getInputDevices();
-        javax.swing.DefaultComboBoxModel cboDevOuts = new javax.swing.DefaultComboBoxModel(vds);
-        cboVideoOutputs.setModel(cboDevOuts);
         loadPrefs();
-        VideoDevice selectedVd = null;
-        for (VideoDevice vd : vds) {
-            if (vd.getVersion() == VideoDevice.Version.V4L2 && lastDriverOutput.equals("v4l2")) {
-                if (vd.getFile().getName().equals(lastDriverOutputPath)) {
-                    selectedVd = vd;
-                    break;
-                }
-            } else if (vd.getVersion() == VideoDevice.Version.V4L && lastDriverOutput.equals("v4l")) {
-                if (vd.getFile().getName().equals(lastDriverOutputPath)) {
-                    selectedVd = vd;
-                    break;
-                }
-            }
-        }
-        if (selectedVd == null) {
-            for (VideoDevice vd : vds) {
-                if (vd.getVersion() == VideoDevice.Version.V4L2 && lastDriverOutput.equals("v4l2")) {
-                    selectedVd = vd;
-                    break;
-                } else if (vd.getVersion() == VideoDevice.Version.V4L && lastDriverOutput.equals("v4l")) {
-                    selectedVd = vd;
-                    break;
-                }
-            }
-        }
-        if (selectedVd == null && vds.length > 0) {
-            selectedVd = vds[0];
-        }
-        if (selectedVd != null) {
-            cboVideoOutputs.setSelectedItem(selectedVd);
-            selectOutputDevice(selectedVd);
+        if (!XMODE) {
+            initVideoDevices();
         }
         layoutManager = new LayoutManager();
 
@@ -136,7 +110,11 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         } else {
             mixer.setBackground(null);
         }
-        setTitle(java.util.ResourceBundle.getBundle("webcamstudio/Languages").getString("WEBCAMSTUDIO_FOR_GNU/LINUX_") + " " + webcamstudio.Version.version + " (Build: " + new webcamstudio.Version().getBuild() + ")");
+        if (XMODE) {
+            setTitle(java.util.ResourceBundle.getBundle("webcamstudio/Languages").getString("WEBCAMSTUDIO_X") + " " + webcamstudio.Version.version + " (Build: " + new webcamstudio.Version().getBuild() + ")");
+        } else {
+            setTitle(java.util.ResourceBundle.getBundle("webcamstudio/Languages").getString("WEBCAMSTUDIO_FOR_GNU/LINUX_") + " " + webcamstudio.Version.version + " (Build: " + new webcamstudio.Version().getBuild() + ")");
+        }
         java.awt.Image img = getToolkit().getImage(java.net.URLClassLoader.getSystemResource("webcamstudio/resources/icon.png"));
 
         setIconImage(img);
@@ -178,13 +156,75 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
             }
         }).start();
         monitor = new SystemMonitor(pgCPUUsage);
-        if (mnuOutputchkActivateStream.isSelected()){
+        if (XMODE) {
             outputStream = new VideoExporterStream(outputStreamPort, mixer);
             mnuOutputLabelStreamPort.setText("Stream Port: " + outputStreamPort);
             outputStream.startExport();
+
+        } else {
+            if (mnuOutputchkActivateStream.isSelected()) {
+                outputStream = new VideoExporterStream(outputStreamPort, mixer);
+                mnuOutputLabelStreamPort.setText("Stream Port: " + outputStreamPort);
+                outputStream.startExport();
+            }
         }
         pack();
 
+    }
+
+
+    private void updateGUIForXmode(){
+        cboVideoOutputs.setVisible(!XMODE);
+        panelStatus.remove(cboVideoOutputs);
+        mnuPixelFormat.setVisible(!XMODE);
+        mnuOutputFlipImage.setVisible(!XMODE);
+        mnuOutputchkActivateStream.setVisible(!XMODE);
+        mnuVideoInfo.setVisible(!XMODE);
+    }
+    private void initVideoDevices() {
+        VideoDevice[] vds = VideoDevice.getInputDevices();
+        javax.swing.DefaultComboBoxModel cboDevOuts = new javax.swing.DefaultComboBoxModel(vds);
+        cboVideoOutputs.setModel(cboDevOuts);
+        VideoDevice selectedVd = null;
+        for (VideoDevice vd : vds) {
+            if (vd.getVersion() == VideoDevice.Version.V4L2 && lastDriverOutput.equals("v4l2")) {
+                if (vd.getFile().getName().equals(lastDriverOutputPath)) {
+                    selectedVd = vd;
+                    break;
+                }
+            } else if (vd.getVersion() == VideoDevice.Version.V4L && lastDriverOutput.equals("v4l")) {
+                if (vd.getFile().getName().equals(lastDriverOutputPath)) {
+                    selectedVd = vd;
+                    break;
+                }
+            }
+        }
+        if (selectedVd == null) {
+            for (VideoDevice vd : vds) {
+                if (vd.getVersion() == VideoDevice.Version.V4L2 && lastDriverOutput.equals("v4l2")) {
+                    selectedVd = vd;
+                    break;
+                } else if (vd.getVersion() == VideoDevice.Version.V4L && lastDriverOutput.equals("v4l")) {
+                    selectedVd = vd;
+                    break;
+                }
+            }
+        }
+        if (selectedVd == null && vds.length > 0) {
+            selectedVd = vds[0];
+        }
+        if (selectedVd != null) {
+            cboVideoOutputs.setSelectedItem(selectedVd);
+            selectOutputDevice(selectedVd);
+        }
+    }
+
+    private boolean isLinux() {
+        boolean retValue = false;
+        String osName = System.getProperty("os.name");
+        System.out.println("OS is " + osName);
+        retValue = osName.toLowerCase().startsWith("linux");
+        return retValue;
     }
 
     private void selectOutputDevice(VideoDevice dev) {
@@ -215,15 +255,16 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
 
         mediaPanel.setAutoscrolls(true);
 
-
-        //Loading devices
-        buildSourceDevices();
-        MediaPanelList pdevices = new MediaPanelList(this);
-        pdevices.setPanelName(bundle.getString("DEVICES"));
-        for (VideoSource v : devices.values()) {
-            pdevices.addMedia(v);
+        if (!XMODE) {
+            //Loading devices
+            buildSourceDevices();
+            MediaPanelList pdevices = new MediaPanelList(this);
+            pdevices.setPanelName(bundle.getString("DEVICES"));
+            for (VideoSource v : devices.values()) {
+                pdevices.addMedia(v);
+            }
+            mediaPanel.addMedia(pdevices);
         }
-        mediaPanel.addMedia(pdevices);
 
         buildSourceImages();
         MediaPanelList pImages = new MediaPanelList(this);
@@ -296,12 +337,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         }
         mediaPanel.addMedia(ppipes);
 
-        MediaPanelList pexp = new MediaPanelList(this);
-        pexp.setPanelName(bundle.getString("EXPORTERS"));
-        for (VideoExporter v : exporters.values()) {
-            pexp.addMedia(v);
-        }
-        mediaPanel.addMedia(pexp);
         setCursor(Cursor.getDefaultCursor());
         mediaPanel.revalidate();
         panBrowser.removeAll();
@@ -390,19 +425,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
                                 } else {
                                     pipelines.put(vm.getName(), vm);
                                 }
-                            } else if (type.toLowerCase().equals("sink")) {
-                                VideoExporterPipeline vp = null;
-                                if (output != null) {
-                                    vp = new VideoExporterPipeline(f, output.getDevice());
-                                } else {
-                                    vp = new VideoExporterPipeline(f, "");
-                                }
-                                if (exporters.containsKey(vp.getName())) {
-                                    exporters.put(vp.getName() + " - " + new java.util.Random().nextInt(), vp);
-                                } else {
-                                    exporters.put(vp.getName(), vp);
-                                }
-
                             }
                         } catch (IOException ex) {
                             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
@@ -481,11 +503,11 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         for (int i = 0; i < v.length; i++) {
             switch (v[i].getVersion()) {
                 case V4L:
-                    webcam = new VideoSourceV4L(v[i].getName(),v[i].getFile());
+                    webcam = new VideoSourceV4L(v[i].getName(), v[i].getFile());
                     devices.put(webcam.getName() + webcam.getUUID(), webcam);
                     break;
                 case V4L2:
-                    webcam = new VideoSourceV4L2(v[i].getName(),v[i].getFile());
+                    webcam = new VideoSourceV4L2(v[i].getName(), v[i].getFile());
                     devices.put(webcam.getName() + webcam.getUUID(), webcam);
                     break;
             }
@@ -527,8 +549,8 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
             mnurdPixelFormatUYVY.setSelected(true);
             mnurdPixelFormatRGB24.setSelected(false);
             mnuOutputSize.setEnabled(false);
-            outputWidth=640;
-            outputHeight=480;
+            outputWidth = 640;
+            outputHeight = 480;
         }
         String outputSize = outputWidth + "x" + outputHeight;
         java.util.Enumeration<javax.swing.AbstractButton> list = grpOutputSize.getElements();
@@ -642,7 +664,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
                     layouts.add((Layout) l);
                 }
                 outStudio.setLayouts(layouts);
-                outStudio.saveStudio(studio,mixer);
+                outStudio.saveStudio(studio, mixer);
                 lastStudioFile = studio;
                 mnuStudioLoadLast.setEnabled(true);
                 mnuStudioLoadLast.setToolTipText(lastStudioFile.getAbsolutePath());
@@ -1950,15 +1972,17 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         String outputSize = evt.getActionCommand();
         outputWidth = new Integer(outputSize.split("x")[0]);
         outputHeight = new Integer(outputSize.split("x")[1]);
-        output.close();
-        if (mnurdPixelFormatRGB24.isSelected()) {
-            output.open(output.getDevice(), outputWidth, outputHeight, V4L2Loopback.RGB24);
-        } else {
-            output.open(output.getDevice(), outputWidth, outputHeight, V4L2Loopback.UYVY);
+        if (output != null) {
+            output.close();
+            if (mnurdPixelFormatRGB24.isSelected()) {
+                output.open(output.getDevice(), outputWidth, outputHeight, V4L2Loopback.RGB24);
+            } else {
+                output.open(output.getDevice(), outputWidth, outputHeight, V4L2Loopback.UYVY);
+            }
+            mixer.setOutput(output);
         }
-
         mixer.setSize(outputWidth, outputHeight);
-        mixer.setOutput(output);
+
 
 
     }//GEN-LAST:event_mnuOutputSizeActionPerformed
@@ -2073,35 +2097,41 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
     }//GEN-LAST:event_btnPreviewActionPerformed
 
     private void mnurdPixelFormatRGB24ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnurdPixelFormatRGB24ActionPerformed
-        output.close();
-        if (mnurdPixelFormatRGB24.isSelected()) {
-            mnuOutputSize.setEnabled(true);
-            output.open(output.getDevice(), outputWidth, outputHeight, V4L2Loopback.RGB24);
-        } else {
-            mnuOutputSize.setEnabled(false);
-            output.open(output.getDevice(), outputWidth, outputHeight, V4L2Loopback.UYVY);
+        if (output != null) {
+            output.close();
+            if (mnurdPixelFormatRGB24.isSelected()) {
+                mnuOutputSize.setEnabled(true);
+                output.open(output.getDevice(), outputWidth, outputHeight, V4L2Loopback.RGB24);
+            } else {
+                mnuOutputSize.setEnabled(false);
+                output.open(output.getDevice(), outputWidth, outputHeight, V4L2Loopback.UYVY);
+            }
         }
         mixer.setSize(outputWidth, outputHeight);
     }//GEN-LAST:event_mnurdPixelFormatRGB24ActionPerformed
 
     private void mnurdPixelFormatUYVYActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnurdPixelFormatUYVYActionPerformed
-        output.close();
-        
-        if (mnurdPixelFormatRGB24.isSelected()) {
-            output.open(output.getDevice(), outputWidth, outputHeight, V4L2Loopback.RGB24);
-            mnuOutputSize.setEnabled(true);
-        } else {
-            mnuOutputSize3.setSelected(true);
-            outputWidth = 640;
-            outputHeight = 480;
-            output.open(output.getDevice(), outputWidth, outputHeight, V4L2Loopback.UYVY);
-            mnuOutputSize.setEnabled(false);
+        if (output != null) {
+            output.close();
+
+            if (mnurdPixelFormatRGB24.isSelected()) {
+                output.open(output.getDevice(), outputWidth, outputHeight, V4L2Loopback.RGB24);
+                mnuOutputSize.setEnabled(true);
+            } else {
+                mnuOutputSize3.setSelected(true);
+                outputWidth = 640;
+                outputHeight = 480;
+                output.open(output.getDevice(), outputWidth, outputHeight, V4L2Loopback.UYVY);
+                mnuOutputSize.setEnabled(false);
+            }
         }
         mixer.setSize(outputWidth, outputHeight);
     }//GEN-LAST:event_mnurdPixelFormatUYVYActionPerformed
 
     private void mnuOutputFlipImageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuOutputFlipImageActionPerformed
-        output.setFlipImage(mnuOutputFlipImage.isSelected());
+        if (output != null) {
+            output.setFlipImage(mnuOutputFlipImage.isSelected());
+        }
     }//GEN-LAST:event_mnuOutputFlipImageActionPerformed
 
     private void mnuLayoutF1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuLayoutF1ActionPerformed
@@ -2173,16 +2203,16 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
     }//GEN-LAST:event_mnuSourceschkShowBrowserActionPerformed
 
     private void mnuOutputchkActivateStreamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuOutputchkActivateStreamActionPerformed
-        if (mnuOutputchkActivateStream.isSelected()){
-            if (outputStream!=null){
+        if (mnuOutputchkActivateStream.isSelected()) {
+            if (outputStream != null) {
                 outputStream.stopExport();
 
             }
             mnuOutputLabelStreamPort.setText("Stream Port : " + outputStreamPort);
             outputStream = new VideoExporterStream(outputStreamPort, mixer);
             outputStream.startExport();
-        }else{
-            if (outputStream !=null){
+        } else {
+            if (outputStream != null) {
                 outputStream.stopExport();
             }
             mnuOutputLabelStreamPort.setText("Stream Port : Disabled");
@@ -2195,6 +2225,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
     public static void main(String args[]) {
 
         boolean nogui = false;
+        boolean xmode = false;
         String studio = null;
         for (String arg : args) {
             if (arg.equals("-native")) {
@@ -2213,7 +2244,11 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
             if (arg.equals("-nogui")) {
                 nogui = true;
             }
+            if (arg.equals("-xmode")) {
+                xmode = true;
+            }
         }
+        Main.XMODE=xmode;
         Main m = new Main();
         if (studio != null) {
             m.loadStudioFromFile(new File(studio));

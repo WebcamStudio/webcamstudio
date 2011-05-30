@@ -21,6 +21,7 @@ import javax.swing.JLabel;
 import org.gstreamer.Gst;
 import webcamstudio.components.LayoutEventsManager;
 import webcamstudio.components.Preview;
+import webcamstudio.exporter.VideoExporterStream;
 import webcamstudio.exporter.vloopback.V4L2Loopback;
 import webcamstudio.exporter.vloopback.VideoOutput;
 import webcamstudio.layout.Layout;
@@ -42,10 +43,16 @@ public class MainConsole extends javax.swing.JFrame implements InfoListener {
     private Layout currentLayout = null;
     private Preview preview = null;
     private LayoutEventsManager eventsManager = null;
+    //Flag to validate if we are in XMode or in Linux
+    public static boolean XMODE = true;
+    private VideoExporterStream outputStream = null;
+    private int outputStreamPort = 4888;
+
     /** Creates new form MainConsole */
     public MainConsole() {
         Gst.init(java.util.ResourceBundle.getBundle("webcamstudio/Languages").getString("WEBCAMSTUDIO"), new String[0]);
         initComponents();
+        XMODE = !isLinux();
         javax.swing.DefaultComboBoxModel model = new javax.swing.DefaultComboBoxModel();
         cboLayouts.setModel(model);
         javax.swing.DefaultListCellRenderer renderer = new javax.swing.DefaultListCellRenderer() {
@@ -88,6 +95,14 @@ public class MainConsole extends javax.swing.JFrame implements InfoListener {
 
     }
 
+    private boolean isLinux() {
+        boolean retValue = false;
+        String osName = System.getProperty("os.name");
+        System.out.println("OS is " + osName);
+        retValue = osName.toLowerCase().startsWith("linux");
+        return retValue;
+    }
+
     private void selectOutputDevice(String dev) {
 
         if (output != null) {
@@ -126,19 +141,23 @@ public class MainConsole extends javax.swing.JFrame implements InfoListener {
                 width = studio.getWidth();
                 height = studio.getHeight();
                 pixFormat = studio.getPixFormat();
-                device = studio.getDevice();
-                selectOutputDevice(device);
                 mixer = new webcamstudio.components.Mixer();
                 mixer.setSize(width, height);
-                mixer.setOutput(output);
                 mixer.setFramerate(30);
+                mixer.setOutput(output);
+                if (!XMODE) {
+                    device = studio.getDevice();
+                    selectOutputDevice(device);
+                } else {
+                    outputStream = new VideoExporterStream(outputStreamPort, mixer);
+                }
                 for (Layout l : studio.getLayouts()) {
                     l.enterLayout();
                     currentLayout = l;
                     break;
                 }
                 javax.swing.DefaultComboBoxModel model = new javax.swing.DefaultComboBoxModel(studio.getLayouts());
-                if (eventsManager!=null){
+                if (eventsManager != null) {
                     eventsManager.stop();
                 }
                 eventsManager = new LayoutEventsManager(studio.getLayouts());
