@@ -182,7 +182,7 @@ public class VideoSourceAnimation extends VideoSource {
                 Logger.getLogger(VideoSourceAnimation.class.getName()).log(Level.SEVERE, null, ex);
             }
             try {
-                saveThumbnail(new ImageIcon(Animator.getThumbnail(new File(location))));
+                saveThumbnail(icon);
             } catch (Exception ex) {
                 System.out.println(ex.getMessage());
                 Logger.getLogger(VideoSourceAnimation.class.getName()).log(Level.SEVERE, null, ex);
