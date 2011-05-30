@@ -33,7 +33,7 @@ public class MixerWin32 implements java.lang.Runnable {
     private boolean stopMe = false;
     private java.awt.image.BufferedImage paintImage = null;
     private Image background = Toolkit.getDefaultToolkit().createImage(getClass().getResource("/webcamstudio/resources/splash.jpg"));
-    private NetworkStream ns = null;
+
     public enum MixerQuality {
 
         HIGH,
@@ -54,20 +54,6 @@ public class MixerWin32 implements java.lang.Runnable {
     public void setSize(int w, int h) {
         outputWidth = w;
         outputHeight = h;
-        if (ns !=null){
-            ns.stop();
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(MixerWin32.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            try {
-                ns.start();
-            } catch (IOException ex) {
-                Logger.getLogger(MixerWin32.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-
     }
 
     public void setFramerate(int fps) {
@@ -178,14 +164,6 @@ public class MixerWin32 implements java.lang.Runnable {
     @Override
     public void run() {
         graphicConfiguration = java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
-        ns = new NetworkStream(this);
-        NetworkStreamAudio nsa = new NetworkStreamAudio();
-        try {
-            ns.start();
-            nsa.start();
-        } catch (IOException ex) {
-            Logger.getLogger(MixerWin32.class.getName()).log(Level.SEVERE, null, ex);
-        }
         while (!stopMe) {
             try {
                 drawImage();
@@ -194,7 +172,5 @@ public class MixerWin32 implements java.lang.Runnable {
                 e.printStackTrace();
             }
         }
-        ns.stop();
-        nsa.stop();
     }
 }

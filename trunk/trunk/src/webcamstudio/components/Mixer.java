@@ -6,12 +6,10 @@ package webcamstudio.components;
 
 import java.awt.Image;
 import java.awt.Toolkit;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import webcamstudio.sources.*;
 import webcamstudio.VirtualHost;
 import java.awt.image.*;
+import webcamstudio.exporter.VideoExporterStream;
 import webcamstudio.exporter.vloopback.VideoOutput;
 import webcamstudio.layout.Layout;
 import webcamstudio.layout.LayoutItem;
@@ -174,14 +172,6 @@ public class Mixer implements java.lang.Runnable {
     @Override
     public void run() {
         graphicConfiguration = java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
-        
-//        NetworkStream ns = new NetworkStream(this);
-//        try {
-//            ns.start();
-//
-//        } catch (IOException ex) {
-//            Logger.getLogger(Mixer.class.getName()).log(Level.SEVERE, null, ex);
-//        }
         while (!stopMe) {
             try {
                 drawImage();
@@ -193,7 +183,5 @@ public class Mixer implements java.lang.Runnable {
                 e.printStackTrace();
             }
         }
-//        ns.stop();
-        
     }
 }
