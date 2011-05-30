@@ -58,9 +58,9 @@ public abstract class VideoSource implements InfoListener {
 
     protected javax.swing.ImageIcon getCachedThumbnail() {
         ImageIcon icon = null;
-        File home = new File(System.getProperty("user.home"),".webcamstudio");
-        File thumbs = new File(home,"thumbs");
-        File img = new File(thumbs,location.replaceAll("/", "_").replaceAll("file:", "") + ".png");
+        File home = new File(System.getProperty("user.home"), ".webcamstudio");
+        File thumbs = new File(home, "thumbs");
+        File img = new File(thumbs, location.replaceAll("/", "_").replaceAll("file:", "").replaceAll("\\\\", "_").replaceAll(":", "_") + ".png");
         if (img.exists()) {
             try {
                 icon = new ImageIcon(new ImageIcon(img.toURI().toURL()).getImage().getScaledInstance(32, 32, BufferedImage.SCALE_FAST));
@@ -98,15 +98,18 @@ public abstract class VideoSource implements InfoListener {
         if (!thumbs.exists()) {
             thumbs.mkdir();
         }
-        File img = new File(thumbs, location.replaceAll("/", "_").replaceAll("file:", "") + ".png");
+        File img = new File(thumbs, location.replaceAll("/", "_").replaceAll("file:", "").replaceAll("\\\\", "_").replaceAll(":", "_") + ".png");
         if (img.exists()) {
             img.delete();
         }
 
         BufferedImage i = new BufferedImage(icon.getIconWidth(), icon.getIconHeight(), BufferedImage.TRANSLUCENT);
         i.getGraphics().drawImage(icon.getImage(), 0, 0, null);
-        javax.imageio.ImageIO.write((RenderedImage) i, "png", img);
         System.out.println("Saving to " + img.getAbsolutePath());
+        RenderedImage ri = (RenderedImage) i;
+        if (ri != null) {
+            javax.imageio.ImageIO.write(ri, "png", img);
+        }
     }
 
     public abstract java.util.Collection<JPanel> getControls();
@@ -921,7 +924,7 @@ public abstract class VideoSource implements InfoListener {
     protected long updateTimeLaspe = 0;
     protected java.awt.Image shape = null;
     protected String shapeName = "";
-    protected String audioSink = "gconfaudiosink";
+    protected String audioSink = "autoaudiosink";
     protected boolean activityDetected = true;
     protected int activityThreshold = 0;
     private java.awt.image.BufferedImage lastInputImage = null;
