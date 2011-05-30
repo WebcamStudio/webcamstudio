@@ -38,6 +38,7 @@ import webcamstudio.components.*;
 import webcamstudio.components.LayoutManager;
 import webcamstudio.exporter.VideoExporter;
 import webcamstudio.exporter.VideoExporterPipeline;
+import webcamstudio.exporter.VideoExporterStream;
 import webcamstudio.exporter.vloopback.V4LLoopback;
 import webcamstudio.exporter.vloopback.VideoOutput;
 import webcamstudio.layout.Layout;
@@ -77,6 +78,8 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
     private String lastDriverOutput = "";
     private String lastDriverOutputPath = "";
     private SystemMonitor monitor = null;
+    private VideoExporterStream outputStream = null;
+    private int outputStreamPort = 4888;
 
     /** Creates new form Main */
     public Main() {
@@ -175,6 +178,11 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
             }
         }).start();
         monitor = new SystemMonitor(pgCPUUsage);
+        if (mnuOutputchkActivateStream.isSelected()){
+            outputStream = new VideoExporterStream(outputStreamPort, mixer);
+            mnuOutputLabelStreamPort.setText("Stream Port: " + outputStreamPort);
+            outputStream.startExport();
+        }
         pack();
 
     }
@@ -553,6 +561,8 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         lastDriverOutputPath = prefs.get("lastdriverpath", lastDriverOutputPath);
         mnuSourceschkShowBrowser.setSelected(prefs.getBoolean("showbrowser", mnuSourceschkShowBrowser.isSelected()));
         panBrowser.setVisible(mnuSourceschkShowBrowser.isSelected());
+        outputStreamPort = prefs.getInt("streamport", outputStreamPort);
+        mnuOutputchkActivateStream.setSelected(prefs.getBoolean("activatestream", mnuOutputchkActivateStream.isSelected()));
 
         prefs = null;
     }
@@ -579,6 +589,8 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         if (lastFolder != null) {
             prefs.put("lastfolder", lastFolder.getAbsolutePath());
         }
+        prefs.putBoolean("activatestream", mnuOutputchkActivateStream.isSelected());
+        prefs.putInt("streamport", outputStreamPort);
         String allDirs = "";
         for (String d : dirToScan) {
             allDirs += d + ";";
@@ -852,6 +864,9 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         mnurdPixelFormatRGB24 = new javax.swing.JRadioButtonMenuItem();
         mnurdPixelFormatUYVY = new javax.swing.JRadioButtonMenuItem();
         mnuOutputFlipImage = new javax.swing.JCheckBoxMenuItem();
+        mnuOutputchkActivateStream = new javax.swing.JCheckBoxMenuItem();
+        jSeparator4 = new javax.swing.JPopupMenu.Separator();
+        mnuOutputLabelStreamPort = new javax.swing.JMenuItem();
         mnuLayout = new javax.swing.JMenu();
         mnuLayoutF1 = new javax.swing.JMenuItem();
         mnuLayoutF2 = new javax.swing.JMenuItem();
@@ -1415,6 +1430,23 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
             }
         });
         mnuOutput.add(mnuOutputFlipImage);
+
+        mnuOutputchkActivateStream.setText(bundle.getString("ACTIVATE_OUTPUT_STREAM")); // NOI18N
+        mnuOutputchkActivateStream.setName("mnuOutputchkActivateStream"); // NOI18N
+        mnuOutputchkActivateStream.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnuOutputchkActivateStreamActionPerformed(evt);
+            }
+        });
+        mnuOutput.add(mnuOutputchkActivateStream);
+
+        jSeparator4.setName("jSeparator4"); // NOI18N
+        mnuOutput.add(jSeparator4);
+
+        mnuOutputLabelStreamPort.setText("Stream Port:  Disabled"); // NOI18N
+        mnuOutputLabelStreamPort.setEnabled(false);
+        mnuOutputLabelStreamPort.setName("mnuOutputLabelStreamPort"); // NOI18N
+        mnuOutput.add(mnuOutputLabelStreamPort);
 
         menuBar.add(mnuOutput);
 
@@ -2140,6 +2172,23 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         panBrowser.setVisible(mnuSourceschkShowBrowser.isSelected());
     }//GEN-LAST:event_mnuSourceschkShowBrowserActionPerformed
 
+    private void mnuOutputchkActivateStreamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuOutputchkActivateStreamActionPerformed
+        if (mnuOutputchkActivateStream.isSelected()){
+            if (outputStream!=null){
+                outputStream.stopExport();
+
+            }
+            mnuOutputLabelStreamPort.setText("Stream Port : " + outputStreamPort);
+            outputStream = new VideoExporterStream(outputStreamPort, mixer);
+            outputStream.startExport();
+        }else{
+            if (outputStream !=null){
+                outputStream.stopExport();
+            }
+            mnuOutputLabelStreamPort.setText("Stream Port : Disabled");
+        }
+    }//GEN-LAST:event_mnuOutputchkActivateStreamActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -2190,6 +2239,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
+    private javax.swing.JPopupMenu.Separator jSeparator4;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenu mnuAbout;
     private javax.swing.JMenuItem mnuAboutItem;
@@ -2219,6 +2269,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
     private javax.swing.JCheckBoxMenuItem mnuOutputFlipImage;
     private javax.swing.JMenu mnuOutputFramerate;
     private javax.swing.JMenuItem mnuOutputGISSCaster;
+    private javax.swing.JMenuItem mnuOutputLabelStreamPort;
     private javax.swing.JMenu mnuOutputSize;
     private javax.swing.JRadioButtonMenuItem mnuOutputSize1;
     private javax.swing.JRadioButtonMenuItem mnuOutputSize2;
@@ -2228,6 +2279,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
     private javax.swing.JRadioButtonMenuItem mnuOutputSize6;
     private javax.swing.JRadioButtonMenuItem mnuOutputSize7;
     private javax.swing.JMenuItem mnuOutputSpnashot;
+    private javax.swing.JCheckBoxMenuItem mnuOutputchkActivateStream;
     private javax.swing.JMenu mnuPixelFormat;
     private javax.swing.JMenuItem mnuReloadSourceTree;
     private javax.swing.JMenuItem mnuRemoveDir;
