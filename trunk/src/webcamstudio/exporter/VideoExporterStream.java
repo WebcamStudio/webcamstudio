@@ -67,6 +67,7 @@ public class VideoExporterStream extends VideoExporter {
         //Video
         System.out.println("Initializing stream...");
         Element source = ElementFactory.make("fakesrc", "source");
+        System.out.println("Initializing Source stream...");
         Element sink = ElementFactory.make("fakesink", "sink");
         System.out.println("Initializing Sink stream...");
 
@@ -119,11 +120,13 @@ public class VideoExporterStream extends VideoExporter {
 
             @Override
             public void handoff(Element element, org.gstreamer.Buffer buffer, Pad pad) {
-                data = ((java.awt.image.DataBufferInt) mixer.getImage().getRaster().getDataBuffer()).getData();
-                ByteBuffer bytes = buffer.getByteBuffer();
-                IntBuffer b = bytes.asIntBuffer();
-                buffer.setDuration(ClockTime.fromMillis(1000 / rate));
-                b.put(data);
+                if (mixer.getImage() != null) {
+                    data = ((java.awt.image.DataBufferInt) mixer.getImage().getRaster().getDataBuffer()).getData();
+                    ByteBuffer bytes = buffer.getByteBuffer();
+                    IntBuffer b = bytes.asIntBuffer();
+                    buffer.setDuration(ClockTime.fromMillis(1000 / rate));
+                    b.put(data);
+                }
             }
         });
         System.out.println("Setting sink stream...");

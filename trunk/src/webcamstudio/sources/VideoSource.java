@@ -58,7 +58,9 @@ public abstract class VideoSource implements InfoListener {
 
     protected javax.swing.ImageIcon getCachedThumbnail() {
         ImageIcon icon = null;
-        File img = new File(System.getenv("HOME") + "/.webcamstudio/thumbs/" + location.replaceAll("/", "_").replaceAll("file:", "") + ".png");
+        File home = new File(System.getProperty("user.home"),".webcamstudio");
+        File thumbs = new File(home,"thumbs");
+        File img = new File(thumbs,location.replaceAll("/", "_").replaceAll("file:", "") + ".png");
         if (img.exists()) {
             try {
                 icon = new ImageIcon(new ImageIcon(img.toURI().toURL()).getImage().getScaledInstance(32, 32, BufferedImage.SCALE_FAST));
@@ -88,7 +90,7 @@ public abstract class VideoSource implements InfoListener {
 
     public void saveThumbnail(ImageIcon icon) throws IOException {
 
-        File dir = new File(System.getenv("HOME"), ".webcamstudio");
+        File dir = new File(System.getProperty("user.home"), ".webcamstudio");
         if (!dir.exists()) {
             dir.mkdir();
         }

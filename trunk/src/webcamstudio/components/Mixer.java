@@ -7,9 +7,7 @@ package webcamstudio.components;
 import java.awt.Image;
 import java.awt.Toolkit;
 import webcamstudio.sources.*;
-import webcamstudio.VirtualHost;
 import java.awt.image.*;
-import webcamstudio.exporter.VideoExporterStream;
 import webcamstudio.exporter.vloopback.VideoOutput;
 import webcamstudio.layout.Layout;
 import webcamstudio.layout.LayoutItem;
@@ -23,12 +21,10 @@ public class Mixer implements java.lang.Runnable {
     protected int frameRate = 15;
     protected int outputWidth = 320;
     protected int outputHeight = 240;
-    protected static java.awt.GraphicsConfiguration graphicConfiguration = null;
-    protected java.awt.image.BufferedImage image = java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().createCompatibleImage(outputWidth, outputHeight);
-    private BufferedImage outputImage = java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().createCompatibleImage(outputWidth, outputHeight);
+    protected java.awt.image.BufferedImage image = new BufferedImage(outputWidth, outputHeight, BufferedImage.TRANSLUCENT);
+    private BufferedImage outputImage = new BufferedImage(outputWidth, outputHeight, BufferedImage.TRANSLUCENT);
     private boolean isDrawing = false;
     protected boolean lightMode = false;
-    private VirtualHost virtualHost = new VirtualHost();
     private boolean stopMe = false;
     private java.awt.image.BufferedImage paintImage = null;
     private VideoOutput outputDevice = null;
@@ -79,8 +75,8 @@ public class Mixer implements java.lang.Runnable {
     private void drawImage() {
         isDrawing = true;
         if (image == null || (outputWidth != image.getWidth())) {
-            image = graphicConfiguration.createCompatibleImage(outputWidth, outputHeight, java.awt.image.BufferedImage.TRANSLUCENT);
-            outputImage = graphicConfiguration.createCompatibleImage(outputWidth, outputHeight, java.awt.image.BufferedImage.TRANSLUCENT);
+            image = new BufferedImage(outputWidth, outputHeight, BufferedImage.TRANSLUCENT);
+            outputImage = new BufferedImage(outputWidth, outputHeight, BufferedImage.TRANSLUCENT);
         }
         java.awt.Graphics2D buffer = image.createGraphics();
         int x1, x2, x3, x4;
@@ -171,7 +167,6 @@ public class Mixer implements java.lang.Runnable {
     }
     @Override
     public void run() {
-        graphicConfiguration = java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
         while (!stopMe) {
             try {
                 drawImage();
