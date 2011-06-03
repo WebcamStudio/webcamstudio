@@ -4,26 +4,38 @@
  */
 package webcamstudio.exporter;
 
-import java.io.BufferedOutputStream;
+import com.sun.jna.Pointer;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.gstreamer.*;
+import org.gstreamer.elements.AppSink;
+import org.gstreamer.elements.AppSrc;
 import webcamstudio.components.Mixer;
 
 /**
  *
  * @author pballeux
  */
-public class VideoExporterStream extends VideoExporter {
+public class VideoExporterStream {
 
     private java.net.ServerSocket streamServer = null;
     private int port = 4888;
-    public java.util.Vector<byte[]> dataStream = new java.util.Vector<byte[]>();
+    private boolean stopMe = false;
+    private Mixer mixer = null;
+    private Pipeline pipe = null;
+    private int rate = 15;
+    private int captureWidth = 320;
+    private int captureHeight = 240;
+    private int abitrate = 128000;
+    private org.gstreamer.elements.AppSink sink = null;
+    private org.gstreamer.elements.AppSrc source = null;
+    private int frameCount = 0;
+    private boolean feedPipe = false;
 
     public void stop() {
         stopMe = true;
@@ -49,172 +61,107 @@ public class VideoExporterStream extends VideoExporter {
                         System.out.println("Accepting connection from " + connection.getLocalSocketAddress().toString());
                         streamServer.close();
                         streamServer = null;
+
+                        startExport();
                         feedConnection(connection);
+                        stopExport();
+
                     } catch (java.net.SocketTimeoutException ex) {
                         continue;
                     } catch (IOException ex) {
-                        //Logger.getLogger(VideoExporterStream.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-            }
-        }).start();
-    }
-
-    @Override
-    public void startExport() {
-        new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-                dataStream = new java.util.Vector<byte[]>();
-                stopMe = false;
-                //Video
-                System.out.println("Initializing stream...");
-                Element source = ElementFactory.make("fakesrc", "source");
-                System.out.println("Initializing Source stream...");
-                Element sink = ElementFactory.make("fakesink", "sink");
-                System.out.println("Initializing Sink stream...");
-
-                Element videoRate = ElementFactory.make("videorate", "videorate");
-                Element capsRate = ElementFactory.make("capsfilter", "capsrate");
-                capsRate.setCaps(Caps.fromString("video/x-raw-rgb,framerate=" + rate + "/1"));
-
-                Element capsSize = ElementFactory.make("capsfilter", "capsSize");
-                Caps fltcaps = new Caps("video/x-raw-rgb, framerate=" + rate + "/1" + ", width=" + captureWidth + ", height=" + captureHeight + ", bpp=32, depth=32,red_mask=0x0000FF00,green_mask=0x00FF0000,blue_mask=0xFF000000");
-                capsSize.setCaps(fltcaps);
-
-                Element ffmpegColorSpace = ElementFactory.make("ffmpegcolorspace", "ffmpegcolorspace");
-                Element muxer = ElementFactory.make("oggmux", "oggmux");
-                Element vEncoder = ElementFactory.make("theoraenc", "encoder");
-                vEncoder.set("quality", 63);
-                Element queue = ElementFactory.make("queue", "queue");
-                //Audio
-                System.out.println("Initializing Audio stream...");
-                Element audioSource = ElementFactory.make("autoaudiosrc", "autoaudiosrc");
-                Element audioCaps = ElementFactory.make("capsfilter", "audiocaps");
-                audioCaps.setCaps(Caps.fromString("audio/x-raw-int,rate=44100,channels=2"));
-                Element audioConvert = ElementFactory.make("audioconvert", "audioconvert");
-                Element aEncoder = ElementFactory.make("vorbisenc", "vorbisenc");
-                aEncoder.set("bitrate", abitrate);
-                Element aqueue = ElementFactory.make("queue", "aqueue");
-
-                pipe = new Pipeline();
-                pipe.addMany(source, capsSize, videoRate, capsRate, ffmpegColorSpace, vEncoder, queue, muxer, sink);
-                Element.linkMany(source, capsSize, videoRate, capsRate, ffmpegColorSpace, vEncoder, queue, muxer, sink);
-
-                pipe.addMany(audioSource, audioCaps, audioConvert, aEncoder, aqueue);
-                Element.linkMany(audioSource, audioCaps, audioConvert, aEncoder, aqueue, muxer);
-                System.out.println("Setting source stream...");
-                source.connect("handoff", new Closure() {
-
-                    @SuppressWarnings("unused")
-                    public void invoke(Element element, Buffer buffer, Pad pad) {
-//                        System.out.println("Closure: Element=" + element.getNativeAddress()
-//                                + " buffer=" + buffer.getNativeAddress()
-//                                + " pad=" + pad.getNativeAddress());
-                    }
-                });
-                source.set("signal-handoffs", true);
-                source.set("sizemax", captureWidth * captureHeight * 4);
-                source.set("sizetype", 2);
-                source.set("sync", true);
-                source.set("is-live", true);
-                source.set("filltype", 1); // Don't fill the buffer before handoff
-                source.connect(new Element.HANDOFF() {
-
-                    @Override
-                    public void handoff(Element element, org.gstreamer.Buffer buffer, Pad pad) {
-                        if (mixer.getImage() != null) {
-                            data = ((java.awt.image.DataBufferInt) mixer.getImage().getRaster().getDataBuffer()).getData();
-                            ByteBuffer bytes = buffer.getByteBuffer();
-                            IntBuffer b = bytes.asIntBuffer();
-                            buffer.setDuration(ClockTime.fromMillis(1000 / rate));
-                            b.put(data);
-                        }
-                    }
-                });
-                System.out.println("Setting sink stream...");
-                sink.connect("handoff", new Closure() {
-
-                    @SuppressWarnings("unused")
-                    public void invoke(Element element, Buffer buffer, Pad pad) {
-//                        System.out.println("Closure: Element=" + element.getNativeAddress()
-//                                + " buffer=" + buffer.getNativeAddress()
-//                                + " pad=" + pad.getNativeAddress());
-                    }
-                });
-                sink.set("signal-handoffs", true);
-                sink.connect(new Element.HANDOFF() {
-
-                    @Override
-                    public void handoff(Element element, org.gstreamer.Buffer buffer, Pad pad) {
-                        byte[] data = new byte[buffer.getSize()];
-                        buffer.getByteBuffer().get(data);
-                        if (dataStream != null) {
-                            dataStream.add(data);
-                            while (dataStream.size() > 50) {
-                                dataStream.remove(0);
-                            }
-                        }
-                    }
-                });
-                pipe.getBus().connect(new Bus.ERROR() {
-
-                    public void errorMessage(GstObject arg0, int arg1, String arg2) {
-                        error("OGG Export Error: " + arg0 + "," + arg1 + ", " + arg2);
-                        System.out.println("Stream Export Error: " + arg0 + "," + arg1 + ", " + arg2);
-                    }
-                });
-                pipe.getBus().connect(new Bus.INFO() {
-
-                    @Override
-                    public void infoMessage(GstObject arg0, int arg1, String arg2) {
-                        System.out.println("Stream Export Info: " + arg0 + "," + arg1 + ", " + arg2);
-                    }
-                });
-                System.out.println("Sending stream...");
-                pipe.play();
-                try {
-                    listen();
-                } catch (IOException ex) {
-                    Logger.getLogger(VideoExporterStream.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        }).start();
-    }
-
-    @Override
-    public void stopExport() {
-        stopMe = true;
-        super.stopExport();
-        try {
-            if (streamServer != null && streamServer.isBound()) {
-                streamServer.close();
-            }
-            streamServer = null;
-        } catch (IOException ex) {
-            Logger.getLogger(VideoExporterStream.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    private void feedConnection(Socket conn) {
-        java.io.BufferedOutputStream out = null;
-        try {
-            out = new BufferedOutputStream(conn.getOutputStream());
-            while (!stopMe) {
-                if (dataStream.size() > 0) {
-                    byte[] data = dataStream.remove(0);
-                    out.write(data);
-                } else {
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException ex) {
                         Logger.getLogger(VideoExporterStream.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
             }
+        }).start();
+    }
+
+    private void startExport() {
+        rate = mixer.getFramerate();
+        captureWidth=mixer.getWidth();
+        captureHeight=mixer.getHeight();
+        String pipeline = "";
+        pipeline += "ffmpegcolorspace name=conv ! videorate ! video/x-raw-yuv,framerate=" + rate + "/1 ! theoraenc name=enc quality=48 ! oggmux name=mux";
+        pipeline += " queue ! autoaudiosrc ! audioconvert ! vorbisenc ! mux.";
+
+        pipe = Pipeline.launch(pipeline);
+        source = (AppSrc) ElementFactory.make("appsrc", "source");
+        Element srcfilter = ElementFactory.make("capsfilter", "srcfilter");
+        Caps fltcaps = new Caps("video/x-raw-rgb, framerate=" + rate + "/1" + ", width=" + captureWidth + ", height=" + captureHeight + ", bpp=32, depth=32,endianness=4321,red_mask=0x0000FF00,green_mask=0x00FF0000,blue_mask=0xFF000000");
+        srcfilter.setCaps(fltcaps);
+        source.set("emit-signals", true);
+        source.setLive(true);
+        sink = (AppSink) ElementFactory.make("appsink", "sink");
+        pipe.addMany(source, srcfilter, sink);
+        Element mux = pipe.getElementByName("mux");
+        Element conv = pipe.getElementByName("conv");
+        mux.link(sink);
+        source.link(srcfilter);
+        srcfilter.link(conv);
+        frameCount = 0;
+        source.connect(new AppSrc.NEED_DATA() {
+
+            public void needData(Element elem, int size, Pointer userData) {
+                BufferedImage img = mixer.getImage();
+                int[] pixels = ((java.awt.image.DataBufferInt) img.getRaster().getDataBuffer()).getData();
+                Buffer buffer = new Buffer(pixels.length*4);
+                buffer.getByteBuffer().asIntBuffer().put(pixels);
+                //buffer.setDuration(ClockTime.fromMillis(1000 / rate));
+                //buffer.setTimestamp(ClockTime.fromMillis(System.currentTimeMillis()));
+                source.pushBuffer(buffer);
+            }
+        });
+        source.connect(new AppSrc.ENOUGH_DATA() {
+
+            public void enoughData(Element elem, Pointer userData) {
+                //System.out.println("Frame sent " + frameCount);
+            }
+        });
+        pipe.getBus().connect(new Bus.ERROR() {
+
+            public void errorMessage(GstObject arg0, int arg1, String arg2) {
+                System.out.println("Stream Export Error: " + arg0 + "," + arg1 + ", " + arg2 + " - Frame Count = " + frameCount);
+            }
+        });
+        pipe.getBus().connect(new Bus.INFO() {
+
+            @Override
+            public void infoMessage(GstObject arg0, int arg1, String arg2) {
+                System.out.println("Stream Export Info: " + arg0 + "," + arg1 + ", " + arg2);
+            }
+        });
+        System.out.println("Starting pipe");
+        feedPipe = false;
+        pipe.play();
+
+        frameCount = 0;
+    }
+
+    private void stopExport() {
+        if (pipe != null) {
+            pipe.stop();
+            pipe = null;
+        }
+    }
+
+    private void feedConnection(Socket conn) throws IOException {
+        java.io.OutputStream out = null;
+        boolean stopFeeding = false;
+        byte[] buffer = new byte[4048];
+        try {
+            out = conn.getOutputStream();
+            while (!stopFeeding) {
+                org.gstreamer.Buffer b = sink.pullBuffer();
+                if (b != null) {
+                    buffer = new byte[b.getSize()];
+                    ByteBuffer bb = b.getByteBuffer();
+                    bb.get(buffer);
+                    out.write(buffer);
+                }
+            }
         } catch (IOException ex) {
-            System.out.println("Lost connection");
+            System.out.println("Lost connection ");
+            stopFeeding = true;
         } finally {
             try {
                 out.close();
@@ -227,7 +174,10 @@ public class VideoExporterStream extends VideoExporter {
 
     public VideoExporterStream(int port, Mixer mixer) {
         this.port = port;
-        setMixer(mixer);
+        this.mixer = mixer;
+        rate = mixer.getFramerate();
+        captureWidth=mixer.getWidth();
+        captureHeight=mixer.getHeight();
     }
 
     public static void main(String[] args) {

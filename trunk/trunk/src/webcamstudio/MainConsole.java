@@ -45,12 +45,12 @@ public class MainConsole extends javax.swing.JFrame implements InfoListener {
     private LayoutEventsManager eventsManager = null;
     //Flag to validate if we are in XMode or in Linux
     public static boolean XMODE = true;
-    private VideoExporterStream outputStream = null;
+    
     private int outputStreamPort = 4888;
 
     /** Creates new form MainConsole */
     public MainConsole() {
-        Gst.init(java.util.ResourceBundle.getBundle("webcamstudio/Languages").getString("WEBCAMSTUDIO"), new String[0]);
+        Gst.init();
         initComponents();
         XMODE = !isLinux();
         javax.swing.DefaultComboBoxModel model = new javax.swing.DefaultComboBoxModel();
@@ -149,7 +149,7 @@ public class MainConsole extends javax.swing.JFrame implements InfoListener {
                     device = studio.getDevice();
                     selectOutputDevice(device);
                 } else {
-                    outputStream = new VideoExporterStream(outputStreamPort, mixer);
+                    mixer.activateStream(true, outputStreamPort);
                 }
                 for (Layout l : studio.getLayouts()) {
                     l.enterLayout();
