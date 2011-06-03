@@ -77,14 +77,13 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
     private String lastDriverOutput = "";
     private String lastDriverOutputPath = "";
     private SystemMonitor monitor = null;
-    private VideoExporterStream outputStream = null;
     private int outputStreamPort = 4888;
     //Flag to validate if we are in XMode or in Linux
     public static boolean XMODE = false;
 
     /** Creates new form Main */
     public Main() {
-        Gst.init(java.util.ResourceBundle.getBundle("webcamstudio/Languages").getString("WEBCAMSTUDIO"), new String[0]);
+        Gst.init();
 
         initComponents();
         // if XMODE is already try, override OS Detection
@@ -157,15 +156,13 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         }).start();
         monitor = new SystemMonitor(pgCPUUsage);
         if (XMODE) {
-            outputStream = new VideoExporterStream(outputStreamPort, mixer);
             mnuOutputLabelStreamPort.setText("Stream Port: " + outputStreamPort);
-            outputStream.startExport();
+            mixer.activateStream(true, outputStreamPort);
 
         } else {
             if (mnuOutputchkActivateStream.isSelected()) {
-                outputStream = new VideoExporterStream(outputStreamPort, mixer);
                 mnuOutputLabelStreamPort.setText("Stream Port: " + outputStreamPort);
-                outputStream.startExport();
+                mixer.stopStream();
             }
         }
         pack();
@@ -2204,18 +2201,11 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
 
     private void mnuOutputchkActivateStreamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuOutputchkActivateStreamActionPerformed
         if (mnuOutputchkActivateStream.isSelected()) {
-            if (outputStream != null) {
-                outputStream.stopExport();
-
-            }
             mnuOutputLabelStreamPort.setText("Stream Port : " + outputStreamPort);
-            outputStream = new VideoExporterStream(outputStreamPort, mixer);
-            outputStream.startExport();
+            mixer.activateStream(true, outputStreamPort);
         } else {
-            if (outputStream != null) {
-                outputStream.stopExport();
-            }
             mnuOutputLabelStreamPort.setText("Stream Port : Disabled");
+            mixer.stopStream();
         }
     }//GEN-LAST:event_mnuOutputchkActivateStreamActionPerformed
 

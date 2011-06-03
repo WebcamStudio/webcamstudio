@@ -8,6 +8,7 @@ import java.awt.Image;
 import java.awt.Toolkit;
 import webcamstudio.sources.*;
 import java.awt.image.*;
+import webcamstudio.exporter.VideoExporterStream;
 import webcamstudio.exporter.vloopback.VideoOutput;
 import webcamstudio.layout.Layout;
 import webcamstudio.layout.LayoutItem;
@@ -29,7 +30,9 @@ public class Mixer implements java.lang.Runnable {
     private java.awt.image.BufferedImage paintImage = null;
     private VideoOutput outputDevice = null;
     private Image background = Toolkit.getDefaultToolkit().createImage(getClass().getResource("/webcamstudio/resources/splash.jpg"));
-    
+    private boolean activateOutputStream = false;
+    private VideoExporterStream outputStream = null;
+    private int outputStreamPort = 4888;
     public enum MixerQuality {
 
         HIGH,
@@ -165,11 +168,24 @@ public class Mixer implements java.lang.Runnable {
     public int getHeight(){
         return outputHeight;
     }
+    public void activateStream(boolean activate,int port){
+        outputStreamPort=port;
+        activateOutputStream = true;
+    }
+    public void stopStream(){
+        activateOutputStream = false;
+    }
     @Override
     public void run() {
         while (!stopMe) {
             try {
                 drawImage();
+                if (activateOutputStream && outputStream == null){
+                    outputStream = new VideoExporterStream(outputStreamPort, this);
+                    outputStream.listen();
+                } else if (!activateOutputStream && outputStream != null){
+                    outputStream.stop();
+                }
                 if (outputDevice != null) {
                     outputDevice.write(outputImage);
                 }
