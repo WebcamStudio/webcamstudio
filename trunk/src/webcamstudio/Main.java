@@ -35,7 +35,7 @@ import org.gstreamer.*;
 import webcamstudio.layout.transitions.Transition;
 import webcamstudio.sources.*;
 import webcamstudio.components.*;
-import webcamstudio.components.LayoutManager;
+import webcamstudio.components.LayoutManager2;
 import webcamstudio.exporter.VideoExporter;
 import webcamstudio.exporter.VideoExporterStream;
 import webcamstudio.exporter.vloopback.V4LLoopback;
@@ -73,7 +73,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
     private javax.swing.tree.DefaultTreeModel sourceDir = null;
     private javax.swing.tree.DefaultMutableTreeNode root = null;
     private javax.swing.tree.DefaultMutableTreeNode nodeDevices = null;
-    private LayoutManager layoutManager = null;
+    private LayoutManager2 layoutManager = null;
     private String lastDriverOutput = "";
     private String lastDriverOutputPath = "";
     private SystemMonitor monitor = null;
@@ -97,7 +97,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         if (!XMODE) {
             initVideoDevices();
         }
-        layoutManager = new LayoutManager();
+        layoutManager = new LayoutManager2();
 
 
         mixer = new Mixer();
@@ -165,7 +165,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
                 mixer.stopStream();
             }
         }
-        pack();
+        
 
     }
 
@@ -539,6 +539,9 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         }
         outputWidth = prefs.getInt("outputwidth", outputWidth);
         outputHeight = prefs.getInt("outputheight", outputHeight);
+
+        this.setLocation(prefs.getInt("mainx", 0),prefs.getInt("mainy", 0));
+        this.setSize(prefs.getInt("mainw", 800), prefs.getInt("mainh", 600));
         if (prefs.get("format", "rgb24").equals("rgb24")) {
             mnurdPixelFormatRGB24.setSelected(true);
             mnurdPixelFormatUYVY.setSelected(false);
@@ -591,6 +594,11 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         if (lastStudioFile != null) {
             prefs.put("laststudiofile", lastStudioFile.getAbsolutePath());
         }
+        prefs.putInt("mainx", this.getX());
+        prefs.putInt("mainy", this.getY());
+        prefs.putInt("mainw", this.getWidth());
+        prefs.putInt("mainh", this.getHeight());
+
         prefs.put("fps", grpFramerate.getSelection().getActionCommand());
         prefs.putInt("outputwidth", outputWidth);
         prefs.putInt("outputheight", outputHeight);
