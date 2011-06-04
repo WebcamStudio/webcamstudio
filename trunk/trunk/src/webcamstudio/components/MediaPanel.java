@@ -43,24 +43,24 @@ public class MediaPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        scroller = new javax.swing.JScrollPane();
+        jScrollPane1 = new javax.swing.JScrollPane();
         panList = new javax.swing.JPanel();
 
         setLayout(new java.awt.BorderLayout());
 
-        scroller.setName("scroller"); // NOI18N
+        jScrollPane1.setName("jScrollPane1"); // NOI18N
 
         panList.setName("panList"); // NOI18N
         panList.setLayout(new javax.swing.BoxLayout(panList, javax.swing.BoxLayout.Y_AXIS));
-        scroller.setViewportView(panList);
+        jScrollPane1.setViewportView(panList);
 
-        add(scroller, java.awt.BorderLayout.CENTER);
+        add(jScrollPane1, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPanel panList;
-    private javax.swing.JScrollPane scroller;
     // End of variables declaration//GEN-END:variables
 
 }

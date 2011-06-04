@@ -15,6 +15,7 @@ import webcamstudio.exporter.vloopback.VideoDevice;
 import webcamstudio.exporter.vloopback.V4L2Loopback;
 import java.awt.Component;
 import java.awt.Cursor;
+import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.SplashScreen;
 import java.awt.Toolkit;
@@ -125,7 +126,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
             mnuStudioLoadLast.setEnabled(false);
         }
 
-        this.add(layoutManager, BorderLayout.CENTER);
+        panLayouts.add(layoutManager, BorderLayout.CENTER);
 
         javax.swing.DefaultListCellRenderer layoutrenderer = new javax.swing.DefaultListCellRenderer() {
 
@@ -337,7 +338,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         setCursor(Cursor.getDefaultCursor());
         mediaPanel.revalidate();
         panBrowser.removeAll();
-        panBrowser.add(mediaPanel, BorderLayout.CENTER);
+        panBrowser.add(mediaPanel,BorderLayout.CENTER);
         panBrowser.revalidate();
     }
 
@@ -835,9 +836,10 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         grpFramerate = new javax.swing.ButtonGroup();
         grpPixelFormat = new javax.swing.ButtonGroup();
         panelStatus = new javax.swing.JPanel();
-        btnPreview = new javax.swing.JButton();
+        btnShowPreview = new javax.swing.JToggleButton();
         pgCPUUsage = new javax.swing.JProgressBar();
         cboVideoOutputs = new javax.swing.JComboBox();
+        panLayouts = new javax.swing.JPanel();
         panBrowser = new javax.swing.JPanel();
         menuBar = new javax.swing.JMenuBar();
         mnuStudios = new javax.swing.JMenu();
@@ -866,7 +868,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         mnuSourcesWidget = new javax.swing.JMenuItem();
         mnuSourcesConsole = new javax.swing.JMenuItem();
         mnuOutput = new javax.swing.JMenu();
-        mnuShowPreview = new javax.swing.JMenuItem();
         mnuVideoRecorder = new javax.swing.JMenuItem();
         mnuOutputSpnashot = new javax.swing.JMenuItem();
         mnuOutputGISSCaster = new javax.swing.JMenuItem();
@@ -928,15 +929,14 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         panelStatus.setName("panelStatus"); // NOI18N
         panelStatus.setLayout(new java.awt.GridLayout(1, 2, 10, 0));
 
-        btnPreview.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/video-display.png"))); // NOI18N
-        btnPreview.setText(bundle.getString("SHOW_PREVIEW")); // NOI18N
-        btnPreview.setName("btnPreview"); // NOI18N
-        btnPreview.addActionListener(new java.awt.event.ActionListener() {
+        btnShowPreview.setText(bundle.getString("SHOW_PREVIEW")); // NOI18N
+        btnShowPreview.setName("btnShowPreview"); // NOI18N
+        btnShowPreview.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnPreviewActionPerformed(evt);
+                btnShowPreviewActionPerformed(evt);
             }
         });
-        panelStatus.add(btnPreview);
+        panelStatus.add(btnShowPreview);
 
         pgCPUUsage.setToolTipText(bundle.getString("CPUUSAGE")); // NOI18N
         pgCPUUsage.setName("pgCPUUsage"); // NOI18N
@@ -953,6 +953,10 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         panelStatus.add(cboVideoOutputs);
 
         getContentPane().add(panelStatus, java.awt.BorderLayout.SOUTH);
+
+        panLayouts.setName("panLayouts"); // NOI18N
+        panLayouts.setLayout(new java.awt.BorderLayout());
+        getContentPane().add(panLayouts, java.awt.BorderLayout.CENTER);
 
         panBrowser.setName("panBrowser"); // NOI18N
         panBrowser.setLayout(new java.awt.BorderLayout());
@@ -1216,17 +1220,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         mnuOutput.setText(bundle.getString("OUTPUT")); // NOI18N
         mnuOutput.setName("mnuOutput"); // NOI18N
         mnuOutput.setPreferredSize(new java.awt.Dimension(100, 23));
-
-        mnuShowPreview.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_P, java.awt.event.InputEvent.CTRL_MASK));
-        mnuShowPreview.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/video-display.png"))); // NOI18N
-        mnuShowPreview.setText(bundle.getString("SHOW_PREVIEW")); // NOI18N
-        mnuShowPreview.setName("mnuShowPreview"); // NOI18N
-        mnuShowPreview.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuShowPreviewActionPerformed(evt);
-            }
-        });
-        mnuOutput.add(mnuShowPreview);
 
         mnuVideoRecorder.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-record.png"))); // NOI18N
         mnuVideoRecorder.setText(bundle.getString("VIDEO_RECORDER")); // NOI18N
@@ -1853,21 +1846,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
 
     }//GEN-LAST:event_mnuSourcesMovieActionPerformed
 
-    private void mnuShowPreviewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuShowPreviewActionPerformed
-        if (preview != null) {
-            preview.dispose();
-            preview = null;
-        }
-        preview = new Preview(this, false, mixer);
-        preview.addWindowListener(new java.awt.event.WindowAdapter() {
-
-            public void windowClosing(java.awt.event.WindowEvent e) {
-                preview.stopMe();
-            }
-        });
-        preview.setVisible(true);
-    }//GEN-LAST:event_mnuShowPreviewActionPerformed
-
     private void mnuAboutItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuAboutItemActionPerformed
         webcamstudio.About about = new webcamstudio.About(this, true);
         about.pack();
@@ -2097,10 +2075,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         initSourceDir();
     }//GEN-LAST:event_mnuReloadSourceTreeActionPerformed
 
-    private void btnPreviewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPreviewActionPerformed
-        mnuShowPreview.doClick();
-    }//GEN-LAST:event_btnPreviewActionPerformed
-
     private void mnurdPixelFormatRGB24ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnurdPixelFormatRGB24ActionPerformed
         if (output != null) {
             output.close();
@@ -2217,6 +2191,14 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         }
     }//GEN-LAST:event_mnuOutputchkActivateStreamActionPerformed
 
+    private void btnShowPreviewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShowPreviewActionPerformed
+        if (btnShowPreview.isSelected()){
+            layoutManager.showPreview(mixer);
+        } else {
+            layoutManager.showPreview(null);
+        }
+    }//GEN-LAST:event_btnShowPreviewActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -2263,7 +2245,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         }
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnPreview;
+    private javax.swing.JToggleButton btnShowPreview;
     private javax.swing.JComboBox cboVideoOutputs;
     private javax.swing.ButtonGroup grpFramerate;
     private javax.swing.ButtonGroup grpOutputSize;
@@ -2317,7 +2299,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
     private javax.swing.JMenuItem mnuReloadSourceTree;
     private javax.swing.JMenuItem mnuRemoveDir;
     private javax.swing.JMenuItem mnuSetFlashPermissions;
-    private javax.swing.JMenuItem mnuShowPreview;
     private javax.swing.JMenuItem mnuSourceIRC;
     private javax.swing.JMenu mnuSources;
     private javax.swing.JMenuItem mnuSourcesAnimation;
@@ -2343,6 +2324,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
     private javax.swing.JRadioButtonMenuItem mnurdPixelFormatRGB24;
     private javax.swing.JRadioButtonMenuItem mnurdPixelFormatUYVY;
     private javax.swing.JPanel panBrowser;
+    private javax.swing.JPanel panLayouts;
     private javax.swing.JPanel panelStatus;
     private javax.swing.JProgressBar pgCPUUsage;
     // End of variables declaration//GEN-END:variables
