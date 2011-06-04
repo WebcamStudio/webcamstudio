@@ -14,9 +14,9 @@ import javax.swing.JPanel;
  *
  * @author pballeux
  */
-public class TEST extends Effect {
+public class Edge extends Effect {
 
-    private com.jhlabs.image.CrystallizeFilter filter = new com.jhlabs.image.CrystallizeFilter();
+    private com.jhlabs.image.EdgeFilter filter = new com.jhlabs.image.EdgeFilter();
 
     @Override
     public void applyEffect(BufferedImage img) {

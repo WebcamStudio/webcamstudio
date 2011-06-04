@@ -14,13 +14,13 @@ import javax.swing.JPanel;
  *
  * @author pballeux
  */
-public class TEST extends Effect {
+public class Glass extends Effect {
 
-    private com.jhlabs.image.CrystallizeFilter filter = new com.jhlabs.image.CrystallizeFilter();
+    private com.jhlabs.image.MarbleFilter filter = new com.jhlabs.image.MarbleFilter();
 
     @Override
     public void applyEffect(BufferedImage img) {
-        
+
         Graphics2D buffer = img.createGraphics();
         BufferedImage temp = filter.filter(img, null);
         buffer.setBackground(new Color(0, 0, 0, 0));

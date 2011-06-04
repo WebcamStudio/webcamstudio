@@ -42,6 +42,11 @@ public abstract class Effect {
         retValue.put(NoBackground.class.getSimpleName(), new NoBackground());
         retValue.put(RGB.class.getSimpleName(), new RGB());
         retValue.put(ZoomZoom.class.getSimpleName(), new ZoomZoom());
+        retValue.put(MegaMind.class.getSimpleName(), new MegaMind());
+        retValue.put(Glass.class.getSimpleName(), new Glass());
+        retValue.put(Edge.class.getSimpleName(), new Edge());
+        //retValue.put(TEST.class.getSimpleName(), new TEST());
+
         return retValue;
     }
     public BufferedImage cloneImage(BufferedImage src){
