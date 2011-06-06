@@ -867,6 +867,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         mnuSourcesPlayList = new javax.swing.JMenuItem();
         mnuSourcesWidget = new javax.swing.JMenuItem();
         mnuSourcesConsole = new javax.swing.JMenuItem();
+        mnuSourcesQRCode = new javax.swing.JMenuItem();
         mnuOutput = new javax.swing.JMenu();
         mnuVideoRecorder = new javax.swing.JMenuItem();
         mnuOutputSpnashot = new javax.swing.JMenuItem();
@@ -1213,6 +1214,16 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
             }
         });
         mnuSources.add(mnuSourcesConsole);
+
+        mnuSourcesQRCode.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/image-x-generic.png"))); // NOI18N
+        mnuSourcesQRCode.setText(bundle.getString("QRCODE")); // NOI18N
+        mnuSourcesQRCode.setName("mnuSourcesQRCode"); // NOI18N
+        mnuSourcesQRCode.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnuSourcesQRCodeActionPerformed(evt);
+            }
+        });
+        mnuSources.add(mnuSourcesQRCode);
 
         menuBar.add(mnuSources);
 
@@ -2199,6 +2210,12 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         }
     }//GEN-LAST:event_btnShowPreviewActionPerformed
 
+    private void mnuSourcesQRCodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuSourcesQRCodeActionPerformed
+        VideoSourceQRCode source = new VideoSourceQRCode("WebcamStudio");
+        addSourceToDesktop(source);
+
+    }//GEN-LAST:event_mnuSourcesQRCodeActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -2310,6 +2327,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
     private javax.swing.JMenuItem mnuSourcesMovie;
     private javax.swing.JMenuItem mnuSourcesMovieViewer;
     private javax.swing.JMenuItem mnuSourcesPlayList;
+    private javax.swing.JMenuItem mnuSourcesQRCode;
     private javax.swing.JMenuItem mnuSourcesStream;
     private javax.swing.JMenuItem mnuSourcesWidget;
     private javax.swing.JCheckBoxMenuItem mnuSourceschkShowBrowser;
