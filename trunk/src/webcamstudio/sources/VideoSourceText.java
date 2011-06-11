@@ -22,7 +22,7 @@ public class VideoSourceText extends VideoSource {
 
     public VideoSourceText(String txt) {
         frameRate = 1;
-        
+
         name = "Text";
         location = name;
         captureWidth = 320;
@@ -34,59 +34,18 @@ public class VideoSourceText extends VideoSource {
         loadText();
     }
 
-    public void updateFile(java.io.File f) {
-        try {
-            customText = "";
-            location = f.toURI().toURL().toString();
-            loadText();
-            name = f.getName();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+    
+    
 
-    public VideoSourceText(java.io.File loc) {
-        frameRate = 1;
-        try {
-            location = loc.toURI().toURL().toString();
-        } catch (Exception e) {
-            error("Text Error  :" + e.getMessage());
-        }
-        name = loc.getName();
-
-    }
-
-    public VideoSourceText(java.net.URL loc) {
-        frameRate = 1;
-        location = loc.toString();
-        name = location;
-    }
+    
 
     protected void loadText() {
         String data = "";
-        if (location.length() > 0) {
-            lines.clear();
-            try {
-                java.net.URL url = new java.net.URL(location);
-                java.io.DataInput din = new java.io.DataInputStream(url.openStream());
-                data = din.readLine();
-                while (data != null) {
-                    lines.add(data);
-                    newTextLine(data);
-                    data = din.readLine();
-                }
-                din = null;
-                url = null;
-            } catch (Exception e) {
-                error("Text Error  :" + e.getMessage());
-            }
-        } else {
             String[] datas = customText.split("\n");
             lines.clear();
             for (int i = 0; i < datas.length; i++) {
                 lines.add(datas[i]);
             }
-        }
     }
 
     @Override
@@ -133,7 +92,6 @@ public class VideoSourceText extends VideoSource {
                         buffer.fillRect(0, 0, tempimage.getWidth(), tempimage.getHeight());
                         buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC, 1F));
                         //draw Line
-
                         switch (scrollDirection) {
                             case SCROLL_NONE:
                                 interLine = 0;
@@ -412,7 +370,7 @@ public class VideoSourceText extends VideoSource {
             }
             retValue = retValue.replaceAll("#DATE", tmp);
         }
-
+        
         return retValue;
     }
 }
