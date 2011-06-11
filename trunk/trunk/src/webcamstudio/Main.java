@@ -864,7 +864,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         mnuSourcesMovie = new javax.swing.JMenuItem();
         mnuSourcesStream = new javax.swing.JMenuItem();
         mnuSourcesMovieViewer = new javax.swing.JMenuItem();
-        mnuSourcesPlayList = new javax.swing.JMenuItem();
         mnuSourcesWidget = new javax.swing.JMenuItem();
         mnuSourcesConsole = new javax.swing.JMenuItem();
         mnuSourcesQRCode = new javax.swing.JMenuItem();
@@ -1181,17 +1180,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
             }
         });
         mnuSources.add(mnuSourcesMovieViewer);
-
-        mnuSourcesPlayList.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_P, java.awt.event.InputEvent.ALT_MASK));
-        mnuSourcesPlayList.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-start.png"))); // NOI18N
-        mnuSourcesPlayList.setText(bundle.getString("PLAYLIST")); // NOI18N
-        mnuSourcesPlayList.setName("mnuSourcesPlayList"); // NOI18N
-        mnuSourcesPlayList.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuSourcesPlayListActionPerformed(evt);
-            }
-        });
-        mnuSources.add(mnuSourcesPlayList);
 
         mnuSourcesWidget.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_W, java.awt.event.InputEvent.ALT_MASK));
         mnuSourcesWidget.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/image-x-generic.png"))); // NOI18N
@@ -1981,24 +1969,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
 
     }//GEN-LAST:event_mnuOutputSizeActionPerformed
 
-    private void mnuSourcesPlayListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuSourcesPlayListActionPerformed
-        javax.swing.JFileChooser chooser = new javax.swing.JFileChooser(lastFolder);
-        chooser.setToolTipText(java.util.ResourceBundle.getBundle("webcamstudio/Languages").getString("SELECT_YOUR_PLAYLIST_FILE"));
-        chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        javax.swing.filechooser.FileFilter filter = null;
-        filter = new javax.swing.filechooser.FileNameExtensionFilter("PLIST", "plist", "PLIST");
-        chooser.setMultiSelectionEnabled(false);
-        chooser.setFileFilter(filter);
-        if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-            java.io.File f = chooser.getSelectedFile();
-            VideoSourcePlaylist source = null;
-            source = new VideoSourcePlaylist(f, null);
-            lastFolder = f.getParentFile();
-            addSourceToDesktop(source);
-        }
-
-    }//GEN-LAST:event_mnuSourcesPlayListActionPerformed
-
     private void mnuAnimationCreatorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuAnimationCreatorActionPerformed
         AnimationCreator anm = new AnimationCreator(this, false);
         anm.pack();
@@ -2326,7 +2296,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
     private javax.swing.JMenuItem mnuSourcesImage;
     private javax.swing.JMenuItem mnuSourcesMovie;
     private javax.swing.JMenuItem mnuSourcesMovieViewer;
-    private javax.swing.JMenuItem mnuSourcesPlayList;
     private javax.swing.JMenuItem mnuSourcesQRCode;
     private javax.swing.JMenuItem mnuSourcesStream;
     private javax.swing.JMenuItem mnuSourcesWidget;
