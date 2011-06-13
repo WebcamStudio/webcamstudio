@@ -225,6 +225,8 @@ public class LayoutManager2 extends javax.swing.JPanel implements SourceListener
             Layout l = new Layout("New Layout");
             layouts.add(l);
             currentLayout = l;
+            l.enterLayout();
+            oldLayout = l;
         }
         if (currentLayout != null) {
             currentLayout.addSource(s);

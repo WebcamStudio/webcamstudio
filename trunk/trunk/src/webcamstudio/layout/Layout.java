@@ -263,6 +263,13 @@ public class Layout {
         }
         LayoutItem item = new LayoutItem(tempSource,  index);
         items.put(item.getLayer(), item);
+        if (isActive){
+            item.getSource().setLayer(item.getLayer());
+            item.setActive(true);
+            item.setTransitionToDo(item.getTransitionIn());
+            item.run();
+            
+        }
     }
 
     public void applyStudioConfig(java.util.prefs.Preferences prefs, int order) {
