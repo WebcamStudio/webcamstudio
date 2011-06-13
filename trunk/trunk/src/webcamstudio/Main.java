@@ -15,7 +15,6 @@ import webcamstudio.exporter.vloopback.VideoDevice;
 import webcamstudio.exporter.vloopback.V4L2Loopback;
 import java.awt.Component;
 import java.awt.Cursor;
-import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.SplashScreen;
 import java.awt.Toolkit;
@@ -38,7 +37,6 @@ import webcamstudio.sources.*;
 import webcamstudio.components.*;
 import webcamstudio.components.LayoutManager2;
 import webcamstudio.exporter.VideoExporter;
-import webcamstudio.exporter.VideoExporterStream;
 import webcamstudio.exporter.vloopback.V4LLoopback;
 import webcamstudio.exporter.vloopback.VideoOutput;
 import webcamstudio.layout.Layout;
@@ -98,7 +96,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         if (!XMODE) {
             initVideoDevices();
         }
-        layoutManager = new LayoutManager2();
+        
 
 
         mixer = new Mixer();
@@ -110,11 +108,14 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         } else {
             mixer.setBackground(null);
         }
+        layoutManager = new LayoutManager2(mixer);
+        
         if (XMODE) {
             setTitle(java.util.ResourceBundle.getBundle("webcamstudio/Languages").getString("WEBCAMSTUDIO_X") + " " + webcamstudio.Version.version + " (Build: " + new webcamstudio.Version().getBuild() + ")");
         } else {
             setTitle(java.util.ResourceBundle.getBundle("webcamstudio/Languages").getString("WEBCAMSTUDIO_FOR_GNU/LINUX_") + " " + webcamstudio.Version.version + " (Build: " + new webcamstudio.Version().getBuild() + ")");
         }
+
         java.awt.Image img = getToolkit().getImage(java.net.URLClassLoader.getSystemResource("webcamstudio/resources/icon.png"));
 
         setIconImage(img);
@@ -2173,11 +2174,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
     }//GEN-LAST:event_mnuOutputchkActivateStreamActionPerformed
 
     private void btnShowPreviewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShowPreviewActionPerformed
-        if (btnShowPreview.isSelected()){
-            layoutManager.showPreview(mixer);
-        } else {
-            layoutManager.showPreview(null);
-        }
+        layoutManager.showPreview(btnShowPreview.isSelected());
     }//GEN-LAST:event_btnShowPreviewActionPerformed
 
     private void mnuSourcesQRCodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuSourcesQRCodeActionPerformed

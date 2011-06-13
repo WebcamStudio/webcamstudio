@@ -66,10 +66,12 @@ public class LayoutManager2 extends javax.swing.JPanel implements SourceListener
     private DefaultListModel modelLayouts = new DefaultListModel();
     private DefaultListModel modelLayoutItems = new DefaultListModel();
     private Viewer viewer = new Viewer();
+    private Mixer mixer;
 
     /** Creates new form LayoutManager2 */
-    public LayoutManager2() {
+    public LayoutManager2(Mixer mix) {
         initComponents();
+        this.mixer = mix;
         iconMovie = new ImageIcon(getToolkit().getImage(java.net.URLClassLoader.getSystemResource("webcamstudio/resources/tango/video-display.png")));
         iconImage = new ImageIcon(getToolkit().getImage(java.net.URLClassLoader.getSystemResource("webcamstudio/resources/tango/image-x-generic.png")));
         iconDevice = new ImageIcon(getToolkit().getImage(java.net.URLClassLoader.getSystemResource("webcamstudio/resources/tango/camera-video.png")));
@@ -144,9 +146,11 @@ public class LayoutManager2 extends javax.swing.JPanel implements SourceListener
             @Override
             public void run() {
                 while (!stopMe) {
-                    lstLayoutItems.repaint();
-                    lstLayouts.repaint();
+                    repaint();
                     try {
+                        if (viewer.isVisible()) {
+                            viewer.img = mixer.getImage();
+                        }
                         Thread.sleep(200);
                     } catch (InterruptedException ex) {
                         Logger.getLogger(LayoutManager2.class.getName()).log(Level.SEVERE, null, ex);
@@ -157,33 +161,11 @@ public class LayoutManager2 extends javax.swing.JPanel implements SourceListener
 
     }
 
-    public void showPreview(final Mixer mixer) {
-        if (mixer != null) {
-            new Thread(new Runnable() {
-
-                @Override
-                public void run() {
-                    viewer.setVisible(true);
-                    panPreview.setVisible(true);
-                    panPreview.setPreferredSize(new Dimension(320,240));
-                    panPreview.revalidate();
-                    while (viewer.isVisible()) {
-                        try {
-                            viewer.img = mixer.getImage();
-                            panPreview.repaint();
-                            Thread.sleep(100);
-                        } catch (InterruptedException ex) {
-                            Logger.getLogger(LayoutManager2.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    }
-
-                }
-            }).start();
-
-        } else {
-            viewer.setVisible(false);
-            panPreview.setVisible(false);
-        }
+    public void showPreview(boolean visible) {
+        viewer.setVisible(visible);
+        panPreview.setVisible(visible);
+        panPreview.setPreferredSize(new Dimension(320, 240));
+        panPreview.revalidate();
     }
 
     private void updateLayoutsList() {
