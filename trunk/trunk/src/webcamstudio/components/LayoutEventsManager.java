@@ -44,16 +44,21 @@ public class LayoutEventsManager {
             }
             if (currentLayout != null) {
                 if (currentLayout.getDuration() > 0) {
-                    if (currentLayout.timeStamp == 0){
+                    if (currentLayout.timeStamp == 0) {
                         currentLayout.timeStamp = (currentLayout.getDuration() * 1000) + System.currentTimeMillis();
-                    }
-                    if (currentLayout.timeStamp <= System.currentTimeMillis()) {
-                        currentLayout.exitLayout();
-                        currentLayout.timeStamp=0;
+                    } else if (currentLayout.timeStamp <= System.currentTimeMillis()) {
+                        currentLayout.timeStamp = 0;
                         for (Layout l : layouts) {
                             if (l.toString().equals(currentLayout.getNextLayout())) {
                                 currentLayout = l;
                                 currentLayout.enterLayout();
+                                while (!currentLayout.isActive()) {
+                                    try {
+                                        Thread.sleep(100);
+                                    } catch (InterruptedException ex) {
+                                        Logger.getLogger(LayoutEventsManager.class.getName()).log(Level.SEVERE, null, ex);
+                                    }
+                                }
                                 break;
                             }
                         }
