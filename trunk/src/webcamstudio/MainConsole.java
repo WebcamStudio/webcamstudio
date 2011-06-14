@@ -262,9 +262,6 @@ public class MainConsole extends javax.swing.JFrame implements InfoListener {
 
             @Override
             public void run() {
-                if (currentLayout != null) {
-                    currentLayout.exitLayout();
-                }
                 currentLayout = (Layout) cboLayouts.getSelectedItem();
                 currentLayout.enterLayout();
                 cboLayouts.setEnabled(true);

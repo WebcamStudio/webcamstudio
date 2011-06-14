@@ -31,6 +31,7 @@ public class Layout {
     private boolean isEntering = false;
     private boolean isExiting = false;
     private static Layout activeLayout = null;
+    public static Layout previousActiveLayout = null;
     private String inputSource ="";
     private String inputSourceApp = "";
     private int duration = 0;
@@ -114,6 +115,11 @@ public class Layout {
     public void enterLayout() {
         isEntering = true;
         activeLayout=this;
+        if (previousActiveLayout != null){
+            previousActiveLayout.exitLayout();
+            
+        }
+        previousActiveLayout = activeLayout;
         if (inputSourceApp.length()>0){
             PulseAudioManager p = new PulseAudioManager();
             p.setSoundInput(inputSourceApp, inputSource);
@@ -140,8 +146,9 @@ public class Layout {
         isActive = true;
     }
 
-    public void exitLayout() {
+    private void exitLayout() {
         isExiting = true;
+        isActive = false;
         java.util.concurrent.ExecutorService tp = java.util.concurrent.Executors.newCachedThreadPool();
         for (LayoutItem item : items.values()) {
             item.setTransitionToDo(item.getTransitionOut());
@@ -157,7 +164,7 @@ public class Layout {
             Logger.getLogger(Layout.class.getName()).log(Level.SEVERE, null, ex);
         }
         isExiting = false;
-        isActive = false;
+        
     }
     public Collection<LayoutItem> getItems() {
         java.util.Vector<LayoutItem> retValues = new java.util.Vector<LayoutItem>();

@@ -53,7 +53,6 @@ public class LayoutManager2 extends javax.swing.JPanel implements SourceListener
 
     private java.util.Vector<Layout> layouts = new java.util.Vector<Layout>();
     private Layout currentLayout = null;
-    private Layout oldLayout = null;
     private LayoutItem currentLayoutItem = null;
     private ImageIcon iconMovie = null;
     private ImageIcon iconImage = null;
@@ -226,7 +225,6 @@ public class LayoutManager2 extends javax.swing.JPanel implements SourceListener
             layouts.add(l);
             currentLayout = l;
             l.enterLayout();
-            oldLayout = l;
         }
         if (currentLayout != null) {
             currentLayout.addSource(s);
@@ -468,11 +466,7 @@ public class LayoutManager2 extends javax.swing.JPanel implements SourceListener
             @Override
             public void run() {
                 if (currentLayout != null) {
-                    if (oldLayout != null) {
-                        oldLayout.exitLayout();
-                    }
                     currentLayout.enterLayout();
-                    oldLayout = currentLayout;
                 }
             }
         }).start();
