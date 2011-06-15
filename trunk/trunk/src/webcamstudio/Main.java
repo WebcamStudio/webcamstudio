@@ -465,7 +465,8 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
                 || f.getName().endsWith(".m4v")
                 || f.getName().endsWith(".mp4")
                 || f.getName().endsWith(".vob")
-                || f.getName().endsWith(".mpeg")) {
+                || f.getName().endsWith(".mpeg")
+                || f.getName().endsWith(".webm")) {
             retValue = true;
         }
         return retValue;

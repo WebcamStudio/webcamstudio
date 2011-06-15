@@ -177,6 +177,7 @@
                         <StringItem index="4" value="Item 5"/>
                       </StringArray>
                     </Property>
+                    <Property name="doubleBuffered" type="boolean" value="true"/>
                     <Property name="name" type="java.lang.String" value="lstLayoutItems" noResource="true"/>
                   </Properties>
                   <Events>
@@ -232,6 +233,7 @@
                         <StringItem index="4" value="Item 5"/>
                       </StringArray>
                     </Property>
+                    <Property name="doubleBuffered" type="boolean" value="true"/>
                     <Property name="name" type="java.lang.String" value="lstLayouts" noResource="true"/>
                   </Properties>
                   <Events>

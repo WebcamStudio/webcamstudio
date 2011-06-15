@@ -6,8 +6,13 @@ package webcamstudio.components;
 
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import webcamstudio.sources.*;
 import java.awt.image.*;
+import java.util.Timer;
+import java.util.TimerTask;
 import webcamstudio.exporter.VideoExporterStream;
 import webcamstudio.exporter.vloopback.VideoOutput;
 import webcamstudio.layout.Layout;
@@ -17,22 +22,24 @@ import webcamstudio.layout.LayoutItem;
  *
  * @author pballeux
  */
-public class Mixer implements java.lang.Runnable {
+public class Mixer  {
 
-    protected int frameRate = 15;
+    protected int frameRate = 20;
     protected int outputWidth = 320;
     protected int outputHeight = 240;
     protected java.awt.image.BufferedImage image = new BufferedImage(outputWidth, outputHeight, BufferedImage.TRANSLUCENT);
-    private BufferedImage outputImage = new BufferedImage(outputWidth, outputHeight, BufferedImage.TRANSLUCENT);
-    private boolean isDrawing = false;
+    protected BufferedImage outputImage = new BufferedImage(outputWidth, outputHeight, BufferedImage.TRANSLUCENT);
+    protected boolean isDrawing = false;
     protected boolean lightMode = false;
     private boolean stopMe = false;
-    private java.awt.image.BufferedImage paintImage = null;
-    private VideoOutput outputDevice = null;
-    private Image background = Toolkit.getDefaultToolkit().createImage(getClass().getResource("/webcamstudio/resources/splash.jpg"));
-    private boolean activateOutputStream = false;
-    private VideoExporterStream outputStream = null;
-    private int outputStreamPort = 4888;
+    protected java.awt.image.BufferedImage paintImage = null;
+    protected VideoOutput outputDevice = null;
+    protected Image background = Toolkit.getDefaultToolkit().createImage(getClass().getResource("/webcamstudio/resources/splash.jpg"));
+    protected boolean activateOutputStream = false;
+    protected VideoExporterStream outputStream = null;
+    protected int outputStreamPort = 4888;
+    protected Timer timer = null;
+
     public enum MixerQuality {
 
         HIGH,
@@ -47,7 +54,8 @@ public class Mixer implements java.lang.Runnable {
     private MixerQuality quality = MixerQuality.NORMAL;
 
     public Mixer() {
-        new Thread(this).start();
+        timer = new Timer(true);
+        timer.schedule(new imageMixer(this), 0, 1000/frameRate);
     }
 
     public void setSize(int w, int h) {
@@ -57,6 +65,9 @@ public class Mixer implements java.lang.Runnable {
 
     public void setFramerate(int fps) {
         frameRate = fps;
+        timer.cancel();
+        timer = new Timer(true);
+        timer.schedule(new imageMixer(this), 0, 1000/frameRate);
     }
 
     public int getFramerate() {
@@ -75,7 +86,7 @@ public class Mixer implements java.lang.Runnable {
         quality = q;
     }
 
-    private void drawImage() {
+    protected void drawImage() {
         isDrawing = true;
         if (image == null || (outputWidth != image.getWidth())) {
             image = new BufferedImage(outputWidth, outputHeight, BufferedImage.TRANSLUCENT);
@@ -158,41 +169,50 @@ public class Mixer implements java.lang.Runnable {
         outputDevice = o;
     }
 
-
-    public VideoOutput getDevice(){
+    public VideoOutput getDevice() {
         return outputDevice;
     }
-    public int getWidth(){
+
+    public int getWidth() {
         return outputWidth;
     }
-    public int getHeight(){
+
+    public int getHeight() {
         return outputHeight;
     }
-    public void activateStream(boolean activate,int port){
-        outputStreamPort=port;
+
+    public void activateStream(boolean activate, int port) {
+        outputStreamPort = port;
         activateOutputStream = true;
     }
-    public void stopStream(){
+
+    public void stopStream() {
         activateOutputStream = false;
     }
+
+    
+}
+class imageMixer extends TimerTask{
+    private Mixer mixer = null;
+    public imageMixer(Mixer m){
+        mixer=m;
+    }
+
     @Override
     public void run() {
-        while (!stopMe) {
+        mixer.drawImage();
+        if (mixer.activateOutputStream && mixer.outputStream == null) {
+            mixer.outputStream = new VideoExporterStream(mixer.outputStreamPort, mixer);
             try {
-                drawImage();
-                if (activateOutputStream && outputStream == null){
-                    outputStream = new VideoExporterStream(outputStreamPort, this);
-                    outputStream.listen();
-                } else if (!activateOutputStream && outputStream != null){
-                    outputStream.stop();
-                }
-                if (outputDevice != null) {
-                    outputDevice.write(outputImage);
-                }
-                Thread.sleep(1000 / frameRate);
-            } catch (Exception e) {
-                e.printStackTrace();
+                mixer.outputStream.listen();
+            } catch (IOException ex) {
+                Logger.getLogger(Mixer.class.getName()).log(Level.SEVERE, null, ex);
             }
+        } else if (!mixer.activateOutputStream && mixer.outputStream != null) {
+            mixer.outputStream.stop();
+        }
+        if (mixer.outputDevice != null) {
+            mixer.outputDevice.write(mixer.outputImage);
         }
     }
 }

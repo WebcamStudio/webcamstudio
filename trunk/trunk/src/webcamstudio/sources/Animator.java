@@ -20,24 +20,15 @@
 package webcamstudio.sources;
 
 import java.awt.Image;
+import java.util.TimerTask;
 import webcamstudio.*;
 import java.util.jar.*;
 
-public class Animator implements Runnable {
+public class Animator  {
 
     public Animator(InfoListener list) {
         listener = list;
-        new Thread(this).start();
-    }
 
-    public void play() {
-        if (stopped) {
-            new Thread(this).start();
-        }
-    }
-
-    public void stopMe() {
-        stopMe = true;
     }
 
     public void setLoop(int nb) {
@@ -63,81 +54,78 @@ public class Animator implements Runnable {
 
     public void loadAnimation(final java.io.File animationFile) {
 
-        new Thread(new Runnable() {
-
-            public void run() {
-                try {
-                    java.util.jar.JarFile jarFile = new java.util.jar.JarFile(animationFile);
-                    java.awt.image.BufferedImage tempimage = null;
-                    java.awt.image.BufferedImage img = null;
-                    java.util.Enumeration<java.util.jar.JarEntry> list = jarFile.entries();
-                    String nameList = "";
-                    while (list.hasMoreElements()) {
-                        JarEntry entry = list.nextElement();
-                        if (entry.getName().toLowerCase().endsWith(".png")) {
-                            tempimage = javax.imageio.ImageIO.read(jarFile.getInputStream(jarFile.getEntry(entry.getName())));
-                            img = java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().createCompatibleImage(tempimage.getWidth(), tempimage.getHeight(), java.awt.image.BufferedImage.TRANSLUCENT);
-                            width = img.getWidth();
-                            height = img.getHeight();
-                            java.awt.Graphics2D g = img.createGraphics();
-                            g.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC, 1));
-                            g.setClip(0, 0, tempimage.getWidth(), tempimage.getHeight());
-                            g.drawImage(tempimage, 0, 0, null);
-                            //Store this image to be found by their name...  To support playlist...
-                            nameList += entry.getName().toLowerCase().trim() + ",";
-                            mapSprites.put(entry.getName().toLowerCase().trim(), img);
-                            g.dispose();
-                        }
-                    }
-                    playlist.add(nameList);
-                    String speed = jarFile.getManifest().getMainAttributes().getValue("Speed");
-                    timelapse = new Integer(speed);
-                    creator = jarFile.getManifest().getMainAttributes().getValue("Created-By");
-                    comment = jarFile.getManifest().getMainAttributes().getValue("Comment");
-                    if (jarFile.getManifest().getMainAttributes().getValue("UseAudio") != null) {
-                        useAudioLevel = jarFile.getManifest().getMainAttributes().getValue("UseAudio").toString().equals("TRUE");
-                    }
-
-                    if (jarFile.getManifest().getMainAttributes().containsKey(new java.util.jar.Attributes.Name("Loop"))) {
-                        loadedNbLoop = new Integer(jarFile.getManifest().getMainAttributes().getValue("Loop"));
-                    } else {
-                        loadedNbLoop = -1;
-                    }
-                    //Loading custom playlist...
-                    int index = 1;
-                    while (jarFile.getManifest().getMainAttributes().containsKey(new java.util.jar.Attributes.Name("Playlist" + index))) {
-                        playlist.add(jarFile.getManifest().getMainAttributes().getValue("Playlist" + index));
-                        index++;
-                    }
-                    if (playlist.size() > 1) {
-                        playRandom = true;
-                    }
-                    if (listener != null) {
-                        listener.info("Animation " + animationFile.getName() + " loaded.  Created by " + creator + " (" + comment + ")");
-                    }
-                    jarFile.close();
-                    ready = true;
-                } catch (Exception e) {
-                    if (listener != null) {
-                        listener.info("Animation " + animationFile.getName() + " Error:  " + e.getMessage());
-                    }
-                    stopMe = true;
+        try {
+            java.util.jar.JarFile jarFile = new java.util.jar.JarFile(animationFile);
+            java.awt.image.BufferedImage tempimage = null;
+            java.awt.image.BufferedImage img = null;
+            java.util.Enumeration<java.util.jar.JarEntry> list = jarFile.entries();
+            String nameList = "";
+            while (list.hasMoreElements()) {
+                JarEntry entry = list.nextElement();
+                if (entry.getName().toLowerCase().endsWith(".png")) {
+                    tempimage = javax.imageio.ImageIO.read(jarFile.getInputStream(jarFile.getEntry(entry.getName())));
+                    img = java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().createCompatibleImage(tempimage.getWidth(), tempimage.getHeight(), java.awt.image.BufferedImage.TRANSLUCENT);
+                    width = img.getWidth();
+                    height = img.getHeight();
+                    java.awt.Graphics2D g = img.createGraphics();
+                    g.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC, 1));
+                    g.setClip(0, 0, tempimage.getWidth(), tempimage.getHeight());
+                    g.drawImage(tempimage, 0, 0, null);
+                    //Store this image to be found by their name...  To support playlist...
+                    nameList += entry.getName().toLowerCase().trim() + ",";
+                    mapSprites.put(entry.getName().toLowerCase().trim(), img);
+                    g.dispose();
                 }
             }
-        }).start();
+            playlist.add(nameList);
+            String speed = jarFile.getManifest().getMainAttributes().getValue("Speed");
+            timelapse = new Integer(speed);
+            creator = jarFile.getManifest().getMainAttributes().getValue("Created-By");
+            comment = jarFile.getManifest().getMainAttributes().getValue("Comment");
+            if (jarFile.getManifest().getMainAttributes().getValue("UseAudio") != null) {
+                useAudioLevel = jarFile.getManifest().getMainAttributes().getValue("UseAudio").toString().equals("TRUE");
+            }
+
+            if (jarFile.getManifest().getMainAttributes().containsKey(new java.util.jar.Attributes.Name("Loop"))) {
+                loadedNbLoop = new Integer(jarFile.getManifest().getMainAttributes().getValue("Loop"));
+            } else {
+                loadedNbLoop = -1;
+            }
+            //Loading custom playlist...
+            int index = 1;
+            while (jarFile.getManifest().getMainAttributes().containsKey(new java.util.jar.Attributes.Name("Playlist" + index))) {
+                playlist.add(jarFile.getManifest().getMainAttributes().getValue("Playlist" + index));
+                index++;
+            }
+            if (playlist.size() > 1) {
+                playRandom = true;
+            }
+            if (listener != null) {
+                listener.info("Animation " + animationFile.getName() + " loaded.  Created by " + creator + " (" + comment + ")");
+            }
+            jarFile.close();
+            ready = true;
+        } catch (Exception e) {
+            if (listener != null) {
+                listener.info("Animation " + animationFile.getName() + " Error:  " + e.getMessage());
+            }
+            stopMe = true;
+        }
     }
 
-    public void run() {
+   
+    public boolean isStopped() {
+        return stopped;
+    }
+
+    public java.awt.image.BufferedImage getCurrentImage() {
         String itemName = "";
-        String[] list = null;
-        stopMe = false;
-        stopped = false;
-        nbLoop = -1;
-        while (!stopMe) {
-            if (playlist.size() > 0 && ready) {
-                if (nbLoop == -1 && loadedNbLoop != -1) {
-                    nbLoop = loadedNbLoop;
-                }
+        if (playlist.size() > 0 && ready) {
+
+            //Play the chosen list...
+            currentIndex++;
+            if (list == null || currentIndex >= list.length) {
+                currentIndex = 0;
                 if (playRandom) {
                     // When random mode, do not play the first playlist as it will have everything in it...
                     if (useAudioLevel) {
@@ -150,42 +138,16 @@ public class Animator implements Runnable {
                 } else {
                     list = playlist.get(0).split(",");
                 }
-                //Play the chosen list...
-                for (int i = 0; i < list.length && !stopMe; i++) {
-                    itemName = list[i].trim();
-                    try {
-                        if (itemName.length() > 0) {
-                            if (itemName.endsWith(".png")) {
-                                currentImage = mapSprites.get(list[i].toLowerCase().trim());
-                                if (currentImage == null) {
-                                    System.out.println("Image is null: " + list[i].trim());
-                                }
-                                
-                            }
-                        }
-                        //To prevent freezing with a bad animation file...
-                        if (timelapse>0){
-                        Thread.sleep(timelapse);
-                        } else{
-                            Thread.sleep(100);
-                        }
-                    } catch (Exception e) {
-                    }
+            }
+            itemName = list[currentIndex].trim();
+            if (itemName.toLowerCase().endsWith(".png")) {
+                currentImage = mapSprites.get(itemName);
+                if (currentImage == null) {
+                    System.out.println("Image is null: " + itemName);
                 }
-                if (nbLoop != -1 && --nbLoop == 0) {
-                    stopMe = true;
-                }
+
             }
         }
-        currentImage = null;
-        stopped = true;
-    }
-
-    public boolean isStopped() {
-        return stopped;
-    }
-
-    public java.awt.image.BufferedImage getCurrentImage() {
         return currentImage;
     }
 
@@ -228,4 +190,6 @@ public class Animator implements Runnable {
     private int height = 240;
     private int audioLevel = 0;
     private boolean useAudioLevel = false;
+    private int currentIndex = 0;
+    private String[] list = null;
 }

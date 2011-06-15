@@ -19,8 +19,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.util.Collection;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Timer;
+import java.util.TimerTask;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
@@ -64,8 +64,9 @@ public class LayoutManager2 extends javax.swing.JPanel implements SourceListener
     private LayoutEventsManager eventsManager = null;
     private DefaultListModel modelLayouts = new DefaultListModel();
     private DefaultListModel modelLayoutItems = new DefaultListModel();
-    private Viewer viewer = new Viewer();
-    private Mixer mixer;
+    protected Viewer viewer = new Viewer();
+    protected Mixer mixer;
+    private Timer timer = null;
 
     /** Creates new form LayoutManager2 */
     public LayoutManager2(Mixer mix) {
@@ -139,25 +140,10 @@ public class LayoutManager2 extends javax.swing.JPanel implements SourceListener
             }
         };
         lstLayoutItems.setCellRenderer(rendererLayoutItem);
-
-        new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-                while (!stopMe) {
-                    repaint();
-                    try {
-                        if (viewer.isVisible()) {
-                            viewer.img = mixer.getImage();
-                        }
-                        Thread.sleep(200);
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(LayoutManager2.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-            }
-        }).start();
-
+        timer = new Timer(true);
+        timer.scheduleAtFixedRate(new imageUpdater(this), 0, 200);
+        
+        
     }
 
     public void showPreview(boolean visible) {
@@ -179,6 +165,7 @@ public class LayoutManager2 extends javax.swing.JPanel implements SourceListener
 
     public void quitting() {
         eventsManager.stop();
+        timer.cancel();
         stopMe = true;
     }
 
@@ -335,6 +322,7 @@ public class LayoutManager2 extends javax.swing.JPanel implements SourceListener
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
+        lstLayoutItems.setDoubleBuffered(true);
         lstLayoutItems.setName("lstLayoutItems"); // NOI18N
         lstLayoutItems.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -358,6 +346,7 @@ public class LayoutManager2 extends javax.swing.JPanel implements SourceListener
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
+        lstLayouts.setDoubleBuffered(true);
         lstLayouts.setName("lstLayouts"); // NOI18N
         lstLayouts.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -592,5 +581,19 @@ public class LayoutManager2 extends javax.swing.JPanel implements SourceListener
         }
 
 
+    }
+}
+class imageUpdater extends TimerTask {
+
+    private LayoutManager2 layoutManager = null;
+    public imageUpdater(LayoutManager2 l){
+        layoutManager = l;
+    }
+    @Override
+    public void run() {
+        layoutManager.repaint();
+        if (layoutManager.viewer.isVisible()){
+            layoutManager.viewer.img = layoutManager.mixer.getImage();
+        }
     }
 }
