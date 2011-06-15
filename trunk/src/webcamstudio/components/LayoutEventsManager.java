@@ -5,71 +5,57 @@
 package webcamstudio.components;
 
 import java.util.Collection;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Timer;
+import java.util.TimerTask;
 import webcamstudio.layout.Layout;
 
 /**
  *
  * @author patrick
  */
-public class LayoutEventsManager {
+public class LayoutEventsManager extends TimerTask {
 
     private Collection<Layout> layouts = null;
     private boolean stopMe = false;
+    private Timer timer = null;
 
     public LayoutEventsManager(Collection<Layout> ls) {
         layouts = ls;
-        new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-                monitor();
-            }
-        }).start();
+        timer = new Timer(true);
+        timer.scheduleAtFixedRate(this, 0, 1000);
     }
 
     public void stop() {
-        stopMe = true;
+        timer.cancel();
+        timer=null;
     }
 
-    private void monitor() {
+
+    @Override
+    public void run() {
         Layout currentLayout = null;
-        while (!stopMe) {
-            for (Layout l : layouts) {
-                if (l.isActive()) {
-                    currentLayout = l;
-                    break;
-                }
+        for (Layout l : layouts) {
+            if (l.isActive()) {
+                currentLayout = l;
+                break;
             }
-            if (currentLayout != null) {
-                if (currentLayout.getDuration() > 0) {
-                    if (currentLayout.timeStamp == 0) {
-                        currentLayout.timeStamp = (currentLayout.getDuration() * 1000) + System.currentTimeMillis();
-                    } else if (currentLayout.timeStamp <= System.currentTimeMillis()) {
-                        currentLayout.timeStamp = 0;
-                        for (Layout l : layouts) {
-                            if (l.toString().equals(currentLayout.getNextLayout())) {
-                                currentLayout = l;
-                                currentLayout.enterLayout();
-                                while (!currentLayout.isActive()) {
-                                    try {
-                                        Thread.sleep(100);
-                                    } catch (InterruptedException ex) {
-                                        Logger.getLogger(LayoutEventsManager.class.getName()).log(Level.SEVERE, null, ex);
-                                    }
-                                }
-                                break;
-                            }
+        }
+        if (currentLayout != null) {
+            if (currentLayout.getDuration() > 0) {
+                if (currentLayout.timeStamp == 0) {
+                    currentLayout.timeStamp = (currentLayout.getDuration() * 1000) + System.currentTimeMillis();
+                } else if (currentLayout.timeStamp <= System.currentTimeMillis()) {
+                    currentLayout.timeStamp = 0;
+                    for (Layout l : layouts) {
+                        if (l.toString().equals(currentLayout.getNextLayout())) {
+                            currentLayout = l;
+                            currentLayout.enterLayout();
+                            break;
                         }
                     }
                 }
             }
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(LayoutEventsManager.class.getName()).log(Level.SEVERE, null, ex);
-            }
         }
+
     }
 }
