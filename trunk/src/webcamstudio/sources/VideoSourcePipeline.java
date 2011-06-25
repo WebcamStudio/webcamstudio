@@ -19,6 +19,8 @@
  */
 package webcamstudio.sources;
 
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -34,28 +36,32 @@ import org.gstreamer.*;
 public class VideoSourcePipeline extends VideoSource implements org.gstreamer.elements.RGBDataSink.Listener {
 
     private String gstPipeline = "videotestsrc ! video/x-raw-rgb,width=320,height=240 ! ffmpegcolorspace name=tosink";
+    private String iconFile = null;
 
     public VideoSourcePipeline(File pluginFile) {
 
         location = pluginFile.getAbsolutePath();
-        name = pluginFile.getName();
+        getPipeline();
         frameRate = 15;
         outputWidth = 320;
         outputHeight = 240;
     }
+
     public VideoSourcePipeline() {
         frameRate = 15;
         outputWidth = 320;
         outputHeight = 240;
     }
 
-    private String getPipeline(){
+    private String getPipeline() {
         String retValue = "";
         File pluginFile = new File(location);
         if (pluginFile.exists()) {
             try {
                 java.util.Properties plugin = new java.util.Properties();
                 plugin.load(pluginFile.toURI().toURL().openStream());
+                name = plugin.getProperty("name", name);
+                iconFile = plugin.getProperty("icon", null);
                 retValue = plugin.getProperty("pipeline");
                 hasSound = false;
             } catch (IOException ex) {
@@ -64,6 +70,7 @@ public class VideoSourcePipeline extends VideoSource implements org.gstreamer.el
         }
         return retValue;
     }
+
     public void setName(String n) {
         name = n;
     }
@@ -215,7 +222,11 @@ public class VideoSourcePipeline extends VideoSource implements org.gstreamer.el
     public javax.swing.ImageIcon getThumbnail() {
         ImageIcon icon = super.getCachedThumbnail();
         if (icon == null) {
-            icon = super.getThumbnail();
+            if (iconFile == null) {
+                icon = super.getThumbnail();
+            } else {
+                icon = new ImageIcon(Toolkit.getDefaultToolkit().createImage(iconFile).getScaledInstance(32, 32, Image.SCALE_FAST));
+            }
             try {
                 saveThumbnail(icon);
             } catch (IOException ex) {
