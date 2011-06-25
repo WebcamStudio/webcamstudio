@@ -25,7 +25,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
-import webcamstudio.*;
 import org.gstreamer.*;
 
 /**
@@ -147,7 +146,11 @@ public class VideoSourcePipeline extends VideoSource implements org.gstreamer.el
         if (!isRendering) {
             isRendering = true;
             tempimage = graphicConfiguration.createCompatibleImage(captureWidth, captureHeight, java.awt.image.BufferedImage.TRANSLUCENT);
-            tempimage.setRGB(0, 0, captureWidth, captureHeight, buffer.array(), 0, captureWidth);
+            int[] array = buffer.array();
+            for (int i = 0; i < array.length; i++) {
+                array[i] = array[i] | 0xFF000000;
+            }
+            tempimage.setRGB(0, 0, captureWidth, captureHeight, array, 0, captureWidth);
             detectActivity(tempimage);
             applyEffects(tempimage);
             applyShape(tempimage);
