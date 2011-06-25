@@ -582,6 +582,11 @@ public class LayoutManager2 extends javax.swing.JPanel implements SourceListener
 
 
     }
+    protected void update(){
+        panPreview.repaint();
+        lstLayoutItems.repaint();
+        lstLayouts.repaint();
+    }
 }
 class imageUpdater extends TimerTask {
 
@@ -591,9 +596,9 @@ class imageUpdater extends TimerTask {
     }
     @Override
     public void run() {
-        layoutManager.repaint();
         if (layoutManager.viewer.isVisible()){
             layoutManager.viewer.img = layoutManager.mixer.getImage();
         }
+        layoutManager.update();
     }
 }

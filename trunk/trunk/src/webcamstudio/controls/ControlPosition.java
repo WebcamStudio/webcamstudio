@@ -127,6 +127,9 @@ public class ControlPosition extends javax.swing.JPanel implements Controls {
             slideSeek.setVisible(false);
         }
 
+        chkKeepRatio.setSelected(layout.isKeepingRatio());
+        spinHeight.setEnabled(!layout.isKeepingRatio());
+
 
     }
 
@@ -166,6 +169,7 @@ public class ControlPosition extends javax.swing.JPanel implements Controls {
         btnRemove = new javax.swing.JButton();
         jLabel7 = new javax.swing.JLabel();
         spinVolume = new javax.swing.JSpinner();
+        chkKeepRatio = new javax.swing.JCheckBox();
 
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("webcamstudio/Languages"); // NOI18N
         lblSeek.setText(bundle.getString("SEEK")); // NOI18N
@@ -310,6 +314,14 @@ public class ControlPosition extends javax.swing.JPanel implements Controls {
             }
         });
 
+        chkKeepRatio.setText(bundle.getString("KEEP_RATIO")); // NOI18N
+        chkKeepRatio.setName("chkKeepRatio"); // NOI18N
+        chkKeepRatio.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chkKeepRatioActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -337,23 +349,26 @@ public class ControlPosition extends javax.swing.JPanel implements Controls {
                                         .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING))
-                                    .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 116, Short.MAX_VALUE)
-                                    .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, 116, Short.MAX_VALUE)
-                                    .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, 116, Short.MAX_VALUE))
+                                    .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 99, Short.MAX_VALUE)
+                                    .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, 99, Short.MAX_VALUE)
+                                    .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, 99, Short.MAX_VALUE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
                             .addComponent(lblSeek)
                             .addComponent(jLabel7))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(spinVolume, javax.swing.GroupLayout.DEFAULT_SIZE, 290, Short.MAX_VALUE)
-                            .addComponent(spinWidth, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 290, Short.MAX_VALUE)
-                            .addComponent(spinY, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 290, Short.MAX_VALUE)
-                            .addComponent(spinX, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 290, Short.MAX_VALUE)
-                            .addComponent(cboTransOut, javax.swing.GroupLayout.Alignment.LEADING, 0, 290, Short.MAX_VALUE)
-                            .addComponent(cboTransIn, javax.swing.GroupLayout.Alignment.LEADING, 0, 290, Short.MAX_VALUE)
-                            .addComponent(spinHeight, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 290, Short.MAX_VALUE)
+                            .addComponent(spinVolume, javax.swing.GroupLayout.DEFAULT_SIZE, 307, Short.MAX_VALUE)
+                            .addComponent(spinWidth, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 307, Short.MAX_VALUE)
+                            .addComponent(spinY, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 307, Short.MAX_VALUE)
+                            .addComponent(spinX, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 307, Short.MAX_VALUE)
+                            .addComponent(cboTransOut, javax.swing.GroupLayout.Alignment.LEADING, 0, 307, Short.MAX_VALUE)
+                            .addComponent(cboTransIn, javax.swing.GroupLayout.Alignment.LEADING, 0, 307, Short.MAX_VALUE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addComponent(chkKeepRatio)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(spinHeight, javax.swing.GroupLayout.DEFAULT_SIZE, 204, Short.MAX_VALUE))
                             .addGroup(layout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(slideSeek, javax.swing.GroupLayout.DEFAULT_SIZE, 290, Short.MAX_VALUE)))))
+                                .addComponent(slideSeek, javax.swing.GroupLayout.DEFAULT_SIZE, 307, Short.MAX_VALUE)))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -381,7 +396,8 @@ public class ControlPosition extends javax.swing.JPanel implements Controls {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
-                    .addComponent(spinHeight, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(spinHeight, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(chkKeepRatio))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(spinVolume, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -438,6 +454,11 @@ public class ControlPosition extends javax.swing.JPanel implements Controls {
 
     private void spinWidthStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinWidthStateChanged
         layout.setWidth((Integer) spinWidth.getValue());
+        if (layout.isKeepingRatio()){
+            int w = layout.getWidth();
+            int h = w * layout.getSource().getCaptureHeight() / layout.getSource().getCaptureWidth();
+            spinHeight.setValue(new Integer(h));
+        }
         if (listener!=null){
             listener.sourceUpdate(layout.getSource());
         }
@@ -515,6 +536,15 @@ public class ControlPosition extends javax.swing.JPanel implements Controls {
         layout.setVolume((Integer)spinVolume.getValue());
     }//GEN-LAST:event_spinVolumeStateChanged
 
+    private void chkKeepRatioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkKeepRatioActionPerformed
+        if (chkKeepRatio.isSelected()){
+            spinHeight.setEnabled(false);
+        } else {
+            spinHeight.setEnabled(true);
+        }
+        layout.setKeepRatio(chkKeepRatio.isSelected());
+    }//GEN-LAST:event_chkKeepRatioActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnMoveDown;
     private javax.swing.JButton btnMoveUp;
@@ -524,6 +554,7 @@ public class ControlPosition extends javax.swing.JPanel implements Controls {
     private javax.swing.JButton btnStop;
     private javax.swing.JComboBox cboTransIn;
     private javax.swing.JComboBox cboTransOut;
+    private javax.swing.JCheckBox chkKeepRatio;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

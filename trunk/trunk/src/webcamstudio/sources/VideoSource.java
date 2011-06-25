@@ -31,11 +31,14 @@ import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
+import org.gstreamer.elements.AppSink;
 import webcamstudio.*;
 import webcamstudio.sources.effects.Effect;
 import webcamstudio.studio.Studio;
@@ -196,6 +199,7 @@ public abstract class VideoSource implements InfoListener {
         prefs.putBoolean("reverseshapemask", doReverseShapeMask);
         prefs.putBoolean("ignorelayouttransition", ignoreLayoutTransition);
         prefs.put("password", encrypt(password));
+        prefs.putBoolean("keepration",keepRatio);
         int index = 0;
         for (Effect effect : effects) {
             String key = Studio.getKeyIndex(index++);
@@ -280,6 +284,7 @@ public abstract class VideoSource implements InfoListener {
         doReverseShapeMask = prefs.getBoolean("reverseshapemask", doReverseShapeMask);
         ignoreLayoutTransition = prefs.getBoolean("ignorelayouttransition", ignoreLayoutTransition);
         password = decrypt(prefs.get("password", password));
+        keepRatio = prefs.getBoolean("keepration", keepRatio);
         String[] effectIndexes;
         try {
             effectIndexes = prefs.node("Effects").childrenNames();
@@ -311,6 +316,12 @@ public abstract class VideoSource implements InfoListener {
         virtualHostKeywords = keywords;
     }
 
+    public void setKeepRatio(boolean ratio){
+        keepRatio=ratio;
+    }
+    public boolean isKeepingRatio(){
+        return keepRatio;
+    }
     protected String encrypt(String text) {
         StringBuilder sb = new StringBuilder(text);
 
@@ -885,6 +896,21 @@ public abstract class VideoSource implements InfoListener {
     public int getLayer() {
         return layer;
     }
+
+    protected void updateImage(AppSink sink) {
+        if (sink != null) {
+            boolean stopFeeding = false;
+            while (!stopFeeding) {
+                org.gstreamer.Buffer b = sink.pullBuffer();
+                if (b != null) {
+                    IntBuffer bb = b.getByteBuffer().asIntBuffer();
+                    tempimage = graphicConfiguration.createCompatibleImage(captureWidth, captureHeight, java.awt.image.BufferedImage.TRANSLUCENT);
+                    tempimage.setRGB(0, 0, captureWidth, captureHeight, bb.array(), 0, captureWidth);
+                    image = tempimage;
+                }
+            }
+        }
+    }
     protected String location = null;
     protected int outputWidth = 0;
     protected int outputHeight = 0;
@@ -955,5 +981,7 @@ public abstract class VideoSource implements InfoListener {
     protected float backgroundOpacity = 0;
     protected int layer = -1;
     protected String password = "";
+    protected AppSink appSink = null;
+    protected boolean keepRatio = false;
     private static final String key = "WS4GL"; // The key for 'encrypting' and 'decrypting'
 }

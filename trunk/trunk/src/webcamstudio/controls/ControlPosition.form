@@ -41,9 +41,9 @@
                                       <Component id="jLabel2" alignment="0" max="32767" attributes="1"/>
                                       <Component id="jLabel1" alignment="0" min="-2" max="-2" attributes="1"/>
                                   </Group>
-                                  <Component id="jLabel4" alignment="0" pref="116" max="32767" attributes="1"/>
-                                  <Component id="jLabel5" alignment="0" pref="116" max="32767" attributes="1"/>
-                                  <Component id="jLabel6" alignment="0" pref="116" max="32767" attributes="1"/>
+                                  <Component id="jLabel4" alignment="0" pref="99" max="32767" attributes="1"/>
+                                  <Component id="jLabel5" alignment="0" pref="99" max="32767" attributes="1"/>
+                                  <Component id="jLabel6" alignment="0" pref="99" max="32767" attributes="1"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                           </Group>
@@ -51,16 +51,20 @@
                           <Component id="jLabel7" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <Group type="103" groupAlignment="1" attributes="0">
-                          <Component id="spinVolume" alignment="1" pref="290" max="32767" attributes="0"/>
-                          <Component id="spinWidth" alignment="0" pref="290" max="32767" attributes="3"/>
-                          <Component id="spinY" alignment="0" pref="290" max="32767" attributes="3"/>
-                          <Component id="spinX" alignment="0" pref="290" max="32767" attributes="3"/>
-                          <Component id="cboTransOut" alignment="0" pref="290" max="32767" attributes="3"/>
-                          <Component id="cboTransIn" alignment="0" pref="290" max="32767" attributes="3"/>
-                          <Component id="spinHeight" alignment="0" pref="290" max="32767" attributes="3"/>
+                          <Component id="spinVolume" alignment="1" pref="307" max="32767" attributes="0"/>
+                          <Component id="spinWidth" alignment="0" pref="307" max="32767" attributes="3"/>
+                          <Component id="spinY" alignment="0" pref="307" max="32767" attributes="3"/>
+                          <Component id="spinX" alignment="0" pref="307" max="32767" attributes="3"/>
+                          <Component id="cboTransOut" alignment="0" pref="307" max="32767" attributes="3"/>
+                          <Component id="cboTransIn" alignment="0" pref="307" max="32767" attributes="3"/>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Component id="chkKeepRatio" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="spinHeight" pref="204" max="32767" attributes="3"/>
+                          </Group>
                           <Group type="102" alignment="1" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="slideSeek" pref="290" max="32767" attributes="2"/>
+                              <Component id="slideSeek" pref="307" max="32767" attributes="2"/>
                           </Group>
                       </Group>
                   </Group>
@@ -100,6 +104,7 @@
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jLabel6" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="spinHeight" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="chkKeepRatio" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
@@ -356,6 +361,17 @@
       </Properties>
       <Events>
         <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="spinVolumeStateChanged"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JCheckBox" name="chkKeepRatio">
+      <Properties>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="webcamstudio/Languages.properties" key="KEEP_RATIO" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+        </Property>
+        <Property name="name" type="java.lang.String" value="chkKeepRatio" noResource="true"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="chkKeepRatioActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>

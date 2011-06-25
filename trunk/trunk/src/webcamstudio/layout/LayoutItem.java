@@ -28,6 +28,14 @@ public class LayoutItem implements Runnable{
     private int layer = 0;
     private int volume = 10;
     private boolean isInActiveLayout = false;
+    private boolean keepRatio = false;
+
+    public void setKeepRatio(boolean keep){
+        keepRatio=keep;
+    }
+    public boolean isKeepingRatio(){
+        return keepRatio;
+    }
 
     public void setActive(boolean status){
         isInActiveLayout = status;
@@ -121,6 +129,7 @@ public class LayoutItem implements Runnable{
         prefs.putInt("width", width);
         prefs.putInt("height", height);
         prefs.put("uuid", source.getUUID());
+        prefs.putBoolean("keepratio",keepRatio);
         if (transIn != null) {
             prefs.put("transitionin", transIn.getName());
         }
@@ -149,6 +158,7 @@ public class LayoutItem implements Runnable{
         } else {
             VideoSource.loadedSources.put(source.getLocation(), source);
         }
+        keepRatio = prefs.getBoolean("keepratio",keepRatio);
         volume = prefs.getInt("volume", volume);
     }
     @Override

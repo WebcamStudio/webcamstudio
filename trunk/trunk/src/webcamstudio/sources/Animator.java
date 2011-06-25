@@ -20,7 +20,6 @@
 package webcamstudio.sources;
 
 import java.awt.Image;
-import java.util.TimerTask;
 import webcamstudio.*;
 import java.util.jar.*;
 
