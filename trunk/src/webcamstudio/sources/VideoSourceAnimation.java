@@ -72,6 +72,10 @@ public class VideoSourceAnimation extends VideoSource {
 
     @Override
     public void startSource() {
+        if (timer != null) {
+            timer.cancel();
+        }
+        timer = new Timer(true);
         if (animator == null) {
             animator = new Animator(this);
             try {
@@ -107,7 +111,7 @@ public class VideoSourceAnimation extends VideoSource {
 
     @Override
     public boolean isPlaying() {
-        return (animator != null && !animator.isStopped());
+        return (timer != null && animator!=null);
     }
 
     @Override
@@ -134,8 +138,10 @@ public class VideoSourceAnimation extends VideoSource {
         stopMe = true;
         if (timer != null) {
             timer.cancel();
-            timer = null;
+
         }
+        timer = null;
+        image = null;
     }
 
     @Override
