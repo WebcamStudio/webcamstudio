@@ -23,6 +23,7 @@ import java.awt.Image;
 import java.awt.Toolkit;
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
@@ -41,6 +42,7 @@ public class VideoSourcePipeline extends VideoSource implements org.gstreamer.el
     public VideoSourcePipeline(File pluginFile) {
 
         location = pluginFile.getAbsolutePath();
+        name = pluginFile.getName();
         getPipeline();
         frameRate = 15;
         outputWidth = 320;
@@ -225,7 +227,16 @@ public class VideoSourcePipeline extends VideoSource implements org.gstreamer.el
             if (iconFile == null) {
                 icon = super.getThumbnail();
             } else {
-                icon = new ImageIcon(Toolkit.getDefaultToolkit().createImage(iconFile).getScaledInstance(32, 32, Image.SCALE_FAST));
+                File resource = new File(iconFile);
+                if (!resource.exists()){
+                    //Try to find the image at the same place as the pipeline
+                    resource = new File(new File(location).getParentFile(),iconFile);
+                }
+                try {
+                    icon = new ImageIcon(Toolkit.getDefaultToolkit().createImage(resource.toURI().toURL()).getScaledInstance(32, 32, Image.SCALE_FAST));
+                } catch (MalformedURLException ex) {
+                    Logger.getLogger(VideoSourcePipeline.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
             try {
                 saveThumbnail(icon);
