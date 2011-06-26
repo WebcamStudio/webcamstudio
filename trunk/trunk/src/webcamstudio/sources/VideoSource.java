@@ -55,6 +55,9 @@ public abstract class VideoSource implements InfoListener {
         name = n;
     }
 
+    public void setImage(BufferedImage img){
+        image=img;
+    }
     public void setLocation(String l) {
         location = l;
     }
@@ -973,7 +976,7 @@ public abstract class VideoSource implements InfoListener {
     protected String customText = "";
     protected java.util.Vector<Effect> effects = new java.util.Vector<Effect>();
     protected GraphicsConfiguration graphicConfiguration = java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
-    protected boolean doRescale = false;
+    protected boolean doRescale = true;
     protected boolean doReverseShapeMask = false;
     protected Image faceDetection = null;
     protected BufferedImage rawImage = null;

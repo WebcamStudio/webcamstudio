@@ -27,6 +27,7 @@ import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import org.gstreamer.*;
+import org.gstreamer.elements.AppSink;
 import webcamstudio.controls.ControlRescale;
 import webcamstudio.exporter.vloopback.VideoDevice;
 
@@ -34,9 +35,11 @@ import webcamstudio.exporter.vloopback.VideoDevice;
  *
  * @author pballeux
  */
-public class VideoSourceV4L extends VideoSource implements org.gstreamer.elements.RGBDataSink.Listener {
+public class VideoSourceV4L extends VideoSource {
 
     protected String source = "v4lsrc";
+    private VideoSink videosink = null;
+    private AppSink sink = null;
 
     public VideoSourceV4L() {
         outputWidth = 320;
@@ -54,7 +57,7 @@ public class VideoSourceV4L extends VideoSource implements org.gstreamer.element
         name = deviceName;
         location = getDeviceForName(deviceName, fallbackDevice).getAbsolutePath();
         //If the name has changed, it will be reaffected...
-        
+
         if (deviceName.length() == 0) {
             name = "???";
         }
@@ -77,7 +80,7 @@ public class VideoSourceV4L extends VideoSource implements org.gstreamer.element
             f = fallbackDevice;
             for (VideoDevice v : VideoDevice.getDevices()) {
                 if (f.getAbsolutePath().equals(v.getFile().getAbsoluteFile())) {
-                    name=v.getName();
+                    name = v.getName();
                     break;
                 }
             }
@@ -93,11 +96,15 @@ public class VideoSourceV4L extends VideoSource implements org.gstreamer.element
 
     public void stopSource() {
         stopMe = true;
+        if (videosink!=null){
+            videosink.stop();
+            videosink=null;
+        }
         if (pipe != null) {
 
             pipe.stop();
             pipe.getState();
-            elementSink = null;
+            sink = null;
             pipe = null;
         }
         image = null;
@@ -111,7 +118,7 @@ public class VideoSourceV4L extends VideoSource implements org.gstreamer.element
         isPlaying = true;
         location = getDeviceForName(name, new File(location)).getAbsolutePath();
         try {
-            elementSink = new org.gstreamer.elements.RGBDataSink("RGBDataSink" + uuId, this);
+            sink = (AppSink) ElementFactory.make("appsink", "appsink"+uuId);
             String rescaling = "";
             if (doRescale) {
                 rescaling = " ! videoscale ! video/x-raw-yuv,width=" + captureWidth + ",height=" + captureHeight + " ! videorate ! video/x-raw-yuv,framerate=" + frameRate + "/1";
@@ -120,11 +127,12 @@ public class VideoSourceV4L extends VideoSource implements org.gstreamer.element
             if (activeEffect.length() == 0) {
                 pipe = Pipeline.launch(source + " device=" + location + " " + rescaling + " ! ffmpegcolorspace ! video/x-raw-rgb,bpp=32,depth=24, red_mask=65280, green_mask=16711680, blue_mask=-16777216 ! ffmpegcolorspace name=tosink");
             } else {
-                pipe = Pipeline.launch(source + " device=" + location + " " + rescaling + " ! ffmpegcolorspace ! " + activeEffect + " ! ffmpegcolorspace ! video/x-raw-rgb,bpp=24,depth=24, red_mask=65280, green_mask=16711680, blue_mask=-16777216 !ffmpegcolorspace name=tosink");
+                pipe = Pipeline.launch(source + " device=" + location + " " + rescaling + " ! ffmpegcolorspace ! " + activeEffect + " ! ffmpegcolorspace ! video/x-raw-rgb,bpp=32,depth=24 !  ffmpegcolorspace name=tosink");
+
             }
-            pipe.add(elementSink);
+            pipe.add(sink);
             Element e = pipe.getElementByName("tosink");
-            e.link(elementSink);
+            e.link(sink);
 
             pipe.getBus().connect(new Bus.SEGMENT_START() {
 
@@ -165,36 +173,21 @@ public class VideoSourceV4L extends VideoSource implements org.gstreamer.element
         } catch (Exception e) {
             e.printStackTrace();
         }
+        if (videosink!=null){
+            videosink.stop();
+        }
+        videosink = new VideoSink(this, sink);
+        videosink.start();
     }
 
+    
     @Override
-    public void rgbFrame(int w, int h, java.nio.IntBuffer buffer) {
-        captureWidth = w;
-        captureHeight = h;
-        int[] array = buffer.array();
-        final BufferedImage temp = graphicConfiguration.createCompatibleImage(captureWidth, captureHeight, java.awt.image.BufferedImage.TRANSLUCENT);
-        if (activeEffect.equals("vertigotv") || activeEffect.equals("shagadelictv")) {
-            for (int i = 0; i < array.length; i++) {
-                array[i] = array[i] | 0xFF000000;
-            }
-        }
-        temp.setRGB(0, 0, captureWidth, captureHeight, array, 0, captureWidth);
-        new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-                if (!isRendering) {
-                    isRendering = true;
-                    tempimage = temp;
-                    applyFaceDetection(tempimage);
-                    detectActivity(tempimage);
-                    applyEffects(tempimage);
-                    applyShape(tempimage);
-                    image = tempimage;
-                    isRendering = false;
-                }
-            }
-        }).start();
+    public void setImage(BufferedImage img) {
+        applyFaceDetection(img);
+        detectActivity(img);
+        applyEffects(img);
+        applyShape(img);
+        image=img;
     }
 
     @Override
@@ -208,16 +201,12 @@ public class VideoSourceV4L extends VideoSource implements org.gstreamer.element
     public void pause() {
         if (pipe != null) {
             pipe.pause();
-
-
         }
     }
 
     public void play() {
         if (pipe != null) {
             pipe.play();
-
-
         }
     }
 

@@ -32,7 +32,7 @@ public class ControlRescale extends javax.swing.JPanel implements Controls {
         spinHeight.setValue(source.getCaptureHeight());
         slideFramerate.setValue(source.getFrameRate());
         chkRescaleEnabled.setSelected(source.isRescaled());
-
+        chkRescaleEnabled.setVisible(false);
         slideFramerate.setEnabled(chkRescaleEnabled.isSelected());
         spinHeight.setEnabled(chkRescaleEnabled.isSelected());
         spinWidth.setEnabled(chkRescaleEnabled.isSelected());
