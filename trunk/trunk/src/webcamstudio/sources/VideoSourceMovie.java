@@ -26,6 +26,7 @@ import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import org.gstreamer.*;
+import org.gstreamer.elements.AppSink;
 import webcamstudio.controls.ControlAudio;
 import webcamstudio.controls.ControlRescale;
 
@@ -33,14 +34,17 @@ import webcamstudio.controls.ControlRescale;
  *
  * @author pballeux
  */
-public class VideoSourceMovie extends VideoSource implements org.gstreamer.elements.RGBDataSink.Listener {
+public class VideoSourceMovie extends VideoSource {
+
+    private VideoSink videosink = null;
+    private AppSink sink = null;
 
     protected VideoSourceMovie() {
         frameRate = 24;
         captureWidth = 320;
         captureHeight = 240;
         doRescale = true;
-        keepRatio=true;
+        keepRatio = true;
     }
 
     public VideoSourceMovie(java.io.File loc) {
@@ -53,7 +57,7 @@ public class VideoSourceMovie extends VideoSource implements org.gstreamer.eleme
         captureWidth = 320;
         captureHeight = 240;
         doRescale = true;
-        keepRatio=true;
+        keepRatio = true;
     }
 
     public VideoSourceMovie(java.net.URL loc) {
@@ -66,20 +70,20 @@ public class VideoSourceMovie extends VideoSource implements org.gstreamer.eleme
         captureWidth = 320;
         captureHeight = 240;
         doRescale = true;
-        keepRatio=true;
+        keepRatio = true;
     }
 
     public VideoSourceMovie(String loc) {
         location = loc;
         name = loc;
-        
+
         hasSound = true;
         volume = 10;
         frameRate = 24;
         captureWidth = 320;
         captureHeight = 240;
         doRescale = true;
-        keepRatio=true;
+        keepRatio = true;
     }
 
     public void setName(String n) {
@@ -88,11 +92,15 @@ public class VideoSourceMovie extends VideoSource implements org.gstreamer.eleme
 
     public void stopSource() {
         stopMe = true;
+        if (videosink != null) {
+            videosink.stop();
+            videosink = null;
+        }
         if (pipe != null) {
 
             pipe.stop();
             pipe.getState();
-            elementSink = null;
+            sink = null;
             java.util.List<Element> list = pipe.getElements();
             for (int i = 0; i < list.size(); i++) {
                 list.get(i).disown();
@@ -100,7 +108,7 @@ public class VideoSourceMovie extends VideoSource implements org.gstreamer.eleme
             }
             pipe = null;
         }
-        elementSink = null;
+        sink = null;
         image = null;
         pixels = null;
         tempimage = null;
@@ -113,26 +121,26 @@ public class VideoSourceMovie extends VideoSource implements org.gstreamer.eleme
         try {
             isPlaying = true;
             if (location.toLowerCase().startsWith("http://") || location.toLowerCase().startsWith("https://")) {
-                pipeline = "souphttpsrc location=\""+location+"\" ! decodebin name=decode ";
-                loadSound=true;
+                pipeline = "souphttpsrc location=\"" + location + "\" ! decodebin name=decode ";
+                loadSound = true;
             } else if (location.toLowerCase().startsWith("rtsp://")) {
-                pipeline = "rtspsrc location=\""+location+"\" ! decodebin name=decode ";
+                pipeline = "rtspsrc location=\"" + location + "\" ! decodebin name=decode ";
                 loadSound = true;
             } else if (location.toLowerCase().startsWith("tcp://")) {
                 pipeline = "tcpclientsrc ";
-                
+
                 String[] addr = location.replaceFirst("tcp://", "").split(":");
                 switch (addr.length) {
                     case 2:
-                        pipeline+= " host=" +addr[0];
-                        pipeline+= " port=" + addr[1];
+                        pipeline += " host=" + addr[0];
+                        pipeline += " port=" + addr[1];
                         break;
                     case 1:
-                        pipeline+= " host=" +addr[0];
-                        pipeline+= " port=4888";
+                        pipeline += " host=" + addr[0];
+                        pipeline += " port=4888";
                         break;
                 }
-                pipeline+= " ! decodebin  name=decode ";
+                pipeline += " ! decodebin  name=decode ";
                 loadSound = true;
             } else if (location.toLowerCase().startsWith("rfb://")) {
 
@@ -140,21 +148,21 @@ public class VideoSourceMovie extends VideoSource implements org.gstreamer.eleme
                 String[] addr = location.replaceFirst("rfb://", "").split(":");
                 switch (addr.length) {
                     case 3:
-                        pipeline+= " host=" +addr[0];
-                        pipeline+= " port=" +addr[1];
-                        pipeline+= " password=" +addr[2];
+                        pipeline += " host=" + addr[0];
+                        pipeline += " port=" + addr[1];
+                        pipeline += " password=" + addr[2];
                         break;
                     case 2:
-                        pipeline+= " host=" +addr[0];
-                        pipeline+= " port=" +addr[1];
+                        pipeline += " host=" + addr[0];
+                        pipeline += " port=" + addr[1];
                         break;
                     case 1:
-                        pipeline+= " host=" +addr[0];
+                        pipeline += " host=" + addr[0];
                         break;
                 }
                 loadSound = false;
             } else {
-                pipeline="filesrc location=\""+location+"\" ! decodebin  name=decode ";
+                pipeline = "filesrc location=\"" + location + "\" ! decodebin  name=decode ";
                 loadSound = true;
             }
 
@@ -163,24 +171,23 @@ public class VideoSourceMovie extends VideoSource implements org.gstreamer.eleme
                 outputWidth = captureWidth;
                 outputHeight = captureHeight;
             }
-            if (doRescale){
-                pipeline += " ! videorate ! video/x-raw-yuv,framerate="+frameRate + "/1 ! videoscale add-borders=true ! video/x-raw-yuv,width=" + captureWidth + ",height=" + captureHeight;
+            if (doRescale) {
+                pipeline += " ! videorate ! video/x-raw-yuv,framerate=" + frameRate + "/1 ! videoscale add-borders=true ! video/x-raw-yuv,width=" + captureWidth + ",height=" + captureHeight;
             }
             if (activeEffect.length() != 0) {
                 pipeline += " ! ffmpegcolorspace ! " + activeEffect + " ! ffmpegcolorspace ";
             }
-            pipeline+= " ! alpha ! ffmpegcolorspace ! video/x-raw-rgb,bpp=32,depth=24, red_mask=65280, green_mask=16711680, blue_mask=-16777216 ! ffmpegcolorspace name=tosink";
-            if (loadSound){
-                pipeline += " decode. ! queue ! volume name=volume volume="+(double)volume / 100D +" ! audioconvert ! autoaudiosink ";
+            pipeline += " ! alpha ! ffmpegcolorspace ! video/x-raw-rgb,bpp=32,depth=24, red_mask=65280, green_mask=16711680, blue_mask=-16777216 ! ffmpegcolorspace name=tosink";
+            if (loadSound) {
+                pipeline += " decode. ! queue ! volume name=volume volume=" + (double) volume / 100D + " ! audioconvert ! autoaudiosink ";
             }
             System.out.println(pipeline);
             pipe = Pipeline.launch(pipeline);
-            elementSink = new org.gstreamer.elements.RGBDataSink("RGBDataSink" + uuId, this);
-            elementSink.setPassDirectBuffer(false);
-            pipe.add(elementSink);
+            sink = (AppSink) ElementFactory.make("appsink", "appsink" + uuId);
+            pipe.add(sink);
             Element lastElement = pipe.getElementByName("tosink");
-            lastElement.link(elementSink);
-            if (loadSound){
+            lastElement.link(sink);
+            if (loadSound) {
                 elementAudioVolume = pipe.getElementByName("volume");
             }
             pipe.getBus().connect(new Bus.EOS() {
@@ -204,34 +211,22 @@ public class VideoSourceMovie extends VideoSource implements org.gstreamer.eleme
             });
             pipe.setState(State.PLAYING);
             duration = pipe.queryDuration().toSeconds();
+            if (videosink!=null){
+                videosink.stop();
+            }
+            videosink = new VideoSink(this, sink);
+            videosink.start();
         } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
 
-    @Override
-    public void rgbFrame(int w, int h, java.nio.IntBuffer buffer) {
-        captureWidth = w;
-        captureHeight = h;
-        if (!isRendering) {
-            isRendering = true;
-            int[] array = new int[w * h];
-            buffer.get(array);
-            tempimage = graphicConfiguration.createCompatibleImage(captureWidth, captureHeight, java.awt.image.BufferedImage.TRANSLUCENT);
-            if (activeEffect.equals("vertigotv") || activeEffect.equals("shagadelictv")) {
-                for (int i = 0; i < array.length; i++) {
-                    array[i] = array[i] | 0xFF000000;
-                }
-            }
-            tempimage.setRGB(0, 0, captureWidth, captureHeight, array, 0, captureWidth);
-            detectActivity(tempimage);
-            applyEffects(tempimage);
-            applyShape(tempimage);
-            image = tempimage;
-            isRendering = false;
-        }
-
+    public void setImage(BufferedImage img) {
+        detectActivity(img);
+        applyEffects(img);
+        applyShape(img);
+        image = img;
     }
 
     public void seek(long secs) {
@@ -296,7 +291,6 @@ public class VideoSourceMovie extends VideoSource implements org.gstreamer.eleme
         return retValue;
     }
 
-    
     @Override
     public String toString() {
         return "Movie: " + new java.io.File(location).getName();
@@ -319,11 +313,7 @@ public class VideoSourceMovie extends VideoSource implements org.gstreamer.eleme
         list.add(new ControlAudio(this));
         return list;
     }
-    private Element effectSource = null;
-    private Element currentEffect = null;
-    private Element effectSink = null;
     private Element elementAudioVolume = null;
-    private org.gstreamer.elements.RGBDataSink elementSink = null;
     private Pipeline pipe = null;
     private long duration = 0;
 
