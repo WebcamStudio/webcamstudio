@@ -139,6 +139,8 @@ public class Studio {
             source = new VideoSourcePipeline();
         } else if (currentClass.equals(VideoSourceQRCode.class.getName()) || currentClass.equals(VideoSourceQRCode.class.getName().replace(".sources", ""))) {
             source = new VideoSourceQRCode("");
+        } else if (currentClass.equals(VideoSourceFullDesktop.class.getName()) || currentClass.equals(VideoSourceFullDesktop.class.getName().replace(".sources", ""))) {
+            source = new VideoSourceFullDesktop();
         }
         //webcamstudio.sources.VideoSourcePipeline
         return source;

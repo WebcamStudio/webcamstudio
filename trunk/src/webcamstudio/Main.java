@@ -858,6 +858,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         mnuRemoveDir = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JSeparator();
         mnuSourcesDesktop = new javax.swing.JMenuItem();
+        mnuSourcesFullDesktop = new javax.swing.JMenuItem();
         mnuSourcesDV = new javax.swing.JMenuItem();
         mnuSourcesImage = new javax.swing.JMenuItem();
         mnuSourcesFreeText = new javax.swing.JMenuItem();
@@ -1094,6 +1095,17 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
             }
         });
         mnuSources.add(mnuSourcesDesktop);
+
+        mnuSourcesFullDesktop.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_D, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.SHIFT_MASK));
+        mnuSourcesFullDesktop.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/user-desktop.png"))); // NOI18N
+        mnuSourcesFullDesktop.setText(bundle.getString("FULLDESKTOP")); // NOI18N
+        mnuSourcesFullDesktop.setName("mnuSourcesFullDesktop"); // NOI18N
+        mnuSourcesFullDesktop.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnuSourcesFullDesktopActionPerformed(evt);
+            }
+        });
+        mnuSources.add(mnuSourcesFullDesktop);
 
         mnuSourcesDV.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R, java.awt.event.InputEvent.ALT_MASK));
         mnuSourcesDV.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/camera-video.png"))); // NOI18N
@@ -2184,6 +2196,10 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
 
     }//GEN-LAST:event_mnuSourcesQRCodeActionPerformed
 
+    private void mnuSourcesFullDesktopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuSourcesFullDesktopActionPerformed
+        addSourceToDesktop(new VideoSourceFullDesktop());
+    }//GEN-LAST:event_mnuSourcesFullDesktopActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -2291,6 +2307,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
     private javax.swing.JMenuItem mnuSourcesDV;
     private javax.swing.JMenuItem mnuSourcesDesktop;
     private javax.swing.JMenuItem mnuSourcesFreeText;
+    private javax.swing.JMenuItem mnuSourcesFullDesktop;
     private javax.swing.JMenuItem mnuSourcesImage;
     private javax.swing.JMenuItem mnuSourcesMovie;
     private javax.swing.JMenuItem mnuSourcesMovieViewer;

@@ -36,7 +36,7 @@ import org.gstreamer.*;
  */
 public class VideoSourcePipeline extends VideoSource implements org.gstreamer.elements.RGBDataSink.Listener {
 
-    private String gstPipeline = "videotestsrc ! video/x-raw-rgb,width=320,height=240 ! ffmpegcolorspace name=tosink";
+    protected String gstPipeline = "videotestsrc ! video/x-raw-rgb,width=320,height=240 ! ffmpegcolorspace name=tosink";
     private String iconFile = null;
 
     public VideoSourcePipeline(File pluginFile) {
