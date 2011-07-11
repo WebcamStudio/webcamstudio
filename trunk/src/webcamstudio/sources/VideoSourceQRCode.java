@@ -21,7 +21,7 @@ import javax.swing.JPanel;
 
 public class VideoSourceQRCode extends VideoSource {
 
-    private Timer timer = new Timer(true);
+    private Timer timer = null;
     public VideoSourceQRCode(String text) {
         location = "";
         name = "QRCode";
@@ -37,7 +37,7 @@ public class VideoSourceQRCode extends VideoSource {
     public void startSource() {
         isPlaying = true;
 
-        timer = new Timer(true);
+        timer = new Timer(this.getClass().getSimpleName(),true);
         timer.scheduleAtFixedRate(new imageQRCode(this), 0, 500);
     }
 

@@ -50,7 +50,7 @@ public class ControlShapes extends javax.swing.JPanel implements Controls {
                 Component comp = super.getListCellRendererComponent(list, value, index, isSelected, hasFocus);
                 JLabel label = (JLabel) comp;
                 if (shapes.getImage(value.toString()) != null || index == 1) {
-                    BufferedImage img = new BufferedImage(16, 16, BufferedImage.TRANSLUCENT);
+                    BufferedImage img = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
                     Image shape = shapes.getImage(value.toString());
                     if (index == 1) {
                         shape = shapes.getImage("custom");

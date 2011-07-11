@@ -87,8 +87,8 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         initComponents();
         // if XMODE is already try, override OS Detection
         XMODE = !isLinux() || XMODE;
-        if (XMODE){
-            System.out.println ("X Mode activated");
+        if (XMODE) {
+            System.out.println("X Mode activated");
             updateGUIForXmode();
         }
         output = null;
@@ -96,7 +96,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         if (!XMODE) {
             initVideoDevices();
         }
-        
+
 
 
         mixer = new Mixer();
@@ -109,7 +109,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
             mixer.setBackground(null);
         }
         layoutManager = new LayoutManager2(mixer);
-        
+
         if (XMODE) {
             setTitle(java.util.ResourceBundle.getBundle("webcamstudio/Languages").getString("WEBCAMSTUDIO_X") + " " + webcamstudio.Version.version + " (Build: " + new webcamstudio.Version().getBuild() + ")");
         } else {
@@ -139,9 +139,9 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
                     Layout layout = (Layout) value;
                     label.setText(layout.toString());
                     label.setToolTipText(layout.toString());
-                    if (layout.getPreview() != null) {
-                        label.setIcon(new ImageIcon(layout.getPreview().getScaledInstance(48, 48, BufferedImage.SCALE_FAST)));
-                    }
+
+                    label.setIcon(new ImageIcon(layout.getPreview(outputWidth,outputHeight).getScaledInstance(32, 32, BufferedImage.SCALE_FAST)));
+
                 }
                 return comp;
             }
@@ -167,12 +167,11 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
                 mixer.stopStream();
             }
         }
-        
+
 
     }
 
-
-    private void updateGUIForXmode(){
+    private void updateGUIForXmode() {
         cboVideoOutputs.setVisible(!XMODE);
         panelStatus.remove(cboVideoOutputs);
         mnuPixelFormat.setVisible(!XMODE);
@@ -180,6 +179,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         mnuOutputchkActivateStream.setVisible(!XMODE);
         mnuVideoInfo.setVisible(!XMODE);
     }
+
     private void initVideoDevices() {
         VideoDevice[] vds = VideoDevice.getInputDevices();
         javax.swing.DefaultComboBoxModel cboDevOuts = new javax.swing.DefaultComboBoxModel(vds);
@@ -339,7 +339,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         setCursor(Cursor.getDefaultCursor());
         mediaPanel.revalidate();
         panBrowser.removeAll();
-        panBrowser.add(mediaPanel,BorderLayout.CENTER);
+        panBrowser.add(mediaPanel, BorderLayout.CENTER);
         panBrowser.revalidate();
     }
 
@@ -543,7 +543,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         outputWidth = prefs.getInt("outputwidth", outputWidth);
         outputHeight = prefs.getInt("outputheight", outputHeight);
 
-        this.setLocation(prefs.getInt("mainx", 0),prefs.getInt("mainy", 0));
+        this.setLocation(prefs.getInt("mainx", 0), prefs.getInt("mainy", 0));
         this.setSize(prefs.getInt("mainw", 800), prefs.getInt("mainh", 600));
         if (prefs.get("format", "rgb24").equals("rgb24")) {
             mnurdPixelFormatRGB24.setSelected(true);
@@ -1897,7 +1897,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
 
     private void mnuOutputSpnashotActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuOutputSpnashotActionPerformed
 
-        BufferedImage imgOut = new BufferedImage(outputWidth, outputHeight, java.awt.image.BufferedImage.TRANSLUCENT);
+        BufferedImage imgOut = new BufferedImage(outputWidth, outputHeight, java.awt.image.BufferedImage.TYPE_INT_ARGB);
         imgOut.getGraphics().drawImage(mixer.getImage(), 0, 0, null);
         javax.swing.JFileChooser chooser = new javax.swing.JFileChooser(lastFolder);
         chooser.setToolTipText(java.util.ResourceBundle.getBundle("webcamstudio/Languages").getString("SELECT_YOUR_IMAGE_FILE"));
@@ -2229,7 +2229,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
                 xmode = true;
             }
         }
-        Main.XMODE=xmode;
+        Main.XMODE = xmode;
         Main m = new Main();
         if (studio != null) {
             m.loadStudioFromFile(new File(studio));

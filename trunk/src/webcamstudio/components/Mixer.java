@@ -27,8 +27,8 @@ public class Mixer  {
     protected int frameRate = 20;
     protected int outputWidth = 320;
     protected int outputHeight = 240;
-    protected java.awt.image.BufferedImage image = new BufferedImage(outputWidth, outputHeight, BufferedImage.TRANSLUCENT);
-    protected BufferedImage outputImage = new BufferedImage(outputWidth, outputHeight, BufferedImage.TRANSLUCENT);
+    protected java.awt.image.BufferedImage image = null;
+    protected BufferedImage outputImage = null;
     protected boolean isDrawing = false;
     protected boolean lightMode = false;
     private boolean stopMe = false;
@@ -39,7 +39,8 @@ public class Mixer  {
     protected VideoExporterStream outputStream = null;
     protected int outputStreamPort = 4888;
     protected Timer timer = null;
-
+    protected java.awt.Graphics2D buffer = null;
+    protected java.awt.Graphics2D bufferOutput = null;
     public enum MixerQuality {
 
         HIGH,
@@ -54,7 +55,7 @@ public class Mixer  {
     private MixerQuality quality = MixerQuality.NORMAL;
 
     public Mixer() {
-        timer = new Timer(true);
+        timer = new Timer(this.getClass().getSimpleName(),true);
         timer.schedule(new imageMixer(this), 0, 1000/frameRate);
     }
 
@@ -66,7 +67,7 @@ public class Mixer  {
     public void setFramerate(int fps) {
         frameRate = fps;
         timer.cancel();
-        timer = new Timer(true);
+        timer = new Timer(this.getClass().getSimpleName(),true);
         timer.schedule(new imageMixer(this), 0, 1000/frameRate);
     }
 
@@ -88,14 +89,9 @@ public class Mixer  {
 
     protected void drawImage() {
         isDrawing = true;
-        if (image == null || (outputWidth != image.getWidth())) {
-            image = new BufferedImage(outputWidth, outputHeight, BufferedImage.TRANSLUCENT);
-            outputImage = new BufferedImage(outputWidth, outputHeight, BufferedImage.TRANSLUCENT);
-        }
-        java.awt.Graphics2D buffer = image.createGraphics();
-        int x1, x2, x3, x4;
-        int y1, y2, y3, y4;
-
+        
+        image = new BufferedImage(outputWidth, outputHeight, BufferedImage.TRANSLUCENT);
+        buffer = image.createGraphics();
 //        switch (quality) {
 //            case HIGH:
 //                buffer.setRenderingHint(java.awt.RenderingHints.KEY_INTERPOLATION, java.awt.RenderingHints.VALUE_INTERPOLATION_BICUBIC);
@@ -130,38 +126,35 @@ public class Mixer  {
             buffer.drawImage(background, 0, 0, outputWidth, outputHeight, 0, 0, background.getWidth(null), background.getHeight(null), null);
         }
 
-        BufferedImage img = null;
+        Image img = null;
         try {
             Layout activeLayout = Layout.getActiveLayout();
             if (activeLayout != null) {
                 for (LayoutItem item : activeLayout.getItems()) {
                     VideoSource source = item.getSource();
                     if (source.getActivityDetection() == 0 || (source.getActivityDetection() > 0 && source.activityDetected())) {
-                        img = source.getImage();
-                        if (img != null) {
+                        
+                        if (source.getImage() != null) {
+                            img = source.getImage();
                             //Don't do anything if there is no rotation to do...
-
-                            x1 = source.getShowAtX();
-                            y1 = source.getShowAtY();
-                            x2 = x1 + source.getOutputWidth();
-                            y2 = y1 + source.getOutputHeight();
-                            x3 = 0;
-                            y3 = 0;
-                            x4 = source.getCaptureWidth();
-                            y4 = source.getCaptureHeight();
                             float opacity = (float) source.getOpacity();
                             buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC_OVER, opacity / 100F));
                             //buffer.setClip(x1, y1, source.getOutputWidth(), source.getOutputHeight());
-                            buffer.drawImage(img, x1, y1, x2, y2, x3, y3, x4, y4, null);
+                            buffer.drawImage(img, source.getShowAtX(),source.getShowAtY(),source.getOutputWidth(),source.getOutputHeight(),null);
+                            img=null;
                         }
                     }
+                    source=null;
                 }
             }
+            activeLayout=null;
         } catch (Exception e) {
             e.printStackTrace();
         }
         buffer.dispose();
-        outputImage.getGraphics().drawImage(image, 0, 0, null);
+        buffer=null;
+        outputImage=image;
+        image=null;
         isDrawing = false;
     }
 

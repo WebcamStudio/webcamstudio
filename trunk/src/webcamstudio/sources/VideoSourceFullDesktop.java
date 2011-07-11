@@ -24,7 +24,7 @@ public class VideoSourceFullDesktop extends VideoSource implements RGBDataSink.L
     private RGBDataSink sink = null;
 
     public VideoSourceFullDesktop() {
-        name = "Desktop";
+        name = "Full Desktop";
         location = "";
 
     }
@@ -42,7 +42,6 @@ public class VideoSourceFullDesktop extends VideoSource implements RGBDataSink.L
     public Collection<JPanel> getControls() {
         java.util.Vector<JPanel> list = new java.util.Vector<JPanel>();
         list.add(new ControlRescale(this));
-        list.add(new webcamstudio.controls.ControlActivity(this));
         list.add(new webcamstudio.controls.ControlIdentity(this));
         return list;
     }
@@ -110,11 +109,11 @@ public class VideoSourceFullDesktop extends VideoSource implements RGBDataSink.L
         captureHeight = h;
         if (!isRendering) {
             isRendering = true;
-            tempimage = graphicConfiguration.createCompatibleImage(captureWidth, captureHeight, java.awt.image.BufferedImage.OPAQUE);
+            if (image == null || image.getWidth()!= captureWidth || image.getHeight()!=captureHeight){
+                image = graphicConfiguration.createCompatibleImage(captureWidth, captureHeight, java.awt.image.BufferedImage.TYPE_INT_ARGB);
+            }
             int[] array = buffer.array();
-            tempimage.setRGB(0, 0, captureWidth, captureHeight, array, 0, captureWidth);
-            detectActivity(tempimage);
-            image = tempimage;
+            image.setRGB(0, 0, captureWidth, captureHeight, array, 0, captureWidth);
             isRendering = false;
         }
     }

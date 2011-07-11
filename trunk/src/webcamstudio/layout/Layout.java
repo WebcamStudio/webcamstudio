@@ -32,34 +32,43 @@ public class Layout {
     private boolean isExiting = false;
     private static Layout activeLayout = null;
     public static Layout previousActiveLayout = null;
-    private String inputSource ="";
+    private String inputSource = "";
     private String inputSourceApp = "";
     private int duration = 0;
     private String nextLayoutName = "";
     public long timeStamp = 0;
-    public void setDuration(int sec,String nextLayout){
+    protected BufferedImage preview = null;
+
+    public void setDuration(int sec, String nextLayout) {
         duration = sec;
-        nextLayoutName=nextLayout;
+        nextLayoutName = nextLayout;
     }
-    public int getDuration(){
+
+    public int getDuration() {
         return duration;
     }
-    public String getNextLayout(){
+
+    public String getNextLayout() {
         return nextLayoutName;
     }
-    public void setAudioSource(String source){
+
+    public void setAudioSource(String source) {
         inputSource = source;
     }
-    public void setAudioApp(String app){
+
+    public void setAudioApp(String app) {
         inputSourceApp = app;
     }
-    public String getAudioSource(){
+
+    public String getAudioSource() {
         return inputSource;
     }
-    public String getAudioApp(){
+
+    public String getAudioApp() {
         return inputSourceApp;
     }
-    public static Layout getActiveLayout(){
+
+    public static Layout getActiveLayout() {
         return activeLayout;
     }
 
@@ -114,13 +123,13 @@ public class Layout {
 
     public void enterLayout() {
         isEntering = true;
-        activeLayout=this;
-        if (previousActiveLayout != null){
+        if (previousActiveLayout != null) {
             previousActiveLayout.exitLayout();
-            
+
         }
+        activeLayout = this;
         previousActiveLayout = activeLayout;
-        if (inputSourceApp.length()>0){
+        if (inputSourceApp.length() > 0) {
             PulseAudioManager p = new PulseAudioManager();
             p.setSoundInput(inputSourceApp, inputSource);
         }
@@ -144,6 +153,7 @@ public class Layout {
         }
         isEntering = false;
         isActive = true;
+        
     }
 
     private void exitLayout() {
@@ -164,8 +174,9 @@ public class Layout {
             Logger.getLogger(Layout.class.getName()).log(Level.SEVERE, null, ex);
         }
         isExiting = false;
-        
+
     }
+
     public Collection<LayoutItem> getItems() {
         java.util.Vector<LayoutItem> retValues = new java.util.Vector<LayoutItem>();
         if (items.size() > 0) {
@@ -177,6 +188,7 @@ public class Layout {
         }
         return retValues;
     }
+
     public Collection<LayoutItem> getReversedItems() {
         java.util.Vector<LayoutItem> retValues = new java.util.Vector<LayoutItem>();
         if (items.size() > 0) {
@@ -189,13 +201,16 @@ public class Layout {
         return retValues;
     }
 
-    public Image getPreview() {
-        BufferedImage image = new java.awt.image.BufferedImage(320, 240, java.awt.image.BufferedImage.TRANSLUCENT);
-        Graphics2D buffer = image.createGraphics();
-        buffer.setBackground(Color.DARK_GRAY);
+    public Image getPreview(int w, int h) {
+        if (preview == null || preview.getWidth() != w || preview.getHeight() != h) {
+            preview = new java.awt.image.BufferedImage(w, h, java.awt.image.BufferedImage.TYPE_INT_ARGB);
+        }
+        Graphics2D buffer = preview.createGraphics();
+        buffer.setBackground(Color.GRAY);
+        buffer.clearRect(0,0,w,h);
         buffer.setStroke(new java.awt.BasicStroke(10f));
         buffer.setColor(Color.BLACK);
-        buffer.drawRect(0, 0, image.getWidth(), image.getHeight());
+        buffer.drawRect(0, 0, w, h);
         for (LayoutItem item : items.values()) {
             buffer.setColor(Color.WHITE);
             if (item.getSource() instanceof VideoSourceV4L || item.getSource() instanceof VideoSourceDV) {
@@ -211,27 +226,27 @@ public class Layout {
             } else if (item.getSource() instanceof VideoSourceDesktop) {
                 buffer.setColor(Color.ORANGE);
             }
-            if (item.getSource().getImage() != null) {
-                buffer.drawImage(item.getSource().getImage(), item.getX(), item.getY(), item.getWidth() + item.getX(), item.getHeight() + item.getY(), 0, 0, item.getSource().getImage().getWidth(), item.getSource().getImage().getHeight(), null);
-            }
+//            if (item.getSource().getImage() != null) {
+//                buffer.drawImage(item.getSource().getImage(), item.getX(), item.getY(), item.getWidth() + item.getX(), item.getHeight() + item.getY(), 0, 0, item.getSource().getImage().getWidth(), item.getSource().getImage().getHeight(), null);
+//            }
             buffer.drawRect(item.getX(), item.getY(), item.getWidth(), item.getHeight());
         }
         if (isEntering) {
             buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC_OVER, 0.5F));
             buffer.setColor(Color.YELLOW);
-            buffer.fillRect(0, 0, image.getWidth(), image.getHeight());
+            buffer.fillRect(0, 0, w, h);
         } else if (isExiting) {
             buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC_OVER, 0.5F));
             buffer.setColor(Color.RED);
-            buffer.fillRect(0, 0, image.getWidth(), image.getHeight());
+            buffer.fillRect(0, 0, w,h);
         } else if (isActive) {
             buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC_OVER, 0.5F));
             buffer.setColor(Color.GREEN);
-            buffer.fillRect(0, 0, image.getWidth(), image.getHeight());
+            buffer.fillRect(0, 0, w,h);
         }
         buffer.dispose();
 
-        return image;
+        return preview;
     }
 
     public void removeSource(VideoSource source) {
@@ -257,25 +272,25 @@ public class Layout {
 
     public void addSource(VideoSource source) {
         int index = 0;
-        if (items.size()!=0){
-            index = items.lastKey()+1;
+        if (items.size() != 0) {
+            index = items.lastKey() + 1;
         }
         VideoSource tempSource = source;
-        if (VideoSource.loadedSources.containsKey(source.getLocation())){
+        if (VideoSource.loadedSources.containsKey(source.getLocation())) {
             tempSource = VideoSource.loadedSources.get(source.getLocation());
             System.out.println("Same source" + source.getLocation());
         } else {
             VideoSource.loadedSources.put(source.getLocation(), source);
             System.out.println("Not same source" + source.getLocation());
         }
-        LayoutItem item = new LayoutItem(tempSource,  index);
+        LayoutItem item = new LayoutItem(tempSource, index);
         items.put(item.getLayer(), item);
-        if (isActive){
+        if (isActive) {
             item.getSource().setLayer(item.getLayer());
             item.setActive(true);
             item.setTransitionToDo(item.getTransitionIn());
             item.run();
-            
+
         }
     }
 
@@ -284,10 +299,10 @@ public class Layout {
         layout.put("name", name);
         layout.put("uuid", layoutUUID);
         layout.put("hotkey", hotKey);
-        layout.put("inputsource",inputSource);
-        layout.put("inputsourceapp",inputSourceApp);
-        layout.putInt("duration",duration);
-        layout.put("nextlayout",nextLayoutName);
+        layout.put("inputsource", inputSource);
+        layout.put("inputsourceapp", inputSourceApp);
+        layout.putInt("duration", duration);
+        layout.put("nextlayout", nextLayoutName);
         for (LayoutItem item : items.values()) {
             item.applyStudioConfig(layout.node("Items").node("" + item.getLayer()));
         }
@@ -298,13 +313,13 @@ public class Layout {
         name = layout.get("name", name);
         layoutUUID = layout.get("uuid", layoutUUID);
         hotKey = layout.get("hotkey", hotKey);
-        inputSource=layout.get("inputsource",inputSource);
-        inputSourceApp=layout.get("inputsourceapp",inputSourceApp);
-        duration = layout.getInt("duration",duration);
-        nextLayoutName = layout.get("nextlayout",nextLayoutName);
+        inputSource = layout.get("inputsource", inputSource);
+        inputSourceApp = layout.get("inputsourceapp", inputSourceApp);
+        duration = layout.getInt("duration", duration);
+        nextLayoutName = layout.get("nextlayout", nextLayoutName);
         String[] itemIndexes = layout.node("Items").childrenNames();
         for (String itemIndex : itemIndexes) {
-            LayoutItem item = new LayoutItem(null,0);
+            LayoutItem item = new LayoutItem(null, 0);
             item.loadFromStudioConfig(layout.node("Items").node(itemIndex));
             items.put(item.getLayer(), item);
         }

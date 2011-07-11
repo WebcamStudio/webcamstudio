@@ -60,8 +60,9 @@ public class PulseAudioManager {
     }
 
     public String[] getApps() {
-        String[] retValues = new String[apps.size()];
-        for (int i = 0; i < apps.size(); i++) {
+        String[] retValues = new String[apps.size()+1];
+        retValues[0]="";
+        for (int i = 1; i < apps.size(); i++) {
             retValues[i] = apps.keySet().toArray()[i].toString();
         }
         return retValues;

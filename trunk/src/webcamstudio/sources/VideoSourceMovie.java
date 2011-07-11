@@ -21,12 +21,13 @@ package webcamstudio.sources;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.nio.IntBuffer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import org.gstreamer.*;
-import org.gstreamer.elements.AppSink;
+import org.gstreamer.elements.RGBDataSink;
 import webcamstudio.controls.ControlAudio;
 import webcamstudio.controls.ControlRescale;
 
@@ -34,10 +35,9 @@ import webcamstudio.controls.ControlRescale;
  *
  * @author pballeux
  */
-public class VideoSourceMovie extends VideoSource {
+public class VideoSourceMovie extends VideoSource implements RGBDataSink.Listener {
 
-    private VideoSink videosink = null;
-    private AppSink sink = null;
+    private RGBDataSink sink = null;
 
     protected VideoSourceMovie() {
         frameRate = 24;
@@ -92,10 +92,6 @@ public class VideoSourceMovie extends VideoSource {
 
     public void stopSource() {
         stopMe = true;
-        if (videosink != null) {
-            videosink.stop();
-            videosink = null;
-        }
         if (pipe != null) {
 
             pipe.stop();
@@ -172,7 +168,7 @@ public class VideoSourceMovie extends VideoSource {
                 outputHeight = captureHeight;
             }
             if (doRescale) {
-                pipeline += " ! videorate ! video/x-raw-yuv,framerate=" + frameRate + "/1 ! videoscale add-borders=true ! video/x-raw-yuv,width=" + captureWidth + ",height=" + captureHeight;
+                pipeline += " ! videorate ! video/x-raw-yuv,framerate=" + frameRate + "/1 ! videoscale ! video/x-raw-yuv,width=" + captureWidth + ",height=" + captureHeight;
             }
             if (activeEffect.length() != 0) {
                 pipeline += " ! ffmpegcolorspace ! " + activeEffect + " ! ffmpegcolorspace ";
@@ -183,7 +179,7 @@ public class VideoSourceMovie extends VideoSource {
             }
             System.out.println(pipeline);
             pipe = Pipeline.launch(pipeline);
-            sink = (AppSink) ElementFactory.make("appsink", "appsink" + uuId);
+            sink = new RGBDataSink(name + uuId, this);
             pipe.add(sink);
             Element lastElement = pipe.getElementByName("tosink");
             lastElement.link(sink);
@@ -209,13 +205,15 @@ public class VideoSourceMovie extends VideoSource {
                     doLoop = false;
                 }
             });
-            pipe.setState(State.PLAYING);
-            duration = pipe.queryDuration().toSeconds();
-            if (videosink!=null){
-                videosink.stop();
-            }
-            videosink = new VideoSink(this, sink);
-            videosink.start();
+            new Thread(new Runnable() {
+
+                @Override
+                public void run() {
+                    pipe.setState(State.PLAYING);
+                    duration = pipe.queryDuration().toSeconds();
+                }
+            }).start();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -278,7 +276,9 @@ public class VideoSourceMovie extends VideoSource {
     @Override
     public void setVolume(int v) {
         volume = v;
-        elementAudioVolume.set("volume", (double) v / 100D);
+        if (elementAudioVolume != null) {
+            elementAudioVolume.set("volume", (double) v / 100D);
+        }
 
     }
 
@@ -351,5 +351,22 @@ public class VideoSourceMovie extends VideoSource {
             loadSound = true;
         }
         return icon;
+    }
+
+    @Override
+    public void rgbFrame(int w, int h, IntBuffer buffer) {
+        captureWidth = w;
+        captureHeight = h;
+        if (!isRendering) {
+            isRendering = true;
+            tempimage = graphicConfiguration.createCompatibleImage(captureWidth, captureHeight, java.awt.image.BufferedImage.TYPE_INT_ARGB);
+            int[] array = buffer.array();
+            tempimage.setRGB(0, 0, captureWidth, captureHeight, array, 0, captureWidth);
+            setImage(tempimage);
+            tempimage = null;
+            isRendering = false;
+        } else {
+            System.out.println("Skipping frame...");
+        }
     }
 }
