@@ -22,7 +22,7 @@ public class VideoSourceText extends VideoSource {
 
     protected VideoSourceText() {
         frameRate = 1;
-        timer = new Timer(true);
+        
     }
 
     public VideoSourceText(String txt) {
@@ -54,7 +54,7 @@ public class VideoSourceText extends VideoSource {
         if (timer != null) {
             timer.cancel();
             timer = null;
-            timer = new Timer(true);
+            timer = new Timer(this.getClass().getSimpleName(),true);
             timer.scheduleAtFixedRate(new imageText(this), 0, 1000 / frameRate);
         }
 
@@ -64,7 +64,7 @@ public class VideoSourceText extends VideoSource {
     public void startSource() {
         isPlaying = true;
         loadText();
-        timer = new Timer(true);
+        timer = new Timer(this.getClass().getSimpleName(),true);
         timer.scheduleAtFixedRate(new imageText(this), 0, 1000 / frameRate);
     }
 
@@ -261,7 +261,7 @@ class imageText extends TimerTask {
                 text.outputWidth = 320;
                 text.outputHeight = 240;
             }
-            text.tempimage = text.graphicConfiguration.createCompatibleImage(text.captureWidth, text.captureHeight, java.awt.image.BufferedImage.TRANSLUCENT);
+            text.tempimage = text.graphicConfiguration.createCompatibleImage(text.captureWidth, text.captureHeight, java.awt.image.BufferedImage.TYPE_INT_ARGB);
             java.awt.Graphics2D buffer = text.tempimage.createGraphics();
 
             if (text.updateTimeLaspe > 0 && System.currentTimeMillis() - lastTimeStamp > text.updateTimeLaspe) {

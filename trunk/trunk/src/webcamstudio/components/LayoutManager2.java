@@ -14,6 +14,8 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -92,10 +94,10 @@ public class LayoutManager2 extends javax.swing.JPanel implements SourceListener
                 JLabel label = (JLabel) comp;
                 if (value instanceof Layout) {
                     Layout layout = (Layout) value;
-                    label.setIcon(new ImageIcon(layout.getPreview().getScaledInstance(32, 32, BufferedImage.SCALE_FAST)));
                     label.setText(layout.toString());
+                    label.setIcon(new ImageIcon(layout.getPreview(mixer.getWidth(), mixer.getHeight()).getScaledInstance(16, 16, BufferedImage.SCALE_FAST)));
                 }
-                return comp;
+                return label;
             }
         };
         lstLayouts.setCellRenderer(rendererLayout);
@@ -110,40 +112,40 @@ public class LayoutManager2 extends javax.swing.JPanel implements SourceListener
                     VideoSource v = item.getSource();
                     label.setText(v.getName());
                     label.setToolTipText(v.getLocation());
-                    if (!v.isPlaying() || v.getImage() == null) {
-                        label.setForeground(Color.GRAY);
-                        if (v instanceof VideoSourceImage) {
-                            VideoSourceImage source = (VideoSourceImage) v;
-                            if (source.getThumnail() == null) {
-                                label.setIcon(iconImage);
-                            } else {
-                                label.setIcon(new ImageIcon(source.getThumnail()));
-                            }
 
-                        } else if (v instanceof VideoSourceMovie) {
-                            label.setIcon(iconMovie);
-                        } else if (v instanceof VideoSourceV4L || v instanceof VideoSourceDV || v instanceof VideoSourcePipeline) {
-                            label.setIcon(iconDevice);
-                        } else if (v instanceof VideoSourceAnimation || v instanceof VideoSourceWidget) {
-                            label.setIcon(iconAnimation);
-                        } else if (v instanceof VideoSourceText || v instanceof VideoSourceIRC) {
-                            label.setIcon(iconText);
-                        } else {
+                    label.setForeground(Color.GRAY);
+                    if (v.isPlaying()) {
+                        label.setForeground(Color.BLACK);
+                    }
+                    if (v instanceof VideoSourceImage) {
+                        VideoSourceImage source = (VideoSourceImage) v;
+                        if (source.getThumnail() == null) {
                             label.setIcon(iconImage);
+                        } else {
+                            label.setIcon(new ImageIcon(source.getThumnail().getScaledInstance(16, 16, Image.SCALE_FAST)));
                         }
 
+                    } else if (v instanceof VideoSourceMovie) {
+                        label.setIcon(iconMovie);
+                    } else if (v instanceof VideoSourceV4L || v instanceof VideoSourceDV || v instanceof VideoSourcePipeline) {
+                        label.setIcon(iconDevice);
+                    } else if (v instanceof VideoSourceAnimation || v instanceof VideoSourceWidget) {
+                        label.setIcon(iconAnimation);
+                    } else if (v instanceof VideoSourceText || v instanceof VideoSourceIRC) {
+                        label.setIcon(iconText);
                     } else {
-                        label.setIcon(new ImageIcon(v.getImage().getScaledInstance(16, 16, BufferedImage.SCALE_FAST)));
+                        label.setIcon(iconImage);
                     }
                 }
                 return comp;
             }
         };
         lstLayoutItems.setCellRenderer(rendererLayoutItem);
-        timer = new Timer(true);
+        timer = new Timer(this.getClass().getSimpleName(), true);
+
         timer.scheduleAtFixedRate(new imageUpdater(this), 0, 200);
-        
-        
+
+
     }
 
     public void showPreview(boolean visible) {
@@ -582,21 +584,25 @@ public class LayoutManager2 extends javax.swing.JPanel implements SourceListener
 
 
     }
-    protected void update(){
+
+    protected void update() {
         panPreview.repaint();
         lstLayoutItems.repaint();
         lstLayouts.repaint();
     }
 }
+
 class imageUpdater extends TimerTask {
 
     private LayoutManager2 layoutManager = null;
-    public imageUpdater(LayoutManager2 l){
+
+    public imageUpdater(LayoutManager2 l) {
         layoutManager = l;
     }
+
     @Override
     public void run() {
-        if (layoutManager.viewer.isVisible()){
+        if (layoutManager.viewer.isVisible()) {
             layoutManager.viewer.img = layoutManager.mixer.getImage();
         }
         layoutManager.update();

@@ -67,7 +67,7 @@ public class MainConsole extends javax.swing.JFrame implements InfoListener {
                         Layout l = (Layout) value;
                         label.setText(l.toString());
                         label.setToolTipText(l.toString());
-                        label.setIcon(new ImageIcon(l.getPreview().getScaledInstance(32, 32, BufferedImage.SCALE_FAST)));
+                        label.setIcon(new ImageIcon(l.getPreview(mixer.getWidth(),mixer.getHeight()).getScaledInstance(32, 32, BufferedImage.SCALE_FAST)));
                         label.setDisabledIcon(label.getIcon());
                     }
                 }

@@ -22,7 +22,7 @@ public class SystemMonitor extends TimerTask {
 
     public SystemMonitor(JProgressBar b) {
         bar = b;
-        timer = new Timer(true);
+        timer = new Timer(this.getClass().getSimpleName(),true);
         timer.scheduleAtFixedRate(this, 0, 1000);
     }
 

@@ -33,7 +33,7 @@ public class VideoEffects {
         if (output == null || w != output.getWidth() || h != output.getWidth()) {
             w = input.getWidth();
             h = input.getHeight();
-            output = java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().createCompatibleImage(w, h, BufferedImage.TRANSLUCENT);
+            output = java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().createCompatibleImage(w, h, BufferedImage.TYPE_INT_ARGB);
             buffer = output.createGraphics();
             buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC, 1F));
         }
@@ -209,7 +209,7 @@ public class VideoEffects {
     }
 
     public BufferedImage getDifference(BufferedImage input, int delay) {
-        lastImage = graphicConfiguration.createCompatibleImage(w, h, BufferedImage.TRANSLUCENT);
+        lastImage = graphicConfiguration.createCompatibleImage(w, h, BufferedImage.TYPE_INT_ARGB);
         lastImage.createGraphics().drawImage(input, 0, 0, null);
         lastImages.add(0, lastImage);
         for (int i = delay; i < lastImages.size(); i++) {
@@ -227,7 +227,7 @@ public class VideoEffects {
     public BufferedImage getSeeThePast(BufferedImage input, int delay, int opacity) {
         frameCount++;
         if (frameCount > delay) {
-            lastImage = graphicConfiguration.createCompatibleImage(w, h, BufferedImage.TRANSLUCENT);
+            lastImage = graphicConfiguration.createCompatibleImage(w, h, BufferedImage.TYPE_INT_ARGB);
             lastImage.createGraphics().drawImage(input, 0, 0, null);
             lastImages.add(0, lastImage);
             frameCount = 0;
@@ -482,7 +482,7 @@ public class VideoEffects {
             high = 1;
         }
         if (backgroundImage == null || dataBackgroundImage.length != data.length) {
-            backgroundImage = graphicConfiguration.createCompatibleImage(w, h, BufferedImage.TRANSLUCENT);
+            backgroundImage = graphicConfiguration.createCompatibleImage(w, h, BufferedImage.TYPE_INT_ARGB);
             backgroundImage.getGraphics().drawImage(input, 0, 0, null);
             dataBackgroundImage = ((java.awt.image.DataBufferInt) backgroundImage.getRaster().getDataBuffer()).getData();
         } else {
@@ -583,9 +583,9 @@ public class VideoEffects {
         int or, og, ob;
         ++stacksize;
         ++divider;
-        lastImage = graphicConfiguration.createCompatibleImage(w, h, BufferedImage.TRANSLUCENT);
+        lastImage = graphicConfiguration.createCompatibleImage(w, h, BufferedImage.TYPE_INT_ARGB);
         if ((lastWidth == w) && (lastHeight == h) && (lastStacksize == stacksize)) {
-            firstImage = graphicConfiguration.createCompatibleImage(w, h, BufferedImage.TRANSLUCENT);
+            firstImage = graphicConfiguration.createCompatibleImage(w, h, BufferedImage.TYPE_INT_ARGB);
             firstImage.createGraphics().drawImage(input, 0, 0, null);
             lastImages.add(0, firstImage);
             while (lastImages.size() > stacksize) {
@@ -685,7 +685,7 @@ public class VideoEffects {
     public static final int FILTERBLUE = 22;
     public static final int NIGHTVISION = 23;
     public static final int NIGHTVISION2 = 24;
-    private BufferedImage output = graphicConfiguration.createCompatibleImage(w, h, BufferedImage.TRANSLUCENT);
+    private BufferedImage output = graphicConfiguration.createCompatibleImage(w, h, BufferedImage.TYPE_INT_ARGB);
     private java.awt.Graphics2D buffer = null;
     private com.jhlabs.image.ContourFilter counterFilter = new com.jhlabs.image.ContourFilter();
     private com.jhlabs.image.ChromeFilter chromeFilter = new com.jhlabs.image.ChromeFilter();
@@ -696,7 +696,7 @@ public class VideoEffects {
     private com.jhlabs.image.CircleFilter circleFilter = new com.jhlabs.image.CircleFilter();
     private com.jhlabs.image.BlockFilter blockFilter = new com.jhlabs.image.BlockFilter();
     private BufferedImage firstImage = null;
-    private BufferedImage imageStack = graphicConfiguration.createCompatibleImage(w, h, BufferedImage.TRANSLUCENT);
+    private BufferedImage imageStack = graphicConfiguration.createCompatibleImage(w, h, BufferedImage.TYPE_INT_ARGB);
     private int[] redBuffer;
     private int[] greenBuffer;
     private int[] blueBuffer;

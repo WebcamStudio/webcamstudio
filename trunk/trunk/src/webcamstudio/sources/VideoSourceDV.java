@@ -19,6 +19,7 @@
  */
 package webcamstudio.sources;
 
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -106,12 +107,13 @@ public class VideoSourceDV extends VideoSource implements org.gstreamer.elements
         captureHeight=h;
         if (!isRendering) {
             isRendering = true;
-            tempimage = graphicConfiguration.createCompatibleImage(captureWidth, captureHeight, java.awt.image.BufferedImage.TRANSLUCENT);
+            tempimage = new BufferedImage(captureWidth, captureHeight, BufferedImage.TRANSLUCENT);
             tempimage.setRGB(0, 0, captureWidth, captureHeight, buffer.array(), 0, captureWidth);
             detectActivity(tempimage);
             applyEffects(tempimage);
             applyShape(tempimage);
             image=tempimage;
+            tempimage=null;
             isRendering = false;
         }
 

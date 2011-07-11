@@ -50,7 +50,7 @@ public class ControlFaceDetection extends javax.swing.JPanel implements Controls
                 JLabel label = (JLabel) comp;
                 Image face = faces.getImage(value.toString());
                 if (face != null) {
-                    BufferedImage img = new BufferedImage(16, 16, BufferedImage.TRANSLUCENT);
+                    BufferedImage img = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
                     if (face != null) {
                         img.createGraphics().drawImage(face, 0, 0, 16, 16, 0, 0, face.getWidth(null), face.getHeight(null), null);
                         label.setIcon(new ImageIcon(img));
@@ -131,7 +131,7 @@ public class ControlFaceDetection extends javax.swing.JPanel implements Controls
                     int[] points = null;
                     String selectedFace = cboFaces.getSelectedItem().toString();
                     Image meface = faces.getImage(selectedFace);
-                    BufferedImage face = new BufferedImage(320, 240, BufferedImage.TRANSLUCENT);
+                    BufferedImage face = new BufferedImage(320, 240, BufferedImage.TYPE_INT_ARGB);
                     Graphics2D buffer = face.createGraphics();
                     buffer.setBackground(new Color(0,0,0,0));
                     while (chkEnableFaceDetection.isSelected()) {

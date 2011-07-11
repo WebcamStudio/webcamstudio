@@ -30,7 +30,6 @@ public class VideoSourceAnimation extends VideoSource {
         location = loc.getAbsolutePath();
         name = loc.getName();
         frameRate = 5;
-        timer = new Timer(true);
     }
 
     public VideoSourceAnimation(java.net.URL loc) {
@@ -75,7 +74,7 @@ public class VideoSourceAnimation extends VideoSource {
         if (timer != null) {
             timer.cancel();
         }
-        timer = new Timer(true);
+        timer = new Timer(this.getClass().getSimpleName(),true);
         if (animator == null) {
             animator = new Animator(this);
             try {
@@ -123,7 +122,7 @@ public class VideoSourceAnimation extends VideoSource {
         if (timer != null) {
             timer.cancel();
         }
-        timer = new Timer(true);
+        timer = new Timer(this.getClass().getSimpleName(),true);
         timer.scheduleAtFixedRate(new imageAnimation(this), 0, animator.getTimeLapse());
 
     }
@@ -192,7 +191,7 @@ class imageAnimation extends TimerTask {
             animation.captureWidth = animation.animator.getWidth();
             animation.captureHeight = animation.animator.getHeight();
 
-            animation.tempimage = animation.graphicConfiguration.createCompatibleImage(animation.captureWidth, animation.captureHeight, java.awt.image.BufferedImage.TRANSLUCENT);
+            animation.tempimage = animation.graphicConfiguration.createCompatibleImage(animation.captureWidth, animation.captureHeight, java.awt.image.BufferedImage.TYPE_INT_ARGB);
             Graphics2D buffer = animation.tempimage.createGraphics();
             buffer.drawImage(animation.animator.getCurrentImage(), 0, 0, null);
             buffer.dispose();

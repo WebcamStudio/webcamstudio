@@ -21,7 +21,7 @@ public class LayoutEventsManager extends TimerTask {
 
     public LayoutEventsManager(Collection<Layout> ls) {
         layouts = ls;
-        timer = new Timer(true);
+        timer = new Timer(this.getClass().getSimpleName(),true);
         timer.scheduleAtFixedRate(this, 0, 1000);
     }
 

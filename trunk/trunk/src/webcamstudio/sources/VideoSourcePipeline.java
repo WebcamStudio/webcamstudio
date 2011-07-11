@@ -154,7 +154,7 @@ public class VideoSourcePipeline extends VideoSource implements org.gstreamer.el
         captureHeight = h;
         if (!isRendering) {
             isRendering = true;
-            tempimage = graphicConfiguration.createCompatibleImage(captureWidth, captureHeight, java.awt.image.BufferedImage.TRANSLUCENT);
+            tempimage = graphicConfiguration.createCompatibleImage(captureWidth, captureHeight, java.awt.image.BufferedImage.TYPE_INT_ARGB);
             int[] array = buffer.array();
             for (int i = 0; i < array.length; i++) {
                 array[i] = array[i] | 0xFF000000;

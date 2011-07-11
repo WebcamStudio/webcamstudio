@@ -19,15 +19,18 @@
  */
 package webcamstudio.sources;
 
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.IntBuffer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import org.gstreamer.*;
 import org.gstreamer.elements.AppSink;
+import org.gstreamer.elements.RGBDataSink;
 import webcamstudio.controls.ControlRescale;
 import webcamstudio.exporter.vloopback.VideoDevice;
 
@@ -35,11 +38,11 @@ import webcamstudio.exporter.vloopback.VideoDevice;
  *
  * @author pballeux
  */
-public class VideoSourceV4L extends VideoSource {
+public class VideoSourceV4L extends VideoSource implements RGBDataSink.Listener {
 
     protected String source = "v4lsrc";
-    private VideoSink videosink = null;
-    private AppSink sink = null;
+    private RGBDataSink sink = null;
+    private Graphics2D buffer = null;
 
     public VideoSourceV4L() {
         outputWidth = 320;
@@ -96,10 +99,6 @@ public class VideoSourceV4L extends VideoSource {
 
     public void stopSource() {
         stopMe = true;
-        if (videosink!=null){
-            videosink.stop();
-            videosink=null;
-        }
         if (pipe != null) {
 
             pipe.stop();
@@ -117,8 +116,9 @@ public class VideoSourceV4L extends VideoSource {
     public void startSource() {
         isPlaying = true;
         location = getDeviceForName(name, new File(location)).getAbsolutePath();
+
         try {
-            sink = (AppSink) ElementFactory.make("appsink", "appsink"+uuId);
+            sink = new RGBDataSink(name + uuId, this);
             String rescaling = "";
             if (doRescale) {
                 rescaling = " ! videoscale ! video/x-raw-yuv,width=" + captureWidth + ",height=" + captureHeight + " ! videorate ! video/x-raw-yuv,framerate=" + frameRate + "/1";
@@ -173,21 +173,15 @@ public class VideoSourceV4L extends VideoSource {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if (videosink!=null){
-            videosink.stop();
-        }
-        videosink = new VideoSink(this, sink);
-        videosink.start();
     }
 
-    
     @Override
     public void setImage(BufferedImage img) {
         applyFaceDetection(img);
         detectActivity(img);
         applyEffects(img);
         applyShape(img);
-        image=img;
+        image = img;
     }
 
     @Override
@@ -268,5 +262,20 @@ public class VideoSourceV4L extends VideoSource {
         }
         return icon;
 
+    }
+
+    @Override
+    public void rgbFrame(int w, int h, IntBuffer buffer) {
+        captureWidth = w;
+        captureHeight = h;
+        if (!isRendering) {
+            isRendering = true;
+            tempimage = graphicConfiguration.createCompatibleImage(captureWidth, captureHeight, java.awt.image.BufferedImage.TYPE_INT_ARGB);
+            int[] array = buffer.array();
+            tempimage.setRGB(0, 0, captureWidth, captureHeight, array, 0, captureWidth);
+            setImage(tempimage);
+            tempimage=null;
+            isRendering = false;
+        }
     }
 }

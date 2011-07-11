@@ -63,7 +63,7 @@ public class Animator  {
                 JarEntry entry = list.nextElement();
                 if (entry.getName().toLowerCase().endsWith(".png")) {
                     tempimage = javax.imageio.ImageIO.read(jarFile.getInputStream(jarFile.getEntry(entry.getName())));
-                    img = java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().createCompatibleImage(tempimage.getWidth(), tempimage.getHeight(), java.awt.image.BufferedImage.TRANSLUCENT);
+                    img = java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().createCompatibleImage(tempimage.getWidth(), tempimage.getHeight(), java.awt.image.BufferedImage.TYPE_INT_ARGB);
                     width = img.getWidth();
                     height = img.getHeight();
                     java.awt.Graphics2D g = img.createGraphics();

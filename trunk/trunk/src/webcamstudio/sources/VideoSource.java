@@ -78,7 +78,7 @@ public abstract class VideoSource implements InfoListener {
     }
 
     public javax.swing.ImageIcon getThumbnail() {
-        BufferedImage img = new BufferedImage(32, 32, BufferedImage.TRANSLUCENT);
+        BufferedImage img = new BufferedImage(32, 32, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = img.createGraphics();
         String n = name;
         g.setColor(Color.GRAY);
@@ -109,7 +109,7 @@ public abstract class VideoSource implements InfoListener {
             img.delete();
         }
 
-        BufferedImage i = new BufferedImage(icon.getIconWidth(), icon.getIconHeight(), BufferedImage.TRANSLUCENT);
+        BufferedImage i = new BufferedImage(icon.getIconWidth(), icon.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
         i.getGraphics().drawImage(icon.getImage(), 0, 0, null);
         System.out.println("Saving to " + img.getAbsolutePath());
         RenderedImage ri = (RenderedImage) i;
@@ -707,7 +707,7 @@ public abstract class VideoSource implements InfoListener {
             activityDetected =
                     true;
             if (lastInputImage == null || w != lastInputImage.getWidth() || h != lastInputImage.getHeight()) {
-                lastInputImage = java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().createCompatibleImage(w, h, java.awt.image.BufferedImage.TRANSLUCENT);
+                lastInputImage = java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().createCompatibleImage(w, h, java.awt.image.BufferedImage.TYPE_INT_ARGB);
                 lastInputImage.getGraphics().drawImage(input, 0, 0, null);
             }
 
@@ -907,7 +907,7 @@ public abstract class VideoSource implements InfoListener {
                 org.gstreamer.Buffer b = sink.pullBuffer();
                 if (b != null) {
                     IntBuffer bb = b.getByteBuffer().asIntBuffer();
-                    tempimage = graphicConfiguration.createCompatibleImage(captureWidth, captureHeight, java.awt.image.BufferedImage.TRANSLUCENT);
+                    tempimage = graphicConfiguration.createCompatibleImage(captureWidth, captureHeight, java.awt.image.BufferedImage.TYPE_INT_ARGB);
                     tempimage.setRGB(0, 0, captureWidth, captureHeight, bb.array(), 0, captureWidth);
                     image = tempimage;
                 }
