@@ -7,9 +7,6 @@ package webcamstudio.sources;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-import java.util.TimerTask;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JPanel;
 import webcamstudio.*;
 import webcamstudio.components.PreciseTimer;
@@ -255,7 +252,7 @@ class imageText implements Runnable {
                     text.outputWidth = 320;
                     text.outputHeight = 240;
                 }
-                text.tempimage = text.graphicConfiguration.createCompatibleImage(text.captureWidth, text.captureHeight, java.awt.image.BufferedImage.TYPE_INT_ARGB);
+                text.tempimage = text.graphicConfiguration.createCompatibleImage(text.captureWidth, text.captureHeight, java.awt.image.BufferedImage.TRANSLUCENT);
                 java.awt.Graphics2D buffer = text.tempimage.createGraphics();
 
                 if (text.updateTimeLaspe > 0 && System.currentTimeMillis() - lastTimeStamp > text.updateTimeLaspe) {
