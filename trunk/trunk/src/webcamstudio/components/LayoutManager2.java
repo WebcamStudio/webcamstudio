@@ -142,7 +142,7 @@ public class LayoutManager2 extends javax.swing.JPanel implements SourceListener
         lstLayoutItems.setCellRenderer(rendererLayoutItem);
         timer = new Timer(this.getClass().getSimpleName(), true);
 
-        timer.scheduleAtFixedRate(new imageUpdater(this), 0, 200);
+        timer.scheduleAtFixedRate(new imageUpdater(this), 0, 500);
 
 
     }

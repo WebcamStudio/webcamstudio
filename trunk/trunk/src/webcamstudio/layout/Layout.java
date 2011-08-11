@@ -141,7 +141,7 @@ public class Layout {
             for (LayoutItem item : items.values()) {
                 item.setTransitionToDo(item.getTransitionIn());
                 item.setActive(true);
-                tp.submit(item);
+                tp.submit(item);                
             }
             tp.shutdown();
 

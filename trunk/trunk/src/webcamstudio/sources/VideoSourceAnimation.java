@@ -10,8 +10,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
@@ -23,7 +21,6 @@ import javax.swing.JPanel;
  */
 public class VideoSourceAnimation extends VideoSource {
 
-    private Timer timer = null;
 
     public VideoSourceAnimation(java.io.File loc) {
 
@@ -71,10 +68,8 @@ public class VideoSourceAnimation extends VideoSource {
 
     @Override
     public void startSource() {
-        if (timer != null) {
-            timer.cancel();
-        }
-        timer = new Timer(this.getClass().getSimpleName(),true);
+        stopMe=false;
+
         if (animator == null) {
             animator = new Animator(this);
             try {
@@ -86,6 +81,7 @@ public class VideoSourceAnimation extends VideoSource {
                 }
                 captureWidth = animator.getWidth();
                 captureHeight = animator.getHeight();
+                frameRate=1000/animator.getTimeLapse();
                 if (outputHeight == 0 && outputWidth == 0) {
                     outputWidth = 320;
                     outputHeight = 240;
@@ -94,8 +90,7 @@ public class VideoSourceAnimation extends VideoSource {
                 error("Animation Error  : " + e.getMessage());
             }
         }
-        timer.scheduleAtFixedRate(new imageAnimation(this), 0, animator.getTimeLapse());
-
+        new Thread(new imageAnimation(this),name).start();
     }
 
     @Override
@@ -110,7 +105,7 @@ public class VideoSourceAnimation extends VideoSource {
 
     @Override
     public boolean isPlaying() {
-        return (timer != null && animator!=null);
+        return (animator!=null);
     }
 
     @Override
@@ -119,12 +114,6 @@ public class VideoSourceAnimation extends VideoSource {
 
     @Override
     public void play() {
-        if (timer != null) {
-            timer.cancel();
-        }
-        timer = new Timer(this.getClass().getSimpleName(),true);
-        timer.scheduleAtFixedRate(new imageAnimation(this), 0, animator.getTimeLapse());
-
     }
 
     @Override
@@ -135,11 +124,6 @@ public class VideoSourceAnimation extends VideoSource {
     @Override
     public void stopSource() {
         stopMe = true;
-        if (timer != null) {
-            timer.cancel();
-
-        }
-        timer = null;
         image = null;
     }
 
@@ -177,7 +161,7 @@ public class VideoSourceAnimation extends VideoSource {
     }
 }
 
-class imageAnimation extends TimerTask {
+class imageAnimation implements Runnable {
 
     private VideoSourceAnimation animation = null;
 
@@ -187,6 +171,7 @@ class imageAnimation extends TimerTask {
 
     @Override
     public void run() {
+        while (!animation.stopMe){
         if (animation.animator != null) {
             animation.captureWidth = animation.animator.getWidth();
             animation.captureHeight = animation.animator.getHeight();
@@ -198,6 +183,12 @@ class imageAnimation extends TimerTask {
             animation.applyEffects(animation.tempimage);
             animation.applyShape(animation.tempimage);
             animation.image = animation.tempimage;
+        }
+            try {
+                Thread.sleep(1000 / animation.frameRate);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(imageAnimation.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 }

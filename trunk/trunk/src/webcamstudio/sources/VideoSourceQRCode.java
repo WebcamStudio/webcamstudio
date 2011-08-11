@@ -12,8 +12,6 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
@@ -21,7 +19,6 @@ import javax.swing.JPanel;
 
 public class VideoSourceQRCode extends VideoSource {
 
-    private Timer timer = null;
     public VideoSourceQRCode(String text) {
         location = "";
         name = "QRCode";
@@ -36,9 +33,9 @@ public class VideoSourceQRCode extends VideoSource {
     @Override
     public void startSource() {
         isPlaying = true;
+        stopMe = false;
 
-        timer = new Timer(this.getClass().getSimpleName(),true);
-        timer.scheduleAtFixedRate(new imageQRCode(this), 0, 500);
+        new Thread(new imageQRCode(this), name).start();
     }
 
     @Override
@@ -68,10 +65,6 @@ public class VideoSourceQRCode extends VideoSource {
 
     @Override
     public void stopSource() {
-        if (timer!=null){
-            timer.cancel();
-            timer=null;
-        }
         isPlaying = false;
         stopMe = true;
         image = null;
@@ -127,7 +120,7 @@ public class VideoSourceQRCode extends VideoSource {
     }
 }
 
-class imageQRCode extends TimerTask {
+class imageQRCode implements Runnable {
 
     private VideoSourceQRCode qrcode = null;
 
@@ -139,14 +132,21 @@ class imageQRCode extends TimerTask {
     @Override
     public void run() {
         com.google.zxing.MultiFormatWriter w = new MultiFormatWriter();
-        try {
-            BitMatrix b = w.encode(qrcode.customText, BarcodeFormat.QR_CODE, qrcode.captureWidth, qrcode.captureHeight);
-            qrcode.tempimage = com.google.zxing.client.j2se.MatrixToImageWriter.toBufferedImage(b);
-            qrcode.applyEffects(qrcode.tempimage);
-            qrcode.applyShape(qrcode.tempimage);
-            qrcode.image = qrcode.tempimage;
-        } catch (WriterException ex) {
-            Logger.getLogger(VideoSourceQRCode.class.getName()).log(Level.SEVERE, null, ex);
+        while (!qrcode.stopMe) {
+            try {
+                BitMatrix b = w.encode(qrcode.customText, BarcodeFormat.QR_CODE, qrcode.captureWidth, qrcode.captureHeight);
+                qrcode.tempimage = com.google.zxing.client.j2se.MatrixToImageWriter.toBufferedImage(b);
+                qrcode.applyEffects(qrcode.tempimage);
+                qrcode.applyShape(qrcode.tempimage);
+                qrcode.image = qrcode.tempimage;
+            } catch (WriterException ex) {
+                Logger.getLogger(VideoSourceQRCode.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(imageQRCode.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 }

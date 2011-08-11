@@ -9,6 +9,8 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JPanel;
 import webcamstudio.*;
 
@@ -18,11 +20,9 @@ import webcamstudio.*;
  */
 public class VideoSourceText extends VideoSource {
 
-    private Timer timer = null;
-
     protected VideoSourceText() {
         frameRate = 1;
-        
+
     }
 
     public VideoSourceText(String txt) {
@@ -51,21 +51,14 @@ public class VideoSourceText extends VideoSource {
     @Override
     public void setFrameRate(int r) {
         frameRate = r;
-        if (timer != null) {
-            timer.cancel();
-            timer = null;
-            timer = new Timer(this.getClass().getSimpleName(),true);
-            timer.scheduleAtFixedRate(new imageText(this), 0, 1000 / frameRate);
-        }
-
     }
 
     @Override
     public void startSource() {
+        stopMe = false;
         isPlaying = true;
         loadText();
-        timer = new Timer(this.getClass().getSimpleName(),true);
-        timer.scheduleAtFixedRate(new imageText(this), 0, 1000 / frameRate);
+        new Thread(new imageText(this),name).start();
     }
 
     @Override
@@ -76,8 +69,6 @@ public class VideoSourceText extends VideoSource {
     @Override
     public void stopSource() {
         isPlaying = false;
-        timer.cancel();
-        timer = null;
         stopMe = true;
         image = null;
     }
@@ -254,142 +245,149 @@ class imageText extends TimerTask {
 
     @Override
     public void run() {
-        if (!isRendering) {
-            isRendering = true;
-            //lineIndex = index;
-            if (text.outputWidth == 0 || text.outputHeight == 0) {
-                text.outputWidth = 320;
-                text.outputHeight = 240;
-            }
-            text.tempimage = text.graphicConfiguration.createCompatibleImage(text.captureWidth, text.captureHeight, java.awt.image.BufferedImage.TYPE_INT_ARGB);
-            java.awt.Graphics2D buffer = text.tempimage.createGraphics();
+        while (!text.stopMe) {
+            if (!isRendering) {
+                isRendering = true;
+                //lineIndex = index;
+                if (text.outputWidth == 0 || text.outputHeight == 0) {
+                    text.outputWidth = 320;
+                    text.outputHeight = 240;
+                }
+                text.tempimage = text.graphicConfiguration.createCompatibleImage(text.captureWidth, text.captureHeight, java.awt.image.BufferedImage.TYPE_INT_ARGB);
+                java.awt.Graphics2D buffer = text.tempimage.createGraphics();
 
-            if (text.updateTimeLaspe > 0 && System.currentTimeMillis() - lastTimeStamp > text.updateTimeLaspe) {
-                text.loadText();
-                lastTimeStamp = System.currentTimeMillis();
-            }
-            buffer.setRenderingHint(java.awt.RenderingHints.KEY_TEXT_ANTIALIASING, java.awt.RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-            buffer.setRenderingHint(java.awt.RenderingHints.KEY_INTERPOLATION, java.awt.RenderingHints.VALUE_INTERPOLATION_BICUBIC);
-            buffer.setRenderingHint(java.awt.RenderingHints.KEY_RENDERING, java.awt.RenderingHints.VALUE_RENDER_QUALITY);
-            buffer.setRenderingHint(java.awt.RenderingHints.KEY_DITHERING, java.awt.RenderingHints.VALUE_DITHER_ENABLE);
-            buffer.setRenderingHint(java.awt.RenderingHints.KEY_COLOR_RENDERING, java.awt.RenderingHints.VALUE_COLOR_RENDER_QUALITY);
-            buffer.setFont(new java.awt.Font(text.fontName, java.awt.Font.PLAIN, text.fontSize));
+                if (text.updateTimeLaspe > 0 && System.currentTimeMillis() - lastTimeStamp > text.updateTimeLaspe) {
+                    text.loadText();
+                    lastTimeStamp = System.currentTimeMillis();
+                }
+                buffer.setRenderingHint(java.awt.RenderingHints.KEY_TEXT_ANTIALIASING, java.awt.RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+                buffer.setRenderingHint(java.awt.RenderingHints.KEY_INTERPOLATION, java.awt.RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+                buffer.setRenderingHint(java.awt.RenderingHints.KEY_RENDERING, java.awt.RenderingHints.VALUE_RENDER_QUALITY);
+                buffer.setRenderingHint(java.awt.RenderingHints.KEY_DITHERING, java.awt.RenderingHints.VALUE_DITHER_ENABLE);
+                buffer.setRenderingHint(java.awt.RenderingHints.KEY_COLOR_RENDERING, java.awt.RenderingHints.VALUE_COLOR_RENDER_QUALITY);
+                buffer.setFont(new java.awt.Font(text.fontName, java.awt.Font.PLAIN, text.fontSize));
 
-            buffer.setBackground(text.backgroundColor);
-            buffer.clearRect(0, 0, text.tempimage.getWidth(), text.tempimage.getHeight());
-            buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC, text.backgroundOpacity));
-            buffer.setColor(text.backgroundColor);
-            buffer.fillRect(0, 0, text.tempimage.getWidth(), text.tempimage.getHeight());
-            buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC, 1F));
-            //draw Line
-            switch (text.scrollDirection) {
-                case VideoSource.SCROLL_NONE:
-                    interLine = 0;
-                    index = 0;
-                    x = 0;
-                    y = text.fontSize;
-                    lineIndex = index;
-                    while (y < (text.tempimage.getHeight() + text.fontSize) && text.lines.size() > 0 && lineIndex < text.lines.size()) {
-                        //buffer.setColor(backgroundColor);
-                        //buffer.fillRect(0, 0, tempimage.getWidth(), tempimage.getHeight());
-                        //buffer.drawString(lines.get(lineIndex), x + 1, y + 1);
-                        buffer.setColor(text.foregroundColor);
-                        buffer.drawString(text.translateTags(text.lines.get(lineIndex)), x, y);
-                        lineIndex++;
-                        y += text.fontSize;
-                    }
-                    break;
-                case VideoSource.SCROLL_BOTTOMTOTOP:
-                    
-                    if (interLine <= 0) {
-                        interLine = text.fontSize;
-                        index += 1;
-                    }
-                    if (index >= text.lines.size()) {
-                        index = 0;
-                    }
-                    x = 0;
-                    y = interLine -= 1;
-                    lineIndex = index;
-                    while (y < (text.tempimage.getHeight() + text.fontSize) && text.lines.size() > 0) {
-                        if (lineIndex >= text.lines.size()) {
-                            lineIndex = 0;
-                        }
-                        buffer.setColor(text.foregroundColor);
-                        buffer.drawString(text.translateTags(text.lines.get(lineIndex)), x, y);
-                        lineIndex++;
-                        y += text.fontSize;
-                    }
-                    break;
-                case VideoSource.SCROLL_TOPTOBOTTOM:
-                    if (interLine >= text.fontSize) {
+                buffer.setBackground(text.backgroundColor);
+                buffer.clearRect(0, 0, text.tempimage.getWidth(), text.tempimage.getHeight());
+                buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC, text.backgroundOpacity));
+                buffer.setColor(text.backgroundColor);
+                buffer.fillRect(0, 0, text.tempimage.getWidth(), text.tempimage.getHeight());
+                buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC, 1F));
+                //draw Line
+                switch (text.scrollDirection) {
+                    case VideoSource.SCROLL_NONE:
                         interLine = 0;
-                        index -= 1;
-                    }
-                    if (index < 0) {
-                        index = text.lines.size() - 1;
-                    }
-                    x = 0;
-                    y = interLine += 1;
-                    lineIndex = index;
-                    while (y < (text.tempimage.getHeight() + text.fontSize) && text.lines.size() > 0) {
-                        if (lineIndex >= text.lines.size()) {
-                            lineIndex = 0;
+                        index = 0;
+                        x = 0;
+                        y = text.fontSize;
+                        lineIndex = index;
+                        while (y < (text.tempimage.getHeight() + text.fontSize) && text.lines.size() > 0 && lineIndex < text.lines.size()) {
+                            //buffer.setColor(backgroundColor);
+                            //buffer.fillRect(0, 0, tempimage.getWidth(), tempimage.getHeight());
+                            //buffer.drawString(lines.get(lineIndex), x + 1, y + 1);
+                            buffer.setColor(text.foregroundColor);
+                            buffer.drawString(text.translateTags(text.lines.get(lineIndex)), x, y);
+                            lineIndex++;
+                            y += text.fontSize;
                         }
-                        buffer.setColor(text.foregroundColor);
-                        buffer.drawString(text.translateTags(text.lines.get(lineIndex)), x, y);
-                        lineIndex++;
-                        y += text.fontSize;
-                    }
-                    break;
-                case VideoSource.SCROLL_LEFTTORIGHT:
-                    if (x >= 0) {
-                        index -= 1;
+                        break;
+                    case VideoSource.SCROLL_BOTTOMTOTOP:
+
+                        if (interLine <= 0) {
+                            interLine = text.fontSize;
+                            index += 1;
+                        }
+                        if (index >= text.lines.size()) {
+                            index = 0;
+                        }
+                        x = 0;
+                        y = interLine -= 1;
+                        lineIndex = index;
+                        while (y < (text.tempimage.getHeight() + text.fontSize) && text.lines.size() > 0) {
+                            if (lineIndex >= text.lines.size()) {
+                                lineIndex = 0;
+                            }
+                            buffer.setColor(text.foregroundColor);
+                            buffer.drawString(text.translateTags(text.lines.get(lineIndex)), x, y);
+                            lineIndex++;
+                            y += text.fontSize;
+                        }
+                        break;
+                    case VideoSource.SCROLL_TOPTOBOTTOM:
+                        if (interLine >= text.fontSize) {
+                            interLine = 0;
+                            index -= 1;
+                        }
                         if (index < 0) {
                             index = text.lines.size() - 1;
                         }
-                        x = 0 - buffer.getFontMetrics().stringWidth(text.translateTags(text.lines.get(index)));
-                    }
-                    x += 3;
-                    y = text.fontSize + 10;
-                    lineIndex = index;
-                    txt = "";
-                    while ((buffer.getFontMetrics().stringWidth(txt) + x) <= text.tempimage.getWidth()) {
-                        txt += text.translateTags(text.lines.get(lineIndex++));
-                        if (lineIndex >= text.lines.size()) {
-                            lineIndex = 0;
-                        }
-                    }
-                    buffer.setColor(text.foregroundColor);
-                    buffer.drawString(txt, x, y);
-                    break;
-                case VideoSource.SCROLL_RIGHTTOLEFT:
-                    if ((buffer.getFontMetrics().stringWidth(text.translateTags(text.lines.get(index))) + x) <= 0) {
                         x = 0;
-                        index += 1;
-                    }
-                    if (index >= text.lines.size()) {
-                        index = 0;
-                    }
-                    x -= 3;
-                    y = text.fontSize + 10;
-                    lineIndex = index;
-                    txt = "";
-                    while ((buffer.getFontMetrics().stringWidth(txt) + x) <= text.tempimage.getWidth()) {
-                        txt += text.translateTags(text.lines.get(lineIndex++));
-                        if (lineIndex >= text.lines.size()) {
-                            lineIndex = 0;
+                        y = interLine += 1;
+                        lineIndex = index;
+                        while (y < (text.tempimage.getHeight() + text.fontSize) && text.lines.size() > 0) {
+                            if (lineIndex >= text.lines.size()) {
+                                lineIndex = 0;
+                            }
+                            buffer.setColor(text.foregroundColor);
+                            buffer.drawString(text.translateTags(text.lines.get(lineIndex)), x, y);
+                            lineIndex++;
+                            y += text.fontSize;
                         }
-                    }
-                    buffer.setColor(text.foregroundColor);
-                    buffer.drawString(txt, x, y);
-                    break;
+                        break;
+                    case VideoSource.SCROLL_LEFTTORIGHT:
+                        if (x >= 0) {
+                            index -= 1;
+                            if (index < 0) {
+                                index = text.lines.size() - 1;
+                            }
+                            x = 0 - buffer.getFontMetrics().stringWidth(text.translateTags(text.lines.get(index)));
+                        }
+                        x += 3;
+                        y = text.fontSize + 10;
+                        lineIndex = index;
+                        txt = "";
+                        while ((buffer.getFontMetrics().stringWidth(txt) + x) <= text.tempimage.getWidth()) {
+                            txt += text.translateTags(text.lines.get(lineIndex++));
+                            if (lineIndex >= text.lines.size()) {
+                                lineIndex = 0;
+                            }
+                        }
+                        buffer.setColor(text.foregroundColor);
+                        buffer.drawString(txt, x, y);
+                        break;
+                    case VideoSource.SCROLL_RIGHTTOLEFT:
+                        if ((buffer.getFontMetrics().stringWidth(text.translateTags(text.lines.get(index))) + x) <= 0) {
+                            x = 0;
+                            index += 1;
+                        }
+                        if (index >= text.lines.size()) {
+                            index = 0;
+                        }
+                        x -= 3;
+                        y = text.fontSize + 10;
+                        lineIndex = index;
+                        txt = "";
+                        while ((buffer.getFontMetrics().stringWidth(txt) + x) <= text.tempimage.getWidth()) {
+                            txt += text.translateTags(text.lines.get(lineIndex++));
+                            if (lineIndex >= text.lines.size()) {
+                                lineIndex = 0;
+                            }
+                        }
+                        buffer.setColor(text.foregroundColor);
+                        buffer.drawString(txt, x, y);
+                        break;
+                }
+                buffer.dispose();
+                //text.applyEffects(text.tempimage);
+                //text.applyShape(text.tempimage);
+                text.image = text.tempimage;
+                isRendering = false;
             }
-            buffer.dispose();
-            //text.applyEffects(text.tempimage);
-            //text.applyShape(text.tempimage);
-            text.image = text.tempimage;
-            isRendering = false;
+            try {
+                Thread.sleep(1000 / text.frameRate);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(imageText.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
 
     }
