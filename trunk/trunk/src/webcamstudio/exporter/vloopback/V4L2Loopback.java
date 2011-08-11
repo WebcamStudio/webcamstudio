@@ -36,20 +36,20 @@ public class V4L2Loopback extends VideoOutput{
     }
 
     @Override
-    public void write(BufferedImage bi) {
-        if (flipImage){
-            bi = flipper.cloneImage(bi);
-            flipper.applyEffect(bi);
-        }
+    public void write(int[] data) {
+//        if (flipImage){
+//            bi = flipper.cloneImage(bi);
+//            flipper.applyEffect(bi);
+//        }
         if (devFD != 0) {
 
             byte[] buffer = null;
             switch(pixFormat){
                 case RGB24:
-                    buffer = img2rgb24(bi);
+                    buffer = img2rgb24(data);
                     break;
                 case UYVY:
-                    buffer = img2uyvy(bi);
+                    buffer = img2uyvy(data);
                     break;
             }
             

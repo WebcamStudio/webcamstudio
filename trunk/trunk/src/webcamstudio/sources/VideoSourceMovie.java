@@ -95,7 +95,7 @@ public class VideoSourceMovie extends VideoSource implements RGBDataSink.Listene
         if (pipe != null) {
 
             pipe.stop();
-            pipe.getState();
+            pipe.getState(100);
             sink = null;
             java.util.List<Element> list = pipe.getElements();
             for (int i = 0; i < list.size(); i++) {
@@ -186,6 +186,9 @@ public class VideoSourceMovie extends VideoSource implements RGBDataSink.Listene
             if (loadSound) {
                 elementAudioVolume = pipe.getElementByName("volume");
             }
+            if (elementAudioVolume == null) {
+                hasSound = false;
+            }
             pipe.getBus().connect(new Bus.EOS() {
 
                 public void endOfStream(GstObject arg0) {
@@ -224,7 +227,11 @@ public class VideoSourceMovie extends VideoSource implements RGBDataSink.Listene
         detectActivity(img);
         applyEffects(img);
         applyShape(img);
-        image = img;
+        if (image == null || image.getWidth() != img.getWidth() || image.getHeight() != img.getHeight()) {
+            image = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TRANSLUCENT);
+            dataOutputImage = ((java.awt.image.DataBufferInt) image.getRaster().getDataBuffer()).getData();
+        }
+        System.arraycopy(dataInputImage, 0, dataOutputImage, 0, dataInputImage.length);
     }
 
     public void seek(long secs) {
@@ -241,7 +248,7 @@ public class VideoSourceMovie extends VideoSource implements RGBDataSink.Listene
 
     public long getSeekPosition() {
         long pos = 0;
-        if (pipe != null && (pipe.isPlaying() || pipe.getState() == State.PAUSED)) {
+        if (pipe != null && (pipe.isPlaying() || pipe.getState(100) == State.PAUSED)) {
             pos = pipe.queryPosition().toSeconds();
         }
         return pos;
@@ -278,6 +285,8 @@ public class VideoSourceMovie extends VideoSource implements RGBDataSink.Listene
         volume = v;
         if (elementAudioVolume != null) {
             elementAudioVolume.set("volume", (double) v / 100D);
+        } else {
+            hasSound = false;
         }
 
     }
@@ -286,7 +295,7 @@ public class VideoSourceMovie extends VideoSource implements RGBDataSink.Listene
     public boolean isPaused() {
         boolean retValue = false;
         if (pipe != null) {
-            retValue = (pipe.getState() == State.PAUSED);
+            retValue = (pipe.getState(100) == State.PAUSED);
         }
         return retValue;
     }
@@ -310,7 +319,9 @@ public class VideoSourceMovie extends VideoSource implements RGBDataSink.Listene
         list.add(new webcamstudio.controls.ControlGSTEffects(this));
         list.add(new webcamstudio.controls.ControlActivity(this));
         list.add(new webcamstudio.controls.ControlFaceDetection(this));
-        list.add(new ControlAudio(this));
+        if (hasSound) {
+            list.add(new ControlAudio(this));
+        }
         return list;
     }
     private Element elementAudioVolume = null;
@@ -359,14 +370,14 @@ public class VideoSourceMovie extends VideoSource implements RGBDataSink.Listene
         captureHeight = h;
         if (!isRendering) {
             isRendering = true;
-            tempimage = graphicConfiguration.createCompatibleImage(captureWidth, captureHeight, java.awt.image.BufferedImage.TYPE_INT_ARGB);
+            if (tempimage == null || tempimage.getWidth() != w || tempimage.getHeight() != h) {
+                tempimage = graphicConfiguration.createCompatibleImage(captureWidth, captureHeight, java.awt.image.BufferedImage.TRANSLUCENT);
+                dataInputImage = ((java.awt.image.DataBufferInt) tempimage.getRaster().getDataBuffer()).getData();
+            }
             int[] array = buffer.array();
-            tempimage.setRGB(0, 0, captureWidth, captureHeight, array, 0, captureWidth);
+            System.arraycopy(array, 0, dataInputImage, 0, dataInputImage.length);
             setImage(tempimage);
-            tempimage = null;
             isRendering = false;
-        } else {
-            System.out.println("Skipping frame...");
         }
     }
 }

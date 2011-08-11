@@ -22,7 +22,7 @@ import webcamstudio.layout.LayoutItem;
  *
  * @author pballeux
  */
-public class Mixer  {
+public class Mixer {
 
     protected int frameRate = 20;
     protected int outputWidth = 320;
@@ -40,7 +40,9 @@ public class Mixer  {
     protected int outputStreamPort = 4888;
     protected Timer timer = null;
     protected java.awt.Graphics2D buffer = null;
-    protected java.awt.Graphics2D bufferOutput = null;
+    protected int[] dataImageOutput = null;
+    protected int[] dataImageMixer = null;
+
     public enum MixerQuality {
 
         HIGH,
@@ -55,8 +57,8 @@ public class Mixer  {
     private MixerQuality quality = MixerQuality.NORMAL;
 
     public Mixer() {
-        timer = new Timer(this.getClass().getSimpleName(),true);
-        timer.schedule(new imageMixer(this), 0, 1000/frameRate);
+        timer = new Timer(this.getClass().getSimpleName(), true);
+        timer.schedule(new imageMixer(this), 0, 1000 / frameRate);
     }
 
     public void setSize(int w, int h) {
@@ -67,8 +69,8 @@ public class Mixer  {
     public void setFramerate(int fps) {
         frameRate = fps;
         timer.cancel();
-        timer = new Timer(this.getClass().getSimpleName(),true);
-        timer.schedule(new imageMixer(this), 0, 1000/frameRate);
+        timer = new Timer(this.getClass().getSimpleName(), true);
+        timer.schedule(new imageMixer(this), 0, 1000 / frameRate);
     }
 
     public int getFramerate() {
@@ -89,9 +91,11 @@ public class Mixer  {
 
     protected void drawImage() {
         isDrawing = true;
-        
-        image = new BufferedImage(outputWidth, outputHeight, BufferedImage.TRANSLUCENT);
-        buffer = image.createGraphics();
+        if (image == null || image.getWidth() != outputWidth || image.getHeight() != outputHeight) {
+            image = new BufferedImage(outputWidth, outputHeight, BufferedImage.TRANSLUCENT);
+            buffer = image.createGraphics();
+            dataImageMixer = ((java.awt.image.DataBufferInt) image.getRaster().getDataBuffer()).getData();
+        }
 //        switch (quality) {
 //            case HIGH:
 //                buffer.setRenderingHint(java.awt.RenderingHints.KEY_INTERPOLATION, java.awt.RenderingHints.VALUE_INTERPOLATION_BICUBIC);
@@ -133,28 +137,32 @@ public class Mixer  {
                 for (LayoutItem item : activeLayout.getItems()) {
                     VideoSource source = item.getSource();
                     if (source.getActivityDetection() == 0 || (source.getActivityDetection() > 0 && source.activityDetected())) {
-                        
+
                         if (source.getImage() != null) {
                             img = source.getImage();
                             //Don't do anything if there is no rotation to do...
-                            float opacity = (float) source.getOpacity();
-                            buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC_OVER, opacity / 100F));
+                            buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC_OVER, ((float) source.getOpacity()) / 100F));
                             //buffer.setClip(x1, y1, source.getOutputWidth(), source.getOutputHeight());
-                            buffer.drawImage(img, source.getShowAtX(),source.getShowAtY(),source.getOutputWidth(),source.getOutputHeight(),null);
-                            img=null;
+                            buffer.drawImage(img, source.getShowAtX(), source.getShowAtY(), source.getOutputWidth(), source.getOutputHeight(), null);
+                            img = null;
                         }
                     }
-                    source=null;
+                    source = null;
                 }
             }
-            activeLayout=null;
+            activeLayout = null;
         } catch (Exception e) {
             e.printStackTrace();
         }
-        buffer.dispose();
-        buffer=null;
-        outputImage=image;
-        image=null;
+        //buffer.dispose();
+        //buffer = null;
+        if (outputImage == null || outputImage.getWidth()!=outputWidth || outputImage.getHeight()!=outputHeight){
+            outputImage = new BufferedImage(outputWidth,outputHeight,BufferedImage.TRANSLUCENT);
+            outputImage.getGraphics().clearRect(0, 0, outputWidth, outputHeight);
+            dataImageOutput = ((java.awt.image.DataBufferInt) outputImage.getRaster().getDataBuffer()).getData();
+        }
+        System.arraycopy(dataImageMixer, 0, dataImageOutput, 0, dataImageOutput.length);
+        //image = null;
         isDrawing = false;
     }
 
@@ -182,13 +190,14 @@ public class Mixer  {
     public void stopStream() {
         activateOutputStream = false;
     }
-
-    
 }
-class imageMixer extends TimerTask{
+
+class imageMixer extends TimerTask {
+
     private Mixer mixer = null;
-    public imageMixer(Mixer m){
-        mixer=m;
+
+    public imageMixer(Mixer m) {
+        mixer = m;
     }
 
     @Override
@@ -205,7 +214,7 @@ class imageMixer extends TimerTask{
             mixer.outputStream.stop();
         }
         if (mixer.outputDevice != null) {
-            mixer.outputDevice.write(mixer.outputImage);
+            mixer.outputDevice.write(mixer.dataImageOutput);
         }
     }
 }

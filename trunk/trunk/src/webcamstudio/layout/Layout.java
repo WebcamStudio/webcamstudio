@@ -136,42 +136,48 @@ public class Layout {
         for (LayoutItem item : items.values()) {
             item.getSource().setLayer(item.getLayer());
         }
-        java.util.concurrent.ExecutorService tp = java.util.concurrent.Executors.newCachedThreadPool();
-        for (LayoutItem item : items.values()) {
-            item.setTransitionToDo(item.getTransitionIn());
-            item.setActive(true);
-            tp.submit(item);
-        }
-        tp.shutdown();
-
-        try {
-            while (!tp.isTerminated()) {
-                Thread.sleep(100);
+        if (items.size() > 0) {
+            java.util.concurrent.ExecutorService tp = java.util.concurrent.Executors.newFixedThreadPool(items.size());
+            for (LayoutItem item : items.values()) {
+                item.setTransitionToDo(item.getTransitionIn());
+                item.setActive(true);
+                tp.submit(item);
             }
-        } catch (InterruptedException ex) {
-            Logger.getLogger(Layout.class.getName()).log(Level.SEVERE, null, ex);
+            tp.shutdown();
+
+            try {
+                while (!tp.isTerminated()) {
+                    Thread.sleep(100);
+                }
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Layout.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            tp = null;
         }
         isEntering = false;
         isActive = true;
-        
+
     }
 
     private void exitLayout() {
         isExiting = true;
         isActive = false;
-        java.util.concurrent.ExecutorService tp = java.util.concurrent.Executors.newCachedThreadPool();
-        for (LayoutItem item : items.values()) {
-            item.setTransitionToDo(item.getTransitionOut());
-            item.setActive(false);
-            tp.submit(item);
-        }
-        tp.shutdown();
-        try {
-            while (!tp.isTerminated()) {
-                Thread.sleep(100);
+        if (items.size() > 0) {
+            java.util.concurrent.ExecutorService tp = java.util.concurrent.Executors.newFixedThreadPool(items.size());
+            for (LayoutItem item : items.values()) {
+                item.setTransitionToDo(item.getTransitionOut());
+                item.setActive(false);
+                tp.submit(item);
             }
-        } catch (InterruptedException ex) {
-            Logger.getLogger(Layout.class.getName()).log(Level.SEVERE, null, ex);
+            tp.shutdown();
+            try {
+                while (!tp.isTerminated()) {
+                    Thread.sleep(100);
+                }
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Layout.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            tp = null;
         }
         isExiting = false;
 
@@ -207,7 +213,7 @@ public class Layout {
         }
         Graphics2D buffer = preview.createGraphics();
         buffer.setBackground(Color.GRAY);
-        buffer.clearRect(0,0,w,h);
+        buffer.clearRect(0, 0, w, h);
         buffer.setStroke(new java.awt.BasicStroke(10f));
         buffer.setColor(Color.BLACK);
         buffer.drawRect(0, 0, w, h);
@@ -238,11 +244,11 @@ public class Layout {
         } else if (isExiting) {
             buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC_OVER, 0.5F));
             buffer.setColor(Color.RED);
-            buffer.fillRect(0, 0, w,h);
+            buffer.fillRect(0, 0, w, h);
         } else if (isActive) {
             buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC_OVER, 0.5F));
             buffer.setColor(Color.GREEN);
-            buffer.fillRect(0, 0, w,h);
+            buffer.fillRect(0, 0, w, h);
         }
         buffer.dispose();
 

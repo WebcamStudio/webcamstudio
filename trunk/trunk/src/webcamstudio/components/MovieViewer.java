@@ -68,14 +68,12 @@ public class MovieViewer extends javax.swing.JDialog implements InfoListener {
                 while (!stopMe) {
                     try {
                         if (source != null) {
-                            viewer.img = source.getImage();
-                            viewer.repaint();
+                            viewer.updateImage(source.getImage());
                         }
                         Thread.sleep(100);
                     } catch (InterruptedException ex) {
                     }
                 }
-                viewer.img = null;
                 viewer.repaint();
 
             }

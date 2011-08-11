@@ -4,6 +4,7 @@
  */
 package webcamstudio.sources;
 
+import java.awt.image.BufferedImage;
 import java.nio.IntBuffer;
 import java.util.Collection;
 import javax.swing.JPanel;
@@ -102,6 +103,13 @@ public class VideoSourceFullDesktop extends VideoSource implements RGBDataSink.L
         });
         pipe.play();
     }
+    public void setImage(BufferedImage img) {
+        if (image == null || image.getWidth() != img.getWidth() || image.getHeight() != img.getHeight()) {
+            image = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TRANSLUCENT);
+            dataOutputImage = ((java.awt.image.DataBufferInt) image.getRaster().getDataBuffer()).getData();
+        }
+        System.arraycopy(dataInputImage, 0, dataOutputImage, 0, dataInputImage.length);
+    }
 
     @Override
     public void rgbFrame(int w, int h, IntBuffer buffer) {
@@ -109,11 +117,13 @@ public class VideoSourceFullDesktop extends VideoSource implements RGBDataSink.L
         captureHeight = h;
         if (!isRendering) {
             isRendering = true;
-            if (image == null || image.getWidth()!= captureWidth || image.getHeight()!=captureHeight){
-                image = graphicConfiguration.createCompatibleImage(captureWidth, captureHeight, java.awt.image.BufferedImage.TYPE_INT_ARGB);
+            if (tempimage == null || tempimage.getWidth() != w || tempimage.getHeight() != h) {
+                tempimage = graphicConfiguration.createCompatibleImage(captureWidth, captureHeight, java.awt.image.BufferedImage.TRANSLUCENT);
+                dataInputImage = ((java.awt.image.DataBufferInt) tempimage.getRaster().getDataBuffer()).getData();
             }
             int[] array = buffer.array();
-            image.setRGB(0, 0, captureWidth, captureHeight, array, 0, captureWidth);
+            System.arraycopy(array, 0, dataInputImage, 0, dataInputImage.length);
+            setImage(tempimage);
             isRendering = false;
         }
     }

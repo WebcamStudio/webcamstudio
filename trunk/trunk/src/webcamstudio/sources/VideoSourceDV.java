@@ -101,19 +101,30 @@ public class VideoSourceDV extends VideoSource implements org.gstreamer.elements
         });
         pipe.setState(State.PLAYING);
     }
+    public void setImage(BufferedImage img) {
+
+        detectActivity(img);
+        applyEffects(img);
+        applyShape(img);
+        if (image == null || image.getWidth() != img.getWidth() || image.getHeight() != img.getHeight()) {
+            image = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TRANSLUCENT);
+            dataOutputImage = ((java.awt.image.DataBufferInt) image.getRaster().getDataBuffer()).getData();
+        }
+        System.arraycopy(dataInputImage, 0, dataOutputImage, 0, dataInputImage.length);
+    }
 
     public void rgbFrame(int w, int h, java.nio.IntBuffer buffer) {
         captureWidth=w;
         captureHeight=h;
         if (!isRendering) {
             isRendering = true;
-            tempimage = new BufferedImage(captureWidth, captureHeight, BufferedImage.TRANSLUCENT);
-            tempimage.setRGB(0, 0, captureWidth, captureHeight, buffer.array(), 0, captureWidth);
-            detectActivity(tempimage);
-            applyEffects(tempimage);
-            applyShape(tempimage);
-            image=tempimage;
-            tempimage=null;
+            if (tempimage == null || tempimage.getWidth() != w || tempimage.getHeight() != h) {
+                tempimage = graphicConfiguration.createCompatibleImage(captureWidth, captureHeight, java.awt.image.BufferedImage.TRANSLUCENT);
+                dataInputImage = ((java.awt.image.DataBufferInt) tempimage.getRaster().getDataBuffer()).getData();
+            }
+            int[] array = buffer.array();
+            System.arraycopy(array, 0, dataInputImage, 0, dataInputImage.length);
+            setImage(tempimage);
             isRendering = false;
         }
 
