@@ -50,7 +50,7 @@ public abstract class Effect {
         return retValue;
     }
     public BufferedImage cloneImage(BufferedImage src){
-        BufferedImage tempimage = java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().createCompatibleImage(src.getWidth(), src.getHeight(), java.awt.image.BufferedImage.TYPE_INT_ARGB);
+        BufferedImage tempimage = java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().createCompatibleImage(src.getWidth(), src.getHeight(), java.awt.image.BufferedImage.TRANSLUCENT);
         Graphics2D tempbuffer = tempimage.createGraphics();
         tempbuffer.drawImage(src, 0, 0, null);
         tempbuffer.dispose();

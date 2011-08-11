@@ -694,8 +694,7 @@ public class GifDecoder {
 		frameCount++;
 
 		// create new image to receive frame data
-		image =
-			new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB_PRE);
+		image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB_PRE);
 
 		setPixels(); // transfer pixel data to image
 

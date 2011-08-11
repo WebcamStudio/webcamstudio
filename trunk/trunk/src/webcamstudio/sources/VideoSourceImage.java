@@ -90,7 +90,7 @@ public class VideoSourceImage extends VideoSource {
                                 captureHeight = images.get(animatedIndex).getHeight();
                                 captureWidth = images.get(animatedIndex).getWidth();
                             }
-                            tempimage = graphicConfiguration.createCompatibleImage(captureWidth, captureHeight, java.awt.image.BufferedImage.TYPE_INT_ARGB);
+                            tempimage = graphicConfiguration.createCompatibleImage(captureWidth, captureHeight, java.awt.image.BufferedImage.TRANSLUCENT);
                             java.awt.Graphics2D g = tempimage.createGraphics();
                             g.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC, 1));
                             g.drawImage(images.get(animatedIndex), 0, 0, null);

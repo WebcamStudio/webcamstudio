@@ -131,7 +131,7 @@ public class VideoSourceIRC extends VideoSource {
                     outputHeight = 240;
                 }
 
-                tempimage = graphicConfiguration.createCompatibleImage(outputWidth, outputHeight, java.awt.image.BufferedImage.TYPE_INT_ARGB);
+                tempimage = graphicConfiguration.createCompatibleImage(outputWidth, outputHeight, java.awt.image.BufferedImage.TRANSLUCENT);
 
                 buffer = tempimage.createGraphics();
                 int index = 0;
