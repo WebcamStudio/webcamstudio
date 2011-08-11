@@ -20,7 +20,16 @@ import webcamstudio.controls.ControlDesktop;
 public class VideoSourceDesktop extends VideoSource {
 
     private Timer timer = null;
+    protected Robot robot = null;
+    protected int screenwidth = java.awt.MouseInfo.getPointerInfo().getDevice().getDisplayMode().getWidth();
+    protected int screenheight = java.awt.MouseInfo.getPointerInfo().getDevice().getDisplayMode().getHeight();
+
     public VideoSourceDesktop() {
+        try {
+            robot = new Robot();
+        } catch (AWTException ex) {
+            Logger.getLogger(VideoSourceDesktop.class.getName()).log(Level.SEVERE, null, ex);
+        }
         name = "Desktop";
         location = name;
         frameRate = 15;
@@ -30,8 +39,8 @@ public class VideoSourceDesktop extends VideoSource {
     @Override
     public void startSource() {
         isPlaying = true;
-        timer = new Timer(this.getClass().getSimpleName(),true);
-        timer.scheduleAtFixedRate(new imageDesktop(this), 0, 1000/frameRate);
+        timer = new Timer(this.getClass().getSimpleName(), true);
+        timer.scheduleAtFixedRate(new imageDesktop(this), 0, 1000 / frameRate);
     }
 
     public boolean canUpdateSource() {
@@ -82,21 +91,18 @@ public class VideoSourceDesktop extends VideoSource {
         list.add(new webcamstudio.controls.ControlIdentity(this));
         return list;
     }
-
 }
-class imageDesktop extends TimerTask{
+
+class imageDesktop extends TimerTask {
+
     private Robot robot = null;
-    private int screenwidth = java.awt.MouseInfo.getPointerInfo().getDevice().getDisplayMode().getWidth();
-    private int screenheight = java.awt.MouseInfo.getPointerInfo().getDevice().getDisplayMode().getHeight();
     VideoSourceDesktop desktop = null;
-    public imageDesktop(VideoSourceDesktop d){
-        try {
-            robot = new Robot();
-        } catch (AWTException ex) {
-            Logger.getLogger(VideoSourceDesktop.class.getName()).log(Level.SEVERE, null, ex);
-        }
+
+    public imageDesktop(VideoSourceDesktop d) {
+        robot = d.robot;
         desktop = d;
     }
+
     @Override
     public void run() {
         if (desktop.getOutputWidth() == 0 && desktop.getOutputHeight() == 0) {
@@ -122,11 +128,11 @@ class imageDesktop extends TimerTask{
         if (y < 0) {
             y = 0;
         }
-        if (x > (screenwidth - desktop.captureWidth)) {
-            x = screenwidth - desktop.captureWidth - 1;
+        if (x > (desktop.screenwidth - desktop.captureWidth)) {
+            x = desktop.screenwidth - desktop.captureWidth - 1;
         }
-        if (y > (screenheight - desktop.captureHeight)) {
-            y = screenheight - desktop.captureHeight - 1;
+        if (y > (desktop.screenheight - desktop.captureHeight)) {
+            y = desktop.screenheight - desktop.captureHeight - 1;
         }
         desktop.captureAtX = x;
         desktop.captureAtY = y;
@@ -152,5 +158,4 @@ class imageDesktop extends TimerTask{
             desktop.image = desktop.tempimage;
         }
     }
-
 }

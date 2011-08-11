@@ -24,17 +24,20 @@ abstract public class VideoOutput {
     protected boolean flipImage = false;
     protected FlipVertical flipper = new FlipVertical();
     protected InfoListener listener = null;
+    protected byte[] rgbs = null;
 
     public void setFlipImage(boolean flip) {
         flipImage = flip;
     }
 
-    public int getPixFormat(){
+    public int getPixFormat() {
         return pixFormat;
     }
-    protected byte[] img2rgb24(BufferedImage bi) {
-        int[] data = ((java.awt.image.DataBufferInt) bi.getRaster().getDataBuffer()).getData();
-        byte[] rgbs = new byte[data.length * 3];
+
+    protected byte[] img2rgb24(int[] data) {
+        if (rgbs == null || rgbs.length != data.length * 3) {
+            rgbs = new byte[data.length * 3];
+        }
         int index = 0;
         for (int i = 0; i < data.length; i++) {
             rgbs[index++] = (byte) (data[i] >> 16 & 0xFF);
@@ -89,8 +92,7 @@ abstract public class VideoOutput {
         return yuvs;
     }
 
-    protected byte[] img2uyvy(BufferedImage bi) {
-        int[] data = ((java.awt.image.DataBufferInt) bi.getRaster().getDataBuffer()).getData();
+    protected byte[] img2uyvy(int[] data) {
         byte[] yuvs = new byte[(data.length * 2)];
         int index = data.length - 1;
         int yuvIndex = yuvs.length - 1;
@@ -136,5 +138,5 @@ abstract public class VideoOutput {
 
     abstract public void close();
 
-    abstract public void write(BufferedImage bi);
+    abstract public void write(int[] data);
 }

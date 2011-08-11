@@ -21,6 +21,7 @@ package webcamstudio.sources;
 
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -147,6 +148,18 @@ public class VideoSourcePipeline extends VideoSource implements org.gstreamer.el
             e.printStackTrace();
         }
     }
+@Override
+    public void setImage(BufferedImage img) {
+
+        detectActivity(img);
+        applyEffects(img);
+        applyShape(img);
+        if (image == null || image.getWidth() != img.getWidth() || image.getHeight() != img.getHeight()) {
+            image = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TRANSLUCENT);
+            dataOutputImage = ((java.awt.image.DataBufferInt) image.getRaster().getDataBuffer()).getData();
+        }
+        System.arraycopy(dataInputImage, 0, dataOutputImage, 0, dataInputImage.length);
+    }
 
     @Override
     public void rgbFrame(int w, int h, java.nio.IntBuffer buffer) {
@@ -154,16 +167,13 @@ public class VideoSourcePipeline extends VideoSource implements org.gstreamer.el
         captureHeight = h;
         if (!isRendering) {
             isRendering = true;
-            tempimage = graphicConfiguration.createCompatibleImage(captureWidth, captureHeight, java.awt.image.BufferedImage.TYPE_INT_ARGB);
-            int[] array = buffer.array();
-            for (int i = 0; i < array.length; i++) {
-                array[i] = array[i] | 0xFF000000;
+            if (tempimage == null || tempimage.getWidth() != w || tempimage.getHeight() != h) {
+                tempimage = graphicConfiguration.createCompatibleImage(captureWidth, captureHeight, java.awt.image.BufferedImage.TRANSLUCENT);
+                dataInputImage = ((java.awt.image.DataBufferInt) tempimage.getRaster().getDataBuffer()).getData();
             }
-            tempimage.setRGB(0, 0, captureWidth, captureHeight, array, 0, captureWidth);
-            detectActivity(tempimage);
-            applyEffects(tempimage);
-            applyShape(tempimage);
-            image = tempimage;
+            int[] array = buffer.array();
+            System.arraycopy(array, 0, dataInputImage, 0, dataInputImage.length);
+            setImage(tempimage);
             isRendering = false;
         }
 

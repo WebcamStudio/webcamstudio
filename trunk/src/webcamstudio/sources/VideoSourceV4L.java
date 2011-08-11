@@ -29,7 +29,6 @@ import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import org.gstreamer.*;
-import org.gstreamer.elements.AppSink;
 import org.gstreamer.elements.RGBDataSink;
 import webcamstudio.controls.ControlRescale;
 import webcamstudio.exporter.vloopback.VideoDevice;
@@ -42,8 +41,6 @@ public class VideoSourceV4L extends VideoSource implements RGBDataSink.Listener 
 
     protected String source = "v4lsrc";
     private RGBDataSink sink = null;
-    private Graphics2D buffer = null;
-
     public VideoSourceV4L() {
         outputWidth = 320;
         outputHeight = 240;
@@ -181,7 +178,11 @@ public class VideoSourceV4L extends VideoSource implements RGBDataSink.Listener 
         detectActivity(img);
         applyEffects(img);
         applyShape(img);
-        image = img;
+        if (image == null || image.getWidth() != img.getWidth() || image.getHeight() != img.getHeight()) {
+            image = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TRANSLUCENT);
+            dataOutputImage = ((java.awt.image.DataBufferInt) image.getRaster().getDataBuffer()).getData();
+        }
+        System.arraycopy(dataInputImage, 0, dataOutputImage, 0, dataInputImage.length);
     }
 
     @Override
@@ -270,11 +271,13 @@ public class VideoSourceV4L extends VideoSource implements RGBDataSink.Listener 
         captureHeight = h;
         if (!isRendering) {
             isRendering = true;
-            tempimage = graphicConfiguration.createCompatibleImage(captureWidth, captureHeight, java.awt.image.BufferedImage.TYPE_INT_ARGB);
+            if (tempimage == null || tempimage.getWidth() != w || tempimage.getHeight() != h) {
+                tempimage = graphicConfiguration.createCompatibleImage(captureWidth, captureHeight, java.awt.image.BufferedImage.TRANSLUCENT);
+                dataInputImage = ((java.awt.image.DataBufferInt) tempimage.getRaster().getDataBuffer()).getData();
+            }
             int[] array = buffer.array();
-            tempimage.setRGB(0, 0, captureWidth, captureHeight, array, 0, captureWidth);
+            System.arraycopy(array, 0, dataInputImage, 0, dataInputImage.length);
             setImage(tempimage);
-            tempimage=null;
             isRendering = false;
         }
     }

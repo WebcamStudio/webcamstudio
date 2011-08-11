@@ -161,17 +161,14 @@ public class V4LLoopback extends VideoOutput {
     }
 
     @Override
-    public void write(BufferedImage bi) {
+    public void write(int[] data) {
         if (devFD != 0) {
             switch (fmt) {
                 case VIDEO_PALETTE_RGB24:
-                    buffer = img2rgb24(bi);
-                    break;
-                case VIDEO_PALETTE_YUV420P:
-                    buffer = img2yuv420(bi);
+                    buffer = img2rgb24(data);
                     break;
                 case VIDEO_PALETTE_UYVY:
-                    buffer = img2uyvy(bi);
+                    buffer = img2uyvy(data);
                     break;
             }
             int countWritten = 0;

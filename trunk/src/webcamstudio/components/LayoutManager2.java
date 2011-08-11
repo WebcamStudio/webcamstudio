@@ -14,7 +14,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -586,9 +585,11 @@ public class LayoutManager2 extends javax.swing.JPanel implements SourceListener
     }
 
     protected void update() {
-        panPreview.repaint();
         lstLayoutItems.repaint();
         lstLayouts.repaint();
+        if (viewer.isVisible()) {
+            viewer.updateImage(mixer.getImage());
+        }
     }
 }
 
@@ -602,9 +603,6 @@ class imageUpdater extends TimerTask {
 
     @Override
     public void run() {
-        if (layoutManager.viewer.isVisible()) {
-            layoutManager.viewer.img = layoutManager.mixer.getImage();
-        }
         layoutManager.update();
     }
 }

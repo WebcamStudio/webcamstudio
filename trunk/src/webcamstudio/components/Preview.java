@@ -34,7 +34,7 @@ public class Preview extends javax.swing.JDialog implements Runnable {
     }
 
     public void setImage(java.awt.image.BufferedImage img) {
-        viewer.img = img;
+        viewer.updateImage(img);
     }
 
     public void stopMe() {
@@ -95,8 +95,7 @@ public class Preview extends javax.swing.JDialog implements Runnable {
             } catch (InterruptedException ex) {
             }
             if (mixer != null) {
-                viewer.img = mixer.getImage();
-                panViewer.repaint();
+                viewer.updateImage(mixer.getImage());
             }
         }
         mixer = null;

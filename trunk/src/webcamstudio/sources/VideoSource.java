@@ -55,9 +55,10 @@ public abstract class VideoSource implements InfoListener {
         name = n;
     }
 
-    public void setImage(BufferedImage img){
-        image=img;
+    public void setImage(BufferedImage img) {
+        image = img;
     }
+
     public void setLocation(String l) {
         location = l;
     }
@@ -202,7 +203,7 @@ public abstract class VideoSource implements InfoListener {
         prefs.putBoolean("reverseshapemask", doReverseShapeMask);
         prefs.putBoolean("ignorelayouttransition", ignoreLayoutTransition);
         prefs.put("password", encrypt(password));
-        prefs.putBoolean("keepration",keepRatio);
+        prefs.putBoolean("keepration", keepRatio);
         int index = 0;
         for (Effect effect : effects) {
             String key = Studio.getKeyIndex(index++);
@@ -319,12 +320,14 @@ public abstract class VideoSource implements InfoListener {
         virtualHostKeywords = keywords;
     }
 
-    public void setKeepRatio(boolean ratio){
-        keepRatio=ratio;
+    public void setKeepRatio(boolean ratio) {
+        keepRatio = ratio;
     }
-    public boolean isKeepingRatio(){
+
+    public boolean isKeepingRatio() {
         return keepRatio;
     }
+
     protected String encrypt(String text) {
         StringBuilder sb = new StringBuilder(text);
 
@@ -927,7 +930,10 @@ public abstract class VideoSource implements InfoListener {
     protected String activeEffect = "";
     protected String uuId = java.util.UUID.randomUUID().toString();
     protected int videoEffect = 0;
+    protected java.awt.image.BufferedImage tempimage = null;
     protected java.awt.image.BufferedImage image = null;
+    protected int[] dataInputImage = null;
+    protected int[] dataOutputImage = null;
     protected int frameRate = 15;
     protected String name = "";
     protected int volume = 15;
@@ -938,7 +944,6 @@ public abstract class VideoSource implements InfoListener {
     protected int effectsSensitivityHigh = 100;
     protected boolean isRendering = false;
     protected int[] pixels = null;
-    protected java.awt.image.BufferedImage tempimage = null;
     protected boolean stopMe = true;
     protected boolean isPlaying = false;
     protected java.awt.Color foregroundColor = java.awt.Color.WHITE;
