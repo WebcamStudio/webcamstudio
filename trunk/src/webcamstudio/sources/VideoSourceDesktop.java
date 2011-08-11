@@ -137,7 +137,7 @@ class imageDesktop implements Runnable {
             desktop.captureAtX = x;
             desktop.captureAtY = y;
             if (robot != null) {
-                desktop.tempimage = desktop.graphicConfiguration.createCompatibleImage(desktop.captureWidth, desktop.captureHeight, java.awt.image.BufferedImage.TYPE_INT_ARGB);
+                desktop.tempimage = desktop.graphicConfiguration.createCompatibleImage(desktop.captureWidth, desktop.captureHeight, java.awt.image.BufferedImage.TRANSLUCENT);
                 java.awt.Graphics2D buffer = desktop.tempimage.createGraphics();
                 buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC, 1.0F));
                 buffer.setRenderingHint(java.awt.RenderingHints.KEY_RENDERING, java.awt.RenderingHints.VALUE_RENDER_QUALITY);
