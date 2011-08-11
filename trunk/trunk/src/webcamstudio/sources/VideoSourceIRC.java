@@ -27,6 +27,7 @@ import f00f.net.irc.martyr.commands.PongCommand;
 import java.awt.Graphics2D;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
+import webcamstudio.components.PreciseTimer;
 
 /**
  *
@@ -67,7 +68,7 @@ public class VideoSourceIRC extends VideoSource {
         state = new ClientState();
         state.addChannel(channel);
         connection = new IRCConnection(state);
-        new AutoRegister(connection, nick, nick + "_" + new java.util.Random().nextInt(), nick + "_" + new java.util.Random().nextInt(),password);
+        new AutoRegister(connection, nick, nick + "_" + new java.util.Random().nextInt(), nick + "_" + new java.util.Random().nextInt(), password);
         autoReconnect = new AutoReconnect(connection);
         new AutoJoin(connection, channel, null);
         messageMonitor = new MessageMonitor(this);
@@ -124,6 +125,7 @@ public class VideoSourceIRC extends VideoSource {
         Thread t = new Thread(new Runnable() {
 
             public void run() {
+                long timestamp = 0;
                 if (outputWidth == 0 || outputHeight == 0) {
                     outputWidth = 320;
                     outputHeight = 240;
@@ -142,7 +144,7 @@ public class VideoSourceIRC extends VideoSource {
                 int interLine = 0;
                 java.awt.Color lastColor = foregroundColor;
                 while (!stopMe) {
-
+                    timestamp = System.currentTimeMillis();
                     try {
                         buffer.setRenderingHint(java.awt.RenderingHints.KEY_TEXT_ANTIALIASING, java.awt.RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
                         buffer.setRenderingHint(java.awt.RenderingHints.KEY_INTERPOLATION, java.awt.RenderingHints.VALUE_INTERPOLATION_BICUBIC);
@@ -184,7 +186,8 @@ public class VideoSourceIRC extends VideoSource {
                         applyShape(tempimage);
                         applyEffects(tempimage);
                         image = tempimage;
-                        Thread.sleep(1000 / frameRate);
+                        PreciseTimer.sleep(timestamp, 1000 / frameRate);
+
                     } catch (Exception e) {
                         error("IRC Error  :" + e.getMessage());
                     }
@@ -216,7 +219,8 @@ public class VideoSourceIRC extends VideoSource {
     public void addIRCListener(VideoSourceIRCListener l) {
         ircListeners.add(l);
     }
-    public void removeIRCListener(VideoSourceIRCListener l){
+
+    public void removeIRCListener(VideoSourceIRCListener l) {
         ircListeners.remove(l);
     }
 
@@ -306,8 +310,8 @@ public class VideoSourceIRC extends VideoSource {
             } else {
                 connection.sendCommand(
                         new MessageCommand(msg.getSource(),
-                        "Bad secret f00! Try using the '" +
-                        showSecret + "' command."));
+                        "Bad secret f00! Try using the '"
+                        + showSecret + "' command."));
             }
         } else if (commandStr.equals(showSecret)) {
             System.out.println("Show secret requested.  Secret is: " + secret);
@@ -407,7 +411,7 @@ public class VideoSourceIRC extends VideoSource {
     }
 
     public void addNewLine(String from, String text) {
-        for (VideoSourceIRCListener l : ircListeners){
+        for (VideoSourceIRCListener l : ircListeners) {
             l.newLine(this, from, text);
         }
     }

@@ -194,7 +194,9 @@ class imageMixer implements Runnable {
 
     @Override
     public void run() {
+        long timestamp = 0;
         while (!mixer.stopMe) {
+            timestamp = System.currentTimeMillis();
             if (!mixer.isDrawing) {
                 mixer.drawImage();
                 if (mixer.activateOutputStream && mixer.outputStream == null) {
@@ -211,11 +213,7 @@ class imageMixer implements Runnable {
                     mixer.outputDevice.write(mixer.dataImageOutput);
                 }
             }
-            try {
-                Thread.sleep(1000 / mixer.frameRate);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(imageMixer.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            PreciseTimer.sleep(timestamp, 1000/mixer.frameRate);
         }
 
     }

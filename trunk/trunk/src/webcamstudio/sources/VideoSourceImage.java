@@ -19,6 +19,7 @@ import javax.imageio.stream.ImageInputStream;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import webcamstudio.components.GifDecoder;
+import webcamstudio.components.PreciseTimer;
 
 public class VideoSourceImage extends VideoSource {
 
@@ -72,7 +73,9 @@ public class VideoSourceImage extends VideoSource {
             public void run() {
                 stopMe = false;
                 long lastTimeStamp = System.currentTimeMillis();
+                long timestamp = 0;
                 while (!stopMe) {
+                    timestamp=System.currentTimeMillis();
                     try {
                         if (updateTimeLaspe > 0 && System.currentTimeMillis() - lastTimeStamp > updateTimeLaspe) {
                             loadImage();
@@ -96,7 +99,7 @@ public class VideoSourceImage extends VideoSource {
                             g.dispose();
                             image = tempimage;
                         }
-                        Thread.sleep(delays.get(animatedIndex));
+                        PreciseTimer.sleep(timestamp, delays.get(animatedIndex));
                     } catch (Exception e) {
                         error("Image Error:  " + e.getMessage());
                     }
