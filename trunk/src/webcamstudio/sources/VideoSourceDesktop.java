@@ -6,8 +6,6 @@ package webcamstudio.sources;
 
 import java.awt.AWTException;
 import java.awt.Robot;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JPanel;
@@ -19,7 +17,6 @@ import webcamstudio.controls.ControlDesktop;
  */
 public class VideoSourceDesktop extends VideoSource {
 
-    private Timer timer = null;
     protected Robot robot = null;
     protected int screenwidth = java.awt.MouseInfo.getPointerInfo().getDevice().getDisplayMode().getWidth();
     protected int screenheight = java.awt.MouseInfo.getPointerInfo().getDevice().getDisplayMode().getHeight();
@@ -39,8 +36,8 @@ public class VideoSourceDesktop extends VideoSource {
     @Override
     public void startSource() {
         isPlaying = true;
-        timer = new Timer(this.getClass().getSimpleName(), true);
-        timer.scheduleAtFixedRate(new imageDesktop(this), 0, 1000 / frameRate);
+        stopMe=false;
+        new Thread(new imageDesktop(this),name).start();
     }
 
     public boolean canUpdateSource() {
@@ -67,7 +64,6 @@ public class VideoSourceDesktop extends VideoSource {
 
     @Override
     public void stopSource() {
-        timer.cancel();
         stopMe = true;
         image = null;
         isPlaying = false;
@@ -93,7 +89,7 @@ public class VideoSourceDesktop extends VideoSource {
     }
 }
 
-class imageDesktop extends TimerTask {
+class imageDesktop implements Runnable {
 
     private Robot robot = null;
     VideoSourceDesktop desktop = null;
@@ -105,6 +101,7 @@ class imageDesktop extends TimerTask {
 
     @Override
     public void run() {
+        while(!desktop.stopMe){
         if (desktop.getOutputWidth() == 0 && desktop.getOutputHeight() == 0) {
             desktop.setOutputWidth(320);
             desktop.setOutputHeight(240);
@@ -156,6 +153,12 @@ class imageDesktop extends TimerTask {
             desktop.applyEffects(desktop.tempimage);
             desktop.applyShape(desktop.tempimage);
             desktop.image = desktop.tempimage;
+        }
+            try {
+                Thread.sleep(1000 / desktop.frameRate);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(imageDesktop.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 }

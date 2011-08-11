@@ -11,8 +11,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import webcamstudio.sources.*;
 import java.awt.image.*;
-import java.util.Timer;
-import java.util.TimerTask;
 import webcamstudio.exporter.VideoExporterStream;
 import webcamstudio.exporter.vloopback.VideoOutput;
 import webcamstudio.layout.Layout;
@@ -31,18 +29,16 @@ public class Mixer {
     protected BufferedImage outputImage = null;
     protected boolean isDrawing = false;
     protected boolean lightMode = false;
-    private boolean stopMe = false;
+    protected boolean stopMe = false;
     protected java.awt.image.BufferedImage paintImage = null;
     protected VideoOutput outputDevice = null;
     protected Image background = Toolkit.getDefaultToolkit().createImage(getClass().getResource("/webcamstudio/resources/splash.jpg"));
     protected boolean activateOutputStream = false;
     protected VideoExporterStream outputStream = null;
     protected int outputStreamPort = 4888;
-    protected Timer timer = null;
     protected java.awt.Graphics2D buffer = null;
     protected int[] dataImageOutput = null;
     protected int[] dataImageMixer = null;
-
     public enum MixerQuality {
 
         HIGH,
@@ -57,8 +53,7 @@ public class Mixer {
     private MixerQuality quality = MixerQuality.NORMAL;
 
     public Mixer() {
-        timer = new Timer(this.getClass().getSimpleName(), true);
-        timer.schedule(new imageMixer(this), 0, 1000 / frameRate);
+        new Thread(new imageMixer(this)).start();
     }
 
     public void setSize(int w, int h) {
@@ -68,9 +63,6 @@ public class Mixer {
 
     public void setFramerate(int fps) {
         frameRate = fps;
-        timer.cancel();
-        timer = new Timer(this.getClass().getSimpleName(), true);
-        timer.schedule(new imageMixer(this), 0, 1000 / frameRate);
     }
 
     public int getFramerate() {
@@ -156,8 +148,8 @@ public class Mixer {
         }
         //buffer.dispose();
         //buffer = null;
-        if (outputImage == null || outputImage.getWidth()!=outputWidth || outputImage.getHeight()!=outputHeight){
-            outputImage = new BufferedImage(outputWidth,outputHeight,BufferedImage.TRANSLUCENT);
+        if (outputImage == null || outputImage.getWidth() != outputWidth || outputImage.getHeight() != outputHeight) {
+            outputImage = new BufferedImage(outputWidth, outputHeight, BufferedImage.TRANSLUCENT);
             outputImage.getGraphics().clearRect(0, 0, outputWidth, outputHeight);
             dataImageOutput = ((java.awt.image.DataBufferInt) outputImage.getRaster().getDataBuffer()).getData();
         }
@@ -192,7 +184,7 @@ public class Mixer {
     }
 }
 
-class imageMixer extends TimerTask {
+class imageMixer implements Runnable {
 
     private Mixer mixer = null;
 
@@ -202,19 +194,29 @@ class imageMixer extends TimerTask {
 
     @Override
     public void run() {
-        mixer.drawImage();
-        if (mixer.activateOutputStream && mixer.outputStream == null) {
-            mixer.outputStream = new VideoExporterStream(mixer.outputStreamPort, mixer);
-            try {
-                mixer.outputStream.listen();
-            } catch (IOException ex) {
-                Logger.getLogger(Mixer.class.getName()).log(Level.SEVERE, null, ex);
+        while (!mixer.stopMe) {
+            if (!mixer.isDrawing) {
+                mixer.drawImage();
+                if (mixer.activateOutputStream && mixer.outputStream == null) {
+                    mixer.outputStream = new VideoExporterStream(mixer.outputStreamPort, mixer);
+                    try {
+                        mixer.outputStream.listen();
+                    } catch (IOException ex) {
+                        Logger.getLogger(Mixer.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                } else if (!mixer.activateOutputStream && mixer.outputStream != null) {
+                    mixer.outputStream.stop();
+                }
+                if (mixer.outputDevice != null) {
+                    mixer.outputDevice.write(mixer.dataImageOutput);
+                }
             }
-        } else if (!mixer.activateOutputStream && mixer.outputStream != null) {
-            mixer.outputStream.stop();
+            try {
+                Thread.sleep(1000 / mixer.frameRate);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(imageMixer.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
-        if (mixer.outputDevice != null) {
-            mixer.outputDevice.write(mixer.dataImageOutput);
-        }
+
     }
 }

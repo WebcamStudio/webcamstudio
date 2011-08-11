@@ -21,7 +21,6 @@ import javax.swing.JLabel;
 import org.gstreamer.Gst;
 import webcamstudio.components.LayoutEventsManager;
 import webcamstudio.components.Preview;
-import webcamstudio.exporter.VideoExporterStream;
 import webcamstudio.exporter.vloopback.V4L2Loopback;
 import webcamstudio.exporter.vloopback.VideoOutput;
 import webcamstudio.layout.Layout;
