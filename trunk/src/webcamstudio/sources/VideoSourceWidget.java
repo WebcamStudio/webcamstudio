@@ -127,7 +127,7 @@ public class VideoSourceWidget extends VideoSource {
         bgColor = new Color(color, true);
         bgColor = new Color(bgColor.getRed(), bgColor.getGreen(), bgColor.getBlue(), alpha);
         // Init image
-        tempimage = graphicConfiguration.createCompatibleImage(captureWidth, captureHeight, java.awt.image.BufferedImage.TYPE_INT_ARGB);
+        tempimage = graphicConfiguration.createCompatibleImage(captureWidth, captureHeight, java.awt.image.BufferedImage.TRANSLUCENT);
 
         //Go over all the items in the list
         NodeList elements = rootNode.getChildNodes();

@@ -108,7 +108,7 @@ public class VideoSourceFullDesktop extends VideoSource implements RGBDataSink.L
             image = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TRANSLUCENT);
             dataOutputImage = ((java.awt.image.DataBufferInt) image.getRaster().getDataBuffer()).getData();
         }
-        System.arraycopy(dataInputImage, 0, dataOutputImage, 0, dataInputImage.length);
+        image.setRGB(0, 0, captureWidth, captureHeight, dataInputImage, 0, captureWidth);
     }
 
     @Override
@@ -122,7 +122,7 @@ public class VideoSourceFullDesktop extends VideoSource implements RGBDataSink.L
                 dataInputImage = ((java.awt.image.DataBufferInt) tempimage.getRaster().getDataBuffer()).getData();
             }
             int[] array = buffer.array();
-            System.arraycopy(array, 0, dataInputImage, 0, dataInputImage.length);
+            tempimage.setRGB(0, 0, w,h,array,0,w);
             setImage(tempimage);
             isRendering = false;
         }

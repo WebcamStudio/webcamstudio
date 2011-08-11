@@ -1897,7 +1897,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
 
     private void mnuOutputSpnashotActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuOutputSpnashotActionPerformed
 
-        BufferedImage imgOut = new BufferedImage(outputWidth, outputHeight, java.awt.image.BufferedImage.TYPE_INT_ARGB);
+        BufferedImage imgOut = new BufferedImage(outputWidth, outputHeight, java.awt.image.BufferedImage.TRANSLUCENT);
         imgOut.getGraphics().drawImage(mixer.getImage(), 0, 0, null);
         javax.swing.JFileChooser chooser = new javax.swing.JFileChooser(lastFolder);
         chooser.setToolTipText(java.util.ResourceBundle.getBundle("webcamstudio/Languages").getString("SELECT_YOUR_IMAGE_FILE"));

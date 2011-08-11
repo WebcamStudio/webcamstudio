@@ -116,7 +116,7 @@ class imageDesktop implements Runnable {
             x = desktop.getCaptureAtX();
             y = desktop.getCaptureAtY();
             if (desktop.getImage() == null || (desktop.image.getWidth() != desktop.getCaptureWidth()) || (desktop.image.getHeight() != desktop.getCaptureHeight())) {
-                desktop.image = java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().createCompatibleImage(desktop.getCaptureWidth(), desktop.getCaptureHeight(), java.awt.image.BufferedImage.TYPE_INT_ARGB);
+                desktop.image = java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().createCompatibleImage(desktop.getCaptureWidth(), desktop.getCaptureHeight(), java.awt.image.BufferedImage.TRANSLUCENT);
             }
             if (desktop.isFollowingMouse()) {
                 x = (int) java.awt.MouseInfo.getPointerInfo().getLocation().getX() - (desktop.getCaptureWidth() / 2);
