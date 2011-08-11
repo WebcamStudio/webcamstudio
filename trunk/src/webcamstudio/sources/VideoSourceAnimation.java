@@ -14,13 +14,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
+import webcamstudio.components.PreciseTimer;
 
 /**
  *
  * @author pballeux
  */
 public class VideoSourceAnimation extends VideoSource {
-
 
     public VideoSourceAnimation(java.io.File loc) {
 
@@ -68,7 +68,7 @@ public class VideoSourceAnimation extends VideoSource {
 
     @Override
     public void startSource() {
-        stopMe=false;
+        stopMe = false;
 
         if (animator == null) {
             animator = new Animator(this);
@@ -81,7 +81,7 @@ public class VideoSourceAnimation extends VideoSource {
                 }
                 captureWidth = animator.getWidth();
                 captureHeight = animator.getHeight();
-                frameRate=1000/animator.getTimeLapse();
+                frameRate = 1000 / animator.getTimeLapse();
                 if (outputHeight == 0 && outputWidth == 0) {
                     outputWidth = 320;
                     outputHeight = 240;
@@ -90,7 +90,7 @@ public class VideoSourceAnimation extends VideoSource {
                 error("Animation Error  : " + e.getMessage());
             }
         }
-        new Thread(new imageAnimation(this),name).start();
+        new Thread(new imageAnimation(this), name).start();
     }
 
     @Override
@@ -105,7 +105,7 @@ public class VideoSourceAnimation extends VideoSource {
 
     @Override
     public boolean isPlaying() {
-        return (animator!=null);
+        return (animator != null);
     }
 
     @Override
@@ -171,24 +171,22 @@ class imageAnimation implements Runnable {
 
     @Override
     public void run() {
-        while (!animation.stopMe){
-        if (animation.animator != null) {
-            animation.captureWidth = animation.animator.getWidth();
-            animation.captureHeight = animation.animator.getHeight();
+        long timestamp = 0;
+        while (!animation.stopMe) {
+            if (animation.animator != null) {
+                timestamp = System.currentTimeMillis();
+                animation.captureWidth = animation.animator.getWidth();
+                animation.captureHeight = animation.animator.getHeight();
 
-            animation.tempimage = animation.graphicConfiguration.createCompatibleImage(animation.captureWidth, animation.captureHeight, java.awt.image.BufferedImage.TYPE_INT_ARGB);
-            Graphics2D buffer = animation.tempimage.createGraphics();
-            buffer.drawImage(animation.animator.getCurrentImage(), 0, 0, null);
-            buffer.dispose();
-            animation.applyEffects(animation.tempimage);
-            animation.applyShape(animation.tempimage);
-            animation.image = animation.tempimage;
-        }
-            try {
-                Thread.sleep(1000 / animation.frameRate);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(imageAnimation.class.getName()).log(Level.SEVERE, null, ex);
+                animation.tempimage = animation.graphicConfiguration.createCompatibleImage(animation.captureWidth, animation.captureHeight, java.awt.image.BufferedImage.TYPE_INT_ARGB);
+                Graphics2D buffer = animation.tempimage.createGraphics();
+                buffer.drawImage(animation.animator.getCurrentImage(), 0, 0, null);
+                buffer.dispose();
+                animation.applyEffects(animation.tempimage);
+                animation.applyShape(animation.tempimage);
+                animation.image = animation.tempimage;
             }
+            PreciseTimer.sleep(timestamp, 1000 / animation.frameRate);
         }
     }
 }

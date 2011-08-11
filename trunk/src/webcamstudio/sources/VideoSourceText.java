@@ -7,12 +7,12 @@ package webcamstudio.sources;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JPanel;
 import webcamstudio.*;
+import webcamstudio.components.PreciseTimer;
 
 /**
  *
@@ -226,7 +226,7 @@ public class VideoSourceText extends VideoSource {
     }
 }
 
-class imageText extends TimerTask {
+class imageText implements Runnable {
 
     VideoSourceText text = null;
     int index = 0;
@@ -245,7 +245,9 @@ class imageText extends TimerTask {
 
     @Override
     public void run() {
+        long timestamp = 0;
         while (!text.stopMe) {
+            timestamp = System.currentTimeMillis();
             if (!isRendering) {
                 isRendering = true;
                 //lineIndex = index;
@@ -383,11 +385,7 @@ class imageText extends TimerTask {
                 text.image = text.tempimage;
                 isRendering = false;
             }
-            try {
-                Thread.sleep(1000 / text.frameRate);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(imageText.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            PreciseTimer.sleep(timestamp, 1000/text.frameRate);
         }
 
     }
