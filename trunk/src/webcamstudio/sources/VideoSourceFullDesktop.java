@@ -6,8 +6,7 @@ package webcamstudio.sources;
 
 import java.awt.image.BufferedImage;
 import java.nio.IntBuffer;
-import java.util.Collection;
-import javax.swing.JPanel;
+import java.util.Timer;
 import org.gstreamer.Bus;
 import org.gstreamer.Element;
 import org.gstreamer.GstObject;
@@ -23,28 +22,28 @@ public class VideoSourceFullDesktop extends VideoSource implements RGBDataSink.L
 
     private Pipeline pipe = null;
     private RGBDataSink sink = null;
+    private Timer timer = null;
 
     public VideoSourceFullDesktop() {
         name = "Full Desktop";
         location = "";
+        controls.add(new ControlRescale(this));
+        controls.add(new webcamstudio.controls.ControlIdentity(this));
 
     }
 
     @Override
     public void stopSource() {
+        if (timer != null) {
+            timer.cancel();
+            timer = null;
+        }
+
         if (pipe != null) {
             pipe.stop();
             pipe = null;
         }
         image = null;
-    }
-
-    @Override
-    public Collection<JPanel> getControls() {
-        java.util.Vector<JPanel> list = new java.util.Vector<JPanel>();
-        list.add(new ControlRescale(this));
-        list.add(new webcamstudio.controls.ControlIdentity(this));
-        return list;
     }
 
     @Override
@@ -102,31 +101,24 @@ public class VideoSourceFullDesktop extends VideoSource implements RGBDataSink.L
             }
         });
         pipe.play();
-    }
-    public void setImage(BufferedImage img) {
-        if (image == null || image.getWidth() != img.getWidth() || image.getHeight() != img.getHeight()) {
-            image = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TRANSLUCENT);
-            dataOutputImage = ((java.awt.image.DataBufferInt) image.getRaster().getDataBuffer()).getData();
+        if (timer != null) {
+            timer.cancel();
+            timer = null;
         }
-        image.setRGB(0, 0, captureWidth, captureHeight, dataInputImage, 0, captureWidth);
+        timer = new Timer(name, true);
+        timer.scheduleAtFixedRate(new VideoSourcePixelsRenderer(this), 0, 1000 / frameRate);
+    }
+
+    protected void updateOutputImage(BufferedImage img){
+        image=img;
     }
 
     @Override
     public void rgbFrame(int w, int h, IntBuffer buffer) {
         captureWidth = w;
         captureHeight = h;
-        if (!isRendering) {
-            isRendering = true;
-            if (tempimage == null || tempimage.getWidth() != w || tempimage.getHeight() != h) {
-                tempimage = graphicConfiguration.createCompatibleImage(captureWidth, captureHeight, java.awt.image.BufferedImage.TRANSLUCENT);
-                dataInputImage = ((java.awt.image.DataBufferInt) tempimage.getRaster().getDataBuffer()).getData();
-            }
-            int[] array = buffer.array();
-            tempimage.setRGB(0, 0, w,h,array,0,w);
-            setImage(tempimage);
-            isRendering = false;
-        }
+        int[] array = new int[w * h];
+        buffer.get(array);
+        pixels = array;
     }
-
-  
 }

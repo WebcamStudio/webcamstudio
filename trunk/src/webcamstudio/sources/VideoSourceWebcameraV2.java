@@ -130,10 +130,6 @@ public class VideoSourceWebcameraV2 extends VideoSource {
 
     }
 
-    @Override
-    public Collection<JPanel> getControls() {
-        return new Vector<JPanel>();
-    }
 
     @Override
     public boolean canUpdateSource() {

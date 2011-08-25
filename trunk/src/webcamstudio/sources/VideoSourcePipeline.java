@@ -25,10 +25,10 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.Timer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
-import javax.swing.JPanel;
 import org.gstreamer.*;
 
 /**
@@ -39,6 +39,7 @@ public class VideoSourcePipeline extends VideoSource implements org.gstreamer.el
 
     protected String gstPipeline = "videotestsrc ! video/x-raw-rgb,width=320,height=240 ! ffmpegcolorspace name=tosink";
     private String iconFile = null;
+    private java.util.Timer timer = null;
 
     public VideoSourcePipeline(File pluginFile) {
 
@@ -48,12 +49,20 @@ public class VideoSourcePipeline extends VideoSource implements org.gstreamer.el
         frameRate = 15;
         outputWidth = 320;
         outputHeight = 240;
+        controls.add(new webcamstudio.controls.ControlShapes(this));
+        controls.add(new webcamstudio.controls.ControlEffects(this));
+        controls.add(new webcamstudio.controls.ControlActivity(this));
+        controls.add(new webcamstudio.controls.ControlFaceDetection(this));
     }
 
     public VideoSourcePipeline() {
         frameRate = 15;
         outputWidth = 320;
         outputHeight = 240;
+        controls.add(new webcamstudio.controls.ControlShapes(this));
+        controls.add(new webcamstudio.controls.ControlEffects(this));
+        controls.add(new webcamstudio.controls.ControlActivity(this));
+        controls.add(new webcamstudio.controls.ControlFaceDetection(this));
     }
 
     private String getPipeline() {
@@ -96,6 +105,10 @@ public class VideoSourcePipeline extends VideoSource implements org.gstreamer.el
     @Override
     public void stopSource() {
         stopMe = true;
+        if (timer != null) {
+            timer.cancel();
+            timer = null;
+        }
         if (pipe != null) {
             pipe.stop();
             pipe.getState();
@@ -144,38 +157,32 @@ public class VideoSourcePipeline extends VideoSource implements org.gstreamer.el
                 }
             });
             pipe.setState(State.PLAYING);
+            if (timer != null) {
+                timer.cancel();
+                timer = null;
+            }
+            timer = new Timer(name, true);
+            timer.scheduleAtFixedRate(new VideoSourcePixelsRenderer(this), 0, 1000 / frameRate);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-@Override
-    public void setImage(BufferedImage img) {
 
+    @Override
+    protected void updateOutputImage(BufferedImage img) {
         detectActivity(img);
         applyEffects(img);
         applyShape(img);
-        if (image == null || image.getWidth() != img.getWidth() || image.getHeight() != img.getHeight()) {
-            image = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TRANSLUCENT);
-            dataOutputImage = ((java.awt.image.DataBufferInt) image.getRaster().getDataBuffer()).getData();
-        }
-        image.setRGB(0, 0, captureWidth, captureHeight, dataInputImage, 0, captureWidth);
+        image = img;
     }
 
     @Override
     public void rgbFrame(int w, int h, java.nio.IntBuffer buffer) {
         captureWidth = w;
         captureHeight = h;
-        if (!isRendering) {
-            isRendering = true;
-            if (tempimage == null || tempimage.getWidth() != w || tempimage.getHeight() != h) {
-                tempimage = graphicConfiguration.createCompatibleImage(captureWidth, captureHeight, java.awt.image.BufferedImage.TRANSLUCENT);
-                dataInputImage = ((java.awt.image.DataBufferInt) tempimage.getRaster().getDataBuffer()).getData();
-            }
-            int[] array = buffer.array();
-            tempimage.setRGB(0, 0, w, h, array, 0, w);
-            setImage(tempimage);
-            isRendering = false;
-        }
+        int[] array = new int[w*h];
+        buffer.get(array);
+        pixels=array;
 
     }
 
@@ -216,17 +223,6 @@ public class VideoSourcePipeline extends VideoSource implements org.gstreamer.el
     public String toString() {
         return name;
     }
-
-    @Override
-    public java.util.Collection<JPanel> getControls() {
-        java.util.Vector<JPanel> list = new java.util.Vector<JPanel>();
-        list.add(new webcamstudio.controls.ControlShapes(this));
-        list.add(new webcamstudio.controls.ControlEffects(this));
-        list.add(new webcamstudio.controls.ControlActivity(this));
-        list.add(new webcamstudio.controls.ControlFaceDetection(this));
-
-        return list;
-    }
     private org.gstreamer.elements.RGBDataSink elementSink = null;
     private Pipeline pipe = null;
 
@@ -238,9 +234,9 @@ public class VideoSourcePipeline extends VideoSource implements org.gstreamer.el
                 icon = super.getThumbnail();
             } else {
                 File resource = new File(iconFile);
-                if (!resource.exists()){
+                if (!resource.exists()) {
                     //Try to find the image at the same place as the pipeline
-                    resource = new File(new File(location).getParentFile(),iconFile);
+                    resource = new File(new File(location).getParentFile(), iconFile);
                 }
                 try {
                     icon = new ImageIcon(Toolkit.getDefaultToolkit().createImage(resource.toURI().toURL()).getScaledInstance(32, 32, Image.SCALE_FAST));

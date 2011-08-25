@@ -10,18 +10,17 @@
  */
 package webcamstudio.components;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
 import java.util.Collection;
 import java.util.Timer;
 import java.util.TimerTask;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
@@ -63,7 +62,8 @@ public class LayoutManager2 extends javax.swing.JPanel implements SourceListener
     private ImageIcon iconText = null;
     private boolean stopMe = false;
     private LayoutEventsManager eventsManager = null;
-    private DefaultListModel modelLayouts = new DefaultListModel();
+    //private DefaultListModel modelLayouts = new DefaultListModel();
+    private DefaultComboBoxModel modelComboLayouts = new DefaultComboBoxModel();
     private DefaultListModel modelLayoutItems = new DefaultListModel();
     protected Viewer viewer = new Viewer();
     protected Mixer mixer;
@@ -80,11 +80,12 @@ public class LayoutManager2 extends javax.swing.JPanel implements SourceListener
         iconFolder = new ImageIcon(getToolkit().getImage(java.net.URLClassLoader.getSystemResource("webcamstudio/resources/tango/folder.png")));
         iconText = new ImageIcon(getToolkit().getImage(java.net.URLClassLoader.getSystemResource("webcamstudio/resources/tango/format-text-bold.png")));
         eventsManager = new LayoutEventsManager(layouts);
-        lstLayouts.setModel(modelLayouts);
+        cboLayouts.setModel(modelComboLayouts);
+        addLayout(new Layout("Default Layout"));
+        currentLayout.enterLayout();
+        //lstLayouts.setModel(modelLayouts);
         lstLayoutItems.setModel(modelLayoutItems);
-        panPreview.add(viewer, BorderLayout.CENTER);
         viewer.setVisible(false);
-        panPreview.setVisible(false);
         DefaultListCellRenderer rendererLayout = new DefaultListCellRenderer() {
 
             @Override
@@ -93,13 +94,19 @@ public class LayoutManager2 extends javax.swing.JPanel implements SourceListener
                 JLabel label = (JLabel) comp;
                 if (value instanceof Layout) {
                     Layout layout = (Layout) value;
-                    label.setText(layout.toString());
-                    label.setIcon(new ImageIcon(layout.getPreview(mixer.getWidth(), mixer.getHeight()).getScaledInstance(16, 16, BufferedImage.SCALE_FAST)));
+                    label.setText("");
+                    label.setIcon(new ImageIcon(layout.getPreview(mixer.getWidth(), mixer.getHeight()).getScaledInstance(160, 120, Image.SCALE_FAST)));
+                    if (layout.isActive()) {
+                        label.setForeground(Color.green);
+                    } else {
+                        label.setForeground(Color.black);
+                    }
                 }
-                return label;
+                return comp;
             }
         };
-        lstLayouts.setCellRenderer(rendererLayout);
+        cboLayouts.setRenderer(rendererLayout);
+
         DefaultListCellRenderer rendererLayoutItem = new DefaultListCellRenderer() {
 
             @Override
@@ -142,28 +149,22 @@ public class LayoutManager2 extends javax.swing.JPanel implements SourceListener
         lstLayoutItems.setCellRenderer(rendererLayoutItem);
         timer = new Timer(this.getClass().getSimpleName(), true);
 
-        timer.scheduleAtFixedRate(new imageUpdater(this), 0, 500);
+        timer.scheduleAtFixedRate(new imageUpdater(this), 0, 200);
 
 
     }
 
-    public void showPreview(boolean visible) {
-        viewer.setVisible(visible);
-        panPreview.setVisible(visible);
-        panPreview.setPreferredSize(new Dimension(320, 240));
-        panPreview.revalidate();
-    }
-
-    private void updateLayoutsList() {
-        modelLayouts.clear();
-        for (Layout l : layouts) {
-            modelLayouts.addElement(l);
+    public void clearLayouts(){
+        for (Layout l : layouts){
+            l.setDuration(0, "");
+            for (LayoutItem li : l.getItems()){
+                li.getSource().stopSource();
+            }
         }
-        lstLayouts.setSelectedValue(currentLayout, true);
-        updateLayoutItemList();
-        lstLayouts.revalidate();
+        layouts.removeAllElements();
+        modelComboLayouts.removeAllElements();
+        layouts.removeAllElements();
     }
-
     public void quitting() {
         eventsManager.stop();
         timer.cancel();
@@ -178,7 +179,17 @@ public class LayoutManager2 extends javax.swing.JPanel implements SourceListener
         //Find Layout in tree...
         for (Layout l : layouts) {
             if (l.getHotKey().equals(key)) {
-                lstLayoutItems.setSelectedValue(l, true);
+                currentLayout = l;
+                cboLayouts.setSelectedItem(l);
+                new Thread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        currentLayout.enterLayout();
+                    }
+                }).start();
+                
+                break;
             }
         }
     }
@@ -186,8 +197,9 @@ public class LayoutManager2 extends javax.swing.JPanel implements SourceListener
     private void updateLayoutItemList() {
         modelLayoutItems.clear();
         if (currentLayout != null) {
-            for (LayoutItem i : currentLayout.getReversedItems()) {
-                modelLayoutItems.addElement(i);
+            Object[] ls = currentLayout.getItems().toArray();
+            for (int i = ls.length - 1; i >= 0; i--) {
+                modelLayoutItems.addElement(ls[i]);
             }
         } else {
             currentLayoutItem = null;
@@ -199,24 +211,20 @@ public class LayoutManager2 extends javax.swing.JPanel implements SourceListener
     }
 
     private void setLayoutToolTip(Layout layout) {
-        String tip = "<HTML><BODY>";
-        for (LayoutItem li : layout.getReversedItems()) {
+        String tip = "<HTML><BODY><H3>" + layout.toString() + "</H3><BR>";
+        Object[] ls = currentLayout.getItems().toArray();
+        for (int i = ls.length - 1; i >= 0; i--) {
+            LayoutItem li = (LayoutItem) ls[i];
             tip += "<B>" + li.getSource().getName() + "</B><BR> X=" + li.getX() + ",Y=" + li.getY() + ", " + li.getWidth() + "x" + li.getHeight() + ", " + li.getTransitionIn().getName() + "-" + li.getTransitionOut().getName() + "<HR>";
         }
         tip += "</BODY></HTML>";
-        lstLayouts.setToolTipText(tip);
+        cboLayouts.setToolTipText(tip);
     }
 
     public void addSource(VideoSource s) {
-        if (layouts.isEmpty()) {
-            Layout l = new Layout("New Layout");
-            layouts.add(l);
-            currentLayout = l;
-            l.enterLayout();
-        }
         if (currentLayout != null) {
             currentLayout.addSource(s);
-            updateLayoutsList();
+            updateLayoutItemList();
         }
     }
 
@@ -232,21 +240,18 @@ public class LayoutManager2 extends javax.swing.JPanel implements SourceListener
         popItems = new javax.swing.JPopupMenu();
         popItemsDuplicateIn = new javax.swing.JMenu();
         popItemsRemove = new javax.swing.JMenuItem();
-        popLayouts = new javax.swing.JPopupMenu();
-        mnuLayoutsAdd = new javax.swing.JMenuItem();
-        mnuLayoutsRemove = new javax.swing.JMenuItem();
-        mnuLayoutsActivate = new javax.swing.JMenuItem();
-        jSeparator1 = new javax.swing.JPopupMenu.Separator();
-        mnuLayoutsRename = new javax.swing.JMenuItem();
-        mainSplit = new javax.swing.JSplitPane();
         panLayoutItems = new javax.swing.JPanel();
-        tabControls = new javax.swing.JTabbedPane();
-        jScrollPane1 = new javax.swing.JScrollPane();
+        scrollItems = new javax.swing.JScrollPane();
         lstLayoutItems = new javax.swing.JList();
-        panLayouts = new javax.swing.JPanel();
-        scrollLayouts = new javax.swing.JScrollPane();
-        lstLayouts = new javax.swing.JList();
-        panPreview = new javax.swing.JPanel();
+        jPanel2 = new javax.swing.JPanel();
+        cboLayouts = new javax.swing.JComboBox();
+        jPanel3 = new javax.swing.JPanel();
+        btnAddLayout = new javax.swing.JButton();
+        btnRemoveLayout = new javax.swing.JButton();
+        btnActivateLayout = new javax.swing.JButton();
+        btnLayoutDetails = new javax.swing.JButton();
+        jPanel1 = new javax.swing.JPanel();
+        tabControls = new javax.swing.JTabbedPane();
 
         popItems.setName("popItems"); // NOI18N
 
@@ -264,58 +269,10 @@ public class LayoutManager2 extends javax.swing.JPanel implements SourceListener
         });
         popItems.add(popItemsRemove);
 
-        popLayouts.setName("popLayouts"); // NOI18N
-
-        mnuLayoutsAdd.setText(bundle.getString("ADD")); // NOI18N
-        mnuLayoutsAdd.setName("mnuLayoutsAdd"); // NOI18N
-        mnuLayoutsAdd.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuLayoutsAddActionPerformed(evt);
-            }
-        });
-        popLayouts.add(mnuLayoutsAdd);
-
-        mnuLayoutsRemove.setText(bundle.getString("REMOVE")); // NOI18N
-        mnuLayoutsRemove.setName("mnuLayoutsRemove"); // NOI18N
-        mnuLayoutsRemove.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuLayoutsRemoveActionPerformed(evt);
-            }
-        });
-        popLayouts.add(mnuLayoutsRemove);
-
-        mnuLayoutsActivate.setText(bundle.getString("ACTIVATE")); // NOI18N
-        mnuLayoutsActivate.setName("mnuLayoutsActivate"); // NOI18N
-        mnuLayoutsActivate.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuLayoutsActivateActionPerformed(evt);
-            }
-        });
-        popLayouts.add(mnuLayoutsActivate);
-
-        jSeparator1.setName("jSeparator1"); // NOI18N
-        popLayouts.add(jSeparator1);
-
-        mnuLayoutsRename.setText(bundle.getString("RENAME")); // NOI18N
-        mnuLayoutsRename.setName("mnuLayoutsRename"); // NOI18N
-        mnuLayoutsRename.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuLayoutsRenameActionPerformed(evt);
-            }
-        });
-        popLayouts.add(mnuLayoutsRename);
-
-        setLayout(new java.awt.BorderLayout());
-
-        mainSplit.setName("mainSplit"); // NOI18N
-
         panLayoutItems.setName("panLayoutItems"); // NOI18N
         panLayoutItems.setLayout(new java.awt.BorderLayout());
 
-        tabControls.setName("tabControls"); // NOI18N
-        panLayoutItems.add(tabControls, java.awt.BorderLayout.CENTER);
-
-        jScrollPane1.setName("jScrollPane1"); // NOI18N
+        scrollItems.setName("scrollItems"); // NOI18N
 
         lstLayoutItems.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("SOURCES"))); // NOI18N
         lstLayoutItems.setModel(new javax.swing.AbstractListModel() {
@@ -330,46 +287,93 @@ public class LayoutManager2 extends javax.swing.JPanel implements SourceListener
                 lstLayoutItemsMouseClicked(evt);
             }
         });
-        jScrollPane1.setViewportView(lstLayoutItems);
+        scrollItems.setViewportView(lstLayoutItems);
 
-        panLayoutItems.add(jScrollPane1, java.awt.BorderLayout.NORTH);
+        panLayoutItems.add(scrollItems, java.awt.BorderLayout.CENTER);
 
-        mainSplit.setRightComponent(panLayoutItems);
+        jPanel2.setName("jPanel2"); // NOI18N
 
-        panLayouts.setName("panLayouts"); // NOI18N
-        panLayouts.setLayout(new java.awt.BorderLayout());
-
-        scrollLayouts.setName("scrollLayouts"); // NOI18N
-
-        lstLayouts.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("LAYOUTS"))); // NOI18N
-        lstLayouts.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
-        });
-        lstLayouts.setDoubleBuffered(true);
-        lstLayouts.setName("lstLayouts"); // NOI18N
-        lstLayouts.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                lstLayoutsMouseClicked(evt);
+        cboLayouts.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cboLayouts.setName("cboLayouts"); // NOI18N
+        cboLayouts.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cboLayoutsActionPerformed(evt);
             }
         });
-        lstLayouts.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
-            public void mouseMoved(java.awt.event.MouseEvent evt) {
-                lstLayoutsMouseMoved(evt);
+        cboLayouts.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                cboLayoutsKeyPressed(evt);
             }
         });
-        scrollLayouts.setViewportView(lstLayouts);
+        jPanel2.add(cboLayouts);
 
-        panLayouts.add(scrollLayouts, java.awt.BorderLayout.CENTER);
+        jPanel3.setName("jPanel3"); // NOI18N
+        jPanel3.setLayout(new javax.swing.BoxLayout(jPanel3, javax.swing.BoxLayout.Y_AXIS));
 
-        panPreview.setName("panPreview"); // NOI18N
-        panPreview.setLayout(new java.awt.BorderLayout());
-        panLayouts.add(panPreview, java.awt.BorderLayout.SOUTH);
+        btnAddLayout.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/document-new.png"))); // NOI18N
+        btnAddLayout.setToolTipText(bundle.getString("ADD")); // NOI18N
+        btnAddLayout.setName("btnAddLayout"); // NOI18N
+        btnAddLayout.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddLayoutActionPerformed(evt);
+            }
+        });
+        jPanel3.add(btnAddLayout);
 
-        mainSplit.setLeftComponent(panLayouts);
+        btnRemoveLayout.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/edit-delete.png"))); // NOI18N
+        btnRemoveLayout.setToolTipText(bundle.getString("REMOVE")); // NOI18N
+        btnRemoveLayout.setName("btnRemoveLayout"); // NOI18N
+        btnRemoveLayout.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRemoveLayoutActionPerformed(evt);
+            }
+        });
+        jPanel3.add(btnRemoveLayout);
 
-        add(mainSplit, java.awt.BorderLayout.CENTER);
+        btnActivateLayout.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-start.png"))); // NOI18N
+        btnActivateLayout.setToolTipText(bundle.getString("ACTIVATE")); // NOI18N
+        btnActivateLayout.setName("btnActivateLayout"); // NOI18N
+        btnActivateLayout.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnActivateLayoutActionPerformed(evt);
+            }
+        });
+        jPanel3.add(btnActivateLayout);
+
+        btnLayoutDetails.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/document-properties.png"))); // NOI18N
+        btnLayoutDetails.setToolTipText(bundle.getString("PROPERTIES")); // NOI18N
+        btnLayoutDetails.setName("btnLayoutDetails"); // NOI18N
+        btnLayoutDetails.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLayoutDetailsActionPerformed(evt);
+            }
+        });
+        jPanel3.add(btnLayoutDetails);
+
+        jPanel2.add(jPanel3);
+
+        panLayoutItems.add(jPanel2, java.awt.BorderLayout.WEST);
+
+        jPanel1.setName("jPanel1"); // NOI18N
+        jPanel1.setLayout(new java.awt.BorderLayout());
+
+        tabControls.setName("tabControls"); // NOI18N
+        jPanel1.add(tabControls, java.awt.BorderLayout.CENTER);
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(panLayoutItems, javax.swing.GroupLayout.DEFAULT_SIZE, 350, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 350, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(panLayoutItems, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 124, Short.MAX_VALUE))
+        );
     }// </editor-fold>//GEN-END:initComponents
 
     private void popItemsRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_popItemsRemoveActionPerformed
@@ -381,28 +385,6 @@ public class LayoutManager2 extends javax.swing.JPanel implements SourceListener
             sourceRemoved(source);
         }
 }//GEN-LAST:event_popItemsRemoveActionPerformed
-
-    private void lstLayoutsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstLayoutsMouseClicked
-        if (evt.getButton() == MouseEvent.BUTTON3) {
-            popLayouts.setInvoker(lstLayouts);
-            mnuLayoutsRemove.setEnabled(currentLayout != null);
-            mnuLayoutsActivate.setEnabled(currentLayout != null);
-            mnuLayoutsRename.setEnabled(currentLayout != null);
-            popLayouts.setLocation(evt.getLocationOnScreen());
-            popLayouts.setVisible(true);
-        } else if (lstLayouts.getSelectedValue() != null) {
-            currentLayout = (Layout) lstLayouts.getSelectedValue();
-            currentLayoutItem = null;
-            tabControls.removeAll();
-            updateLayoutItemList();
-            if (!Main.XMODE) {
-                PulseAudioInputSelecter p = new PulseAudioInputSelecter(currentLayout);
-                tabControls.add("Audio", p);
-            }
-            LayoutEventsControl eventsControl = new LayoutEventsControl(currentLayout, layouts);
-            tabControls.add("Events", eventsControl);
-        }
-    }//GEN-LAST:event_lstLayoutsMouseClicked
 
     private void lstLayoutItemsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstLayoutItemsMouseClicked
         if (lstLayoutItems.getSelectedIndex() != -1) {
@@ -417,40 +399,27 @@ public class LayoutManager2 extends javax.swing.JPanel implements SourceListener
                 ControlPosition ctrl = new ControlPosition(currentLayoutItem);
                 ctrl.setListener(this);
                 tabControls.add(ctrl.getLabel(), ctrl);
-                for (JPanel panel : currentLayoutItem.getSource().getControls()) {
-                    Controls c = (Controls) panel;
-                    tabControls.add(c.getLabel(), panel);
-                    c.setListener(this);
+                for (Controls control : currentLayoutItem.getSource().getControls()) {
+                    tabControls.add(control.getLabel(), (JPanel) control);
+                    control.setListener(this);
                 }
             }
         }
     }//GEN-LAST:event_lstLayoutItemsMouseClicked
 
-    private void lstLayoutsMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstLayoutsMouseMoved
-        int index = lstLayouts.locationToIndex(evt.getPoint());
-        if (index != -1) {
-            Layout layout = layouts.get(index);
-            setLayoutToolTip(layout);
-        } else {
-            lstLayouts.setToolTipText("");
-        }
-
-    }//GEN-LAST:event_lstLayoutsMouseMoved
-
-    private void mnuLayoutsAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuLayoutsAddActionPerformed
+    private void btnAddLayoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddLayoutActionPerformed
         addLayout(new Layout("New Layout"));
-    }//GEN-LAST:event_mnuLayoutsAddActionPerformed
+    }//GEN-LAST:event_btnAddLayoutActionPerformed
 
-    private void mnuLayoutsRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuLayoutsRemoveActionPerformed
-        if (currentLayout != null) {
-            layouts.remove(currentLayout);
-            currentLayout = null;
-            currentLayoutItem = null;
-            updateLayoutsList();
-        }
-    }//GEN-LAST:event_mnuLayoutsRemoveActionPerformed
+    private void btnRemoveLayoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveLayoutActionPerformed
+        layouts.remove(currentLayout);
+        cboLayouts.removeItem(currentLayout);
+        currentLayout = null;
+        currentLayoutItem = null;
+        
+    }//GEN-LAST:event_btnRemoveLayoutActionPerformed
 
-    private void mnuLayoutsActivateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuLayoutsActivateActionPerformed
+    private void btnActivateLayoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActivateLayoutActionPerformed
         new Thread(new Runnable() {
 
             @Override
@@ -460,32 +429,43 @@ public class LayoutManager2 extends javax.swing.JPanel implements SourceListener
                 }
             }
         }).start();
-    }//GEN-LAST:event_mnuLayoutsActivateActionPerformed
+    }//GEN-LAST:event_btnActivateLayoutActionPerformed
 
-    private void mnuLayoutsRenameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuLayoutsRenameActionPerformed
-        EditLayoutName editor = new EditLayoutName(null, true, currentLayout);
-        editor.setLocationRelativeTo(lstLayouts);
-        editor.setVisible(true);
-        lstLayouts.revalidate();
-    }//GEN-LAST:event_mnuLayoutsRenameActionPerformed
+    private void cboLayoutsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboLayoutsActionPerformed
+        if (cboLayouts.getSelectedItem() != null) {
+            currentLayout = (Layout) cboLayouts.getSelectedItem();
+            tabControls.removeAll();
+            updateLayoutItemList();
+        }
+
+    }//GEN-LAST:event_cboLayoutsActionPerformed
+
+    private void btnLayoutDetailsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLayoutDetailsActionPerformed
+        tabControls.removeAll();
+        LayoutEventsControl control = new LayoutEventsControl(currentLayout, layouts);
+        tabControls.add("Events",control);
+    }//GEN-LAST:event_btnLayoutDetailsActionPerformed
+
+    private void cboLayoutsKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cboLayoutsKeyPressed
+        applyLayoutHotKey(""+ evt.getKeyChar());
+        
+    }//GEN-LAST:event_cboLayoutsKeyPressed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JPopupMenu.Separator jSeparator1;
+    private javax.swing.JButton btnActivateLayout;
+    private javax.swing.JButton btnAddLayout;
+    private javax.swing.JButton btnLayoutDetails;
+    private javax.swing.JButton btnRemoveLayout;
+    private javax.swing.JComboBox cboLayouts;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JList lstLayoutItems;
-    private javax.swing.JList lstLayouts;
-    private javax.swing.JSplitPane mainSplit;
-    private javax.swing.JMenuItem mnuLayoutsActivate;
-    private javax.swing.JMenuItem mnuLayoutsAdd;
-    private javax.swing.JMenuItem mnuLayoutsRemove;
-    private javax.swing.JMenuItem mnuLayoutsRename;
     private javax.swing.JPanel panLayoutItems;
-    private javax.swing.JPanel panLayouts;
-    private javax.swing.JPanel panPreview;
     private javax.swing.JPopupMenu popItems;
     private javax.swing.JMenu popItemsDuplicateIn;
     private javax.swing.JMenuItem popItemsRemove;
-    private javax.swing.JPopupMenu popLayouts;
-    private javax.swing.JScrollPane scrollLayouts;
+    private javax.swing.JScrollPane scrollItems;
     private javax.swing.JTabbedPane tabControls;
     // End of variables declaration//GEN-END:variables
 
@@ -548,8 +528,8 @@ public class LayoutManager2 extends javax.swing.JPanel implements SourceListener
     public void addLayout(Layout l) {
         layouts.add(l);
         currentLayout = l;
-        l.setHotKey("F" + (layouts.size()));
-        updateLayoutsList();
+        modelComboLayouts.addElement(l);
+        cboLayouts.setSelectedItem(l);
     }
 
     private void updatePopItemMenu() {
@@ -585,11 +565,8 @@ public class LayoutManager2 extends javax.swing.JPanel implements SourceListener
     }
 
     protected void update() {
+        cboLayouts.repaint();
         lstLayoutItems.repaint();
-        lstLayouts.repaint();
-        if (viewer.isVisible()) {
-            viewer.updateImage(mixer.getImage());
-        }
     }
 }
 

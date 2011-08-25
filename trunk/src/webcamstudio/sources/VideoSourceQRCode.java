@@ -23,6 +23,9 @@ public class VideoSourceQRCode extends VideoSource {
         location = "";
         name = "QRCode";
         this.customText = text;
+        controls.add(new webcamstudio.controls.ControlQRCode(this));
+        controls.add(new webcamstudio.controls.ControlEffects(this));
+        controls.add(new webcamstudio.controls.ControlShapes(this));
 
     }
 
@@ -85,14 +88,6 @@ public class VideoSourceQRCode extends VideoSource {
     }
     private Image thumbnail = null;
 
-    @Override
-    public java.util.Collection<JPanel> getControls() {
-        java.util.Vector<JPanel> list = new java.util.Vector<JPanel>();
-        list.add(new webcamstudio.controls.ControlQRCode(this));
-        list.add(new webcamstudio.controls.ControlEffects(this));
-        list.add(new webcamstudio.controls.ControlShapes(this));
-        return list;
-    }
 
     @Override
     public ImageIcon getThumbnail() {

@@ -5,6 +5,7 @@
 package webcamstudio.layout;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
@@ -26,7 +27,7 @@ public class Layout {
     private java.util.TreeMap<Integer, LayoutItem> items = new java.util.TreeMap<Integer, LayoutItem>();
     private String name = "";
     private String layoutUUID = java.util.UUID.randomUUID().toString();
-    private String hotKey = "F1";
+    private String hotKey = "";
     private boolean isActive = false;
     private boolean isEntering = false;
     private boolean isExiting = false;
@@ -141,7 +142,7 @@ public class Layout {
             for (LayoutItem item : items.values()) {
                 item.setTransitionToDo(item.getTransitionIn());
                 item.setActive(true);
-                tp.submit(item);                
+                tp.submit(item);
             }
             tp.shutdown();
 
@@ -184,27 +185,7 @@ public class Layout {
     }
 
     public Collection<LayoutItem> getItems() {
-        java.util.Vector<LayoutItem> retValues = new java.util.Vector<LayoutItem>();
-        if (items.size() > 0) {
-            Integer key = items.firstKey();
-            while (key != null) {
-                retValues.add(items.get(key));
-                key = items.higherKey(key);
-            }
-        }
-        return retValues;
-    }
-
-    public Collection<LayoutItem> getReversedItems() {
-        java.util.Vector<LayoutItem> retValues = new java.util.Vector<LayoutItem>();
-        if (items.size() > 0) {
-            Integer key = items.lastKey();
-            while (key != null) {
-                retValues.add(items.get(key));
-                key = items.lowerKey(key);
-            }
-        }
-        return retValues;
+        return items.values();
     }
 
     public Image getPreview(int w, int h) {
@@ -232,24 +213,24 @@ public class Layout {
             } else if (item.getSource() instanceof VideoSourceDesktop) {
                 buffer.setColor(Color.ORANGE);
             }
-//            if (item.getSource().getImage() != null) {
-//                buffer.drawImage(item.getSource().getImage(), item.getX(), item.getY(), item.getWidth() + item.getX(), item.getHeight() + item.getY(), 0, 0, item.getSource().getImage().getWidth(), item.getSource().getImage().getHeight(), null);
-//            }
+            if (item.getSource().getImage() != null) {
+                buffer.drawImage(item.getSource().getImage(), item.getX(), item.getY(), item.getWidth() + item.getX(), item.getHeight() + item.getY(), 0, 0, item.getSource().getImage().getWidth(), item.getSource().getImage().getHeight(), null);
+            }
             buffer.drawRect(item.getX(), item.getY(), item.getWidth(), item.getHeight());
         }
+        buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC_OVER, 0.5F));
+        buffer.setColor(Color.BLACK);
+        buffer.fillRect(0, 0, w, 34);
         if (isEntering) {
-            buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC_OVER, 0.5F));
             buffer.setColor(Color.YELLOW);
-            buffer.fillRect(0, 0, w, h);
         } else if (isExiting) {
-            buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC_OVER, 0.5F));
             buffer.setColor(Color.RED);
-            buffer.fillRect(0, 0, w, h);
         } else if (isActive) {
-            buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC_OVER, 0.5F));
             buffer.setColor(Color.GREEN);
-            buffer.fillRect(0, 0, w, h);
         }
+        buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC_OVER, 1F));
+        buffer.setFont(new Font("Monospaced", Font.BOLD, 30));
+        buffer.drawString(name, 5,30);
         buffer.dispose();
 
         return preview;

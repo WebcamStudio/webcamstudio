@@ -26,8 +26,7 @@ import f00f.net.irc.martyr.commands.PingCommand;
 import f00f.net.irc.martyr.commands.PongCommand;
 import java.awt.Graphics2D;
 import javax.swing.ImageIcon;
-import javax.swing.JPanel;
-import webcamstudio.components.PreciseTimer;
+
 
 /**
  *
@@ -40,6 +39,11 @@ public class VideoSourceIRC extends VideoSource {
         name = location;
         this.nick = nick;
         frameRate = 1;
+        controls.add(new webcamstudio.controls.ControlIRC(this));
+        controls.add(new webcamstudio.controls.ControlShapes(this));
+        controls.add(new webcamstudio.controls.ControlEffects(this));
+        controls.add(new webcamstudio.controls.ControlActivity(this));
+        controls.add(new webcamstudio.controls.ControlSpeech(this));
 
     }
 
@@ -50,6 +54,11 @@ public class VideoSourceIRC extends VideoSource {
         frameRate = 1;
         captureWidth = 320;
         captureHeight = 240;
+        controls.add(new webcamstudio.controls.ControlIRC(this));
+        controls.add(new webcamstudio.controls.ControlShapes(this));
+        controls.add(new webcamstudio.controls.ControlEffects(this));
+        controls.add(new webcamstudio.controls.ControlActivity(this));
+        controls.add(new webcamstudio.controls.ControlSpeech(this));
     }
 
     public void setChatroom(String address, String port, String channel, String nick) {
@@ -186,7 +195,8 @@ public class VideoSourceIRC extends VideoSource {
                         applyShape(tempimage);
                         applyEffects(tempimage);
                         image = tempimage;
-                        PreciseTimer.sleep(timestamp, 1000 / frameRate);
+
+                        Thread.sleep(1000/frameRate);
 
                     } catch (Exception e) {
                         error("IRC Error  :" + e.getMessage());
@@ -439,16 +449,6 @@ public class VideoSourceIRC extends VideoSource {
     private java.awt.Graphics2D buffer = null;
     private Emotes emotes = new Emotes();
 
-    @Override
-    public Collection<JPanel> getControls() {
-        java.util.Vector<JPanel> list = new java.util.Vector<JPanel>();
-        list.add(new webcamstudio.controls.ControlIRC(this));
-        list.add(new webcamstudio.controls.ControlShapes(this));
-        list.add(new webcamstudio.controls.ControlEffects(this));
-        list.add(new webcamstudio.controls.ControlActivity(this));
-        list.add(new webcamstudio.controls.ControlSpeech(this));
-        return list;
-    }
 }
 
 class MessageMonitor extends GenericAutoService {

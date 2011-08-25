@@ -20,7 +20,9 @@ public class Slide extends Transition {
         VideoSource source = item.getSource();
         if (!source.isPlaying()) {
             source.startSource();
+            
         }
+        item.setActive(true);
         source.setVolume(item.getVolume());
         int xDelta = (item.getX() - source.getShowAtX()) / 20;
         int yDelta = (item.getY() - source.getShowAtY()) / 20;

@@ -7,7 +7,6 @@ package webcamstudio.sources;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Iterator;
@@ -17,9 +16,7 @@ import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
 import javax.swing.ImageIcon;
-import javax.swing.JPanel;
 import webcamstudio.components.GifDecoder;
-import webcamstudio.components.PreciseTimer;
 
 public class VideoSourceImage extends VideoSource {
 
@@ -35,6 +32,9 @@ public class VideoSourceImage extends VideoSource {
             }
             name = loc.getName();
         }
+        controls.add(new webcamstudio.controls.ControlEffects(this));
+        controls.add(new webcamstudio.controls.ControlShapes(this));
+        controls.add(new webcamstudio.controls.ControlReload(this));
     }
 
     public VideoSourceImage(java.io.File[] locs) {
@@ -53,6 +53,9 @@ public class VideoSourceImage extends VideoSource {
         if (locs.length > 0) {
             location = location.substring(0, location.length() - 1);
         }
+        controls.add(new webcamstudio.controls.ControlEffects(this));
+        controls.add(new webcamstudio.controls.ControlShapes(this));
+        controls.add(new webcamstudio.controls.ControlReload(this));
     }
 
     public VideoSourceImage(java.net.URL loc) {
@@ -62,6 +65,9 @@ public class VideoSourceImage extends VideoSource {
             locations.add(location);
             name = loc.toString();
         }
+        controls.add(new webcamstudio.controls.ControlEffects(this));
+        controls.add(new webcamstudio.controls.ControlShapes(this));
+        controls.add(new webcamstudio.controls.ControlReload(this));
     }
 
     @Override
@@ -99,7 +105,7 @@ public class VideoSourceImage extends VideoSource {
                             g.dispose();
                             image = tempimage;
                         }
-                        PreciseTimer.sleep(timestamp, delays.get(animatedIndex));
+                        Thread.sleep(1000);
                     } catch (Exception e) {
                         error("Image Error:  " + e.getMessage());
                     }
@@ -224,14 +230,6 @@ public class VideoSourceImage extends VideoSource {
     private java.util.Vector<Integer> delays = new java.util.Vector<Integer>();
     private Image thumbnail = null;
 
-    @Override
-    public java.util.Collection<JPanel> getControls() {
-        java.util.Vector<JPanel> list = new java.util.Vector<JPanel>();
-        list.add(new webcamstudio.controls.ControlEffects(this));
-        list.add(new webcamstudio.controls.ControlShapes(this));
-        list.add(new webcamstudio.controls.ControlReload(this));
-        return list;
-    }
 
     @Override
     public ImageIcon getThumbnail() {

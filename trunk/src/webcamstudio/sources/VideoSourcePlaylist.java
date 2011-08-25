@@ -46,6 +46,9 @@ import javax.swing.JPanel;
 public class VideoSourcePlaylist extends VideoSource implements Runnable {
 
     public VideoSourcePlaylist() {
+        controls.add(new webcamstudio.controls.ControlEffects(this));
+        controls.add(new webcamstudio.controls.ControlShapes(this));
+
     }
 
     public VideoSourcePlaylist(java.io.File list, InfoListener l) {
@@ -53,6 +56,8 @@ public class VideoSourcePlaylist extends VideoSource implements Runnable {
         location = list.getAbsolutePath();
         outputWidth = 320;
         outputHeight = 240;
+        controls.add(new webcamstudio.controls.ControlEffects(this));
+        controls.add(new webcamstudio.controls.ControlShapes(this));
     }
 
     private void loadList() {
@@ -375,11 +380,4 @@ public class VideoSourcePlaylist extends VideoSource implements Runnable {
     public void pause() {
     }
 
-    @Override
-    public java.util.Collection<JPanel> getControls() {
-        java.util.Vector<JPanel> list = new java.util.Vector<JPanel>();
-        list.add(new webcamstudio.controls.ControlEffects(this));
-        list.add(new webcamstudio.controls.ControlShapes(this));
-        return list;
-    }
 }
