@@ -712,6 +712,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
                 mnuStudioLoadLast.setToolTipText(lastStudioFile.getAbsolutePath());
                 Studio studio = new Studio();
                 studio.loadStudio(lastStudioFile);
+                layoutManager.clearLayouts();
                 for (Layout l : studio.getLayouts()) {
                     layoutManager.addLayout(l);
                 }
@@ -723,96 +724,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         }
     }
 
-    private void updateMenuLayoutNames() {
-        java.util.TreeMap<String, String> ls = new java.util.TreeMap<String, String>();
-        for (Layout l : layoutManager.getLayouts()) {
-            ls.put(l.getHotKey(), l.toString());
-        }
-        if (ls.get("F1") != null) {
-            mnuLayoutF1.setText(ls.get("F1"));
-            mnuLayoutF1.setVisible(true);
-        } else {
-            mnuLayoutF1.setText("...");
-            mnuLayoutF1.setVisible(false);
-        }
-        if (ls.get("F2") != null) {
-            mnuLayoutF2.setText(ls.get("F2"));
-            mnuLayoutF2.setVisible(true);
-        } else {
-            mnuLayoutF2.setText("...");
-            mnuLayoutF2.setVisible(false);
-        }
-        if (ls.get("F3") != null) {
-            mnuLayoutF3.setText(ls.get("F3"));
-            mnuLayoutF3.setVisible(true);
-        } else {
-            mnuLayoutF3.setText("...");
-            mnuLayoutF3.setVisible(false);
-        }
-        if (ls.get("F4") != null) {
-            mnuLayoutF4.setText(ls.get("F4"));
-            mnuLayoutF4.setVisible(true);
-        } else {
-            mnuLayoutF4.setText("...");
-            mnuLayoutF4.setVisible(false);
-        }
-        if (ls.get("F5") != null) {
-            mnuLayoutF5.setText(ls.get("F5"));
-            mnuLayoutF5.setVisible(true);
-        } else {
-            mnuLayoutF5.setText("...");
-            mnuLayoutF5.setVisible(false);
-        }
-        if (ls.get("F6") != null) {
-            mnuLayoutF6.setText(ls.get("F6"));
-            mnuLayoutF6.setVisible(true);
-        } else {
-            mnuLayoutF6.setText("...");
-            mnuLayoutF6.setVisible(false);
-        }
-        if (ls.get("F7") != null) {
-            mnuLayoutF7.setText(ls.get("F7"));
-            mnuLayoutF7.setVisible(true);
-        } else {
-            mnuLayoutF7.setText("...");
-            mnuLayoutF7.setVisible(false);
-        }
-        if (ls.get("F8") != null) {
-            mnuLayoutF8.setText(ls.get("F8"));
-            mnuLayoutF8.setVisible(true);
-        } else {
-            mnuLayoutF8.setText("...");
-            mnuLayoutF8.setVisible(false);
-        }
-        if (ls.get("F9") != null) {
-            mnuLayoutF9.setText(ls.get("F9"));
-            mnuLayoutF9.setVisible(true);
-        } else {
-            mnuLayoutF9.setText("...");
-            mnuLayoutF9.setVisible(false);
-        }
-        if (ls.get("F10") != null) {
-            mnuLayoutF10.setText(ls.get("F10"));
-            mnuLayoutF10.setVisible(true);
-        } else {
-            mnuLayoutF10.setText("...");
-            mnuLayoutF10.setVisible(false);
-        }
-        if (ls.get("F11") != null) {
-            mnuLayoutF11.setText(ls.get("F11"));
-            mnuLayoutF11.setVisible(true);
-        } else {
-            mnuLayoutF11.setText("...");
-            mnuLayoutF11.setVisible(false);
-        }
-        if (ls.get("F12") != null) {
-            mnuLayoutF12.setText(ls.get("F12"));
-            mnuLayoutF12.setVisible(true);
-        } else {
-            mnuLayoutF12.setText("...");
-            mnuLayoutF12.setVisible(false);
-        }
-    }
+    
 
     private void addSourceToDesktop(VideoSource source) {
         if (source.getOutputWidth() == 0) {
@@ -838,7 +750,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         grpFramerate = new javax.swing.ButtonGroup();
         grpPixelFormat = new javax.swing.ButtonGroup();
         panelStatus = new javax.swing.JPanel();
-        btnShowPreview = new javax.swing.JToggleButton();
         pgCPUUsage = new javax.swing.JProgressBar();
         cboVideoOutputs = new javax.swing.JComboBox();
         panLayouts = new javax.swing.JPanel();
@@ -898,19 +809,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         mnuOutputchkActivateStream = new javax.swing.JCheckBoxMenuItem();
         jSeparator4 = new javax.swing.JPopupMenu.Separator();
         mnuOutputLabelStreamPort = new javax.swing.JMenuItem();
-        mnuLayout = new javax.swing.JMenu();
-        mnuLayoutF1 = new javax.swing.JMenuItem();
-        mnuLayoutF2 = new javax.swing.JMenuItem();
-        mnuLayoutF3 = new javax.swing.JMenuItem();
-        mnuLayoutF4 = new javax.swing.JMenuItem();
-        mnuLayoutF5 = new javax.swing.JMenuItem();
-        mnuLayoutF6 = new javax.swing.JMenuItem();
-        mnuLayoutF7 = new javax.swing.JMenuItem();
-        mnuLayoutF8 = new javax.swing.JMenuItem();
-        mnuLayoutF9 = new javax.swing.JMenuItem();
-        mnuLayoutF10 = new javax.swing.JMenuItem();
-        mnuLayoutF11 = new javax.swing.JMenuItem();
-        mnuLayoutF12 = new javax.swing.JMenuItem();
         mnuAbout = new javax.swing.JMenu();
         mnuAboutItem = new javax.swing.JMenuItem();
         mnuGoToWebsite = new javax.swing.JMenuItem();
@@ -931,15 +829,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
 
         panelStatus.setName("panelStatus"); // NOI18N
         panelStatus.setLayout(new java.awt.GridLayout(1, 2, 10, 0));
-
-        btnShowPreview.setText(bundle.getString("SHOW_PREVIEW")); // NOI18N
-        btnShowPreview.setName("btnShowPreview"); // NOI18N
-        btnShowPreview.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnShowPreviewActionPerformed(evt);
-            }
-        });
-        panelStatus.add(btnShowPreview);
 
         pgCPUUsage.setToolTipText(bundle.getString("CPUUSAGE")); // NOI18N
         pgCPUUsage.setName("pgCPUUsage"); // NOI18N
@@ -1483,149 +1372,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
 
         menuBar.add(mnuOutput);
 
-        mnuLayout.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/image-x-generic.png"))); // NOI18N
-        mnuLayout.setText(bundle.getString("LAYOUTS")); // NOI18N
-        mnuLayout.setName("mnuLayout"); // NOI18N
-        mnuLayout.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                mnuLayoutMouseEntered(evt);
-            }
-        });
-
-        mnuLayoutF1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, java.awt.event.InputEvent.SHIFT_MASK));
-        mnuLayoutF1.setMnemonic('\u0001');
-        mnuLayoutF1.setText("F1");
-        mnuLayoutF1.setName("mnuLayoutF1"); // NOI18N
-        mnuLayoutF1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuLayoutF1ActionPerformed(evt);
-            }
-        });
-        mnuLayout.add(mnuLayoutF1);
-
-        mnuLayoutF2.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F2, java.awt.event.InputEvent.SHIFT_MASK));
-        mnuLayoutF2.setMnemonic('\u0002');
-        mnuLayoutF2.setText("F2");
-        mnuLayoutF2.setName("mnuLayoutF2"); // NOI18N
-        mnuLayoutF2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuLayoutF2ActionPerformed(evt);
-            }
-        });
-        mnuLayout.add(mnuLayoutF2);
-
-        mnuLayoutF3.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F3, java.awt.event.InputEvent.SHIFT_MASK));
-        mnuLayoutF3.setMnemonic('\u0003');
-        mnuLayoutF3.setText("F3");
-        mnuLayoutF3.setName("mnuLayoutF3"); // NOI18N
-        mnuLayoutF3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuLayoutF3ActionPerformed(evt);
-            }
-        });
-        mnuLayout.add(mnuLayoutF3);
-
-        mnuLayoutF4.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F4, java.awt.event.InputEvent.SHIFT_MASK));
-        mnuLayoutF4.setMnemonic('\u0004');
-        mnuLayoutF4.setText("F4");
-        mnuLayoutF4.setName("mnuLayoutF4"); // NOI18N
-        mnuLayoutF4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuLayoutF4ActionPerformed(evt);
-            }
-        });
-        mnuLayout.add(mnuLayoutF4);
-
-        mnuLayoutF5.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F5, java.awt.event.InputEvent.SHIFT_MASK));
-        mnuLayoutF5.setMnemonic('\u0005');
-        mnuLayoutF5.setText("F5");
-        mnuLayoutF5.setName("mnuLayoutF5"); // NOI18N
-        mnuLayoutF5.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuLayoutF5ActionPerformed(evt);
-            }
-        });
-        mnuLayout.add(mnuLayoutF5);
-
-        mnuLayoutF6.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F6, java.awt.event.InputEvent.SHIFT_MASK));
-        mnuLayoutF6.setMnemonic('\u0006');
-        mnuLayoutF6.setText("F6");
-        mnuLayoutF6.setName("mnuLayoutF6"); // NOI18N
-        mnuLayoutF6.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuLayoutF6ActionPerformed(evt);
-            }
-        });
-        mnuLayout.add(mnuLayoutF6);
-
-        mnuLayoutF7.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F7, java.awt.event.InputEvent.SHIFT_MASK));
-        mnuLayoutF7.setMnemonic('\u0007');
-        mnuLayoutF7.setText("F7");
-        mnuLayoutF7.setName("mnuLayoutF7"); // NOI18N
-        mnuLayoutF7.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuLayoutF7ActionPerformed(evt);
-            }
-        });
-        mnuLayout.add(mnuLayoutF7);
-
-        mnuLayoutF8.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F8, java.awt.event.InputEvent.SHIFT_MASK));
-        mnuLayoutF8.setMnemonic('\b');
-        mnuLayoutF8.setText("F8");
-        mnuLayoutF8.setName("mnuLayoutF8"); // NOI18N
-        mnuLayoutF8.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuLayoutF8ActionPerformed(evt);
-            }
-        });
-        mnuLayout.add(mnuLayoutF8);
-
-        mnuLayoutF9.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F9, java.awt.event.InputEvent.SHIFT_MASK));
-        mnuLayoutF9.setMnemonic('\t');
-        mnuLayoutF9.setText("F9");
-        mnuLayoutF9.setName("mnuLayoutF9"); // NOI18N
-        mnuLayoutF9.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuLayoutF9ActionPerformed(evt);
-            }
-        });
-        mnuLayout.add(mnuLayoutF9);
-
-        mnuLayoutF10.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F10, java.awt.event.InputEvent.SHIFT_MASK));
-        mnuLayoutF10.setMnemonic('\n');
-        mnuLayoutF10.setText("F10");
-        mnuLayoutF10.setName("mnuLayoutF10"); // NOI18N
-        mnuLayoutF10.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuLayoutF10ActionPerformed(evt);
-            }
-        });
-        mnuLayout.add(mnuLayoutF10);
-
-        mnuLayoutF11.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F11, java.awt.event.InputEvent.SHIFT_MASK));
-        mnuLayoutF11.setMnemonic('\u000b');
-        mnuLayoutF11.setText("F11");
-        mnuLayoutF11.setName("mnuLayoutF11"); // NOI18N
-        mnuLayoutF11.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuLayoutF11ActionPerformed(evt);
-            }
-        });
-        mnuLayout.add(mnuLayoutF11);
-
-        mnuLayoutF12.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F12, java.awt.event.InputEvent.SHIFT_MASK));
-        mnuLayoutF12.setMnemonic('\f');
-        mnuLayoutF12.setText("F12");
-        mnuLayoutF12.setName("mnuLayoutF12"); // NOI18N
-        mnuLayoutF12.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuLayoutF12ActionPerformed(evt);
-            }
-        });
-        mnuLayout.add(mnuLayoutF12);
-
-        menuBar.add(mnuLayout);
-
         mnuAbout.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/dialog-information.png"))); // NOI18N
         mnuAbout.setText(bundle.getString("ABOUT")); // NOI18N
         mnuAbout.setName("mnuAbout"); // NOI18N
@@ -2108,54 +1854,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         }
     }//GEN-LAST:event_mnuOutputFlipImageActionPerformed
 
-    private void mnuLayoutF1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuLayoutF1ActionPerformed
-        layoutManager.applyLayoutHotKey("F1");
-    }//GEN-LAST:event_mnuLayoutF1ActionPerformed
-
-    private void mnuLayoutF2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuLayoutF2ActionPerformed
-        layoutManager.applyLayoutHotKey("F2");
-    }//GEN-LAST:event_mnuLayoutF2ActionPerformed
-
-    private void mnuLayoutF3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuLayoutF3ActionPerformed
-        layoutManager.applyLayoutHotKey("F3");
-    }//GEN-LAST:event_mnuLayoutF3ActionPerformed
-
-    private void mnuLayoutF4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuLayoutF4ActionPerformed
-        layoutManager.applyLayoutHotKey("F4");
-    }//GEN-LAST:event_mnuLayoutF4ActionPerformed
-
-    private void mnuLayoutF5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuLayoutF5ActionPerformed
-        layoutManager.applyLayoutHotKey("F5");
-    }//GEN-LAST:event_mnuLayoutF5ActionPerformed
-
-    private void mnuLayoutF6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuLayoutF6ActionPerformed
-        layoutManager.applyLayoutHotKey("F6");
-    }//GEN-LAST:event_mnuLayoutF6ActionPerformed
-
-    private void mnuLayoutF7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuLayoutF7ActionPerformed
-        layoutManager.applyLayoutHotKey("F7");
-    }//GEN-LAST:event_mnuLayoutF7ActionPerformed
-
-    private void mnuLayoutF8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuLayoutF8ActionPerformed
-        layoutManager.applyLayoutHotKey("F8");
-    }//GEN-LAST:event_mnuLayoutF8ActionPerformed
-
-    private void mnuLayoutF9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuLayoutF9ActionPerformed
-        layoutManager.applyLayoutHotKey("F9");
-    }//GEN-LAST:event_mnuLayoutF9ActionPerformed
-
-    private void mnuLayoutF10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuLayoutF10ActionPerformed
-        layoutManager.applyLayoutHotKey("F10");
-    }//GEN-LAST:event_mnuLayoutF10ActionPerformed
-
-    private void mnuLayoutF11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuLayoutF11ActionPerformed
-        layoutManager.applyLayoutHotKey("F11");
-    }//GEN-LAST:event_mnuLayoutF11ActionPerformed
-
-    private void mnuLayoutF12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuLayoutF12ActionPerformed
-        layoutManager.applyLayoutHotKey("F12");
-    }//GEN-LAST:event_mnuLayoutF12ActionPerformed
-
     private void mnuSourcesConsoleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuSourcesConsoleActionPerformed
         VideoSourceConsole s = new VideoSourceConsole("cal");
         addSourceToDesktop(s);
@@ -2167,10 +1865,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
             selectOutputDevice(vd);
         }
     }//GEN-LAST:event_cboVideoOutputsActionPerformed
-
-    private void mnuLayoutMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_mnuLayoutMouseEntered
-        updateMenuLayoutNames();
-    }//GEN-LAST:event_mnuLayoutMouseEntered
 
     private void mnuSourceschkShowBrowserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuSourceschkShowBrowserActionPerformed
         panBrowser.setVisible(mnuSourceschkShowBrowser.isSelected());
@@ -2185,10 +1879,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
             mixer.stopStream();
         }
     }//GEN-LAST:event_mnuOutputchkActivateStreamActionPerformed
-
-    private void btnShowPreviewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShowPreviewActionPerformed
-        layoutManager.showPreview(btnShowPreview.isSelected());
-    }//GEN-LAST:event_btnShowPreviewActionPerformed
 
     private void mnuSourcesQRCodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuSourcesQRCodeActionPerformed
         VideoSourceQRCode source = new VideoSourceQRCode("WebcamStudio");
@@ -2246,7 +1936,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         }
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JToggleButton btnShowPreview;
     private javax.swing.JComboBox cboVideoOutputs;
     private javax.swing.ButtonGroup grpFramerate;
     private javax.swing.ButtonGroup grpOutputSize;
@@ -2262,19 +1951,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
     private javax.swing.JMenuItem mnuAddDir;
     private javax.swing.JMenuItem mnuAnimationCreator;
     private javax.swing.JMenuItem mnuGoToWebsite;
-    private javax.swing.JMenu mnuLayout;
-    private javax.swing.JMenuItem mnuLayoutF1;
-    private javax.swing.JMenuItem mnuLayoutF10;
-    private javax.swing.JMenuItem mnuLayoutF11;
-    private javax.swing.JMenuItem mnuLayoutF12;
-    private javax.swing.JMenuItem mnuLayoutF2;
-    private javax.swing.JMenuItem mnuLayoutF3;
-    private javax.swing.JMenuItem mnuLayoutF4;
-    private javax.swing.JMenuItem mnuLayoutF5;
-    private javax.swing.JMenuItem mnuLayoutF6;
-    private javax.swing.JMenuItem mnuLayoutF7;
-    private javax.swing.JMenuItem mnuLayoutF8;
-    private javax.swing.JMenuItem mnuLayoutF9;
     private javax.swing.JMenu mnuOutput;
     private javax.swing.JRadioButtonMenuItem mnuOutput10FPS;
     private javax.swing.JRadioButtonMenuItem mnuOutput15FPS;

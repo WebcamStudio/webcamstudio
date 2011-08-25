@@ -31,21 +31,24 @@ import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
+import java.util.Timer;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
-import javax.swing.JPanel;
 import org.gstreamer.elements.AppSink;
 import webcamstudio.*;
+import webcamstudio.controls.Controls;
 import webcamstudio.sources.effects.Effect;
 import webcamstudio.studio.Studio;
 
 public abstract class VideoSource implements InfoListener {
 
     public static java.util.TreeMap<String, VideoSource> loadedSources = new TreeMap<String, VideoSource>();
+    protected java.util.Vector<Controls> controls = new java.util.Vector<Controls>();
+    protected Timer timer = null;
+    
 
     public abstract void startSource();
 
@@ -55,14 +58,13 @@ public abstract class VideoSource implements InfoListener {
         name = n;
     }
 
-    public void setImage(BufferedImage img) {
-        image = img;
-    }
-
     public void setLocation(String l) {
         location = l;
     }
 
+    protected void updateOutputImage(BufferedImage img){
+        image=img;
+    }
     protected javax.swing.ImageIcon getCachedThumbnail() {
         ImageIcon icon = null;
         File home = new File(System.getProperty("user.home"), ".webcamstudio");
@@ -118,8 +120,6 @@ public abstract class VideoSource implements InfoListener {
             javax.imageio.ImageIO.write(ri, "png", img);
         }
     }
-
-    public abstract java.util.Collection<JPanel> getControls();
 
     public boolean hasSound() {
         return hasSound;
@@ -701,6 +701,9 @@ public abstract class VideoSource implements InfoListener {
         return scrollDirection;
     }
 
+    public java.util.Collection<Controls> getControls(){
+        return controls;
+    }
     protected void detectActivity(java.awt.image.BufferedImage input) {
         if (activityDetected && System.currentTimeMillis() - lastTimeStamp > 5000) {
             lastTimeStamp = System.currentTimeMillis();

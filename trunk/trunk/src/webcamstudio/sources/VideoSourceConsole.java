@@ -16,10 +16,20 @@ public class VideoSourceConsole extends VideoSourceText {
         name = command;
         captureWidth = 320;
         captureHeight = 240;
+        controls.add(new webcamstudio.controls.ControlText(this));
+        controls.add(new webcamstudio.controls.ControlEffects(this));
+        controls.add(new webcamstudio.controls.ControlEffects(this));
+        controls.add(new webcamstudio.controls.ControlReload(this));
+        controls.add(new webcamstudio.controls.ControlIdentity(this));
 
     }
 
     public VideoSourceConsole(java.io.File script) {
+        controls.add(new webcamstudio.controls.ControlText(this));
+        controls.add(new webcamstudio.controls.ControlEffects(this));
+        controls.add(new webcamstudio.controls.ControlEffects(this));
+        controls.add(new webcamstudio.controls.ControlReload(this));
+        controls.add(new webcamstudio.controls.ControlIdentity(this));
         //TODO
     }
 

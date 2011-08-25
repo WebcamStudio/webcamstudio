@@ -39,6 +39,7 @@ public class VideoSourceMusic extends VideoSource {
         captureHeight = 0;
         opacity=0;
         image = null;
+        controls.add(new ControlAudio(this));
     }
 
     public VideoSourceMusic(java.io.File loc) {
@@ -51,6 +52,7 @@ public class VideoSourceMusic extends VideoSource {
         captureHeight = 0;
         opacity=0;
         image = null;
+        controls.add(new ControlAudio(this));
     }
 
     public VideoSourceMusic(java.net.URL loc) {
@@ -63,6 +65,7 @@ public class VideoSourceMusic extends VideoSource {
         captureHeight = 0;
         opacity=0;
         image = null;
+        controls.add(new ControlAudio(this));
     }
 
     public VideoSourceMusic(String loc) {
@@ -74,6 +77,7 @@ public class VideoSourceMusic extends VideoSource {
         captureHeight = 0;
         opacity=0;
         image = null;
+        controls.add(new ControlAudio(this));
     }
 
     public void setName(String n) {
@@ -282,12 +286,6 @@ public class VideoSourceMusic extends VideoSource {
         return false;
     }
 
-    @Override
-    public java.util.Collection<JPanel> getControls() {
-        java.util.Vector<JPanel> list = new java.util.Vector<JPanel>();
-        list.add(new ControlAudio(this));
-        return list;
-    }
     private static final String GST_FILESRC = "filesrc";
     private static final String GST_SOUPHTTPSRC = "souphttpsrc";
     private static final String GST_RTSPSRC = "rtspsrc";

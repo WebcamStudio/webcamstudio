@@ -19,15 +19,14 @@
  */
 package webcamstudio.sources;
 
-import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.IntBuffer;
+import java.util.Timer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
-import javax.swing.JPanel;
 import org.gstreamer.*;
 import org.gstreamer.elements.RGBDataSink;
 import webcamstudio.controls.ControlRescale;
@@ -41,6 +40,9 @@ public class VideoSourceV4L extends VideoSource implements RGBDataSink.Listener 
 
     protected String source = "v4lsrc";
     private RGBDataSink sink = null;
+    private int frameCount = 0;
+    private java.util.Timer timer = new Timer("V4L",true);
+
     public VideoSourceV4L() {
         outputWidth = 320;
         outputHeight = 240;
@@ -48,6 +50,12 @@ public class VideoSourceV4L extends VideoSource implements RGBDataSink.Listener 
         captureWidth = 320;
         captureHeight = 240;
         doRescale = true;
+        controls.add(new ControlRescale(this));
+        controls.add(new webcamstudio.controls.ControlShapes(this));
+        controls.add(new webcamstudio.controls.ControlEffects(this));
+        controls.add(new webcamstudio.controls.ControlGSTEffects(this));
+        controls.add(new webcamstudio.controls.ControlActivity(this));
+        controls.add(new webcamstudio.controls.ControlFaceDetection(this));
 
     }
 
@@ -65,6 +73,12 @@ public class VideoSourceV4L extends VideoSource implements RGBDataSink.Listener 
         captureWidth = 320;
         captureHeight = 240;
         doRescale = true;
+        controls.add(new ControlRescale(this));
+        controls.add(new webcamstudio.controls.ControlShapes(this));
+        controls.add(new webcamstudio.controls.ControlEffects(this));
+        controls.add(new webcamstudio.controls.ControlGSTEffects(this));
+        controls.add(new webcamstudio.controls.ControlActivity(this));
+        controls.add(new webcamstudio.controls.ControlFaceDetection(this));
 
     }
 
@@ -96,6 +110,10 @@ public class VideoSourceV4L extends VideoSource implements RGBDataSink.Listener 
 
     public void stopSource() {
         stopMe = true;
+        if (timer!=null){
+            timer.cancel();
+            timer=null;
+        }
         if (pipe != null) {
 
             pipe.stop();
@@ -111,14 +129,27 @@ public class VideoSourceV4L extends VideoSource implements RGBDataSink.Listener 
 
     @Override
     public void startSource() {
+        new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                startSource2();
+            }
+        }).start();
+
+    }
+
+    private void startSource2() {
         isPlaying = true;
+        stopMe = false;
         location = getDeviceForName(name, new File(location)).getAbsolutePath();
 
         try {
             sink = new RGBDataSink(name + uuId, this);
+            sink.setPassDirectBuffer(true);
             String rescaling = "";
             if (doRescale) {
-                rescaling = " ! videoscale ! video/x-raw-yuv,width=" + captureWidth + ",height=" + captureHeight + " ! videorate ! video/x-raw-yuv,framerate=" + frameRate + "/1";
+                rescaling = " ! ffmpegcolorspace ! videorate ! video/x-raw-rgb,framerate=" + frameRate + "/1" + " ! videoscale ! video/x-raw-rgb,width=" + captureWidth + ",height=" + captureHeight;
             }
 
             if (activeEffect.length() == 0) {
@@ -127,6 +158,7 @@ public class VideoSourceV4L extends VideoSource implements RGBDataSink.Listener 
                 pipe = Pipeline.launch(source + " device=" + location + " " + rescaling + " ! ffmpegcolorspace ! " + activeEffect + " ! ffmpegcolorspace ! video/x-raw-rgb,bpp=32,depth=24 !  ffmpegcolorspace name=tosink");
 
             }
+            pipe.setName(name + uuId);
             pipe.add(sink);
             Element e = pipe.getElementByName("tosink");
             e.link(sink);
@@ -166,23 +198,41 @@ public class VideoSourceV4L extends VideoSource implements RGBDataSink.Listener 
                     error(name + " Error: " + arg0 + "," + arg1 + ", " + arg2);
                 }
             });
+
+//            new Thread(new Runnable() {
+//
+//                @Override
+//                public void run() {
+//                    while (!stopMe) {
+//                        if (frameCount != frameRate) {
+//                            System.out.println(name + ": " + frameCount + " fps");
+//                        }
+//                        frameCount = 0;
+//                        try {
+//                            Thread.sleep(1000);
+//                        } catch (InterruptedException ex) {
+//                            Logger.getLogger(VideoSourceV4L.class.getName()).log(Level.SEVERE, null, ex);
+//                        }
+//                    }
+//                }
+//            }).start();
             pipe.setState(State.PLAYING);
+            if (timer!=null){
+                timer.cancel();
+                timer=null;
+            }
+            timer = new Timer("V4L",true);
+            timer.scheduleAtFixedRate(new VideoSourcePixelsRenderer(this), 0, 1000/frameRate);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    @Override
-    public void setImage(BufferedImage img) {
-        applyFaceDetection(img);
-        detectActivity(img);
-        applyEffects(img);
-        applyShape(img);
-        if (image == null || image.getWidth() != img.getWidth() || image.getHeight() != img.getHeight()) {
-            image = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TRANSLUCENT);
-            dataOutputImage = ((java.awt.image.DataBufferInt) image.getRaster().getDataBuffer()).getData();
+    public void setImage(int[] data) {
+        if (image == null || image.getWidth() != captureWidth || image.getHeight() != captureHeight) {
+            image = graphicConfiguration.createCompatibleImage(captureWidth, captureHeight, java.awt.image.BufferedImage.TRANSLUCENT);
         }
-        image.setRGB(0, 0, captureWidth, captureHeight, dataInputImage, 0, captureWidth);
+        image.setRGB(0, 0, captureWidth, captureHeight, data, 0, captureWidth);
     }
 
     @Override
@@ -235,22 +285,6 @@ public class VideoSourceV4L extends VideoSource implements RGBDataSink.Listener 
     private Pipeline pipe = null;
 
     @Override
-    public java.util.Collection<JPanel> getControls() {
-        java.util.Vector<JPanel> list = new java.util.Vector<JPanel>();
-        list.add(new ControlRescale(this));
-        list.add(new webcamstudio.controls.ControlShapes(this));
-        list.add(new webcamstudio.controls.ControlEffects(this));
-        list.add(new webcamstudio.controls.ControlGSTEffects(this));
-        list.add(new webcamstudio.controls.ControlActivity(this));
-        list.add(new webcamstudio.controls.ControlFaceDetection(this));
-
-
-        return list;
-
-
-    }
-
-    @Override
     public javax.swing.ImageIcon getThumbnail() {
         ImageIcon icon = getCachedThumbnail();
         if (icon == null) {
@@ -269,16 +303,17 @@ public class VideoSourceV4L extends VideoSource implements RGBDataSink.Listener 
     public void rgbFrame(int w, int h, IntBuffer buffer) {
         captureWidth = w;
         captureHeight = h;
-        if (!isRendering) {
-            isRendering = true;
-            if (tempimage == null || tempimage.getWidth() != w || tempimage.getHeight() != h) {
-                tempimage = graphicConfiguration.createCompatibleImage(captureWidth, captureHeight, java.awt.image.BufferedImage.TRANSLUCENT);
-                dataInputImage = ((java.awt.image.DataBufferInt) tempimage.getRaster().getDataBuffer()).getData();
-            }
-            int[] array = buffer.array();
-            tempimage.setRGB(0, 0,w,h,array,0,w);
-            setImage(tempimage);
-            isRendering = false;
-        }
+        int[] array = new int[w * h];
+        buffer.get(array);
+        pixels = array;
+
+    }
+    protected void updateOutputImage(BufferedImage img){
+            applyFaceDetection(img);
+            detectActivity(img);
+            applyEffects(img);
+            applyShape(img);
+            image = img;
+        
     }
 }

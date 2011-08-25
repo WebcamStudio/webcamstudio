@@ -47,11 +47,17 @@ public class VideoSourceWidget extends VideoSource {
         } catch (IOException ex) {
             Logger.getLogger(VideoSourceWidget.class.getName()).log(Level.SEVERE, null, ex);
         }
+        controls.add(new webcamstudio.controls.ControlEffects(this));
+        controls.add(new webcamstudio.controls.ControlShapes(this));
+        controls.add(new webcamstudio.controls.ControlReload(this));
 
 
     }
 
     public VideoSourceWidget() {
+        controls.add(new webcamstudio.controls.ControlEffects(this));
+        controls.add(new webcamstudio.controls.ControlShapes(this));
+        controls.add(new webcamstudio.controls.ControlReload(this));
     }
 
     private void loadData(String url) throws ParserConfigurationException, SAXException, IOException {
@@ -340,14 +346,6 @@ public class VideoSourceWidget extends VideoSource {
         return "Widget: " + name;
     }
 
-    @Override
-    public java.util.Collection<JPanel> getControls() {
-        java.util.Vector<JPanel> list = new java.util.Vector<JPanel>();
-        list.add(new webcamstudio.controls.ControlEffects(this));
-        list.add(new webcamstudio.controls.ControlShapes(this));
-        list.add(new webcamstudio.controls.ControlReload(this));
-        return list;
-    }
     @Override
         public javax.swing.ImageIcon getThumbnail() {
         ImageIcon icon = super.getCachedThumbnail();

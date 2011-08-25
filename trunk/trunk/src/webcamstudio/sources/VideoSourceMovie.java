@@ -22,10 +22,11 @@ package webcamstudio.sources;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.IntBuffer;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
-import javax.swing.JPanel;
 import org.gstreamer.*;
 import org.gstreamer.elements.RGBDataSink;
 import webcamstudio.controls.ControlAudio;
@@ -38,6 +39,8 @@ import webcamstudio.controls.ControlRescale;
 public class VideoSourceMovie extends VideoSource implements RGBDataSink.Listener {
 
     private RGBDataSink sink = null;
+    protected int frameCount = 0;
+    protected java.util.Timer timer = null;
 
     protected VideoSourceMovie() {
         frameRate = 24;
@@ -45,6 +48,14 @@ public class VideoSourceMovie extends VideoSource implements RGBDataSink.Listene
         captureHeight = 240;
         doRescale = true;
         keepRatio = true;
+        controls.add(new ControlRescale(this));
+        controls.add(new webcamstudio.controls.ControlEffects(this));
+        controls.add(new webcamstudio.controls.ControlShapes(this));
+        controls.add(new webcamstudio.controls.ControlGSTEffects(this));
+        controls.add(new webcamstudio.controls.ControlActivity(this));
+        controls.add(new webcamstudio.controls.ControlFaceDetection(this));
+        controls.add(new ControlAudio(this));
+
     }
 
     public VideoSourceMovie(java.io.File loc) {
@@ -58,6 +69,13 @@ public class VideoSourceMovie extends VideoSource implements RGBDataSink.Listene
         captureHeight = 240;
         doRescale = true;
         keepRatio = true;
+        controls.add(new ControlRescale(this));
+        controls.add(new webcamstudio.controls.ControlEffects(this));
+        controls.add(new webcamstudio.controls.ControlShapes(this));
+        controls.add(new webcamstudio.controls.ControlGSTEffects(this));
+        controls.add(new webcamstudio.controls.ControlActivity(this));
+        controls.add(new webcamstudio.controls.ControlFaceDetection(this));
+        controls.add(new ControlAudio(this));
     }
 
     public VideoSourceMovie(java.net.URL loc) {
@@ -71,6 +89,13 @@ public class VideoSourceMovie extends VideoSource implements RGBDataSink.Listene
         captureHeight = 240;
         doRescale = true;
         keepRatio = true;
+        controls.add(new ControlRescale(this));
+        controls.add(new webcamstudio.controls.ControlEffects(this));
+        controls.add(new webcamstudio.controls.ControlShapes(this));
+        controls.add(new webcamstudio.controls.ControlGSTEffects(this));
+        controls.add(new webcamstudio.controls.ControlActivity(this));
+        controls.add(new webcamstudio.controls.ControlFaceDetection(this));
+        controls.add(new ControlAudio(this));
     }
 
     public VideoSourceMovie(String loc) {
@@ -84,6 +109,13 @@ public class VideoSourceMovie extends VideoSource implements RGBDataSink.Listene
         captureHeight = 240;
         doRescale = true;
         keepRatio = true;
+        controls.add(new ControlRescale(this));
+        controls.add(new webcamstudio.controls.ControlEffects(this));
+        controls.add(new webcamstudio.controls.ControlShapes(this));
+        controls.add(new webcamstudio.controls.ControlGSTEffects(this));
+        controls.add(new webcamstudio.controls.ControlActivity(this));
+        controls.add(new webcamstudio.controls.ControlFaceDetection(this));
+        controls.add(new ControlAudio(this));
     }
 
     public void setName(String n) {
@@ -92,6 +124,10 @@ public class VideoSourceMovie extends VideoSource implements RGBDataSink.Listene
 
     public void stopSource() {
         stopMe = true;
+        if (timer != null) {
+            timer.cancel();
+            timer = null;
+        }
         if (pipe != null) {
 
             pipe.stop();
@@ -113,8 +149,19 @@ public class VideoSourceMovie extends VideoSource implements RGBDataSink.Listene
 
     @Override
     public void startSource() {
+        new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                startSource2();
+            }
+        }).start();
+    }
+
+    private void startSource2() {
         String pipeline = "";
         try {
+            stopMe = false;
             isPlaying = true;
             if (location.toLowerCase().startsWith("http://") || location.toLowerCase().startsWith("https://")) {
                 pipeline = "souphttpsrc location=\"" + location + "\" ! decodebin name=decode ";
@@ -162,7 +209,7 @@ public class VideoSourceMovie extends VideoSource implements RGBDataSink.Listene
                 loadSound = true;
             }
 
-            pipeline += " ! ffmpegcolorspace ";
+            pipeline += " ! ffmpegcolorspace qos=true ";
             if (outputHeight == 0 && outputWidth == 0) {
                 outputWidth = captureWidth;
                 outputHeight = captureHeight;
@@ -173,13 +220,16 @@ public class VideoSourceMovie extends VideoSource implements RGBDataSink.Listene
             if (activeEffect.length() != 0) {
                 pipeline += " ! ffmpegcolorspace ! " + activeEffect + " ! ffmpegcolorspace ";
             }
-            pipeline += " ! alpha ! ffmpegcolorspace ! video/x-raw-rgb,bpp=32,depth=24, red_mask=65280, green_mask=16711680, blue_mask=-16777216 ! ffmpegcolorspace name=tosink";
+            pipeline += " ! alpha ! ffmpegcolorspace ! video/x-raw-rgb,bpp=32,depth=24, red_mask=65280, green_mask=16711680, blue_mask=-16777216 ! ffmpegcolorspace name=tosink qos=true ";
             if (loadSound) {
                 pipeline += " decode. ! queue ! volume name=volume volume=" + (double) volume / 100D + " ! audioconvert ! autoaudiosink ";
             }
             System.out.println(pipeline);
             pipe = Pipeline.launch(pipeline);
+            pipe.setName(name + uuId);
             sink = new RGBDataSink(name + uuId, this);
+
+            sink.setPassDirectBuffer(true);
             pipe.add(sink);
             Element lastElement = pipe.getElementByName("tosink");
             lastElement.link(sink);
@@ -208,30 +258,39 @@ public class VideoSourceMovie extends VideoSource implements RGBDataSink.Listene
                     doLoop = false;
                 }
             });
-            new Thread(new Runnable() {
 
-                @Override
-                public void run() {
-                    pipe.setState(State.PLAYING);
-                    duration = pipe.queryDuration().toSeconds();
-                }
-            }).start();
-
+//            new Thread(new Runnable() {
+//
+//                @Override
+//                public void run() {
+//                    while (!stopMe) {
+//                        if (frameCount != frameRate) {
+//                            System.out.println(name + " : " + frameCount + " fps");
+//                        }
+//                        frameCount = 0;
+//                        try {
+//                            Thread.sleep(1000);
+//                        } catch (InterruptedException ex) {
+//                            Logger.getLogger(VideoSourceMovie.class.getName()).log(Level.SEVERE, null, ex);
+//                        }
+//                    }
+//                }
+//            }).start();
+            pipe.setState(State.PLAYING);
+            duration = pipe.queryDuration().toSeconds();
+            timer = new Timer("VideoSourceMovie", true);
+            timer.scheduleAtFixedRate(new VideoSourcePixelsRenderer(this), 0, 1000 / frameRate);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
 
-    public void setImage(BufferedImage img) {
-        detectActivity(img);
-        applyEffects(img);
-        applyShape(img);
-        if (image == null || image.getWidth() != img.getWidth() || image.getHeight() != img.getHeight()) {
-            image = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TRANSLUCENT);
-            dataOutputImage = ((java.awt.image.DataBufferInt) image.getRaster().getDataBuffer()).getData();
+    public void setImage(int[] data) {
+        if (image == null || image.getWidth() != captureWidth || image.getHeight() != captureHeight) {
+            image = graphicConfiguration.createCompatibleImage(captureWidth, captureHeight, java.awt.image.BufferedImage.TRANSLUCENT);
         }
-        image.setRGB(0, 0, captureWidth, captureHeight, dataInputImage, 0, captureWidth);
+        image.setRGB(0, 0, captureWidth, captureHeight, data, 0, captureWidth);
     }
 
     public void seek(long secs) {
@@ -309,21 +368,6 @@ public class VideoSourceMovie extends VideoSource implements RGBDataSink.Listene
     public boolean hasText() {
         return false;
     }
-
-    @Override
-    public java.util.Collection<JPanel> getControls() {
-        java.util.Vector<JPanel> list = new java.util.Vector<JPanel>();
-        list.add(new ControlRescale(this));
-        list.add(new webcamstudio.controls.ControlEffects(this));
-        list.add(new webcamstudio.controls.ControlShapes(this));
-        list.add(new webcamstudio.controls.ControlGSTEffects(this));
-        list.add(new webcamstudio.controls.ControlActivity(this));
-        list.add(new webcamstudio.controls.ControlFaceDetection(this));
-        if (hasSound) {
-            list.add(new ControlAudio(this));
-        }
-        return list;
-    }
     private Element elementAudioVolume = null;
     private Pipeline pipe = null;
     private long duration = 0;
@@ -368,16 +412,15 @@ public class VideoSourceMovie extends VideoSource implements RGBDataSink.Listene
     public void rgbFrame(int w, int h, IntBuffer buffer) {
         captureWidth = w;
         captureHeight = h;
-        if (!isRendering) {
-            isRendering = true;
-            if (tempimage == null || tempimage.getWidth() != w || tempimage.getHeight() != h) {
-                tempimage = graphicConfiguration.createCompatibleImage(captureWidth, captureHeight, java.awt.image.BufferedImage.TRANSLUCENT);
-                dataInputImage = ((java.awt.image.DataBufferInt) tempimage.getRaster().getDataBuffer()).getData();
-            }
-            int[] array = buffer.array();
-            tempimage.setRGB(0, 0, w, h, array, 0, w);
-            setImage(tempimage);
-            isRendering = false;
-        }
+        int[] array = new int[w * h];
+        buffer.get(array);
+        pixels = array;
+    }
+
+    protected void updateOutputImage(BufferedImage img) {
+        detectActivity(img);
+        applyEffects(img);
+        applyShape(img);
+        image = img;
     }
 }

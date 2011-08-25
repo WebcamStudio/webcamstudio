@@ -21,10 +21,10 @@ package webcamstudio.sources;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.Timer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
-import javax.swing.JPanel;
 import webcamstudio.*;
 import org.gstreamer.*;
 
@@ -34,6 +34,7 @@ import org.gstreamer.*;
  */
 public class VideoSourceDV extends VideoSource implements org.gstreamer.elements.RGBDataSink.Listener {
 
+    private Timer timer = null;
     public VideoSourceDV() {
 
         location = "DV1394";
@@ -43,6 +44,11 @@ public class VideoSourceDV extends VideoSource implements org.gstreamer.elements
         captureWidth=320;
         captureHeight=240;
         doRescale=true;
+        controls.add(new webcamstudio.controls.ControlRescale(this));
+        controls.add(new webcamstudio.controls.ControlShapes(this));
+        controls.add(new webcamstudio.controls.ControlEffects(this));
+        controls.add(new webcamstudio.controls.ControlActivity(this));
+        controls.add(new webcamstudio.controls.ControlFaceDetection(this));
     }
 
     public boolean canUpdateSource() {
@@ -51,6 +57,10 @@ public class VideoSourceDV extends VideoSource implements org.gstreamer.elements
 
     public void stopSource() {
         stopMe = true;
+        if (timer!=null){
+            timer.cancel();
+            timer=null;
+        }
         if (pipe != null) {
 
             pipe.stop();
@@ -100,33 +110,26 @@ public class VideoSourceDV extends VideoSource implements org.gstreamer.elements
             }
         });
         pipe.setState(State.PLAYING);
+        if (timer!=null){
+            timer.cancel();
+            timer=null;
+        }
+        timer = new Timer(name,true);
+        timer.scheduleAtFixedRate(new VideoSourcePixelsRenderer(this), 0,1000/frameRate);
     }
-    public void setImage(BufferedImage img) {
-
+    protected void updateOutputImage(BufferedImage img) {
         detectActivity(img);
         applyEffects(img);
         applyShape(img);
-        if (image == null || image.getWidth() != img.getWidth() || image.getHeight() != img.getHeight()) {
-            image = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TRANSLUCENT);
-            dataOutputImage = ((java.awt.image.DataBufferInt) image.getRaster().getDataBuffer()).getData();
-        }
-        image.setRGB(0, 0, captureWidth, captureHeight, dataInputImage, 0, captureWidth);
+        image=img;
     }
 
     public void rgbFrame(int w, int h, java.nio.IntBuffer buffer) {
         captureWidth=w;
         captureHeight=h;
-        if (!isRendering) {
-            isRendering = true;
-            if (tempimage == null || tempimage.getWidth() != w || tempimage.getHeight() != h) {
-                tempimage = graphicConfiguration.createCompatibleImage(captureWidth, captureHeight, java.awt.image.BufferedImage.TRANSLUCENT);
-                dataInputImage = ((java.awt.image.DataBufferInt) tempimage.getRaster().getDataBuffer()).getData();
-            }
-            int[] array = buffer.array();
-            tempimage.setRGB(0, 0, w, h, array, 0, w);
-            setImage(tempimage);
-            isRendering = false;
-        }
+        int[] array = new int[w*h];
+        buffer.get(array);
+        pixels=array;
 
     }
 
@@ -165,16 +168,6 @@ public class VideoSourceDV extends VideoSource implements org.gstreamer.elements
         return name;
     }
 
-    @Override
-    public java.util.Collection<JPanel> getControls() {
-        java.util.Vector<JPanel> list = new java.util.Vector<JPanel>();
-        list.add(new webcamstudio.controls.ControlRescale(this));
-        list.add(new webcamstudio.controls.ControlShapes(this));
-        list.add(new webcamstudio.controls.ControlEffects(this));
-        list.add(new webcamstudio.controls.ControlActivity(this));
-        list.add(new webcamstudio.controls.ControlFaceDetection(this));
-        return list;
-    }
     @Override
     public javax.swing.ImageIcon getThumbnail() {
         ImageIcon icon = getCachedThumbnail();

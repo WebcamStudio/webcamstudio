@@ -27,7 +27,8 @@ public class LayoutEventsControl extends javax.swing.JPanel {
     public LayoutEventsControl(Layout l, Collection<Layout> layouts) {
         initComponents();
         layout = l;
-
+        txtHotkey.setText(layout.getHotKey());
+        txtName.setText(layout.toString());
         DefaultComboBoxModel model = new DefaultComboBoxModel();
         for (Layout temp : layouts) {
             model.addElement(temp.toString());
@@ -51,6 +52,10 @@ public class LayoutEventsControl extends javax.swing.JPanel {
         jLabel2 = new javax.swing.JLabel();
         cboLayouts = new javax.swing.JComboBox();
         spinDuration = new javax.swing.JSpinner();
+        jLabel3 = new javax.swing.JLabel();
+        txtHotkey = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
+        txtName = new javax.swing.JTextField();
 
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("webcamstudio/Languages"); // NOI18N
         jLabel1.setText(bundle.getString("DURATION")); // NOI18N
@@ -74,6 +79,36 @@ public class LayoutEventsControl extends javax.swing.JPanel {
             }
         });
 
+        jLabel3.setText(bundle.getString("HOTKEY")); // NOI18N
+        jLabel3.setName("jLabel3"); // NOI18N
+
+        txtHotkey.setName("txtHotkey"); // NOI18N
+        txtHotkey.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtHotkeyActionPerformed(evt);
+            }
+        });
+        txtHotkey.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtHotkeyFocusLost(evt);
+            }
+        });
+
+        jLabel4.setText(bundle.getString("NAME")); // NOI18N
+        jLabel4.setName("jLabel4"); // NOI18N
+
+        txtName.setName("txtName"); // NOI18N
+        txtName.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtNameActionPerformed(evt);
+            }
+        });
+        txtName.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtNameFocusLost(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -82,11 +117,15 @@ public class LayoutEventsControl extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1)
-                    .addComponent(jLabel2))
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel4)
+                    .addComponent(jLabel3))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(cboLayouts, 0, 230, Short.MAX_VALUE)
-                    .addComponent(spinDuration, javax.swing.GroupLayout.DEFAULT_SIZE, 230, Short.MAX_VALUE))
+                    .addComponent(spinDuration, javax.swing.GroupLayout.DEFAULT_SIZE, 230, Short.MAX_VALUE)
+                    .addComponent(txtHotkey, javax.swing.GroupLayout.DEFAULT_SIZE, 230, Short.MAX_VALUE)
+                    .addComponent(txtName, javax.swing.GroupLayout.DEFAULT_SIZE, 230, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -100,7 +139,15 @@ public class LayoutEventsControl extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(cboLayouts, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(226, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtHotkey, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4))
+                .addContainerGap(158, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -121,10 +168,31 @@ public class LayoutEventsControl extends javax.swing.JPanel {
             layout.setDuration((Integer) spinDuration.getValue(), cboLayouts.getSelectedItem().toString());
         }
     }//GEN-LAST:event_spinDurationStateChanged
+
+    private void txtHotkeyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtHotkeyActionPerformed
+        layout.setHotKey(txtHotkey.getText().trim());
+    }//GEN-LAST:event_txtHotkeyActionPerformed
+
+    private void txtHotkeyFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtHotkeyFocusLost
+        layout.setHotKey(txtHotkey.getText().trim());
+    }//GEN-LAST:event_txtHotkeyFocusLost
+
+    private void txtNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNameActionPerformed
+        layout.setName(txtName.getText().trim());
+    }//GEN-LAST:event_txtNameActionPerformed
+
+    private void txtNameFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtNameFocusLost
+        layout.setName(txtName.getText().trim());
+    }//GEN-LAST:event_txtNameFocusLost
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox cboLayouts;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JSpinner spinDuration;
+    private javax.swing.JTextField txtHotkey;
+    private javax.swing.JTextField txtName;
     // End of variables declaration//GEN-END:variables
 }

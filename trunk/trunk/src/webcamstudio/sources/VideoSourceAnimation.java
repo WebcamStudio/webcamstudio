@@ -10,11 +10,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
-import javax.swing.JPanel;
-import webcamstudio.components.PreciseTimer;
 
 /**
  *
@@ -27,6 +27,8 @@ public class VideoSourceAnimation extends VideoSource {
         location = loc.getAbsolutePath();
         name = loc.getName();
         frameRate = 5;
+        controls.add(new webcamstudio.controls.ControlShapes(this));
+        controls.add(new webcamstudio.controls.ControlEffects(this));
     }
 
     public VideoSourceAnimation(java.net.URL loc) {
@@ -34,6 +36,8 @@ public class VideoSourceAnimation extends VideoSource {
         location = loc.toString();
         name = loc.getFile();
         frameRate = 5;
+        controls.add(new webcamstudio.controls.ControlShapes(this));
+        controls.add(new webcamstudio.controls.ControlEffects(this));
     }
 
     private java.io.File getJarFromWeb(String loc) throws IOException {
@@ -90,7 +94,13 @@ public class VideoSourceAnimation extends VideoSource {
                 error("Animation Error  : " + e.getMessage());
             }
         }
-        new Thread(new imageAnimation(this), name).start();
+        if (timer != null) {
+            timer.cancel();
+            timer = null;
+        }
+        timer = new Timer(name, true);
+        timer.scheduleAtFixedRate(new imageAnimation(this), 0, 1000 / frameRate);
+
     }
 
     @Override
@@ -123,6 +133,10 @@ public class VideoSourceAnimation extends VideoSource {
 
     @Override
     public void stopSource() {
+        if (timer != null) {
+            timer.cancel();
+            timer = null;
+        }
         stopMe = true;
         image = null;
     }
@@ -130,14 +144,6 @@ public class VideoSourceAnimation extends VideoSource {
     @Override
     public String toString() {
         return "Animation: " + new java.io.File(location).getName();
-    }
-
-    @Override
-    public java.util.Collection<JPanel> getControls() {
-        java.util.Vector<JPanel> list = new java.util.Vector<JPanel>();
-        list.add(new webcamstudio.controls.ControlShapes(this));
-        list.add(new webcamstudio.controls.ControlEffects(this));
-        return list;
     }
     protected Animator animator = null;
 
@@ -161,7 +167,7 @@ public class VideoSourceAnimation extends VideoSource {
     }
 }
 
-class imageAnimation implements Runnable {
+class imageAnimation extends TimerTask {
 
     private VideoSourceAnimation animation = null;
 
@@ -171,22 +177,19 @@ class imageAnimation implements Runnable {
 
     @Override
     public void run() {
-        long timestamp = 0;
-        while (!animation.stopMe) {
-            if (animation.animator != null) {
-                timestamp = System.currentTimeMillis();
-                animation.captureWidth = animation.animator.getWidth();
-                animation.captureHeight = animation.animator.getHeight();
 
-                animation.tempimage = animation.graphicConfiguration.createCompatibleImage(animation.captureWidth, animation.captureHeight, java.awt.image.BufferedImage.TRANSLUCENT);
-                Graphics2D buffer = animation.tempimage.createGraphics();
-                buffer.drawImage(animation.animator.getCurrentImage(), 0, 0, null);
-                buffer.dispose();
-                animation.applyEffects(animation.tempimage);
-                animation.applyShape(animation.tempimage);
-                animation.image = animation.tempimage;
-            }
-            PreciseTimer.sleep(timestamp, 1000 / animation.frameRate);
+        if (animation.animator != null) {
+            animation.captureWidth = animation.animator.getWidth();
+            animation.captureHeight = animation.animator.getHeight();
+
+            animation.tempimage = animation.graphicConfiguration.createCompatibleImage(animation.captureWidth, animation.captureHeight, java.awt.image.BufferedImage.TRANSLUCENT);
+            Graphics2D buffer = animation.tempimage.createGraphics();
+            buffer.drawImage(animation.animator.getCurrentImage(), 0, 0, null);
+            buffer.dispose();
+            animation.applyEffects(animation.tempimage);
+            animation.applyShape(animation.tempimage);
+            animation.image = animation.tempimage;
         }
+
     }
 }

@@ -142,14 +142,15 @@ public class MainConsole extends javax.swing.JFrame implements InfoListener {
                 pixFormat = studio.getPixFormat();
                 mixer = new webcamstudio.components.Mixer();
                 mixer.setSize(width, height);
-                mixer.setFramerate(30);
-                mixer.setOutput(output);
+                mixer.setFramerate(15);
+                
                 if (!XMODE) {
                     device = studio.getDevice();
                     selectOutputDevice(device);
                 } else {
                     mixer.activateStream(true, outputStreamPort);
                 }
+                mixer.setOutput(output);
                 for (Layout l : studio.getLayouts()) {
                     l.enterLayout();
                     currentLayout = l;
