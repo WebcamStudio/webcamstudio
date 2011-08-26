@@ -23,7 +23,6 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.IntBuffer;
 import java.util.Timer;
-import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
@@ -41,6 +40,7 @@ public class VideoSourceMovie extends VideoSource implements RGBDataSink.Listene
     private RGBDataSink sink = null;
     protected int frameCount = 0;
     protected java.util.Timer timer = null;
+    protected long startingPosition = 0;
 
     protected VideoSourceMovie() {
         frameRate = 24;
@@ -278,6 +278,18 @@ public class VideoSourceMovie extends VideoSource implements RGBDataSink.Listene
 //            }).start();
             pipe.setState(State.PLAYING);
             duration = pipe.queryDuration().toSeconds();
+            if (startingPosition > 0) {
+                while (!stopMe && !pipe.isPlaying()) {
+                    try {
+                        Thread.sleep(100);
+                    } catch (Exception ex) {
+                    }
+                }
+                pipe.setState(State.PAUSED);
+                pipe.seek(ClockTime.fromSeconds(startingPosition));
+                pipe.setState(State.PLAYING);
+            }
+            System.out.println("Starting pos: " + startingPosition);
             timer = new Timer("VideoSourceMovie", true);
             timer.scheduleAtFixedRate(new VideoSourcePixelsRenderer(this), 0, 1000 / frameRate);
         } catch (Exception e) {
@@ -294,7 +306,8 @@ public class VideoSourceMovie extends VideoSource implements RGBDataSink.Listene
     }
 
     public void seek(long secs) {
-        if (secs >= 0 && secs <= duration && pipe != null && pipe.isPlaying()) {
+        startingPosition = secs;
+        if (secs > 0 && pipe != null && pipe.isPlaying()) {
             pipe.pause();
             pipe.seek(ClockTime.fromSeconds(secs));
             pipe.play();

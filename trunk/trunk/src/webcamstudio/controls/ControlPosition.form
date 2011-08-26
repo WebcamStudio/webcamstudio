@@ -53,7 +53,6 @@
                       <Group type="103" groupAlignment="1" attributes="0">
                           <Component id="spinVolume" alignment="1" pref="307" max="32767" attributes="0"/>
                           <Component id="spinWidth" alignment="0" pref="307" max="32767" attributes="3"/>
-                          <Component id="spinY" alignment="0" pref="307" max="32767" attributes="3"/>
                           <Component id="spinX" alignment="0" pref="307" max="32767" attributes="3"/>
                           <Component id="cboTransOut" alignment="0" pref="307" max="32767" attributes="3"/>
                           <Component id="cboTransIn" alignment="0" pref="307" max="32767" attributes="3"/>
@@ -62,9 +61,10 @@
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="spinHeight" pref="204" max="32767" attributes="3"/>
                           </Group>
+                          <Component id="spinSeek" alignment="0" pref="307" max="32767" attributes="0"/>
                           <Group type="102" alignment="1" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="slideSeek" pref="307" max="32767" attributes="2"/>
+                              <Component id="spinY" pref="307" max="32767" attributes="3"/>
                           </Group>
                       </Group>
                   </Group>
@@ -112,11 +112,11 @@
                   <Component id="jLabel7" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="lblSeek" min="-2" max="-2" attributes="0"/>
-                  <Component id="slideSeek" alignment="0" min="-2" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="lblSeek" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="spinSeek" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="46" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="btnMoveUp" min="-2" max="-2" attributes="0"/>
                   <Component id="btnMoveDown" min="-2" max="-2" attributes="0"/>
@@ -140,16 +140,6 @@
         </Property>
         <Property name="name" type="java.lang.String" value="lblSeek" noResource="true"/>
       </Properties>
-    </Component>
-    <Component class="javax.swing.JSlider" name="slideSeek">
-      <Properties>
-        <Property name="paintLabels" type="boolean" value="true"/>
-        <Property name="name" type="java.lang.String" value="slideSeek" noResource="true"/>
-      </Properties>
-      <Events>
-        <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="slideSeekMouseReleased"/>
-        <EventHandler event="mouseDragged" listener="java.awt.event.MouseMotionListener" parameters="java.awt.event.MouseEvent" handler="slideSeekMouseDragged"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JSpinner" name="spinHeight">
       <Properties>
@@ -372,6 +362,14 @@
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="chkKeepRatioActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JSpinner" name="spinSeek">
+      <Properties>
+        <Property name="name" type="java.lang.String" value="spinSeek" noResource="true"/>
+      </Properties>
+      <Events>
+        <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="spinSeekStateChanged"/>
       </Events>
     </Component>
   </SubComponents>

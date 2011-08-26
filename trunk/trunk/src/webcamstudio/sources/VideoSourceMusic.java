@@ -107,6 +107,7 @@ public class VideoSourceMusic extends VideoSource {
     @Override
     public void startSource() {
         try {
+            stopMe=false;
             isPlaying = true;
             loadSound = true;
             if (location.toLowerCase().startsWith("http://") || location.toLowerCase().startsWith("https://")) {
@@ -205,6 +206,14 @@ public class VideoSourceMusic extends VideoSource {
             });
             pipe.setState(State.PLAYING);
             duration = pipe.queryDuration().toSeconds();
+            if (startingPosition > 0){
+                while(!stopMe && !pipe.isPlaying()){
+                    Thread.sleep(100);
+                }
+                pipe.pause();
+                pipe.seek(ClockTime.fromSeconds(startingPosition));
+                pipe.play();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -212,7 +221,8 @@ public class VideoSourceMusic extends VideoSource {
     }
 
     public void seek(long secs) {
-        if (secs >= 0 && secs <= duration && pipe != null && pipe.isPlaying()) {
+        startingPosition = secs;
+        if (secs >= 0  && pipe != null && pipe.isPlaying()) {
             pipe.pause();
             pipe.seek(ClockTime.fromSeconds(secs));
             pipe.play();
@@ -304,6 +314,7 @@ public class VideoSourceMusic extends VideoSource {
     private Element elementAudioConvert = ElementFactory.make(GST_AUDIOCONVERT, GST_AUDIOCONVERT + uuId);
     private Pipeline pipe = null;
     private long duration = 0;
+    private long startingPosition = 0;
 
     @Override
         public javax.swing.ImageIcon getThumbnail() {

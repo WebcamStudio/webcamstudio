@@ -64,67 +64,19 @@ public class ControlPosition extends javax.swing.JPanel implements Controls {
         spinY.setValue(layout.getY());
         if (layout.getSource() instanceof VideoSourceMovie) {
             lblSeek.setVisible(true);
-            slideSeek.setVisible(true);
-            slideSeek.setMaximum((int) ((VideoSourceMovie) layout.getSource()).getDuration());
-            slideSeek.setMinimum(0);
-            slideSeek.setValue((int) ((VideoSourceMovie) layout.getSource()).getSeekPosition());
-            new Thread(new Runnable() {
-
-                @Override
-                public void run() {
-                    while (layout != null) {
-                        if (slideSeek.getMaximum() == 0 && (layout.getSource().isPlaying() || layout.getSource().isPaused())) {
-                            slideSeek.setMaximum((int) ((VideoSourceMovie) layout.getSource()).getDuration());
-                            slideSeek.setMajorTickSpacing((slideSeek.getMaximum() / 5) / 60 * 60);
-                            slideSeek.setMinorTickSpacing(0);
-                        }
-                        int pos = (int) ((VideoSourceMovie) layout.getSource()).getSeekPosition();
-                        if (!slideSeek.getValueIsAdjusting()) {
-                            slideSeek.setValue(pos);
-                        }
-                        try {
-                            Thread.sleep(1000);
-                        } catch (InterruptedException ex) {
-                            Logger.getLogger(ControlPosition.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    }
-                }
-            }).start();
+            spinSeek.setVisible(true);
+            spinSeek.setValue((int)layout.getPosition());
         } else if (layout.getSource() instanceof VideoSourceMusic) {
             spinHeight.setEnabled(false);
             spinWidth.setEnabled(false);
             spinX.setEnabled(false);
             spinY.setEnabled(false);
             lblSeek.setVisible(true);
-            slideSeek.setVisible(true);
-            slideSeek.setMaximum((int) ((VideoSourceMusic) layout.getSource()).getDuration());
-            slideSeek.setMinimum(0);
-            slideSeek.setValue((int) ((VideoSourceMusic) layout.getSource()).getSeekPosition());
-            new Thread(new Runnable() {
-
-                @Override
-                public void run() {
-                    while (layout != null) {
-                        if (slideSeek.getMaximum() == 0 && (layout.getSource().isPlaying() || layout.getSource().isPaused())) {
-                            slideSeek.setMaximum((int) ((VideoSourceMusic) layout.getSource()).getDuration());
-                            slideSeek.setMajorTickSpacing((slideSeek.getMaximum() / 5) / 60 * 60);
-                            slideSeek.setMinorTickSpacing(0);
-                        }
-                        int pos = (int) ((VideoSourceMusic) layout.getSource()).getSeekPosition();
-                        if (!slideSeek.getValueIsAdjusting()) {
-                            slideSeek.setValue(pos);
-                        }
-                        try {
-                            Thread.sleep(1000);
-                        } catch (InterruptedException ex) {
-                            Logger.getLogger(ControlPosition.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    }
-                }
-            }).start();
+            spinSeek.setVisible(true);
+            spinSeek.setValue((int)layout.getPosition());
         } else {
             lblSeek.setVisible(false);
-            slideSeek.setVisible(false);
+            spinSeek.setVisible(false);
         }
 
         chkKeepRatio.setSelected(layout.isKeepingRatio());
@@ -148,7 +100,6 @@ public class ControlPosition extends javax.swing.JPanel implements Controls {
     private void initComponents() {
 
         lblSeek = new javax.swing.JLabel();
-        slideSeek = new javax.swing.JSlider();
         spinHeight = new javax.swing.JSpinner();
         jLabel1 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
@@ -170,23 +121,11 @@ public class ControlPosition extends javax.swing.JPanel implements Controls {
         jLabel7 = new javax.swing.JLabel();
         spinVolume = new javax.swing.JSpinner();
         chkKeepRatio = new javax.swing.JCheckBox();
+        spinSeek = new javax.swing.JSpinner();
 
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("webcamstudio/Languages"); // NOI18N
         lblSeek.setText(bundle.getString("SEEK")); // NOI18N
         lblSeek.setName("lblSeek"); // NOI18N
-
-        slideSeek.setPaintLabels(true);
-        slideSeek.setName("slideSeek"); // NOI18N
-        slideSeek.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                slideSeekMouseReleased(evt);
-            }
-        });
-        slideSeek.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
-            public void mouseDragged(java.awt.event.MouseEvent evt) {
-                slideSeekMouseDragged(evt);
-            }
-        });
 
         spinHeight.setName("spinHeight"); // NOI18N
         spinHeight.addChangeListener(new javax.swing.event.ChangeListener() {
@@ -322,6 +261,13 @@ public class ControlPosition extends javax.swing.JPanel implements Controls {
             }
         });
 
+        spinSeek.setName("spinSeek"); // NOI18N
+        spinSeek.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                spinSeekStateChanged(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -358,7 +304,6 @@ public class ControlPosition extends javax.swing.JPanel implements Controls {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(spinVolume, javax.swing.GroupLayout.DEFAULT_SIZE, 307, Short.MAX_VALUE)
                             .addComponent(spinWidth, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 307, Short.MAX_VALUE)
-                            .addComponent(spinY, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 307, Short.MAX_VALUE)
                             .addComponent(spinX, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 307, Short.MAX_VALUE)
                             .addComponent(cboTransOut, javax.swing.GroupLayout.Alignment.LEADING, 0, 307, Short.MAX_VALUE)
                             .addComponent(cboTransIn, javax.swing.GroupLayout.Alignment.LEADING, 0, 307, Short.MAX_VALUE)
@@ -366,9 +311,10 @@ public class ControlPosition extends javax.swing.JPanel implements Controls {
                                 .addComponent(chkKeepRatio)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(spinHeight, javax.swing.GroupLayout.DEFAULT_SIZE, 204, Short.MAX_VALUE))
+                            .addComponent(spinSeek, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 307, Short.MAX_VALUE)
                             .addGroup(layout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(slideSeek, javax.swing.GroupLayout.DEFAULT_SIZE, 307, Short.MAX_VALUE)))))
+                                .addComponent(spinY, javax.swing.GroupLayout.DEFAULT_SIZE, 307, Short.MAX_VALUE)))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -403,10 +349,10 @@ public class ControlPosition extends javax.swing.JPanel implements Controls {
                     .addComponent(spinVolume, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel7))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblSeek)
-                    .addComponent(slideSeek, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(10, 10, 10)
+                    .addComponent(spinSeek, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(46, 46, 46)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnMoveUp)
                     .addComponent(btnMoveDown)
@@ -418,17 +364,6 @@ public class ControlPosition extends javax.swing.JPanel implements Controls {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-
-    private void slideSeekMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_slideSeekMouseDragged
-    }//GEN-LAST:event_slideSeekMouseDragged
-
-    private void slideSeekMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_slideSeekMouseReleased
-        if (layout.getSource() instanceof VideoSourceMovie) {
-            ((VideoSourceMovie) layout.getSource()).seek(slideSeek.getValue());
-        } else if (layout.getSource() instanceof VideoSourceMusic) {
-            ((VideoSourceMusic) layout.getSource()).seek(slideSeek.getValue());
-        }
-    }//GEN-LAST:event_slideSeekMouseReleased
 
     private void btnMoveUpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMoveUpActionPerformed
         if (listener != null) {
@@ -545,6 +480,10 @@ public class ControlPosition extends javax.swing.JPanel implements Controls {
         layout.setKeepRatio(chkKeepRatio.isSelected());
     }//GEN-LAST:event_chkKeepRatioActionPerformed
 
+    private void spinSeekStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinSeekStateChanged
+        layout.setPosition(((Integer)spinSeek.getValue()));
+    }//GEN-LAST:event_spinSeekStateChanged
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnMoveDown;
     private javax.swing.JButton btnMoveUp;
@@ -563,8 +502,8 @@ public class ControlPosition extends javax.swing.JPanel implements Controls {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel lblSeek;
-    private javax.swing.JSlider slideSeek;
     private javax.swing.JSpinner spinHeight;
+    private javax.swing.JSpinner spinSeek;
     private javax.swing.JSpinner spinVolume;
     private javax.swing.JSpinner spinWidth;
     private javax.swing.JSpinner spinX;
