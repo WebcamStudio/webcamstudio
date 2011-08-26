@@ -4,6 +4,7 @@
  */
 package webcamstudio.sources;
 
+import java.awt.image.BufferedImage;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -20,7 +21,7 @@ public class VideoSourceText extends VideoSource {
     protected VideoSourceText() {
         frameRate = 1;
         controls.add(new webcamstudio.controls.ControlText(this));
-        controls.add(new webcamstudio.controls.ControlEffects(this));
+        controls.add(new webcamstudio.controls.ControlShapes(this));
         controls.add(new webcamstudio.controls.ControlEffects(this));
         controls.add(new webcamstudio.controls.ControlReload(this));
         controls.add(new webcamstudio.controls.ControlIdentity(this));
@@ -35,7 +36,7 @@ public class VideoSourceText extends VideoSource {
         captureWidth = 320;
         captureHeight = 240;
         controls.add(new webcamstudio.controls.ControlText(this));
-        controls.add(new webcamstudio.controls.ControlEffects(this));
+        controls.add(new webcamstudio.controls.ControlShapes(this));
         controls.add(new webcamstudio.controls.ControlEffects(this));
         controls.add(new webcamstudio.controls.ControlReload(this));
         controls.add(new webcamstudio.controls.ControlIdentity(this));
@@ -265,7 +266,7 @@ class imageText extends TimerTask {
                 text.outputWidth = 320;
                 text.outputHeight = 240;
             }
-            text.tempimage = text.graphicConfiguration.createCompatibleImage(text.captureWidth, text.captureHeight, java.awt.image.BufferedImage.TRANSLUCENT);
+            text.tempimage = new BufferedImage(text.captureWidth, text.captureHeight, java.awt.image.BufferedImage.TYPE_INT_ARGB);
             java.awt.Graphics2D buffer = text.tempimage.createGraphics();
 
             if (text.updateTimeLaspe > 0 && System.currentTimeMillis() - lastTimeStamp > text.updateTimeLaspe) {
@@ -390,8 +391,8 @@ class imageText extends TimerTask {
                     break;
             }
             buffer.dispose();
-            //text.applyEffects(text.tempimage);
-            //text.applyShape(text.tempimage);
+            text.applyEffects(text.tempimage);
+            text.applyShape(text.tempimage);
             text.image = text.tempimage;
             isRendering = false;
 

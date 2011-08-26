@@ -184,7 +184,7 @@ class imageAnimation extends TimerTask {
             animation.captureWidth = animation.animator.getWidth();
             animation.captureHeight = animation.animator.getHeight();
 
-            animation.tempimage = animation.graphicConfiguration.createCompatibleImage(animation.captureWidth, animation.captureHeight, java.awt.image.BufferedImage.TRANSLUCENT);
+            animation.tempimage = new BufferedImage(animation.captureWidth, animation.captureHeight, java.awt.image.BufferedImage.TYPE_INT_ARGB);
             Graphics2D buffer = animation.tempimage.createGraphics();
             buffer.drawImage(animation.animator.getCurrentImage(), 0, 0, null);
             buffer.dispose();

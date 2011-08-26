@@ -230,7 +230,7 @@ public class VideoSourceV4L extends VideoSource implements RGBDataSink.Listener 
 
     public void setImage(int[] data) {
         if (image == null || image.getWidth() != captureWidth || image.getHeight() != captureHeight) {
-            image = graphicConfiguration.createCompatibleImage(captureWidth, captureHeight, java.awt.image.BufferedImage.TRANSLUCENT);
+            image = new BufferedImage(captureWidth, captureHeight, java.awt.image.BufferedImage.TYPE_INT_ARGB);
         }
         image.setRGB(0, 0, captureWidth, captureHeight, data, 0, captureWidth);
     }

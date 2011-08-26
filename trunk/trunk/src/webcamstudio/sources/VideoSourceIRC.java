@@ -25,6 +25,7 @@ import f00f.net.irc.martyr.clientstate.Channel;
 import f00f.net.irc.martyr.commands.PingCommand;
 import f00f.net.irc.martyr.commands.PongCommand;
 import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import javax.swing.ImageIcon;
 
 
@@ -133,6 +134,7 @@ public class VideoSourceIRC extends VideoSource {
 
         Thread t = new Thread(new Runnable() {
 
+            @Override
             public void run() {
                 long timestamp = 0;
                 if (outputWidth == 0 || outputHeight == 0) {
@@ -140,7 +142,7 @@ public class VideoSourceIRC extends VideoSource {
                     outputHeight = 240;
                 }
 
-                tempimage = graphicConfiguration.createCompatibleImage(outputWidth, outputHeight, java.awt.image.BufferedImage.TRANSLUCENT);
+                tempimage = new BufferedImage(outputWidth, outputHeight, java.awt.image.BufferedImage.TYPE_INT_ARGB);
 
                 buffer = tempimage.createGraphics();
                 int index = 0;

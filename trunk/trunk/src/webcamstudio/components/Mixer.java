@@ -43,7 +43,6 @@ public class Mixer {
     protected int[] dataImageMixer = null;
     private int x, y, w, h, o;
     private Image img = null;
-    private GraphicsConfiguration graphicConfiguration = java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
     protected int frameCount = 0;
     java.util.Timer timer = null;
 

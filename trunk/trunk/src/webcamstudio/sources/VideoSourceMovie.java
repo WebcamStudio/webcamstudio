@@ -300,7 +300,7 @@ public class VideoSourceMovie extends VideoSource implements RGBDataSink.Listene
 
     public void setImage(int[] data) {
         if (image == null || image.getWidth() != captureWidth || image.getHeight() != captureHeight) {
-            image = graphicConfiguration.createCompatibleImage(captureWidth, captureHeight, java.awt.image.BufferedImage.TRANSLUCENT);
+            image = new BufferedImage(captureWidth, captureHeight, java.awt.image.BufferedImage.TYPE_INT_ARGB);
         }
         image.setRGB(0, 0, captureWidth, captureHeight, data, 0, captureWidth);
     }
@@ -420,6 +420,7 @@ public class VideoSourceMovie extends VideoSource implements RGBDataSink.Listene
         }
         return icon;
     }
+
 
     @Override
     public void rgbFrame(int w, int h, IntBuffer buffer) {
