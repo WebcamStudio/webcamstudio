@@ -137,6 +137,8 @@ public class VideoSourceAnimation extends VideoSource {
             timer.cancel();
             timer = null;
         }
+        
+        animator=null;
         stopMe = true;
         image = null;
     }
