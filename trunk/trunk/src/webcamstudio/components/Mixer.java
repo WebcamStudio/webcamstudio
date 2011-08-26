@@ -78,6 +78,7 @@ public class Mixer {
         timer = new java.util.Timer("Mixer DrawImage", true);
         timer.scheduleAtFixedRate(new drawMixerImage(this), 0L, (long) (1000 / frameRate));
         timer.scheduleAtFixedRate(new outputMixerImage(this), 0L, (long) (1000 / frameRate));
+        timer.scheduleAtFixedRate(new streamMixer(this), 0L, 1000);
     }
 
     public int getFramerate() {
@@ -99,8 +100,8 @@ public class Mixer {
     protected void drawImage() {
         isDrawing = true;
         //if (image == null || image.getWidth() != outputWidth || image.getHeight() != outputHeight) {
-            image = new BufferedImage(outputWidth, outputHeight, BufferedImage.TYPE_INT_ARGB);
-            buffer = image.createGraphics();
+        image = new BufferedImage(outputWidth, outputHeight, BufferedImage.TYPE_INT_ARGB);
+        buffer = image.createGraphics();
         //    dataImageMixer = ((java.awt.image.DataBufferInt) image.getRaster().getDataBuffer()).getData();
         //}
 //        switch (quality) {
@@ -176,12 +177,15 @@ public class Mixer {
 //            dataImageOutput = ((java.awt.image.DataBufferInt) outputImage.getRaster().getDataBuffer()).getData();
 //        }
 //        outputImage.setRGB(0, 0, outputWidth, outputHeight, dataImageMixer, 0, outputWidth);
-          outputImage = image;
+        outputImage = image;
         image = null;
         dataImageOutput = ((java.awt.image.DataBufferInt) outputImage.getRaster().getDataBuffer()).getData();
         isDrawing = false;
     }
 
+    public int[] getRawImageDate(){
+        return dataImageOutput;
+    }
     public void setOutput(VideoOutput o) {
         outputDevice = o;
     }
@@ -239,53 +243,26 @@ class outputMixerImage extends TimerTask {
     }
 }
 
-class imageMixer implements Runnable {
+class streamMixer extends  TimerTask {
 
     private Mixer mixer = null;
 
-    public imageMixer(Mixer m) {
+    public streamMixer(Mixer m) {
         mixer = m;
-        new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-                while (!mixer.stopMe) {
-                    //if (mixer.frameRate != mixer.frameCount) {
-                    System.out.println("Mixer : " + mixer.frameCount + " fps");
-                    //}
-                    mixer.frameCount = 0;
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(imageMixer.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-            }
-        }).start();
     }
 
     @Override
     public void run() {
-        long timestamp = 0;
-        while (!mixer.stopMe) {
-            if (!mixer.isDrawing) {
-                if (mixer.activateOutputStream && mixer.outputStream == null) {
-                    mixer.outputStream = new VideoExporterStream(mixer.outputStreamPort, mixer);
-                    try {
-                        mixer.outputStream.listen();
-                    } catch (IOException ex) {
-                        Logger.getLogger(Mixer.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                } else if (!mixer.activateOutputStream && mixer.outputStream != null) {
-                    mixer.outputStream.stop();
-                }
 
-            }
+        if (mixer.activateOutputStream && mixer.outputStream == null) {
+            mixer.outputStream = new VideoExporterStream(mixer.outputStreamPort, mixer);
             try {
-                Thread.sleep(1000 / mixer.frameRate);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(imageMixer.class.getName()).log(Level.SEVERE, null, ex);
+                mixer.outputStream.listen();
+            } catch (IOException ex) {
+                Logger.getLogger(Mixer.class.getName()).log(Level.SEVERE, null, ex);
             }
+        } else if (!mixer.activateOutputStream && mixer.outputStream != null) {
+            mixer.outputStream.stop();
         }
 
     }

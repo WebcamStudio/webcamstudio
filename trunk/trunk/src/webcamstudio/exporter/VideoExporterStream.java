@@ -78,11 +78,13 @@ public class VideoExporterStream {
 
     private void startExport() {
         rate = mixer.getFramerate();
-        captureWidth=mixer.getWidth();
-        captureHeight=mixer.getHeight();
+        captureWidth = mixer.getWidth();
+        captureHeight = mixer.getHeight();
         String pipeline = "";
-        pipeline += "ffmpegcolorspace name=conv ! videorate ! video/x-raw-yuv,framerate=" + rate + "/1 ! theoraenc name=enc quality=48 ! oggmux name=mux";
-        pipeline += " queue ! autoaudiosrc ! audioconvert ! vorbisenc ! mux.";
+        // FLV Stream...
+        //v4l2src ! stamp sync-margin=1 sync-interval=1 ! videorate ! video/x-raw-yuv,width=320,height=240,framerate=20/1 ! ffmpegcolorspace ! x264enc bitrate=368 subme=4 b-pyramid=true weightb=true ! queue2 ! flvmux name=mux alsasrc device=hw:0,0     ! audio/x-raw-int,rate=22050,channels=2,depth=16     ! audiorate     ! queue2 max-size-buffers=600 max-size-bytes=0 max-size-time=0     ! audioconvert     ! lamemp3enc target=1 bitrate=40 mono=true encoding-engine-quality=1 target=bitrate     ! mux. mux.     ! queue2     ! filesink location=outfile.flv sync=false
+        pipeline += "ffmpegcolorspace name=conv ! videorate ! video/x-raw-yuv,framerate=" + rate + "/1 ! x264enc speed-preset=slow name=enc  ! flvmux name=mux";
+        pipeline += " queue ! autoaudiosrc ! audioconvert ! lame ! mux.";
 
         pipe = Pipeline.launch(pipeline);
         source = (AppSrc) ElementFactory.make("appsrc", "source");
@@ -102,13 +104,15 @@ public class VideoExporterStream {
         source.connect(new AppSrc.NEED_DATA() {
 
             public void needData(Element elem, int size, Pointer userData) {
-                BufferedImage img = mixer.getImage();
-                int[] pixels = ((java.awt.image.DataBufferInt) img.getRaster().getDataBuffer()).getData();
-                Buffer buffer = new Buffer(pixels.length*4);
-                buffer.getByteBuffer().asIntBuffer().put(pixels);
-                //buffer.setDuration(ClockTime.fromMillis(1000 / rate));
-                //buffer.setTimestamp(ClockTime.fromMillis(System.currentTimeMillis()));
-                source.pushBuffer(buffer);
+                int[] pixels = mixer.getRawImageDate();
+                if (pixels != null) {
+                    Buffer buffer = new Buffer(pixels.length * 4);
+                    buffer.getByteBuffer().asIntBuffer().put(pixels);
+                    //buffer.setDuration(ClockTime.fromMillis(1000 / rate));
+                    //buffer.setTimestamp(ClockTime.fromMillis(System.currentTimeMillis()));
+                    source.pushBuffer(buffer);
+                    buffer = null;
+                }
             }
         });
         source.connect(new AppSrc.ENOUGH_DATA() {
@@ -176,8 +180,8 @@ public class VideoExporterStream {
         this.port = port;
         this.mixer = mixer;
         rate = mixer.getFramerate();
-        captureWidth=mixer.getWidth();
-        captureHeight=mixer.getHeight();
+        captureWidth = mixer.getWidth();
+        captureHeight = mixer.getHeight();
     }
 
     public static void main(String[] args) {
