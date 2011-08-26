@@ -15,7 +15,6 @@ import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
-import javax.swing.JPanel;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -133,7 +132,7 @@ public class VideoSourceWidget extends VideoSource {
         bgColor = new Color(color, true);
         bgColor = new Color(bgColor.getRed(), bgColor.getGreen(), bgColor.getBlue(), alpha);
         // Init image
-        tempimage = graphicConfiguration.createCompatibleImage(captureWidth, captureHeight, java.awt.image.BufferedImage.TRANSLUCENT);
+        tempimage = new BufferedImage(captureWidth, captureHeight, java.awt.image.BufferedImage.TYPE_INT_ARGB);
 
         //Go over all the items in the list
         NodeList elements = rootNode.getChildNodes();

@@ -25,7 +25,6 @@ import webcamstudio.components.Shapes;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
-import java.awt.GraphicsConfiguration;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
@@ -48,7 +47,6 @@ public abstract class VideoSource implements InfoListener {
     public static java.util.TreeMap<String, VideoSource> loadedSources = new TreeMap<String, VideoSource>();
     protected java.util.Vector<Controls> controls = new java.util.Vector<Controls>();
     protected Timer timer = null;
-    
 
     public abstract void startSource();
 
@@ -62,9 +60,10 @@ public abstract class VideoSource implements InfoListener {
         location = l;
     }
 
-    protected void updateOutputImage(BufferedImage img){
-        image=img;
+    protected void updateOutputImage(BufferedImage img) {
+        image = img;
     }
+
     protected javax.swing.ImageIcon getCachedThumbnail() {
         ImageIcon icon = null;
         File home = new File(System.getProperty("user.home"), ".webcamstudio");
@@ -81,7 +80,7 @@ public abstract class VideoSource implements InfoListener {
     }
 
     public javax.swing.ImageIcon getThumbnail() {
-        BufferedImage img = new BufferedImage(32, 32, BufferedImage.TRANSLUCENT);
+        BufferedImage img = new BufferedImage(32, 32, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = img.createGraphics();
         String n = name;
         g.setColor(Color.GRAY);
@@ -112,7 +111,7 @@ public abstract class VideoSource implements InfoListener {
             img.delete();
         }
 
-        BufferedImage i = new BufferedImage(icon.getIconWidth(), icon.getIconHeight(), BufferedImage.TRANSLUCENT);
+        BufferedImage i = new BufferedImage(icon.getIconWidth(), icon.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
         i.getGraphics().drawImage(icon.getImage(), 0, 0, null);
         System.out.println("Saving to " + img.getAbsolutePath());
         RenderedImage ri = (RenderedImage) i;
@@ -681,8 +680,7 @@ public abstract class VideoSource implements InfoListener {
 
     public void setActivityDetection(int threshold) {
         activityThreshold = threshold;
-        activityDetected =
-                false;
+        activityDetected = false;
     }
 
     public int getActivityDetection() {
@@ -701,19 +699,19 @@ public abstract class VideoSource implements InfoListener {
         return scrollDirection;
     }
 
-    public java.util.Collection<Controls> getControls(){
+    public java.util.Collection<Controls> getControls() {
         return controls;
     }
+
     protected void detectActivity(java.awt.image.BufferedImage input) {
         if (activityDetected && System.currentTimeMillis() - lastTimeStamp > 5000) {
             lastTimeStamp = System.currentTimeMillis();
         } else if (activityThreshold > 0 && System.currentTimeMillis() - lastTimeStamp > 1000) {
             int w = input.getWidth();
             int h = input.getHeight();
-            activityDetected =
-                    true;
+            activityDetected = true;
             if (lastInputImage == null || w != lastInputImage.getWidth() || h != lastInputImage.getHeight()) {
-                lastInputImage = java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().createCompatibleImage(w, h, java.awt.image.BufferedImage.TRANSLUCENT);
+                lastInputImage = new BufferedImage(w, h, java.awt.image.BufferedImage.TYPE_INT_ARGB);
                 lastInputImage.getGraphics().drawImage(input, 0, 0, null);
             }
 
@@ -913,7 +911,7 @@ public abstract class VideoSource implements InfoListener {
                 org.gstreamer.Buffer b = sink.pullBuffer();
                 if (b != null) {
                     IntBuffer bb = b.getByteBuffer().asIntBuffer();
-                    tempimage = graphicConfiguration.createCompatibleImage(captureWidth, captureHeight, java.awt.image.BufferedImage.TRANSLUCENT);
+                    tempimage = new BufferedImage(captureWidth, captureHeight, java.awt.image.BufferedImage.TYPE_INT_ARGB);
                     tempimage.setRGB(0, 0, captureWidth, captureHeight, bb.array(), 0, captureWidth);
                     image = tempimage;
                 }
@@ -983,7 +981,6 @@ public abstract class VideoSource implements InfoListener {
     protected boolean lightMode = false;
     protected String customText = "";
     protected java.util.Vector<Effect> effects = new java.util.Vector<Effect>();
-    protected GraphicsConfiguration graphicConfiguration = java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
     protected boolean doRescale = true;
     protected boolean doReverseShapeMask = false;
     protected Image faceDetection = null;

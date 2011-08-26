@@ -6,6 +6,7 @@ package webcamstudio.sources;
 
 import java.awt.AWTException;
 import java.awt.Robot;
+import java.awt.image.BufferedImage;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
@@ -130,7 +131,7 @@ class imageDesktop extends TimerTask {
         x = desktop.getCaptureAtX();
         y = desktop.getCaptureAtY();
         if (desktop.getImage() == null || (desktop.image.getWidth() != desktop.getCaptureWidth()) || (desktop.image.getHeight() != desktop.getCaptureHeight())) {
-            desktop.image = java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().createCompatibleImage(desktop.getCaptureWidth(), desktop.getCaptureHeight(), java.awt.image.BufferedImage.TRANSLUCENT);
+            desktop.image = java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().createCompatibleImage(desktop.getCaptureWidth(), desktop.getCaptureHeight(), java.awt.image.BufferedImage.TYPE_INT_ARGB);
         }
         if (desktop.isFollowingMouse()) {
             x = (int) java.awt.MouseInfo.getPointerInfo().getLocation().getX() - (desktop.getCaptureWidth() / 2);
@@ -151,7 +152,7 @@ class imageDesktop extends TimerTask {
         desktop.captureAtX = x;
         desktop.captureAtY = y;
         if (robot != null) {
-            desktop.tempimage = desktop.graphicConfiguration.createCompatibleImage(desktop.captureWidth, desktop.captureHeight, java.awt.image.BufferedImage.TRANSLUCENT);
+            desktop.tempimage = new BufferedImage(desktop.captureWidth, desktop.captureHeight, java.awt.image.BufferedImage.TYPE_INT_ARGB);
             java.awt.Graphics2D buffer = desktop.tempimage.createGraphics();
             buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC, 1.0F));
             buffer.setRenderingHint(java.awt.RenderingHints.KEY_RENDERING, java.awt.RenderingHints.VALUE_RENDER_QUALITY);
