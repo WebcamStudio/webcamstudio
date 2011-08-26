@@ -9,6 +9,8 @@ import webcamstudio.layout.transitions.Start;
 import webcamstudio.layout.transitions.Stop;
 import webcamstudio.layout.transitions.Transition;
 import webcamstudio.sources.VideoSource;
+import webcamstudio.sources.VideoSourceMovie;
+import webcamstudio.sources.VideoSourceMusic;
 import webcamstudio.studio.Studio;
 
 /**
@@ -29,7 +31,15 @@ public class LayoutItem implements Runnable{
     private int volume = 10;
     private boolean isInActiveLayout = false;
     private boolean keepRatio = false;
+    private long position = 0;
 
+
+    public void setPosition(long seek){
+        position=seek;
+    }
+    public long getPosition(){
+        return position;
+    }
     public void setKeepRatio(boolean keep){
         keepRatio=keep;
     }
@@ -169,6 +179,15 @@ public class LayoutItem implements Runnable{
     @Override
     public void run() {
         source.setLayer(layer);
+        if (source instanceof VideoSourceMovie){
+            VideoSourceMovie movie = (VideoSourceMovie)source;
+            movie.seek(position);
+        }
+        else if(source instanceof VideoSourceMusic)
+        {
+            VideoSourceMusic music = (VideoSourceMusic)source;
+            music.seek(position);
+        }
         if (transToDo == null || source.isIgnoringLayoutTransition()) {
             source.setShowAtX(x);
             source.setShowAtY(y);
