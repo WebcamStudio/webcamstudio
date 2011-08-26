@@ -21,41 +21,42 @@ public class LayoutEventsManager extends TimerTask {
 
     public LayoutEventsManager(Collection<Layout> ls) {
         layouts = ls;
-        timer = new Timer(this.getClass().getSimpleName(),true);
+        timer = new Timer(this.getClass().getSimpleName(), true);
         timer.scheduleAtFixedRate(this, 0, 1000);
     }
 
     public void stop() {
         timer.cancel();
-        timer=null;
+        timer = null;
     }
-
 
     @Override
     public void run() {
-        Layout currentLayout = null;
-        for (Layout l : layouts) {
-            if (l.isActive()) {
-                currentLayout = l;
-                break;
+        try {
+            Layout currentLayout = null;
+            for (Layout l : layouts) {
+                if (l.isActive()) {
+                    currentLayout = l;
+                    break;
+                }
             }
-        }
-        if (currentLayout != null) {
-            if (currentLayout.getDuration() > 0) {
-                if (currentLayout.timeStamp == 0) {
-                    currentLayout.timeStamp = (currentLayout.getDuration() * 1000) + System.currentTimeMillis();
-                } else if (currentLayout.timeStamp <= System.currentTimeMillis()) {
-                    currentLayout.timeStamp = 0;
-                    for (Layout l : layouts) {
-                        if (l.toString().equals(currentLayout.getNextLayout())) {
-                            currentLayout = l;
-                            currentLayout.enterLayout();
-                            break;
+            if (currentLayout != null) {
+                if (currentLayout.getDuration() > 0) {
+                    if (currentLayout.timeStamp == 0) {
+                        currentLayout.timeStamp = (currentLayout.getDuration() * 1000) + System.currentTimeMillis();
+                    } else if (currentLayout.timeStamp <= System.currentTimeMillis()) {
+                        currentLayout.timeStamp = 0;
+                        for (Layout l : layouts) {
+                            if (l.toString().equals(currentLayout.getNextLayout())) {
+                                currentLayout = l;
+                                currentLayout.enterLayout();
+                                break;
+                            }
                         }
                     }
                 }
             }
+        } catch (Exception e) {
         }
-
     }
 }

@@ -164,8 +164,8 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         } else {
             if (mnuOutputchkActivateStream.isSelected()) {
                 mnuOutputLabelStreamPort.setText("Stream Port: " + outputStreamPort);
-                mixer.stopStream();
             }
+            mixer.activateStream(mnuOutputchkActivateStream.isSelected(), outputStreamPort);
         }
 
 

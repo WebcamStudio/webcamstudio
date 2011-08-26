@@ -15,7 +15,6 @@ import java.awt.Component;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.Collection;
 import java.util.Timer;
@@ -154,10 +153,10 @@ public class LayoutManager2 extends javax.swing.JPanel implements SourceListener
 
     }
 
-    public void clearLayouts(){
-        for (Layout l : layouts){
+    public void clearLayouts() {
+        for (Layout l : layouts) {
             l.setDuration(0, "");
-            for (LayoutItem li : l.getItems()){
+            for (LayoutItem li : l.getItems()) {
                 li.getSource().stopSource();
             }
         }
@@ -165,6 +164,7 @@ public class LayoutManager2 extends javax.swing.JPanel implements SourceListener
         modelComboLayouts.removeAllElements();
         layouts.removeAllElements();
     }
+
     public void quitting() {
         eventsManager.stop();
         timer.cancel();
@@ -188,7 +188,7 @@ public class LayoutManager2 extends javax.swing.JPanel implements SourceListener
                         currentLayout.enterLayout();
                     }
                 }).start();
-                
+
                 break;
             }
         }
@@ -416,7 +416,7 @@ public class LayoutManager2 extends javax.swing.JPanel implements SourceListener
         cboLayouts.removeItem(currentLayout);
         currentLayout = null;
         currentLayoutItem = null;
-        
+
     }//GEN-LAST:event_btnRemoveLayoutActionPerformed
 
     private void btnActivateLayoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActivateLayoutActionPerformed
@@ -443,14 +443,17 @@ public class LayoutManager2 extends javax.swing.JPanel implements SourceListener
     private void btnLayoutDetailsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLayoutDetailsActionPerformed
         tabControls.removeAll();
         LayoutEventsControl control = new LayoutEventsControl(currentLayout, layouts);
-        tabControls.add("Events",control);
+        tabControls.add(currentLayout.toString(), control);
+        if (!Main.XMODE) {
+            PulseAudioInputSelecter pulse = new PulseAudioInputSelecter(currentLayout);
+            tabControls.add("Pulseaudio", pulse);
+        }
     }//GEN-LAST:event_btnLayoutDetailsActionPerformed
 
     private void cboLayoutsKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cboLayoutsKeyPressed
-        applyLayoutHotKey(""+ evt.getKeyChar());
-        
-    }//GEN-LAST:event_cboLayoutsKeyPressed
+        applyLayoutHotKey("" + evt.getKeyChar());
 
+    }//GEN-LAST:event_cboLayoutsKeyPressed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnActivateLayout;
     private javax.swing.JButton btnAddLayout;

@@ -39,7 +39,7 @@ public class PulseAudioInputSelecter extends javax.swing.JPanel {
         cboSources.setModel(sourceModel);
         cboApps.setModel(appsModel);
         cboSources.setSelectedItem(l.getAudioSource());
-        cboApps.setSelectedItem(l.getAudioApp());
+        cboApps.getEditor().setItem(l.getAudioApp());
         if (cboSources.getModel().getSize() > 0 && layout.getAudioSource().length()==0) {
             cboSources.setSelectedIndex(0);
             layout.setAudioSource(cboSources.getSelectedItem().toString());
@@ -86,6 +86,7 @@ public class PulseAudioInputSelecter extends javax.swing.JPanel {
         jLabel2.setText(bundle.getString("PULSEAUDIO_APP_RECODER")); // NOI18N
         jLabel2.setName("jLabel2"); // NOI18N
 
+        cboApps.setEditable(true);
         cboApps.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         cboApps.setName("cboApps"); // NOI18N
         cboApps.addActionListener(new java.awt.event.ActionListener() {
@@ -108,7 +109,7 @@ public class PulseAudioInputSelecter extends javax.swing.JPanel {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cboApps, 0, 181, Short.MAX_VALUE)))
+                        .addComponent(cboApps, 0, 175, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
