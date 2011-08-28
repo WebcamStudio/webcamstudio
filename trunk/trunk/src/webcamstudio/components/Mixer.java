@@ -4,7 +4,6 @@
  */
 package webcamstudio.components;
 
-import java.awt.GraphicsConfiguration;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.io.IOException;
