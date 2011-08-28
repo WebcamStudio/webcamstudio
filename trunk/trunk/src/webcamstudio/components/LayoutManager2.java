@@ -94,7 +94,7 @@ public class LayoutManager2 extends javax.swing.JPanel implements SourceListener
                 if (value instanceof Layout) {
                     Layout layout = (Layout) value;
                     label.setText("");
-                    label.setIcon(new ImageIcon(layout.getPreview(mixer.getWidth(), mixer.getHeight()).getScaledInstance(160, 120, Image.SCALE_FAST)));
+                    label.setIcon(new ImageIcon(layout.getPreview(mixer.getWidth(), mixer.getHeight()).getScaledInstance(180, 180*3/4, Image.SCALE_FAST)));
                     if (layout.isActive()) {
                         label.setForeground(Color.green);
                     } else {
