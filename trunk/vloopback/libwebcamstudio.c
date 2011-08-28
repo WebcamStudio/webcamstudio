@@ -31,13 +31,15 @@ int open_device(char* dev,int width,int height,int pixFormat){
 		case 1:
 		        vid_format.fmt.pix.pixelformat = V4L2_PIX_FMT_RGB24;
 			vid_format.fmt.pix.bytesperline = width *3;
+			vid_format.fmt.pix.sizeimage = width*height*3;
 	break;
 		case 2:
 		        vid_format.fmt.pix.pixelformat = V4L2_PIX_FMT_UYVY;
 			vid_format.fmt.pix.bytesperline = width *2;
+			vid_format.fmt.pix.sizeimage = width*height*2;
 			break;
 	}
-	vid_format.fmt.pix.sizeimage = vid_format.fmt.pix.bytesperline*height;
+	
 	vid_format.fmt.pix.field = V4L2_FIELD_NONE;
 	vid_format.fmt.pix.priv = 0;
 	vid_format.fmt.pix.colorspace = V4L2_COLORSPACE_JPEG;
