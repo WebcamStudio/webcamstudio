@@ -63,7 +63,7 @@ public class V4L2Loopback extends VideoOutput {
             }
 
             int countWritten = 0;
-            countWritten = CV4l2.INSTANCE.writeData(devFD, buffer, buffer.length);
+            countWritten = CV4l2.INSTANCE.writeData(devFD, buffer, buffer.length);            
             if (countWritten != buffer.length) {
                 System.out.println("Error Writing Data - " + countWritten);
             }
