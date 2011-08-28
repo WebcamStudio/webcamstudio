@@ -5,9 +5,12 @@ PWD		:= $(shell pwd)
 
 obj-m		:= webcamstudio.o
 
-all: v4l2loopback
-v4l2loopback:
-	@echo "Building vloopback driver..."
+
+MODULE_OPTIONS = devices=2
+
+all: webcamstudio
+webcamstudio:
+	@echo "Building webcamstudio driver..."
 	$(MAKE) -C $(KERNEL_DIR) M=$(PWD) modules
 install:
 	$(MAKE) -C $(KERNEL_DIR) M=$(PWD) modules_install
@@ -16,3 +19,9 @@ clean:
 	rm -f *~
 	rm -f Module.symvers Module.markers modules.order
 	$(MAKE) -C $(KERNEL_DIR) M=$(PWD) clean
+
+modprobe: webcamstudio
+	modprobe videodev
+	-rmmod webcamstudio
+	insmod ./webcamstudio.ko $(MODULE_OPTIONS)
+
