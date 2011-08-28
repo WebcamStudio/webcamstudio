@@ -219,7 +219,7 @@ public class Layout {
             buffer.drawRect(item.getX(), item.getY(), item.getWidth(), item.getHeight());
         }
         buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC_OVER, 0.5F));
-        buffer.setColor(Color.BLACK);
+        buffer.setColor(Color.DARK_GRAY);
         buffer.fillRect(0, 0, w, 34);
         if (isEntering) {
             buffer.setColor(Color.YELLOW);
