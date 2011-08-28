@@ -551,9 +551,9 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         } else if (prefs.get("format", "uyvy").equals("uyvy")) {
             mnurdPixelFormatUYVY.setSelected(true);
             mnurdPixelFormatRGB24.setSelected(false);
-            mnuOutputSize.setEnabled(false);
-            outputWidth = 640;
-            outputHeight = 480;
+//            mnuOutputSize.setEnabled(false);
+//            outputWidth = 640;
+//            outputHeight = 480;
         }
         String outputSize = outputWidth + "x" + outputHeight;
         java.util.Enumeration<javax.swing.AbstractButton> list = grpOutputSize.getElements();
@@ -1838,11 +1838,11 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
                 output.open(output.getDevice(), outputWidth, outputHeight, V4L2Loopback.RGB24);
                 mnuOutputSize.setEnabled(true);
             } else {
-                mnuOutputSize3.setSelected(true);
-                outputWidth = 640;
-                outputHeight = 480;
+                //mnuOutputSize3.setSelected(true);
+                //outputWidth = 640;
+                //outputHeight = 480;
                 output.open(output.getDevice(), outputWidth, outputHeight, V4L2Loopback.UYVY);
-                mnuOutputSize.setEnabled(false);
+                //mnuOutputSize.setEnabled(false);
             }
         }
         mixer.setSize(outputWidth, outputHeight);
