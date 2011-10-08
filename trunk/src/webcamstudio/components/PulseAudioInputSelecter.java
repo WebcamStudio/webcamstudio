@@ -136,8 +136,10 @@ public class PulseAudioInputSelecter extends javax.swing.JPanel {
 
     private void cboAppsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboAppsActionPerformed
         cboApps.setToolTipText(cboApps.getSelectedItem().toString());
-        if (cboApps.getModel().getSize() > 0) {
+        if (cboApps.getSelectedItem() != null) {
             layout.setAudioApp(cboApps.getSelectedItem().toString());
+        } else {
+            layout.setAudioApp(cboApps.getEditor().getItem().toString());
         }
     }//GEN-LAST:event_cboAppsActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
