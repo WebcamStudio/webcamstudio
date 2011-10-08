@@ -18,14 +18,14 @@ public class AudioFadeIn extends Transition {
     @Override
     public void doTransition(final LayoutItem item) {
         VideoSource source = item.getSource();
-        if (!source.isPlaying()) {
-            source.startSource();
-        }
         source.setOpacity(0);
         source.setVolume(0);
         float deltaAudio = ((float)item.getVolume()) / 20f;
         float volume = 0;
         source.fireSourceUpdated();
+        if (!source.isPlaying()) {
+            source.startSource();
+        }
         for (int i = 0; i <= 20; i++) {
             try {
                 volume+=deltaAudio;

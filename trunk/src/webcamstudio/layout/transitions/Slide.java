@@ -18,16 +18,16 @@ public class Slide extends Transition {
     @Override
     public void doTransition(final LayoutItem item) {
         VideoSource source = item.getSource();
-        if (!source.isPlaying()) {
-            source.startSource();
-            
-        }
         item.setActive(true);
         source.setVolume(item.getVolume());
         int xDelta = (item.getX() - source.getShowAtX()) / 20;
         int yDelta = (item.getY() - source.getShowAtY()) / 20;
         int wDelta = (item.getWidth() - source.getOutputWidth()) / 20;
         int hDelta = (item.getHeight() - source.getOutputHeight()) / 20;
+        if (!source.isPlaying()) {
+            source.startSource();
+            
+        }
         for (int i = 0; i < 20; i++) {
             try {
                 source.setOutputWidth(source.getOutputWidth() + wDelta);

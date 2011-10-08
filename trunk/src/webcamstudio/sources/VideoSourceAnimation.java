@@ -137,8 +137,8 @@ public class VideoSourceAnimation extends VideoSource {
             timer.cancel();
             timer = null;
         }
-        
-        animator=null;
+
+        animator = null;
         stopMe = true;
         image = null;
     }
@@ -186,11 +186,13 @@ class imageAnimation extends TimerTask {
 
             animation.tempimage = new BufferedImage(animation.captureWidth, animation.captureHeight, java.awt.image.BufferedImage.TYPE_INT_ARGB);
             Graphics2D buffer = animation.tempimage.createGraphics();
-            buffer.drawImage(animation.animator.getCurrentImage(), 0, 0, null);
-            buffer.dispose();
-            animation.applyEffects(animation.tempimage);
-            animation.applyShape(animation.tempimage);
-            animation.image = animation.tempimage;
+            if (buffer != null) {
+                buffer.drawImage(animation.animator.getCurrentImage(), 0, 0, null);
+                buffer.dispose();
+                animation.applyEffects(animation.tempimage);
+                animation.applyShape(animation.tempimage);
+                animation.image = animation.tempimage;
+            }
         }
 
     }
