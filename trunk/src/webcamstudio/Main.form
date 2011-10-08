@@ -226,7 +226,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="mnuSourcesDesktop">
               <Properties>
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
-                  <KeyStroke key="Alt+D"/>
+                  <KeyStroke key="Ctrl+Alt+D"/>
                 </Property>
                 <Property name="icon" type="javax.swing.Icon" noResource="true" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/webcamstudio/resources/tango/user-desktop.png"/>
@@ -243,7 +243,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="mnuSourcesFullDesktop">
               <Properties>
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
-                  <KeyStroke key="Shift+Alt+D"/>
+                  <KeyStroke key="Shift+Ctrl+Alt+D"/>
                 </Property>
                 <Property name="icon" type="javax.swing.Icon" noResource="true" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/webcamstudio/resources/tango/user-desktop.png"/>
@@ -260,7 +260,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="mnuSourcesDV">
               <Properties>
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
-                  <KeyStroke key="Alt+R"/>
+                  <KeyStroke key="Ctrl+Alt+R"/>
                 </Property>
                 <Property name="icon" type="javax.swing.Icon" noResource="true" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/webcamstudio/resources/tango/camera-video.png"/>
@@ -277,7 +277,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="mnuSourcesImage">
               <Properties>
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
-                  <KeyStroke key="Alt+I"/>
+                  <KeyStroke key="Ctrl+Alt+I"/>
                 </Property>
                 <Property name="icon" type="javax.swing.Icon" noResource="true" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/webcamstudio/resources/tango/image-x-generic.png"/>
@@ -294,7 +294,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="mnuSourcesFreeText">
               <Properties>
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
-                  <KeyStroke key="Alt+T"/>
+                  <KeyStroke key="Ctrl+Alt+T"/>
                 </Property>
                 <Property name="icon" type="javax.swing.Icon" noResource="true" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/webcamstudio/resources/tango/accessories-text-editor.png"/>
@@ -311,7 +311,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="mnuSourceIRC">
               <Properties>
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
-                  <KeyStroke key="Alt+K"/>
+                  <KeyStroke key="Ctrl+Alt+K"/>
                 </Property>
                 <Property name="icon" type="javax.swing.Icon" noResource="true" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/webcamstudio/resources/tango/internet-group-chat.png"/>
@@ -328,7 +328,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="mnuSourcesAnimation">
               <Properties>
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
-                  <KeyStroke key="Alt+M"/>
+                  <KeyStroke key="Ctrl+Alt+M"/>
                 </Property>
                 <Property name="icon" type="javax.swing.Icon" noResource="true" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/webcamstudio/resources/tango/user-info.png"/>
@@ -345,7 +345,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="mnuSourcesMovie">
               <Properties>
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
-                  <KeyStroke key="Alt+V"/>
+                  <KeyStroke key="Ctrl+Alt+V"/>
                 </Property>
                 <Property name="icon" type="javax.swing.Icon" noResource="true" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/webcamstudio/resources/tango/video-display.png"/>
@@ -362,7 +362,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="mnuSourcesStream">
               <Properties>
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
-                  <KeyStroke key="Shift+Alt+V"/>
+                  <KeyStroke key="Shift+Ctrl+Alt+V"/>
                 </Property>
                 <Property name="icon" type="javax.swing.Icon" noResource="true" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/webcamstudio/resources/tango/video-display.png"/>
@@ -396,7 +396,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="mnuSourcesWidget">
               <Properties>
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
-                  <KeyStroke key="Alt+W"/>
+                  <KeyStroke key="Ctrl+Alt+W"/>
                 </Property>
                 <Property name="icon" type="javax.swing.Icon" noResource="true" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/webcamstudio/resources/tango/image-x-generic.png"/>
@@ -413,7 +413,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="mnuSourcesConsole">
               <Properties>
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
-                  <KeyStroke key="Alt+C"/>
+                  <KeyStroke key="Ctrl+Alt+C"/>
                 </Property>
                 <Property name="icon" type="javax.swing.Icon" noResource="true" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/webcamstudio/resources/tango/accessories-text-editor.png"/>

@@ -10,11 +10,15 @@
  */
 package webcamstudio.components;
 
+import java.awt.AWTEvent;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Image;
+import java.awt.Toolkit;
+import java.awt.event.AWTEventListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.Collection;
 import java.util.Timer;
@@ -44,11 +48,12 @@ import webcamstudio.sources.VideoSourceText;
 import webcamstudio.sources.VideoSourceV4L;
 import webcamstudio.sources.VideoSourceWidget;
 
+
 /**
  *
  * @author patrick
  */
-public class LayoutManager2 extends javax.swing.JPanel implements SourceListener {
+public class LayoutManager2 extends javax.swing.JPanel implements SourceListener,AWTEventListener {
 
     private java.util.Vector<Layout> layouts = new java.util.Vector<Layout>();
     private Layout currentLayout = null;
@@ -149,7 +154,7 @@ public class LayoutManager2 extends javax.swing.JPanel implements SourceListener
         timer = new Timer(this.getClass().getSimpleName(), true);
 
         timer.scheduleAtFixedRate(new imageUpdater(this), 0, 200);
-
+        Toolkit.getDefaultToolkit().addAWTEventListener(this, ActionEvent.KEY_EVENT_MASK);
 
     }
 
@@ -571,8 +576,20 @@ public class LayoutManager2 extends javax.swing.JPanel implements SourceListener
         cboLayouts.repaint();
         lstLayoutItems.repaint();
     }
-}
 
+    @Override
+    public void eventDispatched(AWTEvent event) {
+       KeyEvent key = (KeyEvent)event;
+       if (key.isAltDown()){
+           String c = key.getKeyChar()+"";
+           for (Layout l : layouts){
+               if (l.getHotKey().equals(c)){
+                   l.enterLayout();
+               }
+           }
+       }
+    }
+}
 class imageUpdater extends TimerTask {
 
     private LayoutManager2 layoutManager = null;
