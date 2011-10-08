@@ -220,7 +220,7 @@ public class Layout {
         }
         buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC_OVER, 0.5F));
         buffer.setColor(Color.DARK_GRAY);
-        buffer.fillRect(0, 0, w, 34);
+        buffer.fillRect(0, 0, w, 17);
         if (isEntering) {
             buffer.setColor(Color.YELLOW);
         } else if (isExiting) {
@@ -229,8 +229,8 @@ public class Layout {
             buffer.setColor(Color.GREEN);
         }
         buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC_OVER, 1F));
-        buffer.setFont(new Font("Monospaced", Font.BOLD, 30));
-        buffer.drawString(name, 5,30);
+        buffer.setFont(new Font("Monospaced", Font.BOLD, 15));
+        buffer.drawString(name, 5,15);
         buffer.dispose();
 
         return preview;
