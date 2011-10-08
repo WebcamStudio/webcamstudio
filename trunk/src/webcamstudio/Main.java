@@ -18,6 +18,7 @@ import java.awt.Cursor;
 import java.awt.Image;
 import java.awt.SplashScreen;
 import java.awt.Toolkit;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -762,6 +763,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         mnuStudiosSave = new javax.swing.JMenuItem();
         jSeparator2 = new javax.swing.JSeparator();
         mnuAnimationCreator = new javax.swing.JMenuItem();
+        mnuExit = new javax.swing.JMenuItem();
         mnuSources = new javax.swing.JMenu();
         mnuSourceschkShowBrowser = new javax.swing.JCheckBoxMenuItem();
         mnuReloadSourceTree = new javax.swing.JMenuItem();
@@ -918,6 +920,16 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
             }
         });
         mnuStudios.add(mnuAnimationCreator);
+
+        mnuExit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-stop.png"))); // NOI18N
+        mnuExit.setText(bundle.getString("QUIT")); // NOI18N
+        mnuExit.setName("mnuExit"); // NOI18N
+        mnuExit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnuExitActionPerformed(evt);
+            }
+        });
+        mnuStudios.add(mnuExit);
 
         menuBar.add(mnuStudios);
 
@@ -1890,6 +1902,12 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         addSourceToDesktop(new VideoSourceFullDesktop());
     }//GEN-LAST:event_mnuSourcesFullDesktopActionPerformed
 
+private void mnuExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuExitActionPerformed
+    WindowEvent closingEvent = new WindowEvent(this, WindowEvent.WINDOW_CLOSING);
+    Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(closingEvent);
+
+}//GEN-LAST:event_mnuExitActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1950,6 +1968,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
     private javax.swing.JMenuItem mnuAboutItem;
     private javax.swing.JMenuItem mnuAddDir;
     private javax.swing.JMenuItem mnuAnimationCreator;
+    private javax.swing.JMenuItem mnuExit;
     private javax.swing.JMenuItem mnuGoToWebsite;
     private javax.swing.JMenu mnuOutput;
     private javax.swing.JRadioButtonMenuItem mnuOutput10FPS;
