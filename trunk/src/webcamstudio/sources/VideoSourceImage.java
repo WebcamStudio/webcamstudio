@@ -79,9 +79,7 @@ public class VideoSourceImage extends VideoSource {
             public void run() {
                 stopMe = false;
                 long lastTimeStamp = System.currentTimeMillis();
-                long timestamp = 0;
                 while (!stopMe) {
-                    timestamp=System.currentTimeMillis();
                     try {
                         if (updateTimeLaspe > 0 && System.currentTimeMillis() - lastTimeStamp > updateTimeLaspe) {
                             loadImage();
@@ -104,8 +102,10 @@ public class VideoSourceImage extends VideoSource {
                             applyShape(tempimage);
                             g.dispose();
                             image = tempimage;
+                            Thread.sleep(delays.get(animatedIndex));
+                        } else{
+                           Thread.sleep(1000); 
                         }
-                        Thread.sleep(1000);
                     } catch (Exception e) {
                         error("Image Error:  " + e.getMessage());
                     }
