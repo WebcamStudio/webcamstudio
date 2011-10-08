@@ -305,11 +305,6 @@ public class LayoutManager2 extends javax.swing.JPanel implements SourceListener
                 cboLayoutsActionPerformed(evt);
             }
         });
-        cboLayouts.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                cboLayoutsKeyPressed(evt);
-            }
-        });
         jPanel2.add(cboLayouts);
 
         jPanel3.setName("jPanel3"); // NOI18N
@@ -455,10 +450,6 @@ public class LayoutManager2 extends javax.swing.JPanel implements SourceListener
         }
     }//GEN-LAST:event_btnLayoutDetailsActionPerformed
 
-    private void cboLayoutsKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cboLayoutsKeyPressed
-        applyLayoutHotKey("" + evt.getKeyChar());
-
-    }//GEN-LAST:event_cboLayoutsKeyPressed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnActivateLayout;
     private javax.swing.JButton btnAddLayout;
