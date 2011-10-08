@@ -124,7 +124,7 @@ public class Layout {
 
     public void enterLayout() {
         isEntering = true;
-        if (previousActiveLayout != null) {
+        if (previousActiveLayout != null && previousActiveLayout != this) {
             previousActiveLayout.exitLayout();
 
         }
@@ -163,6 +163,7 @@ public class Layout {
     private void exitLayout() {
         isExiting = true;
         isActive = false;
+        timeStamp=0;
         if (items.size() > 0) {
             java.util.concurrent.ExecutorService tp = java.util.concurrent.Executors.newFixedThreadPool(items.size());
             for (LayoutItem item : items.values()) {
