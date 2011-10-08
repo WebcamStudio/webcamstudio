@@ -18,9 +18,6 @@ public class ShrinkIn extends Transition {
     @Override
     public void doTransition(final LayoutItem item) {
         VideoSource source = item.getSource();
-        if (!source.isPlaying()) {
-            source.startSource();
-        }
         source.setVolume(item.getVolume());
         source.setOutputWidth(0);
         source.setOutputHeight(0);
@@ -29,6 +26,9 @@ public class ShrinkIn extends Transition {
         int deltaH = item.getHeight() / 20/2;
         source.setShowAtX(item.getX()+(item.getWidth()/2) + deltaW);
         source.setShowAtY(item.getY()+(item.getHeight()/2) + deltaH);
+        if (!source.isPlaying()) {
+            source.startSource();
+        }
 
         for (int i = 0; i <= 20; i++) {
             try {

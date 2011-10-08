@@ -18,15 +18,15 @@ public class Start extends Transition {
     @Override
     public void doTransition(final LayoutItem item) {
         VideoSource source = item.getSource();
-        if (!source.isPlaying()) {
-            source.startSource();
-        }
         source.setVolume(item.getVolume());
         source.setOpacity(100);
         source.setShowAtX(item.getX());
         source.setShowAtY(item.getY());
         source.setOutputWidth(item.getWidth());
         source.setOutputHeight(item.getHeight());
+        if (!source.isPlaying()) {
+            source.startSource();
+        }
         source.fireSourceUpdated();
     }
 }

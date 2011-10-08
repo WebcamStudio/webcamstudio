@@ -18,9 +18,6 @@ public class FadeIn extends Transition {
     @Override
     public void doTransition(final LayoutItem item) {
         VideoSource source = item.getSource();
-        if (!source.isPlaying()) {
-            source.startSource();
-        }
         source.setOpacity(0);
         source.setShowAtX(item.getX());
         source.setShowAtY(item.getY());
@@ -28,6 +25,9 @@ public class FadeIn extends Transition {
         source.setOutputHeight(item.getHeight());
         source.setVolume(item.getVolume());
         source.fireSourceUpdated();
+        if (!source.isPlaying()) {
+            source.startSource();
+        }
         for (int i = 0; i <= 20; i++) {
             try {
                 source.setOpacity(i * 5);

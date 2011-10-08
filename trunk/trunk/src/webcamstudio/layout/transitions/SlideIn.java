@@ -23,18 +23,13 @@ public class SlideIn extends Transition {
         source.setOutputWidth(item.getWidth());
         source.setOutputHeight(item.getHeight());
         source.setVolume(item.getVolume());
-        if (!source.isPlaying()) {
-            source.startSource();
-        }
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(SlideIn.class.getName()).log(Level.SEVERE, null, ex);
-        }
         int xDelta = ((item.getX()+item.getWidth())) / 20;
         int yDelta = ((item.getY()+item.getHeight())) / 20;
         source.setShowAtX(0-xDelta*20);
         source.setShowAtY(0-yDelta*20);
+        if (!source.isPlaying()) {
+            source.startSource();
+        }
         for (int i = 0; i < 20; i++) {
             try {
                 source.setShowAtX(source.getShowAtX() + xDelta);
