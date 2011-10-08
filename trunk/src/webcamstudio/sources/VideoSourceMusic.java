@@ -220,7 +220,7 @@ public class VideoSourceMusic extends VideoSource {
 
     public void seek(long secs) {
         startingPosition = secs;
-        if (secs >= 0  && pipe != null && pipe.isPlaying()) {
+        if (secs > 0  && pipe != null && pipe.isPlaying()) {
             pipe.pause();
             pipe.seek(ClockTime.fromSeconds(secs));
             pipe.play();
