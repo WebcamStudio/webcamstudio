@@ -195,7 +195,7 @@ public class Layout {
         Graphics2D buffer = preview.createGraphics();
         buffer.setBackground(Color.GRAY);
         buffer.clearRect(0, 0, w, h);
-        buffer.setStroke(new java.awt.BasicStroke(10f));
+        buffer.setStroke(new java.awt.BasicStroke(10f*w/320));
         buffer.setColor(Color.BLACK);
         buffer.drawRect(0, 0, w, h);
         for (LayoutItem item : items.values()) {
@@ -220,7 +220,7 @@ public class Layout {
         }
         buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC_OVER, 0.5F));
         buffer.setColor(Color.DARK_GRAY);
-        buffer.fillRect(0, 0, w, 17);
+        buffer.fillRect(0, 0, w, (34*h/240));
         if (isEntering) {
             buffer.setColor(Color.YELLOW);
         } else if (isExiting) {
@@ -229,8 +229,8 @@ public class Layout {
             buffer.setColor(Color.GREEN);
         }
         buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC_OVER, 1F));
-        buffer.setFont(new Font("Monospaced", Font.BOLD, 15));
-        buffer.drawString(name, 5,15);
+        buffer.setFont(new Font("Monospaced", Font.BOLD, (30*w/320)));
+        buffer.drawString(name, (5*w/320),(30 *h/240) );
         buffer.dispose();
 
         return preview;
