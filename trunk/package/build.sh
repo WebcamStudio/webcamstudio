@@ -38,6 +38,8 @@ cp webcamstudioConsole.desktop package/usr/share/applications
 #cp webcamstudio-vloopback-installer.desktop package/usr/share/applications
 cp ../trunk/dist/WebcamStudio.jar package/usr/lib/webcamstudio
 cp ../trunk/dist/lib/* package/usr/lib/webcamstudio/lib
+rm package/usr/lib/webcamstudio/lib/jna.jar
+ln -s /usr/share/java/jna.jar package/usr/lib/webcamstudio/lib/jna.jar
 cp ../trunk/dist/README.TXT package/usr/lib/webcamstudio
 cp ../trunk/vloopback/* package/usr/share/webcamstudio/webcamstudio-src
 cp animations/*.anm package/usr/share/webcamstudio/animations
