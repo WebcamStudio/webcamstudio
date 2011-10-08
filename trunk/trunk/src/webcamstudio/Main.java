@@ -986,7 +986,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         jSeparator1.setName("jSeparator1"); // NOI18N
         mnuSources.add(jSeparator1);
 
-        mnuSourcesDesktop.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_D, java.awt.event.InputEvent.ALT_MASK));
+        mnuSourcesDesktop.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_D, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
         mnuSourcesDesktop.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/user-desktop.png"))); // NOI18N
         mnuSourcesDesktop.setText(bundle.getString("DESKTOP")); // NOI18N
         mnuSourcesDesktop.setName("mnuSourcesDesktop"); // NOI18N
@@ -997,7 +997,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         });
         mnuSources.add(mnuSourcesDesktop);
 
-        mnuSourcesFullDesktop.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_D, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.SHIFT_MASK));
+        mnuSourcesFullDesktop.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_D, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
         mnuSourcesFullDesktop.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/user-desktop.png"))); // NOI18N
         mnuSourcesFullDesktop.setText(bundle.getString("FULLDESKTOP")); // NOI18N
         mnuSourcesFullDesktop.setName("mnuSourcesFullDesktop"); // NOI18N
@@ -1008,7 +1008,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         });
         mnuSources.add(mnuSourcesFullDesktop);
 
-        mnuSourcesDV.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R, java.awt.event.InputEvent.ALT_MASK));
+        mnuSourcesDV.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
         mnuSourcesDV.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/camera-video.png"))); // NOI18N
         mnuSourcesDV.setText(bundle.getString("DV")); // NOI18N
         mnuSourcesDV.setName("mnuSourcesDV"); // NOI18N
@@ -1019,7 +1019,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         });
         mnuSources.add(mnuSourcesDV);
 
-        mnuSourcesImage.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_I, java.awt.event.InputEvent.ALT_MASK));
+        mnuSourcesImage.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_I, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
         mnuSourcesImage.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/image-x-generic.png"))); // NOI18N
         mnuSourcesImage.setText(bundle.getString("IMAGE")); // NOI18N
         mnuSourcesImage.setName("mnuSourcesImage"); // NOI18N
@@ -1030,7 +1030,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         });
         mnuSources.add(mnuSourcesImage);
 
-        mnuSourcesFreeText.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_T, java.awt.event.InputEvent.ALT_MASK));
+        mnuSourcesFreeText.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_T, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
         mnuSourcesFreeText.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/accessories-text-editor.png"))); // NOI18N
         mnuSourcesFreeText.setText(bundle.getString("FREE_TEXT")); // NOI18N
         mnuSourcesFreeText.setName("mnuSourcesFreeText"); // NOI18N
@@ -1041,7 +1041,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         });
         mnuSources.add(mnuSourcesFreeText);
 
-        mnuSourceIRC.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_K, java.awt.event.InputEvent.ALT_MASK));
+        mnuSourceIRC.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_K, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
         mnuSourceIRC.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/internet-group-chat.png"))); // NOI18N
         mnuSourceIRC.setText(bundle.getString("IRC")); // NOI18N
         mnuSourceIRC.setName("mnuSourceIRC"); // NOI18N
@@ -1052,7 +1052,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         });
         mnuSources.add(mnuSourceIRC);
 
-        mnuSourcesAnimation.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_M, java.awt.event.InputEvent.ALT_MASK));
+        mnuSourcesAnimation.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_M, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
         mnuSourcesAnimation.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/user-info.png"))); // NOI18N
         mnuSourcesAnimation.setText(bundle.getString("ANIMATION")); // NOI18N
         mnuSourcesAnimation.setName("mnuSourcesAnimation"); // NOI18N
@@ -1063,7 +1063,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         });
         mnuSources.add(mnuSourcesAnimation);
 
-        mnuSourcesMovie.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_V, java.awt.event.InputEvent.ALT_MASK));
+        mnuSourcesMovie.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_V, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
         mnuSourcesMovie.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/video-display.png"))); // NOI18N
         mnuSourcesMovie.setText(bundle.getString("MOVIE")); // NOI18N
         mnuSourcesMovie.setName("mnuSourcesMovie"); // NOI18N
@@ -1074,7 +1074,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         });
         mnuSources.add(mnuSourcesMovie);
 
-        mnuSourcesStream.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_V, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.SHIFT_MASK));
+        mnuSourcesStream.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_V, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
         mnuSourcesStream.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/video-display.png"))); // NOI18N
         mnuSourcesStream.setText(bundle.getString("MOVIESTREAM")); // NOI18N
         mnuSourcesStream.setName("mnuSourcesStream"); // NOI18N
@@ -1096,7 +1096,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         });
         mnuSources.add(mnuSourcesMovieViewer);
 
-        mnuSourcesWidget.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_W, java.awt.event.InputEvent.ALT_MASK));
+        mnuSourcesWidget.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_W, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
         mnuSourcesWidget.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/image-x-generic.png"))); // NOI18N
         mnuSourcesWidget.setText(bundle.getString("WIDGET")); // NOI18N
         mnuSourcesWidget.setName("mnuSourcesWidget"); // NOI18N
@@ -1107,7 +1107,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         });
         mnuSources.add(mnuSourcesWidget);
 
-        mnuSourcesConsole.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.ALT_MASK));
+        mnuSourcesConsole.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
         mnuSourcesConsole.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/accessories-text-editor.png"))); // NOI18N
         mnuSourcesConsole.setText(bundle.getString("CONSOLE")); // NOI18N
         mnuSourcesConsole.setName("mnuSourcesConsole"); // NOI18N
@@ -1905,7 +1905,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
 private void mnuExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuExitActionPerformed
     WindowEvent closingEvent = new WindowEvent(this, WindowEvent.WINDOW_CLOSING);
     Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(closingEvent);
-
 }//GEN-LAST:event_mnuExitActionPerformed
 
     /**
