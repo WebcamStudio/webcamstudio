@@ -189,7 +189,7 @@ public class Layout {
         return items.values();
     }
 
-    public Image getPreview(int w, int h) {
+    public Image getPreview(int w, int h,boolean isSelected) {
         if (preview == null || preview.getWidth() != w || preview.getHeight() != h) {
             preview = new java.awt.image.BufferedImage(w, h, java.awt.image.BufferedImage.TYPE_INT_ARGB);
         }
@@ -219,8 +219,12 @@ public class Layout {
             }
             buffer.drawRect(item.getX(), item.getY(), item.getWidth(), item.getHeight());
         }
-        buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC_OVER, 0.5F));
-        buffer.setColor(Color.DARK_GRAY);
+        if (isSelected){
+            buffer.setColor(Color.DARK_GRAY);
+        } else {
+            buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC_OVER, 0.5F));
+            buffer.setColor(Color.DARK_GRAY);
+        }
         buffer.fillRect(0, 0, w, (34*h/240));
         if (isEntering) {
             buffer.setColor(Color.YELLOW);
@@ -228,9 +232,11 @@ public class Layout {
             buffer.setColor(Color.RED);
         } else if (isActive) {
             buffer.setColor(Color.GREEN);
+        } else {
+            buffer.setColor(Color.RED);
         }
         buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC_OVER, 1F));
-        buffer.setFont(new Font("Monospaced", Font.BOLD, (30*w/320)));
+        buffer.setFont(new Font(Font.MONOSPACED, Font.BOLD, (30*w/320)));
         buffer.drawString(name, (5*w/320),(30 *h/240) );
         buffer.dispose();
 
