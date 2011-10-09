@@ -36,13 +36,14 @@ public class VideoSourceV4L2 extends VideoSourceV4L {
         captureHeight = 240;
         doRescale = true;
         source = "v4l2src";
-        controls.add(new ControlRescale(this));
-        controls.add(new webcamstudio.controls.ControlShapes(this));
-        controls.add(new webcamstudio.controls.ControlEffects(this));
-        controls.add(new webcamstudio.controls.ControlGSTEffects(this));
-        controls.add(new webcamstudio.controls.ControlActivity(this));
-        controls.add(new webcamstudio.controls.ControlFaceDetection(this));
-
+        if (controls.isEmpty()) {
+            controls.add(new ControlRescale(this));
+            controls.add(new webcamstudio.controls.ControlShapes(this));
+            controls.add(new webcamstudio.controls.ControlEffects(this));
+            controls.add(new webcamstudio.controls.ControlGSTEffects(this));
+            controls.add(new webcamstudio.controls.ControlActivity(this));
+            controls.add(new webcamstudio.controls.ControlFaceDetection(this));
+        }
     }
 
     public VideoSourceV4L2(String deviceName, File fallbackDevice) {
