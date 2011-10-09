@@ -1442,6 +1442,12 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
 
     private void mnuSourcesDesktopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuSourcesDesktopActionPerformed
         VideoSourceDesktop s = new VideoSourceDesktop();
+        int index = 1;
+        while (VideoSource.loadedSources.containsKey("Desktop " + index)){
+            index++;
+        }
+        s.setName("Desktop " + index);
+        s.setLocation(s.getName());
         addSourceToDesktop(s);
     }//GEN-LAST:event_mnuSourcesDesktopActionPerformed
 
@@ -1503,7 +1509,12 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
     private void mnuSourcesFreeTextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuSourcesFreeTextActionPerformed
 
         VideoSourceText s = new VideoSourceText("");
-
+        int index = 1;
+        while (VideoSource.loadedSources.containsKey("Text " + index)){
+            index++;
+        }
+        s.setName("Text " + index);
+        s.setLocation(s.getName());
         addSourceToDesktop(s);
     }//GEN-LAST:event_mnuSourcesFreeTextActionPerformed
 
@@ -1893,13 +1904,27 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
     }//GEN-LAST:event_mnuOutputchkActivateStreamActionPerformed
 
     private void mnuSourcesQRCodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuSourcesQRCodeActionPerformed
-        VideoSourceQRCode source = new VideoSourceQRCode("WebcamStudio");
-        addSourceToDesktop(source);
+        VideoSourceQRCode s = new VideoSourceQRCode("WebcamStudio");
+                int index = 1;
+        while (VideoSource.loadedSources.containsKey("QRCode " + index)){
+            index++;
+        }
+        s.setName("QRCode " + index);
+        s.setLocation(s.getName());
+        addSourceToDesktop(s);
 
     }//GEN-LAST:event_mnuSourcesQRCodeActionPerformed
 
     private void mnuSourcesFullDesktopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuSourcesFullDesktopActionPerformed
-        addSourceToDesktop(new VideoSourceFullDesktop());
+        VideoSource s = new VideoSourceFullDesktop();
+                int index = 1;
+        while (VideoSource.loadedSources.containsKey("FullDesktop " + index)){
+            index++;
+        }
+        s.setName("FullDesktop " + index);
+        s.setLocation(s.getName());
+        addSourceToDesktop(s);
+
     }//GEN-LAST:event_mnuSourcesFullDesktopActionPerformed
 
 private void mnuExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuExitActionPerformed
