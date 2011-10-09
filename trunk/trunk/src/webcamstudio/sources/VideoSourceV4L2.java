@@ -35,7 +35,7 @@ public class VideoSourceV4L2 extends VideoSourceV4L {
         captureWidth = 320;
         captureHeight = 240;
         doRescale = true;
-        source="v4l2src";
+        source = "v4l2src";
         controls.add(new ControlRescale(this));
         controls.add(new webcamstudio.controls.ControlShapes(this));
         controls.add(new webcamstudio.controls.ControlEffects(this));
@@ -44,25 +44,28 @@ public class VideoSourceV4L2 extends VideoSourceV4L {
         controls.add(new webcamstudio.controls.ControlFaceDetection(this));
 
     }
-    public VideoSourceV4L2(String deviceName,File fallbackDevice) {
+
+    public VideoSourceV4L2(String deviceName, File fallbackDevice) {
         outputWidth = 320;
         outputHeight = 240;
-        source="v4l2src";
-        location = getDeviceForName(deviceName,fallbackDevice).getAbsolutePath();
+        source = "v4l2src";
+        location = getDeviceForName(deviceName, fallbackDevice).getAbsolutePath();
         name = deviceName;
         if (deviceName.length() == 0) {
             name = deviceName;
         }
         frameRate = 15;
-        captureWidth=320;
-        captureHeight=240;
-        doRescale=true;
-        controls.add(new ControlRescale(this));
-        controls.add(new webcamstudio.controls.ControlShapes(this));
-        controls.add(new webcamstudio.controls.ControlEffects(this));
-        controls.add(new webcamstudio.controls.ControlGSTEffects(this));
-        controls.add(new webcamstudio.controls.ControlActivity(this));
-        controls.add(new webcamstudio.controls.ControlFaceDetection(this));
+        captureWidth = 320;
+        captureHeight = 240;
+        doRescale = true;
+        if (controls.isEmpty()) {
+            controls.add(new ControlRescale(this));
+            controls.add(new webcamstudio.controls.ControlShapes(this));
+            controls.add(new webcamstudio.controls.ControlEffects(this));
+            controls.add(new webcamstudio.controls.ControlGSTEffects(this));
+            controls.add(new webcamstudio.controls.ControlActivity(this));
+            controls.add(new webcamstudio.controls.ControlFaceDetection(this));
+        }
 
     }
 
@@ -70,5 +73,4 @@ public class VideoSourceV4L2 extends VideoSourceV4L {
     public String toString() {
         return name + " (" + captureAtX + "," + captureAtY + ":" + captureWidth + "x" + captureHeight + ")";
     }
-    
 }
