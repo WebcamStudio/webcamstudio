@@ -130,24 +130,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
 
         panLayouts.add(layoutManager, BorderLayout.CENTER);
 
-        javax.swing.DefaultListCellRenderer layoutrenderer = new javax.swing.DefaultListCellRenderer() {
-
-            @Override
-            public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean hasFocus) {
-                Component comp = super.getListCellRendererComponent(list, value, index, isSelected, hasFocus);
-                JLabel label = (JLabel) comp;
-                if (value instanceof Layout) {
-                    Layout layout = (Layout) value;
-                    label.setText(layout.toString());
-                    label.setToolTipText(layout.toString());
-
-                    label.setIcon(new ImageIcon(layout.getPreview(outputWidth,outputHeight).getScaledInstance(32, 32, BufferedImage.SCALE_FAST)));
-
-                }
-                return comp;
-            }
-        };
-
         webcamera = new WebCamera();
         new Thread(new Runnable() {
 
