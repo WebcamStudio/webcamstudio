@@ -48,12 +48,11 @@ import webcamstudio.sources.VideoSourceText;
 import webcamstudio.sources.VideoSourceV4L;
 import webcamstudio.sources.VideoSourceWidget;
 
-
 /**
  *
  * @author patrick
  */
-public class LayoutManager2 extends javax.swing.JPanel implements SourceListener,AWTEventListener {
+public class LayoutManager2 extends javax.swing.JPanel implements SourceListener, AWTEventListener {
 
     private java.util.Vector<Layout> layouts = new java.util.Vector<Layout>();
     private Layout currentLayout = null;
@@ -100,7 +99,7 @@ public class LayoutManager2 extends javax.swing.JPanel implements SourceListener
                     Layout layout = (Layout) value;
                     label.setText("");
                     label.setIconTextGap(0);
-                    label.setIcon(new ImageIcon(layout.getPreview(mixer.getWidth(), mixer.getHeight(),selected).getScaledInstance(180, 180*3/4, Image.SCALE_FAST)));
+                    label.setIcon(new ImageIcon(layout.getPreview(mixer.getWidth(), mixer.getHeight(), selected).getScaledInstance(180, 180 * 3 / 4, Image.SCALE_FAST)));
                     if (layout.isActive()) {
                         label.setForeground(Color.green);
                     } else {
@@ -186,7 +185,7 @@ public class LayoutManager2 extends javax.swing.JPanel implements SourceListener
         for (Layout l : layouts) {
             if (l.getHotKey().equals(key)) {
                 currentLayout = l;
-                lstLayouts.setSelectedValue(l,true);
+                lstLayouts.setSelectedValue(l, true);
                 new Thread(new Runnable() {
 
                     @Override
@@ -371,6 +370,11 @@ public class LayoutManager2 extends javax.swing.JPanel implements SourceListener
                 lstLayoutsMouseClicked(evt);
             }
         });
+        lstLayouts.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                lstLayoutsKeyPressed(evt);
+            }
+        });
         lstLayoutsScroll.setViewportView(lstLayouts);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -461,13 +465,26 @@ public class LayoutManager2 extends javax.swing.JPanel implements SourceListener
     }//GEN-LAST:event_btnLayoutDetailsActionPerformed
 
 private void lstLayoutsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstLayoutsMouseClicked
+    if (lstLayouts.getSelectedValue() != null) {
+        currentLayout = (Layout) lstLayouts.getSelectedValue();
+        tabControls.removeAll();
+        updateLayoutItemList();
+    }
+    if (evt.getClickCount() == 2) {
+        currentLayout.enterLayout();
+    }
+}//GEN-LAST:event_lstLayoutsMouseClicked
+
+private void lstLayoutsKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_lstLayoutsKeyPressed
+    if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
         if (lstLayouts.getSelectedValue() != null) {
             currentLayout = (Layout) lstLayouts.getSelectedValue();
             tabControls.removeAll();
             updateLayoutItemList();
+            currentLayout.enterLayout();
         }
-}//GEN-LAST:event_lstLayoutsMouseClicked
-
+    }
+}//GEN-LAST:event_lstLayoutsKeyPressed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnActivateLayout;
     private javax.swing.JButton btnAddLayout;
@@ -547,7 +564,7 @@ private void lstLayoutsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:
         layouts.add(l);
         currentLayout = l;
         modelComboLayouts.addElement(l);
-        lstLayouts.setSelectedValue(l,true);
+        lstLayouts.setSelectedValue(l, true);
     }
 
     private void updatePopItemMenu() {
@@ -589,17 +606,18 @@ private void lstLayoutsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:
 
     @Override
     public void eventDispatched(AWTEvent event) {
-       KeyEvent key = (KeyEvent)event;
-       if (key.isAltDown()){
-           String c = key.getKeyChar()+"";
-           for (Layout l : layouts){
-               if (l.getHotKey().equals(c)){
-                   l.enterLayout();
-               }
-           }
-       }
+        KeyEvent key = (KeyEvent) event;
+        if (key.isAltDown()) {
+            String c = key.getKeyChar() + "";
+            for (Layout l : layouts) {
+                if (l.getHotKey().equals(c)) {
+                    l.enterLayout();
+                }
+            }
+        }
     }
 }
+
 class imageUpdater extends TimerTask {
 
     private LayoutManager2 layoutManager = null;
