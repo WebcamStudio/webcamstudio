@@ -79,7 +79,7 @@ public class VideoSourceFullDesktop extends VideoSource implements RGBDataSink.L
 
     @Override
     public void startSource() {
-        String pipeline = "ximagesrc use-damage=false remote=false ! video/x-raw-rgb,framerate=" + frameRate + "/1 ! ffmpegcolorspace ! videoscale method=2 ! video/x-raw-rgb,width=" + outputWidth + ",height=" + outputHeight + ",bpp=32,depth=24, red_mask=65280, green_mask=16711680, blue_mask=-16777216,endianness=4321 ! ffmpegcolorspace name=tosink";
+        String pipeline = "ximagesrc use-damage=true remote=false ! video/x-raw-rgb,framerate=" + frameRate + "/1 ! alpha ! ffmpegcolorspace ! videoscale method=2 ! video/x-raw-rgb,width=" + outputWidth + ",height=" + outputHeight + ",bpp=32,depth=24, red_mask=65280, green_mask=16711680, blue_mask=-16777216,alpha_mask=255,endianness=4321 ! ffmpegcolorspace name=tosink";
         pipe = Pipeline.launch(pipeline);
         sink = new RGBDataSink("desktopsink", this);
         Element end = pipe.getElementByName("tosink");
