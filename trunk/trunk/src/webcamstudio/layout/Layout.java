@@ -215,9 +215,9 @@ public class Layout {
                 buffer.setColor(Color.ORANGE);
             }
             if (item.getSource().getImage() != null) {
-                buffer.drawImage(item.getSource().getImage(), item.getX(), item.getY(), item.getWidth() + item.getX(), item.getHeight() + item.getY(), 0, 0, item.getSource().getImage().getWidth(), item.getSource().getImage().getHeight(), null);
+                buffer.drawImage(item.getSource().getImage(), item.getSource().getShowAtX(), item.getSource().getShowAtY(), item.getSource().getOutputWidth() + item.getSource().getShowAtX(), item.getSource().getOutputHeight() + item.getSource().getShowAtY(), 0, 0, item.getSource().getImage().getWidth(), item.getSource().getImage().getHeight(), null);
             }
-            buffer.drawRect(item.getX(), item.getY(), item.getWidth(), item.getHeight());
+            buffer.drawRect(item.getSource().getShowAtX(), item.getSource().getShowAtY(), item.getSource().getOutputWidth(), item.getSource().getOutputHeight());
         }
         if (isSelected){
             buffer.setColor(Color.DARK_GRAY);

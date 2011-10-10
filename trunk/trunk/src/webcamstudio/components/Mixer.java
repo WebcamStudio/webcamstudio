@@ -24,8 +24,8 @@ import webcamstudio.sources.VideoSource;
 public class Mixer {
 
     protected int frameRate = 15;
-    protected int outputWidth = 320;
-    protected int outputHeight = 240;
+    protected static int outputWidth = 320;
+    protected static int outputHeight = 240;
     protected java.awt.image.BufferedImage image = null;
     protected BufferedImage outputImage = null;
     protected boolean isDrawing = false;
@@ -53,6 +53,12 @@ public class Mixer {
         LOW
     };
 
+    public static int getWidth(){
+        return outputWidth;
+    }
+    public static int getHeight(){
+        return outputHeight;
+    }
     public void setBackground(Image img) {
         background = img;
     }
@@ -191,14 +197,6 @@ public class Mixer {
 
     public VideoOutput getDevice() {
         return outputDevice;
-    }
-
-    public int getWidth() {
-        return outputWidth;
-    }
-
-    public int getHeight() {
-        return outputHeight;
     }
 
     public void activateStream(boolean activate, int port) {
