@@ -28,6 +28,7 @@ public abstract class Transition {
         retValue.put(SlideUp.class.getSimpleName(), new SlideUp());
         retValue.put(SlideLeft.class.getSimpleName(), new SlideLeft());
         retValue.put(SlideRight.class.getSimpleName(), new SlideRight());
+        retValue.put(Dropped.class.getSimpleName(), new Dropped());
         return retValue;
     }
     public static java.util.TreeMap<String, Transition> getAudioTransitions() {
@@ -51,6 +52,7 @@ public abstract class Transition {
         retValue.put(SlideUp.class.getSimpleName(), new SlideUp());
         retValue.put(SlideLeft.class.getSimpleName(), new SlideLeft());
         retValue.put(SlideRight.class.getSimpleName(), new SlideRight());
+        retValue.put(Dropped.class.getSimpleName(), new Dropped());
         return retValue;
     }
     public static java.util.TreeMap<String, Transition> getTransitionOuts() {
