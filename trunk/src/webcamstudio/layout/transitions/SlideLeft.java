@@ -13,32 +13,30 @@ import webcamstudio.sources.VideoSource;
  *
  * @author pballeux
  */
-public class SlideIn extends Transition {
+public class SlideLeft extends Transition {
 
     @Override
     public void doTransition(final LayoutItem item) {
         VideoSource source = item.getSource();
-        int x = 0;
-        int y = 0;
+        int frames = 30;
+        int x = 0-item.getWidth();
+        int y = item.getY();
         source.setOutputWidth(item.getWidth());
         source.setOutputHeight(item.getHeight());
         source.setVolume(item.getVolume());
         source.setOpacity(100);
-        int xDelta = ((item.getX()+item.getWidth())) / 20;
-        int yDelta = ((item.getY()+item.getHeight())) / 20;
-        source.setShowAtX(0-xDelta*20);
-        source.setShowAtY(0-yDelta*20);
+        int xDelta = (item.getWidth()+item.getX()) / frames;
+        source.setShowAtX(x);
+        source.setShowAtY(y);
         if (!source.isPlaying()) {
             source.startSource();
         }
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < frames; i++) {
             try {
-                source.setShowAtX(source.getShowAtX() + xDelta);
-                source.setShowAtY(source.getShowAtY() + yDelta);
-
-                Thread.sleep(100);
+                source.setShowAtX(x + (i*xDelta));
+                Thread.sleep(2000/frames);
             } catch (InterruptedException ex) {
-                Logger.getLogger(LayoutItem.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(getName()).log(Level.SEVERE, null, ex);
             }
         }
         source.setShowAtX(item.getX());

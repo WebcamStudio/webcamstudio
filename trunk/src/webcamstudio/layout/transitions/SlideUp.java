@@ -6,6 +6,7 @@ package webcamstudio.layout.transitions;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import webcamstudio.components.Mixer;
 import webcamstudio.layout.LayoutItem;
 import webcamstudio.sources.VideoSource;
 
@@ -13,32 +14,30 @@ import webcamstudio.sources.VideoSource;
  *
  * @author pballeux
  */
-public class SlideIn extends Transition {
+public class SlideUp extends Transition {
 
     @Override
     public void doTransition(final LayoutItem item) {
         VideoSource source = item.getSource();
-        int x = 0;
-        int y = 0;
+        int frames = 30;
+        int x = item.getX();
+        int y = Mixer.getHeight();
         source.setOutputWidth(item.getWidth());
         source.setOutputHeight(item.getHeight());
         source.setVolume(item.getVolume());
         source.setOpacity(100);
-        int xDelta = ((item.getX()+item.getWidth())) / 20;
-        int yDelta = ((item.getY()+item.getHeight())) / 20;
-        source.setShowAtX(0-xDelta*20);
-        source.setShowAtY(0-yDelta*20);
+        int yDelta = ((Mixer.getHeight()-item.getY()) / frames);
+        source.setShowAtX(x);
+        source.setShowAtY(y);
         if (!source.isPlaying()) {
             source.startSource();
         }
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < frames; i++) {
             try {
-                source.setShowAtX(source.getShowAtX() + xDelta);
-                source.setShowAtY(source.getShowAtY() + yDelta);
-
-                Thread.sleep(100);
+                source.setShowAtY(y - (i*yDelta));
+                Thread.sleep(2000/frames);
             } catch (InterruptedException ex) {
-                Logger.getLogger(LayoutItem.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(getName()).log(Level.SEVERE, null, ex);
             }
         }
         source.setShowAtX(item.getX());

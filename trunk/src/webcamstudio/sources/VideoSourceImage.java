@@ -102,7 +102,12 @@ public class VideoSourceImage extends VideoSource {
                             applyShape(tempimage);
                             g.dispose();
                             image = tempimage;
-                            Thread.sleep(delays.get(animatedIndex));
+                            int delay = delays.get(animatedIndex);
+                            if (delay == 0){
+                                delay = 1000;
+                            }
+                            Thread.sleep(delay);
+                            
                         } else{
                            Thread.sleep(1000); 
                         }
@@ -111,6 +116,7 @@ public class VideoSourceImage extends VideoSource {
                     }
 
                 }
+                isPlaying=false;
             }
         });
         t.setPriority(Thread.MIN_PRIORITY);
@@ -205,8 +211,14 @@ public class VideoSourceImage extends VideoSource {
 
     @Override
     public void stopSource() {
-        isPlaying = false;
         stopMe = true;
+        while (isPlaying){
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(VideoSourceImage.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
         image = null;
     }
 
