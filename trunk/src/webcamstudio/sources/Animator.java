@@ -158,6 +158,9 @@ public class Animator  {
     }
 
     public int getTimeLapse() {
+        if (timelapse==0){
+            timelapse=1000;
+        }
         return timelapse;
     }
 

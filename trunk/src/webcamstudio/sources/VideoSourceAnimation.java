@@ -73,36 +73,34 @@ public class VideoSourceAnimation extends VideoSource {
     @Override
     public void startSource() {
         stopMe = false;
-
-        if (animator == null) {
-            animator = new Animator(this);
-            try {
-                if (location.toLowerCase().startsWith("http://") || location.toLowerCase().startsWith("https://")) {
-                    java.io.File file = getJarFromWeb(location);
-                    animator.loadAnimation(file);
-                } else {
-                    animator.loadAnimation(new java.io.File(location));
+        if (!isPlaying) {
+            isPlaying = true;
+            if (animator == null) {
+                animator = new Animator(this);
+                try {
+                    if (location.toLowerCase().startsWith("http://") || location.toLowerCase().startsWith("https://")) {
+                        java.io.File file = getJarFromWeb(location);
+                        animator.loadAnimation(file);
+                    } else {
+                        animator.loadAnimation(new java.io.File(location));
+                    }
+                    captureWidth = animator.getWidth();
+                    captureHeight = animator.getHeight();
+                    if (outputHeight == 0 && outputWidth == 0) {
+                        outputWidth = 320;
+                        outputHeight = 240;
+                    }
+                } catch (Exception e) {
+                    error("Animation Error  : " + e.getMessage());
                 }
-                captureWidth = animator.getWidth();
-                captureHeight = animator.getHeight();
-                frameRate = 1000 / animator.getTimeLapse();
-                if (outputHeight == 0 && outputWidth == 0) {
-                    outputWidth = 320;
-                    outputHeight = 240;
-                }
-            } catch (Exception e) {
-                error("Animation Error  : " + e.getMessage());
             }
+            if (timer != null) {
+                timer.cancel();
+                timer = null;
+            }
+            timer = new Timer(name, true);
+            timer.scheduleAtFixedRate(new imageAnimation(this), 0, animator.getTimeLapse());
         }
-        if (timer != null) {
-            timer.cancel();
-            timer = null;
-        }
-        timer = new Timer(name, true);
-        if (frameRate==0){
-            frameRate=1000;
-        }
-        timer.scheduleAtFixedRate(new imageAnimation(this), 0, 1000 / frameRate);
 
     }
 
@@ -118,7 +116,7 @@ public class VideoSourceAnimation extends VideoSource {
 
     @Override
     public boolean isPlaying() {
-        return (animator != null);
+        return (isPlaying);
     }
 
     @Override
@@ -144,6 +142,7 @@ public class VideoSourceAnimation extends VideoSource {
         animator = null;
         stopMe = true;
         image = null;
+        isPlaying = false;
     }
 
     @Override
