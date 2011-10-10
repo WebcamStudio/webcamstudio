@@ -99,6 +99,9 @@ public class VideoSourceAnimation extends VideoSource {
             timer = null;
         }
         timer = new Timer(name, true);
+        if (frameRate==0){
+            frameRate=1000;
+        }
         timer.scheduleAtFixedRate(new imageAnimation(this), 0, 1000 / frameRate);
 
     }

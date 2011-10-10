@@ -124,12 +124,11 @@ public class Layout {
 
     public void enterLayout() {
         isEntering = true;
-        if (previousActiveLayout != null && previousActiveLayout != this) {
-            previousActiveLayout.exitLayout();
+        if (activeLayout!=null) {
+            activeLayout.exitLayout();
 
-        }
+        } 
         activeLayout = this;
-        previousActiveLayout = activeLayout;
         if (inputSourceApp.length() > 0) {
             PulseAudioManager p = new PulseAudioManager();
             p.setSoundInput(inputSourceApp, inputSource);
@@ -160,10 +159,11 @@ public class Layout {
 
     }
 
-    private void exitLayout() {
+    protected void exitLayout() {
         isExiting = true;
         isActive = false;
         timeStamp=0;
+        previousActiveLayout = this;
         if (items.size() > 0) {
             java.util.concurrent.ExecutorService tp = java.util.concurrent.Executors.newFixedThreadPool(items.size());
             for (LayoutItem item : items.values()) {

@@ -46,11 +46,17 @@ public class LayoutEventsManager extends TimerTask {
                         currentLayout.timeStamp = (currentLayout.getDuration() * 1000) + System.currentTimeMillis();
                     } else if (currentLayout.timeStamp <= System.currentTimeMillis()) {
                         currentLayout.timeStamp = 0;
-                        for (Layout l : layouts) {
-                            if (l.toString().equals(currentLayout.getNextLayout())) {
-                                currentLayout = l;
-                                currentLayout.enterLayout();
-                                break;
+                        if (currentLayout.getNextLayout().equals("Previous Layout...")) {
+                            System.out.println("Returning to previous layout");
+                            currentLayout = Layout.previousActiveLayout;
+                            currentLayout.enterLayout();
+                        } else {
+                            for (Layout l : layouts) {
+                                if (l.toString().equals(currentLayout.getNextLayout())) {
+                                    currentLayout = l;
+                                    currentLayout.enterLayout();
+                                    break;
+                                }
                             }
                         }
                     }
