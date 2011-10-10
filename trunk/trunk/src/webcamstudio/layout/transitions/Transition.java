@@ -29,8 +29,11 @@ public abstract class Transition {
         retValue.put(SlideLeft.class.getSimpleName(), new SlideLeft());
         retValue.put(SlideRight.class.getSimpleName(), new SlideRight());
         retValue.put(Dropped.class.getSimpleName(), new Dropped());
+        retValue.put(FocusIn.class.getSimpleName(), new FocusIn());
+        retValue.put(FocusOut.class.getSimpleName(), new FocusOut());
         return retValue;
     }
+
     public static java.util.TreeMap<String, Transition> getAudioTransitions() {
         java.util.TreeMap<String, Transition> retValue = new java.util.TreeMap<String, Transition>();
         retValue.put(None.class.getSimpleName(), new None());
@@ -53,14 +56,17 @@ public abstract class Transition {
         retValue.put(SlideLeft.class.getSimpleName(), new SlideLeft());
         retValue.put(SlideRight.class.getSimpleName(), new SlideRight());
         retValue.put(Dropped.class.getSimpleName(), new Dropped());
+        retValue.put(FocusIn.class.getSimpleName(), new FocusIn());
         return retValue;
     }
+
     public static java.util.TreeMap<String, Transition> getTransitionOuts() {
         java.util.TreeMap<String, Transition> retValue = new java.util.TreeMap<String, Transition>();
         retValue.put(None.class.getSimpleName(), new None());
         retValue.put(FadeOut.class.getSimpleName(), new FadeOut());
         retValue.put(Stop.class.getSimpleName(), new Stop());
         retValue.put(ShrinkOut.class.getSimpleName(), new ShrinkOut());
+        retValue.put(FocusOut.class.getSimpleName(), new FocusOut());
         return retValue;
     }
 
