@@ -29,8 +29,10 @@ public class LayoutEventsControl extends javax.swing.JPanel {
         layout = l;
         txtHotkey.setText(layout.getHotKey());
         txtName.setText(layout.toString());
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("webcamstudio/Languages"); // NOI18N
+
         DefaultComboBoxModel model = new DefaultComboBoxModel();
-        model.addElement("Previous Layout...");
+        model.addElement(bundle.getString("PREVIOUS_LAYOUT"));
         for (Layout temp : layouts) {
             model.addElement(temp.toString());
         }
@@ -157,7 +159,11 @@ public class LayoutEventsControl extends javax.swing.JPanel {
             if (cboLayouts.getSelectedItem() == null) {
                 cboLayouts.setSelectedIndex(0);
             }
-            layout.setDuration((Integer) spinDuration.getValue(), cboLayouts.getSelectedItem().toString());
+            if (cboLayouts.getSelectedIndex()==0){
+                layout.setDuration((Integer) spinDuration.getValue(), "PREVIOUS_LAYOUT");
+            } else {
+                layout.setDuration((Integer) spinDuration.getValue(), cboLayouts.getSelectedItem().toString());
+            }
         }
     }//GEN-LAST:event_cboLayoutsActionPerformed
 
@@ -166,7 +172,11 @@ public class LayoutEventsControl extends javax.swing.JPanel {
             if (cboLayouts.getSelectedItem() == null) {
                 cboLayouts.setSelectedIndex(0);
             }
-            layout.setDuration((Integer) spinDuration.getValue(), cboLayouts.getSelectedItem().toString());
+            if (cboLayouts.getSelectedIndex()==0){
+                layout.setDuration((Integer) spinDuration.getValue(), "PREVIOUS_LAYOUT");
+            } else {
+                layout.setDuration((Integer) spinDuration.getValue(), cboLayouts.getSelectedItem().toString());
+            }
         }
     }//GEN-LAST:event_spinDurationStateChanged
 
