@@ -112,10 +112,12 @@ public class ControlIdentity extends javax.swing.JPanel implements Controls {
 
     private void txtNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNameActionPerformed
         btnApply.setEnabled(true);
-        if (!alreadyExists(txtName.getText())) {
-            btnApply.doClick();
-        } else {
-            btnApply.setEnabled(false);
+        if (txtName.getText() != null) {
+            if (!alreadyExists(txtName.getText())) {
+                btnApply.doClick();
+            } else {
+                btnApply.setEnabled(false);
+            }
         }
     }//GEN-LAST:event_txtNameActionPerformed
 
@@ -134,7 +136,9 @@ public class ControlIdentity extends javax.swing.JPanel implements Controls {
     }//GEN-LAST:event_txtNameFocusLost
 
     private boolean alreadyExists(String name) {
-        boolean retValue = VideoSource.loadedSources.containsKey(name);
+        boolean retValue = false;
+        if (name!=null){
+        retValue = VideoSource.loadedSources.containsKey(name);
         lblWarning.setVisible(false);
         if (retValue) {
             if (!source.equals(VideoSource.loadedSources.get(name))) {
@@ -144,6 +148,7 @@ public class ControlIdentity extends javax.swing.JPanel implements Controls {
             }
         }
         lblWarning.setVisible(retValue);
+        }
         return retValue;
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
