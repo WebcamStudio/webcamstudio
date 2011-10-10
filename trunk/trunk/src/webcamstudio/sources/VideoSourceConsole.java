@@ -11,6 +11,9 @@ package webcamstudio.sources;
 public class VideoSourceConsole extends VideoSourceText {
 
     public VideoSourceConsole(String command) {
+        if (command==null){
+            command="cal";
+        }
         location = command;
         customText = command;
         name = command;
