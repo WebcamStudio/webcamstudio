@@ -30,6 +30,7 @@ public class LayoutEventsControl extends javax.swing.JPanel {
         txtHotkey.setText(layout.getHotKey());
         txtName.setText(layout.toString());
         DefaultComboBoxModel model = new DefaultComboBoxModel();
+        model.addElement("Previous Layout...");
         for (Layout temp : layouts) {
             model.addElement(temp.toString());
         }
