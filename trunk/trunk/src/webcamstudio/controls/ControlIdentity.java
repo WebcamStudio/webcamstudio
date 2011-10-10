@@ -10,13 +10,6 @@
  */
 package webcamstudio.controls;
 
-import java.awt.Component;
-import java.awt.Image;
-import java.awt.image.BufferedImage;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import webcamstudio.components.Shapes;
 import webcamstudio.components.SourceListener;
 import webcamstudio.sources.VideoSource;
 
