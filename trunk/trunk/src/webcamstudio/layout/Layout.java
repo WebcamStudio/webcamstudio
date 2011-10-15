@@ -39,7 +39,7 @@ public class Layout {
     private String nextLayoutName = "";
     public long timeStamp = 0;
     protected BufferedImage preview = null;
-
+    private LayoutItem itemSelected = null;
     public void setDuration(int sec, String nextLayout) {
         duration = sec;
         nextLayoutName = nextLayout;
@@ -49,6 +49,12 @@ public class Layout {
         return duration;
     }
 
+    public void setItemSelected(LayoutItem layoutItem){
+        itemSelected = layoutItem;
+    }
+    public LayoutItem getItemSelected(){
+        return itemSelected;
+    }
     public String getNextLayout() {
         return nextLayoutName;
     }
@@ -200,23 +206,28 @@ public class Layout {
         buffer.setColor(Color.BLACK);
         buffer.drawRect(0, 0, w, h);
         for (LayoutItem item : items.values()) {
-            buffer.setColor(Color.WHITE);
+            Color color = Color.WHITE;
+            
             if (item.getSource() instanceof VideoSourceV4L || item.getSource() instanceof VideoSourceDV) {
-                buffer.setColor(Color.RED);
+                color = Color.RED.darker();
             } else if (item.getSource() instanceof VideoSourceText) {
-                buffer.setColor(Color.DARK_GRAY);
+                color = Color.DARK_GRAY.darker();
             } else if (item.getSource() instanceof VideoSourceWidget || item.getSource() instanceof VideoSourceAnimation) {
-                buffer.setColor(Color.GREEN);
+                color = Color.GREEN.darker();
             } else if (item.getSource() instanceof VideoSourceMovie) {
-                buffer.setColor(Color.BLUE);
+                color = Color.BLUE.darker();
             } else if (item.getSource() instanceof VideoSourceImage) {
-                buffer.setColor(Color.YELLOW);
+                color = Color.YELLOW.darker();
             } else if (item.getSource() instanceof VideoSourceDesktop) {
-                buffer.setColor(Color.ORANGE);
+                color = Color.ORANGE.darker();
             }
             if (item.getSource().getImage() != null && (isActive||isEntering||isExiting)) {
                 buffer.drawImage(item.getSource().getImage(), item.getSource().getShowAtX(), item.getSource().getShowAtY(), item.getSource().getOutputWidth() + item.getSource().getShowAtX(), item.getSource().getOutputHeight() + item.getSource().getShowAtY(), 0, 0, item.getSource().getImage().getWidth(), item.getSource().getImage().getHeight(), null);
             }
+            if (item.equals(itemSelected)){
+                color=color.brighter();
+            }
+            buffer.setColor(color);
             buffer.drawRect(item.getX(), item.getY(), item.getWidth(), item.getHeight());
         }
         if (isSelected){

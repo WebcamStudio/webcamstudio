@@ -56,7 +56,6 @@ public class LayoutManager2 extends javax.swing.JPanel implements SourceListener
 
     private java.util.Vector<Layout> layouts = new java.util.Vector<Layout>();
     private Layout currentLayout = null;
-    private LayoutItem currentLayoutItem = null;
     private ImageIcon iconMovie = null;
     private ImageIcon iconImage = null;
     private ImageIcon iconDevice = null;
@@ -206,12 +205,10 @@ public class LayoutManager2 extends javax.swing.JPanel implements SourceListener
             for (int i = ls.length - 1; i >= 0; i--) {
                 modelLayoutItems.addElement(ls[i]);
             }
-        } else {
-            currentLayoutItem = null;
-        }
+        } 
         lstLayoutItems.revalidate();
-        if (currentLayoutItem != null) {
-            lstLayoutItems.setSelectedValue(currentLayoutItem, true);
+        if (currentLayout != null) {
+            lstLayoutItems.setSelectedValue(currentLayout.getItemSelected(), true);
         }
     }
 
@@ -291,6 +288,11 @@ public class LayoutManager2 extends javax.swing.JPanel implements SourceListener
         lstLayoutItems.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 lstLayoutItemsMouseClicked(evt);
+            }
+        });
+        lstLayoutItems.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                lstLayoutItemsValueChanged(evt);
             }
         });
         scrollItems.setViewportView(lstLayoutItems);
@@ -416,7 +418,8 @@ public class LayoutManager2 extends javax.swing.JPanel implements SourceListener
                 popItems.setLocation(evt.getLocationOnScreen());
                 popItems.setVisible(true);
             } else {
-                currentLayoutItem = (LayoutItem) lstLayoutItems.getSelectedValue();
+                LayoutItem currentLayoutItem = (LayoutItem) lstLayoutItems.getSelectedValue();
+                currentLayout.setItemSelected(currentLayoutItem);
                 tabControls.removeAll();
                 ControlPosition ctrl = new ControlPosition(currentLayoutItem);
                 ctrl.setListener(this);
@@ -437,9 +440,8 @@ public class LayoutManager2 extends javax.swing.JPanel implements SourceListener
         layouts.remove(currentLayout);
         modelComboLayouts.removeElement(currentLayout);
         lstLayouts.revalidate();
+        currentLayout.setItemSelected(null);
         currentLayout = null;
-        currentLayoutItem = null;
-
     }//GEN-LAST:event_btnRemoveLayoutActionPerformed
 
     private void btnActivateLayoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActivateLayoutActionPerformed
@@ -467,6 +469,7 @@ public class LayoutManager2 extends javax.swing.JPanel implements SourceListener
 private void lstLayoutsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstLayoutsMouseClicked
     if (lstLayouts.getSelectedValue() != null) {
         currentLayout = (Layout) lstLayouts.getSelectedValue();
+        currentLayout.setItemSelected(null);
         tabControls.removeAll();
         updateLayoutItemList();
     }
@@ -479,12 +482,16 @@ private void lstLayoutsKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:even
     if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
         if (lstLayouts.getSelectedValue() != null) {
             currentLayout = (Layout) lstLayouts.getSelectedValue();
+            currentLayout.setItemSelected(null);
             tabControls.removeAll();
             updateLayoutItemList();
             currentLayout.enterLayout();
         }
     }
 }//GEN-LAST:event_lstLayoutsKeyPressed
+
+    private void lstLayoutItemsValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_lstLayoutItemsValueChanged
+    }//GEN-LAST:event_lstLayoutItemsValueChanged
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnActivateLayout;
     private javax.swing.JButton btnAddLayout;
@@ -511,51 +518,46 @@ private void lstLayoutsKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:even
 
     @Override
     public void sourceSetX(VideoSource source, int x) {
-        currentLayoutItem.setX(x);
     }
 
     @Override
     public void sourceSetY(VideoSource source, int y) {
-        currentLayoutItem.setY(y);
     }
 
     @Override
     public void sourceSetWidth(VideoSource source, int w) {
-        currentLayoutItem.setWidth(w);
     }
 
     @Override
     public void sourceSetHeight(VideoSource source, int h) {
-        currentLayoutItem.setHeight(h);
     }
 
     @Override
     public void sourceMoveUp(VideoSource source) {
-        currentLayout.moveUpItem(currentLayoutItem);
+        currentLayout.moveUpItem(currentLayout.getItemSelected());
         updateLayoutItemList();
     }
 
     @Override
     public void sourceMoveDown(VideoSource source) {
-        currentLayout.moveDownItem(currentLayoutItem);
+        currentLayout.moveDownItem(currentLayout.getItemSelected());
         updateLayoutItemList();
     }
 
     @Override
     public void sourceSetTransIn(VideoSource source, Transition in) {
-        currentLayoutItem.setTransitionIn(in);
+        
     }
 
     @Override
     public void sourceSetTransOut(VideoSource source, Transition out) {
-        currentLayoutItem.setTransitionOut(out);
+        
     }
 
     @Override
     public void sourceRemoved(VideoSource source) {
         source.stopSource();
         currentLayout.removeSource(source);
-        currentLayoutItem = null;
         tabControls.removeAll();
         updateLayoutItemList();
     }
