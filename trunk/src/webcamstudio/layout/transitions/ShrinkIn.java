@@ -16,28 +16,30 @@ import webcamstudio.sources.VideoSource;
 public class ShrinkIn extends Transition {
 
     @Override
-    public void doTransition(final LayoutItem item) {
+    public void doTransition(final LayoutItem item,int sec) {
         VideoSource source = item.getSource();
+        frames = sec * FPS;
         source.setVolume(item.getVolume());
         source.setOutputWidth(0);
         source.setOutputHeight(0);
         source.setOpacity(100);        
-        int deltaW = item.getWidth() / 20/2;
-        int deltaH = item.getHeight() / 20/2;
-        source.setShowAtX(item.getX()+(item.getWidth()/2) + deltaW);
-        source.setShowAtY(item.getY()+(item.getHeight()/2) + deltaH);
+        float deltaW = (float)item.getWidth()/(float)frames/2F;
+        float deltaH = (float)item.getHeight()/(float)frames/2F;
+        int x = item.getX()+(item.getWidth()/2);
+        int y = item.getY()+(item.getHeight()/2);
+        source.setShowAtX(x);
+        source.setShowAtY(y);
         if (!source.isPlaying()) {
             source.startSource();
         }
 
-        for (int i = 0; i <= 20; i++) {
+        for (float i = 0; i < frames; i++) {
             try {
-                source.setShowAtX(source.getShowAtX()-deltaW);
-                source.setShowAtY(source.getShowAtY()-deltaH);
-                source.setOutputWidth(deltaW*i*2);
-                source.setOutputHeight(deltaH*i*2);
-                source.fireSourceUpdated();
-                Thread.sleep(100);
+                source.setShowAtX(x-(int)(i*deltaW));
+                source.setShowAtY(y-(int)(i*deltaH));
+                source.setOutputWidth((int)(deltaW*i*2F));
+                source.setOutputHeight((int)(deltaH*i*2F));
+                Thread.sleep(WAITTIME);
             } catch (InterruptedException ex) {
                 Logger.getLogger(LayoutItem.class.getName()).log(Level.SEVERE, null, ex);
             }

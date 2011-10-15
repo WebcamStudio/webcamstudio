@@ -16,8 +16,12 @@ import webcamstudio.sources.VideoSource;
 public class Start extends Transition {
 
     @Override
-    public void doTransition(final LayoutItem item) {
+    public void doTransition(final LayoutItem item,int sec) {
         VideoSource source = item.getSource();
+        try{
+            Thread.sleep(1000*sec);
+        } catch (Exception e){
+        }
         source.setVolume(item.getVolume());
         source.setOpacity(100);
         source.setShowAtX(item.getX());
@@ -27,6 +31,5 @@ public class Start extends Transition {
         if (!source.isPlaying()) {
             source.startSource();
         }
-        source.fireSourceUpdated();
     }
 }

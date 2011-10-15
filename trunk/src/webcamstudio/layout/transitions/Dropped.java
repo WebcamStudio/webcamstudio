@@ -16,25 +16,25 @@ import webcamstudio.sources.VideoSource;
 public class Dropped extends Transition {
 
     @Override
-    public void doTransition(final LayoutItem item) {
+    public void doTransition(final LayoutItem item,int sec) {
         VideoSource source = item.getSource();
-        int frames = 20;
+        frames = sec*FPS;
         int x = item.getX();
         int y = 0 - (item.getHeight());
         source.setOutputWidth(item.getWidth());
         source.setOutputHeight(item.getHeight());
         source.setVolume(item.getVolume());
         source.setOpacity(100);
-        int yDelta = (item.getHeight()+item.getY()) / frames;
+        float yDelta = (item.getHeight()+item.getY()) / ((float)frames/2F);
         source.setShowAtX(x);
         source.setShowAtY(y);
         if (!source.isPlaying()) {
             source.startSource();
         }
-        for (int i = 0; i < frames; i++) {
+        for (int i = 0; i < (frames / 2); i++) {
             try {
-                source.setShowAtY(y + (i*yDelta));
-                Thread.sleep(1000/frames);
+                source.setShowAtY(y + (int)(i*yDelta));
+                Thread.sleep(WAITTIME);
             } catch (InterruptedException ex) {
                 Logger.getLogger(getName()).log(Level.SEVERE, null, ex);
             }
@@ -47,13 +47,13 @@ public class Dropped extends Transition {
         y = item.getY();
         int w = item.getWidth();
         int h = item.getHeight();
-        for (int i = 0;i<20;i++){
+        for (int i = 0;i<(frames/4);i++){
             try {
                 source.setOutputWidth(w + i);
                 source.setShowAtX(x - (i/2));
                 source.setOutputHeight(h - i);
                 source.setShowAtY(y + i);
-                Thread.sleep(30);
+                Thread.sleep(WAITTIME);
             } catch (InterruptedException ex) {
                 Logger.getLogger(getName()).log(Level.SEVERE, null, ex);
             }
@@ -62,13 +62,13 @@ public class Dropped extends Transition {
         h = source.getOutputHeight();
         x = source.getShowAtX();
         y = source.getShowAtY();
-        for (int i = 0;i<20;i++){
+        for (int i = 0;i<frames/4;i++){
             try {
                 source.setOutputWidth(w - i);
                 source.setShowAtX(x + (i/2));
                 source.setOutputHeight(h+ i);
                 source.setShowAtY(y - i);
-                Thread.sleep(30);
+                Thread.sleep(WAITTIME);
             } catch (InterruptedException ex) {
                 Logger.getLogger(getName()).log(Level.SEVERE, null, ex);
             }
@@ -77,7 +77,6 @@ public class Dropped extends Transition {
         source.setShowAtY(item.getY());
         source.setOutputWidth(item.getWidth());
         source.setOutputHeight(item.getHeight());
-        source.fireSourceUpdated();
 
     }
 }

@@ -36,6 +36,10 @@ public class ControlPosition extends javax.swing.JPanel implements Controls {
         javax.swing.DefaultComboBoxModel transModelIn = new javax.swing.DefaultComboBoxModel(Transition.getTransitionIns().values().toArray());
         javax.swing.DefaultComboBoxModel transModelOut = new javax.swing.DefaultComboBoxModel(Transition.getTransitionOuts().values().toArray());
         spinVolume.setModel(new SpinnerNumberModel(10,0,100,1));
+        spinDurationIn.setModel(new SpinnerNumberModel(1,1,10,1));
+        spinDurationOut.setModel(new SpinnerNumberModel(1,1,10,1));
+        spinDurationIn.setValue(src.getTransitionDurationIn());
+        spinDurationOut.setValue(src.getTransitionDurationOut());
         spinVolume.setEnabled(layout.getSource().hasSound());
         spinVolume.setValue(new Integer(layout.getVolume()));
         if (layout.getSource() instanceof VideoSourceMusic) {
@@ -122,6 +126,10 @@ public class ControlPosition extends javax.swing.JPanel implements Controls {
         spinVolume = new javax.swing.JSpinner();
         chkKeepRatio = new javax.swing.JCheckBox();
         spinSeek = new javax.swing.JSpinner();
+        jLabel8 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        spinDurationIn = new javax.swing.JSpinner();
+        spinDurationOut = new javax.swing.JSpinner();
 
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("webcamstudio/Languages"); // NOI18N
         lblSeek.setText(bundle.getString("SEEK")); // NOI18N
@@ -268,6 +276,26 @@ public class ControlPosition extends javax.swing.JPanel implements Controls {
             }
         });
 
+        jLabel8.setText(bundle.getString("DURATION")); // NOI18N
+        jLabel8.setName("jLabel8"); // NOI18N
+
+        jLabel9.setText(bundle.getString("DURATION")); // NOI18N
+        jLabel9.setName("jLabel9"); // NOI18N
+
+        spinDurationIn.setName("spinDurationIn"); // NOI18N
+        spinDurationIn.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                spinDurationInStateChanged(evt);
+            }
+        });
+
+        spinDurationOut.setName("spinDurationOut"); // NOI18N
+        spinDurationOut.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                spinDurationOutStateChanged(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -295,26 +323,38 @@ public class ControlPosition extends javax.swing.JPanel implements Controls {
                                         .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING))
-                                    .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 99, Short.MAX_VALUE)
-                                    .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, 99, Short.MAX_VALUE)
-                                    .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, 99, Short.MAX_VALUE))
+                                    .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 117, Short.MAX_VALUE)
+                                    .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, 117, Short.MAX_VALUE)
+                                    .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, 117, Short.MAX_VALUE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
                             .addComponent(lblSeek)
                             .addComponent(jLabel7))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(spinVolume, javax.swing.GroupLayout.DEFAULT_SIZE, 307, Short.MAX_VALUE)
-                            .addComponent(spinWidth, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 307, Short.MAX_VALUE)
-                            .addComponent(spinX, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 307, Short.MAX_VALUE)
-                            .addComponent(cboTransOut, javax.swing.GroupLayout.Alignment.LEADING, 0, 307, Short.MAX_VALUE)
-                            .addComponent(cboTransIn, javax.swing.GroupLayout.Alignment.LEADING, 0, 307, Short.MAX_VALUE)
+                            .addComponent(spinVolume, javax.swing.GroupLayout.DEFAULT_SIZE, 349, Short.MAX_VALUE)
+                            .addComponent(spinWidth, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 349, Short.MAX_VALUE)
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                 .addComponent(chkKeepRatio)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(spinHeight, javax.swing.GroupLayout.DEFAULT_SIZE, 204, Short.MAX_VALUE))
-                            .addComponent(spinSeek, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 307, Short.MAX_VALUE)
+                                .addComponent(spinHeight, javax.swing.GroupLayout.DEFAULT_SIZE, 246, Short.MAX_VALUE))
+                            .addComponent(spinSeek, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 349, Short.MAX_VALUE)
                             .addGroup(layout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(spinY, javax.swing.GroupLayout.DEFAULT_SIZE, 307, Short.MAX_VALUE)))))
+                                .addComponent(spinY, javax.swing.GroupLayout.DEFAULT_SIZE, 349, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(cboTransOut, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(cboTransIn, javax.swing.GroupLayout.Alignment.LEADING, 0, 143, Short.MAX_VALUE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel9)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(spinDurationOut, javax.swing.GroupLayout.DEFAULT_SIZE, 84, Short.MAX_VALUE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel8)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(spinDurationIn, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(spinX, javax.swing.GroupLayout.DEFAULT_SIZE, 349, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -322,11 +362,15 @@ public class ControlPosition extends javax.swing.JPanel implements Controls {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 13, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cboTransIn, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cboTransIn, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel8)
+                    .addComponent(spinDurationIn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(16, 16, 16)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(cboTransOut, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cboTransOut, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel9)
+                    .addComponent(spinDurationOut, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
@@ -484,6 +528,14 @@ public class ControlPosition extends javax.swing.JPanel implements Controls {
         layout.setPosition(((Integer)spinSeek.getValue()));
     }//GEN-LAST:event_spinSeekStateChanged
 
+    private void spinDurationInStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinDurationInStateChanged
+        layout.setTransitionDurationIn((Integer)spinDurationIn.getValue());
+    }//GEN-LAST:event_spinDurationInStateChanged
+
+    private void spinDurationOutStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinDurationOutStateChanged
+        layout.setTransitionDurationOut((Integer)spinDurationOut.getValue());
+    }//GEN-LAST:event_spinDurationOutStateChanged
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnMoveDown;
     private javax.swing.JButton btnMoveUp;
@@ -501,7 +553,11 @@ public class ControlPosition extends javax.swing.JPanel implements Controls {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JLabel lblSeek;
+    private javax.swing.JSpinner spinDurationIn;
+    private javax.swing.JSpinner spinDurationOut;
     private javax.swing.JSpinner spinHeight;
     private javax.swing.JSpinner spinSeek;
     private javax.swing.JSpinner spinVolume;

@@ -14,15 +14,18 @@ import webcamstudio.sources.VideoSource;
 public class Stop extends Transition {
 
     @Override
-    public void doTransition(LayoutItem item) {
+    public void doTransition(LayoutItem item, int sec) {
         VideoSource source = item.getSource();
+        try{
+            Thread.sleep(1000*sec);
+        } catch (Exception e){
+        }
         source.setVolume(item.getVolume());
         source.setOpacity(0);
         source.setShowAtX(item.getX());
         source.setShowAtY(item.getY());
         source.setOutputWidth(item.getWidth());
         source.setOutputHeight(item.getHeight());
-        source.fireSourceUpdated();
         if (source.isPlaying()) {
             source.stopSource();
         }

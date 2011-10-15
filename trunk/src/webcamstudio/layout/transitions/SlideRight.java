@@ -17,25 +17,25 @@ import webcamstudio.sources.VideoSource;
 public class SlideRight extends Transition {
 
     @Override
-    public void doTransition(final LayoutItem item) {
+    public void doTransition(final LayoutItem item,int sec) {
         VideoSource source = item.getSource();
-        int frames = 30;
+        frames = sec * FPS;;
         int x = Mixer.getWidth();
         int y = item.getY();
         source.setOutputWidth(item.getWidth());
         source.setOutputHeight(item.getHeight());
         source.setVolume(item.getVolume());
         source.setOpacity(100);
-        int xDelta = ((Mixer.getWidth()-item.getX()) / frames);
+        float xDelta = ((Mixer.getWidth()-item.getX()) / frames);
         source.setShowAtX(x);
         source.setShowAtY(y);
         if (!source.isPlaying()) {
             source.startSource();
         }
-        for (int i = 0; i < frames; i++) {
+        for (float i = 0; i < frames; i++) {
             try {
-                source.setShowAtX(x - (i*xDelta));
-                Thread.sleep(2000/frames);
+                source.setShowAtX(x - (int)(i*xDelta));
+                Thread.sleep(WAITTIME);
             } catch (InterruptedException ex) {
                 Logger.getLogger(getName()).log(Level.SEVERE, null, ex);
             }
@@ -44,7 +44,6 @@ public class SlideRight extends Transition {
         source.setShowAtY(item.getY());
         source.setOutputWidth(item.getWidth());
         source.setOutputHeight(item.getHeight());
-        source.fireSourceUpdated();
 
     }
 }

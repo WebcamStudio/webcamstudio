@@ -14,14 +14,13 @@ import webcamstudio.sources.VideoSource;
 public class None extends Transition {
 
     @Override
-    public void doTransition(final LayoutItem item) {
+    public void doTransition(final LayoutItem item,int sec) {
         VideoSource source = item.getSource();
         source.setShowAtX(item.getX());
         source.setShowAtY(item.getY());
         source.setOutputWidth(item.getWidth());
         source.setOutputHeight(item.getHeight());
         source.setVolume(item.getVolume());
-        source.fireSourceUpdated();
 
     }
 }
