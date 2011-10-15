@@ -32,8 +32,23 @@ public class LayoutItem implements Runnable{
     private boolean isInActiveLayout = false;
     private boolean keepRatio = false;
     private long position = 0;
+    private int transitionDurationIn = 1;
+    private int transitionDurationOut = 1;
+    private int transDurationToDo = transitionDurationIn;
 
 
+    public void setTransitionDurationIn(int sec){
+        transitionDurationIn=sec;
+    }
+    public void setTransitionDurationOut(int sec){
+        transitionDurationOut=sec;
+    }
+    public int getTransitionDurationIn(){
+        return transitionDurationIn;
+    }
+    public int getTransitionDurationOut(){
+        return transitionDurationOut;
+    }
     public void setPosition(long seek){
         position=seek;
     }
@@ -109,8 +124,9 @@ public class LayoutItem implements Runnable{
         return retValue;
     }
 
-    public void setTransitionToDo(Transition t){
+    public void setTransitionToDo(Transition t,int sec){
         transToDo=t;
+        transDurationToDo=sec;
     }
 
     public VideoSource getSource() {
@@ -148,6 +164,8 @@ public class LayoutItem implements Runnable{
         }
         prefs.putInt("layer", layer);
         prefs.putInt("volume", volume);
+        prefs.putInt("transitiondurationin",transitionDurationOut);
+        prefs.putInt("transitiondurationout",transitionDurationOut);
         source.applyStudioConfig(prefs.node("source"),layer);
     }
 
@@ -170,6 +188,8 @@ public class LayoutItem implements Runnable{
         }
         keepRatio = prefs.getBoolean("keepratio",keepRatio);
         volume = prefs.getInt("volume", volume);
+        transitionDurationIn=prefs.getInt("transitiondurationin",1);
+        transitionDurationOut=prefs.getInt("transitiondurationout",1);
     }
     @Override
     public String toString(){
@@ -196,7 +216,7 @@ public class LayoutItem implements Runnable{
             source.setVolume(volume);
             source.fireSourceUpdated();
         } else {
-            transToDo.doTransition(this);
+            transToDo.doTransition(this,transDurationToDo);
         }
     }
 }

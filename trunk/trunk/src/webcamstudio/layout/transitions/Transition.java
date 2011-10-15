@@ -11,8 +11,10 @@ import webcamstudio.layout.LayoutItem;
  * @author pballeux
  */
 public abstract class Transition {
-
-    public abstract void doTransition(LayoutItem item);
+    protected static int FPS = 30;
+    protected static int WAITTIME=1000/FPS;
+    protected int frames = FPS;
+    public abstract void doTransition(LayoutItem item,int sec);
 
     public static java.util.TreeMap<String, Transition> getTransitions() {
         java.util.TreeMap<String, Transition> retValue = new java.util.TreeMap<String, Transition>();

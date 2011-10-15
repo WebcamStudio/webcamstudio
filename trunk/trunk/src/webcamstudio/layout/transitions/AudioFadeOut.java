@@ -16,18 +16,14 @@ import webcamstudio.sources.VideoSource;
 public class AudioFadeOut extends Transition {
 
     @Override
-    public void doTransition(final LayoutItem item) {
+    public void doTransition(final LayoutItem item,int sec) {
         VideoSource source = item.getSource();
+        frames=sec*FPS;
         source.setOpacity(0);
-        float deltaAudio = ((float)source.getVolume()) / 20f;
-        float volume = source.getVolume();
-        source.fireSourceUpdated();
-        for (int i = 0; i <= 20; i++) {
+        for (int i = 0; i < frames; i++) {
             try {
-                volume-=deltaAudio;
-                source.setVolume((int)volume);
-                source.fireSourceUpdated();
-                Thread.sleep(200);
+                source.setVolume(100-(i * 100 / frames));
+                Thread.sleep(WAITTIME);
             } catch (InterruptedException ex) {
                 Logger.getLogger(LayoutItem.class.getName()).log(Level.SEVERE, null, ex);
             }

@@ -17,24 +17,24 @@ import webcamstudio.sources.effects.Block;
 public class FocusOut extends Transition {
 
     @Override
-    public void doTransition(final LayoutItem item) {
+    public void doTransition(final LayoutItem item,int sec) {
         VideoSource source = item.getSource();
+        frames=sec*FPS;
         source.setOpacity(0);
         source.setShowAtX(item.getX());
         source.setShowAtY(item.getY());
         source.setOutputWidth(item.getWidth());
         source.setOutputHeight(item.getHeight());
         Block effect = new Block();
-        effect.setSize(20);
+        effect.setSize(1);
         source.addEffect(effect);
         source.setVolume(item.getVolume());
         source.fireSourceUpdated();
-        for (int i = 20; i >= 0; i--) {
+        for (int i = 0; i < frames; i++) {
             try {
-                source.setOpacity(i * 5);
-                effect.setSize(20-i+1);
-                source.fireSourceUpdated();
-                Thread.sleep(100);
+                source.setOpacity(100-(i * 100 / frames));
+                effect.setSize((i * 20 / frames));
+                Thread.sleep(WAITTIME);
             } catch (InterruptedException ex) {
                 Logger.getLogger(LayoutItem.class.getName()).log(Level.SEVERE, null, ex);
             }

@@ -139,7 +139,7 @@ public class Layout {
         if (items.size() > 0) {
             java.util.concurrent.ExecutorService tp = java.util.concurrent.Executors.newFixedThreadPool(items.size());
             for (LayoutItem item : items.values()) {
-                item.setTransitionToDo(item.getTransitionIn());
+                item.setTransitionToDo(item.getTransitionIn(),item.getTransitionDurationIn());
                 item.setActive(true);
                 tp.submit(item);
             }
@@ -167,7 +167,7 @@ public class Layout {
         if (items.size() > 0) {
             java.util.concurrent.ExecutorService tp = java.util.concurrent.Executors.newFixedThreadPool(items.size());
             for (LayoutItem item : items.values()) {
-                item.setTransitionToDo(item.getTransitionOut());
+                item.setTransitionToDo(item.getTransitionOut(),item.getTransitionDurationOut());
                 item.setActive(false);
                 tp.submit(item);
             }
@@ -214,10 +214,10 @@ public class Layout {
             } else if (item.getSource() instanceof VideoSourceDesktop) {
                 buffer.setColor(Color.ORANGE);
             }
-            if (item.getSource().getImage() != null) {
+            if (item.getSource().getImage() != null && (isActive||isEntering||isExiting)) {
                 buffer.drawImage(item.getSource().getImage(), item.getSource().getShowAtX(), item.getSource().getShowAtY(), item.getSource().getOutputWidth() + item.getSource().getShowAtX(), item.getSource().getOutputHeight() + item.getSource().getShowAtY(), 0, 0, item.getSource().getImage().getWidth(), item.getSource().getImage().getHeight(), null);
             }
-            buffer.drawRect(item.getSource().getShowAtX(), item.getSource().getShowAtY(), item.getSource().getOutputWidth(), item.getSource().getOutputHeight());
+            buffer.drawRect(item.getX(), item.getY(), item.getWidth(), item.getHeight());
         }
         if (isSelected){
             buffer.setColor(Color.DARK_GRAY);
@@ -282,7 +282,7 @@ public class Layout {
         if (isActive) {
             item.getSource().setLayer(item.getLayer());
             item.setActive(true);
-            item.setTransitionToDo(item.getTransitionIn());
+            item.setTransitionToDo(item.getTransitionIn(),item.getTransitionDurationIn());
             item.run();
 
         }

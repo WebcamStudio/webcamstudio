@@ -16,20 +16,19 @@ import webcamstudio.sources.VideoSource;
 public class FadeOut extends Transition {
 
     @Override
-    public void doTransition(final LayoutItem item) {
+    public void doTransition(final LayoutItem item,int sec) {
         VideoSource source = item.getSource();
+        frames = sec * FPS;
         source.setOpacity(0);
         source.setShowAtX(item.getX());
         source.setShowAtY(item.getY());
         source.setOutputWidth(item.getWidth());
         source.setOutputHeight(item.getHeight());
         source.setVolume(item.getVolume());
-        source.fireSourceUpdated();
-        for (int i = 20; i >= 0; i--) {
+        for (int i = 0; i <frames; i++) {
             try {
-                source.setOpacity(i * 5);
-                source.fireSourceUpdated();
-                Thread.sleep(100);
+                source.setOpacity(100-(i * 100 / frames));
+                Thread.sleep(WAITTIME);
             } catch (InterruptedException ex) {
                 Logger.getLogger(LayoutItem.class.getName()).log(Level.SEVERE, null, ex);
             }

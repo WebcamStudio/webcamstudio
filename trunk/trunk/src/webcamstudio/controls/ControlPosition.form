@@ -41,9 +41,9 @@
                                       <Component id="jLabel2" alignment="0" max="32767" attributes="1"/>
                                       <Component id="jLabel1" alignment="0" min="-2" max="-2" attributes="1"/>
                                   </Group>
-                                  <Component id="jLabel4" alignment="0" pref="99" max="32767" attributes="1"/>
-                                  <Component id="jLabel5" alignment="0" pref="99" max="32767" attributes="1"/>
-                                  <Component id="jLabel6" alignment="0" pref="99" max="32767" attributes="1"/>
+                                  <Component id="jLabel4" alignment="0" pref="117" max="32767" attributes="1"/>
+                                  <Component id="jLabel5" alignment="0" pref="117" max="32767" attributes="1"/>
+                                  <Component id="jLabel6" alignment="0" pref="117" max="32767" attributes="1"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                           </Group>
@@ -51,21 +51,38 @@
                           <Component id="jLabel7" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <Group type="103" groupAlignment="1" attributes="0">
-                          <Component id="spinVolume" alignment="1" pref="307" max="32767" attributes="0"/>
-                          <Component id="spinWidth" alignment="0" pref="307" max="32767" attributes="3"/>
-                          <Component id="spinX" alignment="0" pref="307" max="32767" attributes="3"/>
-                          <Component id="cboTransOut" alignment="0" pref="307" max="32767" attributes="3"/>
-                          <Component id="cboTransIn" alignment="0" pref="307" max="32767" attributes="3"/>
+                          <Component id="spinVolume" alignment="1" pref="349" max="32767" attributes="0"/>
+                          <Component id="spinWidth" alignment="0" pref="349" max="32767" attributes="3"/>
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="chkKeepRatio" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="spinHeight" pref="204" max="32767" attributes="3"/>
+                              <Component id="spinHeight" pref="246" max="32767" attributes="3"/>
                           </Group>
-                          <Component id="spinSeek" alignment="0" pref="307" max="32767" attributes="0"/>
+                          <Component id="spinSeek" alignment="0" pref="349" max="32767" attributes="0"/>
                           <Group type="102" alignment="1" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="spinY" pref="307" max="32767" attributes="3"/>
+                              <Component id="spinY" pref="349" max="32767" attributes="3"/>
                           </Group>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                                  <Component id="cboTransOut" alignment="0" max="32767" attributes="3"/>
+                                  <Component id="cboTransIn" alignment="0" pref="143" max="32767" attributes="3"/>
+                              </Group>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Group type="102" attributes="0">
+                                      <Component id="jLabel9" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="spinDurationOut" pref="84" max="32767" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Component id="jLabel8" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="spinDurationIn" min="-2" pref="84" max="-2" attributes="0"/>
+                                  </Group>
+                              </Group>
+                          </Group>
+                          <Component id="spinX" alignment="1" pref="349" max="32767" attributes="3"/>
                       </Group>
                   </Group>
               </Group>
@@ -79,11 +96,15 @@
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jLabel1" alignment="3" min="-2" pref="13" max="-2" attributes="0"/>
                   <Component id="cboTransIn" alignment="3" min="-2" pref="25" max="-2" attributes="0"/>
+                  <Component id="jLabel8" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="spinDurationIn" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" pref="16" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jLabel2" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="cboTransOut" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jLabel9" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="spinDurationOut" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
@@ -370,6 +391,38 @@
       </Properties>
       <Events>
         <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="spinSeekStateChanged"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JLabel" name="jLabel8">
+      <Properties>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="webcamstudio/Languages.properties" key="DURATION" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+        </Property>
+        <Property name="name" type="java.lang.String" value="jLabel8" noResource="true"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="jLabel9">
+      <Properties>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="webcamstudio/Languages.properties" key="DURATION" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+        </Property>
+        <Property name="name" type="java.lang.String" value="jLabel9" noResource="true"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JSpinner" name="spinDurationIn">
+      <Properties>
+        <Property name="name" type="java.lang.String" value="spinDurationIn" noResource="true"/>
+      </Properties>
+      <Events>
+        <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="spinDurationInStateChanged"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JSpinner" name="spinDurationOut">
+      <Properties>
+        <Property name="name" type="java.lang.String" value="spinDurationOut" noResource="true"/>
+      </Properties>
+      <Events>
+        <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="spinDurationOutStateChanged"/>
       </Events>
     </Component>
   </SubComponents>
