@@ -30,7 +30,7 @@ public class LayoutItem implements Runnable{
     private int layer = 0;
     private int volume = 10;
     private boolean isInActiveLayout = false;
-    private boolean keepRatio = false;
+    private boolean keepRatio = true;
     private long position = 0;
     private int transitionDurationIn = 1;
     private int transitionDurationOut = 1;
