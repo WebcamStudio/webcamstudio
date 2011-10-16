@@ -13,7 +13,6 @@ package webcamstudio;
 import java.awt.BorderLayout;
 import webcamstudio.exporter.vloopback.VideoDevice;
 import webcamstudio.exporter.vloopback.V4L2Loopback;
-import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Image;
 import java.awt.SplashScreen;
@@ -29,8 +28,6 @@ import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
-import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.UIManager;
 import org.gstreamer.*;
 import webcamstudio.layout.transitions.Transition;
@@ -650,7 +647,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
                     studio.delete();
                 }
                 Studio outStudio = new Studio();
-                outStudio.setLayouts(layoutManager.getLayouts());
                 outStudio.saveStudio(studio, mixer);
                 lastStudioFile = studio;
                 mnuStudioLoadLast.setEnabled(true);
@@ -690,12 +686,9 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
                 mnuStudioLoadLast.setEnabled(true);
                 mnuStudioLoadLast.setToolTipText(lastStudioFile.getAbsolutePath());
                 Studio studio = new Studio();
-                studio.loadStudio(lastStudioFile);
                 layoutManager.clearLayouts();
-                for (Layout l : studio.getLayouts().values()) {
-                    layoutManager.addLayout(l);
-                }
-                layoutManager.revalidate();
+                studio.loadStudio(lastStudioFile);
+                layoutManager.updateLayouts();
                 studio = null;
             } catch (Exception e) {
                 e.printStackTrace();

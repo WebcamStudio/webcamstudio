@@ -19,16 +19,12 @@ import webcamstudio.layout.LayoutItem;
  */
 public class VideoSourceLayout extends VideoSource {
 
-    protected String layoutUUID = null;
-    protected java.util.AbstractMap<String, Layout> layouts = null;
 
-    public VideoSourceLayout(String layoutUUID, java.util.AbstractMap<String, Layout> layouts) {
-        this.layoutUUID = layoutUUID;
+    public VideoSourceLayout(String layoutUUID) {
         location = layoutUUID;
-        if (layouts.containsKey(layoutUUID)) {
-            name = layouts.get(layoutUUID).toString();
+        if (Layout.getLayouts().containsKey(layoutUUID)) {
+            name = Layout.getLayouts().get(layoutUUID).toString();
         }
-        this.layouts = layouts;
     }
 
     @Override
@@ -36,8 +32,8 @@ public class VideoSourceLayout extends VideoSource {
         //Find the layout to use...
         isPlaying = true;
         stopMe = false;
-        if (layouts.containsKey(layoutUUID)) {
-            Layout layout = layouts.get(layoutUUID);
+        if (Layout.getLayouts().containsKey(location)) {
+            Layout layout = Layout.getLayouts().get(location);
             name = layout.toString();
             if (!layout.isActive()) {
                 layout.enterLayout(true);
@@ -50,14 +46,16 @@ public class VideoSourceLayout extends VideoSource {
             timer = new Timer(name, true);
             frameRate=Mixer.getFPS();
             timer.scheduleAtFixedRate(new LayoutImage(this), 0, 1000/frameRate);
+        } else {
+            System.out.println("Could not find layout");
         }
     }
 
     @Override
     public void stopSource() {
         stopMe = true;
-        if (layouts.containsKey(layoutUUID)) {
-            layouts.get(layoutUUID).exitLayout(true);
+        if (Layout.getLayouts().containsKey(location)) {
+            Layout.getLayouts().get(location).exitLayout(true);
         }
         if (timer != null) {
             timer.cancel();
@@ -105,8 +103,8 @@ class LayoutImage extends TimerTask {
 
     @Override
     public void run() {
-        if (source.layouts.containsKey(source.layoutUUID)) {
-            Layout layout = source.layouts.get(source.layoutUUID);
+        if (Layout.getLayouts().containsKey(source.location)) {
+            Layout layout = Layout.getLayouts().get(source.location);
             source.captureHeight = Mixer.getHeight();
             source.captureWidth = Mixer.getWidth();
             source.tempimage = new BufferedImage(source.captureWidth, source.captureHeight, BufferedImage.TYPE_INT_ARGB);
@@ -120,7 +118,7 @@ class LayoutImage extends TimerTask {
             }
             buffer.dispose();
             source.image = source.tempimage;
-        }
+        } 
     }
     
 }

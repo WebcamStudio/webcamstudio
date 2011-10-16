@@ -9,7 +9,9 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.util.AbstractMap;
 import java.util.Collection;
+import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
@@ -24,6 +26,7 @@ import webcamstudio.studio.Studio;
  */
 public class Layout {
 
+    private static TreeMap<String,Layout> loadedLayouts = new TreeMap<String,Layout>();
     private java.util.TreeMap<Integer, LayoutItem> items = new java.util.TreeMap<Integer, LayoutItem>();
     private String name = "";
     private String layoutUUID = java.util.UUID.randomUUID().toString();
@@ -41,6 +44,18 @@ public class Layout {
     protected BufferedImage preview = null;
     private LayoutItem itemSelected = null;
 
+    
+    public static AbstractMap<String,Layout> getLayouts(){
+        return loadedLayouts;
+    }
+    public static void removeLayout(Layout layout){
+        if (loadedLayouts.containsKey(layout.getUUID())){
+            loadedLayouts.remove(layout.getUUID());
+        }
+    }
+    public static void addLayout(Layout layout){
+        loadedLayouts.put(layout.getUUID(), layout);
+    }
     public String getUUID() {
         return layoutUUID;
     }

@@ -4,6 +4,7 @@
  */
 package webcamstudio.layout;
 
+import java.util.AbstractMap;
 import java.util.prefs.BackingStoreException;
 import webcamstudio.layout.transitions.Start;
 import webcamstudio.layout.transitions.Stop;
