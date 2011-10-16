@@ -418,7 +418,7 @@ public class ControlPosition extends javax.swing.JPanel implements Controls {
 
     private void spinWidthStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinWidthStateChanged
         layout.setWidth((Integer) spinWidth.getValue());
-        if (layout.isKeepingRatio()){
+        if (layout.isKeepingRatio() && layout.getSource().getCaptureWidth()>0){
             int w = layout.getWidth();
             int h = w * layout.getSource().getCaptureHeight() / layout.getSource().getCaptureWidth();
             spinHeight.setValue(new Integer(h));
