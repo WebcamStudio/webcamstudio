@@ -40,6 +40,11 @@ public class Layout {
     public long timeStamp = 0;
     protected BufferedImage preview = null;
     private LayoutItem itemSelected = null;
+
+    public String getUUID() {
+        return layoutUUID;
+    }
+
     public void setDuration(int sec, String nextLayout) {
         duration = sec;
         nextLayoutName = nextLayout;
@@ -49,12 +54,14 @@ public class Layout {
         return duration;
     }
 
-    public void setItemSelected(LayoutItem layoutItem){
+    public void setItemSelected(LayoutItem layoutItem) {
         itemSelected = layoutItem;
     }
-    public LayoutItem getItemSelected(){
+
+    public LayoutItem getItemSelected() {
         return itemSelected;
     }
+
     public String getNextLayout() {
         return nextLayoutName;
     }
@@ -126,18 +133,27 @@ public class Layout {
 
     public void setName(String name) {
         this.name = name;
+        for (VideoSource source : VideoSource.loadedSources.values()) {
+            if (source.getLocation().equals(layoutUUID)) {
+                source.setName(name);
+                break;
+            }
+        }
     }
 
-    public void enterLayout() {
-        isEntering = true;
-        if (activeLayout!=null) {
-            activeLayout.exitLayout();
+    public void enterLayout(boolean isVideoSource) {
+        if (!isVideoSource) {
+            isEntering = true;
+            if (activeLayout != null) {
+                activeLayout.exitLayout(false);
 
-        } 
-        activeLayout = this;
-        if (inputSourceApp.length() > 0) {
-            PulseAudioManager p = new PulseAudioManager();
-            p.setSoundInput(inputSourceApp, inputSource);
+            }
+            activeLayout = this;
+
+            if (inputSourceApp.length() > 0) {
+                PulseAudioManager p = new PulseAudioManager();
+                p.setSoundInput(inputSourceApp, inputSource);
+            }
         }
         for (LayoutItem item : items.values()) {
             item.getSource().setLayer(item.getLayer());
@@ -145,7 +161,7 @@ public class Layout {
         if (items.size() > 0) {
             java.util.concurrent.ExecutorService tp = java.util.concurrent.Executors.newFixedThreadPool(items.size());
             for (LayoutItem item : items.values()) {
-                item.setTransitionToDo(item.getTransitionIn(),item.getTransitionDurationIn());
+                item.setTransitionToDo(item.getTransitionIn(), item.getTransitionDurationIn());
                 item.setActive(true);
                 tp.submit(item);
             }
@@ -160,20 +176,24 @@ public class Layout {
             }
             tp = null;
         }
-        isEntering = false;
-        isActive = true;
+        if (!isVideoSource) {
+            isEntering = false;
+            isActive = true;
+        }
 
     }
 
-    protected void exitLayout() {
-        isExiting = true;
-        isActive = false;
-        timeStamp=0;
-        previousActiveLayout = this;
+    public void exitLayout(boolean isVideoSource) {
+        if (!isVideoSource) {
+            isExiting = true;
+            isActive = false;
+            timeStamp = 0;
+            previousActiveLayout = this;
+        }
         if (items.size() > 0) {
             java.util.concurrent.ExecutorService tp = java.util.concurrent.Executors.newFixedThreadPool(items.size());
             for (LayoutItem item : items.values()) {
-                item.setTransitionToDo(item.getTransitionOut(),item.getTransitionDurationOut());
+                item.setTransitionToDo(item.getTransitionOut(), item.getTransitionDurationOut());
                 item.setActive(false);
                 tp.submit(item);
             }
@@ -187,7 +207,9 @@ public class Layout {
             }
             tp = null;
         }
-        isExiting = false;
+        if (!isVideoSource) {
+            isExiting = false;
+        }
 
     }
 
@@ -195,19 +217,19 @@ public class Layout {
         return items.values();
     }
 
-    public Image getPreview(int w, int h,boolean isSelected) {
+    public Image getPreview(int w, int h, boolean isSelected) {
         if (preview == null || preview.getWidth() != w || preview.getHeight() != h) {
             preview = new java.awt.image.BufferedImage(w, h, java.awt.image.BufferedImage.TYPE_INT_ARGB);
         }
         Graphics2D buffer = preview.createGraphics();
         buffer.setBackground(Color.GRAY);
         buffer.clearRect(0, 0, w, h);
-        buffer.setStroke(new java.awt.BasicStroke(10f*w/320));
+        buffer.setStroke(new java.awt.BasicStroke(10f * w / 320));
         buffer.setColor(Color.BLACK);
         buffer.drawRect(0, 0, w, h);
         for (LayoutItem item : items.values()) {
             Color color = Color.WHITE;
-            
+
             if (item.getSource() instanceof VideoSourceV4L || item.getSource() instanceof VideoSourceDV) {
                 color = Color.RED.darker();
             } else if (item.getSource() instanceof VideoSourceText) {
@@ -221,22 +243,22 @@ public class Layout {
             } else if (item.getSource() instanceof VideoSourceDesktop) {
                 color = Color.ORANGE.darker();
             }
-            if (item.getSource().getImage() != null && (isActive||isEntering||isExiting)) {
+            if (item.getSource().getImage() != null && (isActive || isEntering || isExiting)) {
                 buffer.drawImage(item.getSource().getImage(), item.getSource().getShowAtX(), item.getSource().getShowAtY(), item.getSource().getOutputWidth() + item.getSource().getShowAtX(), item.getSource().getOutputHeight() + item.getSource().getShowAtY(), 0, 0, item.getSource().getImage().getWidth(), item.getSource().getImage().getHeight(), null);
             }
-            if (item.equals(itemSelected)){
-                color=color.brighter();
+            if (item.equals(itemSelected)) {
+                color = color.brighter();
             }
             buffer.setColor(color);
             buffer.drawRect(item.getX(), item.getY(), item.getWidth(), item.getHeight());
         }
-        if (isSelected){
+        if (isSelected) {
             buffer.setColor(Color.DARK_GRAY);
         } else {
             buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC_OVER, 0.5F));
             buffer.setColor(Color.DARK_GRAY);
         }
-        buffer.fillRect(0, 0, w, (34*h/240));
+        buffer.fillRect(0, 0, w, (34 * h / 240));
         if (isEntering) {
             buffer.setColor(Color.YELLOW);
         } else if (isExiting) {
@@ -247,8 +269,8 @@ public class Layout {
             buffer.setColor(Color.RED);
         }
         buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC_OVER, 1F));
-        buffer.setFont(new Font(Font.MONOSPACED, Font.BOLD, (30*w/320)));
-        buffer.drawString(name, (5*w/320),(30 *h/240) );
+        buffer.setFont(new Font(Font.MONOSPACED, Font.BOLD, (30 * w / 320)));
+        buffer.drawString(name, (5 * w / 320), (30 * h / 240));
         buffer.dispose();
 
         return preview;
@@ -293,7 +315,7 @@ public class Layout {
         if (isActive) {
             item.getSource().setLayer(item.getLayer());
             item.setActive(true);
-            item.setTransitionToDo(item.getTransitionIn(),item.getTransitionDurationIn());
+            item.setTransitionToDo(item.getTransitionIn(), item.getTransitionDurationIn());
             item.run();
 
         }

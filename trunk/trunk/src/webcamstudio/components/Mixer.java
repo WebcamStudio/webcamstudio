@@ -23,7 +23,7 @@ import webcamstudio.sources.VideoSource;
  */
 public class Mixer {
 
-    protected int frameRate = 15;
+    protected static int frameRate = 15;
     protected static int outputWidth = 320;
     protected static int outputHeight = 240;
     protected java.awt.image.BufferedImage image = null;
@@ -53,6 +53,9 @@ public class Mixer {
         LOW
     };
 
+    public static int getFPS(){
+        return frameRate;
+    }
     public static int getWidth(){
         return outputWidth;
     }

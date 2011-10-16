@@ -650,11 +650,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
                     studio.delete();
                 }
                 Studio outStudio = new Studio();
-                java.util.Vector<Layout> layouts = new java.util.Vector<Layout>();
-                for (Object l : layoutManager.getLayouts()) {
-                    layouts.add((Layout) l);
-                }
-                outStudio.setLayouts(layouts);
+                outStudio.setLayouts(layoutManager.getLayouts());
                 outStudio.saveStudio(studio, mixer);
                 lastStudioFile = studio;
                 mnuStudioLoadLast.setEnabled(true);
@@ -696,7 +692,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
                 Studio studio = new Studio();
                 studio.loadStudio(lastStudioFile);
                 layoutManager.clearLayouts();
-                for (Layout l : studio.getLayouts()) {
+                for (Layout l : studio.getLayouts().values()) {
                     layoutManager.addLayout(l);
                 }
                 layoutManager.revalidate();
