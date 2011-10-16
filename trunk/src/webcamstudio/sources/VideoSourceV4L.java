@@ -155,7 +155,7 @@ public class VideoSourceV4L extends VideoSource implements RGBDataSink.Listener 
             if (activeEffect.length() == 0) {
                 pipe = Pipeline.launch(source + " device=" + location + " " + rescaling + " ! ffmpegcolorspace ! video/x-raw-rgb,bpp=32,depth=24, red_mask=65280, green_mask=16711680, blue_mask=-16777216 ! ffmpegcolorspace name=tosink");
             } else {
-                pipe = Pipeline.launch(source + " device=" + location + " " + rescaling + " ! ffmpegcolorspace ! " + activeEffect + " ! ffmpegcolorspace ! video/x-raw-rgb,bpp=32,depth=24 !  ffmpegcolorspace name=tosink");
+                pipe = Pipeline.launch(source + " device=" + location + " " + rescaling + " ! ffmpegcolorspace ! " + activeEffect + " ! ffmpegcolorspace ! video/x-raw-rgb,bpp=32,depth=24,bpp=32,depth=24, red_mask=65280, green_mask=16711680, blue_mask=-16777216 !  ffmpegcolorspace name=tosink");
 
             }
             pipe.setName(name + uuId);
