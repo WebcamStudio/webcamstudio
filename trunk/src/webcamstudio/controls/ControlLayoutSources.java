@@ -13,6 +13,8 @@ package webcamstudio.controls;
 import webcamstudio.components.LayoutManager2;
 import javax.swing.DefaultComboBoxModel;
 import webcamstudio.layout.Layout;
+import webcamstudio.layout.LayoutItem;
+import webcamstudio.sources.VideoSource;
 import webcamstudio.sources.VideoSourceLayout;
 
 /**
@@ -22,17 +24,43 @@ import webcamstudio.sources.VideoSourceLayout;
 public class ControlLayoutSources extends javax.swing.JPanel {
 
     private Layout layout = null;
-    
     private LayoutManager2 manager = null;
+
     /** Creates new form ControlLayoutSources */
-    public ControlLayoutSources(Layout layout,LayoutManager2 manager) {
+    public ControlLayoutSources(Layout layout, LayoutManager2 manager) {
         initComponents();
-        this.manager=manager;
-        this.layout=layout;
-        
+        this.manager = manager;
+        this.layout = layout;
+
         DefaultComboBoxModel model = new DefaultComboBoxModel(Layout.getLayouts().values().toArray());
-        model.removeElement(layout);
+        
+        for (Layout l : Layout.getLayouts().values()) {
+            removeCircularSources(l, model);
+        }
         cboLayouts.setModel(model);
+    }
+
+    private boolean removeCircularSources(Layout currentLayout, DefaultComboBoxModel model) {
+        boolean found = false;
+        if (currentLayout == layout){
+            found=true;
+        }
+        for (LayoutItem item : currentLayout.getItems()) {
+            if (item.getSource() instanceof VideoSourceLayout) {
+                Layout sourceLayout = Layout.getLayouts().get(item.getSource().getLocation());
+                if (sourceLayout == layout) {
+                    found=true;
+                } else{
+                    found |= removeCircularSources(sourceLayout, model);
+                }
+                
+            }
+            
+        }
+        if (found){
+            model.removeElement(currentLayout);
+        }
+        return found;
     }
 
     /** This method is called from within the constructor to
@@ -91,14 +119,13 @@ public class ControlLayoutSources extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAddAsSourceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddAsSourceActionPerformed
-        if (cboLayouts.getSelectedItem()!=null){
-            Layout sourceLayout = (Layout)cboLayouts.getSelectedItem();
+        if (cboLayouts.getSelectedItem() != null) {
+            Layout sourceLayout = (Layout) cboLayouts.getSelectedItem();
             VideoSourceLayout source = new VideoSourceLayout(sourceLayout.getUUID());
             layout.addSource(source);
             manager.updateLayoutItemList();
         }
     }//GEN-LAST:event_btnAddAsSourceActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddAsSource;
     private javax.swing.JComboBox cboLayouts;
