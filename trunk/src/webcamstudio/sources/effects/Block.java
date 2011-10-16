@@ -20,7 +20,7 @@ public class Block extends Effect{
     private int blockSize = 3;
     @Override
     public void applyEffect(BufferedImage img) {
-        filter.setBlockSize(blockSize);
+        filter.setBlockSize(blockSize+1);
         Graphics2D buffer = img.createGraphics();
         BufferedImage temp = filter.filter(img, null);
         buffer.setBackground(new java.awt.Color(0,0,0,0));
