@@ -7,6 +7,7 @@ package webcamstudio.studio;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.AbstractMap;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.InvalidPreferencesFormatException;
 import javax.xml.parsers.ParserConfigurationException;
@@ -21,7 +22,7 @@ import webcamstudio.sources.*;
  */
 public class Studio {
 
-    java.util.TreeMap<String,Layout> layouts = new java.util.TreeMap<String,Layout>();
+    
     private int outputWidth = 320;
     private int outputHeight = 240;
     private String device = "/dev/video1";
@@ -49,15 +50,7 @@ public class Studio {
     public String getDevice(){
         return device;
     }
-    public void setLayouts(java.util.AbstractMap<String,Layout> list) {
-        layouts.clear();
-        layouts.putAll(list);
-    }
 
-
-    public java.util.AbstractMap<String,Layout> getLayouts() {
-        return layouts;
-    }
 
     public void loadStudio(File studio) throws BackingStoreException, InvalidPreferencesFormatException, IOException {
         java.util.prefs.Preferences prefs = java.util.prefs.Preferences.userNodeForPackage(this.getClass());
@@ -77,7 +70,7 @@ public class Studio {
         for (int i = 0; i < layoutsName.length; i++) {
             layout = new Layout();
             layout.loadFromStudioConfig(prefs.node("Layouts").node(layoutsName[i]));
-            layouts.put(layout.getUUID(),layout);
+            Layout.addLayout(layout);
         }
     }
 
@@ -97,10 +90,9 @@ public class Studio {
         prefs.node("Layouts").removeNode();
         prefs.flush();
         prefs.sync();
-        Layout layout = null;
-        for (int i = 0; i < layouts.size(); i++) {
-            layout = layouts.get(i);
-            layout.applyStudioConfig(prefs.node("Layouts"), i);
+        int index = 1;
+        for (Layout layout : Layout.getLayouts().values()) {
+            layout.applyStudioConfig(prefs.node("Layouts"), index++);
         }
         prefs.exportSubtree(fout);
         prefs.flush();
@@ -141,6 +133,8 @@ public class Studio {
             source = new VideoSourceQRCode("");
         } else if (currentClass.equals(VideoSourceFullDesktop.class.getName()) || currentClass.equals(VideoSourceFullDesktop.class.getName().replace(".sources", ""))) {
             source = new VideoSourceFullDesktop();
+        } else if (currentClass.equals(VideoSourceLayout.class.getName()) || currentClass.equals(VideoSourceLayout.class.getName().replace(".sources", ""))) {
+            source = new VideoSourceLayout("");
         }
         //webcamstudio.sources.VideoSourcePipeline
         return source;

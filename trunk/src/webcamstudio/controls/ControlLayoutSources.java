@@ -11,7 +11,6 @@
 package webcamstudio.controls;
 
 import webcamstudio.components.LayoutManager2;
-import java.util.AbstractMap;
 import javax.swing.DefaultComboBoxModel;
 import webcamstudio.layout.Layout;
 import webcamstudio.sources.VideoSourceLayout;
@@ -23,15 +22,15 @@ import webcamstudio.sources.VideoSourceLayout;
 public class ControlLayoutSources extends javax.swing.JPanel {
 
     private Layout layout = null;
-    private AbstractMap<String,Layout>layouts = null;
+    
     private LayoutManager2 manager = null;
     /** Creates new form ControlLayoutSources */
-    public ControlLayoutSources(Layout layout,AbstractMap<String,Layout>layouts,LayoutManager2 manager) {
+    public ControlLayoutSources(Layout layout,LayoutManager2 manager) {
         initComponents();
         this.manager=manager;
         this.layout=layout;
-        this.layouts = layouts;
-        DefaultComboBoxModel model = new DefaultComboBoxModel(layouts.values().toArray());
+        
+        DefaultComboBoxModel model = new DefaultComboBoxModel(Layout.getLayouts().values().toArray());
         model.removeElement(layout);
         cboLayouts.setModel(model);
     }
@@ -94,7 +93,7 @@ public class ControlLayoutSources extends javax.swing.JPanel {
     private void btnAddAsSourceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddAsSourceActionPerformed
         if (cboLayouts.getSelectedItem()!=null){
             Layout sourceLayout = (Layout)cboLayouts.getSelectedItem();
-            VideoSourceLayout source = new VideoSourceLayout(sourceLayout.getUUID(),layouts);
+            VideoSourceLayout source = new VideoSourceLayout(sourceLayout.getUUID());
             layout.addSource(source);
             manager.updateLayoutItemList();
         }

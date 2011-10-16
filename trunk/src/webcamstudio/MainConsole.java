@@ -151,16 +151,16 @@ public class MainConsole extends javax.swing.JFrame implements InfoListener {
                     mixer.activateStream(true, outputStreamPort);
                 }
                 mixer.setOutput(output);
-                for (Layout l : studio.getLayouts().values()) {
+                for (Layout l : Layout.getLayouts().values()) {
                     l.enterLayout(false);
                     currentLayout = l;
                     break;
                 }
-                javax.swing.DefaultComboBoxModel model = new javax.swing.DefaultComboBoxModel(studio.getLayouts().values().toArray());
+                javax.swing.DefaultComboBoxModel model = new javax.swing.DefaultComboBoxModel(Layout.getLayouts().values().toArray());
                 if (eventsManager != null) {
                     eventsManager.stop();
                 }
-                eventsManager = new LayoutEventsManager(studio.getLayouts());
+                eventsManager = new LayoutEventsManager(Layout.getLayouts());
                 cboLayouts.setModel(model);
 
             } catch (Exception e) {
