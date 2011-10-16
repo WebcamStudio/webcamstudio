@@ -151,12 +151,12 @@ public class MainConsole extends javax.swing.JFrame implements InfoListener {
                     mixer.activateStream(true, outputStreamPort);
                 }
                 mixer.setOutput(output);
-                for (Layout l : studio.getLayouts()) {
-                    l.enterLayout();
+                for (Layout l : studio.getLayouts().values()) {
+                    l.enterLayout(false);
                     currentLayout = l;
                     break;
                 }
-                javax.swing.DefaultComboBoxModel model = new javax.swing.DefaultComboBoxModel(studio.getLayouts());
+                javax.swing.DefaultComboBoxModel model = new javax.swing.DefaultComboBoxModel(studio.getLayouts().values().toArray());
                 if (eventsManager != null) {
                     eventsManager.stop();
                 }
@@ -263,7 +263,7 @@ public class MainConsole extends javax.swing.JFrame implements InfoListener {
             @Override
             public void run() {
                 currentLayout = (Layout) cboLayouts.getSelectedItem();
-                currentLayout.enterLayout();
+                currentLayout.enterLayout(false);
                 cboLayouts.setEnabled(true);
             }
         }).start();

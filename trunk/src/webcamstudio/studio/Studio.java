@@ -21,7 +21,7 @@ import webcamstudio.sources.*;
  */
 public class Studio {
 
-    java.util.Vector<Layout> layouts = new java.util.Vector<Layout>();
+    java.util.TreeMap<String,Layout> layouts = new java.util.TreeMap<String,Layout>();
     private int outputWidth = 320;
     private int outputHeight = 240;
     private String device = "/dev/video1";
@@ -49,13 +49,13 @@ public class Studio {
     public String getDevice(){
         return device;
     }
-    public void setLayouts(java.util.Vector<Layout> list) {
+    public void setLayouts(java.util.AbstractMap<String,Layout> list) {
         layouts.clear();
-        layouts.addAll(list);
+        layouts.putAll(list);
     }
 
 
-    public java.util.Vector<Layout> getLayouts() {
+    public java.util.AbstractMap<String,Layout> getLayouts() {
         return layouts;
     }
 
@@ -77,7 +77,7 @@ public class Studio {
         for (int i = 0; i < layoutsName.length; i++) {
             layout = new Layout();
             layout.loadFromStudioConfig(prefs.node("Layouts").node(layoutsName[i]));
-            layouts.add(layout);
+            layouts.put(layout.getUUID(),layout);
         }
     }
 

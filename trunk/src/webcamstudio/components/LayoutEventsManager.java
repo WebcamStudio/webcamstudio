@@ -4,7 +4,7 @@
  */
 package webcamstudio.components;
 
-import java.util.Collection;
+import java.util.AbstractMap;
 import java.util.Timer;
 import java.util.TimerTask;
 import webcamstudio.layout.Layout;
@@ -15,11 +15,11 @@ import webcamstudio.layout.Layout;
  */
 public class LayoutEventsManager extends TimerTask {
 
-    private Collection<Layout> layouts = null;
+    private AbstractMap<String,Layout> layouts = null;
     private boolean stopMe = false;
     private Timer timer = null;
 
-    public LayoutEventsManager(Collection<Layout> ls) {
+    public LayoutEventsManager(AbstractMap<String,Layout> ls) {
         layouts = ls;
         timer = new Timer(this.getClass().getSimpleName(), true);
         timer.scheduleAtFixedRate(this, 0, 1000);
@@ -34,7 +34,7 @@ public class LayoutEventsManager extends TimerTask {
     public void run() {
         try {
             Layout currentLayout = null;
-            for (Layout l : layouts) {
+            for (Layout l : layouts.values()) {
                 if (l.isActive()) {
                     currentLayout = l;
                     break;
@@ -49,12 +49,12 @@ public class LayoutEventsManager extends TimerTask {
                         if (currentLayout.getNextLayout().equals("PREVIOUS_LAYOUT")) {
                             System.out.println("Returning to previous layout");
                             currentLayout = Layout.previousActiveLayout;
-                            currentLayout.enterLayout();
+                            currentLayout.enterLayout(false);
                         } else {
-                            for (Layout l : layouts) {
+                            for (Layout l : layouts.values()) {
                                 if (l.toString().equals(currentLayout.getNextLayout())) {
                                     currentLayout = l;
-                                    currentLayout.enterLayout();
+                                    currentLayout.enterLayout(false);
                                     break;
                                 }
                             }

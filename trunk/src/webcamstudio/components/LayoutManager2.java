@@ -20,10 +20,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-import java.util.Collection;
+import java.util.AbstractMap;
 import java.util.Timer;
 import java.util.TimerTask;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
@@ -32,6 +31,7 @@ import javax.swing.JList;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import webcamstudio.Main;
+import webcamstudio.controls.ControlLayoutSources;
 import webcamstudio.controls.ControlPosition;
 import webcamstudio.controls.Controls;
 import webcamstudio.layout.Layout;
@@ -54,7 +54,7 @@ import webcamstudio.sources.VideoSourceWidget;
  */
 public class LayoutManager2 extends javax.swing.JPanel implements SourceListener, AWTEventListener {
 
-    private java.util.Vector<Layout> layouts = new java.util.Vector<Layout>();
+    private static java.util.TreeMap<String,Layout> layouts = new java.util.TreeMap<String,Layout>();
     private Layout currentLayout = null;
     private ImageIcon iconMovie = null;
     private ImageIcon iconImage = null;
@@ -84,7 +84,7 @@ public class LayoutManager2 extends javax.swing.JPanel implements SourceListener
         eventsManager = new LayoutEventsManager(layouts);
         lstLayouts.setModel(modelComboLayouts);
         addLayout(new Layout("Default Layout"));
-        currentLayout.enterLayout();
+        currentLayout.enterLayout(false);
         //lstLayouts.setModel(modelLayouts);
         lstLayoutItems.setModel(modelLayoutItems);
         viewer.setVisible(false);
@@ -158,15 +158,14 @@ public class LayoutManager2 extends javax.swing.JPanel implements SourceListener
     }
 
     public void clearLayouts() {
-        for (Layout l : layouts) {
+        for (Layout l : layouts.values()) {
             l.setDuration(0, "");
             for (LayoutItem li : l.getItems()) {
                 li.getSource().stopSource();
             }
         }
-        layouts.removeAllElements();
+        layouts.clear();
         modelComboLayouts.removeAllElements();
-        layouts.removeAllElements();
     }
 
     public void quitting() {
@@ -175,13 +174,13 @@ public class LayoutManager2 extends javax.swing.JPanel implements SourceListener
         stopMe = true;
     }
 
-    public Collection<Layout> getLayouts() {
+    public static AbstractMap<String,Layout> getLayouts() {
         return layouts;
     }
 
     public void applyLayoutHotKey(String key) {
         //Find Layout in tree...
-        for (Layout l : layouts) {
+        for (Layout l : layouts.values()) {
             if (l.getHotKey().equals(key)) {
                 currentLayout = l;
                 lstLayouts.setSelectedValue(l, true);
@@ -189,7 +188,7 @@ public class LayoutManager2 extends javax.swing.JPanel implements SourceListener
 
                     @Override
                     public void run() {
-                        currentLayout.enterLayout();
+                        currentLayout.enterLayout(false);
                     }
                 }).start();
 
@@ -198,7 +197,7 @@ public class LayoutManager2 extends javax.swing.JPanel implements SourceListener
         }
     }
 
-    private void updateLayoutItemList() {
+    public void updateLayoutItemList() {
         modelLayoutItems.clear();
         if (currentLayout != null) {
             Object[] ls = currentLayout.getItems().toArray();
@@ -449,7 +448,7 @@ public class LayoutManager2 extends javax.swing.JPanel implements SourceListener
             @Override
             public void run() {
                 if (currentLayout != null) {
-                    currentLayout.enterLayout();
+                    currentLayout.enterLayout(false);
                 }
             }
         }).start();
@@ -457,12 +456,14 @@ public class LayoutManager2 extends javax.swing.JPanel implements SourceListener
 
     private void btnLayoutDetailsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLayoutDetailsActionPerformed
         tabControls.removeAll();
-        LayoutEventsControl control = new LayoutEventsControl(currentLayout, layouts);
+        LayoutEventsControl control = new LayoutEventsControl(currentLayout, layouts.values());
         tabControls.add(currentLayout.toString(), control);
         if (!Main.XMODE) {
             PulseAudioInputSelecter pulse = new PulseAudioInputSelecter(currentLayout);
             tabControls.add("Pulseaudio", pulse);
         }
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("webcamstudio/Languages"); // NOI18N
+        tabControls.add(bundle.getString("LAYOUTS"),new ControlLayoutSources(currentLayout,layouts,this));
     }//GEN-LAST:event_btnLayoutDetailsActionPerformed
 
 private void lstLayoutsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstLayoutsMouseClicked
@@ -473,7 +474,7 @@ private void lstLayoutsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:
         updateLayoutItemList();
     }
     if (evt.getClickCount() == 2) {
-        currentLayout.enterLayout();
+        currentLayout.enterLayout(false);
     }
 }//GEN-LAST:event_lstLayoutsMouseClicked
 
@@ -484,7 +485,7 @@ private void lstLayoutsKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:even
             currentLayout.setItemSelected(null);
             tabControls.removeAll();
             updateLayoutItemList();
-            currentLayout.enterLayout();
+            currentLayout.enterLayout(false);
         }
     }
 }//GEN-LAST:event_lstLayoutsKeyPressed
@@ -562,7 +563,7 @@ private void lstLayoutsKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:even
     }
 
     public void addLayout(Layout l) {
-        layouts.add(l);
+        layouts.put(l.getUUID(), l);
         currentLayout = l;
         modelComboLayouts.addElement(l);
         lstLayouts.setSelectedValue(l, true);
@@ -575,18 +576,18 @@ private void lstLayoutsKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:even
         if (obj instanceof LayoutItem) {
             popItemsDuplicateIn.setEnabled(true);
             popItemsRemove.setEnabled(true);
-            for (int i = 0; i < layouts.size(); i++) {
-                JMenuItem menu = new JMenuItem(layouts.get(i).toString(), i);
+            for (Layout layout : layouts.values()) {
+                JMenuItem menu = new JMenuItem(layout.toString());
+                menu.setActionCommand(layout.getUUID());
                 popItemsDuplicateIn.add(menu);
                 ActionListener a = new ActionListener() {
 
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        int index = ((JMenuItem) e.getSource()).getMnemonic();
-
+                        String UUID = ((JMenuItem) e.getSource()).getActionCommand();
                         LayoutItem layoutItem = (LayoutItem) obj;
                         VideoSource source = layoutItem.getSource();
-                        Layout layout = layouts.get(index);
+                        Layout layout = layouts.get(UUID);
                         layout.addSource(source);
                     }
                 };
@@ -610,9 +611,9 @@ private void lstLayoutsKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:even
         KeyEvent key = (KeyEvent) event;
         if (key.isAltDown()) {
             String c = key.getKeyChar() + "";
-            for (Layout l : layouts) {
+            for (Layout l : layouts.values()) {
                 if (l.getHotKey().equals(c)) {
-                    l.enterLayout();
+                    l.enterLayout(false);
                 }
             }
         }
