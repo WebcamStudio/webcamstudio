@@ -365,7 +365,6 @@ public class LayoutManager2 extends javax.swing.JPanel implements SourceListener
         });
         lstLayouts.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         lstLayouts.setName("lstLayouts"); // NOI18N
-        lstLayouts.setPreferredSize(new java.awt.Dimension(52, 138));
         lstLayouts.setSelectionBackground(java.awt.Color.white);
         lstLayouts.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {

@@ -249,9 +249,6 @@
             </Property>
             <Property name="selectionMode" type="int" value="0"/>
             <Property name="name" type="java.lang.String" value="lstLayouts" noResource="true"/>
-            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[52, 138]"/>
-            </Property>
             <Property name="selectionBackground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="ff" green="ff" id="white" palette="1" red="ff" type="palette"/>
             </Property>
