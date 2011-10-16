@@ -36,8 +36,8 @@ public class ControlPosition extends javax.swing.JPanel implements Controls {
         javax.swing.DefaultComboBoxModel transModelIn = new javax.swing.DefaultComboBoxModel(Transition.getTransitionIns().values().toArray());
         javax.swing.DefaultComboBoxModel transModelOut = new javax.swing.DefaultComboBoxModel(Transition.getTransitionOuts().values().toArray());
         spinVolume.setModel(new SpinnerNumberModel(10,0,100,1));
-        spinDurationIn.setModel(new SpinnerNumberModel(1,1,10,1));
-        spinDurationOut.setModel(new SpinnerNumberModel(1,1,10,1));
+        spinDurationIn.setModel(new SpinnerNumberModel(1,0,10,1));
+        spinDurationOut.setModel(new SpinnerNumberModel(1,0,10,1));
         spinDurationIn.setValue(src.getTransitionDurationIn());
         spinDurationOut.setValue(src.getTransitionDurationOut());
         spinVolume.setEnabled(layout.getSource().hasSound());

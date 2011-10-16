@@ -20,9 +20,10 @@ public class AudioFadeOut extends Transition {
         VideoSource source = item.getSource();
         frames=sec*FPS;
         source.setOpacity(0);
+        int volume = item.getVolume();
         for (int i = 0; i < frames; i++) {
             try {
-                source.setVolume(100-(i * 100 / frames));
+                source.setVolume(volume-(i * volume / frames));
                 Thread.sleep(WAITTIME);
             } catch (InterruptedException ex) {
                 Logger.getLogger(LayoutItem.class.getName()).log(Level.SEVERE, null, ex);
