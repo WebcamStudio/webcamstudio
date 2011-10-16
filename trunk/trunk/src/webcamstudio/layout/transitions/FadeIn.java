@@ -36,6 +36,7 @@ public class FadeIn extends Transition {
                 Logger.getLogger(LayoutItem.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        source.setOpacity(100);
 
     }
 }

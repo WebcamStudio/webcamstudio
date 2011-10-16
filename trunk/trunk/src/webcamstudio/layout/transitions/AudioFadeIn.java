@@ -22,12 +22,13 @@ public class AudioFadeIn extends Transition {
         
         source.setOpacity(0);
         source.setVolume(0);
+        int originalVolume = item.getVolume();
         if (!source.isPlaying()) {
             source.startSource();
         }
         for (int i = 0; i < frames; i++) {
             try {
-                source.setVolume((i * 100 / frames));
+                source.setVolume((i * originalVolume / frames));
                 Thread.sleep(WAITTIME);
             } catch (InterruptedException ex) {
                 Logger.getLogger(LayoutItem.class.getName()).log(Level.SEVERE, null, ex);

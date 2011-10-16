@@ -20,7 +20,7 @@ public class FocusOut extends Transition {
     public void doTransition(final LayoutItem item,int sec) {
         VideoSource source = item.getSource();
         frames=sec*FPS;
-        source.setOpacity(0);
+        source.setOpacity(100);
         source.setShowAtX(item.getX());
         source.setShowAtY(item.getY());
         source.setOutputWidth(item.getWidth());
@@ -39,10 +39,15 @@ public class FocusOut extends Transition {
                 Logger.getLogger(LayoutItem.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        source.removeEffect(effect);
         if (source.isPlaying()) {
             source.stopSource();
         }
-
+        source.setOpacity(100);
+        source.removeEffect(effect);
+        source.setVolume(item.getVolume());
+        source.setShowAtX(item.getX());
+        source.setShowAtY(item.getY());
+        source.setOutputWidth(item.getWidth());
+        source.setOutputHeight(item.getHeight());
     }
 }

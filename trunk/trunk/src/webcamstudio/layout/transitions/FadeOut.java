@@ -19,7 +19,7 @@ public class FadeOut extends Transition {
     public void doTransition(final LayoutItem item,int sec) {
         VideoSource source = item.getSource();
         frames = sec * FPS;
-        source.setOpacity(0);
+        source.setOpacity(100);
         source.setShowAtX(item.getX());
         source.setShowAtY(item.getY());
         source.setOutputWidth(item.getWidth());
@@ -36,6 +36,7 @@ public class FadeOut extends Transition {
         if (source.isPlaying()) {
             source.stopSource();
         }
+        source.setOpacity(100);
 
     }
 }

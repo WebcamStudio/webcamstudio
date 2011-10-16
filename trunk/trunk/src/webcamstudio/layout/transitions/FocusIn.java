@@ -33,7 +33,7 @@ public class FocusIn extends Transition {
         if (!source.isPlaying()) {
             source.startSource();
         }
-        for (int i = 0; i <= frames; i++) {
+        for (int i = 0; i < frames; i++) {
             try {
                 source.setOpacity((i * 100 / frames));
                 effect.setSize(20-(i * 20 / frames)+1);
@@ -44,5 +44,6 @@ public class FocusIn extends Transition {
         }
         
         source.removeEffect(effect);
+        source.setOpacity(100);
     }
 }

@@ -17,33 +17,38 @@ import webcamstudio.sources.VideoSource;
 public class SlideRight extends Transition {
 
     @Override
-    public void doTransition(final LayoutItem item,int sec) {
+    public void doTransition(final LayoutItem item, int sec) {
         VideoSource source = item.getSource();
         frames = sec * FPS;;
-        int x = Mixer.getWidth();
-        int y = item.getY();
-        source.setOutputWidth(item.getWidth());
-        source.setOutputHeight(item.getHeight());
-        source.setVolume(item.getVolume());
-        source.setOpacity(100);
-        float xDelta = ((Mixer.getWidth()-item.getX()) / frames);
-        source.setShowAtX(x);
-        source.setShowAtY(y);
-        if (!source.isPlaying()) {
-            source.startSource();
-        }
-        for (float i = 0; i < frames; i++) {
-            try {
-                source.setShowAtX(x - (int)(i*xDelta));
-                Thread.sleep(WAITTIME);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(getName()).log(Level.SEVERE, null, ex);
+        if (frames > 0) {
+            int x = Mixer.getWidth();
+            int y = item.getY();
+            source.setOutputWidth(item.getWidth());
+            source.setOutputHeight(item.getHeight());
+            source.setVolume(item.getVolume());
+            source.setOpacity(100);
+            float xDelta = ((Mixer.getWidth() - item.getX()) / frames);
+            source.setShowAtX(x);
+            source.setShowAtY(y);
+            if (!source.isPlaying()) {
+                source.startSource();
             }
+            for (float i = 0; i < frames; i++) {
+                try {
+                    source.setShowAtX(x - (int) (i * xDelta));
+                    Thread.sleep(WAITTIME);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        } else if (!source.isPlaying()) {
+            source.startSource();
         }
         source.setShowAtX(item.getX());
         source.setShowAtY(item.getY());
         source.setOutputWidth(item.getWidth());
         source.setOutputHeight(item.getHeight());
+        source.setVolume(item.getVolume());
 
     }
 }
