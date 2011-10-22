@@ -8,6 +8,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -102,6 +103,11 @@ public class VideoSourceWidget extends VideoSource {
     }
 
     private void loadXML(String url, boolean render) throws ParserConfigurationException, SAXException, IOException {
+        if (new File(url).exists()){
+            //This is  local file
+            location = new File(url).toURI().toURL().toString();
+            url=location;
+        }
         DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
         Document doc = docBuilder.parse(url);
