@@ -3,12 +3,12 @@
 # Patrick Balleux 2009
 # Version VERSION
 INSTALLDIR=/usr/lib/webcamstudio
-JAVA_DIR=/usr/lib/jvm/java-6-openjdk/bin
+JAVA_DIR=/usr/lib/jvm/default-java
 if [ -f $JAVA_DIR/java ]
 then
-    JAVA_DIR=/usr/lib/jvm/java-6-openjdk/bin
+    JAVA_DIR=/usr/lib/jvm/default-java/bin
 else
-    JAVA_DIR=/usr/lib/jvm/java-6-sun/bin
+    JAVA_DIR=/usr/lib/jvm/java-1.6.0-openjdk/bin
 fi
 echo "Using JRE: $JAVA_DIR"
 
