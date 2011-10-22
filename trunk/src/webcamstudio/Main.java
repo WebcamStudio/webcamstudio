@@ -28,6 +28,7 @@ import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.UIManager;
 import org.gstreamer.*;
 import webcamstudio.layout.transitions.Transition;
@@ -626,7 +627,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
             chooser.setToolTipText(java.util.ResourceBundle.getBundle("webcamstudio/Languages").getString("SELECT_YOU_STUDIO_OUTPUT_FILE..."));
 
             chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-            javax.swing.filechooser.FileFilter filter = new javax.swing.filechooser.FileNameExtensionFilter(java.util.ResourceBundle.getBundle("webcamstudio/Languages").getString("WEBCAMSTUDIO_FILE"), "studio","studioz");
+            javax.swing.filechooser.FileFilter filter = new javax.swing.filechooser.FileNameExtensionFilter(java.util.ResourceBundle.getBundle("webcamstudio/Languages").getString("WEBCAMSTUDIO_FILE"), "studio", "studioz");
             chooser.setAcceptAllFileFilterUsed(false);
             chooser.setFileFilter(filter);
 
@@ -643,19 +644,31 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
 
         setCursor(new Cursor(Cursor.WAIT_CURSOR));
         if (studio != null) {
-            try {
-                if (studio.exists()) {
-                    studio.delete();
+            final JFrame frame = this;
+            final File tStudio = studio;
+            new Thread(new Runnable() {
+
+                @Override
+                public void run() {
+                    try {
+                        if (tStudio.exists()) {
+                            tStudio.delete();
+                        }
+                        FileProgress pg = new FileProgress(frame, true);
+                        pg.setLocationRelativeTo(frame);
+                        Studio outStudio = new Studio(pg);
+                        outStudio.saveStudio(tStudio, mixer);
+                        pg.setVisible(true);
+                        lastStudioFile = tStudio;
+                        mnuStudioLoadLast.setEnabled(true);
+                        mnuStudioLoadLast.setToolTipText(lastStudioFile.getAbsolutePath());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
                 }
-                Studio outStudio = new Studio();
-                outStudio.saveStudio(studio, mixer);
-                lastStudioFile = studio;
-                mnuStudioLoadLast.setEnabled(true);
-                mnuStudioLoadLast.setToolTipText(lastStudioFile.getAbsolutePath());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+            }).start();
+            setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
         }
     }
 
@@ -665,7 +678,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         javax.swing.JFileChooser chooser = new javax.swing.JFileChooser(lastStudioFile);
         chooser.setToolTipText(java.util.ResourceBundle.getBundle("webcamstudio/Languages").getString("SELECT_YOUR_STUDIO_FILE_TO_LOAD..."));
         chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        javax.swing.filechooser.FileFilter filter = new javax.swing.filechooser.FileNameExtensionFilter(java.util.ResourceBundle.getBundle("webcamstudio/Languages").getString("WEBCAMSTUDIO_FILE"), "studio","studioz");
+        javax.swing.filechooser.FileFilter filter = new javax.swing.filechooser.FileNameExtensionFilter(java.util.ResourceBundle.getBundle("webcamstudio/Languages").getString("WEBCAMSTUDIO_FILE"), "studio", "studioz");
         chooser.setAcceptAllFileFilterUsed(false);
         chooser.setFileFilter(filter);
 
@@ -682,24 +695,34 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
             currentStudioFile = providedFile;
         }
         if (currentStudioFile != null) {
-            setCursor(new Cursor(Cursor.WAIT_CURSOR));
-            try {
-                lastStudioFile = currentStudioFile;
-                mnuStudioLoadLast.setEnabled(true);
-                mnuStudioLoadLast.setToolTipText(lastStudioFile.getAbsolutePath());
-                Studio studio = new Studio();
-                layoutManager.clearLayouts();
-                studio.loadStudio(lastStudioFile);
-                layoutManager.updateLayouts();
-                studio = null;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+            lastStudioFile = currentStudioFile;
+            final JFrame frame = this;
+            new Thread(new Runnable() {
+
+                @Override
+                public void run() {
+                    setCursor(new Cursor(Cursor.WAIT_CURSOR));
+                    try {
+
+                        mnuStudioLoadLast.setEnabled(true);
+                        mnuStudioLoadLast.setToolTipText(lastStudioFile.getAbsolutePath());
+                        FileProgress pg = new FileProgress(frame, true);
+                        pg.setLocationRelativeTo(frame);
+                        Studio studio = new Studio(pg);
+                        layoutManager.clearLayouts();
+                        studio.loadStudio(lastStudioFile);
+                        pg.setVisible(true);
+                        layoutManager.updateLayouts();
+                        studio = null;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                }
+            }).start();
+
         }
     }
-
-    
 
     private void addSourceToDesktop(VideoSource source) {
         if (source.getOutputWidth() == 0) {
@@ -1417,7 +1440,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
     private void mnuSourcesDesktopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuSourcesDesktopActionPerformed
         VideoSourceDesktop s = new VideoSourceDesktop();
         int index = 1;
-        while (VideoSource.loadedSources.containsKey("Desktop " + index)){
+        while (VideoSource.loadedSources.containsKey("Desktop " + index)) {
             index++;
         }
         s.setName("Desktop " + index);
@@ -1484,7 +1507,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
 
         VideoSourceText s = new VideoSourceText("");
         int index = 1;
-        while (VideoSource.loadedSources.containsKey("Text " + index)){
+        while (VideoSource.loadedSources.containsKey("Text " + index)) {
             index++;
         }
         s.setName("Text " + index);
@@ -1879,8 +1902,8 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
 
     private void mnuSourcesQRCodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuSourcesQRCodeActionPerformed
         VideoSourceQRCode s = new VideoSourceQRCode("WebcamStudio");
-                int index = 1;
-        while (VideoSource.loadedSources.containsKey("QRCode " + index)){
+        int index = 1;
+        while (VideoSource.loadedSources.containsKey("QRCode " + index)) {
             index++;
         }
         s.setName("QRCode " + index);
@@ -1891,8 +1914,8 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
 
     private void mnuSourcesFullDesktopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuSourcesFullDesktopActionPerformed
         VideoSource s = new VideoSourceFullDesktop();
-                int index = 1;
-        while (VideoSource.loadedSources.containsKey("FullDesktop " + index)){
+        int index = 1;
+        while (VideoSource.loadedSources.containsKey("FullDesktop " + index)) {
             index++;
         }
         s.setName("FullDesktop " + index);
