@@ -201,7 +201,7 @@ public abstract class VideoSource implements InfoListener {
         prefs.putBoolean("rescale", doRescale);
         prefs.putBoolean("reverseshapemask", doReverseShapeMask);
         prefs.putBoolean("ignorelayouttransition", ignoreLayoutTransition);
-        prefs.put("password", encrypt(password));
+        prefs.putByteArray("password", encrypt(password).getBytes());
         prefs.putBoolean("keepration", keepRatio);
         int index = 0;
         for (Effect effect : effects) {
@@ -286,7 +286,7 @@ public abstract class VideoSource implements InfoListener {
         doRescale = prefs.getBoolean("rescale", doRescale);
         doReverseShapeMask = prefs.getBoolean("reverseshapemask", doReverseShapeMask);
         ignoreLayoutTransition = prefs.getBoolean("ignorelayouttransition", ignoreLayoutTransition);
-        password = decrypt(prefs.get("password", password));
+        password = decrypt(new String(prefs.getByteArray("password", password.getBytes())));
         keepRatio = prefs.getBoolean("keepration", keepRatio);
         String[] effectIndexes;
         try {
