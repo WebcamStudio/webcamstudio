@@ -135,7 +135,7 @@ public class MainConsole extends javax.swing.JFrame implements InfoListener {
         }
         if (currentStudioFile != null) {
             try {
-                studio = new Studio();
+                studio = new Studio(null);
                 studio.loadStudio(currentStudioFile);
                 width = studio.getWidth();
                 height = studio.getHeight();

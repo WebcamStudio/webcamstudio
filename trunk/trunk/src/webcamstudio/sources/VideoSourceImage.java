@@ -7,6 +7,7 @@ package webcamstudio.sources;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Iterator;
@@ -132,12 +133,15 @@ public class VideoSourceImage extends VideoSource {
                     locations.add(locs[i]);
                 }
             }
-
             if (index >= locations.size()) {
                 index = 0;
             }
-
-            java.net.URL url = new java.net.URL(locations.get(index++));
+            String l = locations.get(index++);
+            if (new File(l).exists()){
+                //This is a local file in absolute path
+                l = new File(l).toURI().toString();
+            }
+            java.net.URL url = new java.net.URL(l);
             if (url.getPath().toUpperCase().endsWith(".GIF")) {
                 GifDecoder decoder = new GifDecoder();
                 decoder.read(url.openStream());

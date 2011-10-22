@@ -13,7 +13,6 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.AbstractMap;
 import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -22,8 +21,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.InvalidPreferencesFormatException;
-import java.util.prefs.Preferences;
-import java.util.zip.ZipEntry;
 import javax.xml.parsers.ParserConfigurationException;
 import webcamstudio.components.Mixer;
 import webcamstudio.exporter.vloopback.VideoOutput;
@@ -36,49 +33,73 @@ import webcamstudio.sources.*;
  * @author pballeux
  */
 public class Studio {
-
+    
     private int outputWidth = 320;
     private int outputHeight = 240;
     private String device = "/dev/video1";
     private int pixFormat = VideoOutput.RGB24;
     private boolean enabledAudioMixer = false;
-    final public static String[] SUPPORTEDEXT = {".studio",".studioz"};
+    final public static String[] SUPPORTEDEXT = {".studio", ".studioz"};
     final public static String STUDIOPATH = "%STUDIOPATH%";
-
-    public Studio() {
+    private StudioListener listener = null;
+    
+    public Studio(StudioListener l) {
+        listener = l;
     }
-
+    
     public boolean isAudioMixerActive() {
         return enabledAudioMixer;
     }
-
+    
     public void setEnabledAudioMixer(boolean active) {
         enabledAudioMixer = active;
     }
-
+    
     public int getWidth() {
         return outputWidth;
     }
-
+    
     public int getHeight() {
         return outputHeight;
     }
-
+    
     public int getPixFormat() {
         return pixFormat;
     }
-
+    
     public String getDevice() {
         return device;
     }
-
-    public void loadStudio(File studio) throws BackingStoreException, InvalidPreferencesFormatException, IOException {
-        if (studio.getName().endsWith(".studioz")){
-            loadCompressedStudio(studio);
-        } else if (studio.getName().endsWith(".studio")){
-            loadUnCompressedStudio(studio);
-        }
+    
+    public void loadStudio(final File studio) throws BackingStoreException, InvalidPreferencesFormatException, IOException {
+        new Thread(new Runnable() {
+            
+            @Override
+            public void run() {
+                try {
+                    if (listener != null) {
+                        listener.startLoading(studio.getName(), 1);
+                    }
+                    if (studio.getName().endsWith(".studioz")) {
+                        loadCompressedStudio(studio);
+                    } else if (studio.getName().endsWith(".studio")) {
+                        loadUnCompressedStudio(studio);
+                    }
+                    if (listener != null) {
+                        listener.completedLoading(studio.getName());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    if (listener != null) {
+                        listener.completedLoading(e.getMessage());
+                    }
+                }
+            }
+        }).start();
+        
+        
     }
+    
     private void loadUnCompressedStudio(File studio) throws BackingStoreException, InvalidPreferencesFormatException, IOException {
         java.util.prefs.Preferences prefs = java.util.prefs.Preferences.userNodeForPackage(this.getClass());
         prefs.node("Sources").removeNode();
@@ -100,15 +121,35 @@ public class Studio {
             Layout.addLayout(layout);
         }
     }
-
-    public void saveStudio(File studio, Mixer mixer) throws ParserConfigurationException, BackingStoreException, FileNotFoundException, IOException, URISyntaxException {
-        if (studio.getName().endsWith(".studioz")) {
-            saveCompressedStudio(studio, mixer, true);
-        } else if (studio.getName().endsWith(".studio")) {
-            saveUnCompressedStudio(studio, mixer);
-        }
+    
+    public void saveStudio(final File studio, final Mixer mixer) throws ParserConfigurationException, BackingStoreException, FileNotFoundException, IOException, URISyntaxException {
+        new Thread(new Runnable() {
+            
+            @Override
+            public void run() {
+                try {
+                    if (listener != null) {
+                        listener.startSaving(studio.getName(), 1);
+                    }
+                    
+                    if (studio.getName().endsWith(".studioz")) {
+                        saveCompressedStudio(studio, mixer, true);
+                    } else if (studio.getName().endsWith(".studio")) {
+                        saveUnCompressedStudio(studio, mixer);
+                    }
+                    if (listener != null) {
+                        listener.completedSaving(studio.getName());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    if (listener != null) {
+                        listener.completedSaving(e.getMessage());
+                    }
+                }
+            }
+        }).start();
     }
-
+    
     private void saveUnCompressedStudio(File studio, Mixer mixer) throws ParserConfigurationException, BackingStoreException, FileNotFoundException, IOException {
         java.util.prefs.Preferences prefs = java.util.prefs.Preferences.userNodeForPackage(this.getClass());
         java.io.FileOutputStream fout = new java.io.FileOutputStream(studio);
@@ -138,7 +179,7 @@ public class Studio {
         prefs.flush();
         fout.close();
     }
-
+    
     public static VideoSource getSourceFromClassName(String currentClass) {
         VideoSource source = null;
         if (currentClass.equals(VideoSourceMovie.class.getName()) || currentClass.equals(VideoSourceMovie.class.getName().replaceAll(".sources", ""))) {
@@ -179,7 +220,7 @@ public class Studio {
         //webcamstudio.sources.VideoSourcePipeline
         return source;
     }
-
+    
     public static String getKeyIndex(int index) {
         String orderNumber = index + "";
         //Padding order with 0 to ensure that when loaded, it will be in the same order as it was saved...
@@ -188,97 +229,128 @@ public class Studio {
         }
         return orderNumber;
     }
-
+    
     private void saveCompressedStudio(File file, Mixer mixer, boolean includeSource) throws IOException, BackingStoreException, ParserConfigurationException, URISyntaxException {
         java.io.OutputStream out = new java.io.FileOutputStream(file);
+        java.util.TreeMap<String,String> originalPath = new java.util.TreeMap<String, String>();
         java.util.jar.JarOutputStream jarFile = new java.util.jar.JarOutputStream(out);
-        File studioFile = File.createTempFile("WS4GL", ".studio");
-        saveUnCompressedStudio(studioFile, mixer);
-        addEntry(jarFile, studioFile, "default.studio");
+        jarFile.setLevel(9);
+        if (listener != null) {
+            listener.startSaving(file.getName(), Layout.getLayouts().size());
+        }
+        int index = 0;
         if (includeSource) {
             for (Layout layout : Layout.getLayouts().values()) {
                 for (LayoutItem item : layout.getItems()) {
                     String fileSource = item.getSource().getLocation();
                     if (!fileSource.startsWith("/dev/")) {
                         File location = new File(fileSource);
-                        if (fileSource.startsWith("file:")){
+                        if (fileSource.startsWith("file:")) {
                             URI uri = new URL(fileSource).toURI();
                             location = new File(uri);
                         }
                         if (location.exists() && location.isFile()) {
-                            addEntry(jarFile, location, location.getName());
+                            addEntry(jarFile, location, location.getName(), index);
+                            originalPath.put(item.getSource().getUUID(), item.getSource().getLocation()+"");
+                            item.getSource().setLocation(STUDIOPATH + location.getName());
                         }
-                        item.getSource().setLocation(STUDIOPATH + location.getName());
                     }
                 }
+                index++;
             }
         }
+        File studioFile = File.createTempFile("WS4GL", ".studio");
+        saveUnCompressedStudio(studioFile, mixer);
+        addEntry(jarFile, studioFile, "default.studio", index++);
         jarFile.flush();
         jarFile.close();
         studioFile.delete();
+        //Resetting original paths
+        for (Layout layout : Layout.getLayouts().values()){
+            for (LayoutItem item : layout.getItems()){
+                if (originalPath.containsKey(item.getSource().getUUID())){
+                    item.getSource().setLocation(originalPath.get(item.getSource().getUUID()));
+                }
+            }
+        }
     }
-
-    private void addEntry(JarOutputStream jar, File file, String name) throws IOException {
+    
+    private void addEntry(JarOutputStream jar, File file, String name, int index) throws IOException {
         JarEntry jarAdd = new JarEntry(name);
         jarAdd.setTime(file.lastModified());
         jar.putNextEntry(jarAdd);
-
+        long size = file.length();
         // Write file to archive
         FileInputStream in = new FileInputStream(file);
         byte[] buffer = new byte[65536];
         int count = in.read(buffer, 0, buffer.length);
+        long total = 0;
         while (count > 0) {
+            if (listener != null) {
+                total +=count;
+                listener.compressing(name, size, total, index);
+            }
             jar.write(buffer, 0, count);
             count = in.read(buffer, 0, buffer.length);
         }
         in.close();
     }
-
+    
     private void loadCompressedStudio(File studio) throws IOException, BackingStoreException, InvalidPreferencesFormatException {
         JarFile jarFile = new JarFile(studio);
         Enumeration<JarEntry> entries = jarFile.entries();
         byte[] buffer = new byte[65536];
         
         File wsDir = new File(System.getProperty("user.home"), ".webcamstudio");
-        File tmpDir = new File(wsDir,"tmpstudio");
-        if (tmpDir.exists()){
+        File tmpDir = new File(wsDir, "tmpstudio");
+        if (tmpDir.exists()) {
             tmpDir.delete();
         } else {
             tmpDir.mkdir();
         }
         tmpDir.deleteOnExit();
         //Extracting files, including default.studio
-        while (entries.hasMoreElements()){
+        if (listener != null) {
+            listener.startLoading(studio.getName(), jarFile.size());
+        }
+        int index = 0;
+        while (entries.hasMoreElements()) {
             JarEntry entry = entries.nextElement();
-            File outputFile = new File (tmpDir,entry.getName());
-            if (outputFile.exists()){
+            File outputFile = new File(tmpDir, entry.getName());
+            if (outputFile.exists()) {
                 outputFile.delete();
             }
             outputFile.deleteOnExit();
             FileOutputStream out = new FileOutputStream(outputFile);
             InputStream in = jarFile.getInputStream(jarFile.getEntry(entry.getName()));
             int count = in.read(buffer, 0, buffer.length);
-            while (count>0){
+            long total = 0;
+            while (count > 0) {
+                if (listener != null) {
+                    total += count;
+                    listener.compressing(entry.getName(), entry.getSize(), total, index);
+                }
                 out.write(buffer, 0, count);
                 count = in.read(buffer, 0, buffer.length);
             }
             out.close();
             in.close();
+            index++;
         }
-        File studioFile = new File(tmpDir,"default.studio");
+        File studioFile = new File(tmpDir, "default.studio");
         loadUnCompressedStudio(studioFile);
-        for (Layout layout : Layout.getLayouts().values()){
-            for (LayoutItem item : layout.getItems()){
+        for (Layout layout : Layout.getLayouts().values()) {
+            for (LayoutItem item : layout.getItems()) {
                 String location = item.getSource().getLocation();
-                if (location.startsWith(STUDIOPATH)){
-                    item.getSource().setLocation(location.replaceFirst(STUDIOPATH, tmpDir.getAbsolutePath()+"/"));
+                if (location.startsWith(STUDIOPATH)) {
+                    item.getSource().setLocation(location.replaceFirst(STUDIOPATH, tmpDir.getAbsolutePath() + "/"));
                 }
             }
         }
     }
-
+    
     public static void main(String[] args) {
-        Studio studio = new Studio();
+        Studio studio = new Studio(null);
         try {
             try {
                 studio.saveStudio(new File("/home/patrick/test.studioz"), new Mixer());
