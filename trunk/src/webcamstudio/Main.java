@@ -626,14 +626,14 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
             chooser.setToolTipText(java.util.ResourceBundle.getBundle("webcamstudio/Languages").getString("SELECT_YOU_STUDIO_OUTPUT_FILE..."));
 
             chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-            javax.swing.filechooser.FileFilter filter = new javax.swing.filechooser.FileNameExtensionFilter(java.util.ResourceBundle.getBundle("webcamstudio/Languages").getString("WEBCAMSTUDIO_FILE"), "studio");
+            javax.swing.filechooser.FileFilter filter = new javax.swing.filechooser.FileNameExtensionFilter(java.util.ResourceBundle.getBundle("webcamstudio/Languages").getString("WEBCAMSTUDIO_FILE"), "studio","studioz");
             chooser.setAcceptAllFileFilterUsed(false);
             chooser.setFileFilter(filter);
 
             if (chooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
                 java.io.File f = chooser.getSelectedFile();
                 if (f != null) {
-                    if (!f.getName().endsWith(".studio")) {
+                    if (!f.getName().endsWith(".studio") && !f.getName().endsWith(".studioz")) {
                         f = new java.io.File(f.getAbsolutePath() + ".studio");
                     }
                     studio = f;
@@ -641,6 +641,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
             }
         }
 
+        setCursor(new Cursor(Cursor.WAIT_CURSOR));
         if (studio != null) {
             try {
                 if (studio.exists()) {
@@ -654,7 +655,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
+        setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
         }
     }
 
@@ -664,7 +665,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         javax.swing.JFileChooser chooser = new javax.swing.JFileChooser(lastStudioFile);
         chooser.setToolTipText(java.util.ResourceBundle.getBundle("webcamstudio/Languages").getString("SELECT_YOUR_STUDIO_FILE_TO_LOAD..."));
         chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        javax.swing.filechooser.FileFilter filter = new javax.swing.filechooser.FileNameExtensionFilter(java.util.ResourceBundle.getBundle("webcamstudio/Languages").getString("WEBCAMSTUDIO_FILE"), "studio");
+        javax.swing.filechooser.FileFilter filter = new javax.swing.filechooser.FileNameExtensionFilter(java.util.ResourceBundle.getBundle("webcamstudio/Languages").getString("WEBCAMSTUDIO_FILE"), "studio","studioz");
         chooser.setAcceptAllFileFilterUsed(false);
         chooser.setFileFilter(filter);
 
@@ -681,6 +682,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
             currentStudioFile = providedFile;
         }
         if (currentStudioFile != null) {
+            setCursor(new Cursor(Cursor.WAIT_CURSOR));
             try {
                 lastStudioFile = currentStudioFile;
                 mnuStudioLoadLast.setEnabled(true);
@@ -693,6 +695,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
         }
     }
 
