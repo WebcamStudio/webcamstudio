@@ -110,8 +110,8 @@ public class VideoSourceMovie extends VideoSource {
     @Override
     public void startSource() {
         isPlaying = true;
-        ffmpeg.setHeight(outputWidth);
-        ffmpeg.setWidth(outputHeight);
+        ffmpeg.setHeight(captureWidth);
+        ffmpeg.setWidth(captureHeight);
         ffmpeg.setInput(location);
         ffmpeg.setRate(frameRate);
         ffmpeg.setSeek(startingPosition);
