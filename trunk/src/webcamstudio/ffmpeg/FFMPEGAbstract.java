@@ -29,15 +29,20 @@ public abstract class FFMPEGAbstract {
     int width = 320;
     int height = 240;
     int rate = 15;
-    String sinkFormat = "rawvideo";
+    String sinkFormat = "-f rawvideo -pix_fmt argb";
     String sinkOutput = "pipe:1";
     String sourceFormat = "";
     String sourceInput = "/dev/video0 ";
+    String sourcePixelFormat = "";
     String sinkAudio = "";
-    String command = "ffmpeg";
+    String sinkQuality = "";
+    String command = "ffmpeg -y -re";
     long seek = 0;
     int volume = 0;
 
+    public void setOutput(String output){
+        sinkOutput = output;
+    }
     public void setCaptureWidth(int w) {
         captureWidth = w;
     }
@@ -62,8 +67,6 @@ public abstract class FFMPEGAbstract {
         for (String c : commands) {
             list.add(c);
         }
-
-        list.add("-re");
         if (captureWidth > 0 && captureHeight > 0) {
             list.add("-s");
             list.add(captureWidth + "x" + captureHeight);
@@ -71,6 +74,10 @@ public abstract class FFMPEGAbstract {
         if (!sourceFormat.isEmpty()) {
             list.add("-f");
             list.add(sourceFormat);
+        }
+        if (!sourcePixelFormat.isEmpty()){
+            list.add("-pix_fmt");
+            list.add(sourcePixelFormat);
         }
         if (seek > 0) {
             list.add("-ss");
@@ -82,12 +89,18 @@ public abstract class FFMPEGAbstract {
         }
         list.add("-i");
         list.add(sourceInput);
+        if (!sinkQuality.isEmpty()) {
+            String[] f = sinkQuality.split(" ");
+            for (String s : f){
+                list.add(s);
+            }
+        }
 
         if (!sinkFormat.isEmpty()) {
-            list.add("-f");
-            list.add(sinkFormat);
-            list.add("-pix_fmt");
-            list.add("argb");
+            String[] f = sinkFormat.split(" ");
+            for (String s : f){
+                list.add(s);
+            }
         }
 
 
@@ -99,8 +112,6 @@ public abstract class FFMPEGAbstract {
         if (!sinkOutput.isEmpty()) {
             list.add(sinkOutput);
         }
-
-
         if (!sinkAudio.isEmpty()) {
             String[] parts = sinkAudio.split(" ");
             for (String s : parts) {
