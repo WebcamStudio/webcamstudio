@@ -11,6 +11,8 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -19,10 +21,11 @@ import java.util.ArrayList;
 public abstract class FFMPEGAbstract {
 
     java.io.DataInput input = null;
-    boolean stopMe = true;
+    boolean stopMe = false;
+    boolean stopped = true;
     BufferedImage image = null;
-    int captureWidth=0;
-    int captureHeight=0;
+    int captureWidth = 0;
+    int captureHeight = 0;
     int width = 320;
     int height = 240;
     int rate = 15;
@@ -35,13 +38,14 @@ public abstract class FFMPEGAbstract {
     long seek = 0;
     int volume = 0;
 
-    
-    public void setCaptureWidth(int w){
-        captureWidth=w;
+    public void setCaptureWidth(int w) {
+        captureWidth = w;
     }
-    public void setCaptureHeight(int h){
-        captureHeight=h;
+
+    public void setCaptureHeight(int h) {
+        captureHeight = h;
     }
+
     public void setVolume(int perc) {
         volume = perc;
     }
@@ -53,16 +57,16 @@ public abstract class FFMPEGAbstract {
     protected String[] buildParms() {
         String retValue[] = null;
         ArrayList<String> list = new ArrayList<String>();
-        
+
         String[] commands = command.split(" ");
-        for (String c : commands){
+        for (String c : commands) {
             list.add(c);
         }
-        
+
         list.add("-re");
-        if (captureWidth>0 && captureHeight>0){
+        if (captureWidth > 0 && captureHeight > 0) {
             list.add("-s");
-            list.add(captureWidth+"x"+captureHeight);
+            list.add(captureWidth + "x" + captureHeight);
         }
         if (!sourceFormat.isEmpty()) {
             list.add("-f");
@@ -126,16 +130,17 @@ public abstract class FFMPEGAbstract {
         sourceInput = input;
     }
 
-    protected void setOpaque(int[] pixels){
+    protected void setOpaque(int[] pixels) {
         //BY default, do nothing;
     }
+
     public void read() {
 
         new Thread(new Runnable() {
 
             @Override
             public void run() {
-                stopMe = false;
+                stopped = false;
                 String[] parms = buildParms();
                 byte[] buffer = new byte[width * height * 4];
                 try {
@@ -144,16 +149,14 @@ public abstract class FFMPEGAbstract {
                         input = new DataInputStream(process.getInputStream());
                         input.readFully(buffer);
                         while (!stopMe) {
-                            if (buffer[0] != 0) {
-                                BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-                                int[] imgData = ((java.awt.image.DataBufferInt) img.getRaster().getDataBuffer()).getData();
-                                IntBuffer data = ByteBuffer.wrap(buffer).order(ByteOrder.BIG_ENDIAN).asIntBuffer();
-                                data.get(imgData);
-                                setOpaque(imgData);
-                                image = img;
-                            } else {
-                                image = null;
-                            }
+
+                            BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+                            int[] imgData = ((java.awt.image.DataBufferInt) img.getRaster().getDataBuffer()).getData();
+                            IntBuffer data = ByteBuffer.wrap(buffer).order(ByteOrder.BIG_ENDIAN).asIntBuffer();
+                            data.get(imgData);
+                            setOpaque(imgData);
+                            image = img;
+
                             input.readFully(buffer);
                         }
                     } else {
@@ -165,23 +168,31 @@ public abstract class FFMPEGAbstract {
                             }
                         }
                     }
+                    process.getOutputStream().write(3);
                     process.destroy();
-
                 } catch (IOException ex) {
                     ex.printStackTrace();
                     System.out.println(new String(buffer).trim());
                 }
-                stopMe = true;
+                stopped = true;
             }
         }).start();
     }
 
     public void stop() {
         stopMe = true;
+        while (!stopped) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(FFMPEGAbstract.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        stopMe = false;
     }
 
     public boolean isStopped() {
-        return stopMe;
+        return stopped;
     }
 
     public BufferedImage getImage() {

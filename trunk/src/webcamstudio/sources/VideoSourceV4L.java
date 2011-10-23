@@ -136,7 +136,7 @@ public class VideoSourceV4L extends VideoSource {
 
     @Override
     public boolean isPlaying() {
-        return isPlaying;
+        return !ffmpeg.isStopped();
 
 
     }
