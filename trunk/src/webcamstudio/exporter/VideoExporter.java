@@ -20,7 +20,7 @@
 package webcamstudio.exporter;
 
 import webcamstudio.*;
-import org.gstreamer.*;
+
 import webcamstudio.components.Mixer;
 
 /**
@@ -29,7 +29,7 @@ import webcamstudio.components.Mixer;
  */
 public abstract class VideoExporter {
     protected boolean stopMe = false;
-    protected String name = "Pipeline";
+    protected String name = "Export";
 
     protected VideoExporter() {
     }
@@ -41,17 +41,6 @@ public abstract class VideoExporter {
     }
     public void stopExport() {
         stopMe=true;
-        if (pipe != null) {
-            pipe.stop();
-            pipe.getState();
-            java.util.List<Element> list = pipe.getElements();
-            for (int i = 0; i < list.size(); i++) {
-                list.get(i).disown();
-                pipe.remove(list.get(i));
-            }
-            pipe = null;
-            stopMixer = true;
-        }
     }
 
     public String toString(){
@@ -116,7 +105,6 @@ public abstract class VideoExporter {
         vbitrate = r;
     }
     protected java.io.File output = null;
-    protected Pipeline pipe = null;
     protected int captureWidth = 320;
     protected int captureHeight = 240;
     protected int width = 320;

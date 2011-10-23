@@ -29,9 +29,11 @@ sed -e "s/VERSION/$VALUE/" webcamstudio >package/usr/bin/webcamstudio
 sed -e "s/VERSION/$VALUE/" webcamstudioConsole >package/usr/bin/webcamstudioConsole
 cp ws4gl-pulseaudio-getsources.sh package/usr/bin
 cp ws4gl-pulseaudio-getapps.sh package/usr/bin
+cp webcamstudiodv.sh package/usr/bin
 chmod 755 package/usr/bin/webcamstudio
 chmod 755 package/usr/bin/webcamstudioConsole
 chmod 755 package/usr/bin/ws4gl-pulseaudio*
+chmod 755 package/usr/bin/webcamstudiodv.sh
 cp webcamstudio.png package/usr/share/pixmaps
 cp webcamstudio.desktop package/usr/share/applications
 cp webcamstudioConsole.desktop package/usr/share/applications

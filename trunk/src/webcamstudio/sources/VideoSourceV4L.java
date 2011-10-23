@@ -22,26 +22,23 @@ package webcamstudio.sources;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.nio.IntBuffer;
 import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
-import org.gstreamer.*;
-import org.gstreamer.elements.RGBDataSink;
 import webcamstudio.controls.ControlRescale;
 import webcamstudio.exporter.vloopback.VideoDevice;
+import webcamstudio.ffmpeg.FFMPEGV4L2;
 
 /**
  *
  * @author pballeux
  */
-public class VideoSourceV4L extends VideoSource implements RGBDataSink.Listener {
+public class VideoSourceV4L extends VideoSource {
 
-    protected String source = "v4lsrc";
-    private RGBDataSink sink = null;
-    private int frameCount = 0;
-    private java.util.Timer timer = new Timer("V4L",true);
+    private java.util.Timer timer = new Timer("V4L", true);
+    protected FFMPEGV4L2 ffmpeg = new FFMPEGV4L2();
 
     public VideoSourceV4L() {
         outputWidth = 320;
@@ -110,129 +107,31 @@ public class VideoSourceV4L extends VideoSource implements RGBDataSink.Listener 
 
     public void stopSource() {
         stopMe = true;
-        if (timer!=null){
+        if (timer != null) {
             timer.cancel();
-            timer=null;
+            timer = null;
         }
-        if (pipe != null) {
-
-            pipe.stop();
-            pipe.getState();
-            sink = null;
-            pipe = null;
+        if (!ffmpeg.isStopped()) {
+            ffmpeg.stop();
         }
         image = null;
-        pixels = null;
-        tempimage = null;
         isPlaying = false;
     }
 
     @Override
     public void startSource() {
-        new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-                startSource2();
-            }
-        }).start();
-
-    }
-
-    private void startSource2() {
         isPlaying = true;
-        stopMe = false;
-        location = getDeviceForName(name, new File(location)).getAbsolutePath();
-
-        try {
-            sink = new RGBDataSink(name + uuId, this);
-            sink.setPassDirectBuffer(true);
-            String rescaling = "";
-            if (doRescale) {
-                rescaling = " ! ffmpegcolorspace ! videorate ! video/x-raw-rgb,framerate=" + frameRate + "/1" + " ! videoscale ! video/x-raw-rgb,width=" + captureWidth + ",height=" + captureHeight;
-            }
-
-            if (activeEffect.length() == 0) {
-                pipe = Pipeline.launch(source + " device=" + location + " " + rescaling + " ! ffmpegcolorspace ! video/x-raw-rgb,bpp=32,depth=24, red_mask=65280, green_mask=16711680, blue_mask=-16777216 ! ffmpegcolorspace name=tosink");
-            } else {
-                pipe = Pipeline.launch(source + " device=" + location + " " + rescaling + " ! ffmpegcolorspace ! " + activeEffect + " ! ffmpegcolorspace ! video/x-raw-rgb,bpp=32,depth=24,bpp=32,depth=24, red_mask=65280, green_mask=16711680, blue_mask=-16777216 !  ffmpegcolorspace name=tosink");
-
-            }
-            pipe.setName(name + uuId);
-            pipe.add(sink);
-            Element e = pipe.getElementByName("tosink");
-            e.link(sink);
-
-            pipe.getBus().connect(new Bus.SEGMENT_START() {
-
-                public void segmentStart(GstObject arg0, Format arg1, long arg2) {
-                    System.out.println("SEGMENT_START: " + arg0.toString() + " : " + arg1 + ", " + arg2);
-                }
-            });
-            pipe.getBus().connect(new Bus.INFO() {
-
-                @Override
-                public void infoMessage(GstObject arg0, int arg1, String arg2) {
-                    System.out.println("INFO: " + arg1 + ", " + arg2);
-                }
-            });
-            pipe.getBus().connect(new Bus.BUFFERING() {
-
-                @Override
-                public void bufferingData(GstObject arg0, int arg1) {
-                    System.out.println("BUFFERING: " + arg1);
-                }
-            });
-
-            pipe.getBus().connect(new Bus.EOS() {
-
-                @Override
-                public void endOfStream(GstObject arg0) {
-                    pipe.stop();
-                }
-            });
-            pipe.getBus().connect(new Bus.ERROR() {
-
-                @Override
-                public void errorMessage(GstObject arg0, int arg1, String arg2) {
-                    error(name + " Error: " + arg0 + "," + arg1 + ", " + arg2);
-                }
-            });
-
-//            new Thread(new Runnable() {
-//
-//                @Override
-//                public void run() {
-//                    while (!stopMe) {
-//                        if (frameCount != frameRate) {
-//                            System.out.println(name + ": " + frameCount + " fps");
-//                        }
-//                        frameCount = 0;
-//                        try {
-//                            Thread.sleep(1000);
-//                        } catch (InterruptedException ex) {
-//                            Logger.getLogger(VideoSourceV4L.class.getName()).log(Level.SEVERE, null, ex);
-//                        }
-//                    }
-//                }
-//            }).start();
-            pipe.setState(State.PLAYING);
-            if (timer!=null){
-                timer.cancel();
-                timer=null;
-            }
-            timer = new Timer("V4L",true);
-            timer.scheduleAtFixedRate(new VideoSourcePixelsRenderer(this), 0, 1000/frameRate);
-        } catch (Exception e) {
-            e.printStackTrace();
+        ffmpeg.setHeight(outputWidth);
+        ffmpeg.setWidth(outputHeight);
+        ffmpeg.setInput(location);
+        ffmpeg.setRate(frameRate);
+        ffmpeg.read();
+        if (timer != null) {
+            timer.cancel();
+            timer = null;
         }
-    }
-
-    public void setImage(int[] data) {
-        if (image == null || image.getWidth() != captureWidth || image.getHeight() != captureHeight) {
-            image = new BufferedImage(captureWidth, captureHeight, java.awt.image.BufferedImage.TYPE_INT_ARGB);
-        }
-        image.setRGB(0, 0, captureWidth, captureHeight, data, 0, captureWidth);
+        timer = new Timer(name, true);
+        timer.scheduleAtFixedRate(new imageV4L(this), 0, 1000 / frameRate);
     }
 
     @Override
@@ -244,35 +143,17 @@ public class VideoSourceV4L extends VideoSource implements RGBDataSink.Listener 
 
     @Override
     public void pause() {
-        if (pipe != null) {
-            pipe.pause();
-        }
     }
 
     public void play() {
-        if (pipe != null) {
-            pipe.play();
-        }
     }
 
     public boolean isPaused() {
-        boolean retValue = false;
-
-
-        if (pipe != null) {
-            retValue = (pipe.getState() == State.PAUSED);
-
-
-        }
-        return retValue;
-
-
+        return false;
     }
 
     public boolean hasText() {
         return false;
-
-
     }
 
     @Override
@@ -281,8 +162,6 @@ public class VideoSourceV4L extends VideoSource implements RGBDataSink.Listener 
 
 
     }
-    private org.gstreamer.elements.RGBDataSink elementSink = null;
-    private Pipeline pipe = null;
 
     @Override
     public javax.swing.ImageIcon getThumbnail() {
@@ -299,21 +178,33 @@ public class VideoSourceV4L extends VideoSource implements RGBDataSink.Listener 
 
     }
 
-    @Override
-    public void rgbFrame(int w, int h, IntBuffer buffer) {
-        captureWidth = w;
-        captureHeight = h;
-        int[] array = new int[w * h];
-        buffer.get(array);
-        pixels = array;
-
-    }
-    protected void updateOutputImage(BufferedImage img){
+    protected void updateOutputImage(BufferedImage img) {
+        if (img != null) {
             applyFaceDetection(img);
             detectActivity(img);
             applyEffects(img);
             applyShape(img);
             image = img;
-        
+        }
+    }
+}
+
+class imageV4L extends TimerTask {
+
+    VideoSourceV4L source = null;
+    boolean isDrawing = false;
+
+    public imageV4L(VideoSourceV4L source) {
+        this.source = source;
+    }
+
+    @Override
+    public void run() {
+        if (!isDrawing) {
+            isDrawing = true;
+            BufferedImage img = source.ffmpeg.getImage();
+            source.updateOutputImage(img);
+            isDrawing = false;
+        }
     }
 }

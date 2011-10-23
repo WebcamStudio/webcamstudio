@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
@@ -30,7 +31,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.UIManager;
-import org.gstreamer.*;
 import webcamstudio.layout.transitions.Transition;
 import webcamstudio.sources.*;
 import webcamstudio.components.*;
@@ -38,7 +38,6 @@ import webcamstudio.components.LayoutManager2;
 import webcamstudio.exporter.VideoExporter;
 import webcamstudio.exporter.vloopback.V4LLoopback;
 import webcamstudio.exporter.vloopback.VideoOutput;
-import webcamstudio.layout.Layout;
 import webcamstudio.studio.Studio;
 import webcamstudio.visage.FaceDetector;
 
@@ -59,7 +58,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
     private File lastLoopbackUsed = null;
     public static int DesktopTaskbarHeight = 0;
     public static FaceDetector MainFaceDetector = new FaceDetector();
-    private WebCamera webcamera = null;
     private java.util.TreeMap<String, VideoSource> devices = null;
     private java.util.TreeMap<String, VideoSource> movies = null;
     private java.util.TreeMap<String, VideoSource> images = null;
@@ -81,8 +79,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
 
     /** Creates new form Main */
     public Main() {
-        Gst.init();
-
         initComponents();
         // if XMODE is already try, override OS Detection
         XMODE = !isLinux() || XMODE;
@@ -128,7 +124,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
 
         panLayouts.add(layoutManager, BorderLayout.CENTER);
 
-        webcamera = new WebCamera();
         new Thread(new Runnable() {
 
             @Override
@@ -308,15 +303,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         }
         mediaPanel.addMedia(pwid);
 
-        buildSourcePipelines();
-        MediaPanelList ppipes = new MediaPanelList(this);
-        ppipes.setPanelName(bundle.getString("PIPELINES"));
-
-        for (VideoSource v : pipelines.values()) {
-            ppipes.addMedia(v);
-        }
-        mediaPanel.addMedia(ppipes);
-
         setCursor(Cursor.getDefaultCursor());
         mediaPanel.revalidate();
         panBrowser.removeAll();
@@ -384,36 +370,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         }
     }
 
-    private void buildSourcePipelines() {
-        pipelines = new java.util.TreeMap<String, VideoSource>();
-        exporters = new java.util.TreeMap<String, VideoExporter>();
-        String type = "source";
-        for (String d : dirToScan) {
-            File dir = new File(d);
-            if (dir.exists()) {
-                File[] fplugins = dir.listFiles();
-                for (File f : fplugins) {
-                    if (f.getName().endsWith(".wspl")) {
-                        try {
-                            java.util.Properties plugin = new java.util.Properties();
-                            plugin.load(f.toURI().toURL().openStream());
-                            type = plugin.getProperty("type");
-                            if (type == null || type.toLowerCase().equals("source")) {
-                                VideoSourcePipeline vm = new VideoSourcePipeline(f);
-                                if (pipelines.containsKey(vm.getName())) {
-                                    pipelines.put(vm.getName() + "-" + vm.getUUID(), vm);
-                                } else {
-                                    pipelines.put(vm.getName(), vm);
-                                }
-                            }
-                        } catch (IOException ex) {
-                            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    }
-                }
-            }
-        }
-    }
+   
 
     private void buildSourceImages() {
         images = new java.util.TreeMap<String, VideoSource>();
@@ -496,9 +453,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         if (new File("/dev/fw1").exists()) {
             VideoSourceDV dv = new VideoSourceDV();
             devices.put(dv.getName() + dv.getUUID(), dv);
-        }
-        if (webcamera.getSource() != null) {
-            devices.put(webcamera.getSource().getName(), webcamera.getSource());
         }
     }
 
@@ -783,7 +737,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         mnuOutput = new javax.swing.JMenu();
         mnuVideoRecorder = new javax.swing.JMenuItem();
         mnuOutputSpnashot = new javax.swing.JMenuItem();
-        mnuOutputGISSCaster = new javax.swing.JMenuItem();
         mnuOutputSize = new javax.swing.JMenu();
         mnuOutputSize1 = new javax.swing.JRadioButtonMenuItem();
         mnuOutputSize2 = new javax.swing.JRadioButtonMenuItem();
@@ -1151,16 +1104,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
             }
         });
         mnuOutput.add(mnuOutputSpnashot);
-
-        mnuOutputGISSCaster.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/gisstv2-16x16.png"))); // NOI18N
-        mnuOutputGISSCaster.setText(bundle.getString("GISSCASTER")); // NOI18N
-        mnuOutputGISSCaster.setName("mnuOutputGISSCaster"); // NOI18N
-        mnuOutputGISSCaster.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuOutputGISSCasterActionPerformed(evt);
-            }
-        });
-        mnuOutput.add(mnuOutputGISSCaster);
 
         mnuOutputSize.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/zoom-fit-best.png"))); // NOI18N
         mnuOutputSize.setText(bundle.getString("OUTPUT_SIZE")); // NOI18N
@@ -1714,9 +1657,13 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         url.setVisible(true);
         String location = url.getURL();
         if (location.trim().length() != 0) {
-            VideoSourceMovie source = new VideoSourceMovie(location);
-
-            addSourceToDesktop(source);
+            VideoSourceMovie source;
+            try {
+                source = new VideoSourceMovie(new URL(location));
+                addSourceToDesktop(source);
+            } catch (MalformedURLException ex) {
+                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }//GEN-LAST:event_mnuSourcesStreamActionPerformed
 
@@ -1765,14 +1712,6 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
     private void mnuOutputFPSActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuOutputFPSActionPerformed
         mixer.setFramerate(new Integer(evt.getActionCommand()));
     }//GEN-LAST:event_mnuOutputFPSActionPerformed
-
-    private void mnuOutputGISSCasterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuOutputGISSCasterActionPerformed
-        GISScaster g = new GISScaster(mixer, this, false);
-        g.pack();
-        g.setLocationRelativeTo(this);
-        g.setVisible(true);
-
-    }//GEN-LAST:event_mnuOutputGISSCasterActionPerformed
 
     private void mnuSourcesWidgetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuSourcesWidgetActionPerformed
         javax.swing.JFileChooser chooser = new javax.swing.JFileChooser(lastFolder);
@@ -2000,7 +1939,6 @@ private void mnuExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
     private javax.swing.JRadioButtonMenuItem mnuOutput5FPS;
     private javax.swing.JCheckBoxMenuItem mnuOutputFlipImage;
     private javax.swing.JMenu mnuOutputFramerate;
-    private javax.swing.JMenuItem mnuOutputGISSCaster;
     private javax.swing.JMenuItem mnuOutputLabelStreamPort;
     private javax.swing.JMenu mnuOutputSize;
     private javax.swing.JRadioButtonMenuItem mnuOutputSize1;

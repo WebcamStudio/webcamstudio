@@ -11,7 +11,10 @@
 package webcamstudio.components;
 
 import java.awt.Cursor;
-import org.gstreamer.Gst;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import webcamstudio.InfoListener;
 import webcamstudio.sources.VideoSourceMovie;
 
@@ -43,7 +46,7 @@ public class MovieViewer extends javax.swing.JDialog implements InfoListener {
         cboURL.setModel(model);
     }
 
-    private void play() {
+    private void play() throws MalformedURLException {
         stopMe = false;
         this.setCursor(new Cursor(java.awt.Cursor.WAIT_CURSOR));
         cboURL.setEnabled(false);
@@ -57,7 +60,7 @@ public class MovieViewer extends javax.swing.JDialog implements InfoListener {
             }
             cboURL.validate();
         }
-        source = new VideoSourceMovie(url);
+        source = new VideoSourceMovie(new URL(url));
         source.setListener(this);
         source.setLooping(false);
         new Thread(new Runnable() {
@@ -202,7 +205,11 @@ public class MovieViewer extends javax.swing.JDialog implements InfoListener {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnViewFeedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewFeedActionPerformed
-        play();
+        try {
+            play();
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(MovieViewer.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btnViewFeedActionPerformed
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
@@ -225,7 +232,11 @@ public class MovieViewer extends javax.swing.JDialog implements InfoListener {
 
     private void cboURLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboURLActionPerformed
         if (cboURL.isEnabled()) {
-            play();
+            try {
+                play();
+            } catch (MalformedURLException ex) {
+                Logger.getLogger(MovieViewer.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }//GEN-LAST:event_cboURLActionPerformed
 
@@ -233,7 +244,6 @@ public class MovieViewer extends javax.swing.JDialog implements InfoListener {
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        Gst.init();
         java.awt.EventQueue.invokeLater(new Runnable() {
 
             public void run() {

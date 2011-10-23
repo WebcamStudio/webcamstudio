@@ -4,7 +4,7 @@ Section: video
 Priority: optional
 Architecture: all
 Essential: no
-Depends: default-jre | openjdk-6-jre | sun-java6-jre, gstreamer0.10-plugins-good, gstreamer0.10-plugins-bad,build-essential, gstreamer0.10-plugins-ugly, libdbus-java, gstreamer0.10-pulseaudio, libglib2.0-dev, libjna-java
+Depends: default-jre | openjdk-6-jre | sun-java6-jre,build-essential, libdbus-java, libglib2.0-dev, libjna-java, ffmpeg,dvgrab
 Recommends: 
 Installed-Size: SIZE
 Maintainer: Patrick Balleux <patrick.balleux@gmail.com>

@@ -18,7 +18,6 @@ import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
-import org.gstreamer.Gst;
 import webcamstudio.components.LayoutEventsManager;
 import webcamstudio.components.Preview;
 import webcamstudio.exporter.vloopback.V4L2Loopback;
@@ -49,7 +48,6 @@ public class MainConsole extends javax.swing.JFrame implements InfoListener {
 
     /** Creates new form MainConsole */
     public MainConsole() {
-        Gst.init();
         initComponents();
         XMODE = !isLinux();
         javax.swing.DefaultComboBoxModel model = new javax.swing.DefaultComboBoxModel();
