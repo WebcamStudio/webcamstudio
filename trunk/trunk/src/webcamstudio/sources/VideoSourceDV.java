@@ -74,8 +74,8 @@ public class VideoSourceDV extends VideoSource {
     public void startSource() {
         isPlaying = true;
         ffmpeg.setRate(frameRate);
-        ffmpeg.setWidth(outputWidth);
-        ffmpeg.setHeight(outputHeight);
+        ffmpeg.setHeight(captureWidth);
+        ffmpeg.setWidth(captureHeight);
         ffmpeg.read();
         if (timer != null) {
             timer.cancel();
