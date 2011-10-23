@@ -22,28 +22,30 @@ package webcamstudio.sources;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
-import webcamstudio.*;
-import org.gstreamer.*;
+import webcamstudio.ffmpeg.FFMPEGDV;
 
 /**
  *
  * @author pballeux
  */
-public class VideoSourceDV extends VideoSource implements org.gstreamer.elements.RGBDataSink.Listener {
+public class VideoSourceDV extends VideoSource {
 
     private Timer timer = null;
+    protected FFMPEGDV ffmpeg = new FFMPEGDV();
+
     public VideoSourceDV() {
 
-        location = "DV1394";
+        location = "";
         name = location;
         hasSound = true;
         frameRate = 15;
-        captureWidth=320;
-        captureHeight=240;
-        doRescale=true;
+        captureWidth = 320;
+        captureHeight = 240;
+        doRescale = true;
         controls.add(new webcamstudio.controls.ControlRescale(this));
         controls.add(new webcamstudio.controls.ControlShapes(this));
         controls.add(new webcamstudio.controls.ControlEffects(this));
@@ -56,25 +58,12 @@ public class VideoSourceDV extends VideoSource implements org.gstreamer.elements
     }
 
     public void stopSource() {
-        stopMe = true;
-        if (timer!=null){
+        if (timer != null) {
             timer.cancel();
-            timer=null;
+            timer = null;
         }
-        if (pipe != null) {
-
-            pipe.stop();
-            pipe.getState();
-            elementSink = null;
-            java.util.List<Element> list = pipe.getElements();
-            for (int i = 0; i < list.size(); i++) {
-                list.get(i).disown();
-                pipe.remove(list.get(i));
-            }
-            pipe = null;
+        if (!ffmpeg.isStopped()) {
         }
-        
-        elementSink = null;
         image = null;
         pixels = null;
         tempimage = null;
@@ -84,53 +73,25 @@ public class VideoSourceDV extends VideoSource implements org.gstreamer.elements
     @Override
     public void startSource() {
         isPlaying = true;
-        elementSink = new org.gstreamer.elements.RGBDataSink("RGBDataSink" + uuId, this);
-        String rescaling = "";
-        if (doRescale){
-            rescaling = "! videoscale ! video/x-raw-yuv,width="+captureWidth+",height="+captureHeight+" ! videorate ! video/x-raw-yuv,framerate="+frameRate+"/1";
-        }
-        pipe = Pipeline.launch("dv1394src ! queue ! dvdemux name=d ! dvdec quality=4 ! queue ! deinterlace "+rescaling+" ! ffmpegcolorspace ! video/x-raw-rgb,bpp=32,depth=24, red_mask=65280, green_mask=16711680, blue_mask=-16777216 ! ffmpegcolorspace name=tosink");
-        pipe.add(elementSink);
-        Element e = pipe.getElementByName("tosink");
-        e.link(elementSink);
-        pipe.getBus().connect(new Bus.EOS() {
-
-            public void endOfStream(GstObject arg0) {
-                pipe.stop();
-                if (doLoop) {
-                    pipe.setState(State.PLAYING);
-                }
-            }
-        });
-        pipe.getBus().connect(new Bus.ERROR() {
-
-            public void errorMessage(GstObject arg0, int arg1, String arg2) {
-                error(name + " Error: " + arg0 + "," + arg1 + ", " + arg2);
-                stopSource();
-            }
-        });
-        pipe.setState(State.PLAYING);
-        if (timer!=null){
+        ffmpeg.setRate(frameRate);
+        ffmpeg.setWidth(outputWidth);
+        ffmpeg.setHeight(outputHeight);
+        ffmpeg.read();
+        if (timer != null) {
             timer.cancel();
-            timer=null;
+            timer = null;
         }
-        timer = new Timer(name,true);
-        timer.scheduleAtFixedRate(new VideoSourcePixelsRenderer(this), 0,1000/frameRate);
+        timer = new Timer(name, true);
+        timer.scheduleAtFixedRate(new imageDV(this), 0, 1000 / frameRate);
     }
+
     protected void updateOutputImage(BufferedImage img) {
-        detectActivity(img);
-        applyEffects(img);
-        applyShape(img);
-        image=img;
-    }
-
-    public void rgbFrame(int w, int h, java.nio.IntBuffer buffer) {
-        captureWidth=w;
-        captureHeight=h;
-        int[] array = new int[w*h];
-        buffer.get(array);
-        pixels=array;
-
+        if (img != null) {
+            detectActivity(img);
+            applyEffects(img);
+            applyShape(img);
+            image = img;
+        }
     }
 
     @Override
@@ -140,15 +101,9 @@ public class VideoSourceDV extends VideoSource implements org.gstreamer.elements
 
     @Override
     public void pause() {
-        if (pipe != null) {
-            pipe.pause();
-        }
     }
 
     public void play() {
-        if (pipe != null) {
-            pipe.play();
-        }
     }
 
     public boolean hasText() {
@@ -157,9 +112,6 @@ public class VideoSourceDV extends VideoSource implements org.gstreamer.elements
 
     public boolean isPaused() {
         boolean retValue = false;
-        if (pipe != null) {
-            retValue = (pipe.getState() == State.PAUSED);
-        }
         return retValue;
     }
 
@@ -182,8 +134,18 @@ public class VideoSourceDV extends VideoSource implements org.gstreamer.elements
         return icon;
 
     }
+}
 
-    private org.gstreamer.elements.RGBDataSink elementSink = null;
-    private Pipeline pipe = null;
-    private VideoEffects objVideoEffects = new VideoEffects();
+class imageDV extends TimerTask {
+
+    VideoSourceDV source = null;
+
+    public imageDV(VideoSourceDV s) {
+        source = s;
+    }
+
+    @Override
+    public void run() {
+        source.updateOutputImage(source.ffmpeg.getImage());
+    }
 }

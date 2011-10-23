@@ -36,7 +36,6 @@ import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
-import org.gstreamer.elements.AppSink;
 import webcamstudio.*;
 import webcamstudio.controls.Controls;
 import webcamstudio.sources.effects.Effect;
@@ -904,20 +903,7 @@ public abstract class VideoSource implements InfoListener {
         return layer;
     }
 
-    protected void updateImage(AppSink sink) {
-        if (sink != null) {
-            boolean stopFeeding = false;
-            while (!stopFeeding) {
-                org.gstreamer.Buffer b = sink.pullBuffer();
-                if (b != null) {
-                    IntBuffer bb = b.getByteBuffer().asIntBuffer();
-                    tempimage = new BufferedImage(captureWidth, captureHeight, java.awt.image.BufferedImage.TYPE_INT_ARGB);
-                    tempimage.setRGB(0, 0, captureWidth, captureHeight, bb.array(), 0, captureWidth);
-                    image = tempimage;
-                }
-            }
-        }
-    }
+ 
     protected String location = null;
     protected int outputWidth = 0;
     protected int outputHeight = 0;
@@ -989,7 +975,6 @@ public abstract class VideoSource implements InfoListener {
     protected float backgroundOpacity = 0;
     protected int layer = -1;
     protected String password = "";
-    protected AppSink appSink = null;
     protected boolean keepRatio = false;
     private static final String key = "WS4GL"; // The key for 'encrypting' and 'decrypting'
 }

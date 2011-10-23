@@ -11,7 +11,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.awt.image.*;
 import java.util.TimerTask;
-import webcamstudio.exporter.VideoExporterStream;
 import webcamstudio.exporter.vloopback.VideoOutput;
 import webcamstudio.layout.Layout;
 import webcamstudio.layout.LayoutItem;
@@ -35,7 +34,6 @@ public class Mixer {
     protected VideoOutput outputDevice = null;
     protected Image background = Toolkit.getDefaultToolkit().createImage(getClass().getResource("/webcamstudio/resources/splash.jpg"));
     protected boolean activateOutputStream = false;
-    protected VideoExporterStream outputStream = null;
     protected int outputStreamPort = 4888;
     protected java.awt.Graphics2D buffer = null;
     protected int[] dataImageOutput = null;
@@ -86,7 +84,6 @@ public class Mixer {
         timer = new java.util.Timer("Mixer DrawImage", true);
         timer.scheduleAtFixedRate(new drawMixerImage(this), 0L, (long) (1000 / frameRate));
         timer.scheduleAtFixedRate(new outputMixerImage(this), 0L, (long) (1000 / frameRate));
-        timer.scheduleAtFixedRate(new streamMixer(this), 0L, 1000);
     }
 
     public int getFramerate() {
@@ -243,27 +240,3 @@ class outputMixerImage extends TimerTask {
     }
 }
 
-class streamMixer extends  TimerTask {
-
-    private Mixer mixer = null;
-
-    public streamMixer(Mixer m) {
-        mixer = m;
-    }
-
-    @Override
-    public void run() {
-
-        if (mixer.activateOutputStream && mixer.outputStream == null) {
-            mixer.outputStream = new VideoExporterStream(mixer.outputStreamPort, mixer);
-            try {
-                mixer.outputStream.listen();
-            } catch (IOException ex) {
-                Logger.getLogger(Mixer.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        } else if (!mixer.activateOutputStream && mixer.outputStream != null) {
-            mixer.outputStream.stop();
-        }
-
-    }
-}

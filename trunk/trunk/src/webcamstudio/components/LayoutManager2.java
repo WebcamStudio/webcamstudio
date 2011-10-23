@@ -43,7 +43,6 @@ import webcamstudio.sources.VideoSourceDV;
 import webcamstudio.sources.VideoSourceIRC;
 import webcamstudio.sources.VideoSourceImage;
 import webcamstudio.sources.VideoSourceMovie;
-import webcamstudio.sources.VideoSourcePipeline;
 import webcamstudio.sources.VideoSourceText;
 import webcamstudio.sources.VideoSourceV4L;
 import webcamstudio.sources.VideoSourceWidget;
@@ -135,8 +134,6 @@ public class LayoutManager2 extends javax.swing.JPanel implements SourceListener
 
                     } else if (v instanceof VideoSourceMovie) {
                         label.setIcon(iconMovie);
-                    } else if (v instanceof VideoSourceV4L || v instanceof VideoSourceDV || v instanceof VideoSourcePipeline) {
-                        label.setIcon(iconDevice);
                     } else if (v instanceof VideoSourceAnimation || v instanceof VideoSourceWidget) {
                         label.setIcon(iconAnimation);
                     } else if (v instanceof VideoSourceText || v instanceof VideoSourceIRC) {

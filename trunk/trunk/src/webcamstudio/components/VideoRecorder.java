@@ -13,8 +13,6 @@ package webcamstudio.components;
 import java.io.File;
 import javax.swing.JFileChooser;
 import webcamstudio.exporter.VideoExporter;
-import webcamstudio.exporter.VideoExporterFLV;
-import webcamstudio.exporter.VideoExporterOGG;
 
 /**
  *
@@ -188,11 +186,11 @@ public class VideoRecorder extends javax.swing.JDialog implements Runnable {
             btnClose.setEnabled(false);
 
             if (file.getAbsolutePath().endsWith("ogg")) {
-                export = new VideoExporterOGG(file);
+                
             } else if (file.getAbsolutePath().endsWith("flv")) {
-                export = new VideoExporterFLV(file);
+                
             } else {
-                export = new VideoExporterOGG(file);
+                
             }
 
             export.setMixer(mixer);
