@@ -6,9 +6,6 @@ package webcamstudio.components;
 
 import java.awt.Image;
 import java.awt.Toolkit;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.awt.image.*;
 import java.util.TimerTask;
 import webcamstudio.exporter.vloopback.VideoOutput;
@@ -26,7 +23,7 @@ public class Mixer {
     protected static int outputWidth = 320;
     protected static int outputHeight = 240;
     protected java.awt.image.BufferedImage image = null;
-    protected BufferedImage outputImage = null;
+    protected static BufferedImage outputImage = null;
     protected boolean isDrawing = false;
     protected boolean lightMode = false;
     protected boolean stopMe = false;
@@ -36,7 +33,7 @@ public class Mixer {
     protected boolean activateOutputStream = false;
     protected int outputStreamPort = 4888;
     protected java.awt.Graphics2D buffer = null;
-    protected int[] dataImageOutput = null;
+    protected static int[] dataImageOutput = null;
     protected int[] dataImageMixer = null;
     private int x, y, w, h, o;
     private Image img = null;
@@ -51,6 +48,9 @@ public class Mixer {
         LOW
     };
 
+    public static int[] getData(){
+        return dataImageOutput;
+    }
     public static int getFPS(){
         return frameRate;
     }

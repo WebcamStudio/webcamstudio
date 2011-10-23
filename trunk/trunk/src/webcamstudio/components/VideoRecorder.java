@@ -12,7 +12,8 @@ package webcamstudio.components;
 
 import java.io.File;
 import javax.swing.JFileChooser;
-import webcamstudio.exporter.VideoExporter;
+import webcamstudio.ffmpeg.FFMPEGEncoder;
+import webcamstudio.sources.VideoSourceRecorder;
 
 /**
  *
@@ -24,7 +25,7 @@ public class VideoRecorder extends javax.swing.JDialog implements Runnable {
     private long timeStamp = 0;
     private boolean stopMe = false;
     private Mixer mixer = null;
-    private VideoExporter export = null;
+    private FFMPEGEncoder ffmpeg = null;;
 
     /** Creates new form VideoRecorder */
     public VideoRecorder(Mixer m, java.awt.Frame parent, boolean modal) {
@@ -165,9 +166,6 @@ public class VideoRecorder extends javax.swing.JDialog implements Runnable {
         chooser.addChoosableFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("FLV", "FLV", "flv"));
         if (chooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
             file = chooser.getSelectedFile();
-            if (!file.getAbsolutePath().toLowerCase().endsWith(".ogg") && !file.getAbsolutePath().toLowerCase().endsWith(".flv")) {
-                file = new File(file.getAbsolutePath() + ".ogg");
-            }
             txtSelectedFileName.setText(file.getAbsolutePath());
         }
     }//GEN-LAST:event_btnBrowseFileActionPerformed
@@ -184,23 +182,18 @@ public class VideoRecorder extends javax.swing.JDialog implements Runnable {
             btnBrowseFile.setEnabled(false);
             txtSelectedFileName.setEnabled(false);
             btnClose.setEnabled(false);
-
-            if (file.getAbsolutePath().endsWith("ogg")) {
-                
-            } else if (file.getAbsolutePath().endsWith("flv")) {
-                
-            } else {
-                
-            }
-
-            export.setMixer(mixer);
-            export.startExport();
-
+            ffmpeg = new FFMPEGEncoder();
+            ffmpeg.setCaptureHeight(Mixer.getHeight());
+            ffmpeg.setCaptureWidth(Mixer.getWidth());
+            ffmpeg.setRate(Mixer.getFPS());
+            ffmpeg.setOutput(txtSelectedFileName.getText());
+            ffmpeg.read();
+            
             timeStamp = System.currentTimeMillis();
         } else {
-            if (export != null) {
-                export.stopExport();
-                export = null;
+            if (ffmpeg != null) {
+                ffmpeg.stop();
+                ffmpeg = null;
             }
             btnBrowseFile.setEnabled(true);
             txtSelectedFileName.setEnabled(true);
