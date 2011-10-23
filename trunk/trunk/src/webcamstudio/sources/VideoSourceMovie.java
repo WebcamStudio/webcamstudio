@@ -145,7 +145,7 @@ public class VideoSourceMovie extends VideoSource {
 
     @Override
     public boolean isPlaying() {
-        return isPlaying;
+        return !ffmpeg.isStopped();
     }
 
     @Override

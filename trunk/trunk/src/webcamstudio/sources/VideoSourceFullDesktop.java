@@ -56,7 +56,7 @@ public class VideoSourceFullDesktop extends VideoSource {
 
     @Override
     public boolean isPlaying() {
-        return isPlaying;
+        return !ffmpeg.isStopped();
     }
 
     @Override
