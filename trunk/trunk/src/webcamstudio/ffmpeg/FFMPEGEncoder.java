@@ -28,7 +28,7 @@ public class FFMPEGEncoder extends FFMPEGAbstract {
         sinkFormat = "";
         sinkQuality = "-qmin 1 -qmax 10";
         sourceInput = "-";
-        command = "ffmpeg -y -f alsa -i pulse";
+        command = "ffmpeg  -y -f alsa -i pulse";
     }
 
     public void pushData(int[] data) throws IOException {
