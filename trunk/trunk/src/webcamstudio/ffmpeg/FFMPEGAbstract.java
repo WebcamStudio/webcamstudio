@@ -30,19 +30,21 @@ public abstract class FFMPEGAbstract {
     int height = 240;
     int rate = 15;
     String sinkFormat = "-f rawvideo -pix_fmt argb";
-    String sinkOutput = "pipe:1";
+    String sinkOutput = "tcp://127.0.0.1:PORT";
     String sourceFormat = "";
     String sourceInput = "/dev/video0 ";
     String sourcePixelFormat = "";
-    String sinkAudio = "";
+    String sinkAudio = "tcp://127.0.0.1:PORT";
+    String sinkAudioFormat = "-f wav";
     String sinkQuality = "";
     String command = "ffmpeg -y -re";
     long seek = 0;
     int volume = 0;
 
-    public void setOutput(String output){
+    public void setOutput(String output) {
         sinkOutput = output;
     }
+
     public void setCaptureWidth(int w) {
         captureWidth = w;
     }
@@ -75,7 +77,7 @@ public abstract class FFMPEGAbstract {
             list.add("-f");
             list.add(sourceFormat);
         }
-        if (!sourcePixelFormat.isEmpty()){
+        if (!sourcePixelFormat.isEmpty()) {
             list.add("-pix_fmt");
             list.add(sourcePixelFormat);
         }
@@ -91,14 +93,14 @@ public abstract class FFMPEGAbstract {
         list.add(sourceInput);
         if (!sinkQuality.isEmpty()) {
             String[] f = sinkQuality.split(" ");
-            for (String s : f){
+            for (String s : f) {
                 list.add(s);
             }
         }
 
         if (!sinkFormat.isEmpty()) {
             String[] f = sinkFormat.split(" ");
-            for (String s : f){
+            for (String s : f) {
                 list.add(s);
             }
         }
@@ -152,39 +154,29 @@ public abstract class FFMPEGAbstract {
             @Override
             public void run() {
                 stopped = false;
+                TCPImageListener imgListen = new TCPImageListener(width, height);
+                int portUsed = imgListen.getPort();
+                sinkOutput = sinkOutput.replaceAll("PORT", ""+portUsed);
                 String[] parms = buildParms();
-                byte[] buffer = new byte[width * height * 4];
+                for (String s : parms){
+                    System.out.print(s + " ");
+                }
+                System.out.println();
                 try {
                     Process process = Runtime.getRuntime().exec(parms);
-                    if (!sinkOutput.isEmpty()) {
-                        input = new DataInputStream(process.getInputStream());
-                        input.readFully(buffer);
-                        while (!stopMe) {
-
-                            BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-                            int[] imgData = ((java.awt.image.DataBufferInt) img.getRaster().getDataBuffer()).getData();
-                            IntBuffer data = ByteBuffer.wrap(buffer).order(ByteOrder.BIG_ENDIAN).asIntBuffer();
-                            data.get(imgData);
-                            setOpaque(imgData);
-                            image = img;
-
-                            input.readFully(buffer);
-                        }
-                    } else {
-                        //This is audio only...
-                        while (!stopMe) {
-                            try {
-                                Thread.sleep(500);
-                            } catch (Exception e) {
-                            }
+                    while (!stopMe) {
+                        image=imgListen.getImage();
+                        try {
+                            Thread.sleep(10);
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(FFMPEGAbstract.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     }
-                    process.getOutputStream().write(3);
                     process.destroy();
                 } catch (IOException ex) {
                     ex.printStackTrace();
-                    System.out.println(new String(buffer).trim());
                 }
+                imgListen.shutdown();
                 stopped = true;
             }
         }).start();
