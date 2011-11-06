@@ -5,11 +5,7 @@
 package webcamstudio.ffmpeg;
 
 import java.awt.image.BufferedImage;
-import java.io.DataInputStream;
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -154,7 +150,7 @@ public abstract class FFMPEGAbstract {
             @Override
             public void run() {
                 stopped = false;
-                TCPImageListener imgListen = new TCPImageListener(width, height);
+                TCPServer imgListen = new TCPServer(width, height);
                 int portUsed = imgListen.getPort();
                 sinkOutput = sinkOutput.replaceAll("PORT", ""+portUsed);
                 String[] parms = buildParms();
@@ -165,7 +161,7 @@ public abstract class FFMPEGAbstract {
                 try {
                     Process process = Runtime.getRuntime().exec(parms);
                     while (!stopMe) {
-                        image=imgListen.getImage();
+                        image=imgListen.getImage().getImage();
                         try {
                             Thread.sleep(10);
                         } catch (InterruptedException ex) {
