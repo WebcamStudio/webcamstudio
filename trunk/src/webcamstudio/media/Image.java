@@ -19,6 +19,9 @@ public class Image  {
         timeStamp=stamp;
         sample = soundSample;
     }
+    public void updateAudio(byte[] audio){
+        sample=audio;
+    }
     public void updateImage(BufferedImage img){
         image=img;
     }

@@ -4,7 +4,6 @@
  */
 package webcamstudio.ffmpeg;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -12,13 +11,10 @@ import java.net.SocketTimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
-import javax.sound.sampled.UnsupportedAudioFileException;
 
 /**
  *
@@ -84,7 +80,7 @@ public class TCPAudioListener {
             System.out.println("Quitting...");
             server.close();
         } catch (IOException ex) {
-            Logger.getLogger(TCPImageListener.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(TCPServer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
