@@ -20,10 +20,9 @@ import webcamstudio.controls.ControlDesktop;
 public class VideoSourceDesktop extends VideoSource {
 
     protected Robot robot = null;
-    protected int screenwidth = java.awt.MouseInfo.getPointerInfo().getDevice().getDisplayMode().getWidth();
-    protected int screenheight = java.awt.MouseInfo.getPointerInfo().getDevice().getDisplayMode().getHeight();
+    protected int screenwidth = java.awt.Toolkit.getDefaultToolkit().getScreenSize().width;
+    protected int screenheight = java.awt.Toolkit.getDefaultToolkit().getScreenSize().height;
     protected int frameCount = 0;
-
 
     public VideoSourceDesktop() {
         try {
@@ -46,25 +45,26 @@ public class VideoSourceDesktop extends VideoSource {
     public void startSource() {
         isPlaying = true;
         stopMe = false;
-        if (timer!=null){
+        if (timer != null) {
             timer.cancel();
-            timer=null;
+            timer = null;
         }
-        timer = new Timer(name,true);
-        timer.scheduleAtFixedRate(new imageDesktop(this), 0, 1000/frameRate);
+        timer = new Timer(name, true);
+        timer.scheduleAtFixedRate(new imageDesktop(this), 0, 1000 / frameRate);
     }
 
     @Override
-    public void setFrameRate(int r){
-        frameRate=r;
-        if (timer!=null){
+    public void setFrameRate(int r) {
+        frameRate = r;
+        if (timer != null) {
             timer.cancel();
-            timer=null;
+            timer = null;
         }
-        timer = new Timer(name,true);
-        timer.scheduleAtFixedRate(new imageDesktop(this), 0, 1000/frameRate);
+        timer = new Timer(name, true);
+        timer.scheduleAtFixedRate(new imageDesktop(this), 0, 1000 / frameRate);
 
     }
+
     @Override
     public boolean canUpdateSource() {
         return false;
@@ -90,9 +90,9 @@ public class VideoSourceDesktop extends VideoSource {
 
     @Override
     public void stopSource() {
-        if (timer!=null){
+        if (timer != null) {
             timer.cancel();
-            timer=null;
+            timer = null;
         }
         stopMe = true;
         image = null;
