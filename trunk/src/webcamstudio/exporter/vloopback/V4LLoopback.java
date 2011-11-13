@@ -40,6 +40,7 @@ import com.sun.jna.Library;
 import com.sun.jna.Native;
 import com.sun.jna.Platform;
 import java.awt.image.BufferedImage;
+import webcamstudio.media.Image;
 
 /**
  *
@@ -159,7 +160,12 @@ public class V4LLoopback extends VideoOutput {
             }
         }
     }
-
+@Override
+    public void newImage(Image image) {
+        BufferedImage outputImage = image.getImage();
+        int [] dataImageOutput = ((java.awt.image.DataBufferInt) outputImage.getRaster().getDataBuffer()).getData();
+        write(dataImageOutput);
+    }
     @Override
     public void write(int[] data) {
         if (devFD != 0) {

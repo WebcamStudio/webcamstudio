@@ -38,6 +38,8 @@ import webcamstudio.components.LayoutManager2;
 import webcamstudio.exporter.VideoExporter;
 import webcamstudio.exporter.vloopback.V4LLoopback;
 import webcamstudio.exporter.vloopback.VideoOutput;
+import webcamstudio.media.SystemPlayer;
+import webcamstudio.mixers.VideoMixer;
 import webcamstudio.studio.Studio;
 import webcamstudio.visage.FaceDetector;
 
@@ -48,9 +50,7 @@ import webcamstudio.visage.FaceDetector;
 public class Main extends javax.swing.JFrame implements InfoListener, SourceListener, MediaListener {
 
     private VideoOutput output = null;
-    private Mixer mixer = null;
     private boolean stopMe = false;
-    private Preview preview = null;
     private int outputWidth = 320;
     private int outputHeight = 240;
     private File lastStudioFile = null;
@@ -90,20 +90,15 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
         loadPrefs();
         if (!XMODE) {
             initVideoDevices();
+            if (output!=null){
+            SystemPlayer.getInstance().addListener(output);
+            }
         }
 
 
-
-        mixer = new Mixer();
-        mixer.setSize(outputWidth, outputHeight);
-        mixer.setOutput(output);
-        if (mnuchkShowBackground.isSelected()) {
-            Image img = Toolkit.getDefaultToolkit().createImage(getClass().getResource("/webcamstudio/resources/splash.jpg"));
-            mixer.setBackground(img);
-        } else {
-            mixer.setBackground(null);
-        }
-        layoutManager = new LayoutManager2(mixer);
+        VideoMixer.getNewInstance(outputWidth, outputHeight, new Integer(grpFramerate.getSelection().getActionCommand()));
+        
+        layoutManager = new LayoutManager2();
 
         if (XMODE) {
             setTitle(java.util.ResourceBundle.getBundle("webcamstudio/Languages").getString("WEBCAMSTUDIO_X") + " " + webcamstudio.Version.version + " (Build: " + new webcamstudio.Version().getBuild() + ")");
@@ -133,17 +128,11 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
             }
         }).start();
         monitor = new SystemMonitor(pgCPUUsage);
-        if (XMODE) {
-            mnuOutputLabelStreamPort.setText("Stream Port: " + outputStreamPort);
-            mixer.activateStream(true, outputStreamPort);
-
-        } else {
-            if (mnuOutputchkActivateStream.isSelected()) {
-                mnuOutputLabelStreamPort.setText("Stream Port: " + outputStreamPort);
-            }
-            mixer.activateStream(mnuOutputchkActivateStream.isSelected(), outputStreamPort);
-        }
-
+        
+        //Enabling sound system...
+        
+        SystemPlayer player = SystemPlayer.getInstance();
+        
 
     }
 
@@ -611,7 +600,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
                         FileProgress pg = new FileProgress(frame, true);
                         pg.setLocationRelativeTo(frame);
                         Studio outStudio = new Studio(pg);
-                        outStudio.saveStudio(tStudio, mixer);
+                        outStudio.saveStudio(tStudio);
                         pg.setVisible(true);
                         lastStudioFile = tStudio;
                         mnuStudioLoadLast.setEnabled(true);
@@ -1598,7 +1587,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
     }//GEN-LAST:event_mnuStudioLoadLastActionPerformed
 
     private void mnuVideoRecorderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuVideoRecorderActionPerformed
-        VideoRecorder recorder = new VideoRecorder(mixer, this, false);
+        VideoRecorder recorder = new VideoRecorder(this, false);
         recorder.pack();
         recorder.setLocationRelativeTo(this);
         recorder.setVisible(true);
@@ -1607,7 +1596,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
     private void mnuOutputSpnashotActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuOutputSpnashotActionPerformed
 
         BufferedImage imgOut = new BufferedImage(outputWidth, outputHeight, java.awt.image.BufferedImage.TRANSLUCENT);
-        imgOut.getGraphics().drawImage(mixer.getImage(), 0, 0, null);
+        //imgOut.getGraphics().drawImage(mixer.getImage(), 0, 0, null);
         javax.swing.JFileChooser chooser = new javax.swing.JFileChooser(lastFolder);
         chooser.setToolTipText(java.util.ResourceBundle.getBundle("webcamstudio/Languages").getString("SELECT_YOUR_IMAGE_FILE"));
         chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -1688,11 +1677,8 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
             } else {
                 output.open(output.getDevice(), outputWidth, outputHeight, V4L2Loopback.UYVY);
             }
-            mixer.setOutput(output);
         }
-        mixer.setSize(outputWidth, outputHeight);
-
-
+         VideoMixer.getNewInstance(outputWidth, outputHeight, new Integer(grpFramerate.getSelection().getActionCommand()));
 
     }//GEN-LAST:event_mnuOutputSizeActionPerformed
 
@@ -1710,7 +1696,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
     }//GEN-LAST:event_mnuSourcesDVActionPerformed
 
     private void mnuOutputFPSActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuOutputFPSActionPerformed
-        mixer.setFramerate(new Integer(evt.getActionCommand()));
+       VideoMixer.getNewInstance(outputWidth, outputHeight, new Integer(evt.getActionCommand()));
     }//GEN-LAST:event_mnuOutputFPSActionPerformed
 
     private void mnuSourcesWidgetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuSourcesWidgetActionPerformed
@@ -1741,9 +1727,9 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
     private void mnuchkShowBackgroundActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuchkShowBackgroundActionPerformed
         if (mnuchkShowBackground.isSelected()) {
             Image img = Toolkit.getDefaultToolkit().createImage(getClass().getResource("/webcamstudio/resources/splash.jpg"));
-            mixer.setBackground(img);
+            
         } else {
-            mixer.setBackground(null);
+            
         }
     }//GEN-LAST:event_mnuchkShowBackgroundActionPerformed
 
@@ -1786,7 +1772,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
                 output.open(output.getDevice(), outputWidth, outputHeight, V4L2Loopback.UYVY);
             }
         }
-        mixer.setSize(outputWidth, outputHeight);
+        
     }//GEN-LAST:event_mnurdPixelFormatRGB24ActionPerformed
 
     private void mnurdPixelFormatUYVYActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnurdPixelFormatUYVYActionPerformed
@@ -1804,7 +1790,7 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
                 //mnuOutputSize.setEnabled(false);
             }
         }
-        mixer.setSize(outputWidth, outputHeight);
+        
     }//GEN-LAST:event_mnurdPixelFormatUYVYActionPerformed
 
     private void mnuOutputFlipImageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuOutputFlipImageActionPerformed
@@ -1832,10 +1818,10 @@ public class Main extends javax.swing.JFrame implements InfoListener, SourceList
     private void mnuOutputchkActivateStreamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuOutputchkActivateStreamActionPerformed
         if (mnuOutputchkActivateStream.isSelected()) {
             mnuOutputLabelStreamPort.setText("Stream Port : " + outputStreamPort);
-            mixer.activateStream(true, outputStreamPort);
+           
         } else {
             mnuOutputLabelStreamPort.setText("Stream Port : Disabled");
-            mixer.stopStream();
+           
         }
     }//GEN-LAST:event_mnuOutputchkActivateStreamActionPerformed
 

@@ -5,20 +5,16 @@
 package webcamstudio.sources;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import webcamstudio.components.Mixer;
-import webcamstudio.ffmpeg.FFMPEGEncoder;
+import webcamstudio.mixers.VideoMixer;
 
 /**
  *
  * @author patrick
  */
 public class VideoSourceRecorder extends VideoSource{
-    FFMPEGEncoder ffmpeg = new FFMPEGEncoder();
+    
     
     public VideoSourceRecorder(File output){
         location = output.getAbsolutePath();
@@ -26,14 +22,7 @@ public class VideoSourceRecorder extends VideoSource{
     }
     @Override
     public void startSource() {
-        frameRate = Mixer.getFPS();
-        ffmpeg.setCaptureHeight(Mixer.getHeight());
-        ffmpeg.setCaptureWidth(Mixer.getWidth());
-        ffmpeg.setHeight(outputHeight);
-        ffmpeg.setWidth(outputWidth);
-        ffmpeg.setOutput(location);
-        ffmpeg.setRate(frameRate);
-        ffmpeg.read();
+        frameRate = VideoMixer.getInstance().getFrameRate();
         if (timer!=null){
             timer.cancel();
             timer=null;
@@ -49,7 +38,6 @@ public class VideoSourceRecorder extends VideoSource{
             timer.cancel();
             timer=null;
         }
-        ffmpeg.stop();
     }
 
     @Override
@@ -69,7 +57,7 @@ public class VideoSourceRecorder extends VideoSource{
 
     @Override
     public boolean isPlaying() {
-        return !ffmpeg.isStopped();
+        return false;
     }
 
     @Override
@@ -91,10 +79,6 @@ class encoderFeeder extends TimerTask{
     }
     @Override
     public void run() {
-        try {
-            source.ffmpeg.pushData(Mixer.getData());
-        } catch (IOException ex) {
-            Logger.getLogger(encoderFeeder.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        
     }
 }

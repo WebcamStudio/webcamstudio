@@ -14,28 +14,42 @@ import java.net.SocketTimeoutException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.sound.sampled.AudioFormat;
 import webcamstudio.media.Image;
+import webcamstudio.media.Sample;
+import webcamstudio.mixers.AudioListener;
+import webcamstudio.mixers.AudioMixer;
+import webcamstudio.mixers.VideoListener;
 
 /**
  *
  * @author patrick
  */
-public class TCPServer {
+public class TCPServer extends TimerTask {
 
     private int vport = 0;
     private int aport = 0;
-    private Image image = null;
-    private Image tempImage = null;
     private int width = 320;
     private int height = 240;
     private byte[] data = null;
     ServerSocket vserver = null;
     ServerSocket aserver = null;
     private boolean stopMe = false;
-    java.util.Vector<byte[]> audioData = new java.util.Vector<byte[]>();
-    public TCPServer(int w, int h) {
+    private long startingTimeStamp;
+    private int frameRate = 15;
+    private AudioListener audioListener = null;
+    private VideoListener videoListener = null;
+    private long audioTimecode = 0;
+    private long videoTimecode = 0;
+    private DataInput astream = null;
+    private DataInput vstream = null;
+
+    public TCPServer(int w, int h, int fps) {
+        frameRate = fps;
         try {
             width = w;
             height = h;
@@ -50,8 +64,16 @@ public class TCPServer {
         } catch (IOException ex) {
             Logger.getLogger(TCPServer.class.getName()).log(Level.SEVERE, null, ex);
         }
-        readAudio();
-        readVideo();
+
+        read();
+    }
+
+    public void setAudioListener(AudioListener l) {
+        audioListener = l;
+    }
+
+    public void setVideoListener(VideoListener l) {
+        videoListener = l;
     }
 
     public void shutdown() {
@@ -59,21 +81,31 @@ public class TCPServer {
         stopMe = true;
     }
 
-    private void readAudio() {
+    private void read() {
+        final TCPServer instance = this;
         new Thread(new Runnable() {
 
             @Override
             public void run() {
                 while (!stopMe) {
                     try {
-                        Socket conn = aserver.accept();
-                        DataInput stream = new DataInputStream(conn.getInputStream());
-
+                        Socket aconn = aserver.accept();
+                        Socket vconn = vserver.accept();
+                        astream = new DataInputStream(aconn.getInputStream());
+                        vstream = new DataInputStream(vconn.getInputStream());
+                        startingTimeStamp = AudioMixer.getTimeCode() + (44100 * 2 * 2 * 3);
+                        audioTimecode = startingTimeStamp;
+                        Timer timer = new Timer("TCPServer", false);
+                        timer.scheduleAtFixedRate(instance, 0, 1000 / frameRate);
                         while (!stopMe) {
-                            byte[] buffer = new byte[44100];
-                            stream.readFully(buffer);
-                            audioData.add(buffer);
+                            try {
+                                Thread.sleep(100);
+                            } catch (InterruptedException ex) {
+                                Logger.getLogger(TCPServer.class.getName()).log(Level.SEVERE, null, ex);
+                            }
                         }
+                        timer.cancel();
+                        timer = null;
                     } catch (SocketTimeoutException timeout) {
                         continue;
                     } catch (IOException ex) {
@@ -92,53 +124,6 @@ public class TCPServer {
         }).start();
     }
 
-    private void readVideo() {
-        new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-                while (!stopMe) {
-                    try {
-                        Socket conn = vserver.accept();
-                        java.io.DataInput din = new java.io.DataInputStream(conn.getInputStream());
-                        while (!stopMe) {
-                            data = new byte[width * height * 4];
-                            din.readFully(data);
-                            BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-                            int[] imgData = ((java.awt.image.DataBufferInt) img.getRaster().getDataBuffer()).getData();
-                            IntBuffer intData = ByteBuffer.wrap(data).order(ByteOrder.BIG_ENDIAN).asIntBuffer();
-                            intData.get(imgData);
-
-                            byte[] audio = null;
-                            if (audioData.size() > 0) {
-                                audio = new byte[audioData.size()*44100];
-                                for (int i = 0;i<audioData.size();i++){
-                                    System.arraycopy(audioData.get(i), 0, audio, i*44100, 44100);
-                                    audioData.clear();
-                                }
-                            }
-                            image = new Image(img, audio, System.currentTimeMillis());
-                        }
-                    } catch (SocketTimeoutException timeout) {
-                        System.out.println("Waiting...");
-                        continue;
-                    } catch (IOException ex) {
-                        //We lost the connection...
-                        stopMe = true;
-                    }
-                }
-                try {
-                    System.out.println("Quitting Video...");
-                    vserver.close();
-                } catch (IOException ex) {
-                    Logger.getLogger(TCPServer.class.getName()).log(Level.SEVERE, null, ex);
-                }
-
-            }
-        }).start();
-
-    }
-
     public int getVideoPort() {
         return vport;
     }
@@ -147,11 +132,31 @@ public class TCPServer {
         return aport;
     }
 
-    public Image getImage() {
-        return image;
-    }
+    @Override
+    public void run() {
+        try {
+            videoTimecode = audioTimecode;
+            byte[] data = new byte[width * height * 4];
+            vstream.readFully(data);
+            BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+            int[] imgData = ((java.awt.image.DataBufferInt) img.getRaster().getDataBuffer()).getData();
+            IntBuffer intData = ByteBuffer.wrap(data).order(ByteOrder.BIG_ENDIAN).asIntBuffer();
+            intData.get(imgData);
+            Image image = new Image(img, videoTimecode, 100, 0);
+            if (videoListener != null) {
+                videoListener.newImage(image);
+            }
+            videoTimecode += ((44100 * 2 * 2) / frameRate);
+            byte[] abuffer = new byte[(44100 * 2 * 2) / frameRate];
+            astream.readFully(abuffer);
+            Sample sample = new Sample(abuffer, audioTimecode, new AudioFormat(44100, 16, 2, true, true));
+            if (audioListener != null) {
+                audioListener.newSample(sample);
+            }
+            audioTimecode += ((44100 * 2 * 2) / frameRate);
+        } catch (IOException e) {
+            stopMe = true;
+        }
 
-    public static void main(String[] args) {
-        TCPServer img = new TCPServer(320, 240);
     }
 }

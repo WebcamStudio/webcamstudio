@@ -6,8 +6,8 @@ package webcamstudio.layout.transitions;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import webcamstudio.components.Mixer;
 import webcamstudio.layout.LayoutItem;
+import webcamstudio.mixers.VideoMixer;
 import webcamstudio.sources.VideoSource;
 
 /**
@@ -22,12 +22,12 @@ public class SlideUp extends Transition {
         frames = sec * FPS;
         if (frames > 0) {
             int x = item.getX();
-            int y = Mixer.getHeight();
+            int y = VideoMixer.getInstance().getHeigt();
             source.setOutputWidth(item.getWidth());
             source.setOutputHeight(item.getHeight());
             source.setVolume(item.getVolume());
             source.setOpacity(100);
-            float yDelta = ((Mixer.getHeight() - item.getY()) / (float) frames);
+            float yDelta = ((VideoMixer.getInstance().getHeigt() - item.getY()) / (float) frames);
             source.setShowAtX(x);
             source.setShowAtY(y);
             if (!source.isPlaying()) {

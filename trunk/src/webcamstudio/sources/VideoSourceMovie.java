@@ -20,22 +20,27 @@
 package webcamstudio.sources;
 
 import java.awt.image.BufferedImage;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.io.File;
+import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import webcamstudio.controls.ControlAudio;
 import webcamstudio.controls.ControlRescale;
-import webcamstudio.ffmpeg.FFMPEGMovies;
+import webcamstudio.ffmpeg.FFMPEGCapture;
+import webcamstudio.media.Image;
+import webcamstudio.mixers.AudioMixer;
+import webcamstudio.mixers.VideoListener;
+import webcamstudio.mixers.VideoMixer;
 
 /**
  *
  * @author pballeux
  */
-public class VideoSourceMovie extends VideoSource {
+public class VideoSourceMovie extends VideoSource implements VideoListener {
 
-    protected java.util.Timer timer = null;
     protected long startingPosition = 0;
-    protected FFMPEGMovies ffmpeg = new FFMPEGMovies();
+    protected FFMPEGCapture ffmpeg = null;
+    private ArrayList<Image> videoBuffer = new ArrayList<Image>();
+
     protected VideoSourceMovie() {
         frameRate = 24;
         captureWidth = 320;
@@ -89,18 +94,13 @@ public class VideoSourceMovie extends VideoSource {
         controls.add(new ControlAudio(this));
     }
 
-
     public void setName(String n) {
         name = n;
     }
 
     public void stopSource() {
         stopMe = true;
-        if (timer != null) {
-            timer.cancel();
-            timer = null;
-        }
-        if (!ffmpeg.isStopped()){
+        if (ffmpeg != null && !ffmpeg.isStopped()) {
             ffmpeg.stop();
         }
         image = null;
@@ -109,20 +109,15 @@ public class VideoSourceMovie extends VideoSource {
 
     @Override
     public void startSource() {
+        ffmpeg = new FFMPEGCapture("movie", this, AudioMixer.getInstance());
         isPlaying = true;
         ffmpeg.setHeight(captureWidth);
         ffmpeg.setWidth(captureHeight);
-        ffmpeg.setInput(location);
+        ffmpeg.setFile(new File(location));
         ffmpeg.setRate(frameRate);
         ffmpeg.setSeek(startingPosition);
         ffmpeg.setVolume(volume);
         ffmpeg.read();
-        if (timer != null) {
-            timer.cancel();
-            timer = null;
-        }
-        timer = new Timer(name, true);
-        timer.scheduleAtFixedRate(new imageMovie(this), 0, 1000 / frameRate);
     }
 
     public void seek(long secs) {
@@ -145,7 +140,7 @@ public class VideoSourceMovie extends VideoSource {
 
     @Override
     public boolean isPlaying() {
-        return !ffmpeg.isStopped();
+        return (ffmpeg != null && !ffmpeg.isStopped());
     }
 
     @Override
@@ -157,7 +152,7 @@ public class VideoSourceMovie extends VideoSource {
 
     @Override
     public void setVolume(int v) {
-        volume=v;
+        volume = v;
     }
 
     @Override
@@ -188,24 +183,39 @@ public class VideoSourceMovie extends VideoSource {
         detectActivity(img);
         applyEffects(img);
         applyShape(img);
-        image = img;
     }
-}
-class imageMovie extends TimerTask{
 
-    VideoSourceMovie source = null;
-    boolean isDrawing=false;
-    public imageMovie(VideoSourceMovie m){
-        source=m;
-    }
     @Override
-    public void run() {
-        if (!isDrawing) {
-            isDrawing = true;
-            BufferedImage img = source.ffmpeg.getImage();
-            source.updateOutputImage(img);
-            isDrawing = false;
+    public BufferedImage getImage() {
+        BufferedImage img = getCurrentImage();
+        if (img != null) {
+            image = img;
         }
+        return image;
     }
-    
+
+    @Override
+    public void newImage(Image image) {
+        updateOutputImage(image.getImage());
+        videoBuffer.add(image);
+    }
+
+    private BufferedImage getCurrentImage() {
+        BufferedImage img = null;
+        long timecode = VideoMixer.getTimeCode();
+        int loop = 0;
+        if (videoBuffer.size() > 0) {
+            Image image = videoBuffer.remove(0);
+            while (image != null && (image.getTimeCode()) <= timecode) {
+                loop++;
+                img = image.getImage();
+                if (videoBuffer.size() > 0) {
+                    image = videoBuffer.remove(0);
+                } else {
+                    break;
+                }
+            }
+        }
+        return img;
+    }
 }
