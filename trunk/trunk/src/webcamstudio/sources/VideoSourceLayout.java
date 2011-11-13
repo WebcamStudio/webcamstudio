@@ -9,9 +9,9 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.util.Timer;
 import java.util.TimerTask;
-import webcamstudio.components.Mixer;
 import webcamstudio.layout.Layout;
 import webcamstudio.layout.LayoutItem;
+import webcamstudio.mixers.VideoMixer;
 
 /**
  *
@@ -44,7 +44,7 @@ public class VideoSourceLayout extends VideoSource {
                 timer = null;
             }
             timer = new Timer(name, true);
-            frameRate=Mixer.getFPS();
+            frameRate=VideoMixer.getInstance().getFrameRate();
             timer.scheduleAtFixedRate(new LayoutImage(this), 0, 1000/frameRate);
         } else {
             System.out.println("Could not find layout");
@@ -105,8 +105,8 @@ class LayoutImage extends TimerTask {
     public void run() {
         if (Layout.getLayouts().containsKey(source.location)) {
             Layout layout = Layout.getLayouts().get(source.location);
-            source.captureHeight = Mixer.getHeight();
-            source.captureWidth = Mixer.getWidth();
+            source.captureHeight = VideoMixer.getInstance().getHeigt();
+            source.captureWidth = VideoMixer.getInstance().getWidth();
             source.tempimage = new BufferedImage(source.captureWidth, source.captureHeight, BufferedImage.TYPE_INT_ARGB);
             Graphics2D buffer = source.tempimage.createGraphics();
             for (LayoutItem item : layout.getItems()) {

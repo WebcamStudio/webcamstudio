@@ -19,12 +19,15 @@
  */
 package webcamstudio.sources;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import webcamstudio.controls.ControlAudio;
-import webcamstudio.ffmpeg.FFMPEGMusic;
+import webcamstudio.ffmpeg.FFMPEGCapture;
+import webcamstudio.mixers.AudioMixer;
+
 
 /**
  *
@@ -32,7 +35,7 @@ import webcamstudio.ffmpeg.FFMPEGMusic;
  */
 public class VideoSourceMusic extends VideoSource {
 
-    FFMPEGMusic ffmpeg = new FFMPEGMusic();
+    FFMPEGCapture ffmpeg = new FFMPEGCapture("music",null,AudioMixer.getInstance());
 
     protected VideoSourceMusic() {
         captureWidth = 0;
@@ -100,7 +103,7 @@ public class VideoSourceMusic extends VideoSource {
         isPlaying=true;
         stopMe=false;
         ffmpeg.setVolume(volume);
-        ffmpeg.setInput(location);
+        ffmpeg.setFile(new File(location));
         ffmpeg.setSeek(startingPosition);
         ffmpeg.read();
     }

@@ -22,10 +22,10 @@ import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.InvalidPreferencesFormatException;
 import javax.xml.parsers.ParserConfigurationException;
-import webcamstudio.components.Mixer;
 import webcamstudio.exporter.vloopback.VideoOutput;
 import webcamstudio.layout.Layout;
 import webcamstudio.layout.LayoutItem;
+import webcamstudio.mixers.VideoMixer;
 import webcamstudio.sources.*;
 
 /**
@@ -122,7 +122,7 @@ public class Studio {
         }
     }
     
-    public void saveStudio(final File studio, final Mixer mixer) throws ParserConfigurationException, BackingStoreException, FileNotFoundException, IOException, URISyntaxException {
+    public void saveStudio(final File studio) throws ParserConfigurationException, BackingStoreException, FileNotFoundException, IOException, URISyntaxException {
         new Thread(new Runnable() {
             
             @Override
@@ -133,9 +133,9 @@ public class Studio {
                     }
                     
                     if (studio.getName().endsWith(".studioz")) {
-                        saveCompressedStudio(studio, mixer, true);
+                        saveCompressedStudio(studio, true);
                     } else if (studio.getName().endsWith(".studio")) {
-                        saveUnCompressedStudio(studio, mixer);
+                        saveUnCompressedStudio(studio);
                     }
                     if (listener != null) {
                         listener.completedSaving(studio.getName());
@@ -150,14 +150,14 @@ public class Studio {
         }).start();
     }
     
-    private void saveUnCompressedStudio(File studio, Mixer mixer) throws ParserConfigurationException, BackingStoreException, FileNotFoundException, IOException {
+    private void saveUnCompressedStudio(File studio) throws ParserConfigurationException, BackingStoreException, FileNotFoundException, IOException {
         java.util.prefs.Preferences prefs = java.util.prefs.Preferences.userNodeForPackage(this.getClass());
         java.io.FileOutputStream fout = new java.io.FileOutputStream(studio);
-        outputWidth = Mixer.getWidth();
-        outputHeight = Mixer.getHeight();
-        if (mixer.getDevice() != null) {
-            device = mixer.getDevice().getDevice();
-            pixFormat = mixer.getDevice().getPixFormat();
+        outputWidth = VideoMixer.getInstance().getWidth();
+        outputHeight = VideoMixer.getInstance().getHeigt();
+        if (VideoOutput.getDevice() != null) {
+            device = VideoOutput.getDevice();
+            pixFormat = VideoOutput.getPixFormat();
         } else {
             device = "";
             pixFormat = VideoOutput.RGB24;
@@ -228,7 +228,7 @@ public class Studio {
         return orderNumber;
     }
     
-    private void saveCompressedStudio(File file, Mixer mixer, boolean includeSource) throws IOException, BackingStoreException, ParserConfigurationException, URISyntaxException {
+    private void saveCompressedStudio(File file, boolean includeSource) throws IOException, BackingStoreException, ParserConfigurationException, URISyntaxException {
         java.io.OutputStream out = new java.io.FileOutputStream(file);
         java.util.TreeMap<String,String> originalPath = new java.util.TreeMap<String, String>();
         java.util.jar.JarOutputStream jarFile = new java.util.jar.JarOutputStream(out);
@@ -258,7 +258,7 @@ public class Studio {
             }
         }
         File studioFile = File.createTempFile("WS4GL", ".studio");
-        saveUnCompressedStudio(studioFile, mixer);
+        saveUnCompressedStudio(studioFile);
         addEntry(jarFile, studioFile, "default.studio", index++);
         jarFile.flush();
         jarFile.close();
@@ -351,7 +351,7 @@ public class Studio {
         Studio studio = new Studio(null);
         try {
             try {
-                studio.saveStudio(new File("/home/patrick/test.studioz"), new Mixer());
+                studio.saveStudio(new File("/home/patrick/test.studioz"));
             } catch (FileNotFoundException ex) {
                 Logger.getLogger(Studio.class.getName()).log(Level.SEVERE, null, ex);
             } catch (URISyntaxException ex) {

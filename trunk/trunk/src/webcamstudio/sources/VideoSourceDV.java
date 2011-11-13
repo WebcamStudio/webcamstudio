@@ -21,21 +21,23 @@ package webcamstudio.sources;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
-import webcamstudio.ffmpeg.FFMPEGDV;
+import webcamstudio.ffmpeg.FFMPEGCapture;
+import webcamstudio.media.Image;
+import webcamstudio.mixers.VideoListener;
+
+
 
 /**
  *
  * @author pballeux
  */
-public class VideoSourceDV extends VideoSource {
+public class VideoSourceDV extends VideoSource implements VideoListener{
 
-    private Timer timer = null;
-    protected FFMPEGDV ffmpeg = new FFMPEGDV();
+    
+    protected FFMPEGCapture ffmpeg;
 
     public VideoSourceDV() {
 
@@ -58,11 +60,9 @@ public class VideoSourceDV extends VideoSource {
     }
 
     public void stopSource() {
-        if (timer != null) {
-            timer.cancel();
-            timer = null;
-        }
-        if (!ffmpeg.isStopped()) {
+       
+        if (ffmpeg != null && !ffmpeg.isStopped()) {
+            ffmpeg.stop();
         }
         image = null;
         pixels = null;
@@ -73,16 +73,11 @@ public class VideoSourceDV extends VideoSource {
     @Override
     public void startSource() {
         isPlaying = true;
+        ffmpeg = new FFMPEGCapture("dv",this,null);
         ffmpeg.setRate(frameRate);
         ffmpeg.setHeight(captureWidth);
         ffmpeg.setWidth(captureHeight);
         ffmpeg.read();
-        if (timer != null) {
-            timer.cancel();
-            timer = null;
-        }
-        timer = new Timer(name, true);
-        timer.scheduleAtFixedRate(new imageDV(this), 0, 1000 / frameRate);
     }
 
     protected void updateOutputImage(BufferedImage img) {
@@ -134,18 +129,10 @@ public class VideoSourceDV extends VideoSource {
         return icon;
 
     }
-}
-
-class imageDV extends TimerTask {
-
-    VideoSourceDV source = null;
-
-    public imageDV(VideoSourceDV s) {
-        source = s;
-    }
 
     @Override
-    public void run() {
-        source.updateOutputImage(source.ffmpeg.getImage());
+    public void newImage(Image image) {
+        updateOutputImage(image.getImage());
+        this.image=image.getImage();
     }
 }

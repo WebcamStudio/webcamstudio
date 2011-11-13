@@ -7,7 +7,6 @@ package webcamstudio.layout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.util.AbstractMap;
 import java.util.Collection;
@@ -17,6 +16,10 @@ import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
 import webcamstudio.components.PulseAudioManager;
 import webcamstudio.layout.transitions.Transition;
+import webcamstudio.media.Image;
+import webcamstudio.media.SystemPlayer;
+import webcamstudio.mixers.VideoMixer;
+import webcamstudio.mixers.VideoListener;
 import webcamstudio.sources.*;
 import webcamstudio.studio.Studio;
 
@@ -24,7 +27,7 @@ import webcamstudio.studio.Studio;
  *
  * @author pballeux
  */
-public class Layout {
+public class Layout implements VideoListener{
 
     private static TreeMap<String,Layout> loadedLayouts = new TreeMap<String,Layout>();
     private java.util.TreeMap<Integer, LayoutItem> items = new java.util.TreeMap<Integer, LayoutItem>();
@@ -43,7 +46,7 @@ public class Layout {
     public long timeStamp = 0;
     protected BufferedImage preview = null;
     private LayoutItem itemSelected = null;
-
+    private Image mixerPreview = null;
     
     public static AbstractMap<String,Layout> getLayouts(){
         return loadedLayouts;
@@ -158,6 +161,10 @@ public class Layout {
 
     public void enterLayout(boolean isVideoSource) {
         if (!isVideoSource) {
+            SystemPlayer player = SystemPlayer.getInstance();
+            if (player!=null){
+                player.addListener(this);
+            }
             isEntering = true;
             if (activeLayout != null) {
                 activeLayout.exitLayout(false);
@@ -224,6 +231,10 @@ public class Layout {
         }
         if (!isVideoSource) {
             isExiting = false;
+            SystemPlayer player = SystemPlayer.getInstance();
+            if (player!=null){
+                player.removeListener(this);
+            }
         }
 
     }
@@ -232,7 +243,9 @@ public class Layout {
         return items.values();
     }
 
-    public Image getPreview(int w, int h, boolean isSelected) {
+    public BufferedImage getPreview(boolean isSelected) {
+        int w = VideoMixer.getInstance().getWidth();
+        int h = VideoMixer.getInstance().getHeigt();
         if (preview == null || preview.getWidth() != w || preview.getHeight() != h) {
             preview = new java.awt.image.BufferedImage(w, h, java.awt.image.BufferedImage.TYPE_INT_ARGB);
         }
@@ -242,6 +255,10 @@ public class Layout {
         buffer.setStroke(new java.awt.BasicStroke(10f * w / 320));
         buffer.setColor(Color.BLACK);
         buffer.drawRect(0, 0, w, h);
+        if (mixerPreview !=null && (isActive || isEntering || isExiting)) {
+           buffer.drawImage(mixerPreview.getImage(), 0, 0, null);
+        }
+
         for (LayoutItem item : items.values()) {
             Color color = Color.WHITE;
 
@@ -257,9 +274,6 @@ public class Layout {
                 color = Color.YELLOW.darker();
             } else if (item.getSource() instanceof VideoSourceDesktop) {
                 color = Color.ORANGE.darker();
-            }
-            if (item.getSource().getImage() != null && (isActive || isEntering || isExiting)) {
-                buffer.drawImage(item.getSource().getImage(), item.getSource().getShowAtX(), item.getSource().getShowAtY(), item.getSource().getOutputWidth() + item.getSource().getShowAtX(), item.getSource().getOutputHeight() + item.getSource().getShowAtY(), 0, 0, item.getSource().getImage().getWidth(), item.getSource().getImage().getHeight(), null);
             }
             if (item.equals(itemSelected)) {
                 color = color.brighter();
@@ -287,7 +301,6 @@ public class Layout {
         buffer.setFont(new Font(Font.MONOSPACED, Font.BOLD, (30 * w / 320)));
         buffer.drawString(name, (5 * w / 320), (30 * h / 240));
         buffer.dispose();
-
         return preview;
     }
 
@@ -370,5 +383,10 @@ public class Layout {
     @Override
     public String toString() {
         return name;
+    }
+
+    @Override
+    public void newImage(webcamstudio.media.Image image) {
+        mixerPreview = image;
     }
 }

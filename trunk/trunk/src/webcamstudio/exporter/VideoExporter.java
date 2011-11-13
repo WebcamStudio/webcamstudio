@@ -21,7 +21,6 @@ package webcamstudio.exporter;
 
 import webcamstudio.*;
 
-import webcamstudio.components.Mixer;
 
 /**
  *
@@ -86,12 +85,7 @@ public abstract class VideoExporter {
         rate = r;
     }
 
-    public void setMixer(Mixer m) {
-        mixer = m;
-        captureWidth = mixer.getImage().getWidth();
-        captureHeight = mixer.getImage().getHeight();
-        rate = mixer.getFramerate();
-    }
+  
 
     public int getVideoBitrate() {
         return vbitrate;
@@ -112,7 +106,6 @@ public abstract class VideoExporter {
     protected int rate = 15;
     protected InfoListener listener = null;
     protected int quality = 85;
-    protected Mixer mixer = null;
     protected boolean stopMixer = true;
     protected int[] data = null;
     protected byte[] bdata = null;

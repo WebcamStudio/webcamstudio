@@ -29,16 +29,21 @@ import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import webcamstudio.controls.ControlRescale;
 import webcamstudio.exporter.vloopback.VideoDevice;
-import webcamstudio.ffmpeg.FFMPEGV4L2;
+import webcamstudio.ffmpeg.FFMPEGCapture;
+import webcamstudio.media.Image;
+import webcamstudio.mixers.AudioMixer;
+import webcamstudio.mixers.VideoListener;
+
+
 
 /**
  *
  * @author pballeux
  */
-public class VideoSourceV4L extends VideoSource {
+public class VideoSourceV4L extends VideoSource implements VideoListener {
 
-    private java.util.Timer timer = new Timer("V4L", true);
-    protected FFMPEGV4L2 ffmpeg = new FFMPEGV4L2();
+    
+    protected FFMPEGCapture ffmpeg;
 
     public VideoSourceV4L() {
         outputWidth = 320;
@@ -107,11 +112,7 @@ public class VideoSourceV4L extends VideoSource {
 
     public void stopSource() {
         stopMe = true;
-        if (timer != null) {
-            timer.cancel();
-            timer = null;
-        }
-        if (!ffmpeg.isStopped()) {
+        if (ffmpeg != null && !ffmpeg.isStopped()) {
             ffmpeg.stop();
         }
         image = null;
@@ -121,24 +122,17 @@ public class VideoSourceV4L extends VideoSource {
     @Override
     public void startSource() {
         isPlaying = true;
+        ffmpeg = new FFMPEGCapture("webcam",this,AudioMixer.getInstance());
         ffmpeg.setHeight(captureWidth);
         ffmpeg.setWidth(captureHeight);
-        ffmpeg.setInput(location);
+        ffmpeg.setFile(new File(location));
         ffmpeg.setRate(frameRate);
         ffmpeg.read();
-        if (timer != null) {
-            timer.cancel();
-            timer = null;
-        }
-        timer = new Timer(name, true);
-        timer.scheduleAtFixedRate(new imageV4L(this), 0, 1000 / frameRate);
     }
 
     @Override
     public boolean isPlaying() {
-        return !ffmpeg.isStopped();
-
-
+        return (ffmpeg!=null || !ffmpeg.isStopped());
     }
 
     @Override
@@ -187,24 +181,10 @@ public class VideoSourceV4L extends VideoSource {
             image = img;
         }
     }
-}
-
-class imageV4L extends TimerTask {
-
-    VideoSourceV4L source = null;
-    boolean isDrawing = false;
-
-    public imageV4L(VideoSourceV4L source) {
-        this.source = source;
-    }
 
     @Override
-    public void run() {
-        if (!isDrawing) {
-            isDrawing = true;
-            BufferedImage img = source.ffmpeg.getImage();
-            source.updateOutputImage(img);
-            isDrawing = false;
-        }
+    public void newImage(Image image) {
+        updateOutputImage(image.getImage());
+        this.image=image.getImage();
     }
 }

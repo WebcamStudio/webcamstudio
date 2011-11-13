@@ -7,13 +7,15 @@ package webcamstudio.exporter.vloopback;
 import com.sun.jna.Library;
 import com.sun.jna.Native;
 import com.sun.jna.Platform;
+import java.awt.image.BufferedImage;
 import webcamstudio.InfoListener;
+import webcamstudio.media.Image;
 
 /**
  *
  * @author patrick
  */
-public class V4L2Loopback extends VideoOutput {
+public class V4L2Loopback extends VideoOutput{
 
     int width = 0;
     int height = 0;
@@ -68,6 +70,13 @@ public class V4L2Loopback extends VideoOutput {
                 System.out.println("Error Writing Data - " + countWritten);
             }
         }
+    }
+
+    @Override
+    public void newImage(Image image) {
+        BufferedImage outputImage = image.getImage();
+        int [] dataImageOutput = ((java.awt.image.DataBufferInt) outputImage.getRaster().getDataBuffer()).getData();
+        write(dataImageOutput);
     }
 
     public interface CV4l2 extends Library {

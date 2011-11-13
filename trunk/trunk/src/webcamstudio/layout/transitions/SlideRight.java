@@ -6,8 +6,8 @@ package webcamstudio.layout.transitions;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import webcamstudio.components.Mixer;
 import webcamstudio.layout.LayoutItem;
+import webcamstudio.mixers.VideoMixer;
 import webcamstudio.sources.VideoSource;
 
 /**
@@ -21,13 +21,13 @@ public class SlideRight extends Transition {
         VideoSource source = item.getSource();
         frames = sec * FPS;;
         if (frames > 0) {
-            int x = Mixer.getWidth();
+            int x = VideoMixer.getInstance().getWidth();
             int y = item.getY();
             source.setOutputWidth(item.getWidth());
             source.setOutputHeight(item.getHeight());
             source.setVolume(item.getVolume());
             source.setOpacity(100);
-            float xDelta = ((Mixer.getWidth() - item.getX()) / frames);
+            float xDelta = ((VideoMixer.getInstance().getWidth() - item.getX()) / frames);
             source.setShowAtX(x);
             source.setShowAtY(y);
             if (!source.isPlaying()) {

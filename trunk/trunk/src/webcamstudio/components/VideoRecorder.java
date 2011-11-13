@@ -10,10 +10,7 @@
  */
 package webcamstudio.components;
 
-import java.io.File;
 import javax.swing.JFileChooser;
-import webcamstudio.ffmpeg.FFMPEGEncoder;
-import webcamstudio.sources.VideoSourceRecorder;
 
 /**
  *
@@ -24,13 +21,10 @@ public class VideoRecorder extends javax.swing.JDialog implements Runnable {
     private java.io.File file = new java.io.File("video.ogg");
     private long timeStamp = 0;
     private boolean stopMe = false;
-    private Mixer mixer = null;
-    private FFMPEGEncoder ffmpeg = null;;
 
     /** Creates new form VideoRecorder */
-    public VideoRecorder(Mixer m, java.awt.Frame parent, boolean modal) {
+    public VideoRecorder(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
-        mixer = m;
         initComponents();
         txtSelectedFileName.setText(file.getAbsolutePath());
         new Thread(this).start();
@@ -182,19 +176,9 @@ public class VideoRecorder extends javax.swing.JDialog implements Runnable {
             btnBrowseFile.setEnabled(false);
             txtSelectedFileName.setEnabled(false);
             btnClose.setEnabled(false);
-            ffmpeg = new FFMPEGEncoder();
-            ffmpeg.setCaptureHeight(Mixer.getHeight());
-            ffmpeg.setCaptureWidth(Mixer.getWidth());
-            ffmpeg.setRate(Mixer.getFPS());
-            ffmpeg.setOutput(txtSelectedFileName.getText());
-            ffmpeg.read();
             
             timeStamp = System.currentTimeMillis();
         } else {
-            if (ffmpeg != null) {
-                ffmpeg.stop();
-                ffmpeg = null;
-            }
             btnBrowseFile.setEnabled(true);
             txtSelectedFileName.setEnabled(true);
             btnClose.setEnabled(true);
@@ -214,7 +198,7 @@ public class VideoRecorder extends javax.swing.JDialog implements Runnable {
         java.awt.EventQueue.invokeLater(new Runnable() {
 
             public void run() {
-                VideoRecorder dialog = new VideoRecorder(new Mixer(), new javax.swing.JFrame(), true);
+                VideoRecorder dialog = new VideoRecorder(new javax.swing.JFrame(), true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
 
                     public void windowClosing(java.awt.event.WindowEvent e) {

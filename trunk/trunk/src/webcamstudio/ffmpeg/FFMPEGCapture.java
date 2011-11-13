@@ -4,7 +4,6 @@
  */
 package webcamstudio.ffmpeg;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -12,12 +11,9 @@ import java.net.URL;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.DataLine;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.SourceDataLine;
 import webcamstudio.media.Image;
+import webcamstudio.mixers.AudioListener;
+import webcamstudio.mixers.VideoListener;
 
 /**
  *
@@ -44,8 +40,11 @@ public class FFMPEGCapture {
     int frequency = 44100;
     int channels = 2;
     int bitSize = 16;
-
-    public FFMPEGCapture(String plugin) {
+    private AudioListener audioListener = null;
+    private VideoListener videoListener = null;
+    public FFMPEGCapture(String plugin,VideoListener v,AudioListener a) {
+        videoListener = v;
+        audioListener = a;
         if (plugins == null) {
             plugins = new Properties();
             try {
@@ -57,8 +56,10 @@ public class FFMPEGCapture {
         this.plugin = plugin;
     }
 
+    
+
     private static URL getResource() throws MalformedURLException {
-        File userSettings = new File(new File(System.getProperty("user.home")+"/.webcamstudio"), "ffmpeg-capture.properties");
+        File userSettings = new File(new File(System.getProperty("user.home") + "/.webcamstudio"), "ffmpeg-capture.properties");
         URL res = null;
         System.out.println(userSettings.getAbsolutePath());
         if (userSettings.exists()) {
@@ -175,14 +176,16 @@ public class FFMPEGCapture {
 
     public void read() {
         stopped = false;
-        stopMe=false;
+        stopMe = false;
         new Thread(new Runnable() {
 
             @Override
             public void run() {
-                final TCPServer imgListen = new TCPServer(width, height);
+                final TCPServer imgListen = new TCPServer(width, height,rate);
                 videoPort = imgListen.getVideoPort();
                 audioPort = imgListen.getAudioPort();
+                imgListen.setAudioListener(audioListener);
+                imgListen.setVideoListener(videoListener);
                 String command = plugins.getProperty(plugin).replaceAll("  ", " "); //Making sure there is no double spaces
                 command = setParameters(command);
                 System.out.println(command);
@@ -194,9 +197,8 @@ public class FFMPEGCapture {
                         @Override
                         public void run() {
                             while (!stopMe) {
-                                image = imgListen.getImage();
                                 try {
-                                    Thread.sleep(10);
+                                    Thread.sleep(100);
                                 } catch (InterruptedException ex) {
                                     Logger.getLogger(FFMPEGCapture.class.getName()).log(Level.SEVERE, null, ex);
                                 }
@@ -216,7 +218,7 @@ public class FFMPEGCapture {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
+                imgListen.setAudioListener(null);
             }
         }).start();
 
@@ -254,36 +256,6 @@ public class FFMPEGCapture {
         return channels;
     }
 
-    public static void main(String[] args) {
-        FFMPEGCapture f = new FFMPEGCapture("movie");
-        f.setFile(new File("/home/patrick/Desktop/Howfast.ogg"));
-        f.read();
-        java.util.Vector<Image> list = new java.util.Vector<Image>();
-        AudioFormat format = new AudioFormat(f.getFrequency(), f.getBitSize(), f.getChannels(), true, true);
-        System.out.println("Frame Size: " + format.getFrameSize());
-        DataLine.Info info = new DataLine.Info(SourceDataLine.class, format);
-        try {
-            SourceDataLine speaker = (SourceDataLine) AudioSystem.getLine(info);
-            speaker.open();
-            speaker.start();
-            
-            while (!f.isStopped()) {
-                if (f.getImage() != null) {
-                    byte[] data = f.getImage().getSound();
-                    if (data != null && data.length > 0) {
-                        speaker.write(data, 0,data.length);
-                    }
-                    try {
-                        Thread.sleep(10);
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(FFMPEGCapture.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-            }
-            speaker.close();
-        } catch (LineUnavailableException ex) {
-            Logger.getLogger(TCPAudioListener.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        //f.stop();
-    }
+    
 }
+

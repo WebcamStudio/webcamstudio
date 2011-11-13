@@ -6,31 +6,33 @@ package webcamstudio.exporter.vloopback;
 
 import java.awt.image.BufferedImage;
 import webcamstudio.InfoListener;
+import webcamstudio.mixers.VideoListener;
 import webcamstudio.sources.effects.FlipVertical;
 
 /**
  *
  * @author lgs
  */
-abstract public class VideoOutput {
+abstract public class VideoOutput implements VideoListener {
 
-    protected String devicePath = "/dev/video2";
+    protected static String devicePath = "/dev/video2";
     protected int devFD = 0;
     protected int w = 320;
     protected int h = 240;
     final public static int RGB24 = 1;
     final public static int UYVY = 2;
-    protected int pixFormat = 2;
+    protected static int pixFormat = 2;
     protected boolean flipImage = false;
     protected FlipVertical flipper = new FlipVertical();
     protected InfoListener listener = null;
     protected byte[] rgbs = null;
 
+   
     public void setFlipImage(boolean flip) {
         flipImage = flip;
     }
 
-    public int getPixFormat() {
+    public static int getPixFormat() {
         return pixFormat;
     }
 
@@ -132,7 +134,7 @@ abstract public class VideoOutput {
         return yuvs;
     }
 
-    public String getDevice() {
+    public static String getDevice() {
         return devicePath;
     }
 

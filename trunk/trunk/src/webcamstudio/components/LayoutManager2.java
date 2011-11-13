@@ -65,13 +65,11 @@ public class LayoutManager2 extends javax.swing.JPanel implements SourceListener
     private DefaultListModel modelLayouts = new DefaultListModel();
     private DefaultListModel modelLayoutItems = new DefaultListModel();
     protected Viewer viewer = new Viewer();
-    protected Mixer mixer;
     private Timer timer = null;
 
     /** Creates new form LayoutManager2 */
-    public LayoutManager2(Mixer mix) {
+    public LayoutManager2() {
         initComponents();
-        this.mixer = mix;
         iconMovie = new ImageIcon(getToolkit().getImage(java.net.URLClassLoader.getSystemResource("webcamstudio/resources/tango/video-display.png")));
         iconImage = new ImageIcon(getToolkit().getImage(java.net.URLClassLoader.getSystemResource("webcamstudio/resources/tango/image-x-generic.png")));
         iconDevice = new ImageIcon(getToolkit().getImage(java.net.URLClassLoader.getSystemResource("webcamstudio/resources/tango/camera-video.png")));
@@ -96,7 +94,7 @@ public class LayoutManager2 extends javax.swing.JPanel implements SourceListener
                     Layout layout = (Layout) value;
                     label.setText("");
                     label.setIconTextGap(0);
-                    label.setIcon(new ImageIcon(layout.getPreview(mixer.getWidth(), mixer.getHeight(), selected).getScaledInstance(180, 180 * 3 / 4, Image.SCALE_FAST)));
+                    label.setIcon(new ImageIcon(layout.getPreview(selected).getScaledInstance(180, 180 * 3 / 4, Image.SCALE_FAST)));
                     if (layout.isActive()) {
                         label.setForeground(Color.green);
                     } else {

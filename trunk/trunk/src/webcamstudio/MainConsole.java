@@ -19,10 +19,10 @@ import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import webcamstudio.components.LayoutEventsManager;
-import webcamstudio.components.Preview;
 import webcamstudio.exporter.vloopback.V4L2Loopback;
 import webcamstudio.exporter.vloopback.VideoOutput;
 import webcamstudio.layout.Layout;
+import webcamstudio.mixers.VideoMixer;
 import webcamstudio.studio.Studio;
 
 /**
@@ -33,13 +33,11 @@ public class MainConsole extends javax.swing.JFrame implements InfoListener {
 
     private Studio studio = null;
     private VideoOutput output = null;
-    private webcamstudio.components.Mixer mixer = null;
     private int width = 320;
     private int height = 240;
     private int pixFormat = VideoOutput.RGB24;
     private String device = "/dev/video1";
     private Layout currentLayout = null;
-    private Preview preview = null;
     private LayoutEventsManager eventsManager = null;
     //Flag to validate if we are in XMode or in Linux
     public static boolean XMODE = true;
@@ -64,7 +62,7 @@ public class MainConsole extends javax.swing.JFrame implements InfoListener {
                         Layout l = (Layout) value;
                         label.setText(l.toString());
                         label.setToolTipText(l.toString());
-                        label.setIcon(new ImageIcon(l.getPreview(mixer.getWidth(),mixer.getHeight(),sel).getScaledInstance(32, 32, BufferedImage.SCALE_FAST)));
+                        label.setIcon(new ImageIcon(l.getPreview(sel).getScaledInstance(32, 32, BufferedImage.SCALE_FAST)));
                         label.setDisabledIcon(label.getIcon());
                     }
                 }
@@ -138,17 +136,16 @@ public class MainConsole extends javax.swing.JFrame implements InfoListener {
                 width = studio.getWidth();
                 height = studio.getHeight();
                 pixFormat = studio.getPixFormat();
-                mixer = new webcamstudio.components.Mixer();
-                mixer.setSize(width, height);
-                mixer.setFramerate(15);
+                VideoMixer.getNewInstance(width, height, 15);
+                
                 
                 if (!XMODE) {
                     device = studio.getDevice();
                     selectOutputDevice(device);
-                } else {
-                    mixer.activateStream(true, outputStreamPort);
-                }
-                mixer.setOutput(output);
+                    if (output!=null){
+                        VideoMixer.getInstance().addListener(output);
+                    }
+                } 
                 for (Layout l : Layout.getLayouts().values()) {
                     l.enterLayout(false);
                     currentLayout = l;
@@ -178,7 +175,6 @@ public class MainConsole extends javax.swing.JFrame implements InfoListener {
     private void initComponents() {
 
         cboLayouts = new javax.swing.JComboBox();
-        jButton1 = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         mnuStudiosLoad = new javax.swing.JMenuItem();
@@ -194,14 +190,6 @@ public class MainConsole extends javax.swing.JFrame implements InfoListener {
         cboLayouts.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cboLayoutsActionPerformed(evt);
-            }
-        });
-
-        jButton1.setText(bundle.getString("PREVIEW")); // NOI18N
-        jButton1.setName("jButton1"); // NOI18N
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
             }
         });
 
@@ -231,9 +219,7 @@ public class MainConsole extends javax.swing.JFrame implements InfoListener {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButton1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 376, Short.MAX_VALUE)
-                    .addComponent(cboLayouts, javax.swing.GroupLayout.Alignment.LEADING, 0, 376, Short.MAX_VALUE))
+                .addComponent(cboLayouts, 0, 376, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -241,9 +227,7 @@ public class MainConsole extends javax.swing.JFrame implements InfoListener {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(cboLayouts, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 38, Short.MAX_VALUE)
-                .addContainerGap())
+                .addContainerGap(56, Short.MAX_VALUE))
         );
 
         pack();
@@ -268,21 +252,6 @@ public class MainConsole extends javax.swing.JFrame implements InfoListener {
 
     }//GEN-LAST:event_cboLayoutsActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        if (preview != null) {
-            preview.dispose();
-            preview = null;
-        }
-        preview = new Preview(this, false, mixer);
-        preview.addWindowListener(new java.awt.event.WindowAdapter() {
-
-            public void windowClosing(java.awt.event.WindowEvent e) {
-                preview.stopMe();
-            }
-        });
-        preview.setVisible(true);
-    }//GEN-LAST:event_jButton1ActionPerformed
-
     /**
      * @param args the command line arguments
      */
@@ -296,7 +265,6 @@ public class MainConsole extends javax.swing.JFrame implements InfoListener {
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox cboLayouts;
-    private javax.swing.JButton jButton1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem mnuStudiosLoad;

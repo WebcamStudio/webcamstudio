@@ -5,19 +5,20 @@
 package webcamstudio.sources;
 
 import java.awt.image.BufferedImage;
-import java.util.Timer;
-import java.util.TimerTask;
 import webcamstudio.controls.ControlRescale;
-import webcamstudio.ffmpeg.FFMPEGFullDesktop;
+import webcamstudio.ffmpeg.FFMPEGCapture;
+import webcamstudio.media.Image;
+import webcamstudio.mixers.VideoListener;
+
 
 /**
  *
  * @author patrick
  */
-public class VideoSourceFullDesktop extends VideoSource {
+public class VideoSourceFullDesktop extends VideoSource implements VideoListener {
 
-    private Timer timer = null;
-    protected FFMPEGFullDesktop ffmpeg = new FFMPEGFullDesktop();
+    
+    protected FFMPEGCapture ffmpeg = null;
     public VideoSourceFullDesktop() {
         name = "Full Desktop";
         location = "";
@@ -28,11 +29,7 @@ public class VideoSourceFullDesktop extends VideoSource {
 
     @Override
     public void stopSource() {
-        if (timer != null) {
-            timer.cancel();
-            timer = null;
-        }
-        if (!ffmpeg.isStopped()){
+        if (ffmpeg != null && !ffmpeg.isStopped()){
             ffmpeg.stop();
         }
         isPlaying=false;
@@ -70,6 +67,7 @@ public class VideoSourceFullDesktop extends VideoSource {
     @Override
     public void startSource() {
         isPlaying=true;
+        ffmpeg = new FFMPEGCapture("desktop",this,null);
         frameRate=5;
         captureWidth = java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode().getWidth();
         captureHeight = java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode().getHeight();
@@ -80,30 +78,15 @@ public class VideoSourceFullDesktop extends VideoSource {
         ffmpeg.setRate(frameRate);
         ffmpeg.read();
         
-        if (timer != null) {
-            timer.cancel();
-            timer = null;
-        }
-        timer = new Timer(name, true);
-        timer.scheduleAtFixedRate(new imageFDesktop(this), 0, 1000 / frameRate);
     }
 
     protected void updateOutputImage(BufferedImage img){
-        if (img!=null){
-            image=img;
-        }
-    }
-
-}
-
-class imageFDesktop extends TimerTask{
-    VideoSourceFullDesktop source = null;
-    public imageFDesktop(VideoSourceFullDesktop s){
-        source=s;
     }
 
     @Override
-    public void run() {
-        source.updateOutputImage(source.ffmpeg.getImage());
+    public void newImage(Image image) {
+        updateOutputImage(image.getImage());
+        this.image = image.getImage();
     }
+
 }
