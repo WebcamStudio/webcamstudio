@@ -10,7 +10,7 @@
  */
 package webcamstudio.components;
 
-import webcamstudio.sources.VideoSourceDesktop;
+import webcamstudio.streams.VideoSourceDesktop;
 
 /**
  *

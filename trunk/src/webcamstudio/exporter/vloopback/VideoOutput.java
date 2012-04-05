@@ -6,14 +6,13 @@ package webcamstudio.exporter.vloopback;
 
 import java.awt.image.BufferedImage;
 import webcamstudio.InfoListener;
-import webcamstudio.mixers.VideoListener;
 import webcamstudio.sources.effects.FlipVertical;
 
 /**
  *
  * @author lgs
  */
-abstract public class VideoOutput implements VideoListener {
+abstract public class VideoOutput{
 
     protected static String devicePath = "/dev/video2";
     protected int devFD = 0;

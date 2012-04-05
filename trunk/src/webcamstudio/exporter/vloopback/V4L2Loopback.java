@@ -9,7 +9,6 @@ import com.sun.jna.Native;
 import com.sun.jna.Platform;
 import java.awt.image.BufferedImage;
 import webcamstudio.InfoListener;
-import webcamstudio.media.Image;
 
 /**
  *
@@ -72,13 +71,7 @@ public class V4L2Loopback extends VideoOutput{
         }
     }
 
-    @Override
-    public void newImage(Image image) {
-        BufferedImage outputImage = image.getImage();
-        int [] dataImageOutput = ((java.awt.image.DataBufferInt) outputImage.getRaster().getDataBuffer()).getData();
-        write(dataImageOutput);
-    }
-
+   
     public interface CV4l2 extends Library {
 
         CV4l2 INSTANCE = (CV4l2) Native.loadLibrary((Platform.isWindows() ? "webcamstudio" : "webcamstudio"),
