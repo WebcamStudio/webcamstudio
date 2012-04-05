@@ -15,7 +15,6 @@ public enum FFMPEGTags {
         CWIDTH("@CWIDTH"),
         CHEIGHT("@CHEIGHT"),
         RATE("@RATE"),
-        VOLUME("@VOLUME"),
         SEEK("@SEEK"),
         VPORT("@VPORT"),
         APORT("@APORT"),
