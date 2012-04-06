@@ -10,7 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 import webcamstudio.mixers.Frame;
-import webcamstudio.mixers.MasterMixer;
+import webcamstudio.mixers.MasterFrameBuilder;
 
 /**
  *
@@ -41,13 +41,14 @@ public class SourceImage extends Stream{
                 public void run() {
                     long timeCode = 0;
                     playing=true;
+                    
                     while(!stop){
                         try{
                             timeCode += ((44100 * 2 * 2) / rate);
-                            Frame frame = new Frame(image,null,timeCode,null);
+                            Frame frame = new Frame(uuid,image,null,timeCode,null);
                             frame.setOutputFormat(x, y, width, height, opacity, volume);
                             frame.setZOrder(zorder);
-                            MasterMixer.addSourceFrame(frame, uuid);
+                            MasterFrameBuilder.addFrame(uuid, frame);
                             Thread.sleep(1000/rate);
                         } catch(Exception e){
                         }
@@ -63,6 +64,7 @@ public class SourceImage extends Stream{
     @Override
     public void stop() {
         stop=true;
+        MasterFrameBuilder.unregister(this);
     }
 
     @Override

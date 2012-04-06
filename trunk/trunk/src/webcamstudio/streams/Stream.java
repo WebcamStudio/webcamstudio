@@ -36,6 +36,10 @@ public abstract class Stream {
     public abstract BufferedImage getPreview();
     public abstract String getName();
     
+    
+    public String getID(){
+        return uuid;
+    }
     public void save(XMLStreamWriter writer) throws XMLStreamException, IllegalArgumentException, IllegalArgumentException, IllegalAccessException{
         writer.writeStartElement(getClass().getCanonicalName());
         for (Field f : getClass().getSuperclass().getDeclaredFields()){

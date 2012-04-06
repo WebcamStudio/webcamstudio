@@ -23,18 +23,22 @@ public class Frame {
     private long timecode = 0;
     private AudioFormat format;
     private int zOrder = 0;
+    private String uuid = null;
     
-    public Frame(BufferedImage img, byte[] audio, long timeCode, AudioFormat f){
+    public Frame(String id,BufferedImage img, byte[] audio, long timeCode, AudioFormat f){
         image=img;
         audioData=audio;
         timecode=timeCode;
         format=f;
+        uuid=id;
     }
     protected Frame(int w,int h,int rate){
         image=new BufferedImage(w,h,BufferedImage.TYPE_INT_ARGB);
         audioData= new byte[(44100 *2 *2) / rate];
     }
-    
+    public String getID(){
+        return uuid;
+    }
     public void setZOrder(int z){
         zOrder=z;
     }

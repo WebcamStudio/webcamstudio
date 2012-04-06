@@ -17,7 +17,7 @@ public class SinkBroadcast extends Stream {
     private FFMPEGRenderer capture = null;
     private String name = "sink";
     public SinkBroadcast() {
-        capture = new FFMPEGRenderer("broadcast");
+        capture = new FFMPEGRenderer(uuid,"broadcast");
         capture.updateFormat(x, y, width, height, opacity, volume);
         name = "Justin.tv";
     }

@@ -15,7 +15,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import webcamstudio.media.renderer.Exporter;
 
-
 /**
  *
  * @author patrick
@@ -46,8 +45,10 @@ public class FFMPEGRenderer {
     int zOrder = 0;
     static String OS = "";
     BufferedImage previewImage = null;
+    String uuid = "";
 
-    public FFMPEGRenderer(String plugin) {
+    public FFMPEGRenderer(String uuid, String plugin) {
+        this.uuid = uuid;
         if (plugins == null) {
             plugins = new Properties();
             try {
@@ -59,12 +60,14 @@ public class FFMPEGRenderer {
         this.plugin = plugin;
     }
 
-    public BufferedImage getPreview(){
+    public BufferedImage getPreview() {
         return previewImage;
     }
-    public void setZOrder(int z){
-        zOrder=z;
+
+    public void setZOrder(int z) {
+        zOrder = z;
     }
+
     public void updateFormat(int x, int y, int width, int height, int opacity, float volume) {
         this.x = x;
         this.y = y;
@@ -74,9 +77,10 @@ public class FFMPEGRenderer {
         this.volume = volume;
     }
 
-    public void setOpacity(int o){
-        opacity=o;
+    public void setOpacity(int o) {
+        opacity = o;
     }
+
     private static URL getResource() throws MalformedURLException {
         File userSettings = new File(new File(System.getProperty("user.home") + "/.webcamstudio"), "ffmpeg-capture.properties");
         URL res = null;
@@ -159,10 +163,10 @@ public class FFMPEGRenderer {
                     command = command.replaceAll(FFMPEGTags.CWIDTH.toString(), "" + captureWidth);
                     break;
                 case FILE:
-                    if (OS.equals("windows")){
+                    if (OS.equals("windows")) {
                         command = command.replaceAll(FFMPEGTags.FILE.toString(), "\"" + file + "\"");
                     } else {
-                        command = command.replaceAll(FFMPEGTags.FILE.toString(), "" + file.replaceAll(" ","\\ ") + "");
+                        command = command.replaceAll(FFMPEGTags.FILE.toString(), "" + file.replaceAll(" ", "\\ ") + "");
                     }
                     break;
                 case OHEIGHT:
@@ -201,7 +205,7 @@ public class FFMPEGRenderer {
 
             @Override
             public void run() {
-                final Capturer capture = new Capturer(x, y, captureWidth, captureHeight, rate, opacity, volume);
+                final Capturer capture = new Capturer(uuid, x, y, captureWidth, captureHeight, rate, opacity, volume);
                 videoPort = capture.getVideoPort();
                 audioPort = capture.getAudioPort();
                 String command = plugins.getProperty(plugin).replaceAll("  ", " "); //Making sure there is no double spaces
@@ -209,8 +213,7 @@ public class FFMPEGRenderer {
                 command = setParameters(command);
                 final String[] parms = command.split("=");
                 try {
-                    capture.listen();
-                    for (String p : parms){
+                    for (String p : parms) {
                         System.out.print(p + " ");
                     }
                     System.out.println();
@@ -220,12 +223,12 @@ public class FFMPEGRenderer {
                         @Override
                         public void run() {
                             while (!stopMe) {
+                                capture.setFormat(x, y, width, height, opacity, volume);
+                                capture.setZOrder(zOrder);
+                                capture.run();
+                                previewImage = capture.getPreview();
                                 try {
-                                    capture.setFormat(x, y, width, height, opacity, volume);
-                                    capture.setZOrder(zOrder);
-                                    capture.run();
-                                    Thread.sleep(1);
-                                    previewImage=capture.getPreview();
+                                    Thread.sleep(1000 / rate);
                                 } catch (InterruptedException ex) {
                                     Logger.getLogger(FFMPEGRenderer.class.getName()).log(Level.SEVERE, null, ex);
                                 }
@@ -242,7 +245,7 @@ public class FFMPEGRenderer {
                             } catch (Exception ex) {
                                 Logger.getLogger(FFMPEGRenderer.class.getName()).log(Level.SEVERE, null, ex);
                             }
-                            
+
                         }
                     }).start();
 
@@ -256,21 +259,21 @@ public class FFMPEGRenderer {
 
     }
 
-    public void write(){
+    public void write() {
         stopped = false;
         stopMe = false;
         new Thread(new Runnable() {
 
             @Override
             public void run() {
-                
+
                 final Exporter renderer = new Exporter();
                 videoPort = renderer.getVideoPort();
                 audioPort = renderer.getAudioPort();
                 String command = plugins.getProperty(plugin).replaceAll("  ", " "); //Making sure there is no double spaces
                 command = setParameters(command);
                 System.out.println(command);
-                
+
                 final String[] parms = command.split(" ");
                 try {
                     final Process process = Runtime.getRuntime().exec(parms);
@@ -298,7 +301,7 @@ public class FFMPEGRenderer {
                             } catch (Exception ex) {
                                 Logger.getLogger(FFMPEGRenderer.class.getName()).log(Level.SEVERE, null, ex);
                             }
-                            
+
                         }
                     }).start();
                 } catch (Exception e) {
@@ -309,6 +312,7 @@ public class FFMPEGRenderer {
         }).start();
 
     }
+
     public void stop() {
         stopMe = true;
         while (!stopped) {
