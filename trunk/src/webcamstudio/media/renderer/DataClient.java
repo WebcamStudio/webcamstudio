@@ -8,25 +8,29 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketTimeoutException;
-import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author patrick
  */
-public class DataClient {
+public class DataClient implements Runnable {
 
     private Socket connection;
-    private ArrayList<byte[]> data = new ArrayList<byte[]>();
+    
+    private byte[] datablock = null;
     private int port = 0;
     private boolean abort = false;
     private ServerSocket server;
     private int dataSize = 0;
     private int rate = 15;
-    public DataClient(int dataSize,int rate) {
+    private DataInputStream din = null;
+    private boolean doneReading = false;
+
+    public DataClient(int dataSize, int rate) {
         this.dataSize = dataSize;
-        this.rate=rate;
+        this.rate = rate;
         try {
             server = new ServerSocket(0);
             port = server.getLocalPort();
@@ -39,57 +43,55 @@ public class DataClient {
         return port;
     }
 
-    public byte[] getData() {
-        if (data.isEmpty()){
-            return null;
-        } else {
-            return data.remove(0);
-        }
+    public byte[] getData() throws IOException {
+        return datablock;
     }
 
-    public void listen() throws IOException {
-        server.setSoTimeout(1000);
-        abort = false;
-        new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-                while (!abort) {
-                    try {
-                        connection = server.accept();
-                        server.close();
-                        feed();
-                        connection.close();
-                    } catch (SocketTimeoutException soe) {
-                        System.out.println("Waiting...");
-                    } catch (IOException ioe) {
-                        //ioe.printStackTrace();
-                        abort = true;
-                    } catch (InterruptedException iee) {
-                        iee.printStackTrace();
-                        abort = true;
-                    }
-                }
-            }
-        }).start();
+    public boolean canFeed() {
+        return connection != null;
     }
 
-    private void feed() throws InterruptedException, IOException {
-        DataInputStream din = new DataInputStream(connection.getInputStream());
-        System.out.println("Reading...");
-        long start = 0;
-        while (!abort && !connection.isClosed()) {
-            start = System.currentTimeMillis();
-            byte[] datablock = new byte[dataSize];
-            din.readFully(datablock);
-            data.add(datablock);
-            if (data.size()> 30){
-                System.out.println("Warning, feeding faster than expected " + data.size());
+    public void feed() throws IOException {
+        if (din != null) {
+            if (!abort && !connection.isClosed()) {
+                datablock = new byte[dataSize];
+                din.readFully(datablock);
             }
         }
     }
 
-    public void shutdown() {
+    public boolean done(){
+        return doneReading;
+    }
+    public void shutdown() throws IOException {
         abort = true;
+        if (connection != null) {
+            connection.close();
+            din=null;
+            connection = null;
+        }
+        if (server != null) {
+            server.close();
+            server = null;
+        }
+    }
+
+    @Override
+    public void run() {
+        doneReading=false;
+        try {
+            if (connection == null) {
+                abort=false;
+                connection = server.accept();
+                din = new DataInputStream(connection.getInputStream());
+                server.close();
+                server = null;
+            }
+            feed();
+        } catch (IOException ex) {
+            abort=true;
+            Logger.getLogger(DataClient.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        doneReading=true;
     }
 }

@@ -4,6 +4,7 @@
  */
 package webcamstudio.media.renderer;
 
+import java.util.concurrent.ExecutorService;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import webcamstudio.mixers.Frame;
@@ -13,7 +14,9 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;
 import java.util.TimerTask;
-import webcamstudio.mixers.MasterMixer;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import webcamstudio.mixers.MasterFrameBuilder;
 
 /**
  *
@@ -39,12 +42,13 @@ public class Capturer extends TimerTask {
     private DataClient videoClient;
     private BufferedImage previewImage = null;
     private int zOrder = 0;
+    private ExecutorService executor = java.util.concurrent.Executors.newCachedThreadPool();
 
-    public Capturer(int x, int y, int w, int h, int fps, int opacity, float volume) {
+    public Capturer(String uuid, int x, int y, int w, int h, int fps, int opacity, float volume) {
         audioClient = new DataClient((44100 * 2 * 2) / frameRate, frameRate);
         videoClient = new DataClient(w * h * 4, frameRate);
         frameRate = fps;
-        uuid = java.util.UUID.randomUUID().toString();
+        this.uuid = uuid;
         captureWidth = w;
         captureHeight = h;
         width = w;
@@ -83,14 +87,14 @@ public class Capturer extends TimerTask {
         this.volume = volume;
     }
 
-    public void listen() throws IOException {
-        videoClient.listen();
-        audioClient.listen();
-    }
 
     public void abort() {
-        videoClient.shutdown();
-        audioClient.shutdown();
+        try {
+            videoClient.shutdown();
+            audioClient.shutdown();
+        } catch (IOException ex) {
+            Logger.getLogger(Capturer.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public int getVideoPort() {
@@ -103,33 +107,39 @@ public class Capturer extends TimerTask {
 
     @Override
     public void run() {
-        Frame frame = new Frame(previewImage, null, timeCode, null);
-        byte[] abuffer = null;
-        while (abuffer == null) {
-            abuffer = audioClient.getData();
-            if (abuffer != null) {
-                frame.setAudio(abuffer);
-            } else {
-                try {
-                    Thread.sleep(1);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(Capturer.class.getName()).log(Level.SEVERE, null, ex);
-                }
+        Frame frame = new Frame(uuid,previewImage, null, timeCode, null);
+       
+        new Thread(audioClient).start();
+        new Thread(videoClient).start();
+        while(!(audioClient.done() && videoClient.done())){
+            try {
+                Thread.sleep(1);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Capturer.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        byte[] vbuffer = videoClient.getData();
-        if (vbuffer != null) {
-            BufferedImage img = new BufferedImage(captureWidth, captureHeight, BufferedImage.TYPE_INT_ARGB);
-            int[] imgData = ((java.awt.image.DataBufferInt) img.getRaster().getDataBuffer()).getData();
-            IntBuffer intData = ByteBuffer.wrap(vbuffer).order(ByteOrder.BIG_ENDIAN).asIntBuffer();
-            intData.get(imgData);
-            frame.setImage(img);
-            previewImage = img;
+        try {
+            byte[] abuffer = audioClient.getData();
+            if (abuffer != null) {
+                frame.setAudio(abuffer);
+            } 
+            byte[] vbuffer = videoClient.getData();
+            if (vbuffer != null) {
+                BufferedImage img = new BufferedImage(captureWidth, captureHeight, BufferedImage.TYPE_INT_ARGB);
+                int[] imgData = ((java.awt.image.DataBufferInt) img.getRaster().getDataBuffer()).getData();
+                IntBuffer intData = ByteBuffer.wrap(vbuffer).order(ByteOrder.BIG_ENDIAN).asIntBuffer();
+                intData.get(imgData);
+                frame.setImage(img);
+                previewImage = img;
+            }
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
         }
         timeCode += ((44100 * 2 * 2) / frameRate);
         frame.setTimeCode(timeCode);
         frame.setOutputFormat(x, y, width, height, opacity, volume);
         frame.setZOrder(zOrder);
-        MasterMixer.addSourceFrame(frame, uuid);
+        MasterFrameBuilder.addFrame(uuid, frame);
+
     }
 }

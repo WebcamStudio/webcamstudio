@@ -7,6 +7,7 @@ package webcamstudio.streams;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import webcamstudio.ffmpeg.FFMPEGRenderer;
+import webcamstudio.mixers.MasterFrameBuilder;
 
 /**
  *
@@ -17,7 +18,7 @@ public class SourceWebcam extends Stream{
     FFMPEGRenderer capture = null;
     String name = "webcam";
     public SourceWebcam(File device){
-       capture = new FFMPEGRenderer("webcam");
+       capture = new FFMPEGRenderer(uuid,"webcam");
        capture.setFile(device);
        name = device.getName();
        
@@ -63,6 +64,7 @@ public class SourceWebcam extends Stream{
     @Override
     public void stop() {
         capture.stop();
+        MasterFrameBuilder.unregister(this);
     }
     @Override
     public boolean isPlaying() {

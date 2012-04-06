@@ -7,6 +7,7 @@ package webcamstudio.streams;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import webcamstudio.ffmpeg.FFMPEGRenderer;
+import webcamstudio.mixers.MasterFrameBuilder;
 
 /**
  *
@@ -18,7 +19,7 @@ public class SourceMovie extends Stream {
     String name = "movie";
     
     public SourceMovie(File movie){
-       capture = new FFMPEGRenderer("movie");
+       capture = new FFMPEGRenderer(uuid,"movie");
        capture.setFile(movie);
        name=movie.getName();
     }
@@ -60,7 +61,9 @@ public class SourceMovie extends Stream {
     }
     @Override
     public void stop() {
+        MasterFrameBuilder.unregister(this);
         capture.stop();
+        
     }
 
     @Override

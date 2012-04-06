@@ -17,7 +17,7 @@ public class SinkFile extends Stream {
     private FFMPEGRenderer capture = null;
     private String name = "sink";
     public SinkFile(File f) {
-        capture = new FFMPEGRenderer("outputfile");
+        capture = new FFMPEGRenderer(uuid,"outputfile");
         capture.updateFormat(x, y, width, height, opacity, volume);
         capture.setFile(f);
         name = f.getName();

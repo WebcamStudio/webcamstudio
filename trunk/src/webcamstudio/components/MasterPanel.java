@@ -29,7 +29,7 @@ public class MasterPanel extends javax.swing.JPanel {
 
     protected Viewer viewer = new Viewer();
     private Timer timer = new Timer();
-    private SystemAudioPlayer audio = new SystemAudioPlayer();
+    private SystemAudioPlayer audio = SystemAudioPlayer.getInstance();
         
     final static public Dimension PANEL_SIZE = new Dimension(200,400);
     /** Creates new form MasterPanel */
