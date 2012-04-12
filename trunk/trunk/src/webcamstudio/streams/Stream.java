@@ -7,10 +7,12 @@ package webcamstudio.streams;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
+import webcamstudio.mixers.Frame;
 
 /**
  *
@@ -29,16 +31,37 @@ public abstract class Stream {
     protected int rate = 15;
     protected int seek = 0;
     protected int zorder = 0;
+    protected File file = null;
+    protected String name = null;
+    protected ArrayList<Frame> frames = new ArrayList<Frame>();
+    
+    
     
     public abstract void read();
     public abstract void stop();
     public abstract boolean isPlaying();
     public abstract BufferedImage getPreview();
-    public abstract String getName();
     
+    
+    public String getName(){
+        return name;
+    }
+    public Frame getFrame(){
+        Frame f = null;
+        if (frames.size()>1){
+            f = frames.remove(0);
+        } else if (frames.size()==1){
+            f = frames.get(0);
+        }
+        return f;
+    }
     
     public String getID(){
         return uuid;
+    }
+    
+    public File getFile(){
+        return file;
     }
     public void save(XMLStreamWriter writer) throws XMLStreamException, IllegalArgumentException, IllegalArgumentException, IllegalAccessException{
         writer.writeStartElement(getClass().getCanonicalName());
@@ -228,6 +251,12 @@ public abstract class Stream {
         this.seek = seek;
     }
 
+    public void addFrame(Frame f){
+        frames.add(f);
+        if (frames.size()>30){
+            frames.remove(0);
+        }
+    }
     public static Stream getInstance(File file){
         Stream stream = null;
         String ext = file.getName().toLowerCase().trim();

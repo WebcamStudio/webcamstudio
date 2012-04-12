@@ -5,7 +5,6 @@
 package webcamstudio.mixers;
 
 import java.awt.image.BufferedImage;
-import java.util.Timer;
 
 /**
  *
@@ -55,7 +54,7 @@ public class MasterMixer {
         currentFrame=f;
     }
     public static void setCurrentFrame(BufferedImage img,byte[] audio){
-        Frame f = new Frame("",img, audio, 0, null);
+        Frame f = new Frame("",img, audio);
         currentFrame=f;
     }
     public static Frame getCurrentFrame() {
