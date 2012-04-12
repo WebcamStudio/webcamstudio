@@ -22,19 +22,21 @@ import webcamstudio.streams.Stream;
  */
 public class MasterFrameBuilder implements Runnable {
 
-    //private static TreeMap<String, Frame> frames = new TreeMap<String, Frame>();
-    static ArrayList<Frame> frames = new ArrayList<Frame>();
+    static ArrayList<Stream> streams = new ArrayList<Stream>();
     private boolean stopMe = false;
 
-    public static void unregister(Stream s) {
-        //frames.remove(s.getID());
+    public static void register(Stream s) {
+        if (!streams.contains(s)) {
+            streams.add(s);
+        }
     }
 
-    public void stop(){
-        stopMe=true;
+    public static void unregister(Stream s) {
+        streams.remove(s);
     }
-    public static void addFrame(String uuid, Frame f) {
-        frames.add(f);
+
+    public void stop() {
+        stopMe = true;
     }
 
     private static void mixImages(Collection<Frame> frames, Frame targetFrame) {
@@ -84,25 +86,28 @@ public class MasterFrameBuilder implements Runnable {
 
     @Override
     public void run() {
-        stopMe=false;
-        TreeMap<String,Frame> list = new TreeMap<String,Frame>();
+        stopMe = false;
+        ArrayList<Frame> frames = new ArrayList<Frame>();
+        for (Stream s : streams) {
+            frames.add(s.getFrame());
+        }
         while (!stopMe) {
             Frame targetFrame = new Frame(MasterMixer.getWidth(), MasterMixer.getHeight(), MasterMixer.getRate());
-            for (int i = 0;i<frames.size();i++){
-                Frame f = frames.get(i);
-                if (!list.containsKey(f.getID())){
-                    list.put(f.getID(), f);
+            frames.clear();
+            for (Stream s : streams) {
+                Frame f = s.getFrame();
+                if (f!=null){
+                    frames.add(s.getFrame());
                 }
             }
-            frames.removeAll(list.values());
-            mixAudio(list.values(), targetFrame);
+            mixAudio(frames, targetFrame);
             SystemAudioPlayer.getInstance().addData(targetFrame.getAudioData());
-            mixImages(list.values(), targetFrame);
+            mixImages(frames, targetFrame);
             MasterMixer.setCurrentFrame(targetFrame);
-            list.clear();
+            frames.clear();
             targetFrame = null;
             try {
-                Thread.sleep(1000/15);
+                Thread.sleep(1000 / 15);
             } catch (InterruptedException ex) {
                 Logger.getLogger(MasterFrameBuilder.class.getName()).log(Level.SEVERE, null, ex);
             }

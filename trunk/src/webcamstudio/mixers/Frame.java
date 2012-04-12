@@ -20,16 +20,12 @@ public class Frame {
     private int opacity = 100;
     private float audioVolume=1;
     private byte[] audioData;
-    private long timecode = 0;
-    private AudioFormat format;
     private int zOrder = 0;
     private String uuid = null;
     
-    public Frame(String id,BufferedImage img, byte[] audio, long timeCode, AudioFormat f){
+    public Frame(String id,BufferedImage img, byte[] audio){
         image=img;
         audioData=audio;
-        timecode=timeCode;
-        format=f;
         uuid=id;
     }
     protected Frame(int w,int h,int rate){
@@ -66,16 +62,6 @@ public class Frame {
         return audioData;
     }
 
-    public long getTimeCode() {
-        return timecode;
-    }
-
-    public void setTimeCode(long t){
-        timecode=t;
-    }
-    public AudioFormat getFormat() {
-        return format;
-    }
     public int getX(){
         return x;
     }

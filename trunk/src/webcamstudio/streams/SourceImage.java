@@ -18,12 +18,12 @@ import webcamstudio.mixers.MasterFrameBuilder;
  */
 public class SourceImage extends Stream{
 
-    File sourceFile = null;
     BufferedImage image = null;
     boolean playing = true;
     boolean stop = false;
     public SourceImage(File img){
-        sourceFile=img;
+        file=img;
+        name = img.getName();
     }
     
     private void loadImage(File f) throws IOException{
@@ -34,21 +34,20 @@ public class SourceImage extends Stream{
     public void read() {
         stop=false;
         try{
-            loadImage(sourceFile);
+            loadImage(file);
+            Frame frame = new Frame(uuid,image,null);
+            frame.setOutputFormat(x, y, width, height, opacity, volume);
+            frame.setZOrder(zorder);
+            frames.add(frame);
+            MasterFrameBuilder.register(this);
             new Thread(new Runnable(){
-
                 @Override
                 public void run() {
-                    long timeCode = 0;
                     playing=true;
-                    
+                    frames.get(0).setOutputFormat(x, y, width, height, opacity, volume);
+                    frames.get(0).setZOrder(zorder);
                     while(!stop){
                         try{
-                            timeCode += ((44100 * 2 * 2) / rate);
-                            Frame frame = new Frame(uuid,image,null,timeCode,null);
-                            frame.setOutputFormat(x, y, width, height, opacity, volume);
-                            frame.setZOrder(zorder);
-                            MasterFrameBuilder.addFrame(uuid, frame);
                             Thread.sleep(1000/rate);
                         } catch(Exception e){
                         }
@@ -64,9 +63,18 @@ public class SourceImage extends Stream{
     @Override
     public void stop() {
         stop=true;
+        frames.clear();
         MasterFrameBuilder.unregister(this);
     }
 
+    @Override
+    public Frame getFrame(){
+        Frame f = null;
+        if (frames.size()>0){
+            f= frames.get(0);
+        }
+        return f;
+    }
     @Override
     public boolean isPlaying() {
         return playing;
@@ -75,11 +83,6 @@ public class SourceImage extends Stream{
     @Override
     public BufferedImage getPreview() {
         return image;
-    }
-
-    @Override
-    public String getName() {
-        return sourceFile.getName();
     }
     
 }

@@ -5,8 +5,8 @@
 package webcamstudio.streams;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
 import webcamstudio.ffmpeg.FFMPEGRenderer;
+import webcamstudio.mixers.Frame;
 
 /**
  *
@@ -15,10 +15,8 @@ import webcamstudio.ffmpeg.FFMPEGRenderer;
 public class SinkBroadcast extends Stream {
 
     private FFMPEGRenderer capture = null;
-    private String name = "sink";
     public SinkBroadcast() {
-        capture = new FFMPEGRenderer(uuid,"broadcast");
-        capture.updateFormat(x, y, width, height, opacity, volume);
+        capture = new FFMPEGRenderer(this,"broadcast");
         name = "Justin.tv";
     }
     @Override
@@ -27,8 +25,6 @@ public class SinkBroadcast extends Stream {
     }
     @Override
     public void read() {
-        capture.updateFormat(x, y, width, height, opacity, volume);
-        capture.setRate(rate);
         capture.write();
     }
 
@@ -44,5 +40,10 @@ public class SinkBroadcast extends Stream {
      @Override
     public BufferedImage getPreview() {
         return capture.getPreview();
+    }
+
+    @Override
+    public Frame getFrame() {
+        return null;
     }
 }
