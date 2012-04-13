@@ -6,8 +6,12 @@ package webcamstudio.media.renderer;
 
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -15,22 +19,16 @@ import java.util.logging.Logger;
  *
  * @author patrick
  */
-public class DataClient implements Runnable {
+public class DataClient extends TimerTask {
 
     private Socket connection;
-    
-    private byte[] datablock = null;
+    final static int BUFFER_SIZE = 10;
     private int port = 0;
-    private boolean abort = false;
     private ServerSocket server;
-    private int dataSize = 0;
-    private int rate = 15;
+    
     private DataInputStream din = null;
-    private boolean doneReading = false;
 
-    public DataClient(int dataSize, int rate) {
-        this.dataSize = dataSize;
-        this.rate = rate;
+    public DataClient() {
         try {
             server = new ServerSocket(0);
             port = server.getLocalPort();
@@ -43,31 +41,16 @@ public class DataClient implements Runnable {
         return port;
     }
 
-    public byte[] getData() throws IOException {
-        return datablock;
-    }
-
     public boolean canFeed() {
         return connection != null;
     }
-
-    public void feed() throws IOException {
-        if (din != null) {
-            if (!abort && !connection.isClosed()) {
-                datablock = new byte[dataSize];
-                din.readFully(datablock);
-            }
-        }
-    }
-
-    public boolean done(){
-        return doneReading;
+    public DataInputStream getStream(){
+        return din;
     }
     public void shutdown() throws IOException {
-        abort = true;
         if (connection != null) {
             connection.close();
-            din=null;
+            din = null;
             connection = null;
         }
         if (server != null) {
@@ -78,20 +61,16 @@ public class DataClient implements Runnable {
 
     @Override
     public void run() {
-        doneReading=false;
         try {
             if (connection == null) {
-                abort=false;
                 connection = server.accept();
+                System.out.println("Accepted connection");
                 din = new DataInputStream(connection.getInputStream());
                 server.close();
                 server = null;
             }
-            feed();
         } catch (IOException ex) {
-            abort=true;
             Logger.getLogger(DataClient.class.getName()).log(Level.SEVERE, null, ex);
         }
-        doneReading=true;
     }
 }

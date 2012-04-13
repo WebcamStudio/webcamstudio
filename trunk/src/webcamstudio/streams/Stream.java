@@ -250,12 +250,11 @@ public abstract class Stream {
     public void setSeek(int seek) {
         this.seek = seek;
     }
-
+    public boolean canAddFrame(){
+        return (frames.size()<10);
+    }
     public void addFrame(Frame f){
         frames.add(f);
-        if (frames.size()>30){
-            frames.remove(0);
-        }
     }
     public static Stream getInstance(File file){
         Stream stream = null;
