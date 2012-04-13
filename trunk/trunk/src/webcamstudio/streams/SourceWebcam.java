@@ -17,7 +17,7 @@ public class SourceWebcam extends Stream{
 
     FFMPEGRenderer capture = null;
     public SourceWebcam(File device){
-       capture = new FFMPEGRenderer(this,"webcam");
+       capture = new FFMPEGRenderer(this,FFMPEGRenderer.ACTION.CAPTURE,"webcam");
        file=device;
        name = device.getName();
        
@@ -41,7 +41,11 @@ public class SourceWebcam extends Stream{
 
     @Override
     public BufferedImage getPreview() {
-        return capture.getPreview();
+        if (frames.size()>0){
+            return frames.get(0).getImage();
+        } else {
+            return null;
+        }
     }
     
 }

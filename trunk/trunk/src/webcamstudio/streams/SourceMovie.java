@@ -6,8 +6,8 @@ package webcamstudio.streams;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
+import org.omg.IOP.CodecPackage.FormatMismatchHelper;
 import webcamstudio.ffmpeg.FFMPEGRenderer;
-import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterFrameBuilder;
 
 /**
@@ -17,9 +17,9 @@ import webcamstudio.mixers.MasterFrameBuilder;
 public class SourceMovie extends Stream {
 
     FFMPEGRenderer capture = null;
-
+    
     public SourceMovie(File movie) {
-        capture = new FFMPEGRenderer(this, "movie");
+        capture = new FFMPEGRenderer(this,FFMPEGRenderer.ACTION.CAPTURE, "movie");
         file=movie;
         name = movie.getName();
     }
@@ -46,7 +46,11 @@ public class SourceMovie extends Stream {
 
     @Override
     public BufferedImage getPreview() {
-        return capture.getPreview();
+        if (frames.size()>0){
+            return frames.get(0).getImage();
+        } else {
+            return null;
+        }
     }
 
 }

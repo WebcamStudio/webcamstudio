@@ -17,7 +17,7 @@ public class SinkFile extends Stream {
 
     private FFMPEGRenderer capture = null;
     public SinkFile(File f) {
-        capture = new FFMPEGRenderer(this,"outputfile");
+        capture = new FFMPEGRenderer(this,FFMPEGRenderer.ACTION.OUTPUT,"file");
         file=f;
         name = f.getName();
     }
@@ -37,7 +37,11 @@ public class SinkFile extends Stream {
     }
      @Override
     public BufferedImage getPreview() {
-        return capture.getPreview();
+        if (frames.size()>0){
+            return frames.get(0).getImage();
+        } else {
+            return null;
+        }
     }
 
     @Override

@@ -16,7 +16,7 @@ public class SinkBroadcast extends Stream {
 
     private FFMPEGRenderer capture = null;
     public SinkBroadcast() {
-        capture = new FFMPEGRenderer(this,"broadcast");
+        capture = new FFMPEGRenderer(this,FFMPEGRenderer.ACTION.OUTPUT,"broadcast");
         name = "Justin.tv";
     }
     @Override
@@ -39,7 +39,11 @@ public class SinkBroadcast extends Stream {
     }
      @Override
     public BufferedImage getPreview() {
-        return capture.getPreview();
+        if (frames.size()>0){
+            return frames.get(0).getImage();
+        } else {
+            return null;
+        }
     }
 
     @Override

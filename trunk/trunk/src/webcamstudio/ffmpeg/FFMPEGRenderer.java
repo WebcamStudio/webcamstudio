@@ -22,6 +22,14 @@ import webcamstudio.streams.Stream;
  */
 public class FFMPEGRenderer {
 
+    final static String RES_CAP = "ffmpeg-capture_OS.properties";
+    final static String RES_OUT = "ffmpeg-output_OS.properties";
+
+    public enum ACTION {
+
+        CAPTURE,
+        OUTPUT
+    }
     java.io.DataInput input = null;
     boolean stopMe = false;
     boolean stopped = true;
@@ -33,15 +41,14 @@ public class FFMPEGRenderer {
     int channels = 2;
     int bitSize = 16;
     static String OS = "";
-    BufferedImage previewImage = null;
     Stream stream;
 
-    public FFMPEGRenderer(Stream s, String plugin) {
-        stream=s;
+    public FFMPEGRenderer(Stream s, ACTION a, String plugin) {
+        stream = s;
         if (plugins == null) {
             plugins = new Properties();
             try {
-                plugins.load(getResource().openStream());
+                plugins.load(getResource(a).openStream());
             } catch (IOException ex) {
                 Logger.getLogger(FFMPEGRenderer.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -49,30 +56,42 @@ public class FFMPEGRenderer {
         this.plugin = plugin;
     }
 
-    public BufferedImage getPreview() {
-        return previewImage;
-    }
-
-    private static URL getResource() throws MalformedURLException {
-        File userSettings = new File(new File(System.getProperty("user.home") + "/.webcamstudio"), "ffmpeg-capture.properties");
+    private static URL getResource(ACTION a) throws MalformedURLException {
+        OS = System.getProperty("os.name").toLowerCase();
+        File userSettings = null;
+        switch (a) {
+            case CAPTURE:
+                userSettings = new File(new File(System.getProperty("user.home") + "/.webcamstudio"), RES_CAP.replaceAll("OS", OS));
+                break;
+            case OUTPUT:
+                userSettings = new File(new File(System.getProperty("user.home") + "/.webcamstudio"), RES_OUT.replaceAll("OS", OS));
+                break;
+        }
         URL res = null;
         System.out.println(userSettings.getAbsolutePath());
         if (userSettings.exists()) {
             res = userSettings.toURI().toURL();
         } else {
-            OS = System.getProperty("os.name").toLowerCase();
-            String path = "/webcamstudio/ffmpeg/ffmpeg-capture_" + OS + ".properties";
+            String path = null;
+            switch (a) {
+                case CAPTURE:
+                    path = "/webcamstudio/ffmpeg/ffmpeg-capture_" + OS + ".properties";
+                    break;
+                case OUTPUT:
+                    path = "/webcamstudio/ffmpeg/ffmpeg-output_" + OS + ".properties";
+                    break;
+            }
             res = FFMPEGRenderer.class.getResource(path);
         }
         System.out.println("Resource Used: " + res.toString());
         return res;
     }
 
-    public static String[] getPlugins() {
+    public static String[] getPlugins(ACTION a) {
         if (plugins == null) {
             plugins = new Properties();
             try {
-                plugins.load(getResource().openStream());
+                plugins.load(getResource(a).openStream());
             } catch (IOException ex) {
                 Logger.getLogger(FFMPEGRenderer.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -84,7 +103,6 @@ public class FFMPEGRenderer {
         }
         return keys;
     }
-
 
     private String setParameters(String cmd) {
         String command = cmd;
@@ -100,12 +118,12 @@ public class FFMPEGRenderer {
                     command = command.replaceAll(FFMPEGTags.CWIDTH.toString(), "" + stream.getCaptureWidth());
                     break;
                 case FILE:
-                    if (stream.getFile()!=null){
-                    if (OS.equals("windows")) {
-                        command = command.replaceAll(FFMPEGTags.FILE.toString(), "\"" + stream.getFile().getAbsolutePath() + "\"");
-                    } else {
-                        command = command.replaceAll(FFMPEGTags.FILE.toString(), "" + stream.getFile().getAbsolutePath().replaceAll(" ", "\\ ") + "");
-                    }
+                    if (stream.getFile() != null) {
+                        if (OS.equals("windows")) {
+                            command = command.replaceAll(FFMPEGTags.FILE.toString(), "\"" + stream.getFile().getAbsolutePath() + "\"");
+                        } else {
+                            command = command.replaceAll(FFMPEGTags.FILE.toString(), "" + stream.getFile().getAbsolutePath().replaceAll(" ", "\\ ") + "");
+                        }
                     }
                     break;
                 case OHEIGHT:
@@ -161,14 +179,19 @@ public class FFMPEGRenderer {
 
                         @Override
                         public void run() {
+                            long wait = 1000/stream.getRate();
+                            long mark = System.currentTimeMillis()+wait;
+                            
                             while (!stopMe) {
                                 capture.run();
-                                previewImage = capture.getPreview();
-                                try {
-                                    Thread.sleep(1000 / stream.getRate());
-                                } catch (InterruptedException ex) {
-                                    Logger.getLogger(FFMPEGRenderer.class.getName()).log(Level.SEVERE, null, ex);
-                                }
+//                                while (System.currentTimeMillis()<mark) {
+//                                    try {
+//                                        Thread.sleep(5);
+//                                    } catch (InterruptedException ex) {
+//                                        Logger.getLogger(FFMPEGRenderer.class.getName()).log(Level.SEVERE, null, ex);
+//                                    }
+//                                }
+//                                mark = System.currentTimeMillis()+wait;
                             }
                             capture.abort();
                             stopped = true;

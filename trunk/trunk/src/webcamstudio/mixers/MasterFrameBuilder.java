@@ -24,6 +24,9 @@ public class MasterFrameBuilder implements Runnable {
 
     static ArrayList<Stream> streams = new ArrayList<Stream>();
     private boolean stopMe = false;
+    private int fps = 0;
+    private long mark = System.currentTimeMillis();
+    private long timeCode = System.currentTimeMillis();
 
     public static void register(Stream s) {
         if (!streams.contains(s)) {
@@ -88,15 +91,15 @@ public class MasterFrameBuilder implements Runnable {
     public void run() {
         stopMe = false;
         ArrayList<Frame> frames = new ArrayList<Frame>();
-        for (Stream s : streams) {
-            frames.add(s.getFrame());
-        }
+        mark = System.currentTimeMillis();
+        timeCode = System.currentTimeMillis();
         while (!stopMe) {
+            timeCode = System.currentTimeMillis() + (1000 / MasterMixer.getRate());
             Frame targetFrame = new Frame(MasterMixer.getWidth(), MasterMixer.getHeight(), MasterMixer.getRate());
             frames.clear();
             for (Stream s : streams) {
                 Frame f = s.getFrame();
-                if (f!=null){
+                if (f != null) {
                     frames.add(s.getFrame());
                 }
             }
@@ -104,13 +107,24 @@ public class MasterFrameBuilder implements Runnable {
             SystemAudioPlayer.getInstance().addData(targetFrame.getAudioData());
             mixImages(frames, targetFrame);
             MasterMixer.setCurrentFrame(targetFrame);
+            fps++;
+            float delta = System.currentTimeMillis() - mark;
+            if (fps == 60) {
+                System.out.println("Master Frame Builder: " + (60F / (delta / 1000F)) + " fps");
+                mark = System.currentTimeMillis();
+                fps = 0;
+            }
             frames.clear();
             targetFrame = null;
-            try {
-                Thread.sleep(1000 / 15);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(MasterFrameBuilder.class.getName()).log(Level.SEVERE, null, ex);
+            long waitTime = timeCode - System.currentTimeMillis();
+            if (waitTime > 0) {
+                try {
+                    Thread.sleep(timeCode - System.currentTimeMillis());
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(MasterFrameBuilder.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
+
         }
     }
 }
