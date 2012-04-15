@@ -1,6 +1,6 @@
 <?xml version="1.1" encoding="UTF-8" ?>
 
-<Form version="1.3" maxVersion="1.7" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
+<Form version="1.5" maxVersion="1.7" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
   <Properties>
     <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
       <Border info="org.netbeans.modules.form.compat2.border.EtchedBorderInfo">
@@ -23,66 +23,62 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="panPreview" alignment="0" pref="221" max="32767" attributes="0"/>
-          <Group type="102" alignment="1" attributes="0">
-              <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="labelH" alignment="0" pref="119" max="32767" attributes="1"/>
-                  <Group type="103" alignment="0" groupAlignment="0" max="-2" attributes="0">
-                      <Component id="labelCH" max="32767" attributes="1"/>
-                      <Component id="labelCW" alignment="0" max="32767" attributes="1"/>
-                      <Component id="labelY" alignment="0" max="32767" attributes="1"/>
-                      <Component id="labelX" alignment="0" pref="119" max="32767" attributes="1"/>
-                  </Group>
-                  <Component id="labelW" alignment="0" pref="119" max="32767" attributes="1"/>
-                  <Component id="labelO" alignment="0" pref="119" max="32767" attributes="1"/>
-                  <Component id="labelV" alignment="0" pref="119" max="32767" attributes="1"/>
-                  <Component id="labelZ" alignment="0" pref="119" max="32767" attributes="1"/>
-              </Group>
-              <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="spinZOrder" pref="66" max="32767" attributes="0"/>
-                  <Component id="spinVolume" pref="66" max="32767" attributes="0"/>
-                  <Component id="spinOpacity" pref="66" max="32767" attributes="1"/>
-                  <Component id="spinH" pref="66" max="32767" attributes="0"/>
-                  <Component id="spinH1" alignment="1" pref="66" max="32767" attributes="1"/>
-                  <Component id="spinW1" alignment="1" pref="66" max="32767" attributes="1"/>
-                  <Component id="spinY" alignment="1" pref="66" max="32767" attributes="1"/>
-                  <Component id="spinX" alignment="1" pref="66" max="32767" attributes="1"/>
-                  <Component id="spinW" alignment="0" pref="66" max="32767" attributes="0"/>
-              </Group>
-              <EmptySpace max="-2" attributes="0"/>
-          </Group>
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="tglActiveStream" pref="197" max="32767" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
+                      <Component id="lblText" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace pref="238" max="-2" attributes="0"/>
+                  </Group>
+                  <Group type="102" alignment="0" attributes="0">
+                      <Group type="103" groupAlignment="1" attributes="0">
+                          <Group type="102" alignment="1" attributes="0">
+                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                  <Component id="labelZ" max="32767" attributes="1"/>
+                                  <Component id="lblColor" alignment="0" max="32767" attributes="1"/>
+                                  <Component id="labelFont" alignment="0" max="32767" attributes="1"/>
+                                  <Component id="labelH" alignment="0" max="32767" attributes="1"/>
+                                  <Component id="labelW" alignment="0" max="32767" attributes="1"/>
+                                  <Component id="labelY" alignment="0" max="32767" attributes="1"/>
+                                  <Component id="labelX" alignment="0" min="-2" pref="72" max="-2" attributes="1"/>
+                              </Group>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="txtHexColor" pref="186" max="32767" attributes="0"/>
+                                  <Component id="cboFonts" pref="186" max="32767" attributes="0"/>
+                                  <Component id="spinZOrder" alignment="0" pref="186" max="32767" attributes="1"/>
+                                  <Component id="spinX" alignment="0" pref="186" max="32767" attributes="1"/>
+                                  <Component id="spinY" alignment="0" pref="186" max="32767" attributes="1"/>
+                                  <Component id="spinW" alignment="0" pref="186" max="32767" attributes="0"/>
+                                  <Component id="spinH" alignment="0" pref="186" max="32767" attributes="0"/>
+                              </Group>
+                          </Group>
+                          <Component id="txtContent" alignment="0" pref="270" max="32767" attributes="1"/>
+                          <Component id="tglActiveStream" alignment="0" pref="270" max="32767" attributes="1"/>
+                      </Group>
+                      <EmptySpace min="-2" pref="16" max="-2" attributes="0"/>
+                  </Group>
+              </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" attributes="0">
-              <Component id="panPreview" min="-2" pref="101" max="-2" attributes="0"/>
+          <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="labelX" min="-2" max="-2" attributes="0"/>
-                  <Component id="spinX" min="-2" max="-2" attributes="0"/>
+              <Component id="lblText" min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
+              <Component id="txtContent" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="labelX" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="spinX" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="labelY" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="spinY" alignment="3" min="-2" max="-2" attributes="0"/>
-              </Group>
-              <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="labelCW" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="spinW1" alignment="3" min="-2" max="-2" attributes="0"/>
-              </Group>
-              <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="labelCH" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="spinH1" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
@@ -96,13 +92,13 @@
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="labelO" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="spinOpacity" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="labelFont" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="cboFonts" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="labelV" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="spinVolume" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="lblColor" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="txtHexColor" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
@@ -117,21 +113,6 @@
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Container class="javax.swing.JPanel" name="panPreview">
-      <Properties>
-        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="71" green="71" red="71" type="rgb"/>
-        </Property>
-        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-          <Border info="org.netbeans.modules.form.compat2.border.EtchedBorderInfo">
-            <EtchetBorder bevelType="0"/>
-          </Border>
-        </Property>
-        <Property name="name" type="java.lang.String" value="panPreview" noResource="true"/>
-      </Properties>
-
-      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
-    </Container>
     <Component class="javax.swing.JSpinner" name="spinX">
       <Properties>
         <Property name="name" type="java.lang.String" value="spinX" noResource="true"/>
@@ -162,22 +143,6 @@
       </Properties>
       <Events>
         <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="spinHStateChanged"/>
-      </Events>
-    </Component>
-    <Component class="javax.swing.JSpinner" name="spinOpacity">
-      <Properties>
-        <Property name="name" type="java.lang.String" value="spinOpacity" noResource="true"/>
-      </Properties>
-      <Events>
-        <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="spinOpacityStateChanged"/>
-      </Events>
-    </Component>
-    <Component class="javax.swing.JSpinner" name="spinVolume">
-      <Properties>
-        <Property name="name" type="java.lang.String" value="spinVolume" noResource="true"/>
-      </Properties>
-      <Events>
-        <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="spinVolumeStateChanged"/>
       </Events>
     </Component>
     <Component class="javax.swing.JToggleButton" name="tglActiveStream">
@@ -235,20 +200,20 @@
         <Property name="name" type="java.lang.String" value="labelH" noResource="true"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="labelO">
+    <Component class="javax.swing.JLabel" name="labelFont">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="webcamstudio/Languages.properties" key="OPACITY" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+          <ResourceString bundle="webcamstudio/Languages.properties" key="FONT" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
         </Property>
-        <Property name="name" type="java.lang.String" value="labelO" noResource="true"/>
+        <Property name="name" type="java.lang.String" value="labelFont" noResource="true"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="labelV">
+    <Component class="javax.swing.JLabel" name="lblColor">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="webcamstudio/Languages.properties" key="VOLUME" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+          <ResourceString bundle="webcamstudio/Languages.properties" key="COLOR" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
         </Property>
-        <Property name="name" type="java.lang.String" value="labelV" noResource="true"/>
+        <Property name="name" type="java.lang.String" value="lblColor" noResource="true"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="labelZ">
@@ -259,36 +224,49 @@
         <Property name="name" type="java.lang.String" value="labelZ" noResource="true"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="labelCW">
+    <Component class="javax.swing.JLabel" name="lblText">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="webcamstudio/Languages.properties" key="CAPTUREWIDTH" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+          <ResourceString bundle="webcamstudio/Languages.properties" key="TEXT" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
         </Property>
-        <Property name="name" type="java.lang.String" value="labelCW" noResource="true"/>
+        <Property name="name" type="java.lang.String" value="lblText" noResource="true"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JSpinner" name="spinW1">
+    <Component class="javax.swing.JTextField" name="txtContent">
       <Properties>
-        <Property name="name" type="java.lang.String" value="spinW1" noResource="true"/>
+        <Property name="name" type="java.lang.String" value="txtContent" noResource="true"/>
       </Properties>
       <Events>
-        <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="spinW1StateChanged"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtContentActionPerformed"/>
+        <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="txtContentFocusLost"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JLabel" name="labelCH">
+    <Component class="javax.swing.JComboBox" name="cboFonts">
       <Properties>
-        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="webcamstudio/Languages.properties" key="CAPTUREHEIGHT" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+          <StringArray count="4">
+            <StringItem index="0" value="Item 1"/>
+            <StringItem index="1" value="Item 2"/>
+            <StringItem index="2" value="Item 3"/>
+            <StringItem index="3" value="Item 4"/>
+          </StringArray>
         </Property>
-        <Property name="name" type="java.lang.String" value="labelCH" noResource="true"/>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JSpinner" name="spinH1">
-      <Properties>
-        <Property name="name" type="java.lang.String" value="spinH1" noResource="true"/>
+        <Property name="name" type="java.lang.String" value="cboFonts" noResource="true"/>
       </Properties>
       <Events>
-        <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="spinH1StateChanged"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cboFontsActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JFormattedTextField" name="txtHexColor">
+      <Properties>
+        <Property name="formatterFactory" type="javax.swing.JFormattedTextField$AbstractFormatterFactory" editor="org.netbeans.modules.form.editors.AbstractFormatterFactoryEditor" preCode="try {" postCode="} catch (java.text.ParseException ex) {&#xa;ex.printStackTrace();&#xa;}">
+          <Format format="HHHHHH" subtype="-1" type="5"/>
+        </Property>
+        <Property name="name" type="java.lang.String" value="txtHexColor" noResource="true"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtHexColorActionPerformed"/>
+        <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="txtHexColorFocusLost"/>
       </Events>
     </Component>
   </SubComponents>
