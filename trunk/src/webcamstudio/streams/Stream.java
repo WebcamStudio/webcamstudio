@@ -33,12 +33,17 @@ public abstract class Stream {
     protected int zorder = 0;
     protected File file = null;
     protected String name = null;
+    protected String url = null;
     
     public abstract void read();
     public abstract void stop();
     public abstract boolean isPlaying();
     public abstract BufferedImage getPreview();
     
+    
+    public String getURL(){
+    return url;
+    }
     
     public String getName(){
         return name;

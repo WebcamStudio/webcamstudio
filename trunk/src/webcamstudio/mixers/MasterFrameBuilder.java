@@ -24,7 +24,8 @@ public class MasterFrameBuilder implements Runnable {
 
     static ArrayList<Stream> streams = new ArrayList<Stream>();
     private boolean stopMe = false;
-    private int fps = 0;
+    private static int fps = 0;
+    private static float avgFPS = 0;
     private long mark = System.currentTimeMillis();
     private long timeCode = System.currentTimeMillis();
     BufferedImage workingImage = null;
@@ -35,6 +36,9 @@ public class MasterFrameBuilder implements Runnable {
         }
     }
 
+    public static float getFPS(){
+        return avgFPS;
+    }
     public static void unregister(Stream s) {
         streams.remove(s);
     }
@@ -54,7 +58,7 @@ public class MasterFrameBuilder implements Runnable {
             for (Frame f : orderedFrame.values()) {
                 if (g != null) {
                     g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, ((float) f.getOpacity()) / 100F));
-                    g.drawImage(f.getImage(), f.getX(), f.getX(), f.getWidth(), f.getHeight(), null);
+                    g.drawImage(f.getImage(), f.getX(), f.getY(), f.getWidth(), f.getHeight(), null);
                 }
             }
             g.dispose();
@@ -116,7 +120,7 @@ public class MasterFrameBuilder implements Runnable {
             fps++;
             float delta = System.currentTimeMillis() - mark;
             if (fps == 60) {
-                System.out.println("Master Frame Builder: " + (60F / (delta / 1000F)) + " fps");
+                avgFPS = ((60F / (delta / 1000F)));
                 mark = System.currentTimeMillis();
                 fps = 0;
             }

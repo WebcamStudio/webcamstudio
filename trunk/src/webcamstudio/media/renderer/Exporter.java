@@ -7,6 +7,8 @@ package webcamstudio.media.renderer;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.TimerTask;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterMixer;
 
@@ -50,12 +52,6 @@ public class Exporter extends TimerTask {
 
     @Override
     public void run() {
-        
-        if (System.currentTimeMillis()-stamp > 1000){
-            System.out.println("FPS: " + count);
-            count = 0;
-            stamp=System.currentTimeMillis();
-        }
         Frame frame = MasterMixer.getCurrentFrame();
         if (frame != null && !cancel && frame!=lastFrame) {
             BufferedImage image = frame.getImage();
@@ -77,6 +73,12 @@ public class Exporter extends TimerTask {
             }
             lastFrame=frame;
             count++;
+        } else {
+            try {
+                Thread.sleep(30);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Exporter.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 }

@@ -17,9 +17,15 @@ import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetDropEvent;
 import java.io.File;
 import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
 import javax.swing.ImageIcon;
 import webcamstudio.components.MasterPanel;
-import webcamstudio.components.StreamPanel;
+import webcamstudio.components.OutputRecorder;
+import webcamstudio.components.ResourceMonitor;
+import webcamstudio.components.StreamDesktop;
 import webcamstudio.exporter.vloopback.VideoDevice;
 import webcamstudio.mixers.MasterMixer;
 import webcamstudio.streams.SinkFile;
@@ -32,6 +38,8 @@ import webcamstudio.streams.Stream;
  */
 public class WebcamStudio extends javax.swing.JFrame {
 
+    Preferences prefs = null;
+
     /** Creates new form WebcamStudio */
     public WebcamStudio() {
         initComponents();
@@ -40,15 +48,15 @@ public class WebcamStudio extends javax.swing.JFrame {
         this.setIconImage(icon.getImage());
 
         panSources.add(new MasterPanel(), BorderLayout.WEST);
-        for (VideoDevice d : VideoDevice.getOutputDevices()) {
-            Stream webcam = new SourceWebcam(d.getFile());
-            StreamPanel p = new StreamPanel(webcam);
-            panScrollingSources.add(p, 0);
 
+
+        for (VideoDevice d : VideoDevice.getOutputDevices()) {
+
+            Stream webcam = new SourceWebcam(d.getFile());
+            StreamDesktop frame = new StreamDesktop(webcam);
+            desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
         }
-        scrollSources.revalidate();
-        panScrollingSources.revalidate();
-        panScrollingSources.setDropTarget(new DropTarget() {
+        desktop.setDropTarget(new DropTarget() {
 
             public synchronized void drop(DropTargetDropEvent evt) {
                 try {
@@ -60,16 +68,11 @@ public class WebcamStudio extends javax.swing.JFrame {
                         if (file.exists()) {
                             Stream stream = Stream.getInstance(file);
                             if (stream != null) {
-                                StreamPanel panel = new StreamPanel(stream);
-                                panel.setVisible(true);
-                                panScrollingSources.add(panel, 0);
-                                scrollSources.revalidate();
-                                panScrollingSources.revalidate();
+                                StreamDesktop frame = new StreamDesktop(stream);
+                                desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
                             }
                         }
                     }
-
-
                     evt.dropComplete(true);
 
                 } catch (Exception ex) {
@@ -77,7 +80,32 @@ public class WebcamStudio extends javax.swing.JFrame {
                 }
             }
         });
-        pack();
+        this.add(new ResourceMonitor(),BorderLayout.SOUTH);
+        prefs = Preferences.userNodeForPackage(this.getClass());
+        this.add(new OutputRecorder(),BorderLayout.WEST);
+        loadPrefs();
+    }
+
+    private void loadPrefs() {
+        int x = prefs.getInt("main-x", 100);
+        int y = prefs.getInt("main-y", 100);
+        int w = prefs.getInt("main-w", 800);
+        int h = prefs.getInt("main-h", 400);
+        this.setLocation(x, y);
+        this.setSize(w, h);
+    }
+
+    private void savePrefs() {
+        prefs.putInt("main-x", this.getX());
+        prefs.putInt("main-y", this.getY());
+        prefs.putInt("main-w", this.getWidth());
+        prefs.putInt("main-h", this.getHeight());
+        try {
+            prefs.flush();
+        } catch (BackingStoreException ex) {
+            Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }
 
     /** This method is called from within the constructor to
@@ -90,71 +118,33 @@ public class WebcamStudio extends javax.swing.JFrame {
     private void initComponents() {
 
         panSources = new javax.swing.JPanel();
-        scrollSources = new javax.swing.JScrollPane();
-        panScrollingSources = new javax.swing.JPanel();
-        panChannels = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
+        desktop = new javax.swing.JDesktopPane();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("WebcamStudio");
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         panSources.setMinimumSize(new java.awt.Dimension(400, 400));
         panSources.setName("panSources"); // NOI18N
         panSources.setLayout(new java.awt.BorderLayout());
 
-        scrollSources.setName("scrollSources"); // NOI18N
-
-        panScrollingSources.setName("panScrollingSources"); // NOI18N
-        panScrollingSources.setLayout(new javax.swing.BoxLayout(panScrollingSources, javax.swing.BoxLayout.X_AXIS));
-        scrollSources.setViewportView(panScrollingSources);
-
-        panSources.add(scrollSources, java.awt.BorderLayout.CENTER);
+        desktop.setAutoscrolls(true);
+        desktop.setMinimumSize(new java.awt.Dimension(400, 400));
+        desktop.setName("desktop"); // NOI18N
+        panSources.add(desktop, java.awt.BorderLayout.CENTER);
 
         getContentPane().add(panSources, java.awt.BorderLayout.CENTER);
-
-        panChannels.setName("panChannels"); // NOI18N
-
-        jButton1.setText("Record");
-        jButton1.setName("jButton1"); // NOI18N
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout panChannelsLayout = new javax.swing.GroupLayout(panChannels);
-        panChannels.setLayout(panChannelsLayout);
-        panChannelsLayout.setHorizontalGroup(
-            panChannelsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 61, Short.MAX_VALUE)
-            .addGroup(panChannelsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(panChannelsLayout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(jButton1)
-                    .addGap(0, 0, Short.MAX_VALUE)))
-        );
-        panChannelsLayout.setVerticalGroup(
-            panChannelsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 415, Short.MAX_VALUE)
-            .addGroup(panChannelsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(panChannelsLayout.createSequentialGroup()
-                    .addGap(0, 192, Short.MAX_VALUE)
-                    .addComponent(jButton1)
-                    .addGap(0, 193, Short.MAX_VALUE)))
-        );
-
-        getContentPane().add(panChannels, java.awt.BorderLayout.WEST);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        SinkFile sink = new SinkFile(new File("/home/patrick/Desktop/test.ogv"));
-        sink.setWidth(MasterMixer.getWidth());
-        sink.setHeight(MasterMixer.getHeight());
-        sink.setRate(MasterMixer.getRate());
-        sink.read();
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        savePrefs();
+    }//GEN-LAST:event_formWindowClosing
 
     /**
      * @param args the command line arguments
@@ -192,10 +182,7 @@ public class WebcamStudio extends javax.swing.JFrame {
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JPanel panChannels;
-    private javax.swing.JPanel panScrollingSources;
+    private javax.swing.JDesktopPane desktop;
     private javax.swing.JPanel panSources;
-    private javax.swing.JScrollPane scrollSources;
     // End of variables declaration//GEN-END:variables
 }
