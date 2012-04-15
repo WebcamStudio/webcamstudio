@@ -29,7 +29,9 @@ public class MasterFrameBuilder implements Runnable {
     private long mark = System.currentTimeMillis();
     private long timeCode = System.currentTimeMillis();
     BufferedImage workingImage = null;
-    BufferedImage renderedImage = null;
+    final static int RENDERED_IMAGES = 15;
+    BufferedImage[] renderedImages = new BufferedImage[RENDERED_IMAGES];
+    int curentRenderedImgeIndex = 0;
     public static void register(Stream s) {
         if (!streams.contains(s)) {
             streams.add(s);
@@ -62,9 +64,11 @@ public class MasterFrameBuilder implements Runnable {
                 }
             }
             g.dispose();
-            g = renderedImage.createGraphics();
+            g = renderedImages[curentRenderedImgeIndex].createGraphics();
             g.drawImage(workingImage, 0, 0,null);
-            targetFrame.setImage(renderedImage);
+            targetFrame.setImage(renderedImages[curentRenderedImgeIndex]);
+            curentRenderedImgeIndex++;
+            curentRenderedImgeIndex = curentRenderedImgeIndex % renderedImages.length;
         }
     }
 
@@ -101,7 +105,9 @@ public class MasterFrameBuilder implements Runnable {
         mark = System.currentTimeMillis();
         timeCode = System.currentTimeMillis();
         workingImage = new BufferedImage(MasterMixer.getWidth(),MasterMixer.getHeight(),BufferedImage.TYPE_INT_ARGB);
-        renderedImage = new BufferedImage(MasterMixer.getWidth(),MasterMixer.getHeight(),BufferedImage.TYPE_INT_ARGB);
+        for (int i = 0; i< renderedImages.length;i++){
+            renderedImages[i] = new BufferedImage(MasterMixer.getWidth(),MasterMixer.getHeight(),BufferedImage.TYPE_INT_ARGB);
+        }
         while (!stopMe) {
             timeCode = System.currentTimeMillis() + (1000 / MasterMixer.getRate());
             Frame targetFrame = new Frame(MasterMixer.getWidth(), MasterMixer.getHeight(), MasterMixer.getRate());
