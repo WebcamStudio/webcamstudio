@@ -25,10 +25,11 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+import webcamstudio.exporter.vloopback.VideoDevice;
 import webcamstudio.mixers.MasterMixer;
 import webcamstudio.streams.SinkBroadcast;
 import webcamstudio.streams.SinkFile;
-
+import webcamstudio.streams.SinkLinuxDevice;
 
 /**
  *
@@ -37,10 +38,49 @@ import webcamstudio.streams.SinkFile;
 public class OutputRecorder extends javax.swing.JPanel {
 
     SinkFile fileStream = null;
-    TreeMap<String,SinkBroadcast> broadcasts = new TreeMap<String,SinkBroadcast>();
+    TreeMap<String, SinkBroadcast> broadcasts = new TreeMap<String, SinkBroadcast>();
+    TreeMap<String, SinkLinuxDevice> devices = new TreeMap<String, SinkLinuxDevice>();
+
     /** Creates new form OutputRecorder */
     public OutputRecorder() {
         initComponents();
+        String OS = System.getProperty("os.name").toLowerCase();
+
+        if (OS.equals("linux")) {
+            for (VideoDevice d : VideoDevice.getInputDevices()) {
+                JToggleButton button = new JToggleButton();
+                button.setText(d.getName());
+                button.setActionCommand(d.getFile().getAbsolutePath());
+                button.setIcon(tglRecordToFile.getIcon());
+                button.setSelectedIcon(tglRecordToFile.getSelectedIcon());
+                button.setRolloverEnabled(false);
+                button.addActionListener(new java.awt.event.ActionListener() {
+
+                    public void actionPerformed(java.awt.event.ActionEvent evt) {
+                        String device = evt.getActionCommand();
+                        JToggleButton button = ((JToggleButton) evt.getSource());
+                        if (button.isSelected()) {
+                            SinkLinuxDevice stream = new SinkLinuxDevice(new File(device), button.getText());
+                            stream.setRate(MasterMixer.getRate());
+                            stream.setWidth(MasterMixer.getWidth());
+                            stream.setHeight(MasterMixer.getHeight());
+                            stream.read();
+                            devices.put(button.getText(), stream);
+
+                        } else {
+                            SinkLinuxDevice stream = devices.get(button.getText());
+                            if (stream != null) {
+                                stream.stop();
+                                devices.remove(button.getText());
+                            }
+                        }
+                    }
+                });
+                this.add(button);
+                this.revalidate();
+            }
+        }
+
         this.setDropTarget(new DropTarget() {
 
             public synchronized void drop(DropTargetDropEvent evt) {
@@ -73,7 +113,7 @@ public class OutputRecorder extends javax.swing.JPanel {
         NodeList nodeStreams = doc.getDocumentElement().getElementsByTagName("stream");
         NodeList nodeNames = doc.getDocumentElement().getElementsByTagName("name");
         JToggleButton button = new JToggleButton();
-        
+
         String url = nodesURL.item(0).getTextContent();
         String stream = nodeStreams.item(0).getTextContent();
         String name = nodeNames.item(0).getTextContent();
@@ -83,16 +123,17 @@ public class OutputRecorder extends javax.swing.JPanel {
         button.setSelectedIcon(tglRecordToFile.getSelectedIcon());
         button.setRolloverEnabled(false);
         button.addActionListener(new java.awt.event.ActionListener() {
+
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 String url = evt.getActionCommand();
-                JToggleButton button = ((JToggleButton)evt.getSource());
-                if (button.isSelected()){
-                    SinkBroadcast broadcast = new SinkBroadcast(url,button.getText());
+                JToggleButton button = ((JToggleButton) evt.getSource());
+                if (button.isSelected()) {
+                    SinkBroadcast broadcast = new SinkBroadcast(url, button.getText());
                     broadcast.read();
                     broadcasts.put(button.getText(), broadcast);
                 } else {
                     SinkBroadcast broadcast = broadcasts.get(button.getText());
-                    if (broadcast!=null){
+                    if (broadcast != null) {
                         broadcast.stop();
                         broadcasts.remove(button.getText());
                     }

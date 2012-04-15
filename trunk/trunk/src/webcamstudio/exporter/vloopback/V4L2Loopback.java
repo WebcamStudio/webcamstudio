@@ -7,7 +7,6 @@ package webcamstudio.exporter.vloopback;
 import com.sun.jna.Library;
 import com.sun.jna.Native;
 import com.sun.jna.Platform;
-import java.awt.image.BufferedImage;
 import webcamstudio.InfoListener;
 
 /**
