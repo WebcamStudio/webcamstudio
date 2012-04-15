@@ -47,7 +47,8 @@ public class WebcamStudio extends javax.swing.JFrame {
     /** Creates new form WebcamStudio */
     public WebcamStudio() {
         initComponents();
-        
+        String build = new Version().getBuild();
+        setTitle("WebcamStudio " + Version.version + " ("+build+")");
         ImageIcon icon = new ImageIcon(this.getClass().getResource("/webcamstudio/resources/icon.png"));
         this.setIconImage(icon.getImage());
 
