@@ -105,13 +105,12 @@ public class FFMPEGRenderer {
 //        }
 //        return keys;
 //    }
-
     private String setParameters(String cmd) {
         String command = cmd;
         for (FFMPEGTags tag : FFMPEGTags.values()) {
             switch (tag) {
                 case URL:
-                    if (stream.getURL()!=null){
+                    if (stream.getURL() != null) {
                         command = command.replaceAll(FFMPEGTags.URL.toString(), "" + stream.getURL());
                     }
                     break;
@@ -223,35 +222,27 @@ public class FFMPEGRenderer {
                 final Exporter renderer = new Exporter();
                 videoPort = renderer.getVideoPort();
                 audioPort = renderer.getAudioPort();
+
                 String command = plugins.getProperty(plugin).replaceAll("  ", " "); //Making sure there is no double spaces
                 command = setParameters(command);
                 System.out.println(command);
 
                 final String[] parms = command.split(" ");
                 try {
-                    process = Runtime.getRuntime().exec(parms);
                     renderer.listen();
-                    new Thread(new Runnable() {
-
-                        @Override
-                        public void run() {
-                            while (!stopMe) {
-                                    renderer.run();
-                            }
-                            stopped = true;
-                            try {
-                                byte[] output = new byte[64000];
-                                process.getErrorStream().read(output);
-                                System.out.println(new String(output).trim());
-                                process.destroy();
-                                stopMe = true;
-                                System.out.println("Process ended");
-                            } catch (Exception ex) {
-                                Logger.getLogger(FFMPEGRenderer.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-
-                        }
-                    }).start();
+                    process = Runtime.getRuntime().exec(parms);
+                    process.waitFor();
+                    stopped = true;
+                    try {
+                        byte[] output = new byte[64000];
+                        process.getErrorStream().read(output);
+                        System.out.println(new String(output).trim());
+                        process.destroy();
+                        stopMe = true;
+                        System.out.println("Process ended");
+                    } catch (Exception ex) {
+                        Logger.getLogger(FFMPEGRenderer.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

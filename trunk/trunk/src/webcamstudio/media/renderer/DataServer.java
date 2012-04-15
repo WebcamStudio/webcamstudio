@@ -4,11 +4,14 @@
  */
 package webcamstudio.media.renderer;
 
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 import java.util.ArrayList;
 
 /**
@@ -22,6 +25,7 @@ public class DataServer {
     private int port = 0;
     private boolean abort = false;
     private ServerSocket server;
+    private DataOutputStream output = null;
 
     public DataServer() {
         try {
@@ -36,10 +40,6 @@ public class DataServer {
         return port;
     }
 
-    public void addData(byte[] d) {
-        data.add(d);
-    }
-
     public void listen() throws IOException {
         server.setSoTimeout(1000);
         abort = false;
@@ -51,16 +51,11 @@ public class DataServer {
                     try {
                         connection = server.accept();
                         server.close();
-                        feed();
-                        connection.close();
-
+                        output = new DataOutputStream(connection.getOutputStream());
                     } catch (SocketTimeoutException soe) {
                         System.out.println("Waiting...");
                     } catch (IOException ioe) {
                         //ioe.printStackTrace();
-                        abort = true;
-                    } catch (InterruptedException iee) {
-                        iee.printStackTrace();
                         abort = true;
                     }
                 }
@@ -68,23 +63,29 @@ public class DataServer {
         }).start();
     }
 
-    private void feed() throws InterruptedException, IOException {
-        OutputStream output = connection.getOutputStream();
-        System.out.println("Feeding...");
-        while (!abort && !connection.isClosed()) {
-            if (data.size() > 0) {
-                byte[] raw = data.remove(0);
-                if (raw!=null){
-                    output.write(raw);
-                    output.flush();
-                }
-            } else {
-                Thread.sleep(30);
-            }
+    public void feed(byte[] data) throws IOException {
+        if (!connection.isClosed()) {
+            output.write(data);
+        }
+    }
+    public boolean canFeed(){
+        return connection!=null;
+    }
+    public void feed(int[] data) throws IOException {
+        if (!connection.isClosed()) {
+            ByteBuffer byteBuffer = ByteBuffer.allocate(data.length * 4);
+            IntBuffer intBuffer = byteBuffer.asIntBuffer();
+            intBuffer.put(data);
+
+            byte[] array = byteBuffer.array();
+            output.write(array);
         }
     }
 
-    public void shutdown() {
+    public void shutdown() throws IOException {
         abort = true;
+        if (connection != null) {
+            connection.close();
+        }
     }
 }
