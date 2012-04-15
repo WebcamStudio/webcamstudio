@@ -53,6 +53,8 @@ public class SourceImage extends Stream{
 
     @Override
     public Frame getFrame(){
+        frame.setOutputFormat(x, y, width, height, opacity, volume);
+        frame.setZOrder(zorder);
         return frame;
     }
     @Override

@@ -10,59 +10,55 @@
  */
 package webcamstudio.components;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Image;
+import java.awt.Font;
+import java.awt.GraphicsEnvironment;
 import java.awt.image.BufferedImage;
 import java.util.Timer;
 import java.util.TimerTask;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
-import javax.swing.SpinnerNumberModel;
-import webcamstudio.streams.Stream;
+import webcamstudio.streams.SourceText;
+
 
 /**
  *
  * @author patrick
  */
-public class StreamPanel extends javax.swing.JPanel {
+public class StreamPanelText extends javax.swing.JPanel {
 
-    Stream stream = null;
+    SourceText stream = null;
     Viewer viewer = new Viewer();
     Timer timer = new Timer();
 
     /** Creates new form StreamPanel */
-    public StreamPanel(Stream stream) {
+    public StreamPanelText(SourceText stream) {
 
         initComponents();
-//        this.setPreferredSize(MasterPanel.PANEL_SIZE);
-//        this.setMaximumSize(MasterPanel.PANEL_SIZE);
-        spinOpacity.setModel(new SpinnerNumberModel(50, 0, 100, 1));
+        
         viewer.setOpaque(true);
         viewer.setVisible(true);
         viewer.setBackground(Color.red);
-        panPreview.add(viewer, BorderLayout.CENTER);
+        DefaultComboBoxModel model = new DefaultComboBoxModel();
+        GraphicsEnvironment e = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        Font[] fonts = e.getAllFonts(); // Get the fonts
+        for (Font f : fonts){
+            model.addElement(f.getName());
+        }
+        cboFonts.setModel(model);
+        
         this.stream = stream;
         spinX.setValue(stream.getX());
         spinY.setValue(stream.getY());
         spinW.setValue(stream.getWidth());
         spinH.setValue(stream.getHeight());
-        spinOpacity.setValue(stream.getOpacity());
-        spinVolume.setValue(stream.getVolume() * 100);
+        cboFonts.setSelectedItem(stream.getFont());
+        txtHexColor.setText(Integer.toHexString(stream.getColor()));
         spinZOrder.setValue(stream.getZOrder());
-        spinH1.setValue(stream.getCaptureHeight());
-        spinW1.setValue(stream.getCaptureWidth());
-        timer.scheduleAtFixedRate(new RefreshPanel(this), 0, 200);
+        timer.scheduleAtFixedRate(new RefreshPanelText(this), 0, 200);
+        txtContent.setText(stream.getContent());
     }
-    public Viewer detachViewer(){
-        panPreview.remove(viewer);
-        panPreview.revalidate();
-        return viewer;
-    }
-    public Viewer attachViewer(){
-        panPreview.add(viewer, BorderLayout.CENTER);
-        panPreview.revalidate();
-        return viewer;
-    }
+   
     public ImageIcon getIcon(){
         ImageIcon icon = null;
         if (stream.getPreview()!=null){
@@ -88,33 +84,25 @@ public class StreamPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        panPreview = new javax.swing.JPanel();
         spinX = new javax.swing.JSpinner();
         spinY = new javax.swing.JSpinner();
         spinW = new javax.swing.JSpinner();
         spinH = new javax.swing.JSpinner();
-        spinOpacity = new javax.swing.JSpinner();
-        spinVolume = new javax.swing.JSpinner();
         tglActiveStream = new javax.swing.JToggleButton();
         spinZOrder = new javax.swing.JSpinner();
         labelX = new javax.swing.JLabel();
         labelY = new javax.swing.JLabel();
         labelW = new javax.swing.JLabel();
         labelH = new javax.swing.JLabel();
-        labelO = new javax.swing.JLabel();
-        labelV = new javax.swing.JLabel();
+        labelFont = new javax.swing.JLabel();
+        lblColor = new javax.swing.JLabel();
         labelZ = new javax.swing.JLabel();
-        labelCW = new javax.swing.JLabel();
-        spinW1 = new javax.swing.JSpinner();
-        labelCH = new javax.swing.JLabel();
-        spinH1 = new javax.swing.JSpinner();
+        lblText = new javax.swing.JLabel();
+        txtContent = new javax.swing.JTextField();
+        cboFonts = new javax.swing.JComboBox();
+        txtHexColor = new javax.swing.JFormattedTextField();
 
         setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
-
-        panPreview.setBackground(new java.awt.Color(113, 113, 113));
-        panPreview.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
-        panPreview.setName("panPreview"); // NOI18N
-        panPreview.setLayout(new java.awt.BorderLayout());
 
         spinX.setName("spinX"); // NOI18N
         spinX.addChangeListener(new javax.swing.event.ChangeListener() {
@@ -141,20 +129,6 @@ public class StreamPanel extends javax.swing.JPanel {
         spinH.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 spinHStateChanged(evt);
-            }
-        });
-
-        spinOpacity.setName("spinOpacity"); // NOI18N
-        spinOpacity.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                spinOpacityStateChanged(evt);
-            }
-        });
-
-        spinVolume.setName("spinVolume"); // NOI18N
-        spinVolume.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                spinVolumeStateChanged(evt);
             }
         });
 
@@ -188,32 +162,52 @@ public class StreamPanel extends javax.swing.JPanel {
         labelH.setText(bundle.getString("HEIGHT")); // NOI18N
         labelH.setName("labelH"); // NOI18N
 
-        labelO.setText(bundle.getString("OPACITY")); // NOI18N
-        labelO.setName("labelO"); // NOI18N
+        labelFont.setText(bundle.getString("FONT")); // NOI18N
+        labelFont.setName("labelFont"); // NOI18N
 
-        labelV.setText(bundle.getString("VOLUME")); // NOI18N
-        labelV.setName("labelV"); // NOI18N
+        lblColor.setText(bundle.getString("COLOR")); // NOI18N
+        lblColor.setName("lblColor"); // NOI18N
 
         labelZ.setText(bundle.getString("LAYER")); // NOI18N
         labelZ.setName("labelZ"); // NOI18N
 
-        labelCW.setText(bundle.getString("CAPTUREWIDTH")); // NOI18N
-        labelCW.setName("labelCW"); // NOI18N
+        lblText.setText(bundle.getString("TEXT")); // NOI18N
+        lblText.setName("lblText"); // NOI18N
 
-        spinW1.setName("spinW1"); // NOI18N
-        spinW1.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                spinW1StateChanged(evt);
+        txtContent.setName("txtContent"); // NOI18N
+        txtContent.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtContentActionPerformed(evt);
+            }
+        });
+        txtContent.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtContentFocusLost(evt);
             }
         });
 
-        labelCH.setText(bundle.getString("CAPTUREHEIGHT")); // NOI18N
-        labelCH.setName("labelCH"); // NOI18N
+        cboFonts.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cboFonts.setName("cboFonts"); // NOI18N
+        cboFonts.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cboFontsActionPerformed(evt);
+            }
+        });
 
-        spinH1.setName("spinH1"); // NOI18N
-        spinH1.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                spinH1StateChanged(evt);
+        try {
+            txtHexColor.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("HHHHHH")));
+        } catch (java.text.ParseException ex) {
+            ex.printStackTrace();
+        }
+        txtHexColor.setName("txtHexColor"); // NOI18N
+        txtHexColor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtHexColorActionPerformed(evt);
+            }
+        });
+        txtHexColor.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtHexColorFocusLost(evt);
             }
         });
 
@@ -221,67 +215,52 @@ public class StreamPanel extends javax.swing.JPanel {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(panPreview, javax.swing.GroupLayout.DEFAULT_SIZE, 221, Short.MAX_VALUE)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(labelH, javax.swing.GroupLayout.DEFAULT_SIZE, 119, Short.MAX_VALUE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(labelCH, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(labelCW, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(labelY, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(labelX, javax.swing.GroupLayout.DEFAULT_SIZE, 119, Short.MAX_VALUE))
-                    .addComponent(labelW, javax.swing.GroupLayout.DEFAULT_SIZE, 119, Short.MAX_VALUE)
-                    .addComponent(labelO, javax.swing.GroupLayout.DEFAULT_SIZE, 119, Short.MAX_VALUE)
-                    .addComponent(labelV, javax.swing.GroupLayout.DEFAULT_SIZE, 119, Short.MAX_VALUE)
-                    .addComponent(labelZ, javax.swing.GroupLayout.DEFAULT_SIZE, 119, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(spinZOrder, javax.swing.GroupLayout.DEFAULT_SIZE, 66, Short.MAX_VALUE)
-                        .addContainerGap())
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(spinVolume, javax.swing.GroupLayout.DEFAULT_SIZE, 66, Short.MAX_VALUE)
-                        .addContainerGap())
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(spinOpacity, javax.swing.GroupLayout.DEFAULT_SIZE, 66, Short.MAX_VALUE)
-                        .addContainerGap())
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(spinH, javax.swing.GroupLayout.DEFAULT_SIZE, 66, Short.MAX_VALUE)
-                        .addContainerGap())
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(spinH1, javax.swing.GroupLayout.DEFAULT_SIZE, 66, Short.MAX_VALUE)
-                            .addComponent(spinW1, javax.swing.GroupLayout.DEFAULT_SIZE, 66, Short.MAX_VALUE)
-                            .addComponent(spinY, javax.swing.GroupLayout.DEFAULT_SIZE, 66, Short.MAX_VALUE)
-                            .addComponent(spinX, javax.swing.GroupLayout.DEFAULT_SIZE, 66, Short.MAX_VALUE)
-                            .addComponent(spinW, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 66, Short.MAX_VALUE))
-                        .addContainerGap())))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(tglActiveStream, javax.swing.GroupLayout.DEFAULT_SIZE, 197, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(lblText)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 238, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(labelZ, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(lblColor, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(labelFont, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(labelH, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(labelW, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(labelY, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(labelX, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(txtHexColor, javax.swing.GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE)
+                                    .addComponent(cboFonts, 0, 186, Short.MAX_VALUE)
+                                    .addComponent(spinZOrder, javax.swing.GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE)
+                                    .addComponent(spinX, javax.swing.GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE)
+                                    .addComponent(spinY, javax.swing.GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE)
+                                    .addComponent(spinW, javax.swing.GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE)
+                                    .addComponent(spinH, javax.swing.GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE)))
+                            .addComponent(txtContent, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 270, Short.MAX_VALUE)
+                            .addComponent(tglActiveStream, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 270, Short.MAX_VALUE))
+                        .addGap(16, 16, 16)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(panPreview, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap()
+                .addComponent(lblText)
+                .addGap(4, 4, 4)
+                .addComponent(txtContent, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(labelX)
                     .addComponent(spinX, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(labelY)
                     .addComponent(spinY, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(labelCW)
-                    .addComponent(spinW1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(labelCH)
-                    .addComponent(spinH1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(labelW)
@@ -292,12 +271,12 @@ public class StreamPanel extends javax.swing.JPanel {
                     .addComponent(spinH, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(labelO)
-                    .addComponent(spinOpacity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(labelFont)
+                    .addComponent(cboFonts, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(labelV)
-                    .addComponent(spinVolume, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(lblColor)
+                    .addComponent(txtHexColor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(labelZ)
@@ -315,10 +294,6 @@ public class StreamPanel extends javax.swing.JPanel {
             stream.stop();
         }
     }//GEN-LAST:event_tglActiveStreamActionPerformed
-
-    private void spinOpacityStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinOpacityStateChanged
-        stream.setOpacity((Integer) spinOpacity.getValue());
-    }//GEN-LAST:event_spinOpacityStateChanged
 
     private void spinZOrderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinZOrderStateChanged
         stream.setZOrder((Integer) spinZOrder.getValue());
@@ -340,55 +315,51 @@ public class StreamPanel extends javax.swing.JPanel {
         stream.setY((Integer)spinY.getValue());
     }//GEN-LAST:event_spinYStateChanged
 
-    private void spinVolumeStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinVolumeStateChanged
-        Object value = spinVolume.getValue();
-        float v = 0;
-        if (value instanceof Float){
-            v = (Float)value;
-        } else if (value instanceof Integer){
-            v = ((Integer)value).floatValue();
-        }
-        stream.setVolume(v/100f);
-        
-    }//GEN-LAST:event_spinVolumeStateChanged
+    private void txtContentFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtContentFocusLost
+        stream.updateContent(txtContent.getText());
+    }//GEN-LAST:event_txtContentFocusLost
 
-    private void spinW1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinW1StateChanged
-       stream.setCaptureWidth((Integer)spinW1.getValue());
-    }//GEN-LAST:event_spinW1StateChanged
+    private void txtContentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtContentActionPerformed
+         stream.updateContent(txtContent.getText());
+    }//GEN-LAST:event_txtContentActionPerformed
 
-    private void spinH1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinH1StateChanged
-        stream.setCaptureHeight((Integer)spinH1.getValue());
-    }//GEN-LAST:event_spinH1StateChanged
+    private void cboFontsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboFontsActionPerformed
+        stream.setFont(cboFonts.getSelectedItem().toString());
+    }//GEN-LAST:event_cboFontsActionPerformed
+
+    private void txtHexColorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtHexColorActionPerformed
+        stream.setColor(Integer.parseInt(txtHexColor.getText().trim(),16));
+    }//GEN-LAST:event_txtHexColorActionPerformed
+
+    private void txtHexColorFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtHexColorFocusLost
+        stream.setColor(Integer.parseInt(txtHexColor.getText().trim(),16));
+    }//GEN-LAST:event_txtHexColorFocusLost
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel labelCH;
-    private javax.swing.JLabel labelCW;
+    private javax.swing.JComboBox cboFonts;
+    private javax.swing.JLabel labelFont;
     private javax.swing.JLabel labelH;
-    private javax.swing.JLabel labelO;
-    private javax.swing.JLabel labelV;
     private javax.swing.JLabel labelW;
     private javax.swing.JLabel labelX;
     private javax.swing.JLabel labelY;
     private javax.swing.JLabel labelZ;
-    private javax.swing.JPanel panPreview;
+    private javax.swing.JLabel lblColor;
+    private javax.swing.JLabel lblText;
     private javax.swing.JSpinner spinH;
-    private javax.swing.JSpinner spinH1;
-    private javax.swing.JSpinner spinOpacity;
-    private javax.swing.JSpinner spinVolume;
     private javax.swing.JSpinner spinW;
-    private javax.swing.JSpinner spinW1;
     private javax.swing.JSpinner spinX;
     private javax.swing.JSpinner spinY;
     private javax.swing.JSpinner spinZOrder;
     private javax.swing.JToggleButton tglActiveStream;
+    private javax.swing.JTextField txtContent;
+    private javax.swing.JFormattedTextField txtHexColor;
     // End of variables declaration//GEN-END:variables
 }
+class RefreshPanelText extends TimerTask {
 
-class RefreshPanel extends TimerTask {
+    StreamPanelText panel = null;
 
-    StreamPanel panel = null;
-
-    public RefreshPanel(StreamPanel p) {
+    public RefreshPanelText(StreamPanelText p) {
         panel = p;
     }
 

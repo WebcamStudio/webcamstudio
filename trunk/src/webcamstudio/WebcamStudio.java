@@ -29,6 +29,8 @@ import webcamstudio.components.StreamDesktop;
 import webcamstudio.exporter.vloopback.VideoDevice;
 import webcamstudio.mixers.MasterMixer;
 import webcamstudio.streams.SinkFile;
+import webcamstudio.streams.SourceDesktop;
+import webcamstudio.streams.SourceText;
 import webcamstudio.streams.SourceWebcam;
 import webcamstudio.streams.Stream;
 
@@ -80,9 +82,9 @@ public class WebcamStudio extends javax.swing.JFrame {
                 }
             }
         });
-        this.add(new ResourceMonitor(),BorderLayout.SOUTH);
+        this.add(new ResourceMonitor(), BorderLayout.SOUTH);
         prefs = Preferences.userNodeForPackage(this.getClass());
-        this.add(new OutputRecorder(),BorderLayout.WEST);
+        this.add(new OutputRecorder(), BorderLayout.WEST);
         loadPrefs();
     }
 
@@ -119,6 +121,9 @@ public class WebcamStudio extends javax.swing.JFrame {
 
         panSources = new javax.swing.JPanel();
         desktop = new javax.swing.JDesktopPane();
+        toolbar = new javax.swing.JToolBar();
+        btnAddDesktop = new javax.swing.JButton();
+        btnAddText = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("WebcamStudio");
@@ -139,12 +144,56 @@ public class WebcamStudio extends javax.swing.JFrame {
 
         getContentPane().add(panSources, java.awt.BorderLayout.CENTER);
 
+        toolbar.setRollover(true);
+        toolbar.setName("toolbar"); // NOI18N
+
+        btnAddDesktop.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/user-desktop.png"))); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("webcamstudio/Languages"); // NOI18N
+        btnAddDesktop.setToolTipText(bundle.getString("DESKTOP")); // NOI18N
+        btnAddDesktop.setFocusable(false);
+        btnAddDesktop.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnAddDesktop.setName("btnAddDesktop"); // NOI18N
+        btnAddDesktop.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnAddDesktop.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddDesktopActionPerformed(evt);
+            }
+        });
+        toolbar.add(btnAddDesktop);
+
+        btnAddText.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/accessories-text-editor.png"))); // NOI18N
+        btnAddText.setToolTipText(bundle.getString("TEXT")); // NOI18N
+        btnAddText.setFocusable(false);
+        btnAddText.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnAddText.setName("btnAddText"); // NOI18N
+        btnAddText.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnAddText.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddTextActionPerformed(evt);
+            }
+        });
+        toolbar.add(btnAddText);
+
+        getContentPane().add(toolbar, java.awt.BorderLayout.PAGE_START);
+
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         savePrefs();
     }//GEN-LAST:event_formWindowClosing
+
+    private void btnAddDesktopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddDesktopActionPerformed
+        SourceDesktop stream = new SourceDesktop();
+        StreamDesktop frame = new StreamDesktop(stream);
+        desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+    }//GEN-LAST:event_btnAddDesktopActionPerformed
+
+    private void btnAddTextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddTextActionPerformed
+        SourceText stream = new SourceText("");
+        StreamDesktop frame = new StreamDesktop(stream);
+        desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+    }//GEN-LAST:event_btnAddTextActionPerformed
 
     /**
      * @param args the command line arguments
@@ -182,7 +231,10 @@ public class WebcamStudio extends javax.swing.JFrame {
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAddDesktop;
+    private javax.swing.JButton btnAddText;
     private javax.swing.JDesktopPane desktop;
     private javax.swing.JPanel panSources;
+    private javax.swing.JToolBar toolbar;
     // End of variables declaration//GEN-END:variables
 }

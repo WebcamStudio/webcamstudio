@@ -11,9 +11,7 @@
 package webcamstudio.components;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Dimension;
-import javax.swing.JInternalFrame;
+import webcamstudio.streams.SourceText;
 import webcamstudio.streams.Stream;
 
 /**
@@ -24,20 +22,28 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
 
     StreamPanel panel = null;
     Stream stream = null;
+
     /** Creates new form StreamDesktop */
     public StreamDesktop(Stream s) {
         stream = s;
         initComponents();
-        StreamPanel p = new StreamPanel(s);
-        this.setLayout(new BorderLayout());
-        this.add(p,BorderLayout.CENTER);
-        this.setTitle(s.getName());
-        this.setVisible(true);
-        panel = p;
+        if (s instanceof SourceText) {
+            StreamPanelText p = new StreamPanelText((SourceText)s);
+            this.setLayout(new BorderLayout());
+            this.add(p, BorderLayout.CENTER);
+            this.setTitle(s.getName());
+            this.setVisible(true);
+        } else {
+            StreamPanel p = new StreamPanel(s);
+            this.setLayout(new BorderLayout());
+            this.add(p, BorderLayout.CENTER);
+            this.setTitle(s.getName());
+            this.setVisible(true);
+            panel = p;
+        }
         pack();
     }
 
-    
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -87,20 +93,20 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void formInternalFrameIconified(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameIconified
+       if (panel!=null){
         this.setFrameIcon(panel.getIcon());
+       }
     }//GEN-LAST:event_formInternalFrameIconified
 
     private void formInternalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameDeiconified
-        
     }//GEN-LAST:event_formInternalFrameDeiconified
 
     private void formInternalFrameClosing(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameClosing
         stream.stop();
         stream = null;
         panel = null;
-        
-    }//GEN-LAST:event_formInternalFrameClosing
 
+    }//GEN-LAST:event_formInternalFrameClosing
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
 }
