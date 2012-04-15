@@ -18,6 +18,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
+import webcamstudio.streams.SourceQRCode;
 import webcamstudio.streams.SourceText;
 
 
@@ -57,6 +58,8 @@ public class StreamPanelText extends javax.swing.JPanel {
         spinZOrder.setValue(stream.getZOrder());
         timer.scheduleAtFixedRate(new RefreshPanelText(this), 0, 200);
         txtContent.setText(stream.getContent());
+        cboFonts.setEnabled(!(stream instanceof SourceQRCode));
+        txtHexColor.setEnabled(!(stream instanceof SourceQRCode));
     }
    
     public ImageIcon getIcon(){
