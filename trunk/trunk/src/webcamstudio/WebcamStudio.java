@@ -30,6 +30,7 @@ import webcamstudio.exporter.vloopback.VideoDevice;
 import webcamstudio.mixers.MasterMixer;
 import webcamstudio.streams.SinkFile;
 import webcamstudio.streams.SourceDesktop;
+import webcamstudio.streams.SourceQRCode;
 import webcamstudio.streams.SourceText;
 import webcamstudio.streams.SourceWebcam;
 import webcamstudio.streams.Stream;
@@ -124,6 +125,7 @@ public class WebcamStudio extends javax.swing.JFrame {
         toolbar = new javax.swing.JToolBar();
         btnAddDesktop = new javax.swing.JButton();
         btnAddText = new javax.swing.JButton();
+        btnAddQRCode = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("WebcamStudio");
@@ -174,6 +176,19 @@ public class WebcamStudio extends javax.swing.JFrame {
         });
         toolbar.add(btnAddText);
 
+        btnAddQRCode.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/dialog-information.png"))); // NOI18N
+        btnAddQRCode.setToolTipText(bundle.getString("QRCODE")); // NOI18N
+        btnAddQRCode.setFocusable(false);
+        btnAddQRCode.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnAddQRCode.setName("btnAddQRCode"); // NOI18N
+        btnAddQRCode.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnAddQRCode.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddQRCodeActionPerformed(evt);
+            }
+        });
+        toolbar.add(btnAddQRCode);
+
         getContentPane().add(toolbar, java.awt.BorderLayout.PAGE_START);
 
         pack();
@@ -194,6 +209,12 @@ public class WebcamStudio extends javax.swing.JFrame {
         StreamDesktop frame = new StreamDesktop(stream);
         desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
     }//GEN-LAST:event_btnAddTextActionPerformed
+
+    private void btnAddQRCodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddQRCodeActionPerformed
+        SourceQRCode stream = new SourceQRCode("webcamstudio");
+        StreamDesktop frame = new StreamDesktop(stream);
+        desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+    }//GEN-LAST:event_btnAddQRCodeActionPerformed
 
     /**
      * @param args the command line arguments
@@ -232,6 +253,7 @@ public class WebcamStudio extends javax.swing.JFrame {
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddDesktop;
+    private javax.swing.JButton btnAddQRCode;
     private javax.swing.JButton btnAddText;
     private javax.swing.JDesktopPane desktop;
     private javax.swing.JPanel panSources;
