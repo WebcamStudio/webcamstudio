@@ -7,7 +7,6 @@ package webcamstudio.streams;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -34,13 +33,45 @@ public abstract class Stream {
     protected File file = null;
     protected String name = null;
     protected String url = null;
-    
+    protected int audioLevelLeft = 0;
+    protected int audioLevelRight = 0;
     public abstract void read();
     public abstract void stop();
     public abstract boolean isPlaying();
     public abstract BufferedImage getPreview();
     
-    
+    public int getAudioLevelLeft(){
+        return audioLevelLeft;
+    }
+    public int getAudioLevelRight(){
+        return audioLevelRight;
+    }
+    protected void setAudioLevel(Frame f) {
+        byte[] data = f.getAudioData();
+        if (data != null) {
+            audioLevelLeft = 0;
+            audioLevelRight = 0;
+            int tempValue = 0;
+            for (int i = 0; i < data.length; i += 4) {
+                tempValue = (data[i]<<8 & (data[i + 1]))/256;
+                if (tempValue<0){
+                    tempValue *=-1;
+                }
+                if (audioLevelLeft < tempValue) {
+                    audioLevelLeft = tempValue;
+                }
+                tempValue = (data[i + 2]<<8 & (data[i + 3]))/256;
+               
+                if (tempValue<0){
+                    tempValue *=-1;
+                }
+                if (audioLevelRight < tempValue) {
+                    audioLevelRight = tempValue;
+                }
+            }
+        }
+    }
+
     public String getURL(){
     return url;
     }

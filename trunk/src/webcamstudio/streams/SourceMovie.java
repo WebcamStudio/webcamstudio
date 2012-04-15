@@ -53,6 +53,7 @@ public class SourceMovie extends Stream {
     public Frame getFrame(){
         Frame f = capture.getFrame();
         if (f!=null){
+            setAudioLevel(f);
             lastPreview=f.getImage();
         }
         return f;

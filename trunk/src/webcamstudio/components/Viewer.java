@@ -10,6 +10,7 @@
  */
 package webcamstudio.components;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -21,7 +22,8 @@ import java.awt.image.BufferedImage;
 public class Viewer extends javax.swing.JPanel {
 
     private BufferedImage img;
-
+    private int audioLeft = 0;
+    private int audioRight=0;
     /** Creates new form Viewer */
     public Viewer() {
         initComponents();
@@ -31,6 +33,10 @@ public class Viewer extends javax.swing.JPanel {
         img = image;
     }
 
+    public void setAudioLevel(int l, int r){
+        audioLeft = l;
+        audioRight=r;
+    }
     @Override
     public void paintComponent(Graphics g) {
         Graphics2D graph = (Graphics2D) g;
@@ -39,8 +45,14 @@ public class Viewer extends javax.swing.JPanel {
         if (img != null) {
             int imgWidth = h * img.getWidth() / img.getHeight();
             int border = (w - imgWidth) / 2;
-            g.clearRect(0, 0, w, h);
+            graph.clearRect(0, 0, w, h);
             graph.drawImage(img, border, 0, imgWidth, h, null);
+        }
+        if (audioLeft > 0 || audioRight > 0){
+            //graph.drawString(audioLeft + "," + audioRight, 10, 50);
+            graph.setColor(Color.GREEN);
+            graph.fillRect(0, h - (audioLeft * h / 128), 10, (audioLeft * h / 128));
+            graph.fillRect(w-10, h - (audioRight * h / 128), 10, (audioRight * h / 128));
         }
     }
 

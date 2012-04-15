@@ -14,15 +14,16 @@ import webcamstudio.mixers.MasterFrameBuilder;
  *
  * @author patrick
  */
-public class SourceWebcam extends Stream{
+public class SourceWebcam extends Stream {
 
     FFMPEGRenderer capture = null;
     BufferedImage lastPreview = null;
-    public SourceWebcam(File device){
-       capture = new FFMPEGRenderer(this,FFMPEGRenderer.ACTION.CAPTURE,"webcam");
-       file=device;
-       name = device.getName();
-       
+
+    public SourceWebcam(File device) {
+        capture = new FFMPEGRenderer(this, FFMPEGRenderer.ACTION.CAPTURE, "webcam");
+        file = device;
+        name = device.getName();
+
     }
 
     @Override
@@ -36,6 +37,7 @@ public class SourceWebcam extends Stream{
         capture.stop();
         MasterFrameBuilder.unregister(this);
     }
+
     @Override
     public boolean isPlaying() {
         return !capture.isStopped();
@@ -45,11 +47,14 @@ public class SourceWebcam extends Stream{
     public BufferedImage getPreview() {
         return lastPreview;
     }
+
+    
     @Override
-    public Frame getFrame(){
+    public Frame getFrame() {
         Frame f = capture.getFrame();
-        if (f!=null){
-            lastPreview=f.getImage();
+        if (f != null) {
+            setAudioLevel(f);
+            lastPreview = f.getImage();
         }
         return f;
     }
