@@ -11,9 +11,6 @@
 package webcamstudio.components;
 
 import java.awt.BorderLayout;
-import java.beans.PropertyVetoException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import webcamstudio.streams.SourceText;
 import webcamstudio.streams.Stream;
 
@@ -44,6 +41,9 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
             this.setVisible(true);
             panel = p;
         }
+        this.setVisible(true);
+        this.setDesktopIcon(new DesktopIcon(this,s));
+        
         pack();
     }
 

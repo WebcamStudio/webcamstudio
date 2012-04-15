@@ -198,11 +198,10 @@ public class FFMPEGRenderer {
                     stopped = true;
                     try {
                         byte[] output = new byte[64000];
-                        process.getErrorStream().read(output);
-                        System.out.println(new String(output).trim());
+//                        process.getErrorStream().read(output);
+//                        System.out.println(new String(output).trim());
                         process.destroy();
-                        stopMe = true;
-                        System.out.println("Process ended");
+                        //System.out.println("Process ended");
                     } catch (Exception ex) {
                         Logger.getLogger(FFMPEGRenderer.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -239,11 +238,10 @@ public class FFMPEGRenderer {
                     stopped = true;
                     try {
                         byte[] output = new byte[64000];
-                        process.getErrorStream().read(output);
-                        System.out.println(new String(output).trim());
+//                        process.getErrorStream().read(output);
+//                        System.out.println(new String(output).trim());
                         process.destroy();
-                        stopMe = true;
-                        System.out.println("Process ended");
+                        //System.out.println("Process ended");
                     } catch (Exception ex) {
                         Logger.getLogger(FFMPEGRenderer.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -258,6 +256,14 @@ public class FFMPEGRenderer {
 
     public void stop() {
         stopMe = true;
+        if (capture!=null){
+            capture.abort();
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(FFMPEGRenderer.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
         if (process != null) {
             process.destroy();
         }

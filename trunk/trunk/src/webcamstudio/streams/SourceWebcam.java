@@ -34,8 +34,11 @@ public class SourceWebcam extends Stream {
 
     @Override
     public void stop() {
+        System.out.println("BeforeStop");
         capture.stop();
+        System.out.println("AfterStop");
         MasterFrameBuilder.unregister(this);
+        System.out.println("AfterUnregister");
     }
 
     @Override
