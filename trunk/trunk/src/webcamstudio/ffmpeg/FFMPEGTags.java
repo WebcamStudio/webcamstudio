@@ -21,7 +21,8 @@ public enum FFMPEGTags {
         FILE("@FILE"),
         FREQ("@FREQ"),
         BITSIZE("@BITSIZE"),
-        CHANNELS("@CHANNELS");
+        CHANNELS("@CHANNELS"),
+        URL("@URL");
         
     private String name = "";
     private FFMPEGTags(String name) {

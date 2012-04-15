@@ -79,7 +79,7 @@ public class DataServer {
                     output.flush();
                 }
             } else {
-                Thread.sleep(10);
+                Thread.sleep(30);
             }
         }
     }

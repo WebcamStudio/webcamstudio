@@ -14,9 +14,11 @@ import webcamstudio.ffmpeg.FFMPEGRenderer;
 public class SinkBroadcast extends Stream {
 
     private FFMPEGRenderer capture = null;
-    public SinkBroadcast() {
+    
+    public SinkBroadcast(String url,String name) {
+        this.url=url;
         capture = new FFMPEGRenderer(this,FFMPEGRenderer.ACTION.OUTPUT,"broadcast");
-        name = "Justin.tv";
+        this.name=name;
     }
     @Override
     public String getName(){

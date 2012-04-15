@@ -110,6 +110,11 @@ public class FFMPEGRenderer {
         String command = cmd;
         for (FFMPEGTags tag : FFMPEGTags.values()) {
             switch (tag) {
+                case URL:
+                    if (stream.getURL()!=null){
+                        command = command.replaceAll(FFMPEGTags.URL.toString(), "" + stream.getURL());
+                    }
+                    break;
                 case APORT:
                     command = command.replaceAll(FFMPEGTags.APORT.toString(), "" + audioPort);
                     break;
@@ -224,19 +229,14 @@ public class FFMPEGRenderer {
 
                 final String[] parms = command.split(" ");
                 try {
-                    final Process process = Runtime.getRuntime().exec(parms);
+                    process = Runtime.getRuntime().exec(parms);
                     renderer.listen();
                     new Thread(new Runnable() {
 
                         @Override
                         public void run() {
                             while (!stopMe) {
-                                try {
                                     renderer.run();
-                                    Thread.sleep(1);
-                                } catch (InterruptedException ex) {
-                                    Logger.getLogger(FFMPEGRenderer.class.getName()).log(Level.SEVERE, null, ex);
-                                }
                             }
                             stopped = true;
                             try {
