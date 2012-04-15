@@ -289,16 +289,18 @@ public abstract class Stream {
                 ext.endsWith(".m4v") ||
                 ext.endsWith(".mpg") ||
                 ext.endsWith(".divx") ||
+                ext.endsWith(".flv") ||
                 ext.endsWith(".vob")){
             stream = new SourceMovie(file);
         } else if (file.getAbsolutePath().toLowerCase().startsWith("/dev/video")){
             stream = new SourceWebcam(file);
         } else if (ext.endsWith(".jpg")||
                 ext.endsWith(".bmp")||
-                ext.endsWith(".gif")||
                 ext.endsWith(".png")
                 ){
             stream = new SourceImage(file);
+        } else if (ext.endsWith(".gif")){
+            stream = new SourceImageGif(file);
         }
         return stream;
     }
