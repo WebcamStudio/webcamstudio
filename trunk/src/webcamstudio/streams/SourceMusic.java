@@ -14,13 +14,13 @@ import webcamstudio.mixers.MasterFrameBuilder;
  *
  * @author patrick
  */
-public class SourceMovie extends Stream {
+public class SourceMusic extends Stream {
 
     FFMPEGRenderer capture = null;
     BufferedImage lastPreview = null;
     
-    public SourceMovie(File movie) {
-        capture = new FFMPEGRenderer(this,FFMPEGRenderer.ACTION.CAPTURE, "movie");
+    public SourceMusic(File movie) {
+        capture = new FFMPEGRenderer(this,FFMPEGRenderer.ACTION.CAPTURE, "music");
         file=movie;
         name = movie.getName();
     }
@@ -66,7 +66,7 @@ public class SourceMovie extends Stream {
 
     @Override
     public boolean hasVideo() {
-        return true;
+        return false;
     }
 
 }

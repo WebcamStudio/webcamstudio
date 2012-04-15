@@ -39,6 +39,9 @@ public abstract class Stream {
     public abstract void stop();
     public abstract boolean isPlaying();
     public abstract BufferedImage getPreview();
+    public abstract boolean hasAudio();
+    public abstract boolean hasVideo();
+    
     
     public int getAudioLevelLeft(){
         return audioLevelLeft;
@@ -301,6 +304,10 @@ public abstract class Stream {
             stream = new SourceImage(file);
         } else if (ext.endsWith(".gif")){
             stream = new SourceImageGif(file);
+        } else if (ext.endsWith(".mp3") ||
+                ext.endsWith(".wav") ||
+                ext.endsWith(".mp2")){
+            stream = new SourceMusic(file);
         }
         return stream;
     }

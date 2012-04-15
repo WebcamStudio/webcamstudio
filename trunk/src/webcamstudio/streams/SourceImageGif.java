@@ -9,7 +9,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.imageio.ImageIO;
 import webcamstudio.components.GifDecoder;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterFrameBuilder;
@@ -111,5 +110,15 @@ public class SourceImageGif extends Stream {
     @Override
     public BufferedImage getPreview() {
         return image;
+    }
+
+    @Override
+    public boolean hasAudio() {
+        return false;
+    }
+
+    @Override
+    public boolean hasVideo() {
+        return true;
     }
 }
