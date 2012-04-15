@@ -6,7 +6,6 @@ package webcamstudio.streams;
 
 import java.awt.image.BufferedImage;
 import webcamstudio.ffmpeg.FFMPEGRenderer;
-import webcamstudio.mixers.Frame;
 
 /**
  *
@@ -37,17 +36,9 @@ public class SinkBroadcast extends Stream {
     public boolean isPlaying() {
         return !capture.isStopped();
     }
-     @Override
-    public BufferedImage getPreview() {
-        if (frames.size()>0){
-            return frames.get(0).getImage();
-        } else {
-            return null;
-        }
-    }
 
     @Override
-    public Frame getFrame() {
+    public BufferedImage getPreview() {
         return null;
     }
 }

@@ -33,9 +33,6 @@ public abstract class Stream {
     protected int zorder = 0;
     protected File file = null;
     protected String name = null;
-    protected ArrayList<Frame> frames = new ArrayList<Frame>();
-    
-    
     
     public abstract void read();
     public abstract void stop();
@@ -48,11 +45,6 @@ public abstract class Stream {
     }
     public Frame getFrame(){
         Frame f = null;
-        if (frames.size()>1){
-            f = frames.remove(0);
-        } else if (frames.size()==1){
-            f = frames.get(0);
-        }
         return f;
     }
     
@@ -249,12 +241,6 @@ public abstract class Stream {
      */
     public void setSeek(int seek) {
         this.seek = seek;
-    }
-    public boolean canAddFrame(){
-        return (frames.size()<10);
-    }
-    public void addFrame(Frame f){
-        frames.add(f);
     }
     public static Stream getInstance(File file){
         Stream stream = null;

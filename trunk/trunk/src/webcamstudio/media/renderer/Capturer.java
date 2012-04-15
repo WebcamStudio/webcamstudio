@@ -8,20 +8,20 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import webcamstudio.mixers.Frame;
 import java.awt.image.BufferedImage;
-import java.io.DataInputStream;
 import java.io.IOException;
-import java.io.PipedInputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;
+import java.util.ArrayList;
 import java.util.TimerTask;
+import java.util.TreeMap;
 import webcamstudio.streams.Stream;
 
 /**
  *
  * @author patrick
  */
-public class Capturer extends TimerTask {
+public class Capturer {
 
     private int vport = 0;
     private int aport = 0;
@@ -29,11 +29,11 @@ public class Capturer extends TimerTask {
     private DataClient audioClient;
     private DataClient videoClient;
     private Stream stream;
-    private int fps = 0;
-    private long mark = System.currentTimeMillis();
-    private long timeCode = 0;
     private int audioBufferSize = 0;
     private int videoBufferSize = 0;
+    private ArrayList<BufferedImage> videoBuffer = new ArrayList<BufferedImage>();
+    private ArrayList<byte[]> audioBuffer = new ArrayList<byte[]>();
+    private final static int BUFFER_LIMIT = 30;
 
     public Capturer(Stream s) {
         stream = s;
@@ -46,6 +46,82 @@ public class Capturer extends TimerTask {
         System.out.println("Port used is " + vport + "/" + aport);
         new Thread(audioClient).start();
         new Thread(videoClient).start();
+        new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                while (!stopMe) {
+                    if (videoClient.getStream() != null) {
+                        if (!isBuffersFull()) {
+                            try {
+                                byte[] vbuffer = new byte[videoBufferSize];
+                                videoClient.getStream().readFully(vbuffer);
+                                BufferedImage img = new BufferedImage(stream.getCaptureWidth(), stream.getCaptureHeight(), BufferedImage.TYPE_INT_ARGB);
+                                int[] imgData = ((java.awt.image.DataBufferInt) img.getRaster().getDataBuffer()).getData();
+                                IntBuffer intData = ByteBuffer.wrap(vbuffer).order(ByteOrder.BIG_ENDIAN).asIntBuffer();
+                                intData.get(imgData);
+                                videoBuffer.add(img);
+                            } catch (IOException ioe) {
+                                stopMe = true;
+                                ioe.printStackTrace();
+                            }
+                        } else {
+                            try {
+                                Thread.sleep(30);
+                            } catch (InterruptedException ex) {
+                                Logger.getLogger(Capturer.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        }
+                        Thread.yield();
+                    } else {
+                        try {
+                            Thread.sleep(100);
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(Capturer.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                }
+
+            }
+        }).start();
+        new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                while (!stopMe) {
+                    if (!isBuffersFull()) {
+                        if (audioClient.getStream() != null) {
+                            try {
+                                byte[] abuffer = new byte[audioBufferSize];
+                                audioClient.getStream().readFully(abuffer);
+                                audioBuffer.add(abuffer);
+                            } catch (IOException ioe) {
+                                stopMe = true;
+                                ioe.printStackTrace();
+                            }
+                            Thread.yield();
+                        } else {
+                            try {
+                                Thread.sleep(100);
+                            } catch (InterruptedException ex) {
+                                Logger.getLogger(Capturer.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        }
+                    } else {
+                        try {
+                            Thread.sleep(30);
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(Capturer.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                }
+            }
+        }).start();
+
+    }
+
+    private boolean isBuffersFull() {
+        return videoBuffer.size() >= BUFFER_LIMIT || audioBuffer.size() >= BUFFER_LIMIT;
     }
 
     public void abort() {
@@ -65,50 +141,16 @@ public class Capturer extends TimerTask {
         return aport;
     }
 
-    @Override
-    public void run() {
-        Frame frame = new Frame(stream.getID(), null, null);
-        timeCode = System.currentTimeMillis() + (990 / stream.getRate());
-        if (stream.canAddFrame() && audioClient.getStream()!=null && videoClient.getStream()!=null) {
-            try {
-                byte[] vbuffer = new byte[videoBufferSize];
-                videoClient.getStream().readFully(vbuffer);
-                byte[] abuffer = new byte[audioBufferSize];
-                audioClient.getStream().readFully(abuffer);
-                frame.setAudio(abuffer);
-                
-                BufferedImage img = new BufferedImage(stream.getCaptureWidth(), stream.getCaptureHeight(), BufferedImage.TYPE_INT_ARGB);
-                int[] imgData = ((java.awt.image.DataBufferInt) img.getRaster().getDataBuffer()).getData();
-                IntBuffer intData = ByteBuffer.wrap(vbuffer).order(ByteOrder.BIG_ENDIAN).asIntBuffer();
-                intData.get(imgData);
-                frame.setImage(img);
-
-            } catch (IOException ioe) {
-                ioe.printStackTrace();
-            }
+    public Frame getFrame() {
+        Frame frame = null;
+        if (!videoBuffer.isEmpty() && !audioBuffer.isEmpty()) {
+            frame = new Frame(stream.getID(), null, null);
             frame.setOutputFormat(stream.getX(), stream.getY(), stream.getWidth(), stream.getHeight(), stream.getOpacity(), stream.getVolume());
             frame.setZOrder(stream.getZOrder());
-            stream.addFrame(frame);
-            fps += 1;
-
+            frame.setImage(videoBuffer.remove(0));
+            frame.setAudio(audioBuffer.remove(0));
         }
-        long waitTime = timeCode - System.currentTimeMillis();
-        if (waitTime > 0) {
-            try {
-                Thread.sleep(waitTime);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(Capturer.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        } else {
-            System.out.println("Too long!");
-        }
-
-        float delta = System.currentTimeMillis() - mark;
-        if (fps == 60) {
-            System.out.println(stream.getName() + ": " + (60F / (delta / 1000F)) + " fps");
-            mark = System.currentTimeMillis();
-            fps = 0;
-        }
-
+        //System.out.println(videoBuffer.size() + ", " + audioBuffer.size());
+        return frame;
     }
 }

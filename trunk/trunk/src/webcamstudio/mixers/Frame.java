@@ -5,7 +5,6 @@
 package webcamstudio.mixers;
 
 import java.awt.image.BufferedImage;
-import javax.sound.sampled.AudioFormat;
 
 /**
  *
@@ -22,11 +21,18 @@ public class Frame {
     private byte[] audioData;
     private int zOrder = 0;
     private String uuid = null;
+    private long frameNb = 0;
     
     public Frame(String id,BufferedImage img, byte[] audio){
         image=img;
         audioData=audio;
         uuid=id;
+    }
+    public void setFrameNumber(long n){
+        frameNb=n;
+    }
+    public long getFrameNumber(){
+        return frameNb;
     }
     protected Frame(int w,int h,int rate){
         image=new BufferedImage(w,h,BufferedImage.TYPE_INT_ARGB);
