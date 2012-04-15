@@ -6,6 +6,7 @@ package webcamstudio.media.renderer;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -16,23 +17,124 @@ import webcamstudio.mixers.MasterMixer;
  *
  * @author patrick
  */
-public class Exporter extends TimerTask {
+public class Exporter {
+
     private boolean cancel = false;
     private DataServer videoServer = new DataServer();
     private DataServer audioServer = new DataServer();
     private long stamp = System.currentTimeMillis();
     private long count = 0;
+    private ArrayList<BufferedImage> images = new ArrayList<BufferedImage>();
+    private ArrayList<byte[]> samples = new ArrayList<byte[]>();
+    final static int FRAME_LIMIT = 2;
     private Frame lastFrame = null;
+
     public Exporter() {
     }
 
-    public void listen() throws IOException{
+    public void listen() throws IOException {
         videoServer.listen();
         audioServer.listen();
+        Thread vOutput = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                while (!cancel) {
+                    if (videoServer.canFeed()) {
+                        if (!images.isEmpty()) {
+                            BufferedImage img = images.remove(0);
+                            int[] imgData = ((java.awt.image.DataBufferInt) img.getRaster().getDataBuffer()).getData();
+                            try {
+                                videoServer.feed(imgData);
+                            } catch (IOException ex) {
+                                cancel = true;
+                                Logger.getLogger(Exporter.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                            
+                        }                         
+                        try {
+                            Thread.sleep(1000/MasterMixer.getRate());
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(Exporter.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+
+                    } else {
+                        try {
+                            Thread.sleep(100);
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(Exporter.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                }
+            }
+        });
+        vOutput.setPriority(Thread.MIN_PRIORITY);
+        //vOutput.start();
+
+        Thread aOutput = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+
+                while (!cancel) {
+                    if (audioServer.canFeed()) {
+
+                        if (!samples.isEmpty()) {
+                            byte[] data = samples.remove(0);
+                            try {
+                                audioServer.feed(data);
+                            } catch (IOException ex) {
+                                cancel = true;
+                                Logger.getLogger(Exporter.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        }
+                        try {
+                            Thread.sleep(1000/MasterMixer.getRate());
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(Exporter.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+
+                    } else {
+                        try {
+                            Thread.sleep(100);
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(Exporter.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                }
+            }
+        });
+        aOutput.setPriority(Thread.MIN_PRIORITY);
+        //aOutput.start();
+
+        new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                while (!cancel) {
+                    
+                    try {
+                        try {
+                            fetch();
+                        } catch (IOException ex) {
+                            Logger.getLogger(Exporter.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        Thread.sleep(800/MasterMixer.getRate());
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Exporter.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+
+                }
+            }
+        }).start();
     }
+
     public void abort() {
-        videoServer.shutdown();
-        audioServer.shutdown();
+        try {
+            videoServer.shutdown();
+            audioServer.shutdown();
+        } catch (Exception e) {
+        }
         cancel = true;
     }
 
@@ -45,41 +147,23 @@ public class Exporter extends TimerTask {
     }
 
     public boolean cancel() {
-        boolean retValue = super.cancel();
         cancel = true;
-        return retValue;
+        return cancel;
     }
 
-    @Override
-    public void run() {
+    public void fetch() throws IOException {
         Frame frame = MasterMixer.getCurrentFrame();
-        if (frame != null && !cancel && frame!=lastFrame) {
-            BufferedImage image = frame.getImage();
-            if (image != null) {
-                int[] imgData = ((java.awt.image.DataBufferInt) image.getRaster().getDataBuffer()).getData();
-                byte[] data = new byte[imgData.length * 4];
-                int index = 0;
-                for (int i = 0; i < imgData.length; i++) {
-                    data[index++] = (byte) (imgData[i] >> 24 & 0xFF);
-                    data[index++] = (byte) (imgData[i] >> 16 & 0xFF);
-                    data[index++] = (byte) (imgData[i] >> 8 & 0xFF);
-                    data[index++] = (byte) (imgData[i] >> 0 & 0xFF);
-                }
-                videoServer.addData(data);
-            }
-            byte[] audio = frame.getAudioData();
-            if (audio != null) {
-                audioServer.addData(audio);
-            }
+        if (frame != null && !cancel && frame != lastFrame) {
             lastFrame=frame;
-            count++;
-        } else {
-            try {
-                Thread.sleep(30);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(Exporter.class.getName()).log(Level.SEVERE, null, ex);
+            
+            if (frame.getAudioData() != null && audioServer.canFeed()) {
+                //samples.add(frame.getAudioData());
+                audioServer.feed(frame.getAudioData());
+            }
+            if (frame.getImage() != null && videoServer.canFeed()) {
+                int[] imgData = ((java.awt.image.DataBufferInt) frame.getImage().getRaster().getDataBuffer()).getData();
+                videoServer.feed(imgData);
             }
         }
     }
 }
-    
