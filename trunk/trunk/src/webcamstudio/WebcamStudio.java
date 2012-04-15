@@ -23,7 +23,7 @@ import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import javax.swing.ImageIcon;
-import javax.swing.JToggleButton;
+import javax.swing.JSplitPane;
 import webcamstudio.components.MasterPanel;
 import webcamstudio.components.OutputRecorder;
 import webcamstudio.components.ResourceMonitor;
@@ -47,11 +47,11 @@ public class WebcamStudio extends javax.swing.JFrame {
     /** Creates new form WebcamStudio */
     public WebcamStudio() {
         initComponents();
-        MasterMixer.start();
+        
         ImageIcon icon = new ImageIcon(this.getClass().getResource("/webcamstudio/resources/icon.png"));
         this.setIconImage(icon.getImage());
 
-        panSources.add(new MasterPanel(), BorderLayout.WEST);
+        
 
         if (OS.equals("linux")){
             for (VideoDevice d : VideoDevice.getOutputDevices()) {
@@ -100,8 +100,12 @@ public class WebcamStudio extends javax.swing.JFrame {
         });
         this.add(new ResourceMonitor(), BorderLayout.SOUTH);
         prefs = Preferences.userNodeForPackage(this.getClass());
-        this.add(new OutputRecorder(), BorderLayout.WEST);
+        mainSplit.add(new OutputRecorder(),JSplitPane.RIGHT);
+        
         loadPrefs();
+        MasterMixer.start();
+        panSources.add(new MasterPanel(), BorderLayout.WEST);
+        
     }
 
     private void loadPrefs() {
@@ -109,6 +113,10 @@ public class WebcamStudio extends javax.swing.JFrame {
         int y = prefs.getInt("main-y", 100);
         int w = prefs.getInt("main-w", 800);
         int h = prefs.getInt("main-h", 400);
+        MasterMixer.setWidth(prefs.getInt("mastermixer-w", 320));
+        MasterMixer.setHeight(prefs.getInt("mastermixer-h", 240));
+        MasterMixer.setRate(prefs.getInt("mastermixer-r", 15));
+        mainSplit.setDividerLocation(prefs.getInt("split-x",800));
         this.setLocation(x, y);
         this.setSize(w, h);
     }
@@ -118,6 +126,10 @@ public class WebcamStudio extends javax.swing.JFrame {
         prefs.putInt("main-y", this.getY());
         prefs.putInt("main-w", this.getWidth());
         prefs.putInt("main-h", this.getHeight());
+        prefs.putInt("mastermixer-w", MasterMixer.getWidth());
+        prefs.putInt("mastermixer-h", MasterMixer.getHeight());
+        prefs.putInt("mastermixer-r", MasterMixer.getRate());
+        prefs.putInt("split-x",mainSplit.getDividerLocation());
         try {
             prefs.flush();
         } catch (BackingStoreException ex) {
@@ -135,12 +147,13 @@ public class WebcamStudio extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        panSources = new javax.swing.JPanel();
-        desktop = new javax.swing.JDesktopPane();
         toolbar = new javax.swing.JToolBar();
         btnAddDesktop = new javax.swing.JButton();
         btnAddText = new javax.swing.JButton();
         btnAddQRCode = new javax.swing.JButton();
+        mainSplit = new javax.swing.JSplitPane();
+        panSources = new javax.swing.JPanel();
+        desktop = new javax.swing.JDesktopPane();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("WebcamStudio");
@@ -149,17 +162,6 @@ public class WebcamStudio extends javax.swing.JFrame {
                 formWindowClosing(evt);
             }
         });
-
-        panSources.setMinimumSize(new java.awt.Dimension(400, 400));
-        panSources.setName("panSources"); // NOI18N
-        panSources.setLayout(new java.awt.BorderLayout());
-
-        desktop.setAutoscrolls(true);
-        desktop.setMinimumSize(new java.awt.Dimension(400, 400));
-        desktop.setName("desktop"); // NOI18N
-        panSources.add(desktop, java.awt.BorderLayout.CENTER);
-
-        getContentPane().add(panSources, java.awt.BorderLayout.CENTER);
 
         toolbar.setRollover(true);
         toolbar.setName("toolbar"); // NOI18N
@@ -204,13 +206,31 @@ public class WebcamStudio extends javax.swing.JFrame {
         });
         toolbar.add(btnAddQRCode);
 
-        getContentPane().add(toolbar, java.awt.BorderLayout.PAGE_START);
+        getContentPane().add(toolbar, java.awt.BorderLayout.NORTH);
+
+        mainSplit.setDividerLocation(400);
+        mainSplit.setName("mainSplit"); // NOI18N
+        mainSplit.setOneTouchExpandable(true);
+
+        panSources.setMinimumSize(new java.awt.Dimension(400, 400));
+        panSources.setName("panSources"); // NOI18N
+        panSources.setLayout(new java.awt.BorderLayout());
+
+        desktop.setAutoscrolls(true);
+        desktop.setMinimumSize(new java.awt.Dimension(400, 400));
+        desktop.setName("desktop"); // NOI18N
+        panSources.add(desktop, java.awt.BorderLayout.CENTER);
+
+        mainSplit.setLeftComponent(panSources);
+
+        getContentPane().add(mainSplit, java.awt.BorderLayout.CENTER);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         savePrefs();
+        MasterMixer.stop();
     }//GEN-LAST:event_formWindowClosing
 
     private void btnAddDesktopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddDesktopActionPerformed
@@ -286,6 +306,7 @@ public class WebcamStudio extends javax.swing.JFrame {
     private javax.swing.JButton btnAddQRCode;
     private javax.swing.JButton btnAddText;
     private javax.swing.JDesktopPane desktop;
+    private javax.swing.JSplitPane mainSplit;
     private javax.swing.JPanel panSources;
     private javax.swing.JToolBar toolbar;
     // End of variables declaration//GEN-END:variables

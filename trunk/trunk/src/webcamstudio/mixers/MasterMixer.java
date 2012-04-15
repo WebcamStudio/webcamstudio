@@ -44,6 +44,7 @@ public class MasterMixer {
     }
 
     static public void start() {
+        builder = new MasterFrameBuilder();
         new Thread(builder).start();
     }
 
