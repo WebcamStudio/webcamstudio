@@ -33,23 +33,27 @@ public class Capturer {
     private ArrayList<byte[]> audioBuffer = new ArrayList<byte[]>();
     private final static int BUFFER_LIMIT = 2;
     BufferedImage workingImage = null;
-    BufferedImage renderedImage = null;
+    BufferedImage[] renderedImages = new BufferedImage[15];
+    int renderedImageIndex = 0;
     int[] workingImageBuffer = null;
+
     public Capturer(Stream s) {
-        
+
         stream = s;
         audioBufferSize = (44100 * 2 * 2) / stream.getRate();
         videoBufferSize = stream.getCaptureWidth() * stream.getCaptureHeight() * 4;
-        if (stream.hasAudio()){
+        if (stream.hasAudio()) {
             audioClient = new DataClient();
             aport = audioClient.getPort();
             new Thread(audioClient).start();
         }
-        if (stream.hasVideo()){
+        if (stream.hasVideo()) {
             videoClient = new DataClient();
             vport = videoClient.getPort();
-            workingImage = new BufferedImage(s.getCaptureWidth(),s.getCaptureHeight(),BufferedImage.TYPE_INT_ARGB);
-            renderedImage = new BufferedImage(s.getCaptureWidth(),s.getCaptureHeight(),BufferedImage.TYPE_INT_ARGB);
+            workingImage = new BufferedImage(s.getCaptureWidth(), s.getCaptureHeight(), BufferedImage.TYPE_INT_ARGB);
+            for (int i = 0;i<renderedImages.length;i++){
+                renderedImages[i] = new BufferedImage(s.getCaptureWidth(), s.getCaptureHeight(), BufferedImage.TYPE_INT_ARGB);
+            }
             workingImageBuffer = ((java.awt.image.DataBufferInt) workingImage.getRaster().getDataBuffer()).getData();
             new Thread(videoClient).start();
         }
@@ -60,16 +64,17 @@ public class Capturer {
             public void run() {
                 while (!stopMe) {
                     if (videoClient.getStream() != null) {
-                        if (videoBuffer.size()<BUFFER_LIMIT) {
+                        if (videoBuffer.size() < BUFFER_LIMIT) {
                             try {
                                 byte[] vbuffer = new byte[videoBufferSize];
                                 videoClient.getStream().readFully(vbuffer);
                                 IntBuffer intData = ByteBuffer.wrap(vbuffer).order(ByteOrder.BIG_ENDIAN).asIntBuffer();
                                 intData.get(workingImageBuffer);
                                 //Special Effects...
-                                
-                                renderedImage.setRGB(0, 0, workingImage.getWidth(), workingImage.getHeight(), workingImageBuffer, 0, workingImage.getWidth());
-                                videoBuffer.add(renderedImage);
+                                renderedImages[renderedImageIndex].setRGB(0, 0, workingImage.getWidth(), workingImage.getHeight(), workingImageBuffer, 0, workingImage.getWidth());
+                                videoBuffer.add(renderedImages[renderedImageIndex]);
+                                renderedImageIndex++;
+                                renderedImageIndex = renderedImageIndex % renderedImages.length;
                             } catch (IOException ioe) {
                                 stopMe = true;
                                 ioe.printStackTrace();
@@ -94,7 +99,7 @@ public class Capturer {
             }
         });
         vCapture.setPriority(Thread.MIN_PRIORITY);
-        if (stream.hasVideo()){
+        if (stream.hasVideo()) {
             vCapture.start();
         }
         Thread aCapture = new Thread(new Runnable() {
@@ -102,7 +107,7 @@ public class Capturer {
             @Override
             public void run() {
                 while (!stopMe) {
-                    if (audioBuffer.size()<BUFFER_LIMIT) {
+                    if (audioBuffer.size() < BUFFER_LIMIT) {
                         if (audioClient.getStream() != null) {
                             try {
                                 byte[] abuffer = new byte[audioBufferSize];
@@ -131,7 +136,7 @@ public class Capturer {
             }
         });
         aCapture.setPriority(Thread.MIN_PRIORITY);
-        if (stream.hasAudio()){
+        if (stream.hasAudio()) {
             aCapture.start();
         }
 
@@ -143,10 +148,10 @@ public class Capturer {
 
     public void abort() {
         try {
-            if (videoClient!=null){
+            if (videoClient != null) {
                 videoClient.shutdown();
             }
-            if (audioClient!=null){
+            if (audioClient != null) {
                 audioClient.shutdown();
             }
         } catch (IOException ex) {
@@ -164,14 +169,14 @@ public class Capturer {
 
     public Frame getFrame() {
         Frame frame = null;
-        if ((!videoBuffer.isEmpty()|| !stream.hasVideo()) && (!audioBuffer.isEmpty()||!stream.hasAudio())) {
+        if ((!videoBuffer.isEmpty() || !stream.hasVideo()) && (!audioBuffer.isEmpty() || !stream.hasAudio())) {
             frame = new Frame(stream.getID(), null, null);
             frame.setOutputFormat(stream.getX(), stream.getY(), stream.getWidth(), stream.getHeight(), stream.getOpacity(), stream.getVolume());
             frame.setZOrder(stream.getZOrder());
-            if (stream.hasVideo()){
-            frame.setImage(videoBuffer.remove(0));
+            if (stream.hasVideo()) {
+                frame.setImage(videoBuffer.remove(0));
             }
-            if (stream.hasAudio()){
+            if (stream.hasAudio()) {
                 frame.setAudio(audioBuffer.remove(0));
             }
         }
