@@ -15,6 +15,7 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetDropEvent;
+import java.beans.PropertyVetoException;
 import java.io.File;
 import java.net.URL;
 import java.util.logging.Level;
@@ -58,6 +59,11 @@ public class WebcamStudio extends javax.swing.JFrame {
             Stream webcam = new SourceWebcam(d.getFile());
             StreamDesktop frame = new StreamDesktop(webcam);
             desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+            try {
+                frame.setSelected(true);
+            } catch (PropertyVetoException ex) {
+                Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         desktop.setDropTarget(new DropTarget() {
 
@@ -66,6 +72,7 @@ public class WebcamStudio extends javax.swing.JFrame {
                     evt.acceptDrop(DnDConstants.ACTION_REFERENCE);
                     String files = evt.getTransferable().getTransferData(DataFlavor.stringFlavor).toString();
                     String[] lines = files.split("\n");
+                    boolean success = false;
                     for (String line : lines) {
                         File file = new File(new URL(line.trim()).toURI());
                         if (file.exists()) {
@@ -73,10 +80,17 @@ public class WebcamStudio extends javax.swing.JFrame {
                             if (stream != null) {
                                 StreamDesktop frame = new StreamDesktop(stream);
                                 desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+                                frame.setLocation(evt.getLocation());
+                                try {
+                                    frame.setSelected(true);
+                                } catch (PropertyVetoException ex) {
+                                    Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                                success=true;
                             }
                         }
                     }
-                    evt.dropComplete(true);
+                    evt.dropComplete(success);
 
                 } catch (Exception ex) {
                     ex.printStackTrace();
@@ -202,18 +216,33 @@ public class WebcamStudio extends javax.swing.JFrame {
         SourceDesktop stream = new SourceDesktop();
         StreamDesktop frame = new StreamDesktop(stream);
         desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        try {
+            frame.setSelected(true);
+        } catch (PropertyVetoException ex) {
+            Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btnAddDesktopActionPerformed
 
     private void btnAddTextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddTextActionPerformed
         SourceText stream = new SourceText("");
         StreamDesktop frame = new StreamDesktop(stream);
         desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        try {
+            frame.setSelected(true);
+        } catch (PropertyVetoException ex) {
+            Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btnAddTextActionPerformed
 
     private void btnAddQRCodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddQRCodeActionPerformed
         SourceQRCode stream = new SourceQRCode("webcamstudio");
         StreamDesktop frame = new StreamDesktop(stream);
         desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        try {
+            frame.setSelected(true);
+        } catch (PropertyVetoException ex) {
+            Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btnAddQRCodeActionPerformed
 
     /**
