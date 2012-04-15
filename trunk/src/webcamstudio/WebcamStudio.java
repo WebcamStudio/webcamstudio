@@ -23,13 +23,13 @@ import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import javax.swing.ImageIcon;
+import javax.swing.JToggleButton;
 import webcamstudio.components.MasterPanel;
 import webcamstudio.components.OutputRecorder;
 import webcamstudio.components.ResourceMonitor;
 import webcamstudio.components.StreamDesktop;
 import webcamstudio.exporter.vloopback.VideoDevice;
 import webcamstudio.mixers.MasterMixer;
-import webcamstudio.streams.SinkFile;
 import webcamstudio.streams.SourceDesktop;
 import webcamstudio.streams.SourceQRCode;
 import webcamstudio.streams.SourceText;
@@ -43,7 +43,7 @@ import webcamstudio.streams.Stream;
 public class WebcamStudio extends javax.swing.JFrame {
 
     Preferences prefs = null;
-
+    public static String OS = System.getProperty("os.name").toLowerCase();
     /** Creates new form WebcamStudio */
     public WebcamStudio() {
         initComponents();
@@ -53,16 +53,17 @@ public class WebcamStudio extends javax.swing.JFrame {
 
         panSources.add(new MasterPanel(), BorderLayout.WEST);
 
+        if (OS.equals("linux")){
+            for (VideoDevice d : VideoDevice.getOutputDevices()) {
 
-        for (VideoDevice d : VideoDevice.getOutputDevices()) {
-
-            Stream webcam = new SourceWebcam(d.getFile());
-            StreamDesktop frame = new StreamDesktop(webcam);
-            desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
-            try {
-                frame.setSelected(true);
-            } catch (PropertyVetoException ex) {
-                Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
+                Stream webcam = new SourceWebcam(d.getFile());
+                StreamDesktop frame = new StreamDesktop(webcam);
+                desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+                try {
+                    frame.setSelected(true);
+                } catch (PropertyVetoException ex) {
+                    Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         }
         desktop.setDropTarget(new DropTarget() {
