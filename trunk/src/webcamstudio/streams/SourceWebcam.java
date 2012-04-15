@@ -7,6 +7,7 @@ package webcamstudio.streams;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import webcamstudio.ffmpeg.FFMPEGRenderer;
+import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterFrameBuilder;
 
 /**
@@ -16,6 +17,7 @@ import webcamstudio.mixers.MasterFrameBuilder;
 public class SourceWebcam extends Stream{
 
     FFMPEGRenderer capture = null;
+    BufferedImage lastPreview = null;
     public SourceWebcam(File device){
        capture = new FFMPEGRenderer(this,FFMPEGRenderer.ACTION.CAPTURE,"webcam");
        file=device;
@@ -41,11 +43,14 @@ public class SourceWebcam extends Stream{
 
     @Override
     public BufferedImage getPreview() {
-        if (frames.size()>0){
-            return frames.get(0).getImage();
-        } else {
-            return null;
-        }
+        return lastPreview;
     }
-    
+    @Override
+    public Frame getFrame(){
+        Frame f = capture.getFrame();
+        if (f!=null){
+            lastPreview=f.getImage();
+        }
+        return f;
+    }
 }

@@ -100,7 +100,7 @@ public class MasterFrameBuilder implements Runnable {
             for (Stream s : streams) {
                 Frame f = s.getFrame();
                 if (f != null) {
-                    frames.add(s.getFrame());
+                    frames.add(f);
                 }
             }
             mixAudio(frames, targetFrame);

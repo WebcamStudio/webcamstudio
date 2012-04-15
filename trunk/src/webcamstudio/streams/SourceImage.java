@@ -21,6 +21,7 @@ public class SourceImage extends Stream{
     BufferedImage image = null;
     boolean playing = true;
     boolean stop = false;
+    Frame frame = null;
     public SourceImage(File img){
         file=img;
         name = img.getName();
@@ -35,26 +36,10 @@ public class SourceImage extends Stream{
         stop=false;
         try{
             loadImage(file);
-            Frame frame = new Frame(uuid,image,null);
+            frame = new Frame(uuid,image,null);
             frame.setOutputFormat(x, y, width, height, opacity, volume);
             frame.setZOrder(zorder);
-            frames.add(frame);
             MasterFrameBuilder.register(this);
-            new Thread(new Runnable(){
-                @Override
-                public void run() {
-                    playing=true;
-                    frames.get(0).setOutputFormat(x, y, width, height, opacity, volume);
-                    frames.get(0).setZOrder(zorder);
-                    while(!stop){
-                        try{
-                            Thread.sleep(1000/rate);
-                        } catch(Exception e){
-                        }
-                    }
-                    playing=false;
-                }
-            }).start();
         } catch(Exception e){
             e.printStackTrace();
         }
@@ -63,17 +48,12 @@ public class SourceImage extends Stream{
     @Override
     public void stop() {
         stop=true;
-        frames.clear();
         MasterFrameBuilder.unregister(this);
     }
 
     @Override
     public Frame getFrame(){
-        Frame f = null;
-        if (frames.size()>0){
-            f= frames.get(0);
-        }
-        return f;
+        return frame;
     }
     @Override
     public boolean isPlaying() {

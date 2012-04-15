@@ -4,7 +4,6 @@
  */
 package webcamstudio.ffmpeg;
 
-import java.awt.image.BufferedImage;
 import webcamstudio.media.renderer.Capturer;
 import java.io.File;
 import java.io.IOException;
@@ -14,6 +13,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import webcamstudio.media.renderer.Exporter;
+import webcamstudio.mixers.Frame;
 import webcamstudio.streams.Stream;
 
 /**
@@ -33,7 +33,7 @@ public class FFMPEGRenderer {
     java.io.DataInput input = null;
     boolean stopMe = false;
     boolean stopped = true;
-    private static Properties plugins = null;
+    private Properties plugins = null;
     String plugin = "";
     int videoPort = 0;
     int audioPort = 0;
@@ -42,6 +42,8 @@ public class FFMPEGRenderer {
     int bitSize = 16;
     static String OS = "";
     Stream stream;
+    Process process;
+    Capturer capture;
 
     public FFMPEGRenderer(Stream s, ACTION a, String plugin) {
         stream = s;
@@ -87,22 +89,22 @@ public class FFMPEGRenderer {
         return res;
     }
 
-    public static String[] getPlugins(ACTION a) {
-        if (plugins == null) {
-            plugins = new Properties();
-            try {
-                plugins.load(getResource(a).openStream());
-            } catch (IOException ex) {
-                Logger.getLogger(FFMPEGRenderer.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-        String[] keys = new String[plugins.keySet().size()];
-        int index = 0;
-        for (Object key : plugins.keySet()) {
-            keys[index++] = key.toString();
-        }
-        return keys;
-    }
+//    public String[] getPlugins(ACTION a) {
+//        if (plugins == null) {
+//            plugins = new Properties();
+//            try {
+//                plugins.load(getResource(a).openStream());
+//            } catch (IOException ex) {
+//                Logger.getLogger(FFMPEGRenderer.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//        }
+//        String[] keys = new String[plugins.keySet().size()];
+//        int index = 0;
+//        for (Object key : plugins.keySet()) {
+//            keys[index++] = key.toString();
+//        }
+//        return keys;
+//    }
 
     private String setParameters(String cmd) {
         String command = cmd;
@@ -155,6 +157,14 @@ public class FFMPEGRenderer {
         return command;
     }
 
+    public Frame getFrame() {
+        if (capture == null) {
+            return null;
+        } else {
+            return capture.getFrame();
+        }
+    }
+
     public void read() {
         stopped = false;
         stopMe = false;
@@ -162,7 +172,7 @@ public class FFMPEGRenderer {
 
             @Override
             public void run() {
-                final Capturer capture = new Capturer(stream);
+                capture = new Capturer(stream);
                 videoPort = capture.getVideoPort();
                 audioPort = capture.getAudioPort();
                 String command = plugins.getProperty(plugin).replaceAll("  ", " "); //Making sure there is no double spaces
@@ -174,42 +184,20 @@ public class FFMPEGRenderer {
                         System.out.print(p + " ");
                     }
                     System.out.println();
-                    final Process process = Runtime.getRuntime().exec(parms);
-                    new Thread(new Runnable() {
-
-                        @Override
-                        public void run() {
-                            long wait = 1000/stream.getRate();
-                            long mark = System.currentTimeMillis()+wait;
-                            
-                            while (!stopMe) {
-                                capture.run();
-//                                while (System.currentTimeMillis()<mark) {
-//                                    try {
-//                                        Thread.sleep(5);
-//                                    } catch (InterruptedException ex) {
-//                                        Logger.getLogger(FFMPEGRenderer.class.getName()).log(Level.SEVERE, null, ex);
-//                                    }
-//                                }
-//                                mark = System.currentTimeMillis()+wait;
-                            }
-                            capture.abort();
-                            stopped = true;
-                            try {
-                                byte[] output = new byte[64000];
-                                process.getErrorStream().read(output);
-                                System.out.println(new String(output).trim());
-                                process.destroy();
-                                stopMe = true;
-                                System.out.println("Process ended");
-                            } catch (Exception ex) {
-                                Logger.getLogger(FFMPEGRenderer.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-
-                        }
-                    }).start();
-
-
+                    process = Runtime.getRuntime().exec(parms);
+                    process.waitFor();
+                    capture.abort();
+                    stopped = true;
+                    try {
+                        byte[] output = new byte[64000];
+                        process.getErrorStream().read(output);
+                        System.out.println(new String(output).trim());
+                        process.destroy();
+                        stopMe = true;
+                        System.out.println("Process ended");
+                    } catch (Exception ex) {
+                        Logger.getLogger(FFMPEGRenderer.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -275,6 +263,9 @@ public class FFMPEGRenderer {
 
     public void stop() {
         stopMe = true;
+        if (process != null) {
+            process.destroy();
+        }
         while (!stopped) {
             try {
                 Thread.sleep(100);

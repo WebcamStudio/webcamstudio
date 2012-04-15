@@ -16,11 +16,13 @@ import webcamstudio.mixers.Frame;
 public class SinkFile extends Stream {
 
     private FFMPEGRenderer capture = null;
+
     public SinkFile(File f) {
-        capture = new FFMPEGRenderer(this,FFMPEGRenderer.ACTION.OUTPUT,"file");
-        file=f;
+        capture = new FFMPEGRenderer(this, FFMPEGRenderer.ACTION.OUTPUT, "file");
+        file = f;
         name = f.getName();
     }
+
     @Override
     public void read() {
         capture.write();
@@ -35,13 +37,10 @@ public class SinkFile extends Stream {
     public boolean isPlaying() {
         return !capture.isStopped();
     }
-     @Override
+
+    @Override
     public BufferedImage getPreview() {
-        if (frames.size()>0){
-            return frames.get(0).getImage();
-        } else {
-            return null;
-        }
+        return null;
     }
 
     @Override
