@@ -43,4 +43,14 @@ public class SinkBroadcast extends Stream {
     public BufferedImage getPreview() {
         return null;
     }
+
+    @Override
+    public boolean hasAudio() {
+        return true;
+    }
+
+    @Override
+    public boolean hasVideo() {
+        return true;
+    }
 }

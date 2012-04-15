@@ -47,4 +47,14 @@ public class SinkFile extends Stream {
     public Frame getFrame() {
         return null;
     }
+
+    @Override
+    public boolean hasAudio() {
+        return true;
+    }
+
+    @Override
+    public boolean hasVideo() {
+        return true;
+    }
 }

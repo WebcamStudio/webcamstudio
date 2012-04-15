@@ -177,8 +177,12 @@ public class FFMPEGRenderer {
             @Override
             public void run() {
                 capture = new Capturer(stream);
-                videoPort = capture.getVideoPort();
-                audioPort = capture.getAudioPort();
+                if (stream.hasVideo()){
+                    videoPort = capture.getVideoPort();
+                }
+                if (stream.hasAudio()){
+                    audioPort = capture.getAudioPort();
+                }
                 String command = plugins.getProperty(plugin).replaceAll("  ", " "); //Making sure there is no double spaces
                 command = command.replaceAll(" ", "=");
                 command = setParameters(command);

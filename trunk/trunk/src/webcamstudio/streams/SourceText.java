@@ -110,4 +110,14 @@ public class SourceText extends Stream {
     public BufferedImage getPreview() {
         return image;
     }
+
+    @Override
+    public boolean hasAudio() {
+        return false;
+    }
+
+    @Override
+    public boolean hasVideo() {
+        return true;
+    }
 }
