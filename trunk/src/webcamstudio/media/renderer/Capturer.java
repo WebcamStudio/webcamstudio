@@ -77,7 +77,7 @@ public class Capturer {
                                 renderedImageIndex = renderedImageIndex % renderedImages.length;
                             } catch (IOException ioe) {
                                 stopMe = true;
-                                ioe.printStackTrace();
+                                //ioe.printStackTrace();
                             }
                         } else {
                             try {
@@ -115,7 +115,7 @@ public class Capturer {
                                 audioBuffer.add(abuffer);
                             } catch (IOException ioe) {
                                 stopMe = true;
-                                ioe.printStackTrace();
+                                //ioe.printStackTrace();
                             }
                             Thread.yield();
                         } else {

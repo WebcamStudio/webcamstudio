@@ -216,6 +216,7 @@ public class WebcamStudio extends javax.swing.JFrame {
         panSources.setName("panSources"); // NOI18N
         panSources.setLayout(new java.awt.BorderLayout());
 
+        desktop.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("SOURCES"))); // NOI18N
         desktop.setAutoscrolls(true);
         desktop.setMinimumSize(new java.awt.Dimension(400, 400));
         desktop.setName("desktop"); // NOI18N
