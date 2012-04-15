@@ -31,10 +31,12 @@ public class MasterPanel extends javax.swing.JPanel {
     private Timer timer = new Timer();
     private SystemAudioPlayer audio = SystemAudioPlayer.getInstance();
         
-    final static public Dimension PANEL_SIZE = new Dimension(200,400);
+    final static public Dimension PANEL_SIZE = new Dimension(150,400);
     /** Creates new form MasterPanel */
     public MasterPanel() {
         initComponents();
+        spinWidth.setValue(MasterMixer.getWidth());
+        spinHeight.setValue(MasterMixer.getHeight());
         this.setVisible(true);
 //        this.setPreferredSize(MasterPanel.PANEL_SIZE);
 //        this.setMaximumSize(MasterPanel.PANEL_SIZE);
@@ -55,6 +57,11 @@ public class MasterPanel extends javax.swing.JPanel {
         panelPreview = new javax.swing.JPanel();
         lblTitle = new javax.swing.JLabel();
         tglSound = new javax.swing.JToggleButton();
+        lblWidth = new javax.swing.JLabel();
+        lblHeight = new javax.swing.JLabel();
+        spinWidth = new javax.swing.JSpinner();
+        spinHeight = new javax.swing.JSpinner();
+        btnApply = new javax.swing.JButton();
 
         setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
 
@@ -63,10 +70,11 @@ public class MasterPanel extends javax.swing.JPanel {
         panelPreview.setLayout(new java.awt.BorderLayout());
 
         lblTitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lblTitle.setText("Master");
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("webcamstudio/Languages"); // NOI18N
+        lblTitle.setText(bundle.getString("PREVIEW")); // NOI18N
         lblTitle.setName("lblTitle"); // NOI18N
 
-        tglSound.setText("Sound");
+        tglSound.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/audio-card.png"))); // NOI18N
         tglSound.setName("tglSound"); // NOI18N
         tglSound.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -74,15 +82,48 @@ public class MasterPanel extends javax.swing.JPanel {
             }
         });
 
+        lblWidth.setText(bundle.getString("WIDTH")); // NOI18N
+        lblWidth.setName("lblWidth"); // NOI18N
+
+        lblHeight.setText(bundle.getString("HEIGHT")); // NOI18N
+        lblHeight.setName("lblHeight"); // NOI18N
+
+        spinWidth.setName("spinWidth"); // NOI18N
+
+        spinHeight.setName("spinHeight"); // NOI18N
+
+        btnApply.setText(bundle.getString("APPLY")); // NOI18N
+        btnApply.setName("btnApply"); // NOI18N
+        btnApply.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnApplyActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(lblTitle, javax.swing.GroupLayout.DEFAULT_SIZE, 199, Short.MAX_VALUE)
-            .addComponent(panelPreview, javax.swing.GroupLayout.DEFAULT_SIZE, 199, Short.MAX_VALUE)
+            .addComponent(panelPreview, javax.swing.GroupLayout.DEFAULT_SIZE, 133, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addComponent(tglSound)
+                .addContainerGap(89, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(lblWidth, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 47, Short.MAX_VALUE)
+                    .addComponent(lblHeight, javax.swing.GroupLayout.Alignment.LEADING))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(spinWidth, javax.swing.GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE)
+                    .addComponent(spinHeight, javax.swing.GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE))
                 .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(btnApply, javax.swing.GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE)
+                .addContainerGap())
+            .addComponent(lblTitle, javax.swing.GroupLayout.DEFAULT_SIZE, 133, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -92,7 +133,17 @@ public class MasterPanel extends javax.swing.JPanel {
                 .addComponent(panelPreview, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(tglSound)
-                .addContainerGap(257, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblWidth)
+                    .addComponent(spinWidth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblHeight)
+                    .addComponent(spinHeight, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(btnApply)
+                .addContainerGap(139, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -108,9 +159,23 @@ public class MasterPanel extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_tglSoundActionPerformed
 
+    private void btnApplyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnApplyActionPerformed
+        int w = (Integer)spinWidth.getValue();
+        int h = (Integer)spinHeight.getValue();
+        MasterMixer.stop();
+        MasterMixer.setWidth(w);
+        MasterMixer.setHeight(h);
+        MasterMixer.start();
+    }//GEN-LAST:event_btnApplyActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnApply;
+    private javax.swing.JLabel lblHeight;
     private javax.swing.JLabel lblTitle;
+    private javax.swing.JLabel lblWidth;
     private javax.swing.JPanel panelPreview;
+    private javax.swing.JSpinner spinHeight;
+    private javax.swing.JSpinner spinWidth;
     private javax.swing.JToggleButton tglSound;
     // End of variables declaration//GEN-END:variables
 }

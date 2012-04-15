@@ -13,6 +13,7 @@ package webcamstudio.components;
 import java.util.Timer;
 import java.util.TimerTask;
 import webcamstudio.mixers.MasterFrameBuilder;
+import webcamstudio.mixers.MasterMixer;
 
 /**
  *
@@ -34,6 +35,7 @@ public class ResourceMonitor extends javax.swing.JPanel {
         memLevel.setValue((int)usedMem);
         memLevel.setString(usedMem + "MB/" + maxMem + "MB");
         lblFPS.setText(MasterFrameBuilder.getFPS() + " fps");
+        lblMixerSize.setText(MasterMixer.getWidth()+ "X" + MasterMixer.getHeight());
     }
     /** This method is called from within the constructor to
      * initialize the form.
@@ -46,6 +48,9 @@ public class ResourceMonitor extends javax.swing.JPanel {
 
         memLevel = new javax.swing.JProgressBar();
         lblFPS = new javax.swing.JLabel();
+        lblMixerSize = new javax.swing.JLabel();
+
+        setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
 
         memLevel.setName("memLevel"); // NOI18N
         memLevel.setStringPainted(true);
@@ -53,6 +58,10 @@ public class ResourceMonitor extends javax.swing.JPanel {
         lblFPS.setText("jLabel1");
         lblFPS.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
         lblFPS.setName("lblFPS"); // NOI18N
+
+        lblMixerSize.setText("jLabel1");
+        lblMixerSize.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        lblMixerSize.setName("lblMixerSize"); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -63,6 +72,8 @@ public class ResourceMonitor extends javax.swing.JPanel {
                 .addComponent(memLevel, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lblFPS)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblMixerSize)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -71,12 +82,15 @@ public class ResourceMonitor extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(memLevel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblFPS))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(lblFPS)
+                        .addComponent(lblMixerSize)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel lblFPS;
+    private javax.swing.JLabel lblMixerSize;
     private javax.swing.JProgressBar memLevel;
     // End of variables declaration//GEN-END:variables
 }
