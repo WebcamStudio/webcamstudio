@@ -13,8 +13,6 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
-import java.util.TimerTask;
-import java.util.TreeMap;
 import webcamstudio.streams.Stream;
 
 /**
@@ -33,8 +31,10 @@ public class Capturer {
     private int videoBufferSize = 0;
     private ArrayList<BufferedImage> videoBuffer = new ArrayList<BufferedImage>();
     private ArrayList<byte[]> audioBuffer = new ArrayList<byte[]>();
-    private final static int BUFFER_LIMIT = 30;
-
+    private final static int BUFFER_LIMIT = 2;
+    BufferedImage workingImage = null;
+    BufferedImage renderedImage = null;
+    int[] workingImageBuffer = null;
     public Capturer(Stream s) {
         stream = s;
         audioBufferSize = (44100 * 2 * 2) / stream.getRate();
@@ -43,24 +43,28 @@ public class Capturer {
         videoClient = new DataClient();
         vport = videoClient.getPort();
         aport = audioClient.getPort();
+        workingImage = new BufferedImage(s.getCaptureWidth(),s.getCaptureHeight(),BufferedImage.TYPE_INT_ARGB);
+        renderedImage = new BufferedImage(s.getCaptureWidth(),s.getCaptureHeight(),BufferedImage.TYPE_INT_ARGB);
+        workingImageBuffer = ((java.awt.image.DataBufferInt) workingImage.getRaster().getDataBuffer()).getData();
         System.out.println("Port used is " + vport + "/" + aport);
         new Thread(audioClient).start();
         new Thread(videoClient).start();
-        new Thread(new Runnable() {
+        Thread vCapture = new Thread(new Runnable() {
 
             @Override
             public void run() {
                 while (!stopMe) {
                     if (videoClient.getStream() != null) {
-                        if (!isBuffersFull()) {
+                        if (videoBuffer.size()<BUFFER_LIMIT) {
                             try {
                                 byte[] vbuffer = new byte[videoBufferSize];
                                 videoClient.getStream().readFully(vbuffer);
-                                BufferedImage img = new BufferedImage(stream.getCaptureWidth(), stream.getCaptureHeight(), BufferedImage.TYPE_INT_ARGB);
-                                int[] imgData = ((java.awt.image.DataBufferInt) img.getRaster().getDataBuffer()).getData();
                                 IntBuffer intData = ByteBuffer.wrap(vbuffer).order(ByteOrder.BIG_ENDIAN).asIntBuffer();
-                                intData.get(imgData);
-                                videoBuffer.add(img);
+                                intData.get(workingImageBuffer);
+                                //Special Effects...
+                                
+                                renderedImage.setRGB(0, 0, workingImage.getWidth(), workingImage.getHeight(), workingImageBuffer, 0, workingImage.getWidth());
+                                videoBuffer.add(renderedImage);
                             } catch (IOException ioe) {
                                 stopMe = true;
                                 ioe.printStackTrace();
@@ -83,13 +87,15 @@ public class Capturer {
                 }
 
             }
-        }).start();
-        new Thread(new Runnable() {
+        });
+        vCapture.setPriority(Thread.MIN_PRIORITY);
+        vCapture.start();
+        Thread aCapture = new Thread(new Runnable() {
 
             @Override
             public void run() {
                 while (!stopMe) {
-                    if (!isBuffersFull()) {
+                    if (audioBuffer.size()<BUFFER_LIMIT) {
                         if (audioClient.getStream() != null) {
                             try {
                                 byte[] abuffer = new byte[audioBufferSize];
@@ -116,7 +122,9 @@ public class Capturer {
                     }
                 }
             }
-        }).start();
+        });
+        aCapture.setPriority(Thread.MIN_PRIORITY);
+        aCapture.start();
 
     }
 

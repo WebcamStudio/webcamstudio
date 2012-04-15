@@ -22,7 +22,6 @@ import webcamstudio.components.MasterPanel;
 import webcamstudio.components.StreamPanel;
 import webcamstudio.exporter.vloopback.VideoDevice;
 import webcamstudio.mixers.MasterMixer;
-import webcamstudio.streams.SinkBroadcast;
 import webcamstudio.streams.SinkFile;
 import webcamstudio.streams.SourceWebcam;
 import webcamstudio.streams.Stream;

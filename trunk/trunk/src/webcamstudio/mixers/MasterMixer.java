@@ -13,8 +13,8 @@ import java.awt.image.BufferedImage;
 public class MasterMixer {
 
     static protected int frameRate = 15;
-    static protected int width = 320;
-    static protected int height = 240;
+    static protected int width = 720;
+    static protected int height = 480;
     
     static private MasterFrameBuilder builder = new MasterFrameBuilder();
     static Frame currentFrame = null;
