@@ -15,6 +15,8 @@ import java.util.logging.Logger;
 import webcamstudio.media.renderer.Exporter;
 import webcamstudio.mixers.Frame;
 import webcamstudio.streams.Stream;
+import webcamstudio.util.Tools;
+import webcamstudio.util.Tools.OS;
 
 /**
  *
@@ -40,7 +42,6 @@ public class FFMPEGRenderer {
     int frequency = 44100;
     int channels = 2;
     int bitSize = 16;
-    static String OS = "";
     Stream stream;
     Process process;
     Capturer capture;
@@ -59,14 +60,14 @@ public class FFMPEGRenderer {
     }
 
     private static URL getResource(ACTION a) throws MalformedURLException {
-        OS = System.getProperty("os.name").toLowerCase();
+        
         File userSettings = null;
         switch (a) {
             case CAPTURE:
-                userSettings = new File(new File(System.getProperty("user.home") + "/.webcamstudio"), RES_CAP.replaceAll("OS", OS));
+                userSettings = new File(new File(System.getProperty("user.home") + "/.webcamstudio"), RES_CAP.replaceAll("OS", Tools.getOSName()));
                 break;
             case OUTPUT:
-                userSettings = new File(new File(System.getProperty("user.home") + "/.webcamstudio"), RES_OUT.replaceAll("OS", OS));
+                userSettings = new File(new File(System.getProperty("user.home") + "/.webcamstudio"), RES_OUT.replaceAll("OS", Tools.getOSName()));
                 break;
         }
         URL res = null;
@@ -77,10 +78,10 @@ public class FFMPEGRenderer {
             String path = null;
             switch (a) {
                 case CAPTURE:
-                    path = "/webcamstudio/ffmpeg/ffmpeg-capture_" + OS + ".properties";
+                    path = "/webcamstudio/ffmpeg/ffmpeg-capture_" + Tools.getOSName() + ".properties";
                     break;
                 case OUTPUT:
-                    path = "/webcamstudio/ffmpeg/ffmpeg-output_" + OS + ".properties";
+                    path = "/webcamstudio/ffmpeg/ffmpeg-output_" + Tools.getOSName() + ".properties";
                     break;
             }
             res = FFMPEGRenderer.class.getResource(path);
@@ -125,7 +126,7 @@ public class FFMPEGRenderer {
                     break;
                 case FILE:
                     if (stream.getFile() != null) {
-                        if (OS.equals("windows")) {
+                        if (Tools.getOS() == OS.WINDOWS) {
                             command = command.replaceAll(FFMPEGTags.FILE.toString(), "\"" + stream.getFile().getAbsolutePath() + "\"");
                         } else {
                             command = command.replaceAll(FFMPEGTags.FILE.toString(), "" + stream.getFile().getAbsolutePath().replaceAll(" ", "\\ ") + "");

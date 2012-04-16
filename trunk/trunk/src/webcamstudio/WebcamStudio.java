@@ -35,6 +35,8 @@ import webcamstudio.streams.SourceQRCode;
 import webcamstudio.streams.SourceText;
 import webcamstudio.streams.SourceWebcam;
 import webcamstudio.streams.Stream;
+import webcamstudio.util.Tools;
+import webcamstudio.util.Tools.OS;
 
 /**
  *
@@ -43,7 +45,7 @@ import webcamstudio.streams.Stream;
 public class WebcamStudio extends javax.swing.JFrame {
 
     Preferences prefs = null;
-    public static String OS = System.getProperty("os.name").toLowerCase();
+    
     /** Creates new form WebcamStudio */
     public WebcamStudio() {
         initComponents();
@@ -54,7 +56,7 @@ public class WebcamStudio extends javax.swing.JFrame {
 
         
 
-        if (OS.equals("linux")){
+        if (Tools.getOS()==OS.LINUX){
             for (VideoDevice d : VideoDevice.getOutputDevices()) {
 
                 Stream webcam = new SourceWebcam(d.getFile());
