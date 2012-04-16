@@ -53,7 +53,7 @@ public class Viewer extends javax.swing.JPanel {
             graph.drawString("No Image",10,10);
         }
         if (audioLeft > 0 || audioRight > 0){
-            graph.drawString(audioLeft + "," + audioRight, 10, 50);
+            //graph.drawString(audioLeft + "," + audioRight, 10, 50);
             graph.setColor(Color.GREEN);
             graph.fillRect(0, h - (audioLeft * h / 128), 10, (audioLeft * h / 128));
             graph.fillRect(w-10, h - (audioRight * h / 128), 10, (audioRight * h / 128));

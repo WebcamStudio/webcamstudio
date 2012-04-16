@@ -8,13 +8,13 @@ import webcamstudio.media.renderer.Capturer;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import webcamstudio.media.renderer.Exporter;
+import webcamstudio.media.renderer.ProcessExecutor;
 import webcamstudio.mixers.Frame;
 import webcamstudio.streams.Stream;
 import webcamstudio.util.Tools;
@@ -45,7 +45,7 @@ public class FFMPEGRenderer {
     int channels = 2;
     int bitSize = 16;
     Stream stream;
-    Process process;
+    ProcessExecutor process;
     Capturer capture;
 
     public FFMPEGRenderer(Stream s, ACTION a, String plugin) {
@@ -58,6 +58,7 @@ public class FFMPEGRenderer {
                 Logger.getLogger(FFMPEGRenderer.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        process = new ProcessExecutor(s.getName());
         this.plugin = plugin;
     }
 
@@ -195,40 +196,9 @@ public class FFMPEGRenderer {
                         System.out.print(p + " ");
                     }
                     System.out.println();
-                    process = Runtime.getRuntime().exec(parms);
-                    new Thread(new Runnable() {
-
-                        @Override
-                        public void run() {
-                            InputStream in = process.getErrorStream();
-                            byte[] buffer = new byte[1024];
-                            int count = 0;
-                            while (!stopped) {
-                                try {
-                                    count = in.read(buffer);
-                                    if (count > 0) {
-                                        System.out.println(new String(buffer, 0, count));
-                                    }
-                                } catch (IOException ex) {
-                                    Logger.getLogger(FFMPEGRenderer.class.getName()).log(Level.SEVERE, null, ex);
-                                }
-
-                            }
-                        }
-                    }).start();
-
-                    process.waitFor();
+                    process.execute(parms);
                     capture.abort();
                     stopped = true;
-                    try {
-                        byte[] output = new byte[64000];
-                        process.getErrorStream().read(output);
-                        System.out.println(new String(output).trim());
-                        process.destroy();
-                        System.out.println("Process ended");
-                    } catch (Exception ex) {
-                        Logger.getLogger(FFMPEGRenderer.class.getName()).log(Level.SEVERE, null, ex);
-                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -257,18 +227,9 @@ public class FFMPEGRenderer {
                 final String[] parms = command.split(" ");
                 try {
                     renderer.listen();
-                    process = Runtime.getRuntime().exec(parms);
-                    process.waitFor();
+                    process.execute(parms);
+                    renderer.abort();
                     stopped = true;
-                    try {
-                        byte[] output = new byte[64000];
-                        process.getErrorStream().read(output);
-                        System.out.println(new String(output).trim());
-                        process.destroy();
-                        System.out.println("Process ended");
-                    } catch (Exception ex) {
-                        Logger.getLogger(FFMPEGRenderer.class.getName()).log(Level.SEVERE, null, ex);
-                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
