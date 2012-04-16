@@ -18,6 +18,8 @@ import java.awt.dnd.DropTargetDropEvent;
 import java.beans.PropertyVetoException;
 import java.io.File;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
@@ -45,18 +47,20 @@ import webcamstudio.util.Tools.OS;
 public class WebcamStudio extends javax.swing.JFrame {
 
     Preferences prefs = null;
-    
-    /** Creates new form WebcamStudio */
+
+    /**
+     * Creates new form WebcamStudio
+     */
     public WebcamStudio() {
         initComponents();
         String build = new Version().getBuild();
-        setTitle("WebcamStudio " + Version.version + " ("+build+")");
+        setTitle("WebcamStudio " + Version.version + " (" + build + ")");
         ImageIcon icon = new ImageIcon(this.getClass().getResource("/webcamstudio/resources/icon.png"));
         this.setIconImage(icon.getImage());
 
-        
 
-        if (Tools.getOS()==OS.LINUX){
+
+        if (Tools.getOS() == OS.LINUX) {
             for (VideoDevice d : VideoDevice.getOutputDevices()) {
 
                 Stream webcam = new SourceWebcam(d.getFile());
@@ -74,23 +78,44 @@ public class WebcamStudio extends javax.swing.JFrame {
             public synchronized void drop(DropTargetDropEvent evt) {
                 try {
                     evt.acceptDrop(DnDConstants.ACTION_REFERENCE);
-                    String files = evt.getTransferable().getTransferData(DataFlavor.stringFlavor).toString();
-                    String[] lines = files.split("\n");
                     boolean success = false;
-                    for (String line : lines) {
-                        File file = new File(new URL(line.trim()).toURI());
-                        if (file.exists()) {
-                            Stream stream = Stream.getInstance(file);
-                            if (stream != null) {
-                                StreamDesktop frame = new StreamDesktop(stream);
-                                desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
-                                frame.setLocation(evt.getLocation());
-                                try {
-                                    frame.setSelected(true);
-                                } catch (PropertyVetoException ex) {
-                                    Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
+                    if (Tools.getOS() == OS.LINUX) {
+                        String files = evt.getTransferable().getTransferData(DataFlavor.stringFlavor).toString();
+                        String[] lines = files.split("\n");
+
+                        for (String line : lines) {
+                            File file = new File(new URL(line.trim()).toURI());
+                            if (file.exists()) {
+                                Stream stream = Stream.getInstance(file);
+                                if (stream != null) {
+                                    StreamDesktop frame = new StreamDesktop(stream);
+                                    desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+                                    frame.setLocation(evt.getLocation());
+                                    try {
+                                        frame.setSelected(true);
+                                    } catch (PropertyVetoException ex) {
+                                        Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
+                                    }
+                                    success = true;
                                 }
-                                success=true;
+                            }
+                        }
+                    } else if (Tools.getOS()==OS.WINDOWS){
+                        List<File> files = (List<File>)evt.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
+                        for (File file : files ){
+                            if (file.exists()) {
+                                Stream stream = Stream.getInstance(file);
+                                if (stream != null) {
+                                    StreamDesktop frame = new StreamDesktop(stream);
+                                    desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+                                    frame.setLocation(evt.getLocation());
+                                    try {
+                                        frame.setSelected(true);
+                                    } catch (PropertyVetoException ex) {
+                                        Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
+                                    }
+                                    success = true;
+                                }
                             }
                         }
                     }
@@ -103,12 +128,12 @@ public class WebcamStudio extends javax.swing.JFrame {
         });
         this.add(new ResourceMonitor(), BorderLayout.SOUTH);
         prefs = Preferences.userNodeForPackage(this.getClass());
-        mainSplit.add(new OutputRecorder(),JSplitPane.RIGHT);
-        
+        mainSplit.add(new OutputRecorder(), JSplitPane.RIGHT);
+
         loadPrefs();
         MasterMixer.start();
         panSources.add(new MasterPanel(), BorderLayout.WEST);
-        
+
     }
 
     private void loadPrefs() {
@@ -119,7 +144,7 @@ public class WebcamStudio extends javax.swing.JFrame {
         MasterMixer.setWidth(prefs.getInt("mastermixer-w", 320));
         MasterMixer.setHeight(prefs.getInt("mastermixer-h", 240));
         MasterMixer.setRate(prefs.getInt("mastermixer-r", 15));
-        mainSplit.setDividerLocation(prefs.getInt("split-x",800));
+        mainSplit.setDividerLocation(prefs.getInt("split-x", 800));
         this.setLocation(x, y);
         this.setSize(w, h);
     }
@@ -132,7 +157,7 @@ public class WebcamStudio extends javax.swing.JFrame {
         prefs.putInt("mastermixer-w", MasterMixer.getWidth());
         prefs.putInt("mastermixer-h", MasterMixer.getHeight());
         prefs.putInt("mastermixer-r", MasterMixer.getRate());
-        prefs.putInt("split-x",mainSplit.getDividerLocation());
+        prefs.putInt("split-x", mainSplit.getDividerLocation());
         try {
             prefs.flush();
         } catch (BackingStoreException ex) {
@@ -141,10 +166,10 @@ public class WebcamStudio extends javax.swing.JFrame {
 
     }
 
-    /** This method is called from within the constructor to
-     * initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is
-     * always regenerated by the Form Editor.
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -275,10 +300,14 @@ public class WebcamStudio extends javax.swing.JFrame {
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
+        /*
+         * Set the Nimbus look and feel
+         */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+        /*
+         * If Nimbus (introduced in Java SE 6) is not available, stay with the
+         * default look and feel. For details see
+         * http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -298,7 +327,9 @@ public class WebcamStudio extends javax.swing.JFrame {
         }
         //</editor-fold>
 
-        /* Create and display the form */
+        /*
+         * Create and display the form
+         */
         java.awt.EventQueue.invokeLater(new Runnable() {
 
             public void run() {

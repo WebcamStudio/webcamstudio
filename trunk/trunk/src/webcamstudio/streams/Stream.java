@@ -306,6 +306,7 @@ public abstract class Stream {
             stream = new SourceImageGif(file);
         } else if (ext.endsWith(".mp3") ||
                 ext.endsWith(".wav") ||
+                ext.endsWith(".wma") ||
                 ext.endsWith(".mp2")){
             stream = new SourceMusic(file);
         }

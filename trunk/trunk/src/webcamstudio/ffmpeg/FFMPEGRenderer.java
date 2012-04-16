@@ -127,7 +127,7 @@ public class FFMPEGRenderer {
                 case FILE:
                     if (stream.getFile() != null) {
                         if (Tools.getOS() == OS.WINDOWS) {
-                            command = command.replaceAll(FFMPEGTags.FILE.toString(), "\"" + stream.getFile().getAbsolutePath() + "\"");
+                            command = command.replaceAll(FFMPEGTags.FILE.toString(), "\"" + stream.getFile().getAbsolutePath().replaceAll("\\\\","\\\\\\\\") + "\"");
                         } else {
                             command = command.replaceAll(FFMPEGTags.FILE.toString(), "" + stream.getFile().getAbsolutePath().replaceAll(" ", "\\ ") + "");
                         }
@@ -199,10 +199,10 @@ public class FFMPEGRenderer {
                     stopped = true;
                     try {
                         byte[] output = new byte[64000];
-//                        process.getErrorStream().read(output);
-//                        System.out.println(new String(output).trim());
+                        process.getErrorStream().read(output);
+                        System.out.println(new String(output).trim());
                         process.destroy();
-                        //System.out.println("Process ended");
+                        System.out.println("Process ended");
                     } catch (Exception ex) {
                         Logger.getLogger(FFMPEGRenderer.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -239,10 +239,10 @@ public class FFMPEGRenderer {
                     stopped = true;
                     try {
                         byte[] output = new byte[64000];
-//                        process.getErrorStream().read(output);
-//                        System.out.println(new String(output).trim());
+                        process.getErrorStream().read(output);
+                        System.out.println(new String(output).trim());
                         process.destroy();
-                        //System.out.println("Process ended");
+                        System.out.println("Process ended");
                     } catch (Exception ex) {
                         Logger.getLogger(FFMPEGRenderer.class.getName()).log(Level.SEVERE, null, ex);
                     }
