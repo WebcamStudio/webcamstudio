@@ -116,7 +116,8 @@ public class Exporter {
                         try {
                             fetch();
                         } catch (IOException ex) {
-                            Logger.getLogger(Exporter.class.getName()).log(Level.SEVERE, null, ex);
+                            //Logger.getLogger(Exporter.class.getName()).log(Level.SEVERE, null, ex);
+                            cancel=true;
                         }
                         Thread.sleep(800/MasterMixer.getRate());
                     } catch (InterruptedException ex) {

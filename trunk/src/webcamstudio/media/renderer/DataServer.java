@@ -52,6 +52,7 @@ public class DataServer {
                         connection = server.accept();
                         server.close();
                         output = new DataOutputStream(connection.getOutputStream());
+                        System.out.println("Connection Accepted");
                     } catch (SocketTimeoutException soe) {
                         System.out.println("Waiting...");
                     } catch (IOException ioe) {
@@ -79,7 +80,7 @@ public class DataServer {
 
             byte[] array = byteBuffer.array();
             output.write(array);
-            //System.out.println("Data written");
+            System.out.println("Data written");
         }
     }
 
