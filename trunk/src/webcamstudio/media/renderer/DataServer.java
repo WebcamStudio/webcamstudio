@@ -79,6 +79,7 @@ public class DataServer {
 
             byte[] array = byteBuffer.array();
             output.write(array);
+            //System.out.println("Data written");
         }
     }
 
