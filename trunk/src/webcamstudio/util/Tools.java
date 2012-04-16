@@ -4,6 +4,9 @@
  */
 package webcamstudio.util;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author patrick
@@ -42,5 +45,13 @@ public class Tools {
         }
         
         return name;
+    }
+    
+    public static void sleep(long millisec){
+        try {
+            Thread.sleep(millisec);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Tools.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

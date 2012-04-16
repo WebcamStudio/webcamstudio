@@ -17,6 +17,7 @@ import java.awt.dnd.DropTargetDropEvent;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.TreeMap;
 import javax.swing.JFileChooser;
 import javax.swing.JToggleButton;
@@ -30,6 +31,8 @@ import webcamstudio.mixers.MasterMixer;
 import webcamstudio.streams.SinkBroadcast;
 import webcamstudio.streams.SinkFile;
 import webcamstudio.streams.SinkLinuxDevice;
+import webcamstudio.util.Tools;
+import webcamstudio.util.Tools.OS;
 
 /**
  *
@@ -44,9 +47,9 @@ public class OutputRecorder extends javax.swing.JPanel {
     /** Creates new form OutputRecorder */
     public OutputRecorder() {
         initComponents();
-        String OS = System.getProperty("os.name").toLowerCase();
 
-        if (OS.equals("linux")) {
+
+        if (Tools.getOS() == OS.LINUX) {
             for (VideoDevice d : VideoDevice.getInputDevices()) {
                 JToggleButton button = new JToggleButton();
                 button.setText(d.getName());
@@ -87,18 +90,26 @@ public class OutputRecorder extends javax.swing.JPanel {
                 boolean dropSuccess = false;
                 try {
                     evt.acceptDrop(DnDConstants.ACTION_REFERENCE);
-                    String files = evt.getTransferable().getTransferData(DataFlavor.stringFlavor).toString();
-                    String[] lines = files.split("\n");
-
-                    for (String line : lines) {
-                        File file = new File(new URL(line.trim()).toURI());
-                        if (file.exists() && file.getName().toLowerCase().endsWith("xml")) {
-                            dropSuccess = true;
-                            addButtonBroadcast(file);
+                    if (Tools.getOS() == OS.LINUX) {
+                        String files = evt.getTransferable().getTransferData(DataFlavor.stringFlavor).toString();
+                        String[] lines = files.split("\n");
+                        for (String line : lines) {
+                            File file = new File(new URL(line.trim()).toURI());
+                            if (file.exists() && file.getName().toLowerCase().endsWith("xml")) {
+                                dropSuccess = true;
+                                addButtonBroadcast(file);
+                            }
+                        }
+                    } else if (Tools.getOS()==OS.WINDOWS){
+                        List files = (List)evt.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
+                        for (Object o : files){
+                            File file = (File)o;
+                            if (file.exists() && file.getName().toLowerCase().endsWith("xml")) {
+                                dropSuccess = true;
+                                addButtonBroadcast(file);
+                            }
                         }
                     }
-
-
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
