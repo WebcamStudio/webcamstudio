@@ -101,8 +101,9 @@ public class WebcamStudio extends javax.swing.JFrame {
                             }
                         }
                     } else if (Tools.getOS()==OS.WINDOWS){
-                        List<File> files = (List<File>)evt.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
-                        for (File file : files ){
+                        List files = (List)evt.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
+                        for (Object o : files ){
+                            File file = (File)o;
                             if (file.exists()) {
                                 Stream stream = Stream.getInstance(file);
                                 if (stream != null) {

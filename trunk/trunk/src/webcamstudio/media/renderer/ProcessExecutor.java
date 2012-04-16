@@ -15,56 +15,47 @@ import webcamstudio.util.Tools;
  * @author patrick
  */
 public class ProcessExecutor {
-   
+
     private Process process;
     private boolean processRunning = false;
     private String name = "";
-    
-    public ProcessExecutor(String name ){
-        this.name=name;
-    }
-    public void execute(String[] params) throws IOException, InterruptedException{
-        processRunning=true;
-        process = Runtime.getRuntime().exec(params);
-        new Thread(new Runnable(){
 
-            @Override
-            public void run() {
-                try {
-                    byte[] buffer = new byte[1024];
-                    int count = 0;
-                    InputStream in = process.getInputStream();
-                    InputStream err = process.getErrorStream();
-                    while(processRunning){
-                        try{
-                            count = in.read(buffer);
-                            if (count>0){
-                                //System.out.println(name + " IN: " + new String(buffer,0,count));
-                            }
-                            count = err.read(buffer);
-                            if (count>0){
-                                //System.out.println(name + " ERR: " + new String(buffer,0,count));
-                            }
-                        } catch(IOException ioe){
-                            break;
-                        }
-                        Tools.sleep(100);
-                    }
-                    in.close();
-                    err.close();
-                    
-                } catch (IOException ex) {
-                    Logger.getLogger(ProcessExecutor.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                process=null;
-            }
-        }).start();
-        process.waitFor();
-        processRunning=false;
+    public ProcessExecutor(String name) {
+        this.name = name;
     }
-    
-    public void destroy(){
-        if (process!=null){
+
+    public void execute(String[] params) throws IOException, InterruptedException {
+        processRunning = true;
+        process = Runtime.getRuntime().exec(params);
+        try {
+            byte[] buffer = new byte[1024];
+            int count = 0;
+            InputStream err = process.getErrorStream();
+            while (processRunning) {
+                try {
+                    count = err.read(buffer);
+                    if (count > 0) {
+                        System.out.println(name + ": " + new String(buffer, 0, count));
+                    }
+                } catch (IOException ioe) {
+                    break;
+                }
+                Tools.sleep(10);
+            }
+            err.close();
+
+        } catch (IOException ex) {
+            Logger.getLogger(ProcessExecutor.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        process.destroy();
+        process = null;
+        System.out.println(name + " ended...");
+        processRunning = false;
+    }
+
+    public void destroy() {
+        processRunning=false;
+        if (process != null) {
             process.destroy();
         }
     }

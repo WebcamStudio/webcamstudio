@@ -31,7 +31,7 @@ public abstract class Stream {
     protected int seek = 0;
     protected int zorder = 0;
     protected File file = null;
-    protected String name = null;
+    protected String name = "Default";
     protected String url = null;
     protected int audioLevelLeft = 0;
     protected int audioLevelRight = 0;
