@@ -3,7 +3,7 @@
 ******************************
 
 
-To compile from the command line simply run:
+ To compile from the command line simply run:
 
 ant clean jar
 
