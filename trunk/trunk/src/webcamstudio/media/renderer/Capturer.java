@@ -86,7 +86,6 @@ public class Capturer {
                                 Logger.getLogger(Capturer.class.getName()).log(Level.SEVERE, null, ex);
                             }
                         }
-                        Thread.yield();
                     } else {
                         try {
                             Thread.sleep(100);
@@ -110,14 +109,21 @@ public class Capturer {
                     if (audioBuffer.size() < BUFFER_LIMIT) {
                         if (audioClient.getStream() != null) {
                             try {
-                                byte[] abuffer = new byte[audioBufferSize];
-                                audioClient.getStream().readFully(abuffer);
-                                audioBuffer.add(abuffer);
+                                if (audioClient.getStream().available()>0){
+                                    byte[] abuffer = new byte[audioBufferSize];
+                                    audioClient.getStream().readFully(abuffer);
+                                    audioBuffer.add(abuffer);
+                                } else {
+                                    try {
+                                        Thread.sleep(30);
+                                    } catch (InterruptedException ex) {
+                                        Logger.getLogger(Capturer.class.getName()).log(Level.SEVERE, null, ex);
+                                    }
+                                }
                             } catch (IOException ioe) {
                                 stopMe = true;
                                 //ioe.printStackTrace();
                             }
-                            Thread.yield();
                         } else {
                             try {
                                 Thread.sleep(100);

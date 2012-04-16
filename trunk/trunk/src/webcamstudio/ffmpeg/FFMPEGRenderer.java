@@ -7,6 +7,8 @@ package webcamstudio.ffmpeg;
 import webcamstudio.media.renderer.Capturer;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Properties;
@@ -60,7 +62,7 @@ public class FFMPEGRenderer {
     }
 
     private static URL getResource(ACTION a) throws MalformedURLException {
-        
+
         File userSettings = null;
         switch (a) {
             case CAPTURE:
@@ -127,7 +129,7 @@ public class FFMPEGRenderer {
                 case FILE:
                     if (stream.getFile() != null) {
                         if (Tools.getOS() == OS.WINDOWS) {
-                            command = command.replaceAll(FFMPEGTags.FILE.toString(), "\"" + stream.getFile().getAbsolutePath().replaceAll("\\\\","\\\\\\\\") + "\"");
+                            command = command.replaceAll(FFMPEGTags.FILE.toString(), "\"" + stream.getFile().getAbsolutePath().replaceAll("\\\\", "\\\\\\\\") + "\"");
                         } else {
                             command = command.replaceAll(FFMPEGTags.FILE.toString(), "" + stream.getFile().getAbsolutePath().replaceAll(" ", "\\ ") + "");
                         }
@@ -178,10 +180,10 @@ public class FFMPEGRenderer {
             @Override
             public void run() {
                 capture = new Capturer(stream);
-                if (stream.hasVideo()){
+                if (stream.hasVideo()) {
                     videoPort = capture.getVideoPort();
                 }
-                if (stream.hasAudio()){
+                if (stream.hasAudio()) {
                     audioPort = capture.getAudioPort();
                 }
                 String command = plugins.getProperty(plugin).replaceAll("  ", " "); //Making sure there is no double spaces
@@ -194,6 +196,27 @@ public class FFMPEGRenderer {
                     }
                     System.out.println();
                     process = Runtime.getRuntime().exec(parms);
+                    new Thread(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            InputStream in = process.getErrorStream();
+                            byte[] buffer = new byte[1024];
+                            int count = 0;
+                            while (!stopped) {
+                                try {
+                                    count = in.read(buffer);
+                                    if (count > 0) {
+                                        System.out.println(new String(buffer, 0, count));
+                                    }
+                                } catch (IOException ex) {
+                                    Logger.getLogger(FFMPEGRenderer.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+
+                            }
+                        }
+                    }).start();
+
                     process.waitFor();
                     capture.abort();
                     stopped = true;
@@ -257,7 +280,7 @@ public class FFMPEGRenderer {
 
     public void stop() {
         stopMe = true;
-        if (capture!=null){
+        if (capture != null) {
             capture.abort();
             try {
                 Thread.sleep(500);
