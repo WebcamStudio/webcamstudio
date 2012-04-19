@@ -16,7 +16,7 @@ import webcamstudio.mixers.MasterMixer;
  *
  * @author patrick
  */
-public class Exporter {
+public class Exporter implements MasterMixer.SinkListener {
 
     private boolean cancel = false;
     private DataServer videoServer = new DataServer("video");
@@ -34,7 +34,8 @@ public class Exporter {
     public void listen() throws IOException {
         videoServer.listen();
         audioServer.listen();
-        cancel=false;
+        MasterMixer.register(this);
+        cancel = false;
         Thread vOutput = new Thread(new Runnable() {
 
             @Override
@@ -46,15 +47,15 @@ public class Exporter {
                             int[] imgData = ((java.awt.image.DataBufferInt) img.getRaster().getDataBuffer()).getData();
                             try {
                                 videoServer.feed(imgData);
-                                
+
                             } catch (IOException ex) {
                                 cancel = true;
                                 //Logger.getLogger(Exporter.class.getName()).log(Level.SEVERE, null, ex);
                             }
-                            
-                        }                         
+
+                        }
                         try {
-                            Thread.sleep(1000/MasterMixer.getRate());
+                            Thread.sleep(1000 / MasterMixer.getRate());
                         } catch (InterruptedException ex) {
                             Logger.getLogger(Exporter.class.getName()).log(Level.SEVERE, null, ex);
                         }
@@ -89,7 +90,7 @@ public class Exporter {
                             }
                         }
                         try {
-                            Thread.sleep(1000/MasterMixer.getRate());
+                            Thread.sleep(1000 / MasterMixer.getRate());
                         } catch (InterruptedException ex) {
                             Logger.getLogger(Exporter.class.getName()).log(Level.SEVERE, null, ex);
                         }
@@ -106,37 +107,17 @@ public class Exporter {
         });
         aOutput.setPriority(Thread.MIN_PRIORITY);
         aOutput.start();
-
-        new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-                while (!cancel) {
-                    
-                    try {
-                        try {
-                            fetch();
-                        } catch (IOException ex) {
-                            Logger.getLogger(Exporter.class.getName()).log(Level.SEVERE, null, ex);
-                            cancel=true;
-                        }
-                        Thread.sleep(800/MasterMixer.getRate());
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(Exporter.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-
-                }
-            }
-        }).start();
     }
 
     public void abort() {
+        MasterMixer.unregister(this);
         try {
             videoServer.shutdown();
             audioServer.shutdown();
         } catch (Exception e) {
         }
         cancel = true;
+        
     }
 
     public int getAudioPort() {
@@ -151,19 +132,13 @@ public class Exporter {
         cancel = true;
         return cancel;
     }
-
-    public void fetch() throws IOException {
-        Frame frame = MasterMixer.getCurrentFrame();
-        if (frame != null && !cancel && frame != lastFrame) {
-            lastFrame=frame;
-            if (frame.getAudioData() != null) {
-                samples.add(frame.getAudioData());
-            }
-            if (frame.getImage() != null) {
-                images.add(frame.getImage());
-            }
-        } else {
-            //System.out.println("Same frame...");
+    @Override
+    public void newFrame(Frame frame) {
+        if (frame.getAudioData() != null) {
+            samples.add(frame.getAudioData());
+        }
+        if (frame.getImage() != null) {
+            images.add(frame.getImage());
         }
     }
 }

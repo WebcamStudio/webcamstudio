@@ -21,14 +21,16 @@ import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterMixer;
 import webcamstudio.mixers.SystemAudioPlayer;
 
+
+
 /**
  *
  * @author patrick
  */
-public class MasterPanel extends javax.swing.JPanel {
+public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkListener {
 
     protected Viewer viewer = new Viewer();
-    private Timer timer = new Timer();
+    
     private SystemAudioPlayer audio = SystemAudioPlayer.getInstance();
         
     final static public Dimension PANEL_SIZE = new Dimension(150,400);
@@ -38,11 +40,9 @@ public class MasterPanel extends javax.swing.JPanel {
         spinWidth.setValue(MasterMixer.getWidth());
         spinHeight.setValue(MasterMixer.getHeight());
         this.setVisible(true);
-//        this.setPreferredSize(MasterPanel.PANEL_SIZE);
-//        this.setMaximumSize(MasterPanel.PANEL_SIZE);
         viewer.setOpaque(true);
         panelPreview.add(viewer, BorderLayout.CENTER);
-        timer.scheduleAtFixedRate(new MasterRefreshPanel(this), 0, 200);
+        MasterMixer.register(this);
     }
 
     /** This method is called from within the constructor to
@@ -174,24 +174,12 @@ public class MasterPanel extends javax.swing.JPanel {
     private javax.swing.JSpinner spinWidth;
     private javax.swing.JToggleButton tglSound;
     // End of variables declaration//GEN-END:variables
-}
-
-class MasterRefreshPanel extends TimerTask {
-
-    MasterPanel panel = null;
-
-    public MasterRefreshPanel(MasterPanel p) {
-        panel = p;
-    }
 
     @Override
-    public void run() {
-        if (panel != null) {
-            Frame frame = MasterMixer.getCurrentFrame();
-            if (frame != null) {
-                panel.viewer.setImage(frame.getImage());
-                panel.viewer.repaint();
-            }
-        }
+    public void newFrame(Frame frame) {
+        viewer.setImage(frame.getImage());
+        viewer.setAudioLevel(0, 0);
+        viewer.repaint();
     }
 }
+
