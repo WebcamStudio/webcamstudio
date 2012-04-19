@@ -20,9 +20,9 @@ public class SourceMusic extends Stream {
     BufferedImage lastPreview = null;
     
     public SourceMusic(File movie) {
-        capture = new FFMPEGRenderer(this,FFMPEGRenderer.ACTION.CAPTURE, "music");
         file=movie;
         name = movie.getName();
+        capture = new FFMPEGRenderer(this,FFMPEGRenderer.ACTION.CAPTURE, "music");
     }
 
 

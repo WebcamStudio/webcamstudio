@@ -19,13 +19,13 @@ import webcamstudio.mixers.MasterMixer;
 public class Exporter {
 
     private boolean cancel = false;
-    private DataServer videoServer = new DataServer();
-    private DataServer audioServer = new DataServer();
+    private DataServer videoServer = new DataServer("video");
+    private DataServer audioServer = new DataServer("audio");
     private long stamp = System.currentTimeMillis();
     private long count = 0;
     private ArrayList<BufferedImage> images = new ArrayList<BufferedImage>();
     private ArrayList<byte[]> samples = new ArrayList<byte[]>();
-    final static int FRAME_LIMIT = 2;
+    final static int FRAME_LIMIT = 5;
     private Frame lastFrame = null;
 
     public Exporter() {
@@ -34,6 +34,7 @@ public class Exporter {
     public void listen() throws IOException {
         videoServer.listen();
         audioServer.listen();
+        cancel=false;
         Thread vOutput = new Thread(new Runnable() {
 
             @Override
@@ -45,9 +46,10 @@ public class Exporter {
                             int[] imgData = ((java.awt.image.DataBufferInt) img.getRaster().getDataBuffer()).getData();
                             try {
                                 videoServer.feed(imgData);
+                                
                             } catch (IOException ex) {
                                 cancel = true;
-                                Logger.getLogger(Exporter.class.getName()).log(Level.SEVERE, null, ex);
+                                //Logger.getLogger(Exporter.class.getName()).log(Level.SEVERE, null, ex);
                             }
                             
                         }                         
@@ -68,19 +70,18 @@ public class Exporter {
             }
         });
         vOutput.setPriority(Thread.MIN_PRIORITY);
-        //vOutput.start();
+        vOutput.start();
 
         Thread aOutput = new Thread(new Runnable() {
 
             @Override
             public void run() {
-
                 while (!cancel) {
                     if (audioServer.canFeed()) {
-
                         if (!samples.isEmpty()) {
                             byte[] data = samples.remove(0);
                             try {
+                                //System.out.println("Feeding audio");
                                 audioServer.feed(data);
                             } catch (IOException ex) {
                                 cancel = true;
@@ -104,7 +105,7 @@ public class Exporter {
             }
         });
         aOutput.setPriority(Thread.MIN_PRIORITY);
-        //aOutput.start();
+        aOutput.start();
 
         new Thread(new Runnable() {
 
@@ -116,7 +117,7 @@ public class Exporter {
                         try {
                             fetch();
                         } catch (IOException ex) {
-                            //Logger.getLogger(Exporter.class.getName()).log(Level.SEVERE, null, ex);
+                            Logger.getLogger(Exporter.class.getName()).log(Level.SEVERE, null, ex);
                             cancel=true;
                         }
                         Thread.sleep(800/MasterMixer.getRate());
@@ -155,15 +156,14 @@ public class Exporter {
         Frame frame = MasterMixer.getCurrentFrame();
         if (frame != null && !cancel && frame != lastFrame) {
             lastFrame=frame;
-            
-            if (frame.getAudioData() != null && audioServer.canFeed()) {
-                //samples.add(frame.getAudioData());
-                audioServer.feed(frame.getAudioData());
+            if (frame.getAudioData() != null) {
+                samples.add(frame.getAudioData());
             }
-            if (frame.getImage() != null && videoServer.canFeed()) {
-                int[] imgData = ((java.awt.image.DataBufferInt) frame.getImage().getRaster().getDataBuffer()).getData();
-                videoServer.feed(imgData);
+            if (frame.getImage() != null) {
+                images.add(frame.getImage());
             }
+        } else {
+            //System.out.println("Same frame...");
         }
     }
 }

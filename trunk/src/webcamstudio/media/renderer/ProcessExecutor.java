@@ -27,25 +27,28 @@ public class ProcessExecutor {
     public void execute(String[] params) throws IOException, InterruptedException {
         processRunning = true;
         process = Runtime.getRuntime().exec(params);
-        try {
-            byte[] buffer = new byte[1024];
-            int count = 0;
-            InputStream err = process.getErrorStream();
-            while (processRunning) {
+        int retValue = process.waitFor();
+        if (retValue != 0) {
+            try {
+                byte[] buffer = new byte[1024];
+                int count = 0;
+                InputStream err = process.getErrorStream();
+
                 try {
                     count = err.read(buffer);
                     if (count > 0) {
-                        System.out.println(name + ": " + new String(buffer, 0, count));
+                        //System.out.println(name + ": " + new String(buffer, 0, count));
                     }
                 } catch (IOException ioe) {
-                    break;
+                    processRunning = false;
                 }
                 Tools.sleep(10);
-            }
-            err.close();
 
-        } catch (IOException ex) {
-            Logger.getLogger(ProcessExecutor.class.getName()).log(Level.SEVERE, null, ex);
+                err.close();
+
+            } catch (IOException ex) {
+                Logger.getLogger(ProcessExecutor.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         process.destroy();
         process = null;
@@ -54,8 +57,7 @@ public class ProcessExecutor {
     }
 
     public void destroy() {
-        processRunning=false;
-        if (process != null) {
+        if (process!=null){
             process.destroy();
         }
     }

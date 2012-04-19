@@ -20,9 +20,9 @@ public class SourceMovie extends Stream {
     BufferedImage lastPreview = null;
     
     public SourceMovie(File movie) {
-        capture = new FFMPEGRenderer(this,FFMPEGRenderer.ACTION.CAPTURE, "movie");
         file=movie;
         name = movie.getName();
+        capture = new FFMPEGRenderer(this,FFMPEGRenderer.ACTION.CAPTURE, "movie");
     }
 
 

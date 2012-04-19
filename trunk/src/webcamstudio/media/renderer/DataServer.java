@@ -6,7 +6,6 @@ package webcamstudio.media.renderer;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
@@ -26,8 +25,9 @@ public class DataServer {
     private boolean abort = false;
     private ServerSocket server;
     private DataOutputStream output = null;
-
-    public DataServer() {
+    private String source = "";
+    public DataServer(String sourceName) {
+        source=sourceName;
         try {
             server = new ServerSocket(0);
             port = server.getLocalPort();
@@ -52,9 +52,9 @@ public class DataServer {
                         connection = server.accept();
                         server.close();
                         output = new DataOutputStream(connection.getOutputStream());
-                        System.out.println("Connection Accepted");
+                        System.out.println(source + " Connection Accepted");
                     } catch (SocketTimeoutException soe) {
-                        System.out.println("Waiting...");
+                        System.out.println(source + " Waiting...");
                     } catch (IOException ioe) {
                         //ioe.printStackTrace();
                         abort = true;
@@ -79,9 +79,10 @@ public class DataServer {
             intBuffer.put(data);
 
             byte[] array = byteBuffer.array();
+            //System.out.println(source + " Data writting");
             output.write(array);
-            System.out.println("Data written");
-        }
+            //System.out.println(source + " Data written");
+        } 
     }
 
     public void shutdown() throws IOException {

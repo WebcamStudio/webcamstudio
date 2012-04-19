@@ -7,7 +7,6 @@ package webcamstudio.ffmpeg;
 import webcamstudio.media.renderer.Capturer;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Properties;
@@ -47,7 +46,8 @@ public class FFMPEGRenderer {
     Stream stream;
     ProcessExecutor process;
     Capturer capture;
-
+    Exporter exporter;
+    
     public FFMPEGRenderer(Stream s, ACTION a, String plugin) {
         stream = s;
         if (plugins == null) {
@@ -219,7 +219,7 @@ public class FFMPEGRenderer {
                 final Exporter renderer = new Exporter();
                 videoPort = renderer.getVideoPort();
                 audioPort = renderer.getAudioPort();
-
+                stopped=false;
                 String command = plugins.getProperty(plugin).replaceAll("  ", " "); //Making sure there is no double spaces
                 command = setParameters(command);
                 System.out.println(command);
@@ -229,6 +229,8 @@ public class FFMPEGRenderer {
                     renderer.listen();
                     process.execute(parms);
                     renderer.abort();
+                    process.destroy();
+                    process=null;
                     stopped = true;
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -241,23 +243,8 @@ public class FFMPEGRenderer {
 
     public void stop() {
         stopMe = true;
-        if (capture != null) {
-            capture.abort();
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(FFMPEGRenderer.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-        if (process != null) {
+        if (process!=null){
             process.destroy();
-        }
-        while (!stopped) {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(FFMPEGRenderer.class.getName()).log(Level.SEVERE, null, ex);
-            }
         }
         stopMe = false;
     }
