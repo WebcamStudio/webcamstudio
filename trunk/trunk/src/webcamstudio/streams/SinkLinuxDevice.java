@@ -9,9 +9,7 @@ import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import webcamstudio.exporter.vloopback.V4L2Loopback;
-import webcamstudio.exporter.vloopback.VideoDevice;
 import webcamstudio.exporter.vloopback.VideoOutput;
-import webcamstudio.ffmpeg.FFMPEGRenderer;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterMixer;
 
@@ -19,12 +17,12 @@ import webcamstudio.mixers.MasterMixer;
  *
  * @author patrick
  */
-public class SinkLinuxDevice extends Stream {
+public class SinkLinuxDevice extends Stream implements MasterMixer.SinkListener {
 
     VideoOutput device;
     boolean stop = false;
-    
-    public SinkLinuxDevice(File f,String name) {
+
+    public SinkLinuxDevice(File f, String name) {
         file = f;
         device = new V4L2Loopback(null);
         this.name = name;
@@ -32,36 +30,17 @@ public class SinkLinuxDevice extends Stream {
 
     @Override
     public void read() {
-        stop=false;
-        new Thread(new Runnable(){
-
-            @Override
-            public void run() {
-                device.open(file.getAbsolutePath(), width, height, VideoOutput.RGB24);
-                while (!stop){
-                    Frame frame = MasterMixer.getCurrentFrame();
-                    if (frame!=null){
-                    BufferedImage image = frame.getImage();
-                    if (image!=null){
-                        int[] imgData = ((java.awt.image.DataBufferInt) image.getRaster().getDataBuffer()).getData();
-                        device.write(imgData);
-                    }
-                    }
-                    try {
-                        Thread.sleep(1000/rate);
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(SinkLinuxDevice.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-            }
-        }).start();
+        stop = false;
+        device.open(file.getAbsolutePath(), width, height, VideoOutput.RGB24);
+        MasterMixer.register(this);
     }
 
     @Override
     public void stop() {
-        stop=true;
+        stop = true;
         device.close();
-        device=null;
+        device = null;
+        MasterMixer.unregister(this);
     }
 
     @Override
@@ -87,5 +66,16 @@ public class SinkLinuxDevice extends Stream {
     @Override
     public boolean hasVideo() {
         return true;
+    }
+
+    @Override
+    public void newFrame(Frame frame) {
+        if (frame != null) {
+            BufferedImage image = frame.getImage();
+            if (image != null) {
+                int[] imgData = ((java.awt.image.DataBufferInt) image.getRaster().getDataBuffer()).getData();
+                device.write(imgData);
+            }
+        }
     }
 }

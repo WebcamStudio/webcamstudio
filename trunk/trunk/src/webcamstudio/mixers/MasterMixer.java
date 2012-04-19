@@ -5,6 +5,7 @@
 package webcamstudio.mixers;
 
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 /**
  *
@@ -15,10 +16,21 @@ public class MasterMixer {
     static protected int frameRate = 15;
     static protected int width = 720;
     static protected int height = 480;
-    
+    static protected ArrayList<SinkListener> listeners = new ArrayList<SinkListener>();
     static private MasterFrameBuilder builder = new MasterFrameBuilder();
+    
     static Frame currentFrame = null;
 
+    public interface SinkListener{
+        public void newFrame(Frame frame);
+    }
+    
+    public synchronized static void register(SinkListener l){
+        listeners.add(l);
+    }
+    public synchronized static void unregister(SinkListener l){
+        listeners.remove(l);
+    }
     public static void setWidth(int w) {
         width = w;
     }
@@ -53,13 +65,17 @@ public class MasterMixer {
     }
     public static void setCurrentFrame(Frame f ){
         currentFrame=f;
+        updateListeners(f);
+    }
+    private synchronized static void updateListeners(Frame f){
+        for (SinkListener l : listeners){
+            l.newFrame(f);
+        }
     }
     public static void setCurrentFrame(BufferedImage img,byte[] audio){
         Frame f = new Frame("",img, audio);
         currentFrame=f;
-    }
-    public static Frame getCurrentFrame() {
-        return currentFrame;
+        updateListeners(f);
     }
 }
 
