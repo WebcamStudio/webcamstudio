@@ -18,9 +18,9 @@ public class SinkFile extends Stream {
     private FFMPEGRenderer capture = null;
 
     public SinkFile(File f) {
-        capture = new FFMPEGRenderer(this, FFMPEGRenderer.ACTION.OUTPUT, "file");
         file = f;
         name = f.getName();
+        capture = new FFMPEGRenderer(this, FFMPEGRenderer.ACTION.OUTPUT, "file");
     }
 
     @Override

@@ -20,9 +20,9 @@ public class SourceWebcam extends Stream {
     BufferedImage lastPreview = null;
 
     public SourceWebcam(File device) {
-        capture = new FFMPEGRenderer(this, FFMPEGRenderer.ACTION.CAPTURE, "webcam");
         file = device;
         name = device.getName();
+        capture = new FFMPEGRenderer(this, FFMPEGRenderer.ACTION.CAPTURE, "webcam");
 
     }
 
@@ -34,11 +34,8 @@ public class SourceWebcam extends Stream {
 
     @Override
     public void stop() {
-        System.out.println("BeforeStop");
         capture.stop();
-        System.out.println("AfterStop");
         MasterFrameBuilder.unregister(this);
-        System.out.println("AfterUnregister");
     }
 
     @Override
