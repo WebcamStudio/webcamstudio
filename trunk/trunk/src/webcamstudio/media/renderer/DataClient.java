@@ -6,11 +6,8 @@ package webcamstudio.media.renderer;
 
 import java.io.DataInputStream;
 import java.io.IOException;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -66,8 +63,8 @@ public class DataClient extends TimerTask {
                 connection = server.accept();
                 System.out.println("Accepted connection");
                 din = new DataInputStream(connection.getInputStream());
-                server.close();
-                server = null;
+//                server.close();
+//                server = null;
             }
         } catch (IOException ex) {
             Logger.getLogger(DataClient.class.getName()).log(Level.SEVERE, null, ex);
