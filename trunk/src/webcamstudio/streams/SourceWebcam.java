@@ -9,6 +9,7 @@ import java.io.File;
 import webcamstudio.ffmpeg.FFMPEGRenderer;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterFrameBuilder;
+import webcamstudio.mixers.MasterMixer;
 
 /**
  *
@@ -20,6 +21,7 @@ public class SourceWebcam extends Stream {
     BufferedImage lastPreview = null;
 
     public SourceWebcam(File device) {
+        rate = MasterMixer.getRate();
         file = device;
         name = device.getName();
         capture = new FFMPEGRenderer(this, FFMPEGRenderer.ACTION.CAPTURE, "webcam");

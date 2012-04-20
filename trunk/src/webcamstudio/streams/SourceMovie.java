@@ -9,6 +9,7 @@ import java.io.File;
 import webcamstudio.ffmpeg.FFMPEGRenderer;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterFrameBuilder;
+import webcamstudio.mixers.MasterMixer;
 
 /**
  *
@@ -20,6 +21,7 @@ public class SourceMovie extends Stream {
     BufferedImage lastPreview = null;
     
     public SourceMovie(File movie) {
+        rate = MasterMixer.getRate();
         file=movie;
         name = movie.getName();
         capture = new FFMPEGRenderer(this,FFMPEGRenderer.ACTION.CAPTURE, "movie");
