@@ -37,7 +37,7 @@ public class ProcessExecutor {
                 try {
                     count = err.read(buffer);
                     if (count > 0) {
-                        //System.out.println(name + ": " + new String(buffer, 0, count));
+                        System.out.println(name + ": " + new String(buffer, 0, count));
                     }
                 } catch (IOException ioe) {
                     processRunning = false;
