@@ -70,8 +70,10 @@ public class Capturer {
                     System.out.println(stream.getName() + " video accepted...");
                     DataInputStream din = new DataInputStream(connection.getInputStream());
                     long mark = 0;
+//                    long count = 0;
                     while (!stopMe) {
                         try {
+//                            count++;
                             mark = System.currentTimeMillis();
                             byte[] vbuffer = new byte[videoBufferSize];
                             int[] rgb = new int[videoBufferSize / 4];
@@ -83,12 +85,17 @@ public class Capturer {
                             image.setRGB(0, 0, stream.getWidth(), stream.getHeight(), rgb, 0, stream.getWidth());
                             lastImage = image;
                             Tools.wait(1000/stream.getRate(), mark);
+//                            if (count == stream.getRate()){
+//                                System.out.println("Video Frame " + System.currentTimeMillis());
+//                                count=0;
+//                            }
                         } catch (IOException ioe) {
                             stopMe = true;
-                            ioe.printStackTrace();
+                            //ioe.printStackTrace();
                         }
 
                     }
+                    din.close();
                 } catch (IOException ex) {
                     Logger.getLogger(Capturer.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -113,12 +120,15 @@ public class Capturer {
                             byte[] abuffer = new byte[audioBufferSize];
                             din.readFully(abuffer);
                             frame = new Frame(stream.getID(), lastImage, abuffer);
+                            frame.setOutputFormat(stream.getX(), stream.getY(), stream.getWidth(), stream.getHeight(), stream.getOpacity(), stream.getVolume());
+                            frame.setZOrder(stream.getZOrder());
                             Tools.wait(1000/stream.getRate(), mark);
                         } catch (IOException ioe) {
                             stopMe = true;
-                            ioe.printStackTrace();
+                            //ioe.printStackTrace();
                         }
                     }
+                    din.close();
                 } catch (IOException ex) {
                     Logger.getLogger(Capturer.class.getName()).log(Level.SEVERE, null, ex);
                 }

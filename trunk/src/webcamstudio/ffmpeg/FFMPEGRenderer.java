@@ -47,7 +47,7 @@ public class FFMPEGRenderer {
     ProcessExecutor process;
     Capturer capture;
     Exporter exporter;
-    
+
     public FFMPEGRenderer(Stream s, ACTION a, String plugin) {
         stream = s;
         if (plugins == null) {
@@ -93,22 +93,6 @@ public class FFMPEGRenderer {
         return res;
     }
 
-//    public String[] getPlugins(ACTION a) {
-//        if (plugins == null) {
-//            plugins = new Properties();
-//            try {
-//                plugins.load(getResource(a).openStream());
-//            } catch (IOException ex) {
-//                Logger.getLogger(FFMPEGRenderer.class.getName()).log(Level.SEVERE, null, ex);
-//            }
-//        }
-//        String[] keys = new String[plugins.keySet().size()];
-//        int index = 0;
-//        for (Object key : plugins.keySet()) {
-//            keys[index++] = key.toString();
-//        }
-//        return keys;
-//    }
     private String setParameters(String cmd) {
         String command = cmd;
         for (FFMPEGTags tag : FFMPEGTags.values()) {
@@ -190,15 +174,13 @@ public class FFMPEGRenderer {
                 String command = plugins.getProperty(plugin).replaceAll("  ", " "); //Making sure there is no double spaces
                 command = command.replaceAll(" ", "ABCDE");
                 command = setParameters(command);
-                final String[] parms = command.split("ABCDE");
+                String[] parms = command.split("ABCDE");
                 try {
                     for (String p : parms) {
                         System.out.print(p + " ");
                     }
                     System.out.println();
                     process.execute(parms);
-                    capture.abort();
-                    stopped = true;
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -219,7 +201,7 @@ public class FFMPEGRenderer {
                 final Exporter renderer = new Exporter();
                 videoPort = renderer.getVideoPort();
                 audioPort = renderer.getAudioPort();
-                stopped=false;
+                stopped = false;
                 String command = plugins.getProperty(plugin).replaceAll("  ", " "); //Making sure there is no double spaces
                 command = setParameters(command);
                 System.out.println(command);
@@ -230,7 +212,7 @@ public class FFMPEGRenderer {
                     process.execute(parms);
                     renderer.abort();
                     process.destroy();
-                    process=null;
+                    process = null;
                     stopped = true;
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -243,9 +225,18 @@ public class FFMPEGRenderer {
 
     public void stop() {
         stopMe = true;
-        if (process!=null){
+        if (capture != null) {
+            capture.abort();
+            capture = null;
+        }
+        if (exporter != null) {
+            exporter.abort();
+            exporter = null;
+        }
+        if (process != null) {
             process.destroy();
         }
+
         stopMe = false;
     }
 
