@@ -208,12 +208,7 @@ public class FFMPEGRenderer {
 
                 final String[] parms = command.split(" ");
                 try {
-                    renderer.listen();
                     process.execute(parms);
-                    renderer.abort();
-                    process.destroy();
-                    process = null;
-                    stopped = true;
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

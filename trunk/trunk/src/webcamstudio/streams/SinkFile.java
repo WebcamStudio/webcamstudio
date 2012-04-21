@@ -8,6 +8,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import webcamstudio.ffmpeg.FFMPEGRenderer;
 import webcamstudio.mixers.Frame;
+import webcamstudio.mixers.MasterMixer;
 
 /**
  *
@@ -18,24 +19,35 @@ public class SinkFile extends Stream {
     private FFMPEGRenderer capture = null;
 
     public SinkFile(File f) {
+        rate = MasterMixer.getRate();
+        captureWidth = MasterMixer.getWidth();
+        captureHeight = MasterMixer.getHeight();
         file = f;
         name = f.getName();
-        capture = new FFMPEGRenderer(this, FFMPEGRenderer.ACTION.OUTPUT, "file");
+
     }
 
     @Override
     public void read() {
+        capture = new FFMPEGRenderer(this, FFMPEGRenderer.ACTION.OUTPUT, "file");
         capture.write();
     }
 
     @Override
     public void stop() {
-        capture.stop();
+        if (capture != null) {
+            capture.stop();
+            capture = null;
+        }
     }
 
     @Override
     public boolean isPlaying() {
-        return !capture.isStopped();
+        if (capture != null) {
+            return !capture.isStopped();
+        } else {
+            return false;
+        }
     }
 
     @Override

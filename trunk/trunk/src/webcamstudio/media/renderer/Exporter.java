@@ -6,11 +6,16 @@ package webcamstudio.media.renderer;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.io.OutputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterMixer;
+import webcamstudio.util.Tools;
 
 /**
  *
@@ -19,126 +24,135 @@ import webcamstudio.mixers.MasterMixer;
 public class Exporter implements MasterMixer.SinkListener {
 
     private boolean cancel = false;
-    private DataServer videoServer = new DataServer("video");
-    private DataServer audioServer = new DataServer("audio");
-    private long stamp = System.currentTimeMillis();
-    private long count = 0;
-    private ArrayList<BufferedImage> images = new ArrayList<BufferedImage>();
-    private ArrayList<byte[]> samples = new ArrayList<byte[]>();
     final static int FRAME_LIMIT = 5;
-    private Frame lastFrame = null;
+    ServerSocket videoServer = null;
+    ServerSocket audioServer = null;
+    OutputStream videoOutput = null;
+    OutputStream audioOutput = null;
+    int aport = 0;
+    int vport = 0;
+    BufferedImage lastImage = null;
+    byte[] audioData = null;
 
     public Exporter() {
-    }
+        try {
+            videoServer = new ServerSocket(0);
+            vport = videoServer.getLocalPort();
+        } catch (IOException ex) {
+            Logger.getLogger(Exporter.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            audioServer = new ServerSocket(0);
+            aport = audioServer.getLocalPort();
+        } catch (IOException ex) {
+            Logger.getLogger(Exporter.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        new Thread(new Runnable() {
 
-    public void listen() throws IOException {
-        videoServer.listen();
-        audioServer.listen();
-        MasterMixer.register(this);
+            @Override
+            public void run() {
+                try {
+                    Socket connection = videoServer.accept();
+                    System.out.println("Video output accepted");
+                    videoOutput = connection.getOutputStream();
+                    long mark = 0;
+                    while (!cancel) {
+                        BufferedImage image = lastImage;
+                        mark = System.currentTimeMillis();
+                        if (image != null) {
+                            byte[] data = new byte[image.getWidth() * image.getHeight() * 4];
+                            ByteBuffer buffer = ByteBuffer.wrap(data);
+                            IntBuffer iBuffer = buffer.asIntBuffer();
+                            int[] imgData = new int[data.length / 4];
+                            image.getRGB(0, 0, image.getWidth(), image.getHeight(), imgData, 0, image.getWidth());
+                            iBuffer.put(imgData);
+                            videoOutput.write(data);
+                        }
+                        Tools.wait(1000 / MasterMixer.getRate(), mark);
+
+                    }
+                } catch (IOException ex) {
+                    //Logger.getLogger(Exporter.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+            }
+        }).start();
+        new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    Socket connection = audioServer.accept();
+                    //System.out.println("Audio output accepted");
+                    audioOutput = connection.getOutputStream();
+                    long mark = 0;
+                    while (!cancel) {
+                        mark = System.currentTimeMillis();
+                        if (audioData != null) {
+                            audioOutput.write(audioData);
+                            audioData = null;
+                        }
+                        Tools.wait(1000 / MasterMixer.getRate(), mark);
+                    }
+
+                } catch (IOException ex) {
+                    //Logger.getLogger(Exporter.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }).start();
         cancel = false;
-        Thread vOutput = new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-                while (!cancel) {
-                    if (videoServer.canFeed()) {
-                        if (!images.isEmpty()) {
-                            BufferedImage img = images.remove(0);
-                            int[] imgData = ((java.awt.image.DataBufferInt) img.getRaster().getDataBuffer()).getData();
-                            try {
-                                videoServer.feed(imgData);
-
-                            } catch (IOException ex) {
-                                cancel = true;
-                                //Logger.getLogger(Exporter.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-
-                        }
-                        try {
-                            Thread.sleep(1000 / MasterMixer.getRate());
-                        } catch (InterruptedException ex) {
-                            Logger.getLogger(Exporter.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-
-                    } else {
-                        try {
-                            Thread.sleep(100);
-                        } catch (InterruptedException ex) {
-                            Logger.getLogger(Exporter.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    }
-                }
-            }
-        });
-        vOutput.setPriority(Thread.MIN_PRIORITY);
-        vOutput.start();
-
-        Thread aOutput = new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-                while (!cancel) {
-                    if (audioServer.canFeed()) {
-                        if (!samples.isEmpty()) {
-                            byte[] data = samples.remove(0);
-                            try {
-                                //System.out.println("Feeding audio");
-                                audioServer.feed(data);
-                            } catch (IOException ex) {
-                                cancel = true;
-                                Logger.getLogger(Exporter.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                        }
-                        try {
-                            Thread.sleep(1000 / MasterMixer.getRate());
-                        } catch (InterruptedException ex) {
-                            Logger.getLogger(Exporter.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-
-                    } else {
-                        try {
-                            Thread.sleep(100);
-                        } catch (InterruptedException ex) {
-                            Logger.getLogger(Exporter.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    }
-                }
-            }
-        });
-        aOutput.setPriority(Thread.MIN_PRIORITY);
-        aOutput.start();
+        MasterMixer.register(this);
     }
 
     public void abort() {
         MasterMixer.unregister(this);
-        try {
-            videoServer.shutdown();
-            audioServer.shutdown();
-        } catch (Exception e) {
-        }
         cancel = true;
-        
+        if (videoServer != null) {
+            try {
+                videoServer.close();
+                videoOutput.close();
+                videoOutput = null;
+            } catch (IOException ex) {
+                Logger.getLogger(Exporter.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            videoServer = null;
+        }
+        if (audioServer != null) {
+            try {
+                audioServer.close();
+                audioOutput.close();
+                audioOutput = null;
+            } catch (IOException ex) {
+                Logger.getLogger(Exporter.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            audioServer = null;
+        }
+
+
     }
 
     public int getAudioPort() {
-        return audioServer.getPort();
+        return aport;
     }
 
     public int getVideoPort() {
-        return videoServer.getPort();
+        return vport;
     }
 
     public boolean cancel() {
         cancel = true;
         return cancel;
     }
+
     @Override
     public void newFrame(Frame frame) {
-        if (frame.getAudioData() != null) {
-            samples.add(frame.getAudioData());
-        }
+
         if (frame.getImage() != null) {
-            images.add(frame.getImage());
+            lastImage = frame.getImage();
+
+        }
+        if (frame.getAudioData() != null) {
+            audioData = frame.getAudioData();
         }
     }
 }
