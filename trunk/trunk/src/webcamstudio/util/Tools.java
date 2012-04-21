@@ -54,4 +54,10 @@ public class Tools {
             Logger.getLogger(Tools.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    public static void wait(long delay, long startTime){
+        long delta = (startTime + delay) - System.currentTimeMillis();
+        if (delta > 0){
+            sleep(delta);
+        }
+    }
 }

@@ -12,11 +12,11 @@ import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import webcamstudio.mixers.Frame;
 import webcamstudio.streams.Stream;
+import webcamstudio.util.Tools;
 
 /**
  *
@@ -58,7 +58,8 @@ public class Capturer {
             }
 
         }
-        System.out.println("Port used is " + vport + "/" + aport);
+        System.out.println("Port used is Video:" + vport + "/Audio:" + aport);
+        System.out.println("Size: " + stream.getCaptureWidth() + "X" + stream.getCaptureHeight());
         Thread vCapture = new Thread(new Runnable() {
 
             @Override
@@ -66,10 +67,12 @@ public class Capturer {
                 Socket connection = null;
                 try {
                     connection = videoServer.accept();
+                    System.out.println(stream.getName() + " video accepted...");
                     DataInputStream din = new DataInputStream(connection.getInputStream());
+                    long mark = 0;
                     while (!stopMe) {
-
                         try {
+                            mark = System.currentTimeMillis();
                             byte[] vbuffer = new byte[videoBufferSize];
                             int[] rgb = new int[videoBufferSize / 4];
                             BufferedImage image = new BufferedImage(stream.getCaptureWidth(), stream.getCaptureHeight(), BufferedImage.TYPE_INT_ARGB);
@@ -79,6 +82,7 @@ public class Capturer {
                             //Special Effects...
                             image.setRGB(0, 0, stream.getWidth(), stream.getHeight(), rgb, 0, stream.getWidth());
                             lastImage = image;
+                            Tools.wait(1000/stream.getRate(), mark);
                         } catch (IOException ioe) {
                             stopMe = true;
                             ioe.printStackTrace();
@@ -100,14 +104,16 @@ public class Capturer {
             public void run() {
                 try {
                     Socket connection = audioServer.accept();
+                    System.out.println(stream.getName() + " audio accepted...");
                     DataInputStream din = new DataInputStream(connection.getInputStream());
-
+                    long mark = 0;
                     while (!stopMe) {
                         try {
+                            mark=System.currentTimeMillis();
                             byte[] abuffer = new byte[audioBufferSize];
                             din.readFully(abuffer);
                             frame = new Frame(stream.getID(), lastImage, abuffer);
-
+                            Tools.wait(1000/stream.getRate(), mark);
                         } catch (IOException ioe) {
                             stopMe = true;
                             ioe.printStackTrace();
