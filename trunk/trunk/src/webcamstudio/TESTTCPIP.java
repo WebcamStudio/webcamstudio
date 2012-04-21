@@ -4,8 +4,9 @@
  */
 package webcamstudio;
 
-import webcamstudio.media.renderer.Capturer;
-import webcamstudio.streams.SourceWebcam;
+import java.io.File;
+import webcamstudio.ffmpeg.FFMPEGRenderer;
+import webcamstudio.streams.SourceMovie;
 
 /**
  *
@@ -13,7 +14,11 @@ import webcamstudio.streams.SourceWebcam;
  */
 public class TESTTCPIP {
     public static void main(String[] args){
-        Capturer capture = new Capturer(new SourceWebcam("default"));
+        File file = new File("C:\\Users\\Patrick Balleux\\Downloads\\big_buck_bunny_480p_stereo.ogg");
+        SourceMovie movie = new SourceMovie(file);
+        movie.setRate(30);
         
+        FFMPEGRenderer ffmpeg = new FFMPEGRenderer(movie, FFMPEGRenderer.ACTION.CAPTURE,"movie");
+        ffmpeg.read();
     }
 }

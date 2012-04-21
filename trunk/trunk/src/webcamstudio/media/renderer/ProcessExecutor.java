@@ -32,32 +32,39 @@ public class ProcessExecutor {
                 InputStream in1 = p.getErrorStream();
                 InputStream in2 = p.getInputStream();
                 byte[] buffer = new byte[65536];
-                while (processRunning){
+                int count = 0;
+                while (count != -1 && processRunning){
                     try {
-                        in1.read(buffer);
-                        in2.read(buffer);
-                        Tools.sleep(10);
+                        count = in1.read(buffer);
+                        if (count > 0){
+                            System.out.println("FFMPEG Err: " + new String(buffer,0,count));
+                        }
+                        count = in2.read(buffer);
+                        if (count > 0){
+                            System.out.println("FFMPEG Out: " + new String(buffer,0,count));
+                        }
+                        Tools.sleep(1);
+                        
                     } catch (IOException ex) {
                         Logger.getLogger(ProcessExecutor.class.getName()).log(Level.SEVERE, null, ex);
                         break;
                     }
                     
                 }
+                System.out.println("FFMPEG Closing streams");
+                
             }
         }).start();
     }
     public void execute(String[] params) throws IOException, InterruptedException {
         process = Runtime.getRuntime().exec(params);
         processRunning = true;
-        readOutput(process);
-        int retValue = process.waitFor();
-        processRunning = false;
-        process.destroy();
-        process = null;
-        System.out.println(name + " ended...");
+        //readOutput(process);
+        
     }
 
     public void destroy() {
+        processRunning=false;
         if (process!=null){
             process.destroy();
         }
