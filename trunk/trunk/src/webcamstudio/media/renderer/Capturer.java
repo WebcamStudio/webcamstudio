@@ -75,6 +75,7 @@ public class Capturer {
                         try {
 //                            count++;
                             mark = System.currentTimeMillis();
+                            videoBufferSize = stream.getCaptureWidth() * stream.getCaptureHeight() * 4;
                             byte[] vbuffer = new byte[videoBufferSize];
                             int[] rgb = new int[videoBufferSize / 4];
                             BufferedImage image = new BufferedImage(stream.getCaptureWidth(), stream.getCaptureHeight(), BufferedImage.TYPE_INT_ARGB);
@@ -82,7 +83,7 @@ public class Capturer {
                             IntBuffer intData = ByteBuffer.wrap(vbuffer).order(ByteOrder.BIG_ENDIAN).asIntBuffer();
                             intData.get(rgb);
                             //Special Effects...
-                            image.setRGB(0, 0, stream.getWidth(), stream.getHeight(), rgb, 0, stream.getWidth());
+                            image.setRGB(0, 0, stream.getCaptureWidth(), stream.getCaptureHeight(), rgb, 0, stream.getCaptureWidth());
                             lastImage = image;
                             Tools.wait(1000/stream.getRate(), mark);
 //                            if (count == stream.getRate()){
@@ -117,6 +118,7 @@ public class Capturer {
                     while (!stopMe) {
                         try {
                             mark=System.currentTimeMillis();
+                            audioBufferSize = (44100 * 2 * 2) / stream.getRate();
                             byte[] abuffer = new byte[audioBufferSize];
                             din.readFully(abuffer);
                             frame = new Frame(stream.getID(), lastImage, abuffer);
