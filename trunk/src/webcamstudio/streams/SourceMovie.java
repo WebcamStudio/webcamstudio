@@ -24,27 +24,31 @@ public class SourceMovie extends Stream {
         rate = MasterMixer.getRate();
         file=movie;
         name = movie.getName();
-        capture = new FFMPEGRenderer(this,FFMPEGRenderer.ACTION.CAPTURE, "movie");
     }
 
 
     @Override
     public void read() {
         MasterFrameBuilder.register(this);
-        capture.read();
+capture = new FFMPEGRenderer(this,FFMPEGRenderer.ACTION.CAPTURE, "movie");
+capture.read();
     }
 
 
     @Override
     public void stop() {
         MasterFrameBuilder.unregister(this);
+        if (capture!=null){
         capture.stop();
-
+        capture=null;
+        }
     }
 
     @Override
     public boolean isPlaying() {
+        if (capture!=null)
         return !capture.isStopped();
+        else return false;
     }
 
     @Override
@@ -53,10 +57,13 @@ public class SourceMovie extends Stream {
     }
     @Override
     public Frame getFrame(){
-        Frame f = capture.getFrame();
+        Frame f = null;
+        if (capture!=null){
+            f = capture.getFrame();
         if (f!=null){
             setAudioLevel(f);
             lastPreview=f.getImage();
+        }
         }
         return f;
     }

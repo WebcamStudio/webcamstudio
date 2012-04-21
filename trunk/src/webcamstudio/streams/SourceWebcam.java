@@ -24,25 +24,37 @@ public class SourceWebcam extends Stream {
         rate = MasterMixer.getRate();
         file = device;
         name = device.getName();
-        capture = new FFMPEGRenderer(this, FFMPEGRenderer.ACTION.CAPTURE, "webcam");
 
+
+    }
+
+    public SourceWebcam(String defaultName) {
+        rate = MasterMixer.getRate();
+        name = defaultName;
     }
 
     @Override
     public void read() {
         MasterFrameBuilder.register(this);
+        capture = new FFMPEGRenderer(this, FFMPEGRenderer.ACTION.CAPTURE, "webcam");
         capture.read();
     }
 
     @Override
     public void stop() {
-        capture.stop();
+        if (capture != null) {
+            capture.stop();
+        }
         MasterFrameBuilder.unregister(this);
     }
 
     @Override
     public boolean isPlaying() {
-        return !capture.isStopped();
+        if (capture != null) {
+            return !capture.isStopped();
+        } else {
+            return false;
+        }
     }
 
     @Override
@@ -50,13 +62,15 @@ public class SourceWebcam extends Stream {
         return lastPreview;
     }
 
-    
     @Override
     public Frame getFrame() {
-        Frame f = capture.getFrame();
-        if (f != null) {
-            setAudioLevel(f);
-            lastPreview = f.getImage();
+        Frame f = null;
+        if (capture != null) {
+            f = capture.getFrame();
+            if (f != null) {
+                setAudioLevel(f);
+                lastPreview = f.getImage();
+            }
         }
         return f;
     }

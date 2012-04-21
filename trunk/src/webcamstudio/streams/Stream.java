@@ -292,6 +292,7 @@ public abstract class Stream {
                 ext.endsWith(".m4v") ||
                 ext.endsWith(".mpg") ||
                 ext.endsWith(".divx") ||
+                ext.endsWith(".wmv") ||
                 ext.endsWith(".flv") ||
                 ext.endsWith(".vob")){
             stream = new SourceMovie(file);
@@ -307,6 +308,7 @@ public abstract class Stream {
         } else if (ext.endsWith(".mp3") ||
                 ext.endsWith(".wav") ||
                 ext.endsWith(".wma") ||
+                ext.endsWith(".m4a") ||
                 ext.endsWith(".mp2")){
             stream = new SourceMusic(file);
         }

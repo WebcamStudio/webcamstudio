@@ -72,6 +72,10 @@ public class WebcamStudio extends javax.swing.JFrame {
                     Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
+        } else if (Tools.getOS() == OS.WINDOWS) {
+            Stream webcam = new SourceWebcam("Default");
+            StreamDesktop frame = new StreamDesktop(webcam);
+            desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
         }
         desktop.setDropTarget(new DropTarget() {
 
@@ -100,10 +104,10 @@ public class WebcamStudio extends javax.swing.JFrame {
                                 }
                             }
                         }
-                    } else if (Tools.getOS()==OS.WINDOWS){
-                        List files = (List)evt.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
-                        for (Object o : files ){
-                            File file = (File)o;
+                    } else if (Tools.getOS() == OS.WINDOWS) {
+                        List files = (List) evt.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
+                        for (Object o : files) {
+                            File file = (File) o;
                             if (file.exists()) {
                                 Stream stream = Stream.getInstance(file);
                                 if (stream != null) {

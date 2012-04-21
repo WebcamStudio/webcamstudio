@@ -4,15 +4,18 @@
  */
 package webcamstudio.media.renderer;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import webcamstudio.mixers.Frame;
 import java.awt.image.BufferedImage;
+import java.io.DataInputStream;
 import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import webcamstudio.mixers.Frame;
 import webcamstudio.streams.Stream;
 
 /**
@@ -24,77 +27,67 @@ public class Capturer {
     private int vport = 0;
     private int aport = 0;
     private boolean stopMe = false;
-    private DataClient audioClient;
-    private DataClient videoClient;
     private Stream stream;
     private int audioBufferSize = 0;
     private int videoBufferSize = 0;
-    private ArrayList<BufferedImage> videoBuffer = new ArrayList<BufferedImage>();
-    private ArrayList<byte[]> audioBuffer = new ArrayList<byte[]>();
-    private final static int BUFFER_LIMIT = 2;
-    BufferedImage workingImage = null;
-    BufferedImage[] renderedImages = new BufferedImage[15];
-    int renderedImageIndex = 0;
-    int[] workingImageBuffer = null;
+    private ServerSocket videoServer = null;
+    private ServerSocket audioServer = null;
+    private Frame frame = null;
+    private BufferedImage lastImage = null;
 
     public Capturer(Stream s) {
-
         stream = s;
         audioBufferSize = (44100 * 2 * 2) / stream.getRate();
         videoBufferSize = stream.getCaptureWidth() * stream.getCaptureHeight() * 4;
+        frame = new Frame(stream.getID(), null, null);
         if (stream.hasAudio()) {
-            audioClient = new DataClient();
-            aport = audioClient.getPort();
-            new Thread(audioClient).start();
+            try {
+                audioServer = new ServerSocket(0);
+                aport = audioServer.getLocalPort();
+            } catch (IOException ex) {
+                Logger.getLogger(Capturer.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
         }
         if (stream.hasVideo()) {
-            videoClient = new DataClient();
-            vport = videoClient.getPort();
-            workingImage = new BufferedImage(s.getCaptureWidth(), s.getCaptureHeight(), BufferedImage.TYPE_INT_ARGB);
-            for (int i = 0;i<renderedImages.length;i++){
-                renderedImages[i] = new BufferedImage(s.getCaptureWidth(), s.getCaptureHeight(), BufferedImage.TYPE_INT_ARGB);
+            try {
+                videoServer = new ServerSocket(0);
+                vport = videoServer.getLocalPort();
+            } catch (IOException ex) {
+                Logger.getLogger(Capturer.class.getName()).log(Level.SEVERE, null, ex);
             }
-            workingImageBuffer = ((java.awt.image.DataBufferInt) workingImage.getRaster().getDataBuffer()).getData();
-            new Thread(videoClient).start();
+
         }
         System.out.println("Port used is " + vport + "/" + aport);
         Thread vCapture = new Thread(new Runnable() {
 
             @Override
             public void run() {
-                while (!stopMe) {
-                    if (videoClient.getStream() != null) {
-                        if (videoBuffer.size() < BUFFER_LIMIT) {
-                            try {
-                                byte[] vbuffer = new byte[videoBufferSize];
-                                videoClient.getStream().readFully(vbuffer);
-                                IntBuffer intData = ByteBuffer.wrap(vbuffer).order(ByteOrder.BIG_ENDIAN).asIntBuffer();
-                                intData.get(workingImageBuffer);
-                                //Special Effects...
-                                renderedImages[renderedImageIndex].setRGB(0, 0, workingImage.getWidth(), workingImage.getHeight(), workingImageBuffer, 0, workingImage.getWidth());
-                                videoBuffer.add(renderedImages[renderedImageIndex]);
-                                renderedImageIndex++;
-                                renderedImageIndex = renderedImageIndex % renderedImages.length;
-                            } catch (IOException ioe) {
-                                stopMe = true;
-                                //ioe.printStackTrace();
-                            }
-                        } else {
-                            try {
-                                Thread.sleep(30);
-                            } catch (InterruptedException ex) {
-                                Logger.getLogger(Capturer.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                        }
-                    } else {
-                        try {
-                            Thread.sleep(100);
-                        } catch (InterruptedException ex) {
-                            Logger.getLogger(Capturer.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    }
-                }
+                Socket connection = null;
+                try {
+                    connection = videoServer.accept();
+                    DataInputStream din = new DataInputStream(connection.getInputStream());
+                    while (!stopMe) {
 
+                        try {
+                            byte[] vbuffer = new byte[videoBufferSize];
+                            int[] rgb = new int[videoBufferSize / 4];
+                            BufferedImage image = new BufferedImage(stream.getCaptureWidth(), stream.getCaptureHeight(), BufferedImage.TYPE_INT_ARGB);
+                            din.readFully(vbuffer);
+                            IntBuffer intData = ByteBuffer.wrap(vbuffer).order(ByteOrder.BIG_ENDIAN).asIntBuffer();
+                            intData.get(rgb);
+                            //Special Effects...
+                            image.setRGB(0, 0, stream.getWidth(), stream.getHeight(), rgb, 0, stream.getWidth());
+                            lastImage = image;
+                        } catch (IOException ioe) {
+                            stopMe = true;
+                            ioe.printStackTrace();
+                        }
+
+                    }
+                } catch (IOException ex) {
+                    Logger.getLogger(Capturer.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
         vCapture.setPriority(Thread.MIN_PRIORITY);
@@ -105,39 +98,23 @@ public class Capturer {
 
             @Override
             public void run() {
-                while (!stopMe) {
-                    if (audioBuffer.size() < BUFFER_LIMIT) {
-                        if (audioClient.getStream() != null) {
-                            try {
-                                if (audioClient.getStream().available()>0){
-                                    byte[] abuffer = new byte[audioBufferSize];
-                                    audioClient.getStream().readFully(abuffer);
-                                    audioBuffer.add(abuffer);
-                                } else {
-                                    try {
-                                        Thread.sleep(30);
-                                    } catch (InterruptedException ex) {
-                                        Logger.getLogger(Capturer.class.getName()).log(Level.SEVERE, null, ex);
-                                    }
-                                }
-                            } catch (IOException ioe) {
-                                stopMe = true;
-                                //ioe.printStackTrace();
-                            }
-                        } else {
-                            try {
-                                Thread.sleep(100);
-                            } catch (InterruptedException ex) {
-                                Logger.getLogger(Capturer.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                        }
-                    } else {
+                try {
+                    Socket connection = audioServer.accept();
+                    DataInputStream din = new DataInputStream(connection.getInputStream());
+
+                    while (!stopMe) {
                         try {
-                            Thread.sleep(30);
-                        } catch (InterruptedException ex) {
-                            Logger.getLogger(Capturer.class.getName()).log(Level.SEVERE, null, ex);
+                            byte[] abuffer = new byte[audioBufferSize];
+                            din.readFully(abuffer);
+                            frame = new Frame(stream.getID(), lastImage, abuffer);
+
+                        } catch (IOException ioe) {
+                            stopMe = true;
+                            ioe.printStackTrace();
                         }
                     }
+                } catch (IOException ex) {
+                    Logger.getLogger(Capturer.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });
@@ -147,18 +124,15 @@ public class Capturer {
         }
 
     }
-
-    private boolean isBuffersFull() {
-        return videoBuffer.size() >= BUFFER_LIMIT || audioBuffer.size() >= BUFFER_LIMIT;
-    }
-
     public void abort() {
         try {
-            if (videoClient != null) {
-                videoClient.shutdown();
+            if (videoServer != null) {
+                videoServer.close();
+                videoServer=null;
             }
-            if (audioClient != null) {
-                audioClient.shutdown();
+            if (audioServer != null) {
+                audioServer.close();
+                audioServer=null;
             }
         } catch (IOException ex) {
             Logger.getLogger(Capturer.class.getName()).log(Level.SEVERE, null, ex);
@@ -174,19 +148,6 @@ public class Capturer {
     }
 
     public Frame getFrame() {
-        Frame frame = null;
-        if ((!videoBuffer.isEmpty() || !stream.hasVideo()) && (!audioBuffer.isEmpty() || !stream.hasAudio())) {
-            frame = new Frame(stream.getID(), null, null);
-            frame.setOutputFormat(stream.getX(), stream.getY(), stream.getWidth(), stream.getHeight(), stream.getOpacity(), stream.getVolume());
-            frame.setZOrder(stream.getZOrder());
-            if (stream.hasVideo()) {
-                frame.setImage(videoBuffer.remove(0));
-            }
-            if (stream.hasAudio()) {
-                frame.setAudio(audioBuffer.remove(0));
-            }
-        }
-        //System.out.println(videoBuffer.size() + ", " + audioBuffer.size());
         return frame;
     }
 }

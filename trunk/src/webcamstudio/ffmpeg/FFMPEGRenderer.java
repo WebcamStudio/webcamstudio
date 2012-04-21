@@ -4,7 +4,6 @@
  */
 package webcamstudio.ffmpeg;
 
-import webcamstudio.media.renderer.Capturer;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -12,6 +11,7 @@ import java.net.URL;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import webcamstudio.media.renderer.Capturer;
 import webcamstudio.media.renderer.Exporter;
 import webcamstudio.media.renderer.ProcessExecutor;
 import webcamstudio.mixers.Frame;
@@ -188,9 +188,9 @@ public class FFMPEGRenderer {
                     audioPort = capture.getAudioPort();
                 }
                 String command = plugins.getProperty(plugin).replaceAll("  ", " "); //Making sure there is no double spaces
-                command = command.replaceAll(" ", "=");
+                command = command.replaceAll(" ", "ABCDE");
                 command = setParameters(command);
-                final String[] parms = command.split("=");
+                final String[] parms = command.split("ABCDE");
                 try {
                     for (String p : parms) {
                         System.out.print(p + " ");

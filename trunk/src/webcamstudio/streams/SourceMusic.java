@@ -19,44 +19,53 @@ public class SourceMusic extends Stream {
 
     FFMPEGRenderer capture = null;
     BufferedImage lastPreview = null;
-    
+
     public SourceMusic(File movie) {
         rate = MasterMixer.getRate();
-        file=movie;
+        file = movie;
         name = movie.getName();
-        capture = new FFMPEGRenderer(this,FFMPEGRenderer.ACTION.CAPTURE, "music");
-    }
 
+    }
 
     @Override
     public void read() {
         MasterFrameBuilder.register(this);
+        capture = new FFMPEGRenderer(this, FFMPEGRenderer.ACTION.CAPTURE, "music");
         capture.read();
     }
-
 
     @Override
     public void stop() {
         MasterFrameBuilder.unregister(this);
         capture.stop();
+        capture = null;
 
     }
 
     @Override
     public boolean isPlaying() {
-        return !capture.isStopped();
+        if (capture != null) {
+            return !capture.isStopped();
+        } else {
+            return false;
+        }
+
     }
 
     @Override
     public BufferedImage getPreview() {
         return lastPreview;
     }
+
     @Override
-    public Frame getFrame(){
-        Frame f = capture.getFrame();
-        if (f!=null){
-            setAudioLevel(f);
-            lastPreview=f.getImage();
+    public Frame getFrame() {
+        Frame f = null;
+        if (capture != null) {
+            f = capture.getFrame();
+            if (f != null) {
+                setAudioLevel(f);
+                lastPreview = f.getImage();
+            }
         }
         return f;
     }
@@ -70,5 +79,4 @@ public class SourceMusic extends Stream {
     public boolean hasVideo() {
         return false;
     }
-
 }
