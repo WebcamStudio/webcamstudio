@@ -24,36 +24,37 @@ public class ProcessExecutor {
         this.name = name;
     }
 
-    public void execute(String[] params) throws IOException, InterruptedException {
-        processRunning = true;
-        process = Runtime.getRuntime().exec(params);
-        int retValue = process.waitFor();
-        if (retValue != 0) {
-            try {
-                byte[] buffer = new byte[1024];
-                int count = 0;
-                InputStream err = process.getErrorStream();
+    private void readOutput(final Process p){
+        new Thread(new Runnable() {
 
-                try {
-                    count = err.read(buffer);
-                    if (count > 0) {
-                        System.out.println(name + ": " + new String(buffer, 0, count));
+            @Override
+            public void run() {
+                InputStream in1 = p.getErrorStream();
+                InputStream in2 = p.getInputStream();
+                byte[] buffer = new byte[65536];
+                while (processRunning){
+                    try {
+                        in1.read(buffer);
+                        in2.read(buffer);
+                        Tools.sleep(10);
+                    } catch (IOException ex) {
+                        Logger.getLogger(ProcessExecutor.class.getName()).log(Level.SEVERE, null, ex);
+                        break;
                     }
-                } catch (IOException ioe) {
-                    processRunning = false;
+                    
                 }
-                Tools.sleep(10);
-
-                err.close();
-
-            } catch (IOException ex) {
-                Logger.getLogger(ProcessExecutor.class.getName()).log(Level.SEVERE, null, ex);
             }
-        }
+        }).start();
+    }
+    public void execute(String[] params) throws IOException, InterruptedException {
+        process = Runtime.getRuntime().exec(params);
+        processRunning = true;
+        readOutput(process);
+        int retValue = process.waitFor();
+        processRunning = false;
         process.destroy();
         process = null;
         System.out.println(name + " ended...");
-        processRunning = false;
     }
 
     public void destroy() {
