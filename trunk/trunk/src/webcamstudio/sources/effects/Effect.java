@@ -34,7 +34,6 @@ public abstract class Effect {
         retValue.put(Rotation.class.getSimpleName(), new Rotation());
         retValue.put(ChromaKey.class.getSimpleName(), new ChromaKey());
         retValue.put(Contrast.class.getSimpleName(), new Contrast());
-        retValue.put(Glow.class.getSimpleName(), new Glow());
         retValue.put(SwapRedBlue.class.getSimpleName(), new SwapRedBlue());
         retValue.put(Perspective.class.getSimpleName(), new Perspective());
         retValue.put(Twirl.class.getSimpleName(), new Twirl());
@@ -43,7 +42,6 @@ public abstract class Effect {
         retValue.put(RGB.class.getSimpleName(), new RGB());
         retValue.put(ZoomZoom.class.getSimpleName(), new ZoomZoom());
         retValue.put(MegaMind.class.getSimpleName(), new MegaMind());
-        retValue.put(Glass.class.getSimpleName(), new Glass());
         retValue.put(Edge.class.getSimpleName(), new Edge());
         retValue.put(Radar.class.getSimpleName(), new Radar());
         //retValue.put(TEST.class.getSimpleName(), new TEST());

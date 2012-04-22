@@ -12,17 +12,19 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 import webcamstudio.mixers.Frame;
+import webcamstudio.sources.effects.Effect;
 
 /**
  *
  * @author patrick
  */
 public abstract class Stream {
+
     protected String uuid = java.util.UUID.randomUUID().toString();
-    protected int captureWidth=320;
-    protected int captureHeight= 240;
-    protected int width=320;
-    protected int height=240;
+    protected int captureWidth = 320;
+    protected int captureHeight = 240;
+    protected int width = 320;
+    protected int height = 240;
     protected int x = 0;
     protected int y = 0;
     protected float volume = 0.5f;
@@ -35,20 +37,50 @@ public abstract class Stream {
     protected String url = null;
     protected int audioLevelLeft = 0;
     protected int audioLevelRight = 0;
+    protected java.util.Vector<Effect> effects = new java.util.Vector<Effect>();
+
     public abstract void read();
+
     public abstract void stop();
+
     public abstract boolean isPlaying();
+
     public abstract BufferedImage getPreview();
+
     public abstract boolean hasAudio();
+
     public abstract boolean hasVideo();
-    
-    
-    public int getAudioLevelLeft(){
+
+    public int getAudioLevelLeft() {
         return audioLevelLeft;
     }
-    public int getAudioLevelRight(){
+
+    public int getAudioLevelRight() {
         return audioLevelRight;
     }
+
+    public java.util.Vector<Effect> getEffects() {
+        return effects;
+    }
+
+    public synchronized void setEffects(java.util.Vector<Effect> list) {
+        effects = list;
+    }
+
+    public synchronized void addEffect(Effect e) {
+        effects.add(e);
+    }
+
+    public synchronized void removeEffect(Effect e) {
+        effects.remove(e);
+    }
+
+    public synchronized void applyEffects(BufferedImage img) {
+        for (Effect e : effects) {
+            e.applyEffect(img);
+        }
+    }
+
     protected void setAudioLevel(Frame f) {
         byte[] data = f.getAudioData();
         if (data != null) {
@@ -56,58 +88,60 @@ public abstract class Stream {
             audioLevelRight = 0;
             int tempValue = 0;
             for (int i = 0; i < data.length; i += 4) {
-                tempValue = (data[i]<<8 & (data[i + 1]))/256;
-                if (tempValue<0){
-                    tempValue *=-1;
+                tempValue = (data[i] << 8 & (data[i + 1])) / 256;
+                if (tempValue < 0) {
+                    tempValue *= -1;
                 }
                 if (audioLevelLeft < tempValue) {
                     audioLevelLeft = tempValue;
                 }
-                tempValue = (data[i + 2]<<8 & (data[i + 3]))/256;
-               
-                if (tempValue<0){
-                    tempValue *=-1;
+                tempValue = (data[i + 2] << 8 & (data[i + 3])) / 256;
+
+                if (tempValue < 0) {
+                    tempValue *= -1;
                 }
                 if (audioLevelRight < tempValue) {
                     audioLevelRight = tempValue;
                 }
             }
-            audioLevelLeft = (int)(audioLevelLeft * volume);
-            audioLevelRight = (int)(audioLevelRight * volume);
+            audioLevelLeft = (int) (audioLevelLeft * volume);
+            audioLevelRight = (int) (audioLevelRight * volume);
         }
     }
 
-    public String getURL(){
-    return url;
+    public String getURL() {
+        return url;
     }
-    
-    public String getName(){
+
+    public String getName() {
         return name;
     }
-    public Frame getFrame(){
+
+    public Frame getFrame() {
         Frame f = null;
         return f;
     }
-    
-    public String getID(){
+
+    public String getID() {
         return uuid;
     }
-    
-    public File getFile(){
+
+    public File getFile() {
         return file;
     }
-    public void save(XMLStreamWriter writer) throws XMLStreamException, IllegalArgumentException, IllegalArgumentException, IllegalAccessException{
+
+    public void save(XMLStreamWriter writer) throws XMLStreamException, IllegalArgumentException, IllegalArgumentException, IllegalAccessException {
         writer.writeStartElement(getClass().getCanonicalName());
-        for (Field f : getClass().getSuperclass().getDeclaredFields()){
-            if (f.getType() == String.class){
+        for (Field f : getClass().getSuperclass().getDeclaredFields()) {
+            if (f.getType() == String.class) {
                 f.setAccessible(true);
                 writer.writeStartElement(f.getName());
                 writer.writeCharacters(f.get(this).toString());
                 writer.writeEndElement();
             }
         }
-        for (Field f : getClass().getDeclaredFields()){
-            if (f.getType() == String.class){
+        for (Field f : getClass().getDeclaredFields()) {
+            if (f.getType() == String.class) {
                 f.setAccessible(true);
                 writer.writeStartElement(f.getName());
                 writer.writeCharacters(f.get(this).toString());
@@ -116,12 +150,12 @@ public abstract class Stream {
         }
         writer.writeEndElement();
     }
-    
-    public void load(XMLStreamReader reader) throws XMLStreamException, NoSuchFieldException, IllegalAccessException{
+
+    public void load(XMLStreamReader reader) throws XMLStreamException, NoSuchFieldException, IllegalAccessException {
         boolean elementReading = true;
-        while (elementReading && reader.hasNext()){
+        while (elementReading && reader.hasNext()) {
             int event = reader.getEventType();
-            switch(event){
+            switch (event) {
                 case XMLStreamConstants.START_ELEMENT:
                     String property = reader.getName().getLocalPart();
                     String value = reader.getText();
@@ -129,18 +163,20 @@ public abstract class Stream {
                     f.setAccessible(true);
                     f.set(this, value);
                     break;
-               case XMLStreamConstants.END_ELEMENT:
-                   if (reader.getName().equals(getClass().getCanonicalName())){
-                       elementReading=false;
-                   }
+                case XMLStreamConstants.END_ELEMENT:
+                    if (reader.getName().equals(getClass().getCanonicalName())) {
+                        elementReading = false;
+                    }
                     break;
             }
         }
     }
-    public void setZOrder(int z){
-        zorder=z;
+
+    public void setZOrder(int z) {
+        zorder = z;
     }
-    public int getZOrder(){
+
+    public int getZOrder() {
         return zorder;
     }
 
@@ -283,35 +319,35 @@ public abstract class Stream {
     public void setSeek(int seek) {
         this.seek = seek;
     }
-    public static Stream getInstance(File file){
+
+    public static Stream getInstance(File file) {
         Stream stream = null;
         String ext = file.getName().toLowerCase().trim();
         System.out.println("DEBUG EXT: " + ext);
-        if (ext.endsWith(".avi") ||
-                ext.endsWith(".ogg") ||
-                ext.endsWith(".ogv") ||
-                ext.endsWith(".mp4") ||
-                ext.endsWith(".m4v") ||
-                ext.endsWith(".mpg") ||
-                ext.endsWith(".divx") ||
-                ext.endsWith(".wmv") ||
-                ext.endsWith(".flv") ||
-                ext.endsWith(".vob")){
+        if (ext.endsWith(".avi")
+                || ext.endsWith(".ogg")
+                || ext.endsWith(".ogv")
+                || ext.endsWith(".mp4")
+                || ext.endsWith(".m4v")
+                || ext.endsWith(".mpg")
+                || ext.endsWith(".divx")
+                || ext.endsWith(".wmv")
+                || ext.endsWith(".flv")
+                || ext.endsWith(".vob")) {
             stream = new SourceMovie(file);
-        } else if (file.getAbsolutePath().toLowerCase().startsWith("/dev/video")){
+        } else if (file.getAbsolutePath().toLowerCase().startsWith("/dev/video")) {
             stream = new SourceWebcam(file);
-        } else if (ext.endsWith(".jpg")||
-                ext.endsWith(".bmp")||
-                ext.endsWith(".png")
-                ){
+        } else if (ext.endsWith(".jpg")
+                || ext.endsWith(".bmp")
+                || ext.endsWith(".png")) {
             stream = new SourceImage(file);
-        } else if (ext.endsWith(".gif")){
+        } else if (ext.endsWith(".gif")) {
             stream = new SourceImageGif(file);
-        } else if (ext.endsWith(".mp3") ||
-                ext.endsWith(".wav") ||
-                ext.endsWith(".wma") ||
-                ext.endsWith(".m4a") ||
-                ext.endsWith(".mp2")){
+        } else if (ext.endsWith(".mp3")
+                || ext.endsWith(".wav")
+                || ext.endsWith(".wma")
+                || ext.endsWith(".m4a")
+                || ext.endsWith(".mp2")) {
             stream = new SourceMusic(file);
         }
         return stream;
