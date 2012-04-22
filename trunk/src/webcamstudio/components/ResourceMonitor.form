@@ -31,6 +31,8 @@
               <EmptySpace max="-2" attributes="0"/>
               <Component id="lblMixerSize" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
+              <Component id="lblMessage" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -43,6 +45,7 @@
                   <Group type="103" alignment="1" groupAlignment="3" attributes="0">
                       <Component id="lblFPS" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="lblMixerSize" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="lblMessage" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace max="32767" attributes="0"/>
@@ -77,6 +80,17 @@
           </Border>
         </Property>
         <Property name="name" type="java.lang.String" value="lblMixerSize" noResource="true"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="lblMessage">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="jLabel1"/>
+        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+          <Border info="org.netbeans.modules.form.compat2.border.EtchedBorderInfo">
+            <EtchetBorder bevelType="0"/>
+          </Border>
+        </Property>
+        <Property name="name" type="java.lang.String" value="lblMessage" noResource="true"/>
       </Properties>
     </Component>
   </SubComponents>

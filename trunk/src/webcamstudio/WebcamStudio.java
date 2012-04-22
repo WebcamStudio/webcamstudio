@@ -25,7 +25,6 @@ import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
-import javax.swing.JSplitPane;
 import webcamstudio.components.*;
 import webcamstudio.exporter.vloopback.VideoDevice;
 import webcamstudio.mixers.MasterMixer;
@@ -118,7 +117,9 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
                         }
                     }
                     evt.dropComplete(success);
-
+                    if (!success){
+                        ResourceMonitor.setMessage("Unsupported file");
+                    }
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }

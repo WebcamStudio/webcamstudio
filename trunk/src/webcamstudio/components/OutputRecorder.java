@@ -114,6 +114,9 @@ public class OutputRecorder extends javax.swing.JPanel {
                     ex.printStackTrace();
                 }
                 evt.dropComplete(dropSuccess);
+                if (!dropSuccess){
+                    ResourceMonitor.setMessage("Unsupported file");
+                }
             }
         });
     }
