@@ -15,7 +15,7 @@ import webcamstudio.streams.Stream;
  */
 public class SourceEffects extends javax.swing.JPanel {
 
-    private DefaultListModel<Effect> listModel = new DefaultListModel<Effect>();
+    private DefaultListModel listModel = new DefaultListModel();
     private Stream stream;
     /**
      * Creates new form SourceEffects
@@ -24,7 +24,7 @@ public class SourceEffects extends javax.swing.JPanel {
         initComponents();
         stream = s;
         boolean found = false;
-        DefaultComboBoxModel<Effect> model = new DefaultComboBoxModel<Effect>();
+        DefaultComboBoxModel model = new DefaultComboBoxModel();
         for (Effect e : Effect.getEffects().values()) {
             found=false;
             for (Effect se : stream.getEffects()){
@@ -185,8 +185,8 @@ public class SourceEffects extends javax.swing.JPanel {
             int indexSelected = lstEffects.getSelectedIndex();
             if (indexSelected>0){
                 int indexPrevious = indexSelected-1;
-                Effect previous = listModel.getElementAt(indexPrevious);
-                Effect selected = listModel.getElementAt(indexSelected);
+                Effect previous = (Effect)listModel.getElementAt(indexPrevious);
+                Effect selected = (Effect)listModel.getElementAt(indexSelected);
                 listModel.setElementAt(selected, indexPrevious);
                 listModel.setElementAt(previous, indexSelected);
                 stream.getEffects().setElementAt(previous, indexSelected);
@@ -202,8 +202,8 @@ public class SourceEffects extends javax.swing.JPanel {
             int indexSelected = lstEffects.getSelectedIndex();
             if (indexSelected != -1 && indexSelected<(listModel.size()-1)){
                 int indexNext = indexSelected+1;
-                Effect next = listModel.getElementAt(indexNext);
-                Effect selected = listModel.getElementAt(indexSelected);
+                Effect next = (Effect)listModel.getElementAt(indexNext);
+                Effect selected = (Effect)listModel.getElementAt(indexSelected);
                 listModel.setElementAt(selected, indexNext);
                 listModel.setElementAt(next, indexSelected);
                 stream.getEffects().setElementAt(next, indexSelected);
