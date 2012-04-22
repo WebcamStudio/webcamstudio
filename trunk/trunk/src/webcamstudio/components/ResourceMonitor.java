@@ -22,12 +22,17 @@ import webcamstudio.mixers.MasterMixer;
 public class ResourceMonitor extends javax.swing.JPanel {
 
     Timer timer = new Timer();
+    private static String message = "";
+    private static long messageMark = 0;
     /** Creates new form ResourceMonitor */
     public ResourceMonitor() {
         initComponents();
         timer.scheduleAtFixedRate(new ResourceMonitorThread(this), 0, 1000);
     }
-
+    public static void setMessage(String m){
+        message=m;
+        messageMark = System.currentTimeMillis();
+    }
     public void updateInfo(){
         long maxMem = Runtime.getRuntime().maxMemory() / 1024 / 1024;
         long usedMem = ((Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory()) / 1024 / 1024);
@@ -36,6 +41,11 @@ public class ResourceMonitor extends javax.swing.JPanel {
         memLevel.setString(usedMem + "MB/" + maxMem + "MB");
         lblFPS.setText(MasterFrameBuilder.getFPS() + " fps");
         lblMixerSize.setText(MasterMixer.getWidth()+ "X" + MasterMixer.getHeight());
+        lblMessage.setText(message);
+        if (System.currentTimeMillis()-messageMark > 5000){
+            message = "";
+            messageMark=System.currentTimeMillis();
+        }
     }
     /** This method is called from within the constructor to
      * initialize the form.
@@ -49,6 +59,7 @@ public class ResourceMonitor extends javax.swing.JPanel {
         memLevel = new javax.swing.JProgressBar();
         lblFPS = new javax.swing.JLabel();
         lblMixerSize = new javax.swing.JLabel();
+        lblMessage = new javax.swing.JLabel();
 
         setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
 
@@ -63,6 +74,10 @@ public class ResourceMonitor extends javax.swing.JPanel {
         lblMixerSize.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
         lblMixerSize.setName("lblMixerSize"); // NOI18N
 
+        lblMessage.setText("jLabel1");
+        lblMessage.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        lblMessage.setName("lblMessage"); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -74,6 +89,8 @@ public class ResourceMonitor extends javax.swing.JPanel {
                 .addComponent(lblFPS)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lblMixerSize)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblMessage)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -84,12 +101,14 @@ public class ResourceMonitor extends javax.swing.JPanel {
                     .addComponent(memLevel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(lblFPS)
-                        .addComponent(lblMixerSize)))
+                        .addComponent(lblMixerSize)
+                        .addComponent(lblMessage)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel lblFPS;
+    private javax.swing.JLabel lblMessage;
     private javax.swing.JLabel lblMixerSize;
     private javax.swing.JProgressBar memLevel;
     // End of variables declaration//GEN-END:variables
