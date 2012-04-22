@@ -33,7 +33,7 @@ public class StreamPanel extends javax.swing.JPanel {
     public StreamPanel(Stream stream) {
 
         initComponents();
-        spinOpacity.setModel(new SpinnerNumberModel(50, 0, 100, 1));
+        
         viewer.setOpaque(true);
         viewer.setVisible(true);
         viewer.setBackground(Color.red);
@@ -43,7 +43,9 @@ public class StreamPanel extends javax.swing.JPanel {
         spinY.setValue(stream.getY());
         spinW.setValue(stream.getWidth());
         spinH.setValue(stream.getHeight());
+        spinOpacity.setModel(new SpinnerNumberModel(50, 0, 100, 1));
         spinOpacity.setValue(stream.getOpacity());
+        spinVolume.setModel(new SpinnerNumberModel(0, 0, 100, 1));
         spinVolume.setValue(stream.getVolume() * 100);
         spinZOrder.setValue(stream.getZOrder());
         spinH1.setValue(stream.getCaptureHeight());

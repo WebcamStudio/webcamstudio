@@ -14,9 +14,9 @@ import webcamstudio.streams.SourceMovie;
  */
 public class TESTTCPIP {
     public static void main(String[] args){
-        File file = new File("C:\\Users\\Patrick Balleux\\Downloads\\big_buck_bunny_480p_stereo.ogg");
+        File file = new File("/home/patrick/Videos/AceVenturaenAfrique.mp4");
         SourceMovie movie = new SourceMovie(file);
-        movie.setRate(30);
+        movie.setRate(15);
         
         FFMPEGRenderer ffmpeg = new FFMPEGRenderer(movie, FFMPEGRenderer.ACTION.CAPTURE,"movie");
         ffmpeg.read();

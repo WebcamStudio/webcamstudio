@@ -88,7 +88,7 @@ public class Capturer {
                             lastImage = image;
                             Tools.wait(1000/stream.getRate(), mark);
 //                            if (count == stream.getRate()){
-//                                System.out.println("Video Frame " + System.currentTimeMillis());
+//                                System.out.println("Video Frame " + (System.currentTimeMillis()-mark)/1000 + " secs");
 //                                count=0;
 //                            }
                         } catch (IOException ioe) {
