@@ -84,6 +84,7 @@ public class Capturer {
                             intData.get(rgb);
                             //Special Effects...
                             image.setRGB(0, 0, stream.getCaptureWidth(), stream.getCaptureHeight(), rgb, 0, stream.getCaptureWidth());
+                            stream.applyEffects(image);
                             lastImage = image;
                             Tools.wait(1000/stream.getRate(), mark);
 //                            if (count == stream.getRate()){

@@ -18,7 +18,6 @@ import java.awt.dnd.DropTargetDropEvent;
 import java.beans.PropertyVetoException;
 import java.io.File;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,17 +25,10 @@ import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import javax.swing.ImageIcon;
 import javax.swing.JSplitPane;
-import webcamstudio.components.MasterPanel;
-import webcamstudio.components.OutputRecorder;
-import webcamstudio.components.ResourceMonitor;
-import webcamstudio.components.StreamDesktop;
+import webcamstudio.components.*;
 import webcamstudio.exporter.vloopback.VideoDevice;
 import webcamstudio.mixers.MasterMixer;
-import webcamstudio.streams.SourceDesktop;
-import webcamstudio.streams.SourceQRCode;
-import webcamstudio.streams.SourceText;
-import webcamstudio.streams.SourceWebcam;
-import webcamstudio.streams.Stream;
+import webcamstudio.streams.*;
 import webcamstudio.util.Tools;
 import webcamstudio.util.Tools.OS;
 
@@ -44,7 +36,7 @@ import webcamstudio.util.Tools.OS;
  *
  * @author patrick
  */
-public class WebcamStudio extends javax.swing.JFrame {
+public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Listener {
 
     Preferences prefs = null;
 
@@ -64,7 +56,7 @@ public class WebcamStudio extends javax.swing.JFrame {
             for (VideoDevice d : VideoDevice.getOutputDevices()) {
 
                 Stream webcam = new SourceWebcam(d.getFile());
-                StreamDesktop frame = new StreamDesktop(webcam);
+                StreamDesktop frame = new StreamDesktop(webcam,this);
                 desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
                 try {
                     frame.setSelected(true);
@@ -74,7 +66,7 @@ public class WebcamStudio extends javax.swing.JFrame {
             }
         } else if (Tools.getOS() == OS.WINDOWS) {
             Stream webcam = new SourceWebcam("Default");
-            StreamDesktop frame = new StreamDesktop(webcam);
+            StreamDesktop frame = new StreamDesktop(webcam,this);
             desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
         }
         desktop.setDropTarget(new DropTarget() {
@@ -92,7 +84,7 @@ public class WebcamStudio extends javax.swing.JFrame {
                             if (file.exists()) {
                                 Stream stream = Stream.getInstance(file);
                                 if (stream != null) {
-                                    StreamDesktop frame = new StreamDesktop(stream);
+                                    StreamDesktop frame = getNewStreamDesktop(stream);
                                     desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
                                     frame.setLocation(evt.getLocation());
                                     try {
@@ -111,7 +103,7 @@ public class WebcamStudio extends javax.swing.JFrame {
                             if (file.exists()) {
                                 Stream stream = Stream.getInstance(file);
                                 if (stream != null) {
-                                    StreamDesktop frame = new StreamDesktop(stream);
+                                    StreamDesktop frame = getNewStreamDesktop(stream);
                                     desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
                                     frame.setLocation(evt.getLocation());
                                     try {
@@ -133,7 +125,7 @@ public class WebcamStudio extends javax.swing.JFrame {
         });
         this.add(new ResourceMonitor(), BorderLayout.SOUTH);
         prefs = Preferences.userNodeForPackage(this.getClass());
-        mainSplit.add(new OutputRecorder(), JSplitPane.RIGHT);
+        panControls.add(new OutputRecorder(), BorderLayout.NORTH);
 
         loadPrefs();
         MasterMixer.start();
@@ -141,6 +133,9 @@ public class WebcamStudio extends javax.swing.JFrame {
 
     }
 
+    private StreamDesktop getNewStreamDesktop(Stream s){
+        return new StreamDesktop(s,this);
+    }
     private void loadPrefs() {
         int x = prefs.getInt("main-x", 100);
         int y = prefs.getInt("main-y", 100);
@@ -187,6 +182,8 @@ public class WebcamStudio extends javax.swing.JFrame {
         mainSplit = new javax.swing.JSplitPane();
         panSources = new javax.swing.JPanel();
         desktop = new javax.swing.JDesktopPane();
+        panControls = new javax.swing.JPanel();
+        tabControls = new javax.swing.JTabbedPane();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("WebcamStudio");
@@ -258,6 +255,15 @@ public class WebcamStudio extends javax.swing.JFrame {
 
         mainSplit.setLeftComponent(panSources);
 
+        panControls.setName("panControls");
+        panControls.setLayout(new java.awt.BorderLayout());
+
+        tabControls.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("PROPERTIES"))); // NOI18N
+        tabControls.setName("tabControls");
+        panControls.add(tabControls, java.awt.BorderLayout.CENTER);
+
+        mainSplit.setRightComponent(panControls);
+
         getContentPane().add(mainSplit, java.awt.BorderLayout.CENTER);
 
         pack();
@@ -270,7 +276,7 @@ public class WebcamStudio extends javax.swing.JFrame {
 
     private void btnAddDesktopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddDesktopActionPerformed
         SourceDesktop stream = new SourceDesktop();
-        StreamDesktop frame = new StreamDesktop(stream);
+        StreamDesktop frame = new StreamDesktop(stream,this);
         desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
         try {
             frame.setSelected(true);
@@ -281,7 +287,7 @@ public class WebcamStudio extends javax.swing.JFrame {
 
     private void btnAddTextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddTextActionPerformed
         SourceText stream = new SourceText("");
-        StreamDesktop frame = new StreamDesktop(stream);
+        StreamDesktop frame = new StreamDesktop(stream,this);
         desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
         try {
             frame.setSelected(true);
@@ -292,7 +298,7 @@ public class WebcamStudio extends javax.swing.JFrame {
 
     private void btnAddQRCodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddQRCodeActionPerformed
         SourceQRCode stream = new SourceQRCode("webcamstudio");
-        StreamDesktop frame = new StreamDesktop(stream);
+        StreamDesktop frame = new StreamDesktop(stream,this);
         desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
         try {
             frame.setSelected(true);
@@ -348,7 +354,16 @@ public class WebcamStudio extends javax.swing.JFrame {
     private javax.swing.JButton btnAddText;
     private javax.swing.JDesktopPane desktop;
     private javax.swing.JSplitPane mainSplit;
+    private javax.swing.JPanel panControls;
     private javax.swing.JPanel panSources;
+    private javax.swing.JTabbedPane tabControls;
     private javax.swing.JToolBar toolbar;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void selectedSource(Stream source) {
+        
+        tabControls.removeAll();
+        tabControls.add("Effects",new SourceEffects(source));
+    }
 }
