@@ -22,7 +22,7 @@ public class Frame {
     private int zOrder = 0;
     private String uuid = null;
     private long frameNb = 0;
-    
+  
     public Frame(String id,BufferedImage img, byte[] audio){
         image=img;
         audioData=audio;

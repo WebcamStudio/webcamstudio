@@ -18,8 +18,24 @@ public class MasterMixer {
     static protected int height = 480;
     static protected ArrayList<SinkListener> listeners = new ArrayList<SinkListener>();
     static private MasterFrameBuilder builder = new MasterFrameBuilder();
+    static private int audioLevelLeft = 0;
+    static private int audioLevelRight = 0;
     
     static Frame currentFrame = null;
+
+    /**
+     * @return the audioLevelLeft
+     */
+    public static int getAudioLevelLeft() {
+        return audioLevelLeft;
+    }
+
+    /**
+     * @return the audioLevelRight
+     */
+    public static int getAudioLevelRight() {
+        return audioLevelRight;
+    }
 
     public interface SinkListener{
         public void newFrame(Frame frame);
@@ -65,6 +81,7 @@ public class MasterMixer {
     }
     public static void setCurrentFrame(Frame f ){
         currentFrame=f;
+        setAudioLevel(f);
         updateListeners(f);
     }
     private synchronized static void updateListeners(Frame f){
@@ -75,7 +92,33 @@ public class MasterMixer {
     public static void setCurrentFrame(BufferedImage img,byte[] audio){
         Frame f = new Frame("",img, audio);
         currentFrame=f;
+        setAudioLevel(f);
         updateListeners(f);
+    }
+    protected static void setAudioLevel(Frame f) {
+        byte[] data = f.getAudioData();
+        if (data != null) {
+            audioLevelLeft = 0;
+            audioLevelRight = 0;
+            int tempValue = 0;
+            for (int i = 0; i < data.length; i += 4) {
+                tempValue = (data[i]<<8 & (data[i + 1]))/256;
+                if (tempValue<0){
+                    tempValue *=-1;
+                }
+                if (getAudioLevelLeft() < tempValue) {
+                    audioLevelLeft = tempValue;
+                }
+                tempValue = (data[i + 2]<<8 & (data[i + 3]))/256;
+               
+                if (tempValue<0){
+                    tempValue *=-1;
+                }
+                if (getAudioLevelRight() < tempValue) {
+                    audioLevelRight = tempValue;
+                }
+            }
+        }
     }
 }
 

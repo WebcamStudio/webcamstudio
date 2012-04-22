@@ -72,6 +72,8 @@ public abstract class Stream {
                     audioLevelRight = tempValue;
                 }
             }
+            audioLevelLeft = (int)(audioLevelLeft * volume);
+            audioLevelRight = (int)(audioLevelRight * volume);
         }
     }
 
