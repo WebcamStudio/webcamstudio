@@ -58,7 +58,9 @@ public abstract class Stream {
     public int getAudioLevelRight() {
         return audioLevelRight;
     }
-
+    public void setName(String n){
+        name=n;
+    }
     public java.util.Vector<Effect> getEffects() {
         return effects;
     }

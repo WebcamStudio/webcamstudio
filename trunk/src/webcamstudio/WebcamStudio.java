@@ -24,6 +24,7 @@ import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
 import javax.swing.JSplitPane;
 import webcamstudio.components.*;
 import webcamstudio.exporter.vloopback.VideoDevice;
@@ -54,9 +55,9 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
 
         if (Tools.getOS() == OS.LINUX) {
             for (VideoDevice d : VideoDevice.getOutputDevices()) {
-
                 Stream webcam = new SourceWebcam(d.getFile());
-                StreamDesktop frame = new StreamDesktop(webcam,this);
+                webcam.setName(d.getName());
+                StreamDesktop frame = new StreamDesktop(webcam, this);
                 desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
                 try {
                     frame.setSelected(true);
@@ -66,7 +67,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
             }
         } else if (Tools.getOS() == OS.WINDOWS) {
             Stream webcam = new SourceWebcam("Default");
-            StreamDesktop frame = new StreamDesktop(webcam,this);
+            StreamDesktop frame = new StreamDesktop(webcam, this);
             desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
         }
         desktop.setDropTarget(new DropTarget() {
@@ -133,9 +134,10 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
 
     }
 
-    private StreamDesktop getNewStreamDesktop(Stream s){
-        return new StreamDesktop(s,this);
+    private StreamDesktop getNewStreamDesktop(Stream s) {
+        return new StreamDesktop(s, this);
     }
+
     private void loadPrefs() {
         int x = prefs.getInt("main-x", 100);
         int y = prefs.getInt("main-y", 100);
@@ -176,6 +178,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
     private void initComponents() {
 
         toolbar = new javax.swing.JToolBar();
+        btnAddFile = new javax.swing.JButton();
         btnAddDesktop = new javax.swing.JButton();
         btnAddText = new javax.swing.JButton();
         btnAddQRCode = new javax.swing.JButton();
@@ -184,6 +187,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         desktop = new javax.swing.JDesktopPane();
         panControls = new javax.swing.JPanel();
         tabControls = new javax.swing.JTabbedPane();
+        lblSourceSelected = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("WebcamStudio");
@@ -195,6 +199,18 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
 
         toolbar.setRollover(true);
         toolbar.setName("toolbar"); // NOI18N
+
+        btnAddFile.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/list-add.png"))); // NOI18N
+        btnAddFile.setFocusable(false);
+        btnAddFile.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnAddFile.setName("btnAddFile"); // NOI18N
+        btnAddFile.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnAddFile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddFileActionPerformed(evt);
+            }
+        });
+        toolbar.add(btnAddFile);
 
         btnAddDesktop.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/user-desktop.png"))); // NOI18N
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("webcamstudio/Languages"); // NOI18N
@@ -255,12 +271,15 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
 
         mainSplit.setLeftComponent(panSources);
 
-        panControls.setName("panControls");
+        panControls.setName("panControls"); // NOI18N
         panControls.setLayout(new java.awt.BorderLayout());
 
         tabControls.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("PROPERTIES"))); // NOI18N
-        tabControls.setName("tabControls");
+        tabControls.setName("tabControls"); // NOI18N
         panControls.add(tabControls, java.awt.BorderLayout.CENTER);
+
+        lblSourceSelected.setName("lblSourceSelected"); // NOI18N
+        panControls.add(lblSourceSelected, java.awt.BorderLayout.SOUTH);
 
         mainSplit.setRightComponent(panControls);
 
@@ -276,7 +295,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
 
     private void btnAddDesktopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddDesktopActionPerformed
         SourceDesktop stream = new SourceDesktop();
-        StreamDesktop frame = new StreamDesktop(stream,this);
+        StreamDesktop frame = new StreamDesktop(stream, this);
         desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
         try {
             frame.setSelected(true);
@@ -287,7 +306,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
 
     private void btnAddTextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddTextActionPerformed
         SourceText stream = new SourceText("");
-        StreamDesktop frame = new StreamDesktop(stream,this);
+        StreamDesktop frame = new StreamDesktop(stream, this);
         desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
         try {
             frame.setSelected(true);
@@ -298,7 +317,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
 
     private void btnAddQRCodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddQRCodeActionPerformed
         SourceQRCode stream = new SourceQRCode("webcamstudio");
-        StreamDesktop frame = new StreamDesktop(stream,this);
+        StreamDesktop frame = new StreamDesktop(stream, this);
         desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
         try {
             frame.setSelected(true);
@@ -306,6 +325,28 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
             Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnAddQRCodeActionPerformed
+
+    private void btnAddFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddFileActionPerformed
+        JFileChooser chooser = new JFileChooser();
+        chooser.setMultiSelectionEnabled(false);
+        chooser.setDialogTitle("WebcamStudio");
+        chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        chooser.showOpenDialog(this);
+        File file = chooser.getSelectedFile();
+        if (file != null) {
+            Stream s = Stream.getInstance(file);
+            if (s != null) {
+                StreamDesktop frame = new StreamDesktop(s, this);
+                desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+                try {
+                    frame.setSelected(true);
+                } catch (PropertyVetoException ex) {
+                    Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+
+    }//GEN-LAST:event_btnAddFileActionPerformed
 
     /**
      * @param args the command line arguments
@@ -350,9 +391,11 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddDesktop;
+    private javax.swing.JButton btnAddFile;
     private javax.swing.JButton btnAddQRCode;
     private javax.swing.JButton btnAddText;
     private javax.swing.JDesktopPane desktop;
+    private javax.swing.JLabel lblSourceSelected;
     private javax.swing.JSplitPane mainSplit;
     private javax.swing.JPanel panControls;
     private javax.swing.JPanel panSources;
@@ -362,8 +405,9 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
 
     @Override
     public void selectedSource(Stream source) {
-        
+        lblSourceSelected.setText(source.getName());
+        lblSourceSelected.setToolTipText(source.getName());
         tabControls.removeAll();
-        tabControls.add("Effects",new SourceEffects(source));
+        tabControls.add("Effects", new SourceEffects(source));
     }
 }

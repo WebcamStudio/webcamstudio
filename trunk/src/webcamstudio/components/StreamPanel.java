@@ -109,11 +109,19 @@ public class StreamPanel extends javax.swing.JPanel {
         spinH1 = new javax.swing.JSpinner();
 
         setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        setMaximumSize(new java.awt.Dimension(138, 350));
+        setMinimumSize(new java.awt.Dimension(138, 350));
+        setPreferredSize(new java.awt.Dimension(138, 350));
+        setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         panPreview.setBackground(new java.awt.Color(113, 113, 113));
         panPreview.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        panPreview.setMaximumSize(new java.awt.Dimension(90, 60));
+        panPreview.setMinimumSize(new java.awt.Dimension(90, 60));
         panPreview.setName("panPreview"); // NOI18N
+        panPreview.setPreferredSize(new java.awt.Dimension(90, 60));
         panPreview.setLayout(new java.awt.BorderLayout());
+        add(panPreview, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 120, 101));
 
         spinX.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         spinX.setName("spinX"); // NOI18N
@@ -122,6 +130,7 @@ public class StreamPanel extends javax.swing.JPanel {
                 spinXStateChanged(evt);
             }
         });
+        add(spinX, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 120, 60, -1));
 
         spinY.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         spinY.setName("spinY"); // NOI18N
@@ -130,6 +139,7 @@ public class StreamPanel extends javax.swing.JPanel {
                 spinYStateChanged(evt);
             }
         });
+        add(spinY, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 140, 60, -1));
 
         spinW.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         spinW.setName("spinW"); // NOI18N
@@ -138,6 +148,7 @@ public class StreamPanel extends javax.swing.JPanel {
                 spinWStateChanged(evt);
             }
         });
+        add(spinW, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 200, 60, -1));
 
         spinH.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         spinH.setName("spinH"); // NOI18N
@@ -146,6 +157,7 @@ public class StreamPanel extends javax.swing.JPanel {
                 spinHStateChanged(evt);
             }
         });
+        add(spinH, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 220, 60, -1));
 
         spinOpacity.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         spinOpacity.setName("spinOpacity"); // NOI18N
@@ -154,6 +166,7 @@ public class StreamPanel extends javax.swing.JPanel {
                 spinOpacityStateChanged(evt);
             }
         });
+        add(spinOpacity, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 240, 60, -1));
 
         spinVolume.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         spinVolume.setName("spinVolume"); // NOI18N
@@ -162,6 +175,7 @@ public class StreamPanel extends javax.swing.JPanel {
                 spinVolumeStateChanged(evt);
             }
         });
+        add(spinVolume, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 260, 60, -1));
 
         tglActiveStream.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-start.png"))); // NOI18N
         tglActiveStream.setName("tglActiveStream"); // NOI18N
@@ -172,6 +186,7 @@ public class StreamPanel extends javax.swing.JPanel {
                 tglActiveStreamActionPerformed(evt);
             }
         });
+        add(tglActiveStream, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 310, 120, -1));
 
         spinZOrder.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         spinZOrder.setName("spinZOrder"); // NOI18N
@@ -180,39 +195,48 @@ public class StreamPanel extends javax.swing.JPanel {
                 spinZOrderStateChanged(evt);
             }
         });
+        add(spinZOrder, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 280, 60, -1));
 
         labelX.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("webcamstudio/Languages"); // NOI18N
         labelX.setText(bundle.getString("X")); // NOI18N
         labelX.setName("labelX"); // NOI18N
+        add(labelX, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 120, 60, -1));
 
         labelY.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         labelY.setText(bundle.getString("Y")); // NOI18N
         labelY.setName("labelY"); // NOI18N
+        add(labelY, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 150, 50, -1));
 
         labelW.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         labelW.setText(bundle.getString("WIDTH")); // NOI18N
         labelW.setName("labelW"); // NOI18N
+        add(labelW, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 210, 52, -1));
 
         labelH.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         labelH.setText(bundle.getString("HEIGHT")); // NOI18N
         labelH.setName("labelH"); // NOI18N
+        add(labelH, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 230, 40, -1));
 
         labelO.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         labelO.setText(bundle.getString("OPACITY")); // NOI18N
         labelO.setName("labelO"); // NOI18N
+        add(labelO, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 250, 40, -1));
 
         labelV.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         labelV.setText(bundle.getString("VOLUME")); // NOI18N
         labelV.setName("labelV"); // NOI18N
+        add(labelV, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 270, 40, 9));
 
         labelZ.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         labelZ.setText(bundle.getString("LAYER")); // NOI18N
         labelZ.setName("labelZ"); // NOI18N
+        add(labelZ, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 290, 30, -1));
 
         labelCW.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         labelCW.setText(bundle.getString("CAPTUREWIDTH")); // NOI18N
         labelCW.setName("labelCW"); // NOI18N
+        add(labelCW, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 170, 50, -1));
 
         spinW1.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         spinW1.setName("spinW1"); // NOI18N
@@ -221,10 +245,12 @@ public class StreamPanel extends javax.swing.JPanel {
                 spinW1StateChanged(evt);
             }
         });
+        add(spinW1, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 160, 60, -1));
 
         labelCH.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         labelCH.setText(bundle.getString("CAPTUREHEIGHT")); // NOI18N
         labelCH.setName("labelCH"); // NOI18N
+        add(labelCH, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 190, 60, -1));
 
         spinH1.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         spinH1.setName("spinH1"); // NOI18N
@@ -233,90 +259,17 @@ public class StreamPanel extends javax.swing.JPanel {
                 spinH1StateChanged(evt);
             }
         });
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(panPreview, javax.swing.GroupLayout.DEFAULT_SIZE, 161, Short.MAX_VALUE)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(labelZ, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(labelV, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(labelO, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(labelH, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(labelW, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(labelCW, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(labelX, javax.swing.GroupLayout.DEFAULT_SIZE, 86, Short.MAX_VALUE)
-                            .addComponent(labelY, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(labelCH, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(spinZOrder)
-                            .addComponent(spinVolume)
-                            .addComponent(spinOpacity)
-                            .addComponent(spinH)
-                            .addComponent(spinW, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(spinH1)
-                            .addComponent(spinW1, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(spinX, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(spinY, javax.swing.GroupLayout.Alignment.TRAILING)))
-                    .addComponent(tglActiveStream, javax.swing.GroupLayout.DEFAULT_SIZE, 137, Short.MAX_VALUE))
-                .addContainerGap())
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(panPreview, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(labelX)
-                    .addComponent(spinX, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(labelY)
-                    .addComponent(spinY, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(labelCW)
-                    .addComponent(spinW1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(labelCH)
-                    .addComponent(spinH1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(labelW)
-                    .addComponent(spinW, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(labelH)
-                    .addComponent(spinH, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(labelO)
-                    .addComponent(spinOpacity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(labelV)
-                    .addComponent(spinVolume, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(labelZ)
-                    .addComponent(spinZOrder, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(tglActiveStream)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+        add(spinH1, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 180, 60, -1));
     }// </editor-fold>//GEN-END:initComponents
 
     private void tglActiveStreamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglActiveStreamActionPerformed
         if (tglActiveStream.isSelected()) {
+            spinW1.setEnabled(false);
+            spinH1.setEnabled(false);
             stream.read();
         } else {
+            spinW1.setEnabled(true);
+            spinH1.setEnabled(true);
             stream.stop();
         }
     }//GEN-LAST:event_tglActiveStreamActionPerformed
