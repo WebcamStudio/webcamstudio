@@ -15,6 +15,7 @@ import java.awt.Dimension;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.sound.sampled.LineUnavailableException;
+import javax.swing.SpinnerNumberModel;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterMixer;
 import webcamstudio.mixers.SystemAudioPlayer;
@@ -35,12 +36,14 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
     /** Creates new form MasterPanel */
     public MasterPanel() {
         initComponents();
+        spinFPS.setModel(new SpinnerNumberModel(5, 5, 30, 1));
         spinWidth.setValue(MasterMixer.getWidth());
         spinHeight.setValue(MasterMixer.getHeight());
         this.setVisible(true);
         viewer.setOpaque(true);
         panelPreview.add(viewer, BorderLayout.CENTER);
         MasterMixer.register(this);
+        spinFPS.setValue(MasterMixer.getRate());
     }
 
     /** This method is called from within the constructor to
@@ -59,6 +62,8 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
         spinWidth = new javax.swing.JSpinner();
         spinHeight = new javax.swing.JSpinner();
         btnApply = new javax.swing.JButton();
+        lblHeight1 = new javax.swing.JLabel();
+        spinFPS = new javax.swing.JSpinner();
 
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("webcamstudio/Languages"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("PREVIEW"))); // NOI18N
@@ -94,6 +99,11 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
             }
         });
 
+        lblHeight1.setText(bundle.getString("FRAMERATE")); // NOI18N
+        lblHeight1.setName("lblHeight1"); // NOI18N
+
+        spinFPS.setName("spinFPS"); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -104,14 +114,19 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
                     .addComponent(panelPreview, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
                     .addComponent(tglSound)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(lblWidth, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE)
-                            .addComponent(lblHeight, javax.swing.GroupLayout.Alignment.LEADING))
+                        .addComponent(btnApply, javax.swing.GroupLayout.DEFAULT_SIZE, 168, Short.MAX_VALUE)
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(lblHeight)
+                            .addComponent(lblHeight1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(lblWidth, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(spinWidth, javax.swing.GroupLayout.DEFAULT_SIZE, 86, Short.MAX_VALUE)
-                            .addComponent(spinHeight, javax.swing.GroupLayout.DEFAULT_SIZE, 86, Short.MAX_VALUE)))
-                    .addComponent(btnApply, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(spinFPS, javax.swing.GroupLayout.DEFAULT_SIZE, 83, Short.MAX_VALUE)
+                            .addComponent(spinHeight, javax.swing.GroupLayout.DEFAULT_SIZE, 83, Short.MAX_VALUE)
+                            .addComponent(spinWidth, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 83, Short.MAX_VALUE))
+                        .addContainerGap())))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -127,9 +142,13 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblHeight)
                     .addComponent(spinHeight, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblHeight1)
+                    .addComponent(spinFPS, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnApply)
-                .addContainerGap(140, Short.MAX_VALUE))
+                .addContainerGap(118, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -151,14 +170,17 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
         MasterMixer.stop();
         MasterMixer.setWidth(w);
         MasterMixer.setHeight(h);
+        MasterMixer.setRate((Integer)spinFPS.getValue());
         MasterMixer.start();
     }//GEN-LAST:event_btnApplyActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnApply;
     private javax.swing.JLabel lblHeight;
+    private javax.swing.JLabel lblHeight1;
     private javax.swing.JLabel lblWidth;
     private javax.swing.JPanel panelPreview;
+    private javax.swing.JSpinner spinFPS;
     private javax.swing.JSpinner spinHeight;
     private javax.swing.JSpinner spinWidth;
     private javax.swing.JToggleButton tglSound;
