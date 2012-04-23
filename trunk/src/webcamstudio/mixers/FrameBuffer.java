@@ -18,7 +18,7 @@ public class FrameBuffer {
     private boolean abort = false;
     public void push(Frame f){
         while (!abort && buffer.size()>=BUFFER_SIZE){
-            Tools.sleep(10);
+            Tools.sleep(30);
         }
         buffer.add(f);
     }

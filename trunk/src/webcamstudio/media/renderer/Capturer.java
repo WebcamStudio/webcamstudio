@@ -16,7 +16,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import webcamstudio.mixers.AudioBuffer;
 import webcamstudio.mixers.Frame;
-import webcamstudio.mixers.FrameBuffer;
 import webcamstudio.mixers.ImageBuffer;
 import webcamstudio.streams.Stream;
 
@@ -34,7 +33,7 @@ public class Capturer {
     private int videoBufferSize = 0;
     private ServerSocket videoServer = null;
     private ServerSocket audioServer = null;
-   // private FrameBuffer frameBuffer = new FrameBuffer();
+    // private FrameBuffer frameBuffer = new FrameBuffer();
     private ImageBuffer imageBuffer = new ImageBuffer();
     private AudioBuffer audioBuffer = new AudioBuffer();
 
@@ -72,12 +71,13 @@ public class Capturer {
                     System.out.println(stream.getName() + " video accepted...");
                     DataInputStream din = new DataInputStream(connection.getInputStream());
                     imageBuffer.clear();
+                    videoBufferSize = stream.getCaptureWidth() * stream.getCaptureHeight() * 4;
+                    byte[] vbuffer = new byte[videoBufferSize];
+                    int[] rgb = new int[videoBufferSize / 4];
                     while (!stopMe) {
                         try {
-                            videoBufferSize = stream.getCaptureWidth() * stream.getCaptureHeight() * 4;
-                            byte[] vbuffer = new byte[videoBufferSize];
-                            int[] rgb = new int[videoBufferSize / 4];
-                            BufferedImage image = new BufferedImage(stream.getCaptureWidth(), stream.getCaptureHeight(), BufferedImage.TYPE_INT_ARGB);
+                            BufferedImage image = null;
+                            image = new BufferedImage(stream.getCaptureWidth(), stream.getCaptureHeight(), BufferedImage.TYPE_INT_ARGB);
                             din.readFully(vbuffer);
                             IntBuffer intData = ByteBuffer.wrap(vbuffer).order(ByteOrder.BIG_ENDIAN).asIntBuffer();
                             intData.get(rgb);
@@ -111,10 +111,10 @@ public class Capturer {
                     System.out.println(stream.getName() + " audio accepted...");
                     DataInputStream din = new DataInputStream(connection.getInputStream());
                     audioBuffer.clear();
+                    audioBufferSize = (44100 * 2 * 2) / stream.getRate();
+                    byte[] abuffer = new byte[audioBufferSize];
                     while (!stopMe) {
                         try {
-                            audioBufferSize = (44100 * 2 * 2) / stream.getRate();
-                            byte[] abuffer = new byte[audioBufferSize];
                             din.readFully(abuffer);
                             audioBuffer.push(abuffer);
                         } catch (IOException ioe) {
@@ -162,7 +162,10 @@ public class Capturer {
     }
 
     public Frame getFrame() {
-        Frame frame = new Frame(stream.getID(), imageBuffer.pop(), audioBuffer.pop());
+        BufferedImage image = imageBuffer.pop();
+        byte[] audio = audioBuffer.pop();
+        Frame frame = null;
+        frame = new Frame(stream.getID(), image, audio);
         frame.setOutputFormat(stream.getX(), stream.getY(), stream.getWidth(), stream.getHeight(), stream.getOpacity(), stream.getVolume());
         frame.setZOrder(stream.getZOrder());
         return frame;

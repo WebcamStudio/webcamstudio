@@ -35,7 +35,8 @@ public class Frame {
         return frameNb;
     }
     protected Frame(int w,int h,int rate){
-        //image=new BufferedImage(w,h,BufferedImage.TYPE_INT_ARGB);
+        this.w=w;
+        this.h=h;
         audioData= new byte[(44100 *2 *2) / rate];
     }
     public String getID(){
