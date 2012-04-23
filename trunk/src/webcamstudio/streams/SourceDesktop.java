@@ -20,7 +20,7 @@ import webcamstudio.mixers.MasterFrameBuilder;
 public class SourceDesktop extends Stream {
 
     BufferedImage image = null;
-    boolean playing = true;
+    boolean playing = false;
     boolean stop = false;
     Frame frame = null;
     Robot robot = null;
@@ -30,33 +30,6 @@ public class SourceDesktop extends Stream {
     public SourceDesktop() {
         super();
         name = "Desktop";
-        try {
-            robot = new Robot();
-        } catch (AWTException ex) {
-            Logger.getLogger(SourceDesktop.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        Thread capture = new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-                while (1 == 1) {
-                    if (frame != null) {
-                        frame.setOutputFormat(x, y, width, height, opacity, volume);
-                        frame.setZOrder(zorder);
-                        frame.setImage(capture());
-                        image = frame.getImage();
-                    }
-                    try {
-                        Thread.sleep(200);
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(SourceDesktop.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-            }
-        });
-        capture.setPriority(Thread.MIN_PRIORITY);
-        capture.start();
-
     }
 
     private BufferedImage capture() {
@@ -69,6 +42,33 @@ public class SourceDesktop extends Stream {
     @Override
     public void read() {
         stop = false;
+        playing=true;
+try {
+            robot = new Robot();
+        } catch (AWTException ex) {
+            Logger.getLogger(SourceDesktop.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        Thread capture = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                while (playing) {
+                    if (frame != null) {
+                        frame.setOutputFormat(x, y, width, height, opacity, volume);
+                        frame.setZOrder(zorder);
+                        frame.setImage(capture());
+                        image = frame.getImage();
+                    }
+                    try {
+                        Thread.sleep(1000/rate);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(SourceDesktop.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+        });
+        capture.setPriority(Thread.MIN_PRIORITY);
+        capture.start();        
         try {
             frame = new Frame(uuid, image, null);
             frame.setOutputFormat(x, y, width, height, opacity, volume);
@@ -82,6 +82,7 @@ public class SourceDesktop extends Stream {
     @Override
     public void stop() {
         stop = true;
+        playing=false;
         MasterFrameBuilder.unregister(this);
     }
 

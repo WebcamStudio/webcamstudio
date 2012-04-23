@@ -19,7 +19,7 @@ public class SourceText extends Stream {
 
     BufferedImage image = null;
     String content = "";
-    boolean playing = true;
+    boolean playing = false;
     boolean stop = false;
     String fontName = Font.MONOSPACED;
     int color = 0xFFFFFF;
@@ -77,6 +77,7 @@ public class SourceText extends Stream {
     @Override
     public void read() {
         stop = false;
+        playing=true;
         try {
             updateContent(content);
             frame = new Frame(uuid, image, null);
@@ -91,6 +92,7 @@ public class SourceText extends Stream {
     @Override
     public void stop() {
         stop = true;
+        playing=false;
         frame = null;
         MasterFrameBuilder.unregister(this);
     }

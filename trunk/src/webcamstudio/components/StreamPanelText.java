@@ -20,13 +20,14 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import webcamstudio.streams.SourceQRCode;
 import webcamstudio.streams.SourceText;
+import webcamstudio.streams.Stream;
 
 
 /**
  *
  * @author patrick
  */
-public class StreamPanelText extends javax.swing.JPanel {
+public class StreamPanelText extends javax.swing.JPanel implements Stream.Listener{
 
     SourceText stream = null;
     Viewer viewer = new Viewer();
@@ -60,6 +61,7 @@ public class StreamPanelText extends javax.swing.JPanel {
         txtContent.setText(stream.getContent());
         cboFonts.setEnabled(!(stream instanceof SourceQRCode));
         txtHexColor.setEnabled(!(stream instanceof SourceQRCode));
+        stream.setListener(this);
     }
    
     public ImageIcon getIcon(){
@@ -357,6 +359,20 @@ public class StreamPanelText extends javax.swing.JPanel {
     private javax.swing.JTextField txtContent;
     private javax.swing.JFormattedTextField txtHexColor;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void sourceUpdated(Stream stream) {
+        spinX.setValue(stream.getX());
+        spinY.setValue(stream.getY());
+        spinW.setValue(stream.getWidth());
+        spinH.setValue(stream.getHeight());
+        cboFonts.setSelectedItem(this.stream.getFont());
+        txtHexColor.setText(Integer.toHexString(this.stream.getColor()));
+        spinZOrder.setValue(stream.getZOrder());
+        timer.scheduleAtFixedRate(new RefreshPanelText(this), 0, 200);
+        txtContent.setText(this.stream.getContent());
+        tglActiveStream.setSelected(stream.isPlaying());
+    }
 }
 class RefreshPanelText extends TimerTask {
 
