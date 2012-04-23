@@ -6,7 +6,6 @@ package webcamstudio.streams;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,24 +18,24 @@ import webcamstudio.sources.effects.Effect;
  */
 public class SourceChannel {
 
-    int x = 0;
-    int y = 0;
-    int capWidth = 0;
-    int capHeight = 0;
-    int width = 0;
-    int height = 0;
-    int opacity = 0;
-    float volume = 0;
-    int zorder = 0;
-    String text = "";
-    String font = "";
-    int color = 0;
-    String name = "";
+    private int x = 0;
+    private int y = 0;
+    private int capWidth = 0;
+    private int capHeight = 0;
+    private int width = 0;
+    private int height = 0;
+    private int opacity = 0;
+    private float volume = 0;
+    private int zorder = 0;
+    private String text = "";
+    private String font = "";
+    private int color = 0;
+    private String name = "";
     boolean isPlaying = false;
     ArrayList<Effect> effects = new ArrayList<Effect>();
-    boolean followMouse = false;
-    int captureX = 0;
-    int captureY = 0;
+    private boolean followMouse = false;
+    private int captureX = 0;
+    private int captureY = 0;
     ArrayList<Transition> startTransitions = new ArrayList<Transition>();
     ArrayList<Transition> endTransitions = new ArrayList<Transition>();
 
@@ -83,44 +82,18 @@ public class SourceChannel {
     }
 
     public void apply(final Stream s) {
+        final SourceChannel instance = this;
         new Thread(new Runnable() {
 
             @Override
             public void run() {
-                s.x = x;
-                s.y = y;
-                s.width = width;
-                s.height = height;
-                s.opacity = opacity;
-                s.effects.clear();
-                s.effects.addAll(effects);
-                s.startTransitions.clear();
-                s.startTransitions.addAll(startTransitions);
-                s.endTransitions.clear();
-                s.endTransitions.addAll(endTransitions);
-                s.volume = volume;
-                s.zorder = zorder;
-                s.captureHeight = capHeight;
-                s.captureWidth = capWidth;
-                if (s instanceof SourceText) {
-                    SourceText st = (SourceText) s;
-                    st.content = text;
-                    st.fontName = font;
-                    st.color = color;
-                    st.updateContent(text);
-                } else if (s instanceof SourceDesktop) {
-                    SourceDesktop sd = (SourceDesktop) s;
-                    sd.followMouse = followMouse;
-                    sd.captureX = captureX;
-                    sd.captureY = captureY;
-                }
                 if (isPlaying) {
                     if (!s.isPlaying()) {
                         s.read();
                     }
                     ExecutorService pool = java.util.concurrent.Executors.newCachedThreadPool();
                     for (Transition t : s.startTransitions) {
-                        pool.submit(t);
+                        pool.submit(t.run(instance));
                     }
                     pool.shutdown();
                     try {
@@ -132,7 +105,8 @@ public class SourceChannel {
                 } else {
                     ExecutorService pool = java.util.concurrent.Executors.newCachedThreadPool();
                     for (Transition t : s.endTransitions) {
-                        pool.submit(t);
+                        System.out.println(t.getClass().getName());
+                        pool.submit(t.run(instance));
                     }
                     pool.shutdown();
                     try {
@@ -144,8 +118,141 @@ public class SourceChannel {
                         s.stop();
                     }
                 }
+                
+                s.x = getX();
+                s.y = getY();
+                s.width = getWidth();
+                s.height = getHeight();
+                s.opacity = getOpacity();
+                s.effects.clear();
+                s.effects.addAll(effects);
+                s.startTransitions.clear();
+                s.startTransitions.addAll(startTransitions);
+                s.endTransitions.clear();
+                s.endTransitions.addAll(endTransitions);
+                s.volume = getVolume();
+                s.zorder = getZorder();
+                s.captureHeight = getCapHeight();
+                s.captureWidth = getCapWidth();
+                if (s instanceof SourceText) {
+                    SourceText st = (SourceText) s;
+                    st.content = getText();
+                    st.fontName = getFont();
+                    st.color = getColor();
+                    st.updateContent(getText());
+                } else if (s instanceof SourceDesktop) {
+                    SourceDesktop sd = (SourceDesktop) s;
+                    sd.followMouse = isFollowMouse();
+                    sd.captureX = getCaptureX();
+                    sd.captureY = getCaptureY();
+                }
             }
         }).start();
 
+    }
+
+    /**
+     * @return the x
+     */
+    public int getX() {
+        return x;
+    }
+
+    /**
+     * @return the y
+     */
+    public int getY() {
+        return y;
+    }
+
+    /**
+     * @return the capWidth
+     */
+    public int getCapWidth() {
+        return capWidth;
+    }
+
+    /**
+     * @return the capHeight
+     */
+    public int getCapHeight() {
+        return capHeight;
+    }
+
+    /**
+     * @return the width
+     */
+    public int getWidth() {
+        return width;
+    }
+
+    /**
+     * @return the height
+     */
+    public int getHeight() {
+        return height;
+    }
+
+    /**
+     * @return the opacity
+     */
+    public int getOpacity() {
+        return opacity;
+    }
+
+    /**
+     * @return the volume
+     */
+    public float getVolume() {
+        return volume;
+    }
+
+    /**
+     * @return the zorder
+     */
+    public int getZorder() {
+        return zorder;
+    }
+
+    /**
+     * @return the text
+     */
+    public String getText() {
+        return text;
+    }
+
+    /**
+     * @return the font
+     */
+    public String getFont() {
+        return font;
+    }
+
+    /**
+     * @return the color
+     */
+    public int getColor() {
+        return color;
+    }
+
+    /**
+     * @return the followMouse
+     */
+    public boolean isFollowMouse() {
+        return followMouse;
+    }
+
+    /**
+     * @return the captureX
+     */
+    public int getCaptureX() {
+        return captureX;
+    }
+
+    /**
+     * @return the captureY
+     */
+    public int getCaptureY() {
+        return captureY;
     }
 }
