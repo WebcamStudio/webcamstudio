@@ -10,6 +10,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JInternalFrame;
 import javax.swing.JInternalFrame.JDesktopIcon;
+import webcamstudio.streams.SourceText;
 import webcamstudio.streams.Stream;
 
 /**
@@ -43,6 +44,10 @@ public class DesktopIcon extends JDesktopIcon {
                             viewer.setImage(img);
                             viewer.setAudioLevel(stream.getAudioLevelLeft(), stream.getAudioLevelRight());
                             viewer.repaint();
+                            if (stream instanceof SourceText){
+                                SourceText sc = (SourceText)stream;
+                                setToolTipText(sc.getContent());
+                            }
                         }
                         Thread.sleep(200);
                     } catch (InterruptedException ex) {

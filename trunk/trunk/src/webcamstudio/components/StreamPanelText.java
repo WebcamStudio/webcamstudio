@@ -59,6 +59,7 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
         spinZOrder.setValue(stream.getZOrder());
         timer.scheduleAtFixedRate(new RefreshPanelText(this), 0, 200);
         txtContent.setText(stream.getContent());
+        setToolTipText(stream.getContent());
         cboFonts.setEnabled(!(stream instanceof SourceQRCode));
         txtHexColor.setEnabled(!(stream instanceof SourceQRCode));
         stream.setListener(this);
@@ -322,10 +323,12 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
 
     private void txtContentFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtContentFocusLost
         stream.updateContent(txtContent.getText());
+        setToolTipText(stream.getContent());
     }//GEN-LAST:event_txtContentFocusLost
 
     private void txtContentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtContentActionPerformed
          stream.updateContent(txtContent.getText());
+         setToolTipText(stream.getContent());
     }//GEN-LAST:event_txtContentActionPerformed
 
     private void cboFontsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboFontsActionPerformed
