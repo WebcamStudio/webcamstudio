@@ -54,13 +54,11 @@ public class MasterMixer {
         public void newFrame(Frame frame);
     }
     
-    public void register(SinkListener l){
+    public synchronized void register(SinkListener l){
         listeners.add(l);
     }
-    public void unregister(SinkListener l){
-        System.out.println("Before unregister");
+    public synchronized void unregister(SinkListener l){
         listeners.remove(l);
-        System.out.println("After unregister " + listeners.size());
     }
     public void setWidth(int w) {
         width = w;

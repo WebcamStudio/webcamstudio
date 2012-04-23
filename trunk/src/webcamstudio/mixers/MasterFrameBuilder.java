@@ -30,12 +30,12 @@ public class MasterFrameBuilder implements Runnable {
     BufferedImage[] renderedImages = new BufferedImage[RENDERED_IMAGES];
     int curentRenderedImgeIndex = 0;
 
-    public static void register(Stream s) {
+    public synchronized static void register(Stream s) {
         if (!streams.contains(s)) {
             streams.add(s);
         }
     }
-    public static void unregister(Stream s) {
+    public synchronized static void unregister(Stream s) {
         streams.remove(s);
     }
 
@@ -111,8 +111,8 @@ public class MasterFrameBuilder implements Runnable {
             timeCode+=frameDelay;
             Frame targetFrame = new Frame(w, h, r);
             frames = new ArrayList<Frame>();
-            for (Stream s : streams) {
-                Frame f = s.getFrame();
+            for (int i = 0; i < streams.size();i++) {
+                Frame f = streams.get(i).getFrame();
                 if (f != null) {
                     frames.add(f);
                 }

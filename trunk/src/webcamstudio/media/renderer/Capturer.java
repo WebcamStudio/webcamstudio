@@ -70,6 +70,7 @@ public class Capturer {
                     connection = videoServer.accept();
                     System.out.println(stream.getName() + " video accepted...");
                     DataInputStream din = new DataInputStream(connection.getInputStream());
+                    imageBuffer.clear();
                     while (!stopMe) {
                         try {
                             videoBufferSize = stream.getCaptureWidth() * stream.getCaptureHeight() * 4;
@@ -108,6 +109,7 @@ public class Capturer {
                     Socket connection = audioServer.accept();
                     System.out.println(stream.getName() + " audio accepted...");
                     DataInputStream din = new DataInputStream(connection.getInputStream());
+                    frameBuffer.clear();
                     while (!stopMe) {
                         try {
                             audioBufferSize = (44100 * 2 * 2) / stream.getRate();
@@ -134,17 +136,20 @@ public class Capturer {
         }
 
     }
+
     public void abort() {
+        stopMe = true;
+        frameBuffer.abort();
+        imageBuffer.abort();
         try {
             if (videoServer != null) {
                 videoServer.close();
-                videoServer=null;
+                videoServer = null;
             }
             if (audioServer != null) {
                 audioServer.close();
-                audioServer=null;
+                audioServer = null;
             }
-            imageBuffer.abort();
         } catch (IOException ex) {
             Logger.getLogger(Capturer.class.getName()).log(Level.SEVERE, null, ex);
         }
