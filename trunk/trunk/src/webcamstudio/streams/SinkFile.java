@@ -19,9 +19,9 @@ public class SinkFile extends Stream {
     private FFMPEGRenderer capture = null;
 
     public SinkFile(File f) {
-        rate = MasterMixer.getRate();
-        captureWidth = MasterMixer.getWidth();
-        captureHeight = MasterMixer.getHeight();
+        rate = MasterMixer.getInstance().getRate();
+        captureWidth = MasterMixer.getInstance().getWidth();
+        captureHeight = MasterMixer.getInstance().getHeight();
         file = f;
         name = f.getName();
 

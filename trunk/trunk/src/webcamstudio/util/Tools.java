@@ -12,52 +12,67 @@ import java.util.logging.Logger;
  * @author patrick
  */
 public class Tools {
-    public enum OS{
+
+    public enum OS {
+
         WINDOWS,
         LINUX,
         OSX
     }
-    public static OS getOS(){
-        OS os =OS.LINUX;
+
+    public static OS getOS() {
+        OS os = OS.LINUX;
         String value = System.getProperty("os.name").toLowerCase().trim();
-        if (value.indexOf("linux")!=-1){
-            os=OS.LINUX;
-        } else if (value.indexOf("windows") != -1){
-            os=OS.WINDOWS;
-        } else if (value.indexOf("osx") !=-1){
-            os=OS.OSX;
+        if (value.indexOf("linux") != -1) {
+            os = OS.LINUX;
+        } else if (value.indexOf("windows") != -1) {
+            os = OS.WINDOWS;
+        } else if (value.indexOf("osx") != -1) {
+            os = OS.OSX;
         }
         return os;
     }
-    public static String getOSName(){
+
+    public static String getOSName() {
         String name = "linux";
         OS os = getOS();
-        switch(os){
+        switch (os) {
             case LINUX:
-                name="linux";
+                name = "linux";
                 break;
             case WINDOWS:
-                name="windows";
+                name = "windows";
                 break;
             case OSX:
-                name="osx";
+                name = "osx";
                 break;
         }
-        
+
         return name;
     }
-    
-    public static void sleep(long millisec){
+
+    public static void sleep(long millisec) {
         try {
             Thread.sleep(millisec);
         } catch (InterruptedException ex) {
             Logger.getLogger(Tools.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    public static void wait(long delay, long startTime){
-        long delta = (startTime + delay) - System.currentTimeMillis();
-        if (delta > 0){
-            sleep(delta);
+
+    public static void waitUntil(long nanoEndTime) {
+        long delta = nanoEndTime - System.nanoTime();
+        if (delta > 0) {
+            try {
+                if (delta > 999999) {
+                    long milli = delta / 1000000;
+                    long nano = delta % 1000000;
+                    Thread.sleep(milli, (int) nano);
+                } else {
+                    Thread.sleep(0, (int) delta);
+                }
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Tools.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 }

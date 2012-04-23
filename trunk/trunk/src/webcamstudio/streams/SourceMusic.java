@@ -21,7 +21,7 @@ public class SourceMusic extends Stream {
     BufferedImage lastPreview = null;
 
     public SourceMusic(File movie) {
-        rate = MasterMixer.getRate();
+        rate = MasterMixer.getInstance().getRate();
         file = movie;
         name = movie.getName();
 

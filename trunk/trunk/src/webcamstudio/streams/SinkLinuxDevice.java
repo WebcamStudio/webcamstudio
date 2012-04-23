@@ -32,7 +32,7 @@ public class SinkLinuxDevice extends Stream implements MasterMixer.SinkListener 
     public void read() {
         stop = false;
         device.open(file.getAbsolutePath(), width, height, VideoOutput.RGB24);
-        MasterMixer.register(this);
+        MasterMixer.getInstance().register(this);
     }
 
     @Override
@@ -40,7 +40,7 @@ public class SinkLinuxDevice extends Stream implements MasterMixer.SinkListener 
         stop = true;
         device.close();
         device = null;
-        MasterMixer.unregister(this);
+        MasterMixer.getInstance().unregister(this);
     }
 
     @Override

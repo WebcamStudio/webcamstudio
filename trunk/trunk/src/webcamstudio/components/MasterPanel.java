@@ -37,13 +37,13 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
     public MasterPanel() {
         initComponents();
         spinFPS.setModel(new SpinnerNumberModel(5, 5, 30, 1));
-        spinWidth.setValue(MasterMixer.getWidth());
-        spinHeight.setValue(MasterMixer.getHeight());
+        spinWidth.setValue(MasterMixer.getInstance().getWidth());
+        spinHeight.setValue(MasterMixer.getInstance().getHeight());
         this.setVisible(true);
         viewer.setOpaque(true);
         panelPreview.add(viewer, BorderLayout.CENTER);
-        MasterMixer.register(this);
-        spinFPS.setValue(MasterMixer.getRate());
+        MasterMixer.getInstance().register(this);
+        spinFPS.setValue(MasterMixer.getInstance().getRate());
     }
 
     /** This method is called from within the constructor to
@@ -167,11 +167,11 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
     private void btnApplyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnApplyActionPerformed
         int w = (Integer)spinWidth.getValue();
         int h = (Integer)spinHeight.getValue();
-        MasterMixer.stop();
-        MasterMixer.setWidth(w);
-        MasterMixer.setHeight(h);
-        MasterMixer.setRate((Integer)spinFPS.getValue());
-        MasterMixer.start();
+        MasterMixer.getInstance().stop();
+        MasterMixer.getInstance().setWidth(w);
+        MasterMixer.getInstance().setHeight(h);
+        MasterMixer.getInstance().setRate((Integer)spinFPS.getValue());
+        MasterMixer.getInstance().start();
     }//GEN-LAST:event_btnApplyActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -189,7 +189,7 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
     @Override
     public void newFrame(Frame frame) {
         viewer.setImage(frame.getImage());
-        viewer.setAudioLevel(MasterMixer.getAudioLevelLeft(), MasterMixer.getAudioLevelRight());
+        viewer.setAudioLevel(MasterMixer.getInstance().getAudioLevelLeft(), MasterMixer.getInstance().getAudioLevelRight());
         viewer.repaint();
     }
 }

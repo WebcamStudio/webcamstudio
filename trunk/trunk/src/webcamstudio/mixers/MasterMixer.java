@@ -13,27 +13,40 @@ import java.util.ArrayList;
  */
 public class MasterMixer {
 
-    static protected int frameRate = 15;
-    static protected int width = 720;
-    static protected int height = 480;
-    static protected ArrayList<SinkListener> listeners = new ArrayList<SinkListener>();
-    static private MasterFrameBuilder builder = new MasterFrameBuilder();
-    static private int audioLevelLeft = 0;
-    static private int audioLevelRight = 0;
+    protected int frameRate = 15;
+    protected int width = 720;
+    protected int height = 480;
+    protected ArrayList<SinkListener> listeners = new ArrayList<SinkListener>();
+    private MasterFrameBuilder builder = new MasterFrameBuilder();
+    private int audioLevelLeft = 0;
+    private int audioLevelRight = 0;
+    private float avgFPS = 0;
+    private static MasterMixer instance = null;
     
-    static Frame currentFrame = null;
-
+    private MasterMixer(){}
+    
+    public static MasterMixer getInstance(){
+        if (instance==null){
+            instance = new MasterMixer();
+        }
+        return instance;
+    }
     /**
      * @return the audioLevelLeft
      */
-    public static int getAudioLevelLeft() {
+    public int getAudioLevelLeft() {
         return audioLevelLeft;
     }
-
+    public void setFPS(float f){
+        avgFPS=f;
+    }
+    public float getFPS(){
+        return avgFPS;
+    }
     /**
      * @return the audioLevelRight
      */
-    public static int getAudioLevelRight() {
+    public int getAudioLevelRight() {
         return audioLevelRight;
     }
 
@@ -41,61 +54,61 @@ public class MasterMixer {
         public void newFrame(Frame frame);
     }
     
-    public synchronized static void register(SinkListener l){
+    public void register(SinkListener l){
         listeners.add(l);
     }
-    public synchronized static void unregister(SinkListener l){
+    public void unregister(SinkListener l){
+        System.out.println("Before unregister");
         listeners.remove(l);
+        System.out.println("After unregister " + listeners.size());
     }
-    public static void setWidth(int w) {
+    public void setWidth(int w) {
         width = w;
     }
 
-    public static void setHeight(int h) {
+    public void setHeight(int h) {
         height = h;
     }
 
-    public static void setRate(int rate) {
+    public void setRate(int rate) {
         frameRate = rate;
     }
 
-    public static int getRate() {
+    public int getRate() {
         return frameRate;
     }
 
-    public static int getWidth() {
+    public int getWidth() {
         return width;
     }
 
-    public static int getHeight() {
+    public int getHeight() {
         return height;
     }
 
-    static public void start() {
+    public void start() {
         builder = new MasterFrameBuilder();
         new Thread(builder).start();
     }
 
-    static public void stop() {
+    public void stop() {
         builder.stop();
     }
-    public static void setCurrentFrame(Frame f ){
-        currentFrame=f;
+    public  void setCurrentFrame(Frame f ){
         setAudioLevel(f);
         updateListeners(f);
     }
-    private synchronized static void updateListeners(Frame f){
+    private void updateListeners(Frame f){
         for (SinkListener l : listeners){
             l.newFrame(f);
         }
     }
-    public static void setCurrentFrame(BufferedImage img,byte[] audio){
+    public void setCurrentFrame(BufferedImage img,byte[] audio){
         Frame f = new Frame("",img, audio);
-        currentFrame=f;
         setAudioLevel(f);
         updateListeners(f);
     }
-    protected static void setAudioLevel(Frame f) {
+    protected void setAudioLevel(Frame f) {
         byte[] data = f.getAudioData();
         if (data != null) {
             audioLevelLeft = 0;
