@@ -29,6 +29,7 @@ public class SourceMovie extends Stream {
 
     @Override
     public void read() {
+        rate = MasterMixer.getInstance().getRate();
         MasterFrameBuilder.register(this);
         capture = new FFMPEGRenderer(this, FFMPEGRenderer.ACTION.CAPTURE, "movie");
         capture.read();

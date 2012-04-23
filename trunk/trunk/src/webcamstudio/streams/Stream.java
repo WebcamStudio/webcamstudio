@@ -14,6 +14,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 import webcamstudio.channels.MasterChannels;
+import webcamstudio.channels.transitions.Transition;
 import webcamstudio.mixers.Frame;
 import webcamstudio.sources.effects.Effect;
 
@@ -42,26 +43,52 @@ public abstract class Stream {
     protected int audioLevelRight = 0;
     protected ArrayList<Effect> effects = new ArrayList<Effect>();
     protected ArrayList<SourceChannel> channels = new ArrayList<SourceChannel>();
+    ArrayList<Transition> startTransitions = new ArrayList<Transition>();
+    ArrayList<Transition> endTransitions = new ArrayList<Transition>();
     Listener listener = null;
-    protected Stream(){
+
+    protected Stream() {
         MasterChannels.getInstance().register(this);
     }
-    
-    public interface Listener{
+
+    public void addStartTransition(Transition t){
+        startTransitions.add(t);
+    }
+    public void addEndTransition(Transition t){
+        endTransitions.add(t);
+    }
+    public void removeStartTransition(Transition t){
+        startTransitions.remove(t);
+    }
+    public void removeEndTransition(Transition t){
+        endTransitions.remove(t);
+    }
+    public ArrayList<Transition> getStartTransitions(){
+        return startTransitions;
+    }
+    public ArrayList<Transition> getEndTransitions(){
+        return endTransitions;
+    }
+    public interface Listener {
+
         public void sourceUpdated(Stream stream);
     }
-    public void setListener(Listener l){
-        listener=l;
+
+    public void setListener(Listener l) {
+        listener = l;
     }
-    public void updateStatus(){
-        if (listener!=null){
+
+    public void updateStatus() {
+        if (listener != null) {
             listener.sourceUpdated(this);
         }
     }
-    public void destroy(){
+
+    public void destroy() {
         stop();
         MasterChannels.getInstance().unregister(this);
     }
+
     public abstract void read();
 
     public abstract void stop();
@@ -81,27 +108,32 @@ public abstract class Stream {
     public int getAudioLevelRight() {
         return audioLevelRight;
     }
-    
-    public void addChannel(SourceChannel sc){
+
+    public void addChannel(SourceChannel sc) {
         channels.add(sc);
     }
-    public void removeChannel(SourceChannel sc){
+
+    public void removeChannel(SourceChannel sc) {
         channels.remove(sc);
     }
-    public void selectChannel(String name){
-        for (SourceChannel sc : channels){
-            if (sc.getName().equals(name)){
+
+    public void selectChannel(String name) {
+        for (SourceChannel sc : channels) {
+            if (sc.getName().equals(name)) {
                 sc.apply(this);
                 break;
             }
         }
     }
-    public ArrayList<SourceChannel> getChannels(){
+
+    public ArrayList<SourceChannel> getChannels() {
         return channels;
     }
-    public void setName(String n){
-        name=n;
+
+    public void setName(String n) {
+        name = n;
     }
+
     public ArrayList<Effect> getEffects() {
         return effects;
     }

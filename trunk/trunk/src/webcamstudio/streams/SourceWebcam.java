@@ -37,6 +37,7 @@ public class SourceWebcam extends Stream {
 
     @Override
     public void read() {
+        rate = MasterMixer.getInstance().getRate();
         MasterFrameBuilder.register(this);
         capture = new FFMPEGRenderer(this, FFMPEGRenderer.ACTION.CAPTURE, "webcam");
         capture.read();

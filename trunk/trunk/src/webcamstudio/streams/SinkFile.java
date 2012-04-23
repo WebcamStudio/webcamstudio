@@ -29,6 +29,7 @@ public class SinkFile extends Stream {
 
     @Override
     public void read() {
+        rate = MasterMixer.getInstance().getRate();
         capture = new FFMPEGRenderer(this, FFMPEGRenderer.ACTION.OUTPUT, "file");
         capture.write();
     }

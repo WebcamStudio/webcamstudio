@@ -17,7 +17,8 @@ public class SourceControls {
     public static ArrayList<Component> getControls(Stream source) {
         ArrayList<Component> comps = new ArrayList<Component>();
         Component c = null;
-
+        c = new SourceControlTransitions(source);
+        comps.add(c);
         if (source instanceof SourceDesktop) {
             c = new SourceControlDesktop((SourceDesktop)source);
             comps.add(c);
