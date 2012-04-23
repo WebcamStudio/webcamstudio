@@ -4,9 +4,11 @@
  */
 package webcamstudio.streams;
 
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import webcamstudio.components.GifDecoder;
@@ -24,17 +26,25 @@ public class SourceImageGif extends Stream {
     boolean stop = false;
     Frame frame = null;
     GifDecoder decoder = new GifDecoder();
-
+    
     public SourceImageGif(File img) {
         file = img;
 
 
         name = img.getName();
     }
-
+    public SourceImageGif(String name,URL url){
+        this.url = url;
+        this.name=name;
+    }
+    
     private void loadImage(File f) throws IOException {
-        decoder.read(file.toURI().toURL().openStream());
-        image = decoder.getImage();
+        if (file!=null){
+            decoder.read(file.toURI().toURL().openStream());
+        } else if (url!=null){
+            decoder.read(url.openStream());
+        }
+        image = new BufferedImage(decoder.getImage().getWidth(),decoder.getImage().getHeight(),BufferedImage.TYPE_4BYTE_ABGR);
         System.out.println("Image Count: " + decoder.getFrameCount());
         new Thread(new Runnable() {
 
@@ -50,6 +60,9 @@ public class SourceImageGif extends Stream {
             int index = 0;
             while (!stop) {
                 image = decoder.getFrame(index);
+//                image.getGraphics().setColor(new Color(0,0,0,0));
+//                image.getGraphics().clearRect(0, 0, image.getWidth(), image.getHeight());
+//                image.getGraphics().drawImage(tmpImage, 0, 0, null);
                 if (image != null) {
                     captureWidth = image.getWidth();
                     captureHeight = image.getHeight();

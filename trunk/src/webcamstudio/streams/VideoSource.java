@@ -119,9 +119,7 @@ public abstract class VideoSource implements InfoListener {
     }
 
 
-    public boolean isAnimation() {
-        return this instanceof VideoSourceAnimation;
-    }
+    
 
     public void setLoadSound(boolean doLoad) {
         loadSound = doLoad;
