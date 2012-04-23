@@ -105,7 +105,7 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_formInternalFrameDeiconified
 
     private void formInternalFrameClosing(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameClosing
-        stream.stop();
+        stream.destroy();
         stream = null;
         panel = null;
 

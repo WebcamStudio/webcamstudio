@@ -20,10 +20,11 @@ public class SourceMusic extends Stream {
     FFMPEGRenderer capture = null;
     BufferedImage lastPreview = null;
 
-    public SourceMusic(File movie) {
+    public SourceMusic(File music) {
+        super();
         rate = MasterMixer.getInstance().getRate();
-        file = movie;
-        name = movie.getName();
+        file = music;
+        name = music.getName();
 
     }
 

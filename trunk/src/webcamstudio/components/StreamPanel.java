@@ -23,7 +23,7 @@ import webcamstudio.streams.Stream;
  *
  * @author patrick
  */
-public class StreamPanel extends javax.swing.JPanel {
+public class StreamPanel extends javax.swing.JPanel implements Stream.Listener{
 
     Stream stream = null;
     Viewer viewer = new Viewer();
@@ -51,6 +51,7 @@ public class StreamPanel extends javax.swing.JPanel {
         spinH1.setValue(stream.getCaptureHeight());
         spinW1.setValue(stream.getCaptureWidth());
         timer.scheduleAtFixedRate(new RefreshPanel(this), 0, 200);
+        stream.setListener(this);
     }
     public Viewer detachViewer(){
         panPreview.remove(viewer);
@@ -78,6 +79,20 @@ public class StreamPanel extends javax.swing.JPanel {
 
     }
 
+    @Override
+    public void sourceUpdated(Stream stream){
+        tglActiveStream.setSelected(stream.isPlaying());
+        spinX.setValue(stream.getX());
+        spinY.setValue(stream.getY());
+        spinW.setValue(stream.getWidth());
+        spinH.setValue(stream.getHeight());
+        spinOpacity.setModel(new SpinnerNumberModel(50, 0, 100, 1));
+        spinOpacity.setValue(stream.getOpacity());
+        spinVolume.setModel(new SpinnerNumberModel(0, 0, 100, 1));
+        spinVolume.setValue(stream.getVolume() * 100);
+        spinZOrder.setValue(stream.getZOrder());
+        
+    }
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is

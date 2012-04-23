@@ -21,6 +21,7 @@ public class SourceWebcam extends Stream {
     BufferedImage lastPreview = null;
 
     public SourceWebcam(File device) {
+        super();
         rate = MasterMixer.getInstance().getRate();
         file = device;
         name = device.getName();
@@ -29,6 +30,7 @@ public class SourceWebcam extends Stream {
     }
 
     public SourceWebcam(String defaultName) {
+        super();
         rate = MasterMixer.getInstance().getRate();
         name = defaultName;
     }

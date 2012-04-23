@@ -28,7 +28,7 @@ public class SourceDesktop extends Stream {
     protected int screenheight = java.awt.Toolkit.getDefaultToolkit().getScreenSize().height;
 
     public SourceDesktop() {
-
+        super();
         name = "Desktop";
         try {
             robot = new Robot();
