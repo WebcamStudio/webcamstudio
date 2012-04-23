@@ -19,12 +19,14 @@ public class SourceControls {
         Component c = null;
 
         if (source instanceof SourceDesktop) {
+            c = new SourceControlDesktop((SourceDesktop)source);
+            comps.add(c);
         } else if (source instanceof SourceMovie) {
-            c = new SourceEffects(source);
+            c = new SourceControlEffects(source);
             c.setName("Effects");
             comps.add(c);
         } else if (source instanceof SourceWebcam) {
-            c = new SourceEffects(source);
+            c = new SourceControlEffects(source);
             c.setName("Effects");
             comps.add(c);
         } else if (source instanceof SourceText) {

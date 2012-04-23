@@ -13,14 +13,14 @@ import webcamstudio.streams.Stream;
  *
  * @author Patrick Balleux
  */
-public class SourceEffects extends javax.swing.JPanel {
+public class SourceControlEffects extends javax.swing.JPanel {
 
     private DefaultListModel listModel = new DefaultListModel();
     private Stream stream;
     /**
-     * Creates new form SourceEffects
+     * Creates new form SourceControlEffects
      */
-    public SourceEffects(Stream s) {
+    public SourceControlEffects(Stream s) {
         initComponents();
         stream = s;
         boolean found = false;
@@ -82,7 +82,6 @@ public class SourceEffects extends javax.swing.JPanel {
 
         btnAddEffect.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/list-add.png"))); // NOI18N
         btnAddEffect.setAlignmentY(0.0F);
-        btnAddEffect.setMargin(new java.awt.Insets(0, 0, 0, 0));
         btnAddEffect.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAddEffectActionPerformed(evt);
@@ -90,7 +89,6 @@ public class SourceEffects extends javax.swing.JPanel {
         });
 
         btnDeleteEffect.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/list-remove.png"))); // NOI18N
-        btnDeleteEffect.setMargin(new java.awt.Insets(0, 0, 0, 0));
         btnDeleteEffect.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnDeleteEffectActionPerformed(evt);
@@ -98,7 +96,6 @@ public class SourceEffects extends javax.swing.JPanel {
         });
 
         btnMoveUp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/go-up.png"))); // NOI18N
-        btnMoveUp.setMargin(new java.awt.Insets(0, 0, 0, 0));
         btnMoveUp.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnMoveUpActionPerformed(evt);
@@ -106,7 +103,6 @@ public class SourceEffects extends javax.swing.JPanel {
         });
 
         btnMoveDown.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/go-down.png"))); // NOI18N
-        btnMoveDown.setMargin(new java.awt.Insets(0, 0, 0, 0));
         btnMoveDown.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnMoveDownActionPerformed(evt);
@@ -120,7 +116,7 @@ public class SourceEffects extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(panSettings, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(panSettings, javax.swing.GroupLayout.DEFAULT_SIZE, 145, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 107, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -129,7 +125,7 @@ public class SourceEffects extends javax.swing.JPanel {
                             .addComponent(btnDeleteEffect)
                             .addComponent(btnMoveUp)
                             .addComponent(btnMoveDown, javax.swing.GroupLayout.Alignment.TRAILING)))
-                    .addComponent(cboEffects, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(cboEffects, 0, 145, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
