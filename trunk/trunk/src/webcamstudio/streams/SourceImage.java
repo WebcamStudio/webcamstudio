@@ -23,6 +23,7 @@ public class SourceImage extends Stream{
     boolean stop = false;
     Frame frame = null;
     public SourceImage(File img){
+        super();
         file=img;
         name = img.getName();
     }

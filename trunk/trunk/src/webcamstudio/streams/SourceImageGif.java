@@ -28,9 +28,8 @@ public class SourceImageGif extends Stream {
     GifDecoder decoder = new GifDecoder();
     
     public SourceImageGif(File img) {
+        super();
         file = img;
-
-
         name = img.getName();
     }
     public SourceImageGif(String name,URL url){

@@ -8,10 +8,12 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.net.URL;
+import java.util.ArrayList;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
+import webcamstudio.channels.MasterChannels;
 import webcamstudio.mixers.Frame;
 import webcamstudio.sources.effects.Effect;
 
@@ -38,8 +40,28 @@ public abstract class Stream {
     protected URL url = null;
     protected int audioLevelLeft = 0;
     protected int audioLevelRight = 0;
-    protected java.util.Vector<Effect> effects = new java.util.Vector<Effect>();
-
+    protected ArrayList<Effect> effects = new ArrayList<Effect>();
+    protected ArrayList<SourceChannel> channels = new ArrayList<SourceChannel>();
+    Listener listener = null;
+    protected Stream(){
+        MasterChannels.getInstance().register(this);
+    }
+    
+    public interface Listener{
+        public void sourceUpdated(Stream stream);
+    }
+    public void setListener(Listener l){
+        listener=l;
+    }
+    public void updateStatus(){
+        if (listener!=null){
+            listener.sourceUpdated(this);
+        }
+    }
+    public void destroy(){
+        stop();
+        MasterChannels.getInstance().unregister(this);
+    }
     public abstract void read();
 
     public abstract void stop();
@@ -59,14 +81,32 @@ public abstract class Stream {
     public int getAudioLevelRight() {
         return audioLevelRight;
     }
+    
+    public void addChannel(SourceChannel sc){
+        channels.add(sc);
+    }
+    public void removeChannel(SourceChannel sc){
+        channels.remove(sc);
+    }
+    public void selectChannel(String name){
+        for (SourceChannel sc : channels){
+            if (sc.getName().equals(name)){
+                sc.apply(this);
+                break;
+            }
+        }
+    }
+    public ArrayList<SourceChannel> getChannels(){
+        return channels;
+    }
     public void setName(String n){
         name=n;
     }
-    public java.util.Vector<Effect> getEffects() {
+    public ArrayList<Effect> getEffects() {
         return effects;
     }
 
-    public synchronized void setEffects(java.util.Vector<Effect> list) {
+    public synchronized void setEffects(ArrayList<Effect> list) {
         effects = list;
     }
 
@@ -79,7 +119,9 @@ public abstract class Stream {
     }
 
     public synchronized void applyEffects(BufferedImage img) {
-        for (Effect e : effects) {
+        ArrayList<Effect> temp = new ArrayList<Effect>();
+        temp.addAll(effects);
+        for (Effect e : temp) {
             e.applyEffect(img);
         }
     }

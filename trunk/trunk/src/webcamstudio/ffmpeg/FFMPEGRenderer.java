@@ -233,6 +233,7 @@ public class FFMPEGRenderer {
         }
 
         stopMe = false;
+        stopped=true;
     }
 
     public boolean isStopped() {

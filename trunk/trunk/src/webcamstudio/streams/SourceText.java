@@ -26,6 +26,7 @@ public class SourceText extends Stream {
     Frame frame = null;
 
     public SourceText(String content) {
+        super();
         this.content = content;
         name = "Text";
         updateContent(content);

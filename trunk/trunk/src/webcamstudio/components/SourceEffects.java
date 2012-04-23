@@ -189,8 +189,8 @@ public class SourceEffects extends javax.swing.JPanel {
                 Effect selected = (Effect)listModel.getElementAt(indexSelected);
                 listModel.setElementAt(selected, indexPrevious);
                 listModel.setElementAt(previous, indexSelected);
-                stream.getEffects().setElementAt(previous, indexSelected);
-                stream.getEffects().setElementAt(selected, indexPrevious);
+                stream.getEffects().set(indexSelected,previous);
+                stream.getEffects().set(indexPrevious,selected);
                 lstEffects.setSelectedIndex(indexPrevious);
             }
             lstEffects.revalidate();
@@ -206,8 +206,8 @@ public class SourceEffects extends javax.swing.JPanel {
                 Effect selected = (Effect)listModel.getElementAt(indexSelected);
                 listModel.setElementAt(selected, indexNext);
                 listModel.setElementAt(next, indexSelected);
-                stream.getEffects().setElementAt(next, indexSelected);
-                stream.getEffects().setElementAt(selected, indexNext);
+                stream.getEffects().set(indexSelected,next);
+                stream.getEffects().set(indexNext,selected);
                 lstEffects.setSelectedIndex(indexNext);
             }
             lstEffects.revalidate();
