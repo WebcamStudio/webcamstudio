@@ -64,9 +64,9 @@ public class OutputRecorder extends javax.swing.JPanel {
                         JToggleButton button = ((JToggleButton) evt.getSource());
                         if (button.isSelected()) {
                             SinkLinuxDevice stream = new SinkLinuxDevice(new File(device), button.getText());
-                            stream.setRate(MasterMixer.getRate());
-                            stream.setWidth(MasterMixer.getWidth());
-                            stream.setHeight(MasterMixer.getHeight());
+                            stream.setRate(MasterMixer.getInstance().getRate());
+                            stream.setWidth(MasterMixer.getInstance().getWidth());
+                            stream.setHeight(MasterMixer.getInstance().getHeight());
                             stream.read();
                             devices.put(button.getText(), stream);
 
@@ -197,9 +197,9 @@ public class OutputRecorder extends javax.swing.JPanel {
             f = chooser.getSelectedFile();
             if (f != null) {
                 fileStream = new SinkFile(f);
-                fileStream.setWidth(MasterMixer.getWidth());
-                fileStream.setHeight(MasterMixer.getHeight());
-                fileStream.setRate(MasterMixer.getRate());
+                fileStream.setWidth(MasterMixer.getInstance().getWidth());
+                fileStream.setHeight(MasterMixer.getInstance().getHeight());
+                fileStream.setRate(MasterMixer.getInstance().getRate());
                 fileStream.read();
             }
         } else {

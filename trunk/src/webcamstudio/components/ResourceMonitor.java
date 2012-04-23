@@ -39,8 +39,8 @@ public class ResourceMonitor extends javax.swing.JPanel {
         memLevel.setMaximum((int)maxMem);
         memLevel.setValue((int)usedMem);
         memLevel.setString(usedMem + "MB/" + maxMem + "MB");
-        lblFPS.setText(MasterFrameBuilder.getFPS() + " fps");
-        lblMixerSize.setText(MasterMixer.getWidth()+ "X" + MasterMixer.getHeight());
+        lblFPS.setText(MasterMixer.getInstance().getFPS() + " fps");
+        lblMixerSize.setText(MasterMixer.getInstance().getWidth()+ "X" + MasterMixer.getInstance().getHeight());
         lblMessage.setText(message);
         if (System.currentTimeMillis()-messageMark > 5000){
             message = "";

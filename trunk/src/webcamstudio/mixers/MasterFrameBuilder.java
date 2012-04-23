@@ -12,9 +12,8 @@ import java.nio.ShortBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.TreeMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import webcamstudio.streams.Stream;
+import webcamstudio.util.Tools;
 
 /**
  *
@@ -25,21 +24,16 @@ public class MasterFrameBuilder implements Runnable {
     static ArrayList<Stream> streams = new ArrayList<Stream>();
     private boolean stopMe = false;
     private static int fps = 0;
-    private static float avgFPS = 0;
     private long mark = System.currentTimeMillis();
-    private long timeCode = System.currentTimeMillis();
     BufferedImage workingImage = null;
     final static int RENDERED_IMAGES = 15;
     BufferedImage[] renderedImages = new BufferedImage[RENDERED_IMAGES];
     int curentRenderedImgeIndex = 0;
+
     public static void register(Stream s) {
         if (!streams.contains(s)) {
             streams.add(s);
         }
-    }
-
-    public static float getFPS(){
-        return avgFPS;
     }
     public static void unregister(Stream s) {
         streams.remove(s);
@@ -65,7 +59,7 @@ public class MasterFrameBuilder implements Runnable {
             }
             g.dispose();
             g = renderedImages[curentRenderedImgeIndex].createGraphics();
-            g.drawImage(workingImage, 0, 0,null);
+            g.drawImage(workingImage, 0, 0, null);
             targetFrame.setImage(renderedImages[curentRenderedImgeIndex]);
             curentRenderedImgeIndex++;
             curentRenderedImgeIndex = curentRenderedImgeIndex % renderedImages.length;
@@ -73,7 +67,7 @@ public class MasterFrameBuilder implements Runnable {
     }
 
     private void mixAudio(Collection<Frame> frames, Frame targetFrame) {
-        byte[] audioData = new byte[(44100 * 2 * 2) / MasterMixer.frameRate];
+        byte[] audioData = new byte[(44100 * 2 * 2) / MasterMixer.getInstance().getRate()];
         ShortBuffer outputBuffer = ByteBuffer.wrap(audioData).asShortBuffer();
         for (Frame f : frames) {
             byte[] data = f.getAudioData();
@@ -103,44 +97,42 @@ public class MasterFrameBuilder implements Runnable {
         stopMe = false;
         ArrayList<Frame> frames = new ArrayList<Frame>();
         mark = System.currentTimeMillis();
-        timeCode = System.currentTimeMillis();
-        workingImage = new BufferedImage(MasterMixer.getWidth(),MasterMixer.getHeight(),BufferedImage.TYPE_INT_ARGB);
-        for (int i = 0; i< renderedImages.length;i++){
-            renderedImages[i] = new BufferedImage(MasterMixer.getWidth(),MasterMixer.getHeight(),BufferedImage.TYPE_INT_ARGB);
+        int w = MasterMixer.getInstance().getWidth();
+        int h = MasterMixer.getInstance().getHeight();
+        int r = MasterMixer.getInstance().getRate();
+        workingImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+        for (int i = 0; i < renderedImages.length; i++) {
+            renderedImages[i] = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
         }
+        long frameDelay = 1000 / r;
+        long timeCode=System.currentTimeMillis();
         while (!stopMe) {
-            timeCode = System.currentTimeMillis() + (1000 / MasterMixer.getRate());
-            Frame targetFrame = new Frame(MasterMixer.getWidth(), MasterMixer.getHeight(), MasterMixer.getRate());
-            frames.clear();
+            long start = System.currentTimeMillis();
+            timeCode+=frameDelay;
+            Frame targetFrame = new Frame(w, h, r);
+            frames = new ArrayList<Frame>();
             for (Stream s : streams) {
                 Frame f = s.getFrame();
                 if (f != null) {
                     frames.add(f);
                 }
             }
-            
             mixAudio(frames, targetFrame);
             SystemAudioPlayer.getInstance().addData(targetFrame.getAudioData());
             mixImages(frames, targetFrame);
-            MasterMixer.setCurrentFrame(targetFrame);
+            MasterMixer.getInstance().setCurrentFrame(targetFrame);
+            targetFrame = null;
             fps++;
             float delta = System.currentTimeMillis() - mark;
-            if (fps == 60) {
-                avgFPS = ((60F / (delta / 1000F)));
+            if (delta >= 1000) {
                 mark = System.currentTimeMillis();
+                MasterMixer.getInstance().setFPS((((float) fps) / (delta / 1000F)));
                 fps = 0;
             }
-            frames.clear();
-            targetFrame = null;
-            long waitTime = timeCode - System.currentTimeMillis();
-            if (waitTime > 0) {
-                try {
-                    Thread.sleep(timeCode - System.currentTimeMillis());
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(MasterFrameBuilder.class.getName()).log(Level.SEVERE, null, ex);
-                }
+            long sleepTime = timeCode-System.currentTimeMillis();
+            if (sleepTime > 0){
+                Tools.sleep(sleepTime+10);
             }
-
         }
     }
 }

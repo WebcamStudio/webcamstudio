@@ -14,8 +14,9 @@ import java.nio.IntBuffer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import webcamstudio.mixers.Frame;
+import webcamstudio.mixers.FrameBuffer;
+import webcamstudio.mixers.ImageBuffer;
 import webcamstudio.mixers.MasterMixer;
-import webcamstudio.util.Tools;
 
 /**
  *
@@ -31,8 +32,8 @@ public class Exporter implements MasterMixer.SinkListener {
     OutputStream audioOutput = null;
     int aport = 0;
     int vport = 0;
-    BufferedImage lastImage = null;
-    byte[] audioData = null;
+    FrameBuffer frameBuffer = new FrameBuffer();
+    ImageBuffer imageBuffer = new ImageBuffer();
 
     public Exporter() {
         try {
@@ -55,10 +56,9 @@ public class Exporter implements MasterMixer.SinkListener {
                     Socket connection = videoServer.accept();
                     System.out.println("Video output accepted");
                     videoOutput = connection.getOutputStream();
-                    long mark = 0;
+                    imageBuffer.clear();
                     while (!cancel) {
-                        BufferedImage image = lastImage;
-                        mark = System.currentTimeMillis();
+                        BufferedImage image = imageBuffer.pop();
                         if (image != null) {
                             byte[] data = new byte[image.getWidth() * image.getHeight() * 4];
                             ByteBuffer buffer = ByteBuffer.wrap(data);
@@ -68,13 +68,14 @@ public class Exporter implements MasterMixer.SinkListener {
                             iBuffer.put(imgData);
                             videoOutput.write(data);
                         }
-                        Tools.wait(1000 / MasterMixer.getRate(), mark);
-
                     }
+
                 } catch (IOException ex) {
+                    cancel = true;
+                    imageBuffer.abort();
                     //Logger.getLogger(Exporter.class.getName()).log(Level.SEVERE, null, ex);
                 }
-
+                System.out.println("Video output stopped");
             }
         }).start();
         new Thread(new Runnable() {
@@ -82,31 +83,42 @@ public class Exporter implements MasterMixer.SinkListener {
             @Override
             public void run() {
                 try {
+                    frameBuffer.clear();
                     Socket connection = audioServer.accept();
-                    //System.out.println("Audio output accepted");
+                    System.out.println("Audio output accepted");
                     audioOutput = connection.getOutputStream();
-                    long mark = 0;
+
                     while (!cancel) {
-                        mark = System.currentTimeMillis();
-                        if (audioData != null) {
-                            audioOutput.write(audioData);
-                            audioData = null;
+                        Frame frame = frameBuffer.pop();
+                        if (frame != null) {
+                            byte[] audioData = frame.getAudioData();
+                            if (audioData != null) {
+                                audioOutput.write(audioData);
+                                audioData = null;
+                            }
                         }
-                        Tools.wait(1000 / MasterMixer.getRate(), mark);
                     }
 
                 } catch (IOException ex) {
+                    cancel = true;
+                    frameBuffer.abort();
                     //Logger.getLogger(Exporter.class.getName()).log(Level.SEVERE, null, ex);
                 }
+                System.out.println("Audio output stopped");
             }
         }).start();
         cancel = false;
-        MasterMixer.register(this);
+        MasterMixer.getInstance().register(this);
+
     }
 
     public void abort() {
-        MasterMixer.unregister(this);
         cancel = true;
+        System.out.println("Output aborted...");
+        MasterMixer.getInstance().unregister(this);
+        imageBuffer.abort();
+        frameBuffer.abort();
+
         if (videoServer != null) {
             try {
                 videoServer.close();
@@ -127,8 +139,6 @@ public class Exporter implements MasterMixer.SinkListener {
             }
             audioServer = null;
         }
-
-
     }
 
     public int getAudioPort() {
@@ -139,20 +149,9 @@ public class Exporter implements MasterMixer.SinkListener {
         return vport;
     }
 
-    public boolean cancel() {
-        cancel = true;
-        return cancel;
-    }
-
     @Override
-    public void newFrame(Frame frame) {
-
-        if (frame.getImage() != null) {
-            lastImage = frame.getImage();
-
-        }
-        if (frame.getAudioData() != null) {
-            audioData = frame.getAudioData();
-        }
+    public void newFrame(final Frame frame) {
+        frameBuffer.push(frame);
+        imageBuffer.push(frame.getImage());
     }
 }

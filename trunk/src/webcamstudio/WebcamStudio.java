@@ -130,7 +130,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         panControls.add(new OutputRecorder(), BorderLayout.NORTH);
 
         loadPrefs();
-        MasterMixer.start();
+        MasterMixer.getInstance().start();
         panSources.add(new MasterPanel(), BorderLayout.WEST);
 
     }
@@ -144,9 +144,9 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         int y = prefs.getInt("main-y", 100);
         int w = prefs.getInt("main-w", 800);
         int h = prefs.getInt("main-h", 400);
-        MasterMixer.setWidth(prefs.getInt("mastermixer-w", 320));
-        MasterMixer.setHeight(prefs.getInt("mastermixer-h", 240));
-        MasterMixer.setRate(prefs.getInt("mastermixer-r", 15));
+        MasterMixer.getInstance().setWidth(prefs.getInt("mastermixer-w", 320));
+        MasterMixer.getInstance().setHeight(prefs.getInt("mastermixer-h", 240));
+        MasterMixer.getInstance().setRate(prefs.getInt("mastermixer-r", 15));
         mainSplit.setDividerLocation(prefs.getInt("split-x", 800));
         this.setLocation(x, y);
         this.setSize(w, h);
@@ -157,9 +157,9 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         prefs.putInt("main-y", this.getY());
         prefs.putInt("main-w", this.getWidth());
         prefs.putInt("main-h", this.getHeight());
-        prefs.putInt("mastermixer-w", MasterMixer.getWidth());
-        prefs.putInt("mastermixer-h", MasterMixer.getHeight());
-        prefs.putInt("mastermixer-r", MasterMixer.getRate());
+        prefs.putInt("mastermixer-w", MasterMixer.getInstance().getWidth());
+        prefs.putInt("mastermixer-h", MasterMixer.getInstance().getHeight());
+        prefs.putInt("mastermixer-r", MasterMixer.getInstance().getRate());
         prefs.putInt("split-x", mainSplit.getDividerLocation());
         try {
             prefs.flush();
@@ -291,7 +291,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         savePrefs();
-        MasterMixer.stop();
+        MasterMixer.getInstance().stop();
     }//GEN-LAST:event_formWindowClosing
 
     private void btnAddDesktopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddDesktopActionPerformed

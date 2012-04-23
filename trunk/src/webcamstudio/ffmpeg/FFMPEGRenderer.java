@@ -198,9 +198,9 @@ public class FFMPEGRenderer {
             @Override
             public void run() {
 
-                final Exporter renderer = new Exporter();
-                videoPort = renderer.getVideoPort();
-                audioPort = renderer.getAudioPort();
+                exporter = new Exporter();
+                videoPort = exporter.getVideoPort();
+                audioPort = exporter.getAudioPort();
                 stopped = false;
                 String command = plugins.getProperty(plugin).replaceAll("  ", " "); //Making sure there is no double spaces
                 command = setParameters(command);
