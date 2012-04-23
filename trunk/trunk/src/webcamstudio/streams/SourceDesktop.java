@@ -34,6 +34,12 @@ public class SourceDesktop extends Stream {
         name = "Desktop";
     }
 
+    public boolean isFollowingMouse(){
+        return followMouse;
+    }
+    public void setFollowMouse(boolean b){
+        followMouse=b;
+    }
     private BufferedImage capture() {
         if (followMouse){
             captureX = (int) java.awt.MouseInfo.getPointerInfo().getLocation().getX() - (captureWidth / 2);

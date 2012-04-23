@@ -4,7 +4,6 @@
  */
 package webcamstudio.streams;
 
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import webcamstudio.sources.effects.Effect;
 
@@ -29,7 +28,9 @@ public class SourceChannel {
     String name = "";
     boolean isPlaying = false;
     ArrayList<Effect> effects = new ArrayList<Effect>();
-
+    boolean followMouse = false;
+    int captureX = 0;
+    int captureY = 0;
     private SourceChannel() {
     }
 
@@ -60,6 +61,12 @@ public class SourceChannel {
             s.text=st.content;
             s.font=st.fontName;
             s.color=st.color;
+            
+        } else if (stream instanceof SourceDesktop){
+            SourceDesktop sd = (SourceDesktop)stream;
+            s.followMouse=sd.followMouse;
+            s.captureX=sd.captureX;
+            s.captureY=sd.captureY;
         }
         return s;
     }
@@ -82,6 +89,11 @@ public class SourceChannel {
             st.fontName=font;
             st.color=color;
             st.updateContent(text);
+        } else if (s instanceof SourceDesktop){
+            SourceDesktop sd = (SourceDesktop)s;
+            sd.followMouse=followMouse;
+            sd.captureX=captureX;
+            sd.captureY=captureY;
         }
         if (isPlaying) {
             if (!s.isPlaying()) {
