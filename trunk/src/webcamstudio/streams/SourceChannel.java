@@ -97,12 +97,12 @@ public class SourceChannel {
         }
         if (isPlaying) {
             if (!s.isPlaying()) {
-                System.out.println("Starting source");
+//                System.out.println("Starting source");
                 s.read();
             }
         } else {
             if (s.isPlaying()) {
-                System.out.println("Stopping source");
+//                System.out.println("Stopping source");
                 s.stop();
             }
         }

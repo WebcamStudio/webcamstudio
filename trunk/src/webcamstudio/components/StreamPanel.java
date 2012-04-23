@@ -47,6 +47,7 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener{
         spinOpacity.setValue(stream.getOpacity());
         spinVolume.setModel(new SpinnerNumberModel(50, 0, 300, 1));
         spinVolume.setValue(stream.getVolume() * 100);
+        spinVolume.setEnabled(stream.hasAudio());
         spinZOrder.setValue(stream.getZOrder());
         spinH1.setValue(stream.getCaptureHeight());
         spinW1.setValue(stream.getCaptureWidth());
