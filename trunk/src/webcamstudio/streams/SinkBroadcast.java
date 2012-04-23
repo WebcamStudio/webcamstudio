@@ -10,6 +10,7 @@ import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import webcamstudio.ffmpeg.FFMPEGRenderer;
+import webcamstudio.mixers.MasterMixer;
 
 /**
  *
@@ -25,7 +26,7 @@ public class SinkBroadcast extends Stream {
         } catch (MalformedURLException ex) {
             Logger.getLogger(SinkBroadcast.class.getName()).log(Level.SEVERE, null, ex);
         }
-        capture = new FFMPEGRenderer(this,FFMPEGRenderer.ACTION.OUTPUT,"broadcast");
+        
         this.name=name;
     }
     @Override
@@ -34,17 +35,22 @@ public class SinkBroadcast extends Stream {
     }
     @Override
     public void read() {
+        rate = MasterMixer.getInstance().getRate();
+        capture = new FFMPEGRenderer(this,FFMPEGRenderer.ACTION.OUTPUT,"broadcast");
         capture.write();
     }
 
     @Override
     public void stop() {
-        capture.stop();
+        if  (capture!=null){
+            capture.stop();
+            capture=null;
+        }
     }
 
     @Override
     public boolean isPlaying() {
-        return !capture.isStopped();
+        return capture!=null && !capture.isStopped();
     }
 
     @Override

@@ -12,6 +12,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterFrameBuilder;
+import webcamstudio.mixers.MasterMixer;
 
 /**
  *
@@ -29,19 +30,22 @@ public class SourceDesktop extends Stream {
     int captureX = 0;
     int captureY = 0;
     boolean followMouse = false;
+
     public SourceDesktop() {
         super();
         name = "Desktop";
     }
 
-    public boolean isFollowingMouse(){
+    public boolean isFollowingMouse() {
         return followMouse;
     }
-    public void setFollowMouse(boolean b){
-        followMouse=b;
+
+    public void setFollowMouse(boolean b) {
+        followMouse = b;
     }
+
     private BufferedImage capture() {
-        if (followMouse){
+        if (followMouse) {
             captureX = (int) java.awt.MouseInfo.getPointerInfo().getLocation().getX() - (captureWidth / 2);
             captureY = (int) java.awt.MouseInfo.getPointerInfo().getLocation().getY() - (captureHeight / 2);
         }
@@ -52,8 +56,9 @@ public class SourceDesktop extends Stream {
     @Override
     public void read() {
         stop = false;
-        playing=true;
-try {
+        rate = MasterMixer.getInstance().getRate();
+        playing = true;
+        try {
             robot = new Robot();
         } catch (AWTException ex) {
             Logger.getLogger(SourceDesktop.class.getName()).log(Level.SEVERE, null, ex);
@@ -70,7 +75,7 @@ try {
                         image = frame.getImage();
                     }
                     try {
-                        Thread.sleep(1000/rate);
+                        Thread.sleep(1000 / rate);
                     } catch (InterruptedException ex) {
                         Logger.getLogger(SourceDesktop.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -78,7 +83,7 @@ try {
             }
         });
         capture.setPriority(Thread.MIN_PRIORITY);
-        capture.start();        
+        capture.start();
         try {
             frame = new Frame(uuid, image, null);
             frame.setOutputFormat(x, y, width, height, opacity, volume);
@@ -92,7 +97,7 @@ try {
     @Override
     public void stop() {
         stop = true;
-        playing=false;
+        playing = false;
         MasterFrameBuilder.unregister(this);
     }
 

@@ -31,6 +31,7 @@ public class SinkLinuxDevice extends Stream implements MasterMixer.SinkListener 
     @Override
     public void read() {
         stop = false;
+        rate = MasterMixer.getInstance().getRate();
         device.open(file.getAbsolutePath(), width, height, VideoOutput.RGB24);
         MasterMixer.getInstance().register(this);
     }
