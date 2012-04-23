@@ -27,7 +27,7 @@ public class Tools {
             os = OS.LINUX;
         } else if (value.indexOf("windows") != -1) {
             os = OS.WINDOWS;
-        } else if (value.indexOf("osx") != -1) {
+        } else if (value.indexOf("os x") != -1) {
             os = OS.OSX;
         }
         return os;
