@@ -14,11 +14,11 @@ import java.nio.ByteOrder;
 import java.nio.IntBuffer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import webcamstudio.mixers.AudioBuffer;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.FrameBuffer;
 import webcamstudio.mixers.ImageBuffer;
 import webcamstudio.streams.Stream;
-import webcamstudio.util.Tools;
 
 /**
  *
@@ -34,8 +34,9 @@ public class Capturer {
     private int videoBufferSize = 0;
     private ServerSocket videoServer = null;
     private ServerSocket audioServer = null;
-    private FrameBuffer frameBuffer = new FrameBuffer();
+   // private FrameBuffer frameBuffer = new FrameBuffer();
     private ImageBuffer imageBuffer = new ImageBuffer();
+    private AudioBuffer audioBuffer = new AudioBuffer();
 
     public Capturer(Stream s) {
         stream = s;
@@ -109,16 +110,13 @@ public class Capturer {
                     Socket connection = audioServer.accept();
                     System.out.println(stream.getName() + " audio accepted...");
                     DataInputStream din = new DataInputStream(connection.getInputStream());
-                    frameBuffer.clear();
+                    audioBuffer.clear();
                     while (!stopMe) {
                         try {
                             audioBufferSize = (44100 * 2 * 2) / stream.getRate();
                             byte[] abuffer = new byte[audioBufferSize];
                             din.readFully(abuffer);
-                            Frame frame = new Frame(stream.getID(), imageBuffer.pop(), abuffer);
-                            frame.setOutputFormat(stream.getX(), stream.getY(), stream.getWidth(), stream.getHeight(), stream.getOpacity(), stream.getVolume());
-                            frame.setZOrder(stream.getZOrder());
-                            frameBuffer.push(frame);
+                            audioBuffer.push(abuffer);
                         } catch (IOException ioe) {
                             stopMe = true;
                             //ioe.printStackTrace();
@@ -139,7 +137,7 @@ public class Capturer {
 
     public void abort() {
         stopMe = true;
-        frameBuffer.abort();
+        audioBuffer.abort();
         imageBuffer.abort();
         try {
             if (videoServer != null) {
@@ -164,6 +162,9 @@ public class Capturer {
     }
 
     public Frame getFrame() {
-        return frameBuffer.pop();
+        Frame frame = new Frame(stream.getID(), imageBuffer.pop(), audioBuffer.pop());
+        frame.setOutputFormat(stream.getX(), stream.getY(), stream.getWidth(), stream.getHeight(), stream.getOpacity(), stream.getVolume());
+        frame.setZOrder(stream.getZOrder());
+        return frame;
     }
 }

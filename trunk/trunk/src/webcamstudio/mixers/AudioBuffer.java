@@ -12,34 +12,34 @@ import webcamstudio.util.Tools;
  *
  * @author patrick
  */
-public class ImageBuffer {
-    private ArrayList<BufferedImage> buffer = new ArrayList<BufferedImage>();
+public class AudioBuffer {
+    private ArrayList<byte[]> buffer = new ArrayList<byte[]>();
     private static final int BUFFER_SIZE = 100;
     private static final int BUFFER_THRESHOLD = 15;
     private boolean abort = false;
-    public void push(BufferedImage img){
+    public void push(byte[] data){
         while (!abort && buffer.size()>=BUFFER_SIZE){
             Tools.sleep(10);
         }
-        buffer.add(img);
+        buffer.add(data);
     }
-    public BufferedImage pop(){
-        BufferedImage image = null;
+    public byte[] pop(){
+        byte[] data = null;
         while(!abort && buffer.size()==0){
             //System.err.println("Waiting for images...");
             Tools.sleep(10);
         }
         if (!abort && buffer.size()>0){
-            image = buffer.remove(0);
+            data = buffer.remove(0);
         }
-        return image;
+        return data;
     }
-    public BufferedImage popNoWait(){
-        BufferedImage image = null;
+    public byte[] popNoWait(){
+        byte[] data = null;
         if (!abort && buffer.size()>0){
-            image = buffer.remove(0);
+            data = buffer.remove(0);
         }
-        return image;
+        return data;
     }
     public void abort(){
         abort=true;
