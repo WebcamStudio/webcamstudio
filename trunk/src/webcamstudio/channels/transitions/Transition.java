@@ -39,12 +39,14 @@ public abstract class Transition implements Runnable{
             t = new Translate(source);
         } else if (name.equals("Shrink")){
             t= new Shrink(source);
+        } else if (name.equals("RevealLeft")){
+            t = new RevealLeft(source);
         }
         return t;
     }
     
     public static String[] getStartTransitions(){
-        String[] ts = {"FadeIn","Translate","Shrink"};
+        String[] ts = {"FadeIn","Translate","Shrink","RevealLeft"};
         return ts;
     }
     public static String[] getEndTransitions(){
