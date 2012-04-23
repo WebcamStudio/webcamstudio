@@ -44,6 +44,7 @@ public abstract class Effect {
         retValue.put(MegaMind.class.getSimpleName(), new MegaMind());
         retValue.put(Edge.class.getSimpleName(), new Edge());
         retValue.put(Radar.class.getSimpleName(), new Radar());
+        retValue.put(Blink.class.getSimpleName(), new Blink());
         //retValue.put(TEST.class.getSimpleName(), new TEST());
 
         return retValue;
