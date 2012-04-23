@@ -11,6 +11,7 @@
 package webcamstudio;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
@@ -19,6 +20,7 @@ import java.beans.PropertyVetoException;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -464,6 +466,9 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         lblSourceSelected.setText(source.getName());
         lblSourceSelected.setToolTipText(source.getName());
         tabControls.removeAll();
-        tabControls.add("Effects", new SourceEffects(source));
+        ArrayList<Component> comps = SourceControls.getControls(source);
+        for (Component c : comps){
+            tabControls.add(c.getName(), c);
+        }
     }
 }

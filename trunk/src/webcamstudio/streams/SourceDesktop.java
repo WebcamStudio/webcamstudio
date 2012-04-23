@@ -26,16 +26,20 @@ public class SourceDesktop extends Stream {
     Robot robot = null;
     protected int screenwidth = java.awt.Toolkit.getDefaultToolkit().getScreenSize().width;
     protected int screenheight = java.awt.Toolkit.getDefaultToolkit().getScreenSize().height;
-
+    int captureX = 0;
+    int captureY = 0;
+    boolean followMouse = false;
     public SourceDesktop() {
         super();
         name = "Desktop";
     }
 
     private BufferedImage capture() {
-        int mouseX = (int) java.awt.MouseInfo.getPointerInfo().getLocation().getX() - (captureWidth / 2);
-        int mouseY = (int) java.awt.MouseInfo.getPointerInfo().getLocation().getY() - (captureHeight / 2);
-        BufferedImage img = robot.createScreenCapture(new Rectangle(mouseX, mouseY, captureWidth, captureHeight));
+        if (followMouse){
+            captureX = (int) java.awt.MouseInfo.getPointerInfo().getLocation().getX() - (captureWidth / 2);
+            captureY = (int) java.awt.MouseInfo.getPointerInfo().getLocation().getY() - (captureHeight / 2);
+        }
+        BufferedImage img = robot.createScreenCapture(new Rectangle(captureX, captureY, captureWidth, captureHeight));
         return img;
     }
 
