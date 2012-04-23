@@ -26,6 +26,13 @@
   <SubComponents>
     <Container class="javax.swing.JScrollPane" name="jScrollPane1">
       <Properties>
+        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+          <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
+            <TitledBorder title="Starting">
+              <ResourceString PropertyName="titleX" bundle="webcamstudio/Languages.properties" key="STARTING" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+            </TitledBorder>
+          </Border>
+        </Property>
         <Property name="name" type="java.lang.String" value="jScrollPane1" noResource="true"/>
       </Properties>
       <AuxValues>
@@ -55,6 +62,13 @@
     </Container>
     <Container class="javax.swing.JScrollPane" name="jScrollPane2">
       <Properties>
+        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+          <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
+            <TitledBorder title="Ending">
+              <ResourceString PropertyName="titleX" bundle="webcamstudio/Languages.properties" key="ENDING" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+            </TitledBorder>
+          </Border>
+        </Property>
         <Property name="name" type="java.lang.String" value="jScrollPane2" noResource="true"/>
       </Properties>
       <AuxValues>

@@ -60,8 +60,9 @@ public class SourceControlTransitions extends javax.swing.JPanel {
 
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("webcamstudio/Languages"); // NOI18N
         setName(bundle.getString("TRANSITIONS")); // NOI18N
-        setLayout(new java.awt.GridLayout());
+        setLayout(new java.awt.GridLayout(1, 0));
 
+        jScrollPane1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("STARTING"))); // NOI18N
         jScrollPane1.setName("jScrollPane1"); // NOI18N
 
         lstStartTransitions.setModel(new javax.swing.AbstractListModel() {
@@ -79,6 +80,7 @@ public class SourceControlTransitions extends javax.swing.JPanel {
 
         add(jScrollPane1);
 
+        jScrollPane2.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ENDING"))); // NOI18N
         jScrollPane2.setName("jScrollPane2"); // NOI18N
 
         lstEndTransitions.setModel(new javax.swing.AbstractListModel() {

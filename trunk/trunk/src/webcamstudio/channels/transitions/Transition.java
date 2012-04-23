@@ -4,6 +4,7 @@
  */
 package webcamstudio.channels.transitions;
 
+import webcamstudio.streams.SourceChannel;
 import webcamstudio.streams.Stream;
 
 /**
@@ -13,13 +14,19 @@ import webcamstudio.streams.Stream;
 public abstract class Transition implements Runnable{
 
     Stream source= null;
+    SourceChannel channel = null;
+    
     protected Transition(Stream source){
         this.source=source;
     }
     protected abstract void execute();
+    
+    public Transition run(SourceChannel sc){
+        channel=sc;
+        return this;
+    }
     @Override
     public void run() {
-        System.out.println("Executing");
         execute();
     }
     public static Transition getInstance(Stream source,String name){
@@ -28,16 +35,20 @@ public abstract class Transition implements Runnable{
             t = new FadeIn(source);
         } else if (name.equals("FadeOut")){
             t = new FadeOut(source);
+        } else if (name.equals("Translate")){
+            t = new Translate(source);
+        } else if (name.equals("Shrink")){
+            t= new Shrink(source);
         }
         return t;
     }
     
     public static String[] getStartTransitions(){
-        String[] ts = {"FadeIn"};
+        String[] ts = {"FadeIn","Translate","Shrink"};
         return ts;
     }
     public static String[] getEndTransitions(){
-        String[] ts = {"FadeOut"};
+        String[] ts = {"FadeOut","Shrink"};
         return ts;
     }
 }
