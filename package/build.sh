@@ -19,32 +19,27 @@ mkdir package/usr/share/pixmaps
 mkdir package/usr/share/applications
 mkdir package/usr/share/webcamstudio
 mkdir package/usr/share/webcamstudio/webcamstudio-src
-mkdir package/usr/share/webcamstudio/animations
 mkdir package/usr/share/webcamstudio/widgets
 mkdir package/DEBIAN
 mkdir package/etc
 
 
 sed -e "s/VERSION/$VALUE/" webcamstudio >package/usr/bin/webcamstudio
-sed -e "s/VERSION/$VALUE/" webcamstudioConsole >package/usr/bin/webcamstudioConsole
 cp ws4gl-pulseaudio-getsources.sh package/usr/bin
 cp ws4gl-pulseaudio-getapps.sh package/usr/bin
 cp webcamstudiodv.sh package/usr/bin
 chmod 755 package/usr/bin/webcamstudio
-chmod 755 package/usr/bin/webcamstudioConsole
 chmod 755 package/usr/bin/ws4gl-pulseaudio*
 chmod 755 package/usr/bin/webcamstudiodv.sh
 cp webcamstudio.png package/usr/share/pixmaps
 cp webcamstudio.desktop package/usr/share/applications
 cp webcamstudioConsole.desktop package/usr/share/applications
-#cp webcamstudio-vloopback-installer.desktop package/usr/share/applications
 cp ../trunk/dist/WebcamStudio.jar package/usr/lib/webcamstudio
 cp ../trunk/dist/lib/* package/usr/lib/webcamstudio/lib
 rm package/usr/lib/webcamstudio/lib/jna.jar
 ln -s /usr/share/java/jna.jar package/usr/lib/webcamstudio/lib/jna.jar
 cp ../trunk/dist/README.TXT package/usr/lib/webcamstudio
 cp ../trunk/vloopback/* package/usr/share/webcamstudio/webcamstudio-src
-cp animations/*.anm package/usr/share/webcamstudio/animations
 cp widgets/*.xml package/usr/share/webcamstudio/widgets
 cp -R service/* package/etc
 rm -R -f package/etc/init.d/.svn
@@ -74,7 +69,6 @@ md5sum usr/lib/webcamstudio/WebcamStudio.jar>> DEBIAN/md5sums
 md5sum usr/lib/webcamstudio/lib/*>> DEBIAN/md5sums
 md5sum usr/share/applications/*>> DEBIAN/md5sums
 md5sum usr/share/pixmaps/*>> DEBIAN/md5sums
-md5sum usr/share/webcamstudio/animations/*>> DEBIAN/md5sums
 md5sum usr/share/webcamstudio/webcamstudio-src/*>> DEBIAN/md5sums
 md5sum usr/share/webcamstudio/widgets/*>> DEBIAN/md5sums
 cd ..
