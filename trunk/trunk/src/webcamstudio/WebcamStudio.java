@@ -57,8 +57,6 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         ImageIcon icon = new ImageIcon(this.getClass().getResource("/webcamstudio/resources/icon.png"));
         this.setIconImage(icon.getImage());
 
-
-
         if (Tools.getOS() == OS.LINUX) {
             for (VideoDevice d : VideoDevice.getOutputDevices()) {
                 Stream webcam = new SourceWebcam(d.getFile());

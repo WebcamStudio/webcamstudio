@@ -19,7 +19,7 @@ public class ImageBuffer {
     private boolean abort = false;
     public void push(BufferedImage img){
         while (!abort && buffer.size()>=BUFFER_SIZE){
-            Tools.sleep(10);
+            Tools.sleep(30);
         }
         buffer.add(img);
     }

@@ -5,8 +5,11 @@
 package webcamstudio;
 
 import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import webcamstudio.ffmpeg.FFMPEGRenderer;
 import webcamstudio.streams.SourceMovie;
+import webcamstudio.streams.SourceWebcam;
 
 /**
  *
@@ -14,11 +17,18 @@ import webcamstudio.streams.SourceMovie;
  */
 public class TESTTCPIP {
     public static void main(String[] args){
-        File file = new File("/home/patrick/Videos/AceVenturaenAfrique.mp4");
-        SourceMovie movie = new SourceMovie(file);
-        movie.setRate(15);
+        File file = new File("/dev/video0");
+        SourceWebcam movie = new SourceWebcam(file);
+        movie.setRate(10);
         
-        FFMPEGRenderer ffmpeg = new FFMPEGRenderer(movie, FFMPEGRenderer.ACTION.CAPTURE,"movie");
-        ffmpeg.read();
+        movie.read();
+        while(movie.isPlaying()){
+            movie.getFrame();
+            try {
+                Thread.sleep(1000/10);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(TESTTCPIP.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
 }

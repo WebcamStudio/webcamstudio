@@ -25,10 +25,6 @@ public class MasterFrameBuilder implements Runnable {
     private boolean stopMe = false;
     private static int fps = 0;
     private long mark = System.currentTimeMillis();
-    BufferedImage workingImage = null;
-    final static int RENDERED_IMAGES = 15;
-    BufferedImage[] renderedImages = new BufferedImage[RENDERED_IMAGES];
-    int curentRenderedImgeIndex = 0;
 
     public synchronized static void register(Stream s) {
         if (!streams.contains(s)) {
@@ -48,9 +44,9 @@ public class MasterFrameBuilder implements Runnable {
         for (Frame f : frames) {
             orderedFrame.put(f.getZOrder(), f);
         }
-        if (workingImage != null) {
-            Graphics2D g = workingImage.createGraphics();
-            g.clearRect(0, 0, workingImage.getWidth(), workingImage.getHeight());
+        BufferedImage image = new BufferedImage(targetFrame.getWidth(),targetFrame.getHeight(),BufferedImage.TYPE_INT_ARGB);
+        if (image != null) {
+            Graphics2D g = image.createGraphics();
             for (Frame f : orderedFrame.values()) {
                 if (g != null) {
                     g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, ((float) f.getOpacity()) / 100F));
@@ -58,11 +54,8 @@ public class MasterFrameBuilder implements Runnable {
                 }
             }
             g.dispose();
-            g = renderedImages[curentRenderedImgeIndex].createGraphics();
-            g.drawImage(workingImage, 0, 0, null);
-            targetFrame.setImage(renderedImages[curentRenderedImgeIndex]);
-            curentRenderedImgeIndex++;
-            curentRenderedImgeIndex = curentRenderedImgeIndex % renderedImages.length;
+            targetFrame.setImage(image);
+            
         }
     }
 
@@ -100,10 +93,6 @@ public class MasterFrameBuilder implements Runnable {
         int w = MasterMixer.getInstance().getWidth();
         int h = MasterMixer.getInstance().getHeight();
         int r = MasterMixer.getInstance().getRate();
-        workingImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-        for (int i = 0; i < renderedImages.length; i++) {
-            renderedImages[i] = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-        }
         long frameDelay = 1000 / r;
         long timeCode=System.currentTimeMillis();
         while (!stopMe) {
@@ -118,7 +107,6 @@ public class MasterFrameBuilder implements Runnable {
                 }
             }
             mixAudio(frames, targetFrame);
-            SystemAudioPlayer.getInstance().addData(targetFrame.getAudioData());
             mixImages(frames, targetFrame);
             MasterMixer.getInstance().setCurrentFrame(targetFrame);
             targetFrame = null;
