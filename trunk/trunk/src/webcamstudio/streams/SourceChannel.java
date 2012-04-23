@@ -87,12 +87,23 @@ public class SourceChannel {
 
             @Override
             public void run() {
+                ExecutorService pool = java.util.concurrent.Executors.newCachedThreadPool();
+                for (Transition t : s.endTransitions) {
+                    System.out.println(t.getClass().getName());
+                    pool.submit(t.run(instance));
+                }
+                pool.shutdown();
+                try {
+                    pool.awaitTermination(10, TimeUnit.SECONDS);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(SourceChannel.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 if (isPlaying) {
                     if (!s.isPlaying()) {
                         s.read();
                     }
-                    ExecutorService pool = java.util.concurrent.Executors.newCachedThreadPool();
-                    for (Transition t : s.startTransitions) {
+                    pool = java.util.concurrent.Executors.newCachedThreadPool();
+                    for (Transition t : instance.startTransitions) {
                         pool.submit(t.run(instance));
                     }
                     pool.shutdown();
@@ -103,22 +114,11 @@ public class SourceChannel {
                     }
 
                 } else {
-                    ExecutorService pool = java.util.concurrent.Executors.newCachedThreadPool();
-                    for (Transition t : s.endTransitions) {
-                        System.out.println(t.getClass().getName());
-                        pool.submit(t.run(instance));
-                    }
-                    pool.shutdown();
-                    try {
-                        pool.awaitTermination(10, TimeUnit.SECONDS);
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(SourceChannel.class.getName()).log(Level.SEVERE, null, ex);
-                    }
                     if (s.isPlaying()) {
                         s.stop();
                     }
                 }
-                
+
                 s.x = getX();
                 s.y = getY();
                 s.width = getWidth();
