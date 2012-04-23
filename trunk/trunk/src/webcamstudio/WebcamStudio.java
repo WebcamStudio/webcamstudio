@@ -17,14 +17,18 @@ import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetDropEvent;
 import java.beans.PropertyVetoException;
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
+import javax.swing.JInternalFrame;
 import webcamstudio.components.*;
 import webcamstudio.exporter.vloopback.VideoDevice;
 import webcamstudio.mixers.MasterMixer;
@@ -39,6 +43,7 @@ import webcamstudio.util.Tools.OS;
 public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Listener {
 
     Preferences prefs = null;
+    Properties animations = new Properties();
 
     /**
      * Creates new form WebcamStudio
@@ -117,7 +122,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
                         }
                     }
                     evt.dropComplete(success);
-                    if (!success){
+                    if (!success) {
                         ResourceMonitor.setMessage("Unsupported file");
                     }
                 } catch (Exception ex) {
@@ -132,11 +137,25 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         loadPrefs();
         MasterMixer.getInstance().start();
         panSources.add(new MasterPanel(), BorderLayout.WEST);
-
+        initAnimations();
     }
 
     private StreamDesktop getNewStreamDesktop(Stream s) {
         return new StreamDesktop(s, this);
+    }
+
+    private void initAnimations() {
+        try {
+            animations.load(getClass().getResourceAsStream("/webcamstudio/resources/animations/animations.properties"));
+            DefaultComboBoxModel model = new DefaultComboBoxModel();
+            for (Object o : animations.keySet()) {
+                model.addElement(o);
+            }
+            cboAnimations.setModel(model);
+        } catch (IOException ex) {
+            Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }
 
     private void loadPrefs() {
@@ -183,6 +202,8 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         btnAddDesktop = new javax.swing.JButton();
         btnAddText = new javax.swing.JButton();
         btnAddQRCode = new javax.swing.JButton();
+        cboAnimations = new javax.swing.JComboBox();
+        btnAddAnimation = new javax.swing.JButton();
         mainSplit = new javax.swing.JSplitPane();
         panSources = new javax.swing.JPanel();
         desktop = new javax.swing.JDesktopPane();
@@ -252,6 +273,24 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
             }
         });
         toolbar.add(btnAddQRCode);
+
+        cboAnimations.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cboAnimations.setToolTipText(bundle.getString("ANIMATIONS")); // NOI18N
+        cboAnimations.setName("cboAnimations"); // NOI18N
+        toolbar.add(cboAnimations);
+
+        btnAddAnimation.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/emotes/face-cool.png"))); // NOI18N
+        btnAddAnimation.setToolTipText(bundle.getString("ADD_ANIMATION")); // NOI18N
+        btnAddAnimation.setFocusable(false);
+        btnAddAnimation.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnAddAnimation.setName("btnAddAnimation"); // NOI18N
+        btnAddAnimation.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnAddAnimation.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddAnimationActionPerformed(evt);
+            }
+        });
+        toolbar.add(btnAddAnimation);
 
         getContentPane().add(toolbar, java.awt.BorderLayout.NORTH);
 
@@ -349,6 +388,20 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
 
     }//GEN-LAST:event_btnAddFileActionPerformed
 
+    private void btnAddAnimationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddAnimationActionPerformed
+        String key = cboAnimations.getSelectedItem().toString();
+        String res = animations.getProperty(key);
+        URL url = getClass().getResource("/webcamstudio/resources/animations/" + res);
+        Stream stream = new SourceImageGif(key, url);
+        StreamDesktop frame = new StreamDesktop(stream, this);
+        desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        try {
+            frame.setSelected(true);
+        } catch (PropertyVetoException ex) {
+            Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnAddAnimationActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -391,10 +444,12 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAddAnimation;
     private javax.swing.JButton btnAddDesktop;
     private javax.swing.JButton btnAddFile;
     private javax.swing.JButton btnAddQRCode;
     private javax.swing.JButton btnAddText;
+    private javax.swing.JComboBox cboAnimations;
     private javax.swing.JDesktopPane desktop;
     private javax.swing.JLabel lblSourceSelected;
     private javax.swing.JSplitPane mainSplit;

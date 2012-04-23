@@ -7,6 +7,7 @@ package webcamstudio.streams;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.lang.reflect.Field;
+import java.net.URL;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -34,7 +35,7 @@ public abstract class Stream {
     protected int zorder = 0;
     protected File file = null;
     protected String name = "Default";
-    protected String url = null;
+    protected URL url = null;
     protected int audioLevelLeft = 0;
     protected int audioLevelRight = 0;
     protected java.util.Vector<Effect> effects = new java.util.Vector<Effect>();
@@ -111,7 +112,7 @@ public abstract class Stream {
         }
     }
 
-    public String getURL() {
+    public URL getURL() {
         return url;
     }
 
