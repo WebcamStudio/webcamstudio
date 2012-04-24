@@ -87,6 +87,8 @@ public class Capturer {
                             imageBuffer.push(image);
                         } catch (IOException ioe) {
                             stopMe = true;
+                            stream.stop();
+                            stream.updateStatus();
                             //ioe.printStackTrace();
                         }
 
@@ -119,6 +121,8 @@ public class Capturer {
                             audioBuffer.push(abuffer);
                         } catch (IOException ioe) {
                             stopMe = true;
+                            stream.stop();
+                            stream.updateStatus();
                             //ioe.printStackTrace();
                         }
                     }
