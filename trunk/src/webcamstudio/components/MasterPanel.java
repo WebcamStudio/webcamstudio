@@ -57,7 +57,8 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
     private void initComponents() {
 
         panelPreview = new javax.swing.JPanel();
-        splitter = new javax.swing.JSplitPane();
+        tabMixers = new javax.swing.JTabbedPane();
+        panChannels = new javax.swing.JPanel();
         panMixer = new javax.swing.JPanel();
         tglSound = new javax.swing.JToggleButton();
         lblWidth = new javax.swing.JLabel();
@@ -67,7 +68,6 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
         btnApply = new javax.swing.JButton();
         lblHeight1 = new javax.swing.JLabel();
         spinFPS = new javax.swing.JSpinner();
-        panChannels = new javax.swing.JPanel();
 
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("webcamstudio/Languages"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("PREVIEW"))); // NOI18N
@@ -81,12 +81,12 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
         panelPreview.setLayout(new java.awt.BorderLayout());
         add(panelPreview, java.awt.BorderLayout.NORTH);
 
-        splitter.setDividerLocation(200);
-        splitter.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
-        splitter.setName("splitter"); // NOI18N
-        splitter.setOneTouchExpandable(true);
+        tabMixers.setName("tabMixers"); // NOI18N
 
-        panMixer.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("MIXER"))); // NOI18N
+        panChannels.setName("panChannels"); // NOI18N
+        panChannels.setLayout(new java.awt.BorderLayout());
+        tabMixers.addTab(bundle.getString("CHANNELS"), panChannels); // NOI18N
+
         panMixer.setName("panMixer"); // NOI18N
 
         tglSound.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/audio-card.png"))); // NOI18N
@@ -124,7 +124,7 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
         panMixer.setLayout(panMixerLayout);
         panMixerLayout.setHorizontalGroup(
             panMixerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 205, Short.MAX_VALUE)
+            .addGap(0, 193, Short.MAX_VALUE)
             .addGroup(panMixerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(panMixerLayout.createSequentialGroup()
                     .addContainerGap()
@@ -136,18 +136,18 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
                                 .addComponent(lblWidth))
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addGroup(panMixerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(spinFPS, javax.swing.GroupLayout.DEFAULT_SIZE, 96, Short.MAX_VALUE)
-                                .addComponent(spinHeight, javax.swing.GroupLayout.DEFAULT_SIZE, 96, Short.MAX_VALUE)
-                                .addComponent(spinWidth, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 96, Short.MAX_VALUE)))
+                                .addComponent(spinFPS, javax.swing.GroupLayout.DEFAULT_SIZE, 84, Short.MAX_VALUE)
+                                .addComponent(spinHeight, javax.swing.GroupLayout.DEFAULT_SIZE, 84, Short.MAX_VALUE)
+                                .addComponent(spinWidth, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 84, Short.MAX_VALUE)))
                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panMixerLayout.createSequentialGroup()
-                            .addComponent(btnApply, javax.swing.GroupLayout.DEFAULT_SIZE, 143, Short.MAX_VALUE)
+                            .addComponent(btnApply, javax.swing.GroupLayout.DEFAULT_SIZE, 131, Short.MAX_VALUE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addComponent(tglSound)))
                     .addContainerGap()))
         );
         panMixerLayout.setVerticalGroup(
             panMixerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 173, Short.MAX_VALUE)
+            .addGap(0, 188, Short.MAX_VALUE)
             .addGroup(panMixerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(panMixerLayout.createSequentialGroup()
                     .addContainerGap()
@@ -166,17 +166,13 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
                     .addGroup(panMixerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(tglSound)
                         .addComponent(btnApply))
-                    .addContainerGap(27, Short.MAX_VALUE)))
+                    .addContainerGap(42, Short.MAX_VALUE)))
         );
 
-        splitter.setLeftComponent(panMixer);
+        tabMixers.addTab(bundle.getString("MIXER"), panMixer); // NOI18N
 
-        panChannels.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("CHANNELS"))); // NOI18N
-        panChannels.setName("panChannels"); // NOI18N
-        panChannels.setLayout(new java.awt.BorderLayout());
-        splitter.setRightComponent(panChannels);
-
-        add(splitter, java.awt.BorderLayout.CENTER);
+        add(tabMixers, java.awt.BorderLayout.CENTER);
+        tabMixers.getAccessibleContext().setAccessibleName(bundle.getString("MIXER")); // NOI18N
     }// </editor-fold>//GEN-END:initComponents
 
     private void tglSoundActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglSoundActionPerformed
@@ -212,7 +208,7 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
     private javax.swing.JSpinner spinFPS;
     private javax.swing.JSpinner spinHeight;
     private javax.swing.JSpinner spinWidth;
-    private javax.swing.JSplitPane splitter;
+    private javax.swing.JTabbedPane tabMixers;
     private javax.swing.JToggleButton tglSound;
     // End of variables declaration//GEN-END:variables
 
