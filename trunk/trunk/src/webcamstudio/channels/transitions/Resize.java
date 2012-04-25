@@ -11,9 +11,9 @@ import webcamstudio.util.Tools;
  *
  * @author patrick
  */
-public class Shrink extends Transition{
+public class Resize extends Transition{
 
-    public Shrink(Stream source){
+    public Resize(Stream source){
         super(source);
     }
     @Override
