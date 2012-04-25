@@ -30,6 +30,7 @@ import java.util.prefs.Preferences;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
 import webcamstudio.components.*;
 import webcamstudio.exporter.vloopback.VideoDevice;
 import webcamstudio.mixers.MasterMixer;
@@ -78,6 +79,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
 
             public synchronized void drop(DropTargetDropEvent evt) {
                 try {
+                    String fileName = "";
                     evt.acceptDrop(DnDConstants.ACTION_REFERENCE);
                     boolean success = false;
                     if (Tools.getOS() == OS.LINUX) {
@@ -87,6 +89,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
                         for (String line : lines) {
                             File file = new File(new URL(line.trim()).toURI());
                             if (file.exists()) {
+                                fileName = file.getName();
                                 Stream stream = Stream.getInstance(file);
                                 if (stream != null) {
                                     StreamDesktop frame = getNewStreamDesktop(stream);
@@ -106,6 +109,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
                         for (Object o : files) {
                             File file = (File) o;
                             if (file.exists()) {
+                                fileName = file.getName();
                                 Stream stream = Stream.getInstance(file);
                                 if (stream != null) {
                                     StreamDesktop frame = getNewStreamDesktop(stream);
@@ -123,14 +127,15 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
                     }
                     evt.dropComplete(success);
                     if (!success) {
-                        ResourceMonitor.setMessage("Unsupported file");
+                        ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+5000,"Unsupported file: " + fileName);
+                        ResourceMonitor.getInstance().addMessage(label);
                     }
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
             }
         });
-        this.add(new ResourceMonitor(), BorderLayout.SOUTH);
+        this.add(ResourceMonitor.getInstance(), BorderLayout.SOUTH);
         prefs = Preferences.userNodeForPackage(this.getClass());
         panControls.add(recorder, BorderLayout.NORTH);
 
