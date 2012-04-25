@@ -21,7 +21,7 @@ public class FadeOut extends Transition{
         int rate = source.getRate();
         for (int i = rate;i>=0;i--){
             source.setOpacity(i*100/rate);
-            Tools.sleep(2000/rate);
+            Tools.sleep(1000/rate);
         }
     }
     

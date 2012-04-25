@@ -21,7 +21,7 @@ public class RevealLeft extends Transition{
         
         int newW = channel.getWidth();
         int rate = source.getRate();
-        int frames = rate * 2;
+        int frames = rate * 1;
         for (int i = 0;i<frames;i++){
             source.setWidth(i*newW/frames);
             source.setOpacity(i*100/frames);
