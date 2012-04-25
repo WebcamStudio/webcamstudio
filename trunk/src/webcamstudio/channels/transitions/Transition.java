@@ -37,8 +37,8 @@ public abstract class Transition implements Runnable{
             t = new FadeOut(source);
         } else if (name.equals("Translate")){
             t = new Translate(source);
-        } else if (name.equals("Shrink")){
-            t= new Shrink(source);
+        } else if (name.equals("Resize")){
+            t= new Resize(source);
         } else if (name.equals("RevealLeft")){
             t = new RevealLeft(source);
         }
@@ -46,7 +46,7 @@ public abstract class Transition implements Runnable{
     }
     
     public static String[] getStartTransitions(){
-        String[] ts = {"FadeIn","Translate","Shrink","RevealLeft"};
+        String[] ts = {"FadeIn","Translate","Resize","RevealLeft"};
         return ts;
     }
     public static String[] getEndTransitions(){

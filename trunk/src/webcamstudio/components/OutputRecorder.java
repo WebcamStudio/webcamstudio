@@ -15,7 +15,6 @@ import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetDropEvent;
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.TreeMap;
@@ -25,14 +24,13 @@ import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import javax.swing.JFileChooser;
 import javax.swing.JToggleButton;
-import javax.xml.parsers.ParserConfigurationException;
-import org.xml.sax.SAXException;
 import webcamstudio.exporter.vloopback.VideoDevice;
 import webcamstudio.ffmpeg.FME;
 import webcamstudio.mixers.MasterMixer;
 import webcamstudio.streams.SinkBroadcast;
 import webcamstudio.streams.SinkFile;
 import webcamstudio.streams.SinkLinuxDevice;
+import webcamstudio.streams.Stream;
 import webcamstudio.util.Tools;
 import webcamstudio.util.Tools.OS;
 
@@ -40,7 +38,7 @@ import webcamstudio.util.Tools.OS;
  *
  * @author patrick
  */
-public class OutputRecorder extends javax.swing.JPanel {
+public class OutputRecorder extends javax.swing.JPanel implements Stream.Listener{
 
     SinkFile fileStream = null;
     TreeMap<String, SinkBroadcast> broadcasts = new TreeMap<String, SinkBroadcast>();
@@ -168,6 +166,7 @@ public class OutputRecorder extends javax.swing.JPanel {
     }
 
     private void addButtonBroadcast(FME fme) {
+        final OutputRecorder instance = this;
         JToggleButton button = new JToggleButton();
         button.setText(fme.getName());
         button.setActionCommand(fme.getUrl() + "/" + fme.getStream());
@@ -181,6 +180,7 @@ public class OutputRecorder extends javax.swing.JPanel {
                 FME fme = fmes.get(button.getText());
                 if (button.isSelected()) {
                     SinkBroadcast broadcast = new SinkBroadcast(fme);
+                    broadcast.setListener(instance);
                     broadcast.read();
                     broadcasts.put(button.getText(), broadcast);
                 } else {
@@ -250,4 +250,9 @@ public class OutputRecorder extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JToggleButton tglRecordToFile;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void sourceUpdated(Stream stream) {
+        tglRecordToFile.setSelected(stream.isPlaying());
+    }
 }
