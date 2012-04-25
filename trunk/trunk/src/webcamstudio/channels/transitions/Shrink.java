@@ -25,9 +25,9 @@ public class Shrink extends Transition{
         int deltaW = newW - oldW;
         int deltaH = newH - oldH;
         int rate = source.getRate();
-        int totalFrames = rate * 2;
+        int totalFrames = rate * 1;
         
-        System.out.println(source.getWidth() + "x" + source.getHeight());
+        //System.out.println(source.getWidth() + "x" + source.getHeight());
         for (int i = 0; i<totalFrames;i++){
             source.setWidth(oldW + ((i*deltaW/totalFrames)));
             source.setHeight(oldH + ((i*deltaH/totalFrames)));

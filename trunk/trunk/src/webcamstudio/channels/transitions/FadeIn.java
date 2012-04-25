@@ -21,7 +21,7 @@ public class FadeIn extends Transition{
         int rate = source.getRate();
         for (int i = 0;i<=rate;i++){
             source.setOpacity(i*100/rate);
-            Tools.sleep(2000/rate);
+            Tools.sleep(1000/rate);
         }
     }
     
