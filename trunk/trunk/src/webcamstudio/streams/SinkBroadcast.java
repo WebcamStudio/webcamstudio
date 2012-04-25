@@ -5,10 +5,6 @@
 package webcamstudio.streams;
 
 import java.awt.image.BufferedImage;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import webcamstudio.ffmpeg.FFMPEGRenderer;
 import webcamstudio.mixers.MasterMixer;
 
@@ -21,12 +17,7 @@ public class SinkBroadcast extends Stream {
     private FFMPEGRenderer capture = null;
     
     public SinkBroadcast(String url,String name) {
-        try {
-            this.url=new URL(url);
-        } catch (MalformedURLException ex) {
-            Logger.getLogger(SinkBroadcast.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
+        this.url=url;
         this.name=name;
     }
     @Override

@@ -36,7 +36,7 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
     /** Creates new form MasterPanel */
     public MasterPanel() {
         initComponents();
-        spinFPS.setModel(new SpinnerNumberModel(5, 5, 30, 1));
+        spinFPS.setModel(new SpinnerNumberModel(5, 5, 30, 5));
         spinWidth.setValue(MasterMixer.getInstance().getWidth());
         spinHeight.setValue(MasterMixer.getInstance().getHeight());
         this.setVisible(true);
