@@ -30,7 +30,6 @@ import java.util.prefs.Preferences;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
-import javax.swing.JInternalFrame;
 import webcamstudio.components.*;
 import webcamstudio.exporter.vloopback.VideoDevice;
 import webcamstudio.mixers.MasterMixer;
@@ -168,6 +167,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         MasterMixer.getInstance().setHeight(prefs.getInt("mastermixer-h", 240));
         MasterMixer.getInstance().setRate(prefs.getInt("mastermixer-r", 15));
         mainSplit.setDividerLocation(prefs.getInt("split-x", 800));
+        mainSplit.setDividerLocation(prefs.getInt("split-last-x", 800));
         this.setLocation(x, y);
         this.setSize(w, h);
         recorder.loadPrefs(prefs);
@@ -182,6 +182,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         prefs.putInt("mastermixer-h", MasterMixer.getInstance().getHeight());
         prefs.putInt("mastermixer-r", MasterMixer.getInstance().getRate());
         prefs.putInt("split-x", mainSplit.getDividerLocation());
+        prefs.putInt("split-last-x", mainSplit.getLastDividerLocation());
         recorder.savePrefs(prefs);
         try {
             prefs.flush();
