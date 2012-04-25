@@ -6,6 +6,7 @@ package webcamstudio.streams;
 
 import java.awt.image.BufferedImage;
 import webcamstudio.ffmpeg.FFMPEGRenderer;
+import webcamstudio.ffmpeg.FME;
 import webcamstudio.mixers.MasterMixer;
 
 /**
@@ -15,10 +16,11 @@ import webcamstudio.mixers.MasterMixer;
 public class SinkBroadcast extends Stream {
 
     private FFMPEGRenderer capture = null;
-    
-    public SinkBroadcast(String url,String name) {
-        this.url=url;
-        this.name=name;
+    private FME fme = null;
+    public SinkBroadcast(FME fme) {
+        this.fme=fme;
+        name=fme.getName();
+        url = fme.getUrl()+"/"+fme.getStream();
     }
     @Override
     public String getName(){
@@ -27,7 +29,7 @@ public class SinkBroadcast extends Stream {
     @Override
     public void read() {
         rate = MasterMixer.getInstance().getRate();
-        capture = new FFMPEGRenderer(this,FFMPEGRenderer.ACTION.OUTPUT,"broadcast");
+        capture = new FFMPEGRenderer(this,fme,"broadcast");
         capture.write();
     }
 

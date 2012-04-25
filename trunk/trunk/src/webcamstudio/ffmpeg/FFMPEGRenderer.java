@@ -47,6 +47,7 @@ public class FFMPEGRenderer {
     ProcessExecutor process;
     Capturer capture;
     Exporter exporter;
+    FME fme = null;
 
     public FFMPEGRenderer(Stream s, ACTION a, String plugin) {
         stream = s;
@@ -54,6 +55,27 @@ public class FFMPEGRenderer {
             plugins = new Properties();
             try {
                 plugins.load(getResource(a).openStream());
+            } catch (IOException ex) {
+                Logger.getLogger(FFMPEGRenderer.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        process = new ProcessExecutor(s.getName());
+        this.plugin = plugin;
+    }
+    private String translateTag(String value){
+        String result = value.toUpperCase();
+        if (plugins.containsKey("TAG_" + result)){
+            result = plugins.getProperty("TAG_"+ result);
+        }
+        return result;
+    }
+    public FFMPEGRenderer(Stream s, FME fme, String plugin) {
+        stream = s;
+        this.fme=fme;
+        if (plugins == null) {
+            plugins = new Properties();
+            try {
+                plugins.load(getResource(ACTION.OUTPUT).openStream());
             } catch (IOException ex) {
                 Logger.getLogger(FFMPEGRenderer.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -97,8 +119,30 @@ public class FFMPEGRenderer {
         String command = cmd;
         for (FFMPEGTags tag : FFMPEGTags.values()) {
             switch (tag) {
+                case VCODEC:
+                    if (fme!=null){
+                        command = command.replaceAll(FFMPEGTags.VCODEC.toString(), translateTag(fme.getVcodec()));
+                    }
+                    break;
+                case ACODEC:
+                    if (fme!=null){
+                        command = command.replaceAll(FFMPEGTags.ACODEC.toString(), translateTag(fme.getAcodec()));
+                    }
+                    break;
+                case VBITRATE:
+                    if (fme!=null){
+                        command = command.replaceAll(FFMPEGTags.VBITRATE.toString(), fme.getVbitrate());
+                    }
+                    break;
+                case ABITRATE:
+                    if (fme!=null){
+                        command = command.replaceAll(FFMPEGTags.ABITRATE.toString(), fme.getAbitrate());
+                    }
+                    break;
                 case URL:
-                    if (stream.getURL() != null) {
+                    if (fme!=null){
+                        command = command.replaceAll(FFMPEGTags.URL.toString(), fme.getUrl()+"/"+fme.getStream());
+                     } else if (stream.getURL() != null) {
                         command = command.replaceAll(FFMPEGTags.URL.toString(), "" + stream.getURL());
                     }
                     break;

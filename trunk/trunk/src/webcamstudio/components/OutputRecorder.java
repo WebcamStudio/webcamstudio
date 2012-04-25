@@ -19,14 +19,16 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
 import javax.swing.JFileChooser;
 import javax.swing.JToggleButton;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 import webcamstudio.exporter.vloopback.VideoDevice;
+import webcamstudio.ffmpeg.FME;
 import webcamstudio.mixers.MasterMixer;
 import webcamstudio.streams.SinkBroadcast;
 import webcamstudio.streams.SinkFile;
@@ -43,12 +45,11 @@ public class OutputRecorder extends javax.swing.JPanel {
     SinkFile fileStream = null;
     TreeMap<String, SinkBroadcast> broadcasts = new TreeMap<String, SinkBroadcast>();
     TreeMap<String, SinkLinuxDevice> devices = new TreeMap<String, SinkLinuxDevice>();
+    TreeMap<String, FME> fmes = new TreeMap<String, FME>();
 
     /** Creates new form OutputRecorder */
     public OutputRecorder() {
         initComponents();
-
-
         if (Tools.getOS() == OS.LINUX) {
             for (VideoDevice d : VideoDevice.getInputDevices()) {
                 JToggleButton button = new JToggleButton();
@@ -97,16 +98,20 @@ public class OutputRecorder extends javax.swing.JPanel {
                             File file = new File(new URL(line.trim()).toURI());
                             if (file.exists() && file.getName().toLowerCase().endsWith("xml")) {
                                 dropSuccess = true;
-                                addButtonBroadcast(file);
+                                FME fme = new FME(file);
+                                fmes.put(fme.getName(), fme);
+                                addButtonBroadcast(fme);
                             }
                         }
-                    } else if (Tools.getOS()==OS.WINDOWS){
-                        List files = (List)evt.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
-                        for (Object o : files){
-                            File file = (File)o;
+                    } else if (Tools.getOS() == OS.WINDOWS) {
+                        List files = (List) evt.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
+                        for (Object o : files) {
+                            File file = (File) o;
                             if (file.exists() && file.getName().toLowerCase().endsWith("xml")) {
                                 dropSuccess = true;
-                                addButtonBroadcast(file);
+                                FME fme = new FME(file);
+                                fmes.put(fme.getName(), fme);
+                                addButtonBroadcast(fme);
                             }
                         }
                     }
@@ -114,35 +119,68 @@ public class OutputRecorder extends javax.swing.JPanel {
                     ex.printStackTrace();
                 }
                 evt.dropComplete(dropSuccess);
-                if (!dropSuccess){
+                if (!dropSuccess) {
                     ResourceMonitor.setMessage("Unsupported file");
                 }
             }
         });
     }
 
-    private void addButtonBroadcast(File xml) throws ParserConfigurationException, SAXException, IOException {
-        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(xml);
-        NodeList nodesURL = doc.getDocumentElement().getElementsByTagName("url");
-        NodeList nodeStreams = doc.getDocumentElement().getElementsByTagName("stream");
-        NodeList nodeNames = doc.getDocumentElement().getElementsByTagName("name");
-        JToggleButton button = new JToggleButton();
+    public void loadPrefs(Preferences prefs) {
+        Preferences fmePrefs = prefs.node("fme");
+        try {
+            String[] services = fmePrefs.childrenNames();
+            for (String s : services) {
+                Preferences service = fmePrefs.node(s);
+                String url = service.get("url", "");
+                String name = service.get("name", "");
+                String abitrate = service.get("abitrate", "");
+                String vbitrate = service.get("vbitrate", "");
+                String vcodec = service.get("vcodec", "");
+                String acodec = service.get("acodec", "");
+                String width = service.get("width", "");
+                String height = service.get("height", "");
+                String stream = service.get("stream", "");
+                FME fme = new FME(url, stream, name, abitrate, vbitrate, vcodec, acodec,width, height);
+                fmes.put(fme.getName(), fme);
+                addButtonBroadcast(fme);
+            }
+        } catch (BackingStoreException ex) {
+            Logger.getLogger(OutputRecorder.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
-        String url = nodesURL.item(0).getTextContent();
-        String stream = nodeStreams.item(0).getTextContent();
-        String name = nodeNames.item(0).getTextContent();
-        button.setText(name);
-        button.setActionCommand(url + "/" + stream);
+    }
+
+    public void savePrefs(Preferences prefs) {
+        Preferences fmePrefs = prefs.node("fme");
+        for (FME fme : fmes.values()) {
+            Preferences service = fmePrefs.node(fme.getName());
+            service.put("url", fme.getUrl());
+            service.put("name", fme.getName());
+            service.put("abitrate", fme.getAbitrate());
+            service.put("vbitrate", fme.getVbitrate());
+            service.put("vcodec", fme.getVcodec());
+            service.put("acodec", fme.getAcodec());
+            service.put("width", fme.getWidth());
+            service.put("height", fme.getHeight());
+            service.put("stream", fme.getStream());
+        }
+    }
+
+    private void addButtonBroadcast(FME fme) {
+        JToggleButton button = new JToggleButton();
+        button.setText(fme.getName());
+        button.setActionCommand(fme.getUrl() + "/" + fme.getStream());
         button.setIcon(tglRecordToFile.getIcon());
         button.setSelectedIcon(tglRecordToFile.getSelectedIcon());
         button.setRolloverEnabled(false);
         button.addActionListener(new java.awt.event.ActionListener() {
 
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                String url = evt.getActionCommand();
                 JToggleButton button = ((JToggleButton) evt.getSource());
+                FME fme = fmes.get(button.getText());
                 if (button.isSelected()) {
-                    SinkBroadcast broadcast = new SinkBroadcast(url, button.getText());
+                    SinkBroadcast broadcast = new SinkBroadcast(fme);
                     broadcast.read();
                     broadcasts.put(button.getText(), broadcast);
                 } else {
