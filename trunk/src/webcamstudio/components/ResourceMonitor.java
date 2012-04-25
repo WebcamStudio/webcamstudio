@@ -10,9 +10,10 @@
  */
 package webcamstudio.components;
 
+import java.awt.Component;
 import java.util.Timer;
 import java.util.TimerTask;
-import webcamstudio.mixers.MasterFrameBuilder;
+import javax.swing.JLabel;
 import webcamstudio.mixers.MasterMixer;
 
 /**
@@ -22,16 +23,28 @@ import webcamstudio.mixers.MasterMixer;
 public class ResourceMonitor extends javax.swing.JPanel {
 
     Timer timer = new Timer();
-    private static String message = "";
-    private static long messageMark = 0;
+    private static ResourceMonitor instance = null;
     /** Creates new form ResourceMonitor */
-    public ResourceMonitor() {
+    private ResourceMonitor() {
         initComponents();
         timer.scheduleAtFixedRate(new ResourceMonitorThread(this), 0, 1000);
     }
-    public static void setMessage(String m){
-        message=m;
-        messageMark = System.currentTimeMillis();
+    
+    public static ResourceMonitor getInstance(){
+        if (instance==null){
+            instance = new ResourceMonitor();
+        }
+        return instance;
+    }
+    public void addMessage(ResourceMonitorLabel label){
+        label.setBorder(lblFPS.getBorder());
+        this.add(label);
+        this.revalidate();
+    }
+    public void removeMessage(ResourceMonitorLabel label){
+        this.remove(label);
+        this.revalidate();
+        this.repaint();
     }
     public void updateInfo(){
         long maxMem = Runtime.getRuntime().maxMemory() / 1024 / 1024;
@@ -39,12 +52,15 @@ public class ResourceMonitor extends javax.swing.JPanel {
         memLevel.setMaximum((int)maxMem);
         memLevel.setValue((int)usedMem);
         memLevel.setString(usedMem + "MB/" + maxMem + "MB");
-        lblFPS.setText(MasterMixer.getInstance().getFPS() + " fps");
+        lblFPS.setText(Math.round(MasterMixer.getInstance().getFPS()) + " fps");
         lblMixerSize.setText(MasterMixer.getInstance().getWidth()+ "X" + MasterMixer.getInstance().getHeight());
-        lblMessage.setText(message);
-        if (System.currentTimeMillis()-messageMark > 5000){
-            message = "";
-            messageMark=System.currentTimeMillis();
+        for (Component c: this.getComponents()){
+            if (c instanceof ResourceMonitorLabel){
+                ResourceMonitorLabel rml = (ResourceMonitorLabel)c;
+                if (rml.getEndTime() != 0 && rml.getEndTime()< System.currentTimeMillis()){
+                    removeMessage(rml);
+                }
+            }
         }
     }
     /** This method is called from within the constructor to
@@ -59,56 +75,26 @@ public class ResourceMonitor extends javax.swing.JPanel {
         memLevel = new javax.swing.JProgressBar();
         lblFPS = new javax.swing.JLabel();
         lblMixerSize = new javax.swing.JLabel();
-        lblMessage = new javax.swing.JLabel();
 
         setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
 
         memLevel.setName("memLevel"); // NOI18N
         memLevel.setStringPainted(true);
+        add(memLevel);
 
         lblFPS.setText("jLabel1");
         lblFPS.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
         lblFPS.setName("lblFPS"); // NOI18N
+        add(lblFPS);
 
         lblMixerSize.setText("jLabel1");
         lblMixerSize.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
         lblMixerSize.setName("lblMixerSize"); // NOI18N
-
-        lblMessage.setText("jLabel1");
-        lblMessage.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
-        lblMessage.setName("lblMessage"); // NOI18N
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(memLevel, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lblFPS)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lblMixerSize)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lblMessage)
-                .addContainerGap())
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(memLevel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(lblFPS)
-                        .addComponent(lblMixerSize)
-                        .addComponent(lblMessage)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+        add(lblMixerSize);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel lblFPS;
-    private javax.swing.JLabel lblMessage;
     private javax.swing.JLabel lblMixerSize;
     private javax.swing.JProgressBar memLevel;
     // End of variables declaration//GEN-END:variables

@@ -38,12 +38,13 @@ import webcamstudio.util.Tools.OS;
  *
  * @author patrick
  */
-public class OutputRecorder extends javax.swing.JPanel implements Stream.Listener{
+public class OutputRecorder extends javax.swing.JPanel implements Stream.Listener {
 
-    SinkFile fileStream = null;
+    TreeMap<String, SinkFile> files = new TreeMap<String, SinkFile>();
     TreeMap<String, SinkBroadcast> broadcasts = new TreeMap<String, SinkBroadcast>();
     TreeMap<String, SinkLinuxDevice> devices = new TreeMap<String, SinkLinuxDevice>();
     TreeMap<String, FME> fmes = new TreeMap<String, FME>();
+    TreeMap<String, ResourceMonitorLabel> labels = new TreeMap<String, ResourceMonitorLabel>();
 
     /** Creates new form OutputRecorder */
     public OutputRecorder() {
@@ -68,12 +69,18 @@ public class OutputRecorder extends javax.swing.JPanel implements Stream.Listene
                             stream.setHeight(MasterMixer.getInstance().getHeight());
                             stream.read();
                             devices.put(button.getText(), stream);
+                            ResourceMonitorLabel label = new ResourceMonitorLabel(0, "Rendering to " + button.getText());
+                            labels.put(button.getText(), label);
+                            ResourceMonitor.getInstance().addMessage(label);
+
 
                         } else {
                             SinkLinuxDevice stream = devices.get(button.getText());
                             if (stream != null) {
                                 stream.stop();
                                 devices.remove(button.getText());
+                                ResourceMonitorLabel label = labels.remove(button.getText());
+                                ResourceMonitor.getInstance().removeMessage(label);
                             }
                         }
                     }
@@ -87,6 +94,8 @@ public class OutputRecorder extends javax.swing.JPanel implements Stream.Listene
 
             public synchronized void drop(DropTargetDropEvent evt) {
                 boolean dropSuccess = false;
+                String fileName = "";
+
                 try {
                     evt.acceptDrop(DnDConstants.ACTION_REFERENCE);
                     if (Tools.getOS() == OS.LINUX) {
@@ -94,6 +103,7 @@ public class OutputRecorder extends javax.swing.JPanel implements Stream.Listene
                         String[] lines = files.split("\n");
                         for (String line : lines) {
                             File file = new File(new URL(line.trim()).toURI());
+                            fileName = file.getName();
                             if (file.exists() && file.getName().toLowerCase().endsWith("xml")) {
                                 dropSuccess = true;
                                 FME fme = new FME(file);
@@ -111,6 +121,7 @@ public class OutputRecorder extends javax.swing.JPanel implements Stream.Listene
                                 fmes.put(fme.getName(), fme);
                                 addButtonBroadcast(fme);
                             }
+                            fileName = file.getName();
                         }
                     }
                 } catch (Exception ex) {
@@ -118,7 +129,7 @@ public class OutputRecorder extends javax.swing.JPanel implements Stream.Listene
                 }
                 evt.dropComplete(dropSuccess);
                 if (!dropSuccess) {
-                    ResourceMonitor.setMessage("Unsupported file");
+                    ResourceMonitor.getInstance().addMessage(new ResourceMonitorLabel(System.currentTimeMillis() + 5000, "Unsupported file: " + fileName));
                 }
             }
         });
@@ -139,7 +150,7 @@ public class OutputRecorder extends javax.swing.JPanel implements Stream.Listene
                 String width = service.get("width", "");
                 String height = service.get("height", "");
                 String stream = service.get("stream", "");
-                FME fme = new FME(url, stream, name, abitrate, vbitrate, vcodec, acodec,width, height);
+                FME fme = new FME(url, stream, name, abitrate, vbitrate, vcodec, acodec, width, height);
                 fmes.put(fme.getName(), fme);
                 addButtonBroadcast(fme);
             }
@@ -183,11 +194,17 @@ public class OutputRecorder extends javax.swing.JPanel implements Stream.Listene
                     broadcast.setListener(instance);
                     broadcast.read();
                     broadcasts.put(button.getText(), broadcast);
+                    ResourceMonitorLabel label = new ResourceMonitorLabel(0, "Broadcasting to " + fme.getName());
+                    labels.put(fme.getName(), label);
+                    ResourceMonitor.getInstance().addMessage(label);
                 } else {
                     SinkBroadcast broadcast = broadcasts.get(button.getText());
                     if (broadcast != null) {
                         broadcast.stop();
-                        broadcasts.remove(button.getText());
+                        broadcasts.remove(fme.getName());
+                        ResourceMonitorLabel label = labels.get(fme.getName());
+                        labels.remove(fme.getName());
+                        ResourceMonitor.getInstance().removeMessage(label);
                     }
                 }
             }
@@ -234,16 +251,24 @@ public class OutputRecorder extends javax.swing.JPanel implements Stream.Listene
             chooser.showSaveDialog(this);
             f = chooser.getSelectedFile();
             if (f != null) {
-                fileStream = new SinkFile(f);
+                SinkFile fileStream = new SinkFile(f);
                 fileStream.setWidth(MasterMixer.getInstance().getWidth());
                 fileStream.setHeight(MasterMixer.getInstance().getHeight());
                 fileStream.setRate(MasterMixer.getInstance().getRate());
                 fileStream.read();
+                files.put("RECORD", fileStream);
+                ResourceMonitorLabel label = new ResourceMonitorLabel(0, "Recording in " + f.getName());
+                labels.put("RECORD", label);
+                ResourceMonitor.getInstance().addMessage(label);
             }
         } else {
+            SinkFile fileStream = files.get("RECORD");
             if (fileStream != null) {
                 fileStream.stop();
                 fileStream = null;
+                files.remove("RECORD");
+                ResourceMonitorLabel label = labels.get("RECORD");
+                ResourceMonitor.getInstance().removeMessage(label);
             }
         }
     }//GEN-LAST:event_tglRecordToFileActionPerformed

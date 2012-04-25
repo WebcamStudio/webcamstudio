@@ -118,7 +118,14 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
     private void formInternalFrameActivated(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameActivated
         
         if (listener!=null){
-            listener.selectedSource(stream);
+            new Thread(new Runnable(){
+
+                @Override
+                public void run() {
+                    listener.selectedSource(stream);
+                }
+            }).start();
+            
         }
     }//GEN-LAST:event_formInternalFrameActivated
 
