@@ -13,7 +13,7 @@ import webcamstudio.util.Tools;
  */
 public class AudioBuffer {
     private ArrayList<byte[]> buffer = new ArrayList<byte[]>();
-    private static final int BUFFER_SIZE = 100;
+    private static final int BUFFER_SIZE = MasterMixer.getInstance().getRate()*10;
     private static final int BUFFER_THRESHOLD = 15;
     private boolean abort = false;
     public void push(byte[] data){

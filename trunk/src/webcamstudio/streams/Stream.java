@@ -38,7 +38,7 @@ public abstract class Stream {
     protected int zorder = 0;
     protected File file = null;
     protected String name = "Default";
-    protected URL url = null;
+    protected String url = null;
     protected int audioLevelLeft = 0;
     protected int audioLevelRight = 0;
     protected ArrayList<Effect> effects = new ArrayList<Effect>();
@@ -186,7 +186,7 @@ public abstract class Stream {
         }
     }
 
-    public URL getURL() {
+    public String getURL() {
         return url;
     }
 

@@ -13,7 +13,7 @@ import webcamstudio.util.Tools;
  */
 public class FrameBuffer {
     private ArrayList<Frame> buffer = new ArrayList<Frame>();
-    private static final int BUFFER_SIZE = 30;
+    private static final int BUFFER_SIZE = MasterMixer.getInstance().getRate()*10;
     private static final int BUFFER_THRESHOLD = 15;
     private boolean abort = false;
     public void push(Frame f){

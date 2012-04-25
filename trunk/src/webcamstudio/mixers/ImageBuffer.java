@@ -14,7 +14,7 @@ import webcamstudio.util.Tools;
  */
 public class ImageBuffer {
     private ArrayList<BufferedImage> buffer = new ArrayList<BufferedImage>();
-    private static final int BUFFER_SIZE = 100;
+    private static final int BUFFER_SIZE = MasterMixer.getInstance().getRate()*10;
     private static final int BUFFER_THRESHOLD = 15;
     private boolean abort = false;
     public void push(BufferedImage img){

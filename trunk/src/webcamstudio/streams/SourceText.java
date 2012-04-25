@@ -47,7 +47,7 @@ public class SourceText extends Stream {
     }
     public void updateContent(String content) {
         this.content = content;
-        image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        image = new BufferedImage(width, height+(height/5), BufferedImage.TYPE_INT_ARGB);
         Graphics2D buffer = image.createGraphics();
         buffer.setRenderingHint(java.awt.RenderingHints.KEY_TEXT_ANTIALIASING, java.awt.RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         buffer.setRenderingHint(java.awt.RenderingHints.KEY_INTERPOLATION, java.awt.RenderingHints.VALUE_INTERPOLATION_BICUBIC);
@@ -57,10 +57,10 @@ public class SourceText extends Stream {
         buffer.setFont(new java.awt.Font(fontName, java.awt.Font.PLAIN, height));
 
         buffer.setBackground(Color.BLACK);
-        buffer.clearRect(0, 0, width, height);
+        buffer.clearRect(0, 0, width, height+(height/5));
         buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC, 0F));
         buffer.setColor(new Color(color));
-        buffer.fillRect(0, 0, width, height);
+        buffer.fillRect(0, 0, width, height+(height/5));
         buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC, 1F));
         buffer.drawString(content, 0, height);
         buffer.dispose();

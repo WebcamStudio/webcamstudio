@@ -66,7 +66,12 @@ public class Exporter implements MasterMixer.SinkListener {
                             int[] imgData = new int[data.length / 4];
                             image.getRGB(0, 0, image.getWidth(), image.getHeight(), imgData, 0, image.getWidth());
                             iBuffer.put(imgData);
-                            videoOutput.write(data);
+                            if (videoOutput!=null){
+                                videoOutput.write(data);
+                            } else {
+                                cancel=true;
+                            }
+                            
                         }
                     }
 
