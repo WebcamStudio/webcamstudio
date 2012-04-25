@@ -46,6 +46,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
 
     Preferences prefs = null;
     Properties animations = new Properties();
+    OutputRecorder recorder = new OutputRecorder();
 
     /**
      * Creates new form WebcamStudio
@@ -132,7 +133,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         });
         this.add(new ResourceMonitor(), BorderLayout.SOUTH);
         prefs = Preferences.userNodeForPackage(this.getClass());
-        panControls.add(new OutputRecorder(), BorderLayout.NORTH);
+        panControls.add(recorder, BorderLayout.NORTH);
 
         loadPrefs();
         MasterMixer.getInstance().start();
@@ -169,6 +170,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         mainSplit.setDividerLocation(prefs.getInt("split-x", 800));
         this.setLocation(x, y);
         this.setSize(w, h);
+        recorder.loadPrefs(prefs);
     }
 
     private void savePrefs() {
@@ -180,6 +182,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         prefs.putInt("mastermixer-h", MasterMixer.getInstance().getHeight());
         prefs.putInt("mastermixer-r", MasterMixer.getInstance().getRate());
         prefs.putInt("split-x", mainSplit.getDividerLocation());
+        recorder.savePrefs(prefs);
         try {
             prefs.flush();
         } catch (BackingStoreException ex) {
