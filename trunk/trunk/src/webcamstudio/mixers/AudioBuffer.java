@@ -14,7 +14,7 @@ import webcamstudio.util.Tools;
 public class AudioBuffer {
 
     private ArrayList<byte[]> buffer = new ArrayList<byte[]>();
-    private static final int BUFFER_SIZE = 30;
+    private static final int BUFFER_SIZE = 3;
     private boolean abort = false;
     int currentIndex = 0;
     long frameCounter = 0;
@@ -26,7 +26,7 @@ public class AudioBuffer {
     }
 
     public void push(byte[] data) {
-        while (frameCounter >= BUFFER_SIZE) {
+        while (frameCounter >0) {
             Tools.sleep(30);
         }
         currentIndex++;
@@ -44,7 +44,7 @@ public class AudioBuffer {
         frameCounter++;
     }    
     public byte[] getAudioToUpdate(){
-        while (frameCounter >= BUFFER_SIZE-1) {
+        while (frameCounter >0) {
             Tools.sleep(30);
         }
         return buffer.get((currentIndex+1)%BUFFER_SIZE);

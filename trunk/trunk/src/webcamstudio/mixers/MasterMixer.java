@@ -98,7 +98,7 @@ public class MasterMixer {
         setAudioLevel(f);
         updateListeners(f);
     }
-    private void updateListeners(Frame f){
+    private synchronized void updateListeners(Frame f){
         for (SinkListener l : listeners){
             l.newFrame(f);
         }

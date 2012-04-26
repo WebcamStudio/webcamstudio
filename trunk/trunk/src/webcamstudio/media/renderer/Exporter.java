@@ -15,7 +15,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import webcamstudio.mixers.AudioBuffer;
 import webcamstudio.mixers.Frame;
-import webcamstudio.mixers.FrameBuffer;
 import webcamstudio.mixers.ImageBuffer;
 import webcamstudio.mixers.MasterMixer;
 
