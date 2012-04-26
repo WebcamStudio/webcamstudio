@@ -6,8 +6,6 @@ package webcamstudio.mixers;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
@@ -24,10 +22,11 @@ public class SystemPlayer implements Runnable {
     private ExecutorService executor = null;
     private static SystemPlayer instance = null;
     private ArrayList<byte[]> buffer = new ArrayList<byte[]>();
-    private FrameBuffer frames = new FrameBuffer();
+    private FrameBuffer frames = null;
     private Viewer viewer = null;
     private SystemPlayer(Viewer viewer){
         this.viewer=viewer;
+        frames = new FrameBuffer(MasterMixer.getInstance().getWidth(),MasterMixer.getInstance().getHeight(),MasterMixer.getInstance().getRate());
     }
     public static SystemPlayer getInstance(Viewer viewer){
         if (instance==null){
@@ -39,9 +38,7 @@ public class SystemPlayer implements Runnable {
     public void addFrame(Frame frame){
         if (source!=null){
             frames.push(frame);
-        } else {
-            frames.clear();
-        }
+        } 
     }
     public void play() throws LineUnavailableException {
         AudioFormat format = new AudioFormat(44100, 16, 2, true, true);
@@ -58,7 +55,6 @@ public class SystemPlayer implements Runnable {
         stopMe = false;
         frames.clear();
         while (!stopMe) {
-            
             Frame frame = frames.pop();
             viewer.setImage(frame.getImage());
             viewer.setAudioLevel(MasterMixer.getInstance().getAudioLevelLeft(), MasterMixer.getInstance().getAudioLevelRight());

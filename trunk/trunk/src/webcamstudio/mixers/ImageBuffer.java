@@ -5,11 +5,7 @@
 package webcamstudio.mixers;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import webcamstudio.util.Tools;
 
 /**
@@ -18,52 +14,61 @@ import webcamstudio.util.Tools;
  */
 public class ImageBuffer {
     private ArrayList<BufferedImage> buffer = new ArrayList<BufferedImage>();
-    private static final int BUFFER_SIZE = 100;
-    private static final int BUFFER_THRESHOLD = 1;
+    private static final int BUFFER_SIZE = 30;
     private boolean abort = false;
-    long count = 0;
+    private int currentIndex = 0;
+    private long frameCounter = 0;
+    
+    
+    public ImageBuffer(int w,int h){
+        for (int i = 0;i<BUFFER_SIZE;i++){
+            BufferedImage img = new BufferedImage(w,h,BufferedImage.TYPE_INT_ARGB);
+            buffer.add(img);
+        }
+    }
     public void push(BufferedImage img){
-        while (!abort && buffer.size()>=BUFFER_SIZE){
+        while(frameCounter >= BUFFER_SIZE){
             Tools.sleep(30);
         }
-        buffer.add(img);
-        if (count==0){
-            try {
-                javax.imageio.ImageIO.write(img, "png", new File("/home/patrick/Desktop/test.png"));
-            } catch (IOException ex) {
-                Logger.getLogger(ImageBuffer.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        currentIndex++;
+        currentIndex = currentIndex % BUFFER_SIZE;
+        buffer.get(currentIndex).getGraphics().drawImage(img, 0, 0, null);
+        frameCounter++;
+    }
+    public void doneUpdate(){
+        currentIndex++;
+        currentIndex = currentIndex % BUFFER_SIZE;
+        frameCounter++;
+    }
+    public BufferedImage getImageToUpdate(){
+        while(frameCounter >= BUFFER_SIZE-1){
+            Tools.sleep(30);
         }
-        count++;
+        return buffer.get((currentIndex+1)%BUFFER_SIZE);
+    }
+    public void push(int[] data){
+        while(frameCounter >= BUFFER_SIZE){
+            Tools.sleep(30);
+        }
+        currentIndex++;
+        currentIndex = currentIndex % BUFFER_SIZE;
+        BufferedImage img = buffer.get(currentIndex);
+        img.setRGB(0, 0, img.getWidth(), img.getHeight(), data, 0, img.getWidth());
+        frameCounter++;
     }
     public BufferedImage pop(){
-        BufferedImage image = null;
-        while(!abort && buffer.isEmpty()){
-            //System.err.println("Waiting for images...");
+        while(frameCounter < 1){
             Tools.sleep(10);
         }
-        if (!abort && buffer.size()>0){
-            image = buffer.remove(0);
-        }
-        return image;
-    }
-    public BufferedImage popNoWait(){
-        BufferedImage image = null;
-        if (!abort && buffer.size()>0){
-            image = buffer.remove(0);
-        }
-        return image;
+        frameCounter--;
+        return buffer.get(currentIndex);
     }
     public void abort(){
-        System.out.println("Video: " + count);
         abort=true;
-        buffer.clear();
-    }
-    public boolean needData(){
-        return buffer.size() < BUFFER_THRESHOLD;
+        currentIndex=0;
     }
     public void clear(){
         abort=false;
-        buffer.clear();
+        currentIndex=0;
     }
 }

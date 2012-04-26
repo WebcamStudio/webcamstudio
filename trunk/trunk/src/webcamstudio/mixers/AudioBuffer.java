@@ -12,46 +12,58 @@ import webcamstudio.util.Tools;
  * @author patrick
  */
 public class AudioBuffer {
+
     private ArrayList<byte[]> buffer = new ArrayList<byte[]>();
-    private static final int BUFFER_SIZE = 100;
-    private static final int BUFFER_THRESHOLD = 1;
+    private static final int BUFFER_SIZE = 30;
     private boolean abort = false;
-    long count = 0;
-    public void push(byte[] data){
-        while (!abort && buffer.size()>=BUFFER_SIZE){
+    int currentIndex = 0;
+    long frameCounter = 0;
+
+    public AudioBuffer(int rate) {
+        for (int i = 0; i < BUFFER_SIZE; i++) {
+            buffer.add(new byte[(44100 * 2 * 2) / rate]);
+        }
+    }
+
+    public void push(byte[] data) {
+        while (frameCounter >= BUFFER_SIZE) {
             Tools.sleep(30);
         }
-        buffer.add(data);
-        count ++;
-    }
-    public byte[] pop(){
-        byte[] data = null;
-        while(!abort && buffer.isEmpty()){
-            //System.err.println("Waiting for images...");
-            Tools.sleep(10);
+        currentIndex++;
+        currentIndex = currentIndex % BUFFER_SIZE;
+        byte[] d = buffer.get(currentIndex);
+        for (int i = 0; i < d.length; i++) {
+            d[i] = data[i];
         }
-        if (!abort && buffer.size()>0){
-            data = buffer.remove(0);
+        frameCounter++;
+
+    }
+    public void doneUpdate(){
+        currentIndex++;
+        currentIndex = currentIndex % BUFFER_SIZE;
+        frameCounter++;
+    }    
+    public byte[] getAudioToUpdate(){
+        while (frameCounter >= BUFFER_SIZE-1) {
+            Tools.sleep(30);
         }
-        return data;
+        return buffer.get((currentIndex+1)%BUFFER_SIZE);
     }
-    public byte[] popNoWait(){
-        byte[] data = null;
-        if (!abort && buffer.size()>0){
-            data = buffer.remove(0);
+    public byte[] pop() {
+        while (frameCounter < 1) {
+            Tools.sleep(1);
         }
-        return data;
+        frameCounter--;
+        return buffer.get(currentIndex);
     }
-    public void abort(){
-        System.out.println("Audio: " + count);
-        abort=true;
-        buffer.clear();
+
+    public void abort() {
+        abort = true;
+        currentIndex = 0;
     }
-    public boolean needData(){
-        return buffer.size() < BUFFER_THRESHOLD;
-    }
-    public void clear(){
-        abort=false;
-        buffer.clear();
+
+    public void clear() {
+        abort = false;
+        currentIndex = 0;
     }
 }
