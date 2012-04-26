@@ -114,9 +114,9 @@ public class Capturer {
                     DataInputStream din = new DataInputStream(connection.getInputStream());
                     audioBuffer.clear();
                     audioBufferSize = (44100 * 2 * 2) / stream.getRate();
-                    byte[] abuffer = new byte[audioBufferSize];
                     while (!stopMe) {
                         try {
+                            byte[] abuffer = new byte[audioBufferSize];
                             din.readFully(abuffer);
                             audioBuffer.push(abuffer);
                         } catch (IOException ioe) {

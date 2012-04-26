@@ -4,9 +4,6 @@
  */
 package webcamstudio.mixers;
 
-import java.io.IOException;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.logging.Level;
@@ -14,36 +11,41 @@ import java.util.logging.Logger;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
+import webcamstudio.components.Viewer;
 
 /**
  *
  * @author patrick
  */
-public class SystemAudioPlayer implements Runnable {
+public class SystemPlayer implements Runnable {
 
     boolean stopMe = false;
     private SourceDataLine source;
     private ExecutorService executor = null;
-    private static SystemAudioPlayer instance = null;
+    private static SystemPlayer instance = null;
     private ArrayList<byte[]> buffer = new ArrayList<byte[]>();
-    
-    private SystemAudioPlayer(){
+    private FrameBuffer frames = new FrameBuffer();
+    private Viewer viewer = null;
+    private SystemPlayer(Viewer viewer){
+        this.viewer=viewer;
     }
-    public static SystemAudioPlayer getInstance(){
+    public static SystemPlayer getInstance(Viewer viewer){
         if (instance==null){
-            instance=new SystemAudioPlayer();
+            instance=new SystemPlayer(viewer);
         }
         return instance;
     }
-    public void addData(byte[] d){
-       if (source!=null){
-            buffer.add(d);
-       }
+    
+    public void addFrame(Frame frame){
+        if (source!=null){
+            frames.push(frame);
+        } else {
+            frames.clear();
+        }
     }
     public void play() throws LineUnavailableException {
         AudioFormat format = new AudioFormat(44100, 16, 2, true, true);
         source = javax.sound.sampled.AudioSystem.getSourceDataLine(format);
-        
         source.open();
         source.start();
         executor = java.util.concurrent.Executors.newCachedThreadPool();
@@ -54,23 +56,23 @@ public class SystemAudioPlayer implements Runnable {
     @Override
     public void run() {
         stopMe = false;
+        frames.clear();
         while (!stopMe) {
-            if (buffer.size()>0){
-                byte[] d = buffer.remove(0);
-                source.write(d, 0, d.length);
-            } else {
-                try {
-                    //System.out.println("No sound to play...");
-                    Thread.sleep(100);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(SystemAudioPlayer.class.getName()).log(Level.SEVERE, null, ex);
+            
+            Frame frame = frames.pop();
+            viewer.setImage(frame.getImage());
+            viewer.setAudioLevel(MasterMixer.getInstance().getAudioLevelLeft(), MasterMixer.getInstance().getAudioLevelRight());
+            viewer.repaint();
+                byte[] d = frame.getAudioData();
+                if (d!=null){
+                    source.write(d, 0, d.length);
                 }
-            }
         }
     }
 
     public void stop() {
         stopMe = true;
+        frames.abort();
         source.stop();
         source.close();
         source = null;
