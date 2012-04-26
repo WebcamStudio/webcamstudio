@@ -99,7 +99,7 @@ public class Exporter implements MasterMixer.SinkListener {
                     audioBuffer.clear();
                     while (!cancel) {
                         byte[] audioData = audioBuffer.pop();
-                        if (audioData != null) {
+                        if (audioData != null && audioOutput!=null) {
                             audioOutput.write(audioData);
                             aCounter++;
                             audioData = null;
