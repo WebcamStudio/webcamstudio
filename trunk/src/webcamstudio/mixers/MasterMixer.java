@@ -16,14 +16,16 @@ public class MasterMixer {
     protected int frameRate = 15;
     protected int width = 720;
     protected int height = 480;
-    protected ArrayList<SinkListener> listeners = new ArrayList<SinkListener>();
-    private MasterFrameBuilder builder = new MasterFrameBuilder();
+    protected ArrayList<SinkListener> listeners = null;
+    private MasterFrameBuilder builder = null;
     private int audioLevelLeft = 0;
     private int audioLevelRight = 0;
     private float avgFPS = 0;
     private static MasterMixer instance = null;
     
-    private MasterMixer(){}
+    private MasterMixer(){
+        listeners = new ArrayList<SinkListener>();
+    }
     
     public static MasterMixer getInstance(){
         if (instance==null){
@@ -85,7 +87,7 @@ public class MasterMixer {
     }
 
     public void start() {
-        builder = new MasterFrameBuilder();
+        builder = new MasterFrameBuilder(width,height,frameRate);
         new Thread(builder).start();
     }
 

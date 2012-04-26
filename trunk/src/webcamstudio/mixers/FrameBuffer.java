@@ -13,31 +13,47 @@ import webcamstudio.util.Tools;
  */
 public class FrameBuffer {
     private ArrayList<Frame> buffer = new ArrayList<Frame>();
-    private static final int BUFFER_SIZE = 100;
-    private static final int BUFFER_THRESHOLD = 15;
+    private static final int BUFFER_SIZE = 30;
     private boolean abort = false;
+    private int currentIndex = 0;
+    private long frameCounter=0;
+    
+    public FrameBuffer(int imgWidth, int imgHeight,int rate){
+        for (int i = 0;i<BUFFER_SIZE;i++){
+            Frame frame = new Frame(imgWidth,imgHeight,rate);
+            buffer.add(frame);
+        }
+    }
     public void push(Frame f){
-        while (!abort && buffer.size()>=BUFFER_SIZE){
+        while (frameCounter >= BUFFER_SIZE) {
             Tools.sleep(30);
         }
-        buffer.add(f);
+        currentIndex++;
+        currentIndex = currentIndex % BUFFER_SIZE;
+        buffer.get(currentIndex).copyFrame(f);
+        frameCounter++;
+    }
+    public void doneUpdate(){
+        currentIndex++;
+        currentIndex = currentIndex % BUFFER_SIZE;
+        frameCounter++;
+    }    
+    public Frame getFrameToUpdate(){
+        while (frameCounter >= BUFFER_SIZE-1) {
+            Tools.sleep(30);
+        }
+        return buffer.get((currentIndex+1)%BUFFER_SIZE);
     }
     public Frame pop(){
-        Frame f = null;
-        while (!abort && buffer.isEmpty()){
+        while(frameCounter < 1){
             Tools.sleep(10);
         }
-        if (buffer.size()>0){
-            f = buffer.remove(0);
-        } 
-        return f;
-    }
-    public boolean needData(){
-        return buffer.size() < BUFFER_THRESHOLD;
+        frameCounter--;
+        return buffer.get(currentIndex);
     }
     public void clear(){
         abort=false;
-        buffer.clear();
+        currentIndex=0;
     }
     public void abort(){
         abort=true;

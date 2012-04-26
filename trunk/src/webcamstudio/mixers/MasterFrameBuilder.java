@@ -25,7 +25,11 @@ public class MasterFrameBuilder implements Runnable {
     private boolean stopMe = false;
     private static int fps = 0;
     private long mark = System.currentTimeMillis();
-
+    private FrameBuffer frameBuffer = null;
+    
+    public MasterFrameBuilder(int w,int h,int r){
+        frameBuffer = new FrameBuffer(w,h,r);
+    }
     public synchronized static void register(Stream s) {
         if (!streams.contains(s)) {
             streams.add(s);
@@ -44,9 +48,10 @@ public class MasterFrameBuilder implements Runnable {
         for (Frame f : frames) {
             orderedFrame.put(f.getZOrder(), f);
         }
-        BufferedImage image = new BufferedImage(targetFrame.getWidth(),targetFrame.getHeight(),BufferedImage.TYPE_INT_ARGB);
+        BufferedImage image = targetFrame.getImage();
         if (image != null) {
             Graphics2D g = image.createGraphics();
+            g.clearRect(0, 0, image.getWidth(), image.getHeight());
             for (Frame f : orderedFrame.values()) {
                 if (g != null) {
                     g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, ((float) f.getOpacity()) / 100F));
@@ -54,14 +59,15 @@ public class MasterFrameBuilder implements Runnable {
                 }
             }
             g.dispose();
-            targetFrame.setImage(image);
-            
         }
     }
 
     private void mixAudio(Collection<Frame> frames, Frame targetFrame) {
-        byte[] audioData = new byte[(44100 * 2 * 2) / MasterMixer.getInstance().getRate()];
+        byte[] audioData = targetFrame.getAudioData();
         ShortBuffer outputBuffer = ByteBuffer.wrap(audioData).asShortBuffer();
+        for (int i = 0;i<audioData.length;i++){
+            audioData[i]=0;
+        }
         for (Frame f : frames) {
             byte[] data = f.getAudioData();
             if (data != null) {
@@ -82,7 +88,6 @@ public class MasterFrameBuilder implements Runnable {
                 f.setAudio(null);
             }
         }
-        targetFrame.setAudio(audioData);
     }
 
     @Override
@@ -98,7 +103,7 @@ public class MasterFrameBuilder implements Runnable {
         while (!stopMe) {
             long start = System.currentTimeMillis();
             timeCode+=frameDelay;
-            Frame targetFrame = new Frame(w, h, r);
+            Frame targetFrame = frameBuffer.getFrameToUpdate();
             frames = new ArrayList<Frame>();
             for (int i = 0; i < streams.size();i++) {
                 Frame f = streams.get(i).getFrame();
@@ -108,8 +113,9 @@ public class MasterFrameBuilder implements Runnable {
             }
             mixAudio(frames, targetFrame);
             mixImages(frames, targetFrame);
-            MasterMixer.getInstance().setCurrentFrame(targetFrame);
             targetFrame = null;
+            frameBuffer.doneUpdate();
+            MasterMixer.getInstance().setCurrentFrame(frameBuffer.pop());
             fps++;
             float delta = System.currentTimeMillis() - mark;
             if (delta >= 1000) {

@@ -33,12 +33,15 @@ public class Exporter implements MasterMixer.SinkListener {
     OutputStream audioOutput = null;
     int aport = 0;
     int vport = 0;
-    ImageBuffer imageBuffer = new ImageBuffer();
-    AudioBuffer audioBuffer = new AudioBuffer();
+    ImageBuffer imageBuffer = null;
+    AudioBuffer audioBuffer = null;
     long vCounter = 0;
     long aCounter = 0;
 
     public Exporter() {
+        imageBuffer = new ImageBuffer(MasterMixer.getInstance().getWidth(),MasterMixer.getInstance().getHeight());
+        audioBuffer = new AudioBuffer(MasterMixer.getInstance().getRate());
+
         try {
             videoServer = new ServerSocket(0);
             vport = videoServer.getLocalPort();
@@ -60,10 +63,10 @@ public class Exporter implements MasterMixer.SinkListener {
                     System.out.println("Video output accepted");
                     videoOutput = connection.getOutputStream();
                     imageBuffer.clear();
+                    byte[] data = new byte[MasterMixer.getInstance().getWidth() * MasterMixer.getInstance().getHeight() * 4];
                     while (!cancel) {
                         BufferedImage image = imageBuffer.pop();
                         if (image != null) {
-                            byte[] data = new byte[image.getWidth() * image.getHeight() * 4];
                             ByteBuffer buffer = ByteBuffer.wrap(data);
                             IntBuffer iBuffer = buffer.asIntBuffer();
                             int[] imgData = new int[data.length / 4];

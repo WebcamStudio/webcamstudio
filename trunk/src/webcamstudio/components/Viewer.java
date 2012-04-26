@@ -21,7 +21,7 @@ import java.awt.image.BufferedImage;
  */
 public class Viewer extends javax.swing.JPanel {
 
-    private BufferedImage img;
+    private BufferedImage img = new BufferedImage(320,240,BufferedImage.TYPE_INT_ARGB);
     private int audioLeft = 0;
     private int audioRight=0;
     /** Creates new form Viewer */
@@ -30,7 +30,7 @@ public class Viewer extends javax.swing.JPanel {
     }
 
     public void setImage(BufferedImage image) {
-        img = image;
+        img.getGraphics().drawImage(image, 0, 0,img.getWidth(),img.getHeight(), this);
     }
 
     public void setAudioLevel(int l, int r){

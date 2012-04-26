@@ -34,13 +34,15 @@ public class Capturer {
     private ServerSocket videoServer = null;
     private ServerSocket audioServer = null;
     // private FrameBuffer frameBuffer = new FrameBuffer();
-    private ImageBuffer imageBuffer = new ImageBuffer();
-    private AudioBuffer audioBuffer = new AudioBuffer();
+    private ImageBuffer imageBuffer = null;
+    private AudioBuffer audioBuffer = null;
 
     public Capturer(Stream s) {
         stream = s;
         audioBufferSize = (44100 * 2 * 2) / stream.getRate();
         videoBufferSize = stream.getCaptureWidth() * stream.getCaptureHeight() * 4;
+        imageBuffer = new ImageBuffer(stream.getCaptureWidth(),stream.getCaptureHeight());
+        audioBuffer = new AudioBuffer(stream.getRate());
         if (stream.hasAudio()) {
             try {
                 audioServer = new ServerSocket(0);
@@ -76,15 +78,14 @@ public class Capturer {
                     int[] rgb = new int[videoBufferSize / 4];
                     while (!stopMe) {
                         try {
-                            BufferedImage image = null;
-                            image = new BufferedImage(stream.getCaptureWidth(), stream.getCaptureHeight(), BufferedImage.TYPE_INT_ARGB);
+                            BufferedImage image = imageBuffer.getImageToUpdate();
                             din.readFully(vbuffer);
                             IntBuffer intData = ByteBuffer.wrap(vbuffer).order(ByteOrder.BIG_ENDIAN).asIntBuffer();
                             intData.get(rgb);
                             //Special Effects...
                             image.setRGB(0, 0, stream.getCaptureWidth(), stream.getCaptureHeight(), rgb, 0, stream.getCaptureWidth());
                             stream.applyEffects(image);
-                            imageBuffer.push(image);
+                            imageBuffer.doneUpdate();
                         } catch (IOException ioe) {
                             stopMe = true;
                             stream.stop();
@@ -113,12 +114,10 @@ public class Capturer {
                     System.out.println(stream.getName() + " audio accepted...");
                     DataInputStream din = new DataInputStream(connection.getInputStream());
                     audioBuffer.clear();
-                    audioBufferSize = (44100 * 2 * 2) / stream.getRate();
                     while (!stopMe) {
                         try {
-                            byte[] abuffer = new byte[audioBufferSize];
-                            din.readFully(abuffer);
-                            audioBuffer.push(abuffer);
+                            din.readFully(audioBuffer.getAudioToUpdate());
+                            audioBuffer.doneUpdate();
                         } catch (IOException ioe) {
                             stopMe = true;
                             stream.stop();
