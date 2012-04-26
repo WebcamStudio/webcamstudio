@@ -52,20 +52,25 @@ public class FME {
     }
     private void parse(File xml) throws ParserConfigurationException, SAXException, IOException, XPathExpressionException {
         XPath path = XPathFactory.newInstance().newXPath();
+        String root = "/flashmediaencoder_profile";
         
         Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(xml);
-        name = (String)path.evaluate("/flashmediaencoder_profile/preset/name", doc,XPathConstants.STRING);
-        width = (String)path.evaluate("/flashmediaencoder_profile/capture/video/size/width", doc,XPathConstants.STRING);
-        height = (String)path.evaluate("/flashmediaencoder_profile/capture/video/size/height", doc,XPathConstants.STRING);
-        vcodec = (String)path.evaluate("/flashmediaencoder_profile/encode/video/format", doc,XPathConstants.STRING);
-        vbitrate = (String)path.evaluate("/flashmediaencoder_profile/encode/video/datarate", doc,XPathConstants.STRING);
+        name = (String)path.evaluate(root + "/preset/name", doc,XPathConstants.STRING);
+        if (name==null || name.length()==0){
+            root = "/flashmedialiveencoder_profile";
+            name = (String)path.evaluate(root + "/preset/name", doc,XPathConstants.STRING);
+        }
+        width = (String)path.evaluate(root + "/capture/video/size/width", doc,XPathConstants.STRING);
+        height = (String)path.evaluate(root + "/capture/video/size/height", doc,XPathConstants.STRING);
+        vcodec = (String)path.evaluate(root + "/encode/video/format", doc,XPathConstants.STRING);
+        vbitrate = (String)path.evaluate(root + "/encode/video/datarate", doc,XPathConstants.STRING);
         if (vbitrate.indexOf(";")!=-1){
             vbitrate = vbitrate.substring(0, vbitrate.indexOf(";"));
         }
-        acodec = (String)path.evaluate("/flashmediaencoder_profile/encode/audio/format", doc,XPathConstants.STRING);
-        abitrate = (String)path.evaluate("/flashmediaencoder_profile/encode/audio/datarate", doc,XPathConstants.STRING);
-        url = (String)path.evaluate("/flashmediaencoder_profile/output/rtmp/url", doc,XPathConstants.STRING);
-        stream = (String)path.evaluate("/flashmediaencoder_profile/output/rtmp/stream", doc,XPathConstants.STRING);
+        acodec = (String)path.evaluate(root + "/encode/audio/format", doc,XPathConstants.STRING);
+        abitrate = (String)path.evaluate(root + "/encode/audio/datarate", doc,XPathConstants.STRING);
+        url = (String)path.evaluate(root + "/output/rtmp/url", doc,XPathConstants.STRING);
+        stream = (String)path.evaluate(root + "/output/rtmp/stream", doc,XPathConstants.STRING);
 
 //        System.out.println(getName());
 //        System.out.println(getWidth()+"X"+getHeight());
