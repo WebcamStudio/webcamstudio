@@ -41,12 +41,13 @@ public class Frame {
         audioData= new byte[(44100 *2 *2) / rate];
     }
     public void copyFrame(Frame frame){
+        
         BufferedImage imageSrc = frame.getImage();
         byte[] audioSrc = frame.getAudioData();
         if (imageSrc!=null){
             image.getGraphics().drawImage(imageSrc, 0, 0, null);
         }
-        if (audioSrc!=null){
+        if (audioSrc!=null && audioSrc.length==audioData.length){
             for (int i = 0;i<audioSrc.length;i++){
                 audioData[i]=audioSrc[i];
             }
