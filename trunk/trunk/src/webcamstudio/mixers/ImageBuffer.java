@@ -14,10 +14,11 @@ import webcamstudio.util.Tools;
  */
 public class ImageBuffer {
     private ArrayList<BufferedImage> buffer = new ArrayList<BufferedImage>();
-    private static final int BUFFER_SIZE = 3;
+    private static final int BUFFER_SIZE = 10;
     private boolean abort = false;
     private int currentIndex = 0;
-    private long frameCounter = 0;
+    private long framePushed = 0;
+    private long framePopped = 0;
     
     
     public ImageBuffer(int w,int h){
@@ -27,30 +28,30 @@ public class ImageBuffer {
         }
     }
     public void push(BufferedImage img){
-        while(frameCounter >0){
+        while(!abort && (framePushed - framePopped) >= BUFFER_SIZE){
             Tools.sleep(30);
         }
         currentIndex++;
         currentIndex = currentIndex % BUFFER_SIZE;
         buffer.get(currentIndex).getGraphics().drawImage(img, 0, 0, null);
-        frameCounter++;
+        framePushed++;
     }
     public void doneUpdate(){
         currentIndex++;
         currentIndex = currentIndex % BUFFER_SIZE;
-        frameCounter++;
+        framePushed++;
     }
     public BufferedImage getImageToUpdate(){
-        while(frameCounter >0){
+        while(!abort && (framePushed - framePopped) >= BUFFER_SIZE){
             Tools.sleep(30);
         }
         return buffer.get((currentIndex+1)%BUFFER_SIZE);
     }
     public BufferedImage pop(){
-        while(frameCounter < 1){
+        while(!abort && framePopped >= framePushed){
             Tools.sleep(10);
         }
-        frameCounter--;
+        framePopped++;
         return buffer.get(currentIndex);
     }
     public void abort(){

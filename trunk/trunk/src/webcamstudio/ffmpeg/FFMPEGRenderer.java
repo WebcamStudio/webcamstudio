@@ -63,7 +63,7 @@ public class FFMPEGRenderer {
         this.plugin = plugin;
     }
     private String translateTag(String value){
-        String result = value.toUpperCase();
+        String result = value.toUpperCase().replace('.', '_');
         if (plugins.containsKey("TAG_" + result)){
             result = plugins.getProperty("TAG_"+ result);
         }
