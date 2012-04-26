@@ -13,7 +13,7 @@ import webcamstudio.util.Tools;
  */
 public class FrameBuffer {
     private ArrayList<Frame> buffer = new ArrayList<Frame>();
-    private static final int BUFFER_SIZE = 30;
+    private static final int BUFFER_SIZE = 3;
     private boolean abort = false;
     private int currentIndex = 0;
     private long frameCounter=0;
@@ -25,7 +25,7 @@ public class FrameBuffer {
         }
     }
     public void push(Frame f){
-        while (frameCounter >= BUFFER_SIZE) {
+        while (frameCounter >0) {
             Tools.sleep(30);
         }
         currentIndex++;
@@ -39,7 +39,7 @@ public class FrameBuffer {
         frameCounter++;
     }    
     public Frame getFrameToUpdate(){
-        while (frameCounter >= BUFFER_SIZE-1) {
+        while (frameCounter >0) {
             Tools.sleep(30);
         }
         return buffer.get((currentIndex+1)%BUFFER_SIZE);
