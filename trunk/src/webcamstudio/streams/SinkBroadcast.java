@@ -29,6 +29,9 @@ public class SinkBroadcast extends Stream {
     @Override
     public void read() {
         rate = MasterMixer.getInstance().getRate();
+        captureWidth = MasterMixer.getInstance().getWidth();
+        captureHeight = MasterMixer.getInstance().getHeight();
+        rate = MasterMixer.getInstance().getRate();
         capture = new FFMPEGRenderer(this,fme,"broadcast");
         capture.write();
     }

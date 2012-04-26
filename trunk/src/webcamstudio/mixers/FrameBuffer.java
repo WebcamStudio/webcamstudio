@@ -25,7 +25,7 @@ public class FrameBuffer {
         }
     }
     public void push(Frame f){
-        while (frameCounter >0) {
+        while (!abort && frameCounter >0) {
             Tools.sleep(30);
         }
         currentIndex++;
@@ -39,13 +39,13 @@ public class FrameBuffer {
         frameCounter++;
     }    
     public Frame getFrameToUpdate(){
-        while (frameCounter >0) {
+        while (!abort && frameCounter >0) {
             Tools.sleep(30);
         }
         return buffer.get((currentIndex+1)%BUFFER_SIZE);
     }
     public Frame pop(){
-        while(frameCounter < 1){
+        while(!abort && frameCounter < 1){
             Tools.sleep(10);
         }
         frameCounter--;

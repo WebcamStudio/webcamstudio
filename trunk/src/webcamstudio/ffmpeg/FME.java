@@ -59,6 +59,9 @@ public class FME {
         height = (String)path.evaluate("/flashmediaencoder_profile/capture/video/size/height", doc,XPathConstants.STRING);
         vcodec = (String)path.evaluate("/flashmediaencoder_profile/encode/video/format", doc,XPathConstants.STRING);
         vbitrate = (String)path.evaluate("/flashmediaencoder_profile/encode/video/datarate", doc,XPathConstants.STRING);
+        if (vbitrate.indexOf(";")!=-1){
+            vbitrate = vbitrate.substring(0, vbitrate.indexOf(";"));
+        }
         acodec = (String)path.evaluate("/flashmediaencoder_profile/encode/audio/format", doc,XPathConstants.STRING);
         abitrate = (String)path.evaluate("/flashmediaencoder_profile/encode/audio/datarate", doc,XPathConstants.STRING);
         url = (String)path.evaluate("/flashmediaencoder_profile/output/rtmp/url", doc,XPathConstants.STRING);
