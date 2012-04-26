@@ -13,18 +13,20 @@ import webcamstudio.util.Tools;
  */
 public class AudioBuffer {
     private ArrayList<byte[]> buffer = new ArrayList<byte[]>();
-    private static final int BUFFER_SIZE = MasterMixer.getInstance().getRate()*10;
-    private static final int BUFFER_THRESHOLD = 15;
+    private static final int BUFFER_SIZE = 100;
+    private static final int BUFFER_THRESHOLD = 1;
     private boolean abort = false;
+    long count = 0;
     public void push(byte[] data){
         while (!abort && buffer.size()>=BUFFER_SIZE){
             Tools.sleep(30);
         }
         buffer.add(data);
+        count ++;
     }
     public byte[] pop(){
         byte[] data = null;
-        while(!abort && buffer.size()==0){
+        while(!abort && buffer.isEmpty()){
             //System.err.println("Waiting for images...");
             Tools.sleep(10);
         }
@@ -41,6 +43,7 @@ public class AudioBuffer {
         return data;
     }
     public void abort(){
+        System.out.println("Audio: " + count);
         abort=true;
         buffer.clear();
     }

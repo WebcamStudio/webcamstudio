@@ -18,7 +18,7 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.swing.SpinnerNumberModel;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterMixer;
-import webcamstudio.mixers.SystemAudioPlayer;
+import webcamstudio.mixers.SystemPlayer;
 
 
 
@@ -30,19 +30,20 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
 
     protected Viewer viewer = new Viewer();
     
-    private SystemAudioPlayer audio = SystemAudioPlayer.getInstance();
-        
+    private SystemPlayer player = null;
+    private MasterMixer mixer = MasterMixer.getInstance();    
     final static public Dimension PANEL_SIZE = new Dimension(150,400);
     /** Creates new form MasterPanel */
     public MasterPanel() {
         initComponents();
         spinFPS.setModel(new SpinnerNumberModel(5, 5, 30, 5));
-        spinWidth.setValue(MasterMixer.getInstance().getWidth());
-        spinHeight.setValue(MasterMixer.getInstance().getHeight());
+        spinWidth.setValue(mixer.getWidth());
+        spinHeight.setValue(mixer.getHeight());
         this.setVisible(true);
         viewer.setOpaque(true);
         panelPreview.add(viewer, BorderLayout.CENTER);
-        MasterMixer.getInstance().register(this);
+        player = SystemPlayer.getInstance(viewer);
+        mixer.register(this);
         spinFPS.setValue(MasterMixer.getInstance().getRate());
         panChannels.add(new ChannelPanel(),BorderLayout.CENTER);
     }
@@ -178,12 +179,12 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
     private void tglSoundActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglSoundActionPerformed
         if (tglSound.isSelected()){
             try {
-                audio.play();
+                player.play();
             } catch (LineUnavailableException ex) {
                 Logger.getLogger(MasterPanel.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
-            audio.stop();
+            player.stop();
         }
     }//GEN-LAST:event_tglSoundActionPerformed
 
@@ -214,9 +215,7 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
 
     @Override
     public void newFrame(Frame frame) {
-        viewer.setImage(frame.getImage());
-        viewer.setAudioLevel(MasterMixer.getInstance().getAudioLevelLeft(), MasterMixer.getInstance().getAudioLevelRight());
-        viewer.repaint();
+        player.addFrame(frame);
     }
 }
 
