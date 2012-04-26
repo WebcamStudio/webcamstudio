@@ -2,7 +2,8 @@
  * webcamstudio.c  --  video4linux2 loopback driver
  *
  * Copyright (C) 2005-2009 Vasily Levin (vasaka@gmail.com)
- * Copyright (C) 2010 IOhannes m zmoelnig (zmoelnig@iem.at)
+ * Copyright (C) 2010-2011 IOhannes m zmoelnig (zmoelnig@iem.at)
+ * Copyright (C) 2011 Stefan Diewald (stefan.diewald@mytum.de)
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,14 +22,18 @@
 #include <media/v4l2-ioctl.h>
 #include <media/v4l2-common.h>
 
+#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,29)
+# define v4l2_file_operations file_operations
+#endif
+
 #include <linux/sched.h>
 #include <linux/slab.h>
 
-#define WEBCAMSTUDIO_VERSION_CODE KERNEL_VERSION(1,0,2)
+#define WEBCAMSTUDIO_VERSION_CODE KERNEL_VERSION(1,0,3)
 
 
 MODULE_DESCRIPTION("WebcamStudio video device");
-MODULE_AUTHOR("Vasily Levin, IOhannes m zmoelnig <zmoelnig@iem.at>, Modified by Patrick Balleux <patrick.balleux@gmail.com>");
+MODULE_AUTHOR("Vasily Levin, IOhannes m zmoelnig <zmoelnig@iem.at>, Stefan Diewald <stefan.diewald@mytum.de>, Modified by Patrick Balleux <patrick.balleux@gmail.com>");
 MODULE_LICENSE("GPL");
 
 
@@ -36,28 +41,21 @@ MODULE_LICENSE("GPL");
 #define STRINGIFY(s) #s
 #define STRINGIFY2(s) STRINGIFY(s)
 
-#define dprintk(fmt, args...)				\
-  do { if (debug > 0) {							\
+#define dprintk(fmt, args...)                                           \
+  do { if (debug > 0) {                                                 \
       printk(KERN_INFO "webcamstudio[" STRINGIFY2(__LINE__) "]: " fmt, ##args); \
     } } while(0)
 
-#define MARK()					\
-  do{ if (debug > 1) {							\
+#define MARK()                                                          \
+  do{ if (debug > 1) {                                                  \
       printk(KERN_INFO "%s:%d[%s]", __FILE__, __LINE__, __FUNCTION__);	\
     } } while (0)
 
-#define dprintkrw(fmt, args...)				\
-  do { if (debug > 2) {							\
+#define dprintkrw(fmt, args...)                                         \
+  do { if (debug > 2) {                                                 \
       printk(KERN_INFO "webcamstudio[" STRINGIFY2(__LINE__)"]: " fmt, ##args); \
     } } while (0)
 
-
-/* kernel compat layer */
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,32)
-#else
-# define video_set_drvdata( drv, data) (drv)->vd_private_data = (data)
-# define video_get_drvdata( drv )      ((drv)->vd_private_data)
-#endif
 
 /* module constants */
 
@@ -67,11 +65,19 @@ module_param(debug, int, S_IRUGO|S_IWUSR );
 MODULE_PARM_DESC(debug, "if debug output is enabled, values are 0, 1 or 2");
 
 #define MAX_BUFFERS 32  /* max buffers that can be mapped, actually they
-			  * are all mapped to max_buffers buffers */
+                         * are all mapped to max_buffers buffers */
 static int max_buffers = 8;
 module_param(max_buffers, int, S_IRUGO);
 MODULE_PARM_DESC(max_buffers, "how many buffers should be allocated");
 
+/* how many times a device can be opened
+ * the per-module default value can be overridden on a per-device basis using
+ * the /sys/devices interface
+ *
+ * note that max_openers should be at least 2 in order to get a working system:
+ *   one opener for the producer and one opener for the consumer
+ *   however, we leave that to the user
+ */
 static int max_openers = 10;
 module_param(max_openers, int, S_IRUGO|S_IWUSR);
 MODULE_PARM_DESC(max_openers, "how many users can open loopback device");
@@ -83,6 +89,9 @@ module_param(devices, int, 0);
 MODULE_PARM_DESC(devices, "how many devices should be created");
 
 
+static int video_nr[MAX_DEVICES] = { [0 ... (MAX_DEVICES-1)] = -1 };
+module_param_array(video_nr, int, NULL, 0444);
+MODULE_PARM_DESC(video_nr, "video device numbers (-1=auto, 0=/dev/video0, etc.)");
 
 
 
@@ -94,8 +103,6 @@ MODULE_PARM_DESC(devices, "how many devices should be created");
 
 #define WEBCAMSTUDIO_SIZE_DEFAULT_WIDTH   640
 #define WEBCAMSTUDIO_SIZE_DEFAULT_HEIGHT  480
-
-
 
 /* module structures */
 struct webcamstudio_private {
@@ -124,6 +131,8 @@ struct webcamstudio_device {
   unsigned long int imagesize;  /* size of buffers data */
   int buffers_number;  /* should not be big, 4 is a good choice */
   struct v4l2l_buffer buffers[MAX_BUFFERS];	/* inner driver buffers */
+  int used_buffers; /* number of the actually used buffers */
+  int max_openers;  /* how many times can this device be opened */
 
   int write_position; /* number of last written frame + 1 */
   long buffer_size;
@@ -131,7 +140,7 @@ struct webcamstudio_device {
   /* sync stuff */
   atomic_t open_count;
   int ready_for_capture;/* set to true when at least one writer opened
-			 * device and negotiated format */
+                         * device and negotiated format */
   wait_queue_head_t read_event;
 };
 
@@ -145,18 +154,19 @@ enum opener_type {
 /* struct keeping state and type of opener */
 struct webcamstudio_opener {
   enum opener_type type;
-  int buffers_number;
-  int position; /* number of last processed frame + 1 or
-		 * write_position - 1 if reader went out of sync */
+  int vidioc_enum_frameintervals_calls;
+  int read_position; /* number of last processed frame + 1 or
+                      * write_position - 1 if reader went out of sync */
   struct v4l2_buffer *buffers;
+  int buffers_number;  /* should not be big, 4 is a good choice */
 };
 
 /* this is heavily inspired by the bttv driver found in the linux kernel */
 struct v4l2l_format {
-        char *name;
-        int  fourcc;          /* video4linux 2      */
-        int  depth;           /* bit/pixel          */
-        int  flags;
+  char *name;
+  int  fourcc;          /* video4linux 2      */
+  int  depth;           /* bit/pixel          */
+  int  flags;
 };
 /* set the v4l2l_format.flags to PLANAR for non-packed formats */
 #define FORMAT_FLAGS_PLANAR       0x01
@@ -199,16 +209,20 @@ static const struct v4l2l_format formats[] = {
     .depth    = 16,
     .flags    = 0,
   },{
+#ifdef V4L2_PIX_FMT_YVYU
     .name     = "4:2:2, packed YVYU",
     .fourcc   = V4L2_PIX_FMT_YVYU,
     .depth    = 16,
     .flags=0,
   },{
+#endif
+#ifdef V4L2_PIX_FMT_VYUY
     .name     = "4:2:2, packed VYUY",
     .fourcc   = V4L2_PIX_FMT_VYUY,
     .depth    = 16,
     .flags=0,
   },{
+#endif
     .name     = "4:2:2, packed YYUV",
     .fourcc   = V4L2_PIX_FMT_YYUV,
     .depth    = 16,
@@ -256,9 +270,9 @@ static const struct v4l2l_format formats[] = {
 static const unsigned int FORMATS = ARRAY_SIZE(formats);
 
 
-static
-char*
-fourcc2str          (unsigned int fourcc, char buf[4]) 
+static char*
+fourcc2str          (unsigned int fourcc,
+                     char buf[4])
 {
   buf[0]=(fourcc>> 0) & 0xFF;
   buf[1]=(fourcc>> 8) & 0xFF;
@@ -268,22 +282,20 @@ fourcc2str          (unsigned int fourcc, char buf[4])
   return buf;
 }
 
-static 
-const struct v4l2l_format*
+static const struct v4l2l_format*
 format_by_fourcc    (int fourcc)
 {
   unsigned int i;
 
   for (i = 0; i < FORMATS; i++) {
     if (formats[i].fourcc == fourcc)
-      return formats+i;
-  }
+      return formats+i;  }
 
   dprintk("unsupported format '%c%c%c%c'",
-	  (fourcc>> 0) & 0xFF,
-	  (fourcc>> 8) & 0xFF,
-	  (fourcc>>16) & 0xFF,
-	  (fourcc>>24) & 0xFF);
+          (fourcc>> 0) & 0xFF,
+          (fourcc>> 8) & 0xFF,
+          (fourcc>>16) & 0xFF,
+          (fourcc>>24) & 0xFF);
   return NULL;
 }
 
@@ -295,7 +307,7 @@ pix_format_set_size     (struct v4l2_pix_format *       f,
 {
   f->width = width;
   f->height = height;
-  
+
   if (fmt->flags & FORMAT_FLAGS_PLANAR) {
     f->bytesperline = width; /* Y plane */
     f->sizeimage = (width * height * fmt->depth) >> 3;
@@ -305,12 +317,122 @@ pix_format_set_size     (struct v4l2_pix_format *       f,
   }
 }
 
+static struct webcamstudio_device*webcamstudio_cd2dev  (struct device*cd);
+
+/* device attributes */
+/* available via sysfs: /sys/devices/virtual/video4linux/video* */
+
+static ssize_t attr_show_fourcc(struct device *cd,
+                         struct device_attribute *attr, 
+                         char *buf)
+{
+  struct webcamstudio_device *dev = webcamstudio_cd2dev(cd);
+
+  char buf4cc[5];
+  if(!dev)return 0;
+
+  fourcc2str(dev->pix_format.pixelformat, buf4cc);
+
+  return sprintf(buf, "%.*s\n", 4, buf4cc);
+}
+static DEVICE_ATTR(fourcc, S_IRUGO, attr_show_fourcc, NULL);
+
+static ssize_t attr_show_buffers(struct device *cd,
+                                 struct device_attribute *attr,
+                                 char *buf)
+{
+  struct webcamstudio_device *dev = webcamstudio_cd2dev(cd);
+  return sprintf(buf, "%d\n", dev->used_buffers);
+}
+static DEVICE_ATTR(buffers, S_IRUGO, attr_show_buffers, NULL);
+
+static ssize_t attr_show_maxopeners(struct device *cd,
+                                    struct device_attribute *attr,
+                                    char *buf)
+{
+  struct webcamstudio_device *dev = webcamstudio_cd2dev(cd);
+  return sprintf(buf, "%d\n", dev->max_openers);
+}
+static ssize_t attr_store_maxopeners(struct device* cd,
+                                     struct device_attribute *attr,
+                                     const char* buf, size_t len)
+{
+  struct webcamstudio_device *dev = NULL;
+  unsigned long curr=0;
+
+  if (strict_strtoul(buf, 0, &curr))
+    return -EINVAL;
+
+  dev = webcamstudio_cd2dev(cd);
+
+  if (dev->max_openers == curr)
+    return len;
+
+  if (dev->open_count.counter > curr) {
+    /* request to limit to less openers as are currently attached to us */
+    return -EINVAL;
+  }
+
+  dev->max_openers = (int)curr;
+
+  return len;
+}
+
+
+static DEVICE_ATTR(max_openers, S_IRUGO | S_IWUSR, attr_show_maxopeners, attr_store_maxopeners);
+
+
+
+
+
+static void webcamstudio_remove_sysfs(struct video_device *vdev)
+{
+#define V4L2_SYSFS_DESTROY(x) device_remove_file(&vdev->dev, &dev_attr_##x)
+
+  if (vdev) {
+    V4L2_SYSFS_DESTROY(fourcc);
+    V4L2_SYSFS_DESTROY(buffers);
+    V4L2_SYSFS_DESTROY(max_openers);
+    /* ... */
+  }
+}
+static void webcamstudio_create_sysfs(struct video_device *vdev)
+{
+  int res=0;
+#define V4L2_SYSFS_CREATE(x)     res = device_create_file(&vdev->dev, &dev_attr_##x); if (res < 0) break
+  if (!vdev) return;
+  do {
+    V4L2_SYSFS_CREATE(fourcc);
+    V4L2_SYSFS_CREATE(buffers);
+    V4L2_SYSFS_CREATE(max_openers);
+    /* ... */
+  } while(0);
+
+  if (res >= 0)return;
+  dev_err(&vdev->dev, "%s error: %d\n", __func__, res);
+}
+
+
+
+
+
+
 /* global module data */
 struct webcamstudio_device *devs[MAX_DEVICES];
 
-static 
-struct webcamstudio_device*
-webcamstudio_getdevice        (struct file*f) {
+static struct webcamstudio_device*
+webcamstudio_cd2dev  (struct device*cd)
+{
+  struct video_device *loopdev = to_video_device(cd);
+  priv_ptr ptr = (priv_ptr)video_get_drvdata(loopdev);
+  int nr = ptr->devicenr;
+  if(nr<0 || nr>=devices){printk(KERN_ERR "webcamstudio: illegal device %d\n",nr);return NULL;}
+  return devs[nr];
+}
+
+static struct webcamstudio_device*
+webcamstudio_getdevice        (struct file*f)
+{
   struct video_device *loopdev = video_devdata(f);
   priv_ptr ptr = (priv_ptr)video_get_drvdata(loopdev);
   int nr = ptr->devicenr;
@@ -324,23 +446,24 @@ static int allocate_buffers(struct webcamstudio_device *dev);
 static int free_buffers(struct webcamstudio_device *dev);
 static const struct v4l2_file_operations webcamstudio_fops;
 static const struct v4l2_ioctl_ops webcamstudio_ioctl_ops;
+
 /* Queue helpers */
 /* next functions sets buffer flags and adjusts counters accordingly */
-static inline void 
+static inline void
 set_done            (struct v4l2l_buffer *buffer)
 {
   buffer->buffer.flags &= ~V4L2_BUF_FLAG_QUEUED;
   buffer->buffer.flags |= V4L2_BUF_FLAG_DONE;
 }
 
-static inline void 
+static inline void
 set_queued          (struct v4l2l_buffer *buffer)
 {
   buffer->buffer.flags &= ~V4L2_BUF_FLAG_DONE;
   buffer->buffer.flags |= V4L2_BUF_FLAG_QUEUED;
 }
 
-static inline void 
+static inline void
 unset_flags         (struct v4l2l_buffer *buffer)
 {
   buffer->buffer.flags &= ~V4L2_BUF_FLAG_QUEUED;
@@ -352,8 +475,8 @@ unset_flags         (struct v4l2l_buffer *buffer)
  */
 static int
 vidioc_querycap     (struct file *file,
-		     void *priv, 
-		     struct v4l2_capability *cap)
+                     void *priv,
+                     struct v4l2_capability *cap)
 {
   strlcpy(cap->driver, "WebcamStudio", sizeof(cap->driver));
   strlcpy(cap->card, "WebcamStudio video device", sizeof(cap->card));
@@ -372,34 +495,33 @@ vidioc_querycap     (struct file *file,
 }
 
 static int
-vidioc_enum_framesizes        (struct file *file, void *fh, 
-			       struct v4l2_frmsizeenum *argp)
+vidioc_enum_framesizes        (struct file *file, void *fh,
+                               struct v4l2_frmsizeenum *argp)
 {
   struct webcamstudio_device *dev;
+
+  /* LATER: what does the index really  mean?
+   * if it's about enumerating formats, we can safely ignore it
+   * (CHECK)
+   */
+
+  /* there can be only one... */
+  if (argp->index)
+    return -EINVAL;
+
 
   dev=webcamstudio_getdevice(file);
   if (dev->ready_for_capture) {
     /* format has already been negotiated
      * cannot change during runtime
      */
-    struct  v4l2_frmsize_discrete discr=argp->discrete;
-
-    if (argp->index)
-      return -EINVAL;
-    
     argp->type=V4L2_FRMSIZE_TYPE_DISCRETE;
-    
-    discr.width=dev->pix_format.width;
-    discr.height=dev->pix_format.height;
+
+    argp->discrete.width=dev->pix_format.width;
+    argp->discrete.height=dev->pix_format.height;
   } else {
-#if 1
-    /* LATER: what does the index mean? 
-     * if it's about enumerating formats, we can safely ignore it
-     * (CHECK)
+    /* if the format has not been negotiated yet, we accept anything
      */
-    if (argp->index)
-      return -EINVAL;
-#endif
     argp->type=V4L2_FRMSIZE_TYPE_CONTINUOUS;
 
     argp->stepwise.min_width=WEBCAMSTUDIO_SIZE_MIN_WIDTH;
@@ -414,15 +536,43 @@ vidioc_enum_framesizes        (struct file *file, void *fh,
   return 0;
 }
 
+/* returns frameinterval (fps) for the set resolution
+ * called on VIDIOC_ENUM_FRAMEINTERVALS
+ */
+static int
+vidioc_enum_frameintervals(struct file *file,
+			   void *fh,
+			   struct v4l2_frmivalenum *argp)
+{
+  struct webcamstudio_device *dev = webcamstudio_getdevice(file);
+  struct webcamstudio_opener *opener = file->private_data;
+
+  if (dev->ready_for_capture) {
+    if (opener->vidioc_enum_frameintervals_calls > 0)
+      return -EINVAL;
+    if (argp->width == dev->pix_format.width &&
+        argp->height== dev->pix_format.height)
+      {
+        argp->type = V4L2_FRMIVAL_TYPE_DISCRETE;
+        argp->discrete = dev->capture_param.timeperframe;
+        opener->vidioc_enum_frameintervals_calls++;
+        return 0;
+      } else {
+      return -EINVAL;
+    }
+  }
+  return 0;
+}
+
 /* ------------------ CAPTURE ----------------------- */
 
 /* returns device formats
  * called on VIDIOC_ENUM_FMT, with v4l2_buf_type set to V4L2_BUF_TYPE_VIDEO_CAPTURE
  */
 static int
-vidioc_enum_fmt_cap (struct file *file, 
-		     void *fh,
-		     struct v4l2_fmtdesc *f)
+vidioc_enum_fmt_cap (struct file *file,
+                     void *fh,
+                     struct v4l2_fmtdesc *f)
 {
   struct webcamstudio_device *dev;
   MARK();
@@ -436,11 +586,11 @@ vidioc_enum_fmt_cap (struct file *file,
     //  strlcpy(f->description, "current format", sizeof(f->description));
 
     snprintf(f->description, sizeof(f->description),
-	     "[%c%c%c%c]",
-	     (format>> 0) & 0xFF,
-	     (format>> 8) & 0xFF,
-	     (format>>16) & 0xFF,
-	     (format>>24) & 0xFF);
+             "[%c%c%c%c]",
+             (format>> 0) & 0xFF,
+             (format>> 8) & 0xFF,
+             (format>>16) & 0xFF,
+             (format>>24) & 0xFF);
 
     f->pixelformat = dev->pix_format.pixelformat;
   } else {
@@ -456,18 +606,18 @@ vidioc_enum_fmt_cap (struct file *file,
  */
 static int
 vidioc_g_fmt_cap    (struct file *file,
-		     void *priv, 
-		     struct v4l2_format *fmt)
+                     void *priv,
+                     struct v4l2_format *fmt)
 {
   struct webcamstudio_device *dev;
   MARK();
 
   dev=webcamstudio_getdevice(file);
 
-  if (dev->ready_for_capture == 0) {
+  if (!dev->ready_for_capture) {
     return -EINVAL;
   }
-  
+
   fmt->fmt.pix = dev->pix_format;
   MARK();
   return 0;
@@ -476,13 +626,13 @@ vidioc_g_fmt_cap    (struct file *file,
 /* checks if it is OK to change to format fmt;
  * actual check is done by inner_try_fmt_cap
  * just checking that pixelformat is OK and set other parameters, app should
- * obey this decision 
+ * obey this decision
  * called on VIDIOC_TRY_FMT, with v4l2_buf_type set to V4L2_BUF_TYPE_VIDEO_CAPTURE
  */
 static int
 vidioc_try_fmt_cap  (struct file *file,
-		     void *priv, 
-		     struct v4l2_format *fmt)
+                     void *priv,
+                     struct v4l2_format *fmt)
 {
   struct webcamstudio_opener *opener;
   struct webcamstudio_device *dev;
@@ -508,13 +658,13 @@ vidioc_try_fmt_cap  (struct file *file,
 
 /* sets new output format, if possible
  * actually format is set  by input and we even do not check it, just return
- * current one, but it is possible to set subregions of input TODO(vasaka) 
+ * current one, but it is possible to set subregions of input TODO(vasaka)
  * called on VIDIOC_S_FMT, with v4l2_buf_type set to V4L2_BUF_TYPE_VIDEO_CAPTURE
  */
 static int
 vidioc_s_fmt_cap    (struct file *file,
-		     void *priv, 
-		     struct v4l2_format *fmt)
+                     void *priv,
+                     struct v4l2_format *fmt)
 {
   return vidioc_try_fmt_cap(file, priv, fmt);
 }
@@ -523,13 +673,13 @@ vidioc_s_fmt_cap    (struct file *file,
 /* ------------------ OUTPUT ----------------------- */
 
 /* returns device formats;
- * LATER: allow all formats 
+ * LATER: allow all formats
  * called on VIDIOC_ENUM_FMT, with v4l2_buf_type set to V4L2_BUF_TYPE_VIDEO_OUTPUT
  */
 static int
-vidioc_enum_fmt_out (struct file *file, 
-		     void *fh,
-		     struct v4l2_fmtdesc *f)
+vidioc_enum_fmt_out (struct file *file,
+                     void *fh,
+                     struct v4l2_fmtdesc *f)
 {
   struct webcamstudio_device *dev;
   const struct v4l2l_format *  fmt;
@@ -542,7 +692,7 @@ vidioc_enum_fmt_out (struct file *file,
     /* format has been fixed by the writer, so only one single format is supported */
     if (f->index)
       return -EINVAL;
-    
+
     fmt=format_by_fourcc(format);
     if(NULL == fmt)
       return -EINVAL;
@@ -556,8 +706,8 @@ vidioc_enum_fmt_out (struct file *file,
   } else {
     __u32 format;
     /* fill in a dummy format */
-    if(f->index < 0 || 
-       f->index >= FORMATS) 
+    if(f->index < 0 ||
+       f->index >= FORMATS)
       return -EINVAL;
 
     fmt=&formats[f->index];
@@ -577,35 +727,32 @@ vidioc_enum_fmt_out (struct file *file,
 
 /* returns current video format format fmt */
 /* NOTE: this is called from the producer
- * so if format has not been negotiated yet, 
- * it should return ALL of available formats, 
+ * so if format has not been negotiated yet,
+ * it should return ALL of available formats,
  * called on VIDIOC_G_FMT, with v4l2_buf_type set to V4L2_BUF_TYPE_VIDEO_OUTPUT
  */
 static int
 vidioc_g_fmt_out    (struct file *file,
-		     void *priv, 
-		     struct v4l2_format *fmt)
+                     void *priv,
+                     struct v4l2_format *fmt)
 {
   struct webcamstudio_device *dev;
   struct webcamstudio_opener *opener;
-  
+
   MARK();
-  
+
   dev=webcamstudio_getdevice(file);
   opener = file->private_data;
   opener->type = WRITER;
   /*
    * LATER: this should return the currently valid format
-   * gstreamer doesn't like it, if this returns -EINVAL, as it 
+   * gstreamer doesn't like it, if this returns -EINVAL, as it
    * then concludes that there is _no_ valid format
-   * CHECK whether this assumption is wrong, 
+   * CHECK whether this assumption is wrong,
    * or whether we have to always provide a valid format
-   */ 
-#if 1
+   */
+
   if (0 == dev->ready_for_capture) {
-#else
-    //  if (0 == dev->pix_format.sizeimage) {
-#endif
     /* we are not fixated yet, so return a default format */
     const struct v4l2l_format *     defaultfmt=&formats[0];
 
@@ -626,18 +773,18 @@ vidioc_g_fmt_out    (struct file *file,
 }
 
 /* checks if it is OK to change to format fmt;
- * if format is negotiated do not change it 
+ * if format is negotiated do not change it
  * called on VIDIOC_TRY_FMT with v4l2_buf_type set to V4L2_BUF_TYPE_VIDEO_OUTPUT
  */
-static int 
+static int
 vidioc_try_fmt_out  (struct file *file,
-		     void *priv, 
-		     struct v4l2_format *fmt)
+                     void *priv,
+                     struct v4l2_format *fmt)
 {
   struct webcamstudio_opener *opener;
   struct webcamstudio_device *dev;
   MARK();
-  
+
   opener = file->private_data;
   opener->type = WRITER;
 
@@ -653,7 +800,7 @@ vidioc_try_fmt_out  (struct file *file,
     __u32 pixfmt=fmt->fmt.pix.pixelformat;
     const struct v4l2l_format*format=format_by_fourcc(pixfmt);
 
-    
+
     if(w<1)
       w=WEBCAMSTUDIO_SIZE_DEFAULT_WIDTH;
 
@@ -663,7 +810,7 @@ vidioc_try_fmt_out  (struct file *file,
     if(NULL==format) {
       format=&formats[0];
     }
-    
+
     pix_format_set_size(&fmt->fmt.pix, format, w, h);
 
     fmt->fmt.pix.pixelformat = format->fourcc;
@@ -680,12 +827,12 @@ vidioc_try_fmt_out  (struct file *file,
 
 /* sets new output format, if possible;
  * allocate data here because we do not know if it will be streaming or
- * read/write IO 
+ * read/write IO
  * called on VIDIOC_S_FMT with v4l2_buf_type set to V4L2_BUF_TYPE_VIDEO_OUTPUT
  */
 static int
 vidioc_s_fmt_out    (struct file *file,
-		     void *priv, struct v4l2_format *fmt)
+                     void *priv, struct v4l2_format *fmt)
 {
   struct webcamstudio_device *dev;
   int ret;
@@ -696,12 +843,16 @@ vidioc_s_fmt_out    (struct file *file,
 
   dprintk("s_fmt_out(%d) %d...%d", ret, dev->ready_for_capture, dev->pix_format.sizeimage);
 
-  do { char buf[5]; buf[4]=0; dprintk("outFOURCC=%s\n", fourcc2str(dev->pix_format.pixelformat, buf)); } while(0);
+  do {
+    char buf[5];
+    buf[4]=0;
+    dprintk("outFOURCC=%s\n", fourcc2str(dev->pix_format.pixelformat, buf));
+  } while(0);
 
   if (ret < 0)
     return ret;
 
-  if (dev->ready_for_capture == 0) {
+  if (!dev->ready_for_capture) {
     dev->buffer_size = PAGE_ALIGN(dev->pix_format.sizeimage);
     fmt->fmt.pix.sizeimage = dev->buffer_size;
     allocate_buffers(dev);
@@ -720,15 +871,15 @@ vidioc_s_fmt_out    (struct file *file,
 #warning OVERLAY dummies
 static int
 vidioc_g_fmt_overlay(struct file *file,
-		     void *priv, 
-		     struct v4l2_format *fmt)
+                     void *priv,
+                     struct v4l2_format *fmt)
 {
   return 0;
 }
-static int 
+static int
 vidioc_s_fmt_overlay(struct file *file,
-		     void *priv, 
-		     struct v4l2_format *fmt)
+                     void *priv,
+                     struct v4l2_format *fmt)
 {
   return 0;
 }
@@ -739,12 +890,12 @@ vidioc_s_fmt_overlay(struct file *file,
 
 /* get some data flow parameters, only capability, fps and readbuffers has
  * effect on this driver
- * called on VIDIOC_G_PARM 
+ * called on VIDIOC_G_PARM
  */
 static int
-vidioc_g_parm       (struct file *file, 
-		     void *priv,
-		     struct v4l2_streamparm *parm)
+vidioc_g_parm       (struct file *file,
+                     void *priv,
+                     struct v4l2_streamparm *parm)
 {
   /* do not care about type of opener, hope this enums would always be
    * compatible */
@@ -758,33 +909,34 @@ vidioc_g_parm       (struct file *file,
 
 /* get some data flow parameters, only capability, fps and readbuffers has
  * effect on this driver
- * called on VIDIOC_S_PARM 
+ * called on VIDIOC_S_PARM
  */
-static int 
-vidioc_s_parm       (struct file *file, 
-		     void *priv,
-		     struct v4l2_streamparm *parm)
+static int
+vidioc_s_parm       (struct file *file,
+                     void *priv,
+                     struct v4l2_streamparm *parm)
 {
   struct webcamstudio_device *dev;
   MARK();
 
   dev=webcamstudio_getdevice(file);
   dprintk("vidioc_s_parm called frate=%d/%d\n",
-	  parm->parm.capture.timeperframe.numerator,
-	  parm->parm.capture.timeperframe.denominator);
+          parm->parm.capture.timeperframe.numerator,
+          parm->parm.capture.timeperframe.denominator);
 
   switch (parm->type) {
   case V4L2_BUF_TYPE_VIDEO_CAPTURE:
-    parm->parm.capture = dev->capture_param;
-    return 0;
+    dev->capture_param.timeperframe=parm->parm.capture.timeperframe;
+    break;
   case V4L2_BUF_TYPE_VIDEO_OUTPUT:
-    /* TODO(vasaka) do nothing now, but should set fps if
-     * needed */
-    parm->parm.capture = dev->capture_param;
-    return 0;
+    dev->capture_param.timeperframe=parm->parm.capture.timeperframe;
+    break;
   default:
     return -1;
   }
+
+  parm->parm.capture = dev->capture_param;
+  return 0;
 }
 
 /* sets a tv standard, actually we do not need to handle this any special way
@@ -792,10 +944,24 @@ vidioc_s_parm       (struct file *file,
  * called on VIDIOC_S_STD
  */
 static int
-vidioc_s_std        (struct file *file, 
-		     void *private_data,
-		     v4l2_std_id *norm)
+vidioc_s_std        (struct file *file,
+                     void *private_data,
+                     v4l2_std_id *_std)
 {
+  v4l2_std_id req_std=0, supported_std=0;
+  const v4l2_std_id all_std=V4L2_STD_ALL, no_std=0;
+
+  if(_std) {
+    req_std=*_std;
+    *_std=all_std;
+  }
+
+  /* we support everything in V4L2_STD_ALL, but not more... */
+  supported_std=(all_std & req_std);
+  if(no_std == supported_std) {
+    return -EINVAL;
+  }
+
   return 0;
 }
 
@@ -803,10 +969,10 @@ vidioc_s_std        (struct file *file,
 /* gets a fake video standard
  * called on VIDIOC_G_STD
  */
-static int 
-vidioc_g_std        (struct file *file, 
-		     void *private_data,
-		     v4l2_std_id *norm)
+static int
+vidioc_g_std        (struct file *file,
+                     void *private_data,
+                     v4l2_std_id *norm)
 {
   if(norm)
     *norm=V4L2_STD_ALL;
@@ -815,127 +981,190 @@ vidioc_g_std        (struct file *file,
 /* gets a fake video standard
  * called on VIDIOC_QUERYSTD
  */
-static int 
+static int
 vidioc_querystd     (struct file *file,
-		     void *private_data,
-		     v4l2_std_id *norm)
+                     void *private_data,
+                     v4l2_std_id *norm)
 {
   if(norm)
-    *norm=V4L2_STD_UNKNOWN;
+    *norm=V4L2_STD_ALL;
   return 0;
 }
 
+
+/* dummy queyr control
+ * called on VIDIOC_QUERYCTRL
+ */
+static int
+vidioc_queryctrl(struct file *file, void *fh,
+                 struct v4l2_queryctrl *a)
+{
+  return -EINVAL;
+}
 
 
 
 /* returns set of device outputs, in our case there is only one
  * called on VIDIOC_ENUMOUTPUT
  */
-static int 
-vidioc_enum_output  (struct file *file, 
-		     void *fh,
-		     struct v4l2_output *outp)
+static int
+vidioc_enum_output  (struct file *file,
+                     void *fh,
+                     struct v4l2_output *outp)
 {
-  struct webcamstudio_device *dev;
+  __u32 index=outp->index;
   MARK();
 
-  if (outp->index) {
+  if (0!=index) {
     return -EINVAL;
   }
 
-  dev=webcamstudio_getdevice(file);
-  
-  if (dev->ready_for_capture)
-    return -EINVAL;
- 
+  /* clear all data (including the reserved fields) */
+  memset(outp, 0, sizeof(*outp));
+
+  outp->index = index;
   strlcpy(outp->name, "loopback in", sizeof(outp->name));
   outp->type = V4L2_OUTPUT_TYPE_ANALOG;
   outp->audioset = 0;
   outp->modulator = 0;
   outp->std = V4L2_STD_ALL;
+
+#ifdef V4L2_OUT_CAP_STD
+  outp->capabilities |= V4L2_OUT_CAP_STD;
+#endif
+
   return 0;
 }
 
-/* returns set of device inputs, in our case there is only one, 
- * but later I may add more
- * called on VIDIOC_ENUMINPUT 
+/* which output is currently active,
+ * called on VIDIOC_G_OUTPUT
  */
-static int 
-vidioc_enum_input   (struct file *file, 
-		     void *fh,
-		     struct v4l2_input *inp)
-{
-  struct webcamstudio_device *dev;
-  MARK();
-
-  dev=webcamstudio_getdevice(file);
-  if (dev->ready_for_capture == 0)
-    return -EINVAL;
-  if (inp->index == 0) {
-    strlcpy(inp->name, "loopback", sizeof(inp->name));
-    inp->type = V4L2_INPUT_TYPE_CAMERA;
-    inp->audioset = 0;
-    inp->tuner = 0;
-    inp->std = V4L2_STD_ALL;
-    inp->status = 0;
-    return 0;
-  }
-  return -EINVAL;
-}
-
-
-
-
-/* which input is currently active, 
- * called on VIDIOC_G_INPUT 
- */
-static int 
-vidioc_g_input     (struct file *file, 
-		    void *fh, 
-		    unsigned int *i)
+static int
+vidioc_g_output     (struct file *file,
+                    void *fh,
+                    unsigned int *i)
 {
   if(i)
     *i = 0;
   return 0;
 }
 
-/* set input, can make sense if we have more than one video src,
- * called on VIDIOC_S_INPUT 
+/* set output, can make sense if we have more than one video src,
+ * called on VIDIOC_S_OUTPUT
  */
 static int
-vidioc_s_input      (struct file *file, 
-		     void *fh, 
-		     unsigned int i)
+vidioc_s_output      (struct file *file,
+                     void *fh,
+                     unsigned int i)
 {
-  if (i == 0)
+  if(i)
+    return -EINVAL;
+  i=0;
+
+  if (webcamstudio_getdevice(file)->ready_for_capture) {
+    return -EBUSY;
+  }
+
+  return 0;
+}
+
+
+/* returns set of device inputs, in our case there is only one,
+ * but later I may add more
+ * called on VIDIOC_ENUMINPUT
+ */
+static int
+vidioc_enum_input   (struct file *file,
+                     void *fh,
+                     struct v4l2_input *inp)
+{
+  __u32 index=inp->index;
+  MARK();
+
+  if (0!=index) {
+    return -EINVAL;
+  }
+
+  if (!webcamstudio_getdevice(file)->ready_for_capture)
+    return -EINVAL;
+
+  /* clear all data (including the reserved fields) */
+  memset(inp, 0, sizeof(*inp));
+
+  inp->index = index;
+  strlcpy(inp->name, "loopback", sizeof(inp->name));
+  inp->type = V4L2_INPUT_TYPE_CAMERA;
+  inp->audioset = 0;
+  inp->tuner = 0;
+  inp->std = V4L2_STD_ALL;
+  inp->status = 0;
+
+
+#ifdef V4L2_IN_CAP_STD
+  inp->capabilities |= V4L2_IN_CAP_STD;
+#endif
+  return 0;
+}
+
+/* which input is currently active,
+ * called on VIDIOC_G_INPUT
+ */
+static int
+vidioc_g_input     (struct file *file,
+                    void *fh,
+                    unsigned int *i)
+{
+ if (!webcamstudio_getdevice(file)->ready_for_capture)
+   return -EINVAL;
+  if(i)
+    *i = 0;
+  return 0;
+}
+
+/* set input, can make sense if we have more than one video src,
+ * called on VIDIOC_S_INPUT
+ */
+static int
+vidioc_s_input      (struct file *file,
+                     void *fh,
+                     unsigned int i)
+{
+  if ((i==0) && (webcamstudio_getdevice(file)->ready_for_capture))
     return 0;
+
   return -EINVAL;
 }
 
 /* --------------- V4L2 ioctl buffer related calls ----------------- */
 
 /* negotiate buffer type
- * only mmap streaming supported 
+ * only mmap streaming supported
  * called on VIDIOC_REQBUFS
  */
-static int 
-vidioc_reqbufs      (struct file *file, 
-		     void *fh,
-		     struct v4l2_requestbuffers *b)
+static int
+vidioc_reqbufs      (struct file *file,
+                     void *fh,
+                     struct v4l2_requestbuffers *b)
 {
   struct webcamstudio_device *dev;
+  struct webcamstudio_opener *opener;
   MARK();
 
   dev=webcamstudio_getdevice(file);
+  opener = file->private_data;
 
   dprintk("reqbufs: %d\t%d=%d", b->memory, b->count, dev->buffers_number);
   init_buffers(dev);
   switch (b->memory) {
   case V4L2_MEMORY_MMAP:
     /* do nothing here, buffers are always allocated*/
-    if (b->count == 0)
+    if (0 == b->count)
       return 0;
-    b->count = dev->buffers_number;
+    if (b->count > dev->buffers_number)
+      b->count = dev->buffers_number;
+    opener->buffers_number = b->count;
+    if (opener->buffers_number < dev->used_buffers)
+      dev->used_buffers = opener->buffers_number;
     return 0;
   default:
     return -EINVAL;
@@ -944,13 +1173,13 @@ vidioc_reqbufs      (struct file *file,
 
 /* returns buffer asked for;
  * give app as many buffers as it wants, if it less than MAX,
- * but map them in our inner buffers 
+ * but map them in our inner buffers
  * called on VIDIOC_QUERYBUF
  */
-static int 
-vidioc_querybuf     (struct file *file, 
-		     void *fh,
-		     struct v4l2_buffer *b)
+static int
+vidioc_querybuf     (struct file *file,
+                     void *fh,
+                     struct v4l2_buffer *b)
 {
   enum v4l2_buf_type type ;
   int index;
@@ -968,7 +1197,7 @@ vidioc_querybuf     (struct file *file,
   if (b->index > max_buffers)
     return -EINVAL;
 
-  *b = dev->buffers[b->index % dev->buffers_number].buffer;
+  *b = dev->buffers[b->index % dev->used_buffers].buffer;
 
   b->type = type;
   b->index = index;
@@ -980,9 +1209,9 @@ vidioc_querybuf     (struct file *file,
  * called on VIDIOC_QBUF
  */
 static int
-vidioc_qbuf         (struct file *file, 
-		     void *private_data,
-		     struct v4l2_buffer *buf)
+vidioc_qbuf         (struct file *file,
+                     void *private_data,
+                     struct v4l2_buffer *buf)
 {
   struct webcamstudio_device *dev;
   struct v4l2l_buffer *b;
@@ -993,14 +1222,16 @@ vidioc_qbuf         (struct file *file,
   if (buf->index > max_buffers)
     return -EINVAL;
 
-  index = buf->index % dev->buffers_number;
+  index = buf->index % dev->used_buffers;
   b=&dev->buffers[index];
 
   switch (buf->type) {
   case V4L2_BUF_TYPE_VIDEO_CAPTURE:
+    dprintkrw("capture QBUF index: %d\n", index);
     set_queued(b);
     return 0;
   case V4L2_BUF_TYPE_VIDEO_OUTPUT:
+    dprintkrw("output QBUF index: %d\n", index);
     do_gettimeofday(&b->buffer.timestamp);
     set_done(b);
     wake_up_all(&dev->read_event);
@@ -1014,9 +1245,9 @@ vidioc_qbuf         (struct file *file,
  * called on VIDIOC_DQBUF
  */
 static int
-vidioc_dqbuf        (struct file *file, 
-		     void *private_data,
-		     struct v4l2_buffer *buf)
+vidioc_dqbuf        (struct file *file,
+                     void *private_data,
+                     struct v4l2_buffer *buf)
 {
   struct webcamstudio_device *dev;
   struct webcamstudio_opener *opener;
@@ -1027,24 +1258,26 @@ vidioc_dqbuf        (struct file *file,
 
   switch (buf->type) {
   case V4L2_BUF_TYPE_VIDEO_CAPTURE:
-    if ((dev->write_position <= opener->position) &&
-	(file->f_flags&O_NONBLOCK))
+    if ((dev->write_position <= opener->read_position) &&
+        (file->f_flags&O_NONBLOCK))
       return -EAGAIN;
     wait_event_interruptible(dev->read_event, (dev->write_position >
-					       opener->position));
-    if (dev->write_position > opener->position+2)
-      opener->position = dev->write_position - 1;
-    index = opener->position % dev->buffers_number;
+					       opener->read_position));
+    if (dev->write_position > opener->read_position+2)
+      opener->read_position = dev->write_position - 1;
+    index = opener->read_position % dev->used_buffers;
+    dprintkrw("capture DQBUF index: %d\n", index);
     if (!(dev->buffers[index].buffer.flags&V4L2_BUF_FLAG_MAPPED)) {
       dprintk("trying to return not mapped buf\n");
       return -EINVAL;
     }
-    ++opener->position;
+    ++opener->read_position;
     unset_flags(&dev->buffers[index]);
     *buf = dev->buffers[index].buffer;
     return 0;
   case V4L2_BUF_TYPE_VIDEO_OUTPUT:
-    index = dev->write_position % dev->buffers_number;
+    index = dev->write_position % dev->used_buffers;
+    dprintkrw("output DQBUF index: %d\n", index);
     unset_flags(&dev->buffers[index]);
     *buf = dev->buffers[index].buffer;
     ++dev->write_position;
@@ -1060,9 +1293,9 @@ vidioc_dqbuf        (struct file *file,
  * called on VIDIOC_STREAMON
  */
 static int
-vidioc_streamon     (struct file *file, 
-		     void *private_data,
-		     enum v4l2_buf_type type)
+vidioc_streamon     (struct file *file,
+                     void *private_data,
+                     enum v4l2_buf_type type)
 {
   struct webcamstudio_device *dev;
   int ret;
@@ -1072,15 +1305,15 @@ vidioc_streamon     (struct file *file,
 
   switch (type) {
   case V4L2_BUF_TYPE_VIDEO_OUTPUT:
-    if (dev->ready_for_capture == 0) {
+    if (!dev->ready_for_capture) {
       ret = allocate_buffers(dev);
       if (ret < 0)
-	return ret;
+        return ret;
       dev->ready_for_capture = 1;
     }
     return 0;
   case V4L2_BUF_TYPE_VIDEO_CAPTURE:
-    if (dev->ready_for_capture == 0)
+    if (!dev->ready_for_capture)
       return -EIO;
     return 0;
   default:
@@ -1092,9 +1325,9 @@ vidioc_streamon     (struct file *file,
  * called on VIDIOC_STREAMOFF
  */
 static int
-vidioc_streamoff    (struct file *file, 
-		     void *private_data,
-		     enum v4l2_buf_type type)
+vidioc_streamoff    (struct file *file,
+                     void *private_data,
+                     enum v4l2_buf_type type)
 {
   MARK();
   dprintk("%d", type);
@@ -1103,9 +1336,9 @@ vidioc_streamoff    (struct file *file,
 
 #ifdef CONFIG_VIDEO_V4L1_COMPAT
 static int
-vidiocgmbuf         (struct file *file, 
-		     void *fh, 
-		     struct video_mbuf *p)
+vidiocgmbuf         (struct file *file,
+                     void *fh,
+                     struct video_mbuf *p)
 {
   struct webcamstudio_device *dev;
   MARK();
@@ -1119,9 +1352,34 @@ vidiocgmbuf         (struct file *file,
 }
 #endif
 
+static int
+vidioc_g_audout     (struct file *file,
+                     void *fh,
+                     struct v4l2_audioout *argp) {
+  return -EINVAL;
+}
+static int
+vidioc_s_audout     (struct file *file,
+                     void *fh,
+                     struct v4l2_audioout *argp) {
+  return -EINVAL;
+}
+static int
+vidioc_g_audio     (struct file *file,
+                     void *fh,
+                     struct v4l2_audio *argp) {
+  return -EINVAL;
+}
+static int
+vidioc_s_audio     (struct file *file,
+                     void *fh,
+                     struct v4l2_audio *argp) {
+  return -EINVAL;
+}
+
 
 /* file operations */
-static void 
+static void
 vm_open             (struct vm_area_struct *vma)
 {
   struct v4l2l_buffer *buf;
@@ -1146,9 +1404,9 @@ static struct vm_operations_struct vm_ops = {
   .close = vm_close,
 };
 
-static int 
+static int
 webcamstudio_mmap  (struct file *file,
-		     struct vm_area_struct *vma)
+                     struct vm_area_struct *vma)
 {
   int i;
   unsigned long addr;
@@ -1216,9 +1474,9 @@ webcamstudio_mmap  (struct file *file,
   return 0;
 }
 
-static unsigned int 
-webcamstudio_poll  (struct file *file,
-		     struct poll_table_struct *pts)
+static unsigned int
+webcamstudio_poll   (struct file *file,
+                     struct poll_table_struct *pts)
 {
   struct webcamstudio_opener *opener;
   struct webcamstudio_device *dev;
@@ -1234,7 +1492,7 @@ webcamstudio_poll  (struct file *file,
     break;
   case READER:
     poll_wait(file, &dev->read_event, pts);
-    if (dev->write_position > opener->position)
+    if (dev->write_position > opener->read_position)
       ret_mask =  POLLIN | POLLRDNORM;
     break;
   default:
@@ -1247,8 +1505,8 @@ webcamstudio_poll  (struct file *file,
 
 /* do not want to limit device opens, it can be as many readers as user want,
  * writers are limited by means of setting writer field */
-static int 
-webcamstudio_open   (struct file *file)
+static int
+webcamstudio_open    (struct file *file)
 {
   struct webcamstudio_device *dev;
   struct webcamstudio_opener *opener;
@@ -1256,7 +1514,7 @@ webcamstudio_open   (struct file *file)
 
   dev=webcamstudio_getdevice(file);
 
-  if (dev->open_count.counter >= max_openers)
+  if (dev->open_count.counter >= dev->max_openers)
     return -EBUSY;
   /* kfree on close */
   opener = kzalloc(sizeof(*opener), GFP_KERNEL);
@@ -1268,8 +1526,8 @@ webcamstudio_open   (struct file *file)
   return 0;
 }
 
-static int 
-webcamstudio_close  (struct file *file)
+static int
+webcamstudio_close   (struct file *file)
 {
   struct webcamstudio_opener *opener;
   struct webcamstudio_device *dev;
@@ -1281,7 +1539,7 @@ webcamstudio_close  (struct file *file)
   atomic_dec(&dev->open_count);
   /* TODO(vasaka) does the closed file means that mapped buffers are
    * no more valid and one can free data? */
-  if (dev->open_count.counter == 0) {
+  if (0 == dev->open_count.counter) {
     free_buffers(dev);
     dev->ready_for_capture = 0;
     dev->buffer_size = 0;
@@ -1292,10 +1550,10 @@ webcamstudio_close  (struct file *file)
 }
 
 static ssize_t
-webcamstudio_read   (struct file *file, 
-		     char __user *buf,
-		     size_t count, 
-		     loff_t *ppos)
+webcamstudio_read    (struct file *file,
+                      char __user *buf,
+                      size_t count,
+                      loff_t *ppos)
 {
   int read_index;
   struct webcamstudio_opener *opener;
@@ -1305,33 +1563,33 @@ webcamstudio_read   (struct file *file,
   opener = file->private_data;
   dev    = webcamstudio_getdevice(file);
 
-  if ((dev->write_position <= opener->position) &&
+  if ((dev->write_position <= opener->read_position) &&
       (file->f_flags&O_NONBLOCK)) {
     return -EAGAIN;
   }
   wait_event_interruptible(dev->read_event,
-			   (dev->write_position > opener->position));
+                           (dev->write_position > opener->read_position));
   if (count > dev->buffer_size)
     count = dev->buffer_size;
-  if (dev->write_position > opener->position+2)
-    opener->position = dev->write_position - 1;
-  read_index = opener->position % dev->buffers_number;
+  if (dev->write_position > opener->read_position+2)
+    opener->read_position = dev->write_position - 1;
+  read_index = opener->read_position % dev->used_buffers;
   if (copy_to_user((void *) buf, (void *) (dev->image +
-					   dev->buffers[read_index].buffer.m.offset), count)) {
+                                           dev->buffers[read_index].buffer.m.offset), count)) {
     printk(KERN_ERR "webcamstudio: "
-	   "failed copy_from_user() in write buf\n");
+           "failed copy_from_user() in write buf\n");
     return -EFAULT;
   }
-  ++opener->position;
+  ++opener->read_position;
   dprintkrw("leave webcamstudio_read()\n");
   return count;
 }
 
-static ssize_t 
-webcamstudio_write  (struct file *file,
-		     const char __user *buf,
-		     size_t count,
-		     loff_t *ppos)
+static ssize_t
+webcamstudio_write   (struct file *file,
+                      const char __user *buf,
+                      size_t count,
+                      loff_t *ppos)
 {
   struct webcamstudio_device *dev;
   int write_index;
@@ -1341,25 +1599,25 @@ webcamstudio_write  (struct file *file,
 
   dev=webcamstudio_getdevice(file);
 
-  if (dev->ready_for_capture == 0) {
+  if (!dev->ready_for_capture) {
     ret = allocate_buffers(dev);
     if (ret < 0)
       return ret;
     dev->ready_for_capture = 1;
   }
-  dprintkrw("webcamstudio_write() trying to write %d bytes\n", count);
+  dprintkrw("webcamstudio_write() trying to write %zu bytes\n", count);
   if (count > dev->buffer_size)
     count = dev->buffer_size;
 
-  write_index = dev->write_position % dev->buffers_number;
+  write_index = dev->write_position % dev->used_buffers;
   b=&dev->buffers[write_index].buffer;
 
   if (copy_from_user(
-		     (void *) (dev->image + b->m.offset),
-		     (void *) buf, count)) {
+                     (void *) (dev->image + b->m.offset),
+                     (void *) buf, count)) {
     printk(KERN_ERR "webcamstudio: "
-	   "failed copy_from_user() in write buf, could not write %d\n",
-	   count);
+           "failed copy_from_user() in write buf, could not write %zu\n",
+           count);
     return -EFAULT;
   }
   do_gettimeofday(&b->timestamp);
@@ -1383,12 +1641,12 @@ static int free_buffers(struct webcamstudio_device *dev)
   return 0;
 }
 /* allocates buffers, if buffer_size is set */
-static int 
+static int
 allocate_buffers    (struct webcamstudio_device *dev)
 {
   MARK();
   /* vfree on close file operation in case no open handles left */
-  if (dev->buffer_size == 0)
+  if (0 == dev->buffer_size)
     return -EINVAL;
 
   if (dev->image) {
@@ -1398,7 +1656,7 @@ allocate_buffers    (struct webcamstudio_device *dev)
       return 0;
 
     /* if there is only one writer, no problem should occur */
-    if (dev->open_count.counter==1) 
+    if (dev->open_count.counter==1)
       free_buffers(dev);
     else
       return -EINVAL;
@@ -1410,14 +1668,14 @@ allocate_buffers    (struct webcamstudio_device *dev)
   if (dev->image == NULL)
     return -ENOMEM;
   dprintk("vmallocated %ld bytes\n",
-	  dev->imagesize);
+          dev->imagesize);
   MARK();
   init_buffers(dev);
   return 0;
 }
 /* init inner buffers, they are capture mode and flags are set as
  * for capture mod buffers */
-static void 
+static void
 init_buffers        (struct webcamstudio_device *dev)
 {
   int i;
@@ -1450,7 +1708,7 @@ init_buffers        (struct webcamstudio_device *dev)
 }
 
 /* fills and register video device */
-static void 
+static void
 init_vdev           (struct video_device *vdev)
 {
   MARK();
@@ -1468,7 +1726,7 @@ init_vdev           (struct video_device *vdev)
 }
 
 /* init default capture parameters, only fps may be changed in future */
-static void 
+static void
 init_capture_param  (struct v4l2_captureparm *capture_param)
 {
   capture_param->capability               = 0;
@@ -1480,9 +1738,9 @@ init_capture_param  (struct v4l2_captureparm *capture_param)
 }
 
 /* init loopback main structure */
-static int 
-webcamstudio_init  (struct webcamstudio_device *dev, 
-		     int nr)
+static int
+webcamstudio_init  (struct webcamstudio_device *dev,
+                     int nr)
 {
   MARK();
   dev->vdev = video_device_alloc();
@@ -1495,16 +1753,18 @@ webcamstudio_init  (struct webcamstudio_device *dev,
     return -ENOMEM;
   }
   ((priv_ptr)video_get_drvdata(dev->vdev))->devicenr = nr;
-    
+
   init_vdev(dev->vdev);
   init_capture_param(&dev->capture_param);
   dev->buffers_number = max_buffers;
+  dev->used_buffers = max_buffers;
+  dev->max_openers = max_openers;
   atomic_set(&dev->open_count, 0);
   dev->ready_for_capture = 0;
   dev->buffer_size = 0;
   dev->image = NULL;
   dev->imagesize = 0;
-  
+
   /* FIXME set buffers to 0 */
 
   init_waitqueue_head(&dev->read_event);
@@ -1520,15 +1780,22 @@ static const struct v4l2_file_operations webcamstudio_fops = {
   .write   = webcamstudio_write,
   .poll    = webcamstudio_poll,
   .mmap    = webcamstudio_mmap,
-  .ioctl   = video_ioctl2,
+  .unlocked_ioctl   = video_ioctl2,
 };
 
 static const struct v4l2_ioctl_ops webcamstudio_ioctl_ops = {
   .vidioc_querycap         = &vidioc_querycap,
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,29)
   .vidioc_enum_framesizes  = &vidioc_enum_framesizes,
-  
+  .vidioc_enum_frameintervals = &vidioc_enum_frameintervals,
+#endif
+
+  .vidioc_queryctrl         = &vidioc_queryctrl,
+
   .vidioc_enum_output       = &vidioc_enum_output,
-  
+  .vidioc_g_output          = &vidioc_g_output,
+  .vidioc_s_output          = &vidioc_s_output,
+
   .vidioc_enum_input       = &vidioc_enum_input,
   .vidioc_g_input          = &vidioc_g_input,
   .vidioc_s_input          = &vidioc_s_input,
@@ -1537,12 +1804,12 @@ static const struct v4l2_ioctl_ops webcamstudio_ioctl_ops = {
   .vidioc_g_fmt_vid_cap    = &vidioc_g_fmt_cap,
   .vidioc_s_fmt_vid_cap    = &vidioc_s_fmt_cap,
   .vidioc_try_fmt_vid_cap  = &vidioc_try_fmt_cap,
-  
+
   .vidioc_enum_fmt_vid_out = &vidioc_enum_fmt_out,
   .vidioc_s_fmt_vid_out    = &vidioc_s_fmt_out,
   .vidioc_g_fmt_vid_out    = &vidioc_g_fmt_out,
   .vidioc_try_fmt_vid_out  = &vidioc_try_fmt_out,
-  
+
 #ifdef V4L2L_OVERLAY
   .vidioc_s_fmt_vid_overlay= &vidioc_s_fmt_overlay,
   .vidioc_g_fmt_vid_overlay= &vidioc_g_fmt_overlay,
@@ -1551,10 +1818,10 @@ static const struct v4l2_ioctl_ops webcamstudio_ioctl_ops = {
   .vidioc_s_std            = &vidioc_s_std,
   .vidioc_g_std            = &vidioc_g_std,
   .vidioc_querystd         = &vidioc_querystd,
-  
+
   .vidioc_g_parm           = &vidioc_g_parm,
   .vidioc_s_parm           = &vidioc_s_parm,
-  
+
   .vidioc_reqbufs          = &vidioc_reqbufs,
   .vidioc_querybuf         = &vidioc_querybuf,
   .vidioc_qbuf             = &vidioc_qbuf,
@@ -1566,21 +1833,29 @@ static const struct v4l2_ioctl_ops webcamstudio_ioctl_ops = {
 #ifdef CONFIG_VIDEO_V4L1_COMPAT
   .vidiocgmbuf             = &vidiocgmbuf,
 #endif
+
+  .vidioc_g_audio          = &vidioc_g_audio,
+  .vidioc_s_audio          = &vidioc_s_audio,
+  .vidioc_g_audout         = &vidioc_g_audout,
+  .vidioc_s_audout         = &vidioc_s_audout,
 };
 
-static void 
-zero_devices        (void) {
+static void
+zero_devices        (void)
+{
   int i;
   for(i=0; i<MAX_DEVICES; i++) {
     devs[i]=NULL;
   }
 }
 
-static void 
-free_devices        (void) {
+static void
+free_devices        (void)
+{
   int i;
   for(i=0; i<devices; i++) {
     if(NULL!=devs[i]) {
+      webcamstudio_remove_sysfs(devs[i]->vdev);
       kfree(video_get_drvdata(devs[i]->vdev));
       video_unregister_device(devs[i]->vdev);
       kfree(devs[i]);
@@ -1597,19 +1872,33 @@ init_module         (void)
   MARK();
 
   zero_devices();
-  if (devices == -1) 
+  if (devices == -1) {
     devices = 1;
+
+    // try guessingthe devices from the "video_nr" parameter
+    for(i=MAX_DEVICES-1; i>=0; i--) {
+      if(video_nr[i]>=0) {
+        devices=i+1;
+        break;
+      }
+    }
+  }
 
   if (devices > MAX_DEVICES) {
     devices = MAX_DEVICES;
-    printk(KERN_INFO "number of devices is limited to: %d\n", MAX_DEVICES);
+    printk(KERN_INFO "webcamstudio: number of devices is limited to: %d\n", MAX_DEVICES);
   }
-  
+
   if (max_buffers > MAX_BUFFERS) {
     max_buffers=MAX_BUFFERS;
-    printk(KERN_INFO "number of buffers is limited to: %d\n", MAX_BUFFERS);
+    printk(KERN_INFO "webcamstudio: number of buffers is limited to: %d\n", MAX_BUFFERS);
   }
-    
+
+  if (max_openers < 0) {
+    printk(KERN_INFO "webcamstudio: allowing %d openers rather than %d\n", 2, max_openers);
+    max_openers=2;
+  }
+
   /* kfree on module release */
   for(i=0; i<devices; i++) {
     dprintk("creating loopback-device #%d\n", i);
@@ -1624,24 +1913,27 @@ init_module         (void)
       return ret;
     }
     /* register the device -> it creates /dev/video* */
-    if (video_register_device(devs[i]->vdev, VFL_TYPE_GRABBER, -1) < 0) {
+    if (video_register_device(devs[i]->vdev, VFL_TYPE_GRABBER, video_nr[i]) < 0) {
       video_device_release(devs[i]->vdev);
-      printk(KERN_ERR "failed video_register_device()\n");
+      printk(KERN_ERR "webcamstudio: failed video_register_device()\n");
       free_devices();
       return -EFAULT;
     }
+    webcamstudio_create_sysfs(devs[i]->vdev);
   }
+
+
   dprintk("module installed\n");
-  
+
   printk(KERN_INFO "v4l2loopack driver version %d.%d.%d loaded\n",
-	 (WEBCAMSTUDIO_VERSION_CODE >> 16) & 0xff,
-	 (WEBCAMSTUDIO_VERSION_CODE >>  8) & 0xff,
-	 (WEBCAMSTUDIO_VERSION_CODE      ) & 0xff);
-  
+         (WEBCAMSTUDIO_VERSION_CODE >> 16) & 0xff,
+         (WEBCAMSTUDIO_VERSION_CODE >>  8) & 0xff,
+         (WEBCAMSTUDIO_VERSION_CODE      ) & 0xff);
+
   return 0;
 }
 
-void __exit 
+void __exit
 cleanup_module      (void)
 {
   MARK();
@@ -1649,5 +1941,4 @@ cleanup_module      (void)
   free_devices();
   dprintk("module removed\n");
 }
-
 
