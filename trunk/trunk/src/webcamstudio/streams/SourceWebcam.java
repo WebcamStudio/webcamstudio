@@ -38,6 +38,7 @@ public class SourceWebcam extends Stream {
     @Override
     public void read() {
         isPlaying=true;
+        lastPreview = new BufferedImage(captureWidth,captureHeight,BufferedImage.TYPE_INT_ARGB);
         rate = MasterMixer.getInstance().getRate();
         MasterFrameBuilder.register(this);
         capture = new FFMPEGRenderer(this, FFMPEGRenderer.ACTION.CAPTURE, "webcam");
@@ -70,7 +71,7 @@ public class SourceWebcam extends Stream {
             f = capture.getFrame();
             if (f != null) {
                 setAudioLevel(f);
-                lastPreview = f.getImage();
+                lastPreview.getGraphics().drawImage(f.getImage(), 0, 0, null);
             }
         }
         return f;

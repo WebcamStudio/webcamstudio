@@ -51,7 +51,8 @@ public class SourceMicrophone extends Stream {
                     line = (TargetDataLine) AudioSystem.getLine(info);
                     line.open(format);
                     line.start();
-                    frame = new Frame(uuid, null, null);
+                    frame = new Frame(captureWidth, captureHeight, rate);
+                    frame.setImage(null);
                     audioBuffer.clear();
                     //long mark = 0;
                     while (isPlaying) {
@@ -76,14 +77,15 @@ public class SourceMicrophone extends Stream {
     @Override
     public void stop() {
         isPlaying = false;
-        audioBuffer.abort();
+        if (audioBuffer!=null){
+            audioBuffer.abort();
+        }
         if (line != null) {
             line.stop();
             line.close();
             line = null;
         }
         MasterFrameBuilder.unregister(this);
-        frame=null;
     }
 
     @Override
@@ -103,6 +105,7 @@ public class SourceMicrophone extends Stream {
             this.setAudioLevel(frame);
             frame.setOutputFormat(x, y, width, height, opacity, volume);
             frame.setZOrder(zorder);
+            frame.setImage(null);
         }
         return frame;
     }
