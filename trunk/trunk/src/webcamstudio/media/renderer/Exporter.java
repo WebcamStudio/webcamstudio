@@ -17,6 +17,7 @@ import webcamstudio.mixers.AudioBuffer;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.ImageBuffer;
 import webcamstudio.mixers.MasterMixer;
+import webcamstudio.streams.Stream;
 
 /**
  *
@@ -36,8 +37,10 @@ public class Exporter implements MasterMixer.SinkListener {
     AudioBuffer audioBuffer = null;
     long vCounter = 0;
     long aCounter = 0;
+    Stream stream = null;
 
-    public Exporter() {
+    public Exporter(Stream s) {
+        this.stream = s;
         imageBuffer = new ImageBuffer(MasterMixer.getInstance().getWidth(),MasterMixer.getInstance().getHeight());
         audioBuffer = new AudioBuffer(MasterMixer.getInstance().getRate());
 
@@ -82,6 +85,8 @@ public class Exporter implements MasterMixer.SinkListener {
                 } catch (IOException ex) {
                     cancel = true;
                     imageBuffer.abort();
+                    stream.stop();
+                    stream.updateStatus();
                     //Logger.getLogger(Exporter.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 System.out.println("Video output stopped");
@@ -109,6 +114,8 @@ public class Exporter implements MasterMixer.SinkListener {
                 } catch (IOException ex) {
                     cancel = true;
                     audioBuffer.abort();
+                    stream.stop();
+                    stream.updateStatus();
                     //Logger.getLogger(Exporter.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 System.out.println("Audio output stopped");

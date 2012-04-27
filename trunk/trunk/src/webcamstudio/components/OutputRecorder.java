@@ -10,6 +10,7 @@
  */
 package webcamstudio.components;
 
+import java.awt.Component;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
@@ -22,6 +23,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
+import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JToggleButton;
 import webcamstudio.exporter.vloopback.VideoDevice;
@@ -278,6 +280,18 @@ public class OutputRecorder extends javax.swing.JPanel implements Stream.Listene
 
     @Override
     public void sourceUpdated(Stream stream) {
-        tglRecordToFile.setSelected(stream.isPlaying());
+        if (stream instanceof SinkFile) {
+            tglRecordToFile.setSelected(stream.isPlaying());
+        } else if (stream instanceof SinkBroadcast) {
+            String name = stream.getName();
+            for (Component c : this.getComponents()){
+                if (c instanceof JToggleButton){
+                    JToggleButton b = (JToggleButton)c;
+                    if (b.getText().equals(name)){
+                        b.setSelected(stream.isPlaying());
+                    }
+                }
+            }
+        }
     }
 }
