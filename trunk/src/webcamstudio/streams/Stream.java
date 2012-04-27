@@ -477,6 +477,7 @@ public abstract class Stream {
                 || ext.endsWith(".divx")
                 || ext.endsWith(".wmv")
                 || ext.endsWith(".flv")
+                || ext.endsWith(".mov")
                 || ext.endsWith(".vob")) {
             stream = new SourceMovie(file);
         } else if (file.getAbsolutePath().toLowerCase().startsWith("/dev/video")) {
