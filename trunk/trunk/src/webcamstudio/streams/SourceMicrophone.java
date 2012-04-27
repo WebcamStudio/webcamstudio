@@ -65,7 +65,7 @@ public class SourceMicrophone extends Stream {
                     isPlaying = false;
                     stop();
                 }
-                frame = null;
+                
             }
         });
         t.setPriority(Thread.MIN_PRIORITY);
@@ -83,6 +83,7 @@ public class SourceMicrophone extends Stream {
             line = null;
         }
         MasterFrameBuilder.unregister(this);
+        frame=null;
     }
 
     @Override
