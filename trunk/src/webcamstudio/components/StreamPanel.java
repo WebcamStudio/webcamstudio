@@ -53,6 +53,16 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener{
         spinW1.setValue(stream.getCaptureWidth());
         timer.scheduleAtFixedRate(new RefreshPanel(this), 0, 200);
         stream.setListener(this);
+        if (!stream.hasVideo()){
+            spinX.setEnabled(false);
+            spinY.setEnabled(false);
+            spinW.setEnabled(false);
+            spinH.setEnabled(false);
+            spinH1.setEnabled(false);
+            spinW1.setEnabled(false);
+            spinZOrder.setEnabled(false);
+            spinOpacity.setEnabled(false);
+        }
     }
     public Viewer detachViewer(){
         panPreview.remove(viewer);

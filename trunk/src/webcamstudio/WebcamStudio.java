@@ -32,7 +32,6 @@ import java.util.prefs.Preferences;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
-import javax.swing.JLabel;
 import webcamstudio.channels.MasterChannels;
 import webcamstudio.components.*;
 import webcamstudio.exporter.vloopback.VideoDevice;
@@ -230,6 +229,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         btnAddDesktop = new javax.swing.JButton();
         btnAddText = new javax.swing.JButton();
         btnAddQRCode = new javax.swing.JButton();
+        btnAddMic = new javax.swing.JButton();
         cboAnimations = new javax.swing.JComboBox();
         btnAddAnimation = new javax.swing.JButton();
         mainSplit = new javax.swing.JSplitPane();
@@ -301,6 +301,19 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
             }
         });
         toolbar.add(btnAddQRCode);
+
+        btnAddMic.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/audio-input-microphone.png"))); // NOI18N
+        btnAddMic.setToolTipText(bundle.getString("MICROPHONE")); // NOI18N
+        btnAddMic.setFocusable(false);
+        btnAddMic.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnAddMic.setName("btnAddMic"); // NOI18N
+        btnAddMic.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnAddMic.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddMicActionPerformed(evt);
+            }
+        });
+        toolbar.add(btnAddMic);
 
         cboAnimations.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         cboAnimations.setToolTipText(bundle.getString("ANIMATIONS")); // NOI18N
@@ -432,6 +445,17 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         }
     }//GEN-LAST:event_btnAddAnimationActionPerformed
 
+    private void btnAddMicActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddMicActionPerformed
+        SourceMicrophone source = new SourceMicrophone();
+        StreamDesktop frame = new StreamDesktop(source, this);
+        desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        try {
+            frame.setSelected(true);
+        } catch (PropertyVetoException ex) {
+            Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnAddMicActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -477,6 +501,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
     private javax.swing.JButton btnAddAnimation;
     private javax.swing.JButton btnAddDesktop;
     private javax.swing.JButton btnAddFile;
+    private javax.swing.JButton btnAddMic;
     private javax.swing.JButton btnAddQRCode;
     private javax.swing.JButton btnAddText;
     private javax.swing.JComboBox cboAnimations;
