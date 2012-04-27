@@ -4,11 +4,18 @@
  */
 package webcamstudio.streams;
 
+import java.awt.AWTException;
+import java.awt.Rectangle;
+import java.awt.Robot;
 import java.awt.image.BufferedImage;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import webcamstudio.ffmpeg.FFMPEGRenderer;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterFrameBuilder;
 import webcamstudio.mixers.MasterMixer;
+import webcamstudio.util.Tools;
+import webcamstudio.util.Tools.OS;
 
 /**
  *
@@ -17,9 +24,11 @@ import webcamstudio.mixers.MasterMixer;
 public class SourceDesktop extends Stream {
 
     FFMPEGRenderer capture = null;
+    Robot defaultCapture = null;
+    Frame frame = null;
     BufferedImage lastPreview = null;
     boolean isPlaying = false;
-    boolean followMouse = false;
+    
 
     public SourceDesktop() {
         super();
@@ -27,21 +36,24 @@ public class SourceDesktop extends Stream {
         rate = MasterMixer.getInstance().getRate();
     }
 
-    public boolean isFollowingMouse() {
-        return followMouse;
-    }
-
-    public void setFollowMouse(boolean b) {
-        followMouse = b;
-    }
-
     @Override
     public void read() {
         isPlaying=true;
         rate = MasterMixer.getInstance().getRate();
         MasterFrameBuilder.register(this);
+        if (Tools.getOS() == OS.LINUX){
         capture = new FFMPEGRenderer(this, FFMPEGRenderer.ACTION.CAPTURE, "desktop");
         capture.read();
+        } else {
+            try {
+                defaultCapture = new Robot();
+                frame = new Frame(uuid,null,null);
+                frame.setOutputFormat(x, y, width, height, opacity, volume);
+                frame.setZOrder(zorder);
+            } catch (AWTException ex) {
+                Logger.getLogger(SourceDesktop.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
 
     @Override
@@ -61,6 +73,11 @@ public class SourceDesktop extends Stream {
             if (f != null) {
                 lastPreview = f.getImage();
             }
+        } else {
+            f = frame;
+            frame.setOutputFormat(x, y, width, height, opacity, volume);
+            frame.setZOrder(zorder);
+            frame.setImage(defaultCapture.createScreenCapture(new Rectangle(desktopX, desktopY, desktopW, desktopH)));
         }
         return f;
     }
