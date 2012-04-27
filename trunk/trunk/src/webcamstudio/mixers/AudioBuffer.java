@@ -15,6 +15,7 @@ public class AudioBuffer {
 
     private ArrayList<byte[]> buffer = new ArrayList<byte[]>();
     private static final int BUFFER_SIZE = 30;
+    private static final long TIMEOUT = 3000;
     private boolean abort = false;
     int currentIndex = 0;
     long framePushed = 0;
@@ -51,7 +52,16 @@ public class AudioBuffer {
         return buffer.get((currentIndex+1)%BUFFER_SIZE);
     }
     public byte[] pop() {
+        long mark = System.currentTimeMillis();
         while (!abort && framePopped >= framePushed) {
+            if (System.currentTimeMillis()-mark >= TIMEOUT){
+                //Resetting everyting;
+                System.err.println("Resetting audio!");
+                currentIndex=0;
+                framePopped=0;
+                framePushed=0;
+                break;
+            }
             Tools.sleep(1);
         }
         framePopped++;
