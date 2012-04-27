@@ -34,7 +34,7 @@ public class Frame {
     public long getFrameNumber(){
         return frameNb;
     }
-    protected Frame(int w,int h,int rate){
+    public Frame(int w,int h,int rate){
         this.w=w;
         this.h=h;
         image = new BufferedImage(w,h,BufferedImage.TYPE_INT_ARGB);
@@ -62,11 +62,23 @@ public class Frame {
     public int getZOrder(){
         return zOrder;
     }
+    public void setID(String id){
+        uuid=id;
+    }
     public void setImage(BufferedImage img){
-        image=img;
+        if (img!=null){
+            image.getGraphics().clearRect(0, 0, w, h);
+            image.getGraphics().drawImage(img, 0, 0, null);
+        } else {
+            image=null;
+        }
     }
     public void setAudio(byte[] data){
-        audioData = data;
+        if (data!=null){
+            audioData = data.clone();
+        } else {
+            audioData=null;
+        }
     }
     public void setOutputFormat(int x, int y, int w, int h, int opacity,float volume){
         this.x=x;

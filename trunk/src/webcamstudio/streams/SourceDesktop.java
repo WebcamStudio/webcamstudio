@@ -39,6 +39,7 @@ public class SourceDesktop extends Stream {
     public void read() {
         isPlaying = true;
         rate = MasterMixer.getInstance().getRate();
+        lastPreview = new BufferedImage(captureWidth,captureHeight,BufferedImage.TYPE_INT_ARGB);
         MasterFrameBuilder.register(this);
         if (Tools.getOS() == OS.LINUX) {
             capture = new FFMPEGRenderer(this, FFMPEGRenderer.ACTION.CAPTURE, "desktop");
@@ -70,7 +71,7 @@ public class SourceDesktop extends Stream {
         if (capture != null) {
             f = capture.getFrame();
             if (f != null) {
-                lastPreview = f.getImage();
+                lastPreview.getGraphics().drawImage(f.getImage(), 0, 0, null);
             }
         } else {
             if (frame != null) {

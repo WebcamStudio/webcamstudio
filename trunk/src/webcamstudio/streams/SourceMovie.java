@@ -30,6 +30,7 @@ public class SourceMovie extends Stream {
     @Override
     public void read() {
         rate = MasterMixer.getInstance().getRate();
+        lastPreview = new BufferedImage(captureWidth,captureHeight,BufferedImage.TYPE_INT_ARGB);
         MasterFrameBuilder.register(this);
         capture = new FFMPEGRenderer(this, FFMPEGRenderer.ACTION.CAPTURE, "movie");
         capture.read();
@@ -65,7 +66,7 @@ public class SourceMovie extends Stream {
             f = capture.getFrame();
             if (f != null) {
                 setAudioLevel(f);
-                lastPreview = f.getImage();
+                lastPreview.getGraphics().drawImage(f.getImage(), 0, 0, null);
             }
         }
         return f;

@@ -60,7 +60,6 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener{
             spinH.setEnabled(false);
             spinH1.setEnabled(false);
             spinW1.setEnabled(false);
-            spinZOrder.setEnabled(false);
             spinOpacity.setEnabled(false);
         }
     }

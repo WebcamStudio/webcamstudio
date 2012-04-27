@@ -39,13 +39,15 @@ public class Capturer {
     // private FrameBuffer frameBuffer = new FrameBuffer();
     private ImageBuffer imageBuffer = null;
     private AudioBuffer audioBuffer = null;
-
+    private Frame frame = null;
     public Capturer(Stream s) {
         stream = s;
         audioBufferSize = (44100 * 2 * 2) / stream.getRate();
         videoBufferSize = stream.getCaptureWidth() * stream.getCaptureHeight() * 4;
         imageBuffer = new ImageBuffer(stream.getCaptureWidth(), stream.getCaptureHeight());
         audioBuffer = new AudioBuffer(stream.getRate());
+        frame = new Frame(stream.getCaptureWidth(),stream.getCaptureHeight(),stream.getRate());
+        frame.setID(stream.getID());
         if (stream.hasAudio()) {
             try {
                 audioServer = new ServerSocket(0);
@@ -187,9 +189,9 @@ public class Capturer {
         if (stream.hasAudio()) {
             audio = audioBuffer.pop();
         }
-        Frame frame = null;
         if (System.currentTimeMillis() - mark < 5000) {
-            frame = new Frame(stream.getID(), image, audio);
+            frame.setAudio(audio);
+            frame.setImage(image);
             frame.setOutputFormat(stream.getX(), stream.getY(), stream.getWidth(), stream.getHeight(), stream.getOpacity(), stream.getVolume());
             frame.setZOrder(stream.getZOrder());
         } else {
