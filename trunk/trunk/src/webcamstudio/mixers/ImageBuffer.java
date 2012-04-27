@@ -14,7 +14,7 @@ import webcamstudio.util.Tools;
  */
 public class ImageBuffer {
     private ArrayList<BufferedImage> buffer = new ArrayList<BufferedImage>();
-    private static final int BUFFER_SIZE = 10;
+    private static final int BUFFER_SIZE = 30;
     private boolean abort = false;
     private int currentIndex = 0;
     private long framePushed = 0;

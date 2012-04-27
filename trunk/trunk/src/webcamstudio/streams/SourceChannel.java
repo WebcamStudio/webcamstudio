@@ -101,6 +101,7 @@ public class SourceChannel {
                 if (isPlaying) {
                     if (!s.isPlaying()) {
                         s.read();
+                        s.updateStatus();
                     }
                     pool = java.util.concurrent.Executors.newCachedThreadPool();
                     for (Transition t : instance.startTransitions) {
@@ -116,6 +117,7 @@ public class SourceChannel {
                 } else {
                     if (s.isPlaying()) {
                         s.stop();
+                        s.updateStatus();
                     }
                 }
 
@@ -146,6 +148,7 @@ public class SourceChannel {
                     sd.captureX = getCaptureX();
                     sd.captureY = getCaptureY();
                 }
+                s.updateStatus();
             }
         }).start();
 

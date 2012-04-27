@@ -58,7 +58,6 @@ public class MasterChannels {
             for (SourceChannel sc : stream.getChannels()){
                 if (sc.getName().equals(name)){
                     sc.apply(stream);
-                    stream.updateStatus();
                     break;
                 }
             }
