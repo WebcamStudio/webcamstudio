@@ -14,8 +14,8 @@ import webcamstudio.util.Tools;
  */
 public class ImageBuffer {
     private ArrayList<BufferedImage> buffer = new ArrayList<BufferedImage>();
-    private static final int BUFFER_SIZE = 30;
-    private static final long TIMEOUT=3000;
+    private static final int BUFFER_SIZE = 10;
+    private static final long TIMEOUT=5000;
     private boolean abort = false;
     private int currentIndex = 0;
     private long framePushed = 0;
@@ -51,14 +51,14 @@ public class ImageBuffer {
     public BufferedImage pop(){
         long mark = System.currentTimeMillis();
         while(!abort && framePopped >= framePushed){
-            if (System.currentTimeMillis()-mark >= TIMEOUT){
-                //Resetting everyting;
-                System.err.println("Resetting video!");
-                currentIndex=0;
-                framePopped=0;
-                framePushed=0;
-                break;
-            }
+//            if (System.currentTimeMillis()-mark >= TIMEOUT){
+//                //Resetting everyting;
+//                System.err.println("Resetting video!");
+//                currentIndex=0;
+//                framePopped=0;
+//                framePushed=0;
+//                break;
+//            }
             Tools.sleep(10);
         }
         framePopped++;
