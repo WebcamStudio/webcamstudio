@@ -114,6 +114,8 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
                         char[] text = new char[65536];
                         int count = reader.read(text);
                         files = new String(text).trim();
+                    }else if (data instanceof String) {
+                        files = data.toString().trim();
                     } else {
                         List list = (List)data;
                         for (Object o : list){
