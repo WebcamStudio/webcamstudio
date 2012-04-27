@@ -14,7 +14,7 @@ import webcamstudio.util.Tools;
  */
 public class ImageBuffer {
     private ArrayList<BufferedImage> buffer = new ArrayList<BufferedImage>();
-    private int bufferSize = 10;
+    private int bufferSize = MasterMixer.BUFFER_SIZE;
     private static final long TIMEOUT=5000;
     private boolean abort = false;
     private int currentIndex = 0;

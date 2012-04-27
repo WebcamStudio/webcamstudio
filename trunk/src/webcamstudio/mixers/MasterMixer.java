@@ -23,6 +23,8 @@ public class MasterMixer {
     private float avgFPS = 0;
     private static MasterMixer instance = null;
     
+    public static int BUFFER_SIZE = 30;
+    
     private MasterMixer(){
         listeners = new ArrayList<SinkListener>();
     }

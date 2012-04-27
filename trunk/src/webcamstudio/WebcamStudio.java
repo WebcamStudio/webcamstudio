@@ -19,6 +19,8 @@ import java.awt.dnd.DropTargetDropEvent;
 import java.beans.PropertyVetoException;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -82,54 +84,49 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
             public synchronized void drop(DropTargetDropEvent evt) {
                 try {
                     String fileName = "";
-                    evt.acceptDrop(DnDConstants.ACTION_REFERENCE);
+                    evt.acceptDrop(DnDConstants.ACTION_LINK);
                     boolean success = false;
-                    if (Tools.getOS() == OS.LINUX) {
-                        String files = evt.getTransferable().getTransferData(DataFlavor.stringFlavor).toString();
-                        String[] lines = files.split("\n");
-
-                        for (String line : lines) {
-                            File file = new File(new URL(line.trim()).toURI());
-                            if (file.exists()) {
-                                fileName = file.getName();
-                                Stream stream = Stream.getInstance(file);
-                                if (stream != null) {
-                                    StreamDesktop frame = getNewStreamDesktop(stream);
-                                    desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
-                                    frame.setLocation(evt.getLocation());
-                                    try {
-                                        frame.setSelected(true);
-                                    } catch (PropertyVetoException ex) {
-                                        Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
-                                    }
-                                    success = true;
-                                }
-                            }
+                    DataFlavor dataFlavor = null;
+                    for (DataFlavor d : evt.getTransferable().getTransferDataFlavors()) {
+                        if (evt.getTransferable().isDataFlavorSupported(d)) {
+                            dataFlavor = d;
+                            break;
                         }
-                    } else if (Tools.getOS() == OS.WINDOWS) {
-                        List files = (List) evt.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
-                        for (Object o : files) {
-                            File file = (File) o;
-                            if (file.exists()) {
-                                fileName = file.getName();
-                                Stream stream = Stream.getInstance(file);
-                                if (stream != null) {
-                                    StreamDesktop frame = getNewStreamDesktop(stream);
-                                    desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
-                                    frame.setLocation(evt.getLocation());
-                                    try {
-                                        frame.setSelected(true);
-                                    } catch (PropertyVetoException ex) {
-                                        Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
-                                    }
-                                    success = true;
+
+                    }
+                    Object data = evt.getTransferable().getTransferData(dataFlavor);
+                    String files = "";
+                    if (data instanceof Reader) {
+                        Reader reader = (Reader) data;
+                        char[] text = new char[65536];
+                        int count = reader.read(text);
+                        files = new String(text).trim();
+                    } 
+                    System.out.println(files);
+                    String[] lines = files.split("\n");
+
+                    for (String line : lines) {
+                        System.out.println(line);
+                        File file = new File(new URL(line.trim()).toURI());
+                        if (file.exists()) {
+                            fileName = file.getName();
+                            Stream stream = Stream.getInstance(file);
+                            if (stream != null) {
+                                StreamDesktop frame = getNewStreamDesktop(stream);
+                                desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+                                frame.setLocation(evt.getLocation());
+                                try {
+                                    frame.setSelected(true);
+                                } catch (PropertyVetoException ex) {
+                                    Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
                                 }
+                                success = true;
                             }
                         }
                     }
                     evt.dropComplete(success);
                     if (!success) {
-                        ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+5000,"Unsupported file: " + fileName);
+                        ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis() + 5000, "Unsupported file: " + fileName);
                         ResourceMonitor.getInstance().addMessage(label);
                     }
                 } catch (Exception ex) {
@@ -478,7 +475,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         lblSourceSelected.setToolTipText(source.getName());
         tabControls.removeAll();
         ArrayList<Component> comps = SourceControls.getControls(source);
-        for (Component c : comps){
+        for (Component c : comps) {
             tabControls.add(c.getName(), c);
         }
     }
