@@ -5,6 +5,7 @@
 package webcamstudio.media.renderer;
 
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.ServerSocket;
@@ -41,9 +42,8 @@ public class Exporter implements MasterMixer.SinkListener {
 
     public Exporter(Stream s) {
         this.stream = s;
-        imageBuffer = new ImageBuffer(MasterMixer.getInstance().getWidth(),MasterMixer.getInstance().getHeight());
-        audioBuffer = new AudioBuffer(MasterMixer.getInstance().getRate());
-
+        imageBuffer = new ImageBuffer(MasterMixer.getInstance().getWidth(),MasterMixer.getInstance().getHeight(),MasterMixer.getInstance().getRate()*3);
+        audioBuffer = new AudioBuffer(MasterMixer.getInstance().getRate(),MasterMixer.getInstance().getRate()*3);
         try {
             videoServer = new ServerSocket(0);
             vport = videoServer.getLocalPort();
@@ -71,8 +71,7 @@ public class Exporter implements MasterMixer.SinkListener {
                         if (image != null) {
                             ByteBuffer buffer = ByteBuffer.wrap(data);
                             IntBuffer iBuffer = buffer.asIntBuffer();
-                            int[] imgData = new int[data.length / 4];
-                            image.getRGB(0, 0, image.getWidth(), image.getHeight(), imgData, 0, image.getWidth());
+                            int[] imgData = ((DataBufferInt)(image).getRaster().getDataBuffer()).getData();
                             iBuffer.put(imgData);
                             vCounter++;
                             if (videoOutput != null) {
