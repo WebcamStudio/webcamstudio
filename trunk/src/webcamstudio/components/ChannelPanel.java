@@ -139,9 +139,11 @@ public class ChannelPanel extends javax.swing.JPanel {
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
         String name = txtName.getText();
-        master.addChannel(name);
-        model.addElement(name);
-        lstChannels.revalidate();
+        if (name.length()>0){
+            master.addChannel(name);
+            model.addElement(name);
+            lstChannels.revalidate();
+        }
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveActionPerformed

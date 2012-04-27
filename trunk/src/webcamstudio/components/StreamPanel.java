@@ -82,17 +82,16 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener{
 
     @Override
     public void sourceUpdated(Stream stream){
-        tglActiveStream.setSelected(stream.isPlaying());
+        
         spinX.setValue(stream.getX());
         spinY.setValue(stream.getY());
         spinW.setValue(stream.getWidth());
         spinH.setValue(stream.getHeight());
-        spinOpacity.setModel(new SpinnerNumberModel(50, 0, 100, 1));
         spinOpacity.setValue(stream.getOpacity());
-        spinVolume.setModel(new SpinnerNumberModel(0, 0, 100, 1));
         spinVolume.setValue(stream.getVolume() * 100);
         spinZOrder.setValue(stream.getZOrder());
-        
+        tglActiveStream.setSelected(stream.isPlaying());
+        tglActiveStream.revalidate();
     }
     /** This method is called from within the constructor to
      * initialize the form.
