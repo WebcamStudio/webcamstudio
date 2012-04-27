@@ -31,9 +31,11 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import webcamstudio.channels.MasterChannels;
 import webcamstudio.components.*;
 import webcamstudio.exporter.vloopback.VideoDevice;
 import webcamstudio.mixers.MasterMixer;
+import webcamstudio.mixers.SystemPlayer;
 import webcamstudio.streams.*;
 import webcamstudio.util.Tools;
 import webcamstudio.util.Tools.OS;
@@ -339,6 +341,8 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         savePrefs();
+        SystemPlayer.getInstance(null).stop();
+        MasterChannels.getInstance().stopAllStream();
         MasterMixer.getInstance().stop();
     }//GEN-LAST:event_formWindowClosing
 

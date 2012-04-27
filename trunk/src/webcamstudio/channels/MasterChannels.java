@@ -67,4 +67,10 @@ public class MasterChannels {
     public ArrayList<String> getChannels(){
         return channelNames;
     }
+    
+    public void stopAllStream(){
+        for (Stream s : streams){
+            s.stop();
+        }
+    }
 }
