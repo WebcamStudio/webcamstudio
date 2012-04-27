@@ -78,6 +78,7 @@ public class SourceDesktop extends Stream {
                 frame.setOutputFormat(x, y, width, height, opacity, volume);
                 frame.setZOrder(zorder);
                 frame.setImage(defaultCapture.createScreenCapture(new Rectangle(desktopX, desktopY, desktopW, desktopH)));
+                lastPreview = frame.getImage();
             }
         }
         return f;
