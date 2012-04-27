@@ -14,8 +14,8 @@ import webcamstudio.util.Tools;
 public class AudioBuffer {
 
     private ArrayList<byte[]> buffer = new ArrayList<byte[]>();
-    private static final int BUFFER_SIZE = 30;
-    private static final long TIMEOUT = 3000;
+    private static final int BUFFER_SIZE = 10;
+    private static final long TIMEOUT = 5000;
     private boolean abort = false;
     int currentIndex = 0;
     long framePushed = 0;

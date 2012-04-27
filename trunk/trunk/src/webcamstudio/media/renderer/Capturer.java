@@ -14,7 +14,6 @@ import java.nio.ByteOrder;
 import java.nio.IntBuffer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JComponent;
 import webcamstudio.components.ResourceMonitor;
 import webcamstudio.components.ResourceMonitorLabel;
 import webcamstudio.mixers.AudioBuffer;
@@ -44,7 +43,7 @@ public class Capturer {
         stream = s;
         audioBufferSize = (44100 * 2 * 2) / stream.getRate();
         videoBufferSize = stream.getCaptureWidth() * stream.getCaptureHeight() * 4;
-        imageBuffer = new ImageBuffer(stream.getCaptureWidth(),stream.getCaptureHeight());
+        imageBuffer = new ImageBuffer(stream.getCaptureWidth(), stream.getCaptureHeight());
         audioBuffer = new AudioBuffer(stream.getRate());
         if (stream.hasAudio()) {
             try {
@@ -83,6 +82,10 @@ public class Capturer {
                         try {
                             BufferedImage image = imageBuffer.getImageToUpdate();
                             din.readFully(vbuffer);
+                            //Setting opacity to 100%
+                            for (int i = 0;i<vbuffer.length;i+=4){
+                                vbuffer[i] = (byte)0xFF;
+                            }
                             IntBuffer intData = ByteBuffer.wrap(vbuffer).order(ByteOrder.BIG_ENDIAN).asIntBuffer();
                             intData.get(rgb);
                             //Special Effects...
@@ -169,15 +172,21 @@ public class Capturer {
 
     public Frame getFrame() {
         long mark = System.currentTimeMillis();
-        BufferedImage image = imageBuffer.pop();
-        byte[] audio = audioBuffer.pop();
+        BufferedImage image = null;
+        if (stream.hasVideo()) {
+            image = imageBuffer.pop();
+        }
+        byte[] audio = null;
+        if (stream.hasAudio()) {
+            audio = audioBuffer.pop();
+        }
         Frame frame = null;
-        if (System.currentTimeMillis()-mark < 3000){
-        frame = new Frame(stream.getID(), image, audio);
-        frame.setOutputFormat(stream.getX(), stream.getY(), stream.getWidth(), stream.getHeight(), stream.getOpacity(), stream.getVolume());
-        frame.setZOrder(stream.getZOrder());
+        if (System.currentTimeMillis() - mark < 5000) {
+            frame = new Frame(stream.getID(), image, audio);
+            frame.setOutputFormat(stream.getX(), stream.getY(), stream.getWidth(), stream.getHeight(), stream.getOpacity(), stream.getVolume());
+            frame.setZOrder(stream.getZOrder());
         } else {
-            ResourceMonitor.getInstance().addMessage(new ResourceMonitorLabel(System.currentTimeMillis()+10000,stream.getName() + " is too slow! Stopping stream..."));
+            ResourceMonitor.getInstance().addMessage(new ResourceMonitorLabel(System.currentTimeMillis() + 10000, stream.getName() + " is too slow! Stopping stream..."));
             stream.stop();
         }
         return frame;
