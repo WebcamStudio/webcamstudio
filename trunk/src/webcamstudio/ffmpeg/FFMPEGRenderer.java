@@ -119,6 +119,18 @@ public class FFMPEGRenderer {
         String command = cmd;
         for (FFMPEGTags tag : FFMPEGTags.values()) {
             switch (tag) {
+                case DESKTOPX:
+                    command = command.replaceAll(FFMPEGTags.DESKTOPX.toString(), stream.getDesktopX()+"");
+                    break;
+                case DESKTOPY:
+                    command = command.replaceAll(FFMPEGTags.DESKTOPY.toString(), stream.getDesktopY()+"");
+                    break;
+                case DESKTOPW:
+                    command = command.replaceAll(FFMPEGTags.DESKTOPW.toString(), stream.getDesktopW()+"");
+                    break;
+                case DESKTOPH:
+                    command = command.replaceAll(FFMPEGTags.DESKTOPH.toString(), stream.getDesktopH()+"");
+                    break;
                 case VCODEC:
                     if (fme!=null){
                         command = command.replaceAll(FFMPEGTags.VCODEC.toString(), translateTag(fme.getVcodec()));

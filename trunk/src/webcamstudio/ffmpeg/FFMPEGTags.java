@@ -26,6 +26,10 @@ public enum FFMPEGTags {
         ACODEC("@ACODEC"),
         VBITRATE("@VBITRATE"),
         ABITRATE("@ABITRATE"),
+        DESKTOPX("@DESKTOPX"),
+        DESKTOPY("@DESKTOPY"),
+        DESKTOPW("@DESKTOPW"),
+        DESKTOPH("@DESKTOPH"),
         URL("@URL");
         
     private String name = "";
