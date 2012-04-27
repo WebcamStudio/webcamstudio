@@ -37,8 +37,10 @@ public class SinkLinuxDevice extends Stream implements MasterMixer.SinkListener 
     @Override
     public void stop() {
         stop = true;
-        device.close();
-        device = null;
+        if (device != null) {
+            device.close();
+            device = null;
+        }
         MasterMixer.getInstance().unregister(this);
     }
 
@@ -73,7 +75,9 @@ public class SinkLinuxDevice extends Stream implements MasterMixer.SinkListener 
             BufferedImage image = frame.getImage();
             if (image != null) {
                 int[] imgData = ((java.awt.image.DataBufferInt) image.getRaster().getDataBuffer()).getData();
-                device.write(imgData);
+                if (device != null) {
+                    device.write(imgData);
+                }
             }
         }
     }
