@@ -54,7 +54,7 @@ public class SourceMicrophone extends Stream {
                     frame = new Frame(uuid, null, null);
                     audioBuffer.clear();
                     //long mark = 0;
-                    while (isPlaying && line.isOpen()) {
+                    while (isPlaying) {
                         //mark= System.currentTimeMillis();
                         byte[] data = audioBuffer.getAudioToUpdate();
                         line.read(data, 0, data.length);
