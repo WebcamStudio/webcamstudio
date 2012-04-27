@@ -4,7 +4,7 @@
  */
 
 /*
- * OutputRecorder.java
+ * OutputPanel.java
  *
  * Created on 15-Apr-2012, 1:28:32 AM
  */
@@ -16,6 +16,8 @@ import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetDropEvent;
 import java.io.File;
+import java.io.InputStream;
+import java.io.Reader;
 import java.net.URL;
 import java.util.List;
 import java.util.TreeMap;
@@ -23,7 +25,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
-import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JToggleButton;
 import webcamstudio.exporter.vloopback.VideoDevice;
@@ -40,7 +41,7 @@ import webcamstudio.util.Tools.OS;
  *
  * @author patrick
  */
-public class OutputRecorder extends javax.swing.JPanel implements Stream.Listener {
+public class OutputPanel extends javax.swing.JPanel implements Stream.Listener {
 
     TreeMap<String, SinkFile> files = new TreeMap<String, SinkFile>();
     TreeMap<String, SinkBroadcast> broadcasts = new TreeMap<String, SinkBroadcast>();
@@ -48,8 +49,8 @@ public class OutputRecorder extends javax.swing.JPanel implements Stream.Listene
     TreeMap<String, FME> fmes = new TreeMap<String, FME>();
     TreeMap<String, ResourceMonitorLabel> labels = new TreeMap<String, ResourceMonitorLabel>();
 
-    /** Creates new form OutputRecorder */
-    public OutputRecorder() {
+    /** Creates new form OutputPanel */
+    public OutputPanel() {
         initComponents();
         if (Tools.getOS() == OS.LINUX) {
             for (VideoDevice d : VideoDevice.getInputDevices()) {
@@ -95,43 +96,66 @@ public class OutputRecorder extends javax.swing.JPanel implements Stream.Listene
         this.setDropTarget(new DropTarget() {
 
             public synchronized void drop(DropTargetDropEvent evt) {
-                boolean dropSuccess = false;
-                String fileName = "";
-
                 try {
+                    String fileName = "";
                     evt.acceptDrop(DnDConstants.ACTION_REFERENCE);
-                    if (Tools.getOS() == OS.LINUX) {
-                        String files = evt.getTransferable().getTransferData(DataFlavor.stringFlavor).toString();
+                    boolean success = false;
+                    DataFlavor dataFlavor = null;
+                    if (evt.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
+                        dataFlavor = DataFlavor.javaFileListFlavor;
+                    } else if (evt.isDataFlavorSupported(DataFlavor.stringFlavor)) {
+                        dataFlavor = DataFlavor.stringFlavor;
+                    } else {
+                        for (DataFlavor d : evt.getTransferable().getTransferDataFlavors()) {
+                            if (evt.getTransferable().isDataFlavorSupported(d)) {
+                                System.out.println("Supported: " + d.getDefaultRepresentationClassAsString());
+                                dataFlavor = d;
+                                break;
+                            }
+                        }
+                    }
+                    Object data = evt.getTransferable().getTransferData(dataFlavor);
+                    String files = "";
+                    System.out.println(data.getClass().getCanonicalName());
+                    if (data instanceof Reader) {
+                        Reader reader = (Reader) data;
+                        char[] text = new char[65536];
+                        int count = reader.read(text);
+                        files = new String(text).trim();
+                    } else if (data instanceof InputStream) {
+                        InputStream list = (InputStream) data;
+                        java.io.InputStreamReader reader = new java.io.InputStreamReader(list);
+                        char[] text = new char[65536];
+                        int count = reader.read(text);
+                        files = new String(text).trim();
+                    } else if (data instanceof String) {
+                        files = data.toString().trim();
+                    } else {
+                        List list = (List) data;
+                        for (Object o : list) {
+                            files += new File(o.toString()).toURI().toURL().toString() + "\n";
+                        }
+                    }
+                    if (files.length() > 0) {
                         String[] lines = files.split("\n");
                         for (String line : lines) {
                             File file = new File(new URL(line.trim()).toURI());
                             fileName = file.getName();
                             if (file.exists() && file.getName().toLowerCase().endsWith("xml")) {
-                                dropSuccess = true;
+                                success = true;
                                 FME fme = new FME(file);
                                 fmes.put(fme.getName(), fme);
                                 addButtonBroadcast(fme);
                             }
                         }
-                    } else if (Tools.getOS() == OS.WINDOWS) {
-                        List files = (List) evt.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
-                        for (Object o : files) {
-                            File file = (File) o;
-                            if (file.exists() && file.getName().toLowerCase().endsWith("xml")) {
-                                dropSuccess = true;
-                                FME fme = new FME(file);
-                                fmes.put(fme.getName(), fme);
-                                addButtonBroadcast(fme);
-                            }
-                            fileName = file.getName();
-                        }
+                    }
+                    evt.dropComplete(success);
+                    if (!success) {
+                        ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis() + 5000, "Unsupported file: " + fileName);
+                        ResourceMonitor.getInstance().addMessage(label);
                     }
                 } catch (Exception ex) {
                     ex.printStackTrace();
-                }
-                evt.dropComplete(dropSuccess);
-                if (!dropSuccess) {
-                    ResourceMonitor.getInstance().addMessage(new ResourceMonitorLabel(System.currentTimeMillis() + 5000, "Unsupported file: " + fileName));
                 }
             }
         });
@@ -157,7 +181,7 @@ public class OutputRecorder extends javax.swing.JPanel implements Stream.Listene
                 addButtonBroadcast(fme);
             }
         } catch (BackingStoreException ex) {
-            Logger.getLogger(OutputRecorder.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(OutputPanel.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -179,7 +203,7 @@ public class OutputRecorder extends javax.swing.JPanel implements Stream.Listene
     }
 
     private void addButtonBroadcast(FME fme) {
-        final OutputRecorder instance = this;
+        final OutputPanel instance = this;
         JToggleButton button = new JToggleButton();
         button.setText(fme.getName());
         button.setActionCommand(fme.getUrl() + "/" + fme.getStream());
@@ -284,10 +308,10 @@ public class OutputRecorder extends javax.swing.JPanel implements Stream.Listene
             tglRecordToFile.setSelected(stream.isPlaying());
         } else if (stream instanceof SinkBroadcast) {
             String name = stream.getName();
-            for (Component c : this.getComponents()){
-                if (c instanceof JToggleButton){
-                    JToggleButton b = (JToggleButton)c;
-                    if (b.getText().equals(name)){
+            for (Component c : this.getComponents()) {
+                if (c instanceof JToggleButton) {
+                    JToggleButton b = (JToggleButton) c;
+                    if (b.getText().equals(name)) {
                         b.setSelected(stream.isPlaying());
                     }
                 }

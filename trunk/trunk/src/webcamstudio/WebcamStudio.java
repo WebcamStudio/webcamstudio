@@ -50,7 +50,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
 
     Preferences prefs = null;
     Properties animations = new Properties();
-    OutputRecorder recorder = new OutputRecorder();
+    OutputPanel recorder = new OutputPanel();
 
     /**
      * Creates new form WebcamStudio
