@@ -4,13 +4,10 @@
  */
 package webcamstudio.streams;
 
-import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import webcamstudio.components.GifDecoder;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterFrameBuilder;
@@ -67,17 +64,17 @@ public class SourceImageGif extends Stream {
                 if (image != null) {
                     captureWidth = image.getWidth();
                     captureHeight = image.getHeight();
-                    Tools.sleep(decoder.getDelay(index));
-                    index++;
-                    if (index >= decoder.getFrameCount()) {
-                        index = 0;
-                    }
                     if (frame != null) {
                         frame.setImage(image);
                         applyEffects(frame.getImage());
                         frame.setOutputFormat(x, y, width, height, opacity, volume);
                         frame.setZOrder(zorder);
                     }
+                    index++;
+                    if (index >= decoder.getFrameCount()) {
+                        index = 0;
+                    }
+                    Tools.sleep(decoder.getDelay(index));
                 } else {
                     stop = true;
                 }
@@ -90,7 +87,9 @@ public class SourceImageGif extends Stream {
         stop = false;
         try {
             loadImage(file);
-            frame = new Frame(uuid, image, null);
+            frame = new Frame(image.getWidth(),image.getHeight(),rate);
+            frame.setID(uuid);
+            frame.setImage(image);
             frame.setOutputFormat(x, y, width, height, opacity, volume);
             frame.setZOrder(zorder);
             MasterFrameBuilder.register(this);
@@ -102,14 +101,11 @@ public class SourceImageGif extends Stream {
     @Override
     public void stop() {
         stop = true;
-        frame = null;
         MasterFrameBuilder.unregister(this);
     }
 
     @Override
     public Frame getFrame() {
-        frame.setOutputFormat(x, y, width, height, opacity, volume);
-        frame.setZOrder(zorder);
         return frame;
     }
 
