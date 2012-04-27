@@ -14,6 +14,9 @@ import java.nio.ByteOrder;
 import java.nio.IntBuffer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JComponent;
+import webcamstudio.components.ResourceMonitor;
+import webcamstudio.components.ResourceMonitorLabel;
 import webcamstudio.mixers.AudioBuffer;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.ImageBuffer;
@@ -165,12 +168,18 @@ public class Capturer {
     }
 
     public Frame getFrame() {
+        long mark = System.currentTimeMillis();
         BufferedImage image = imageBuffer.pop();
         byte[] audio = audioBuffer.pop();
         Frame frame = null;
+        if (System.currentTimeMillis()-mark < 3000){
         frame = new Frame(stream.getID(), image, audio);
         frame.setOutputFormat(stream.getX(), stream.getY(), stream.getWidth(), stream.getHeight(), stream.getOpacity(), stream.getVolume());
         frame.setZOrder(stream.getZOrder());
+        } else {
+            ResourceMonitor.getInstance().addMessage(new ResourceMonitorLabel(System.currentTimeMillis()+10000,stream.getName() + " is too slow! Stopping stream..."));
+            stream.stop();
+        }
         return frame;
     }
 }

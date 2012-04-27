@@ -13,7 +13,6 @@ package webcamstudio.components;
 import java.awt.Component;
 import java.util.Timer;
 import java.util.TimerTask;
-import javax.swing.JLabel;
 import webcamstudio.mixers.MasterMixer;
 
 /**
@@ -39,6 +38,9 @@ public class ResourceMonitor extends javax.swing.JPanel {
     public void addMessage(ResourceMonitorLabel label){
         label.setBorder(lblFPS.getBorder());
         this.add(label);
+        if (label.getEndTime() !=0){
+            System.err.println(label.getText());
+        }
         this.revalidate();
     }
     public void removeMessage(ResourceMonitorLabel label){
