@@ -10,6 +10,7 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.TargetDataLine;
+import webcamstudio.mixers.AudioBuffer;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterFrameBuilder;
 import webcamstudio.mixers.MasterMixer;
@@ -22,6 +23,8 @@ public class SourceMicrophone extends Stream {
 
     private boolean isPlaying = false;
     private TargetDataLine line;
+    private AudioBuffer audioBuffer = null;
+    private Frame frame = null;
     public SourceMicrophone() {
         super();
         rate = MasterMixer.getInstance().getRate();
@@ -32,7 +35,7 @@ public class SourceMicrophone extends Stream {
     public void read() {
         isPlaying = true;
         rate = MasterMixer.getInstance().getRate();
-        
+        audioBuffer = new AudioBuffer(rate);
         AudioFormat format = new AudioFormat(44100, 16, 2, true, true);
         DataLine.Info info = new DataLine.Info(TargetDataLine.class,format); // format is an AudioFormat object
         if (!AudioSystem.isLineSupported(info)) {
@@ -44,6 +47,25 @@ public class SourceMicrophone extends Stream {
             line = (TargetDataLine) AudioSystem.getLine(info);
             line.open(format);
             line.start();
+            Thread t = new Thread(new Runnable(){
+
+                @Override
+                public void run() {
+                    frame = new Frame(uuid,null,null);
+                    audioBuffer.clear();
+                    //long mark = 0;
+                    while (isPlaying && line.isOpen()){
+                        //mark= System.currentTimeMillis();
+                        byte[] data = audioBuffer.getAudioToUpdate();
+                        line.read(data, 0,data.length );
+                        audioBuffer.doneUpdate();
+                        //System.out.println("delta= " + (System.currentTimeMillis()-mark));
+                    }
+                    frame=null;
+                }
+            });
+            t.setPriority(Thread.MIN_PRIORITY);
+            t.start();
             MasterFrameBuilder.register(this);
         } catch (LineUnavailableException ex) {
             isPlaying=false;
@@ -54,8 +76,10 @@ public class SourceMicrophone extends Stream {
     @Override
     public void stop() {
         isPlaying = false;
+        audioBuffer.abort();
         if (line!=null){
             line.stop();
+            line.close();
             line=null;
         }
         MasterFrameBuilder.unregister(this);
@@ -73,15 +97,13 @@ public class SourceMicrophone extends Stream {
 
     @Override
     public Frame getFrame() {
-        Frame f = new Frame(uuid,null,null);
-        int datasize = 44100*2*2/rate;
-        byte[] data = new byte[datasize];
-        line.read(data, 0, data.length);
-        f.setAudio(data);
-        this.setAudioLevel(f);
-        f.setOutputFormat(x, y, width, height, opacity, volume);
-        f.setZOrder(zorder);
-        return f;
+        if(frame!=null){
+            frame.setAudio(audioBuffer.pop());
+            this.setAudioLevel(frame);
+            frame.setOutputFormat(x, y, width, height, opacity, volume);
+            frame.setZOrder(zorder);
+        }
+        return frame;
     }
 
     @Override

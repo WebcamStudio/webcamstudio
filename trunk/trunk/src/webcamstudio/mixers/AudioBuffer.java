@@ -53,6 +53,7 @@ public class AudioBuffer {
     }    
     public byte[] getAudioToUpdate(){
         while (!abort && (framePushed - framePopped) >= bufferSize) {
+            Thread.yield();
             Tools.sleep(30);
         }
         return buffer.get((currentIndex+1)%bufferSize);
@@ -68,7 +69,8 @@ public class AudioBuffer {
                 framePushed=0;
                 break;
             }
-            Tools.sleep(1);
+            Thread.yield();
+            Tools.sleep(10);
         }
         framePopped++;
         return buffer.get(currentIndex);
