@@ -242,7 +242,7 @@ public class FFMPEGRenderer {
             @Override
             public void run() {
 
-                exporter = new Exporter();
+                exporter = new Exporter(stream);
                 videoPort = exporter.getVideoPort();
                 audioPort = exporter.getAudioPort();
                 stopped = false;

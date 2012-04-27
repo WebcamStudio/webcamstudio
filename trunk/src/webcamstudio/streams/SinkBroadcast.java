@@ -17,6 +17,7 @@ public class SinkBroadcast extends Stream {
 
     private FFMPEGRenderer capture = null;
     private FME fme = null;
+    private boolean isPlaying = false;
     public SinkBroadcast(FME fme) {
         this.fme=fme;
         name=fme.getName();
@@ -28,6 +29,7 @@ public class SinkBroadcast extends Stream {
     }
     @Override
     public void read() {
+        isPlaying=true;
         rate = MasterMixer.getInstance().getRate();
         captureWidth = MasterMixer.getInstance().getWidth();
         captureHeight = MasterMixer.getInstance().getHeight();
@@ -38,6 +40,7 @@ public class SinkBroadcast extends Stream {
 
     @Override
     public void stop() {
+        isPlaying=false;
         if  (capture!=null){
             capture.stop();
             capture=null;
@@ -46,7 +49,7 @@ public class SinkBroadcast extends Stream {
 
     @Override
     public boolean isPlaying() {
-        return capture!=null && !capture.isStopped();
+        return isPlaying;
     }
 
     @Override
