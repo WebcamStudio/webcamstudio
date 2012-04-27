@@ -84,43 +84,61 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
             public synchronized void drop(DropTargetDropEvent evt) {
                 try {
                     String fileName = "";
-                    evt.acceptDrop(DnDConstants.ACTION_LINK);
+                    evt.acceptDrop(DnDConstants.ACTION_REFERENCE);
                     boolean success = false;
                     DataFlavor dataFlavor = null;
-                    for (DataFlavor d : evt.getTransferable().getTransferDataFlavors()) {
-                        if (evt.getTransferable().isDataFlavorSupported(d)) {
-                            dataFlavor = d;
-                            break;
+                    if (evt.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
+                        dataFlavor = DataFlavor.javaFileListFlavor;
+                    } else if (evt.isDataFlavorSupported(DataFlavor.stringFlavor)) {
+                        dataFlavor = DataFlavor.stringFlavor;
+                    } else {
+                        for (DataFlavor d : evt.getTransferable().getTransferDataFlavors()) {
+                            if (evt.getTransferable().isDataFlavorSupported(d)) {
+                                System.out.println("Supported: " + d.getDefaultRepresentationClassAsString());
+                                dataFlavor = d;
+                                break;
+                            }
                         }
-
                     }
                     Object data = evt.getTransferable().getTransferData(dataFlavor);
                     String files = "";
+                    System.out.println(data.getClass().getCanonicalName());
                     if (data instanceof Reader) {
                         Reader reader = (Reader) data;
                         char[] text = new char[65536];
                         int count = reader.read(text);
                         files = new String(text).trim();
-                    } 
-                    System.out.println(files);
-                    String[] lines = files.split("\n");
-
-                    for (String line : lines) {
-                        System.out.println(line);
-                        File file = new File(new URL(line.trim()).toURI());
-                        if (file.exists()) {
-                            fileName = file.getName();
-                            Stream stream = Stream.getInstance(file);
-                            if (stream != null) {
-                                StreamDesktop frame = getNewStreamDesktop(stream);
-                                desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
-                                frame.setLocation(evt.getLocation());
-                                try {
-                                    frame.setSelected(true);
-                                } catch (PropertyVetoException ex) {
-                                    Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
+                    } else if (data instanceof InputStream) {
+                        InputStream list = (InputStream) data;
+                        java.io.InputStreamReader reader = new java.io.InputStreamReader(list);
+                        char[] text = new char[65536];
+                        int count = reader.read(text);
+                        files = new String(text).trim();
+                    } else {
+                        List list = (List)data;
+                        for (Object o : list){
+                            files += new File(o.toString()).toURI().toURL().toString() + "\n";
+                        }
+                    }
+                    if (files.length() > 0) {
+                        String[] lines = files.split("\n");
+                        for (String line : lines) {
+                            System.out.println(line);
+                            File file = new File(new URL(line.trim()).toURI());
+                            if (file.exists()) {
+                                fileName = file.getName();
+                                Stream stream = Stream.getInstance(file);
+                                if (stream != null) {
+                                    StreamDesktop frame = getNewStreamDesktop(stream);
+                                    desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+                                    frame.setLocation(evt.getLocation());
+                                    try {
+                                        frame.setSelected(true);
+                                    } catch (PropertyVetoException ex) {
+                                        Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
+                                    }
+                                    success = true;
                                 }
-                                success = true;
                             }
                         }
                     }
