@@ -38,8 +38,10 @@ public class SourceMusic extends Stream {
     @Override
     public void stop() {
         MasterFrameBuilder.unregister(this);
-        capture.stop();
-        capture = null;
+        if (capture != null) {
+            capture.stop();
+            capture = null;
+        }
 
     }
 
