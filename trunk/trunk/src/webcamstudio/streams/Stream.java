@@ -7,7 +7,6 @@ package webcamstudio.streams;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.lang.reflect.Field;
-import java.net.URL;
 import java.util.ArrayList;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
@@ -43,6 +42,11 @@ public abstract class Stream {
     protected int audioLevelRight = 0;
     protected ArrayList<Effect> effects = new ArrayList<Effect>();
     protected ArrayList<SourceChannel> channels = new ArrayList<SourceChannel>();
+    protected int desktopX = 0;
+    protected int desktopY = 0;
+    protected int desktopW = 1024;
+    protected int desktopH = 768;
+    
     ArrayList<Transition> startTransitions = new ArrayList<Transition>();
     ArrayList<Transition> endTransitions = new ArrayList<Transition>();
     Listener listener = null;
@@ -68,6 +72,62 @@ public abstract class Stream {
     }
     public ArrayList<Transition> getEndTransitions(){
         return endTransitions;
+    }
+
+    /**
+     * @return the desktopX
+     */
+    public int getDesktopX() {
+        return desktopX;
+    }
+
+    /**
+     * @param desktopX the desktopX to set
+     */
+    public void setDesktopX(int desktopX) {
+        this.desktopX = desktopX;
+    }
+
+    /**
+     * @return the desktopY
+     */
+    public int getDesktopY() {
+        return desktopY;
+    }
+
+    /**
+     * @param desktopY the desktopY to set
+     */
+    public void setDesktopY(int desktopY) {
+        this.desktopY = desktopY;
+    }
+
+    /**
+     * @return the desktopW
+     */
+    public int getDesktopW() {
+        return desktopW;
+    }
+
+    /**
+     * @param desktopW the desktopW to set
+     */
+    public void setDesktopW(int desktopW) {
+        this.desktopW = desktopW;
+    }
+
+    /**
+     * @return the desktopH
+     */
+    public int getDesktopH() {
+        return desktopH;
+    }
+
+    /**
+     * @param desktopH the desktopH to set
+     */
+    public void setDesktopH(int desktopH) {
+        this.desktopH = desktopH;
     }
     public interface Listener {
 
