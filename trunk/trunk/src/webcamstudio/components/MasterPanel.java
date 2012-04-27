@@ -20,8 +20,6 @@ import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterMixer;
 import webcamstudio.mixers.SystemPlayer;
 
-
-
 /**
  *
  * @author patrick
@@ -29,10 +27,10 @@ import webcamstudio.mixers.SystemPlayer;
 public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkListener {
 
     protected Viewer viewer = new Viewer();
-    
     private SystemPlayer player = null;
-    private MasterMixer mixer = MasterMixer.getInstance();    
-    final static public Dimension PANEL_SIZE = new Dimension(150,400);
+    private MasterMixer mixer = MasterMixer.getInstance();
+    final static public Dimension PANEL_SIZE = new Dimension(150, 400);
+
     /** Creates new form MasterPanel */
     public MasterPanel() {
         initComponents();
@@ -45,7 +43,7 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
         player = SystemPlayer.getInstance(viewer);
         mixer.register(this);
         spinFPS.setValue(MasterMixer.getInstance().getRate());
-        panChannels.add(new ChannelPanel(),BorderLayout.CENTER);
+        panChannels.add(new ChannelPanel(), BorderLayout.CENTER);
     }
 
     /** This method is called from within the constructor to
@@ -177,7 +175,7 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
     }// </editor-fold>//GEN-END:initComponents
 
     private void tglSoundActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglSoundActionPerformed
-        if (tglSound.isSelected()){
+        if (tglSound.isSelected()) {
             try {
                 player.play();
             } catch (LineUnavailableException ex) {
@@ -189,15 +187,24 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
     }//GEN-LAST:event_tglSoundActionPerformed
 
     private void btnApplyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnApplyActionPerformed
-        int w = (Integer)spinWidth.getValue();
-        int h = (Integer)spinHeight.getValue();
-        MasterMixer.getInstance().stop();
-        MasterMixer.getInstance().setWidth(w);
-        MasterMixer.getInstance().setHeight(h);
-        MasterMixer.getInstance().setRate((Integer)spinFPS.getValue());
-        MasterMixer.getInstance().start();
+        int w = (Integer) spinWidth.getValue();
+        int h = (Integer) spinHeight.getValue();
+        if (tglSound.isSelected()) {
+            player.stop();
+        }
+        mixer.stop();
+        mixer.setWidth(w);
+        mixer.setHeight(h);
+        mixer.setRate((Integer) spinFPS.getValue());
+        mixer.getInstance().start();
+        if (tglSound.isSelected()) {
+            try {
+                player.play();
+            } catch (LineUnavailableException ex) {
+                Logger.getLogger(MasterPanel.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }//GEN-LAST:event_btnApplyActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnApply;
     private javax.swing.JLabel lblHeight;
@@ -218,4 +225,3 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
         player.addFrame(frame);
     }
 }
-

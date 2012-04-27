@@ -26,7 +26,6 @@ public class SystemPlayer implements Runnable {
     private Viewer viewer = null;
     private SystemPlayer(Viewer viewer){
         this.viewer=viewer;
-        frames = new FrameBuffer(MasterMixer.getInstance().getWidth(),MasterMixer.getInstance().getHeight(),MasterMixer.getInstance().getRate());
     }
     public static SystemPlayer getInstance(Viewer viewer){
         if (instance==null){
@@ -37,10 +36,12 @@ public class SystemPlayer implements Runnable {
     
     public void addFrame(Frame frame){
         if (source!=null){
+            
             frames.push(frame);
         } 
     }
     public void play() throws LineUnavailableException {
+        frames = new FrameBuffer(MasterMixer.getInstance().getWidth(),MasterMixer.getInstance().getHeight(),MasterMixer.getInstance().getRate());
         AudioFormat format = new AudioFormat(44100, 16, 2, true, true);
         source = javax.sound.sampled.AudioSystem.getSourceDataLine(format);
         source.open();
