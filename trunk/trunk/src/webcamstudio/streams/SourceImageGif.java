@@ -14,6 +14,7 @@ import java.util.logging.Logger;
 import webcamstudio.components.GifDecoder;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterFrameBuilder;
+import webcamstudio.util.Tools;
 
 /**
  *
@@ -26,24 +27,25 @@ public class SourceImageGif extends Stream {
     boolean stop = false;
     Frame frame = null;
     GifDecoder decoder = new GifDecoder();
-    
+
     public SourceImageGif(File img) {
         super();
         file = img;
         name = img.getName();
     }
-    public SourceImageGif(String name,URL url){
+
+    public SourceImageGif(String name, URL url) {
         this.url = url.toString();
-        this.name=name;
+        this.name = name;
     }
-    
+
     private void loadImage(File f) throws IOException {
-        if (file!=null){
+        if (file != null) {
             decoder.read(file.toURI().toURL().openStream());
-        } else if (url!=null){
+        } else if (url != null) {
             decoder.read(new URL(url).openStream());
         }
-        image = new BufferedImage(decoder.getImage().getWidth(),decoder.getImage().getHeight(),BufferedImage.TYPE_4BYTE_ABGR);
+        image = new BufferedImage(decoder.getImage().getWidth(), decoder.getImage().getHeight(), BufferedImage.TYPE_4BYTE_ABGR);
         System.out.println("Image Count: " + decoder.getFrameCount());
         new Thread(new Runnable() {
 
@@ -65,22 +67,19 @@ public class SourceImageGif extends Stream {
                 if (image != null) {
                     captureWidth = image.getWidth();
                     captureHeight = image.getHeight();
-                    try {
-                        Thread.sleep(decoder.getDelay(index));
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(SourceImageGif.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+                    Tools.sleep(decoder.getDelay(index));
                     index++;
                     if (index >= decoder.getFrameCount()) {
                         index = 0;
                     }
                     if (frame != null) {
                         frame.setImage(image);
+                        applyEffects(frame.getImage());
                         frame.setOutputFormat(x, y, width, height, opacity, volume);
                         frame.setZOrder(zorder);
                     }
                 } else {
-                    stop=true;
+                    stop = true;
                 }
             }
         }

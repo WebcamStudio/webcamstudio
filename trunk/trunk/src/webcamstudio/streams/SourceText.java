@@ -31,6 +31,15 @@ public class SourceText extends Stream {
         name = "Text";
         updateContent(content);
     }
+    @Override
+    public void setWidth(int w){
+        width=w;
+        updateContent(content);
+    }
+    public void setHeight(int h){
+        height=h;
+        updateContent(content);
+    }
     public void setColor(int c){
         color=c;
         updateContent(content);
@@ -47,23 +56,29 @@ public class SourceText extends Stream {
     }
     public void updateContent(String content) {
         this.content = content;
-        image = new BufferedImage(width, height+(height/5), BufferedImage.TYPE_INT_ARGB);
+        captureWidth=width;
+        captureHeight=height;
+        frame = new Frame(captureWidth,captureHeight,rate);
+        image = new BufferedImage(captureWidth, captureHeight+(captureHeight/5), BufferedImage.TYPE_INT_ARGB);
+        
         Graphics2D buffer = image.createGraphics();
         buffer.setRenderingHint(java.awt.RenderingHints.KEY_TEXT_ANTIALIASING, java.awt.RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         buffer.setRenderingHint(java.awt.RenderingHints.KEY_INTERPOLATION, java.awt.RenderingHints.VALUE_INTERPOLATION_BICUBIC);
         buffer.setRenderingHint(java.awt.RenderingHints.KEY_RENDERING, java.awt.RenderingHints.VALUE_RENDER_QUALITY);
         buffer.setRenderingHint(java.awt.RenderingHints.KEY_DITHERING, java.awt.RenderingHints.VALUE_DITHER_ENABLE);
         buffer.setRenderingHint(java.awt.RenderingHints.KEY_COLOR_RENDERING, java.awt.RenderingHints.VALUE_COLOR_RENDER_QUALITY);
-        buffer.setFont(new java.awt.Font(fontName, java.awt.Font.PLAIN, height));
+        buffer.setFont(new java.awt.Font(fontName, java.awt.Font.PLAIN, captureHeight));
 
         buffer.setBackground(Color.BLACK);
-        buffer.clearRect(0, 0, width, height+(height/5));
+        buffer.clearRect(0, 0, captureWidth, captureHeight+(captureHeight/5));
         buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC, 0F));
         buffer.setColor(new Color(color));
-        buffer.fillRect(0, 0, width, height+(height/5));
+        buffer.fillRect(0, 0, captureWidth, captureHeight+(captureHeight/5));
         buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC, 1F));
-        buffer.drawString(content, 0, height);
+        buffer.drawString(content, 0, captureHeight);
         buffer.dispose();
+        frame.setImage(image);
+        applyEffects(image);
         if (frame != null) {
             frame.setImage(image);
             frame.setOutputFormat(x, y, width, height, opacity, volume);
@@ -80,7 +95,8 @@ public class SourceText extends Stream {
         playing=true;
         try {
             updateContent(content);
-            frame = new Frame(uuid, image, null);
+            frame.setID(uuid);
+            frame.setImage(image);
             frame.setOutputFormat(x, y, width, height, opacity, volume);
             frame.setZOrder(zorder);
             MasterFrameBuilder.register(this);
@@ -99,6 +115,8 @@ public class SourceText extends Stream {
 
     @Override
     public Frame getFrame() {
+        frame.setImage(image);
+        applyEffects(frame.getImage());
         frame.setOutputFormat(x, y, width, height, opacity, volume);
         frame.setZOrder(zorder);
         return frame;

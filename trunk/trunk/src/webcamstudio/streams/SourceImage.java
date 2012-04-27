@@ -37,7 +37,10 @@ public class SourceImage extends Stream{
         stop=false;
         try{
             loadImage(file);
-            frame = new Frame(uuid,image,null);
+            frame = new Frame(captureWidth,captureHeight,rate);
+            frame.setImage(image);
+            frame.setAudio(null);
+            frame.setID(uuid);
             frame.setOutputFormat(x, y, width, height, opacity, volume);
             frame.setZOrder(zorder);
             MasterFrameBuilder.register(this);
@@ -54,6 +57,8 @@ public class SourceImage extends Stream{
 
     @Override
     public Frame getFrame(){
+        frame.setImage(image);
+        applyEffects(frame.getImage());
         frame.setOutputFormat(x, y, width, height, opacity, volume);
         frame.setZOrder(zorder);
         return frame;
