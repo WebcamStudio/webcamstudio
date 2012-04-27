@@ -5,6 +5,7 @@
 package webcamstudio.media.renderer;
 
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -74,22 +75,27 @@ public class Capturer {
                     connection = videoServer.accept();
                     System.out.println(stream.getName() + " video accepted...");
                     DataInputStream din = new DataInputStream(connection.getInputStream());
+                    
                     imageBuffer.clear();
                     videoBufferSize = stream.getCaptureWidth() * stream.getCaptureHeight() * 4;
                     byte[] vbuffer = new byte[videoBufferSize];
+                    
                     int[] rgb = new int[videoBufferSize / 4];
+//                    long mark = 0;
+//                    long delta = 0;
                     while (!stopMe) {
+//                        mark = System.currentTimeMillis();
                         try {
                             BufferedImage image = imageBuffer.getImageToUpdate();
+                            rgb = ((DataBufferInt)(image).getRaster().getDataBuffer()).getData();
                             din.readFully(vbuffer);
-                            //Setting opacity to 100%
+//                            //Setting opacity to 100%
                             for (int i = 0;i<vbuffer.length;i+=4){
                                 vbuffer[i] = (byte)0xFF;
                             }
                             IntBuffer intData = ByteBuffer.wrap(vbuffer).order(ByteOrder.BIG_ENDIAN).asIntBuffer();
                             intData.get(rgb);
-                            //Special Effects...
-                            image.setRGB(0, 0, stream.getCaptureWidth(), stream.getCaptureHeight(), rgb, 0, stream.getCaptureWidth());
+//                            //Special Effects...
                             stream.applyEffects(image);
                             imageBuffer.doneUpdate();
                         } catch (IOException ioe) {
@@ -98,7 +104,8 @@ public class Capturer {
                             stream.updateStatus();
                             //ioe.printStackTrace();
                         }
-
+//                        delta = System.currentTimeMillis()-mark;
+//                        System.out.println(delta);
                     }
                     imageBuffer.clear();
                     din.close();
