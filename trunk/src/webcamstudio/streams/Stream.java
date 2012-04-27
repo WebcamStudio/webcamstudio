@@ -46,7 +46,6 @@ public abstract class Stream {
     protected int desktopY = 0;
     protected int desktopW = 1024;
     protected int desktopH = 768;
-    
     ArrayList<Transition> startTransitions = new ArrayList<Transition>();
     ArrayList<Transition> endTransitions = new ArrayList<Transition>();
     Listener listener = null;
@@ -55,22 +54,27 @@ public abstract class Stream {
         MasterChannels.getInstance().register(this);
     }
 
-    public void addStartTransition(Transition t){
+    public void addStartTransition(Transition t) {
         startTransitions.add(t);
     }
-    public void addEndTransition(Transition t){
+
+    public void addEndTransition(Transition t) {
         endTransitions.add(t);
     }
-    public void removeStartTransition(Transition t){
+
+    public void removeStartTransition(Transition t) {
         startTransitions.remove(t);
     }
-    public void removeEndTransition(Transition t){
+
+    public void removeEndTransition(Transition t) {
         endTransitions.remove(t);
     }
-    public ArrayList<Transition> getStartTransitions(){
+
+    public ArrayList<Transition> getStartTransitions() {
         return startTransitions;
     }
-    public ArrayList<Transition> getEndTransitions(){
+
+    public ArrayList<Transition> getEndTransitions() {
         return endTransitions;
     }
 
@@ -129,6 +133,7 @@ public abstract class Stream {
     public void setDesktopH(int desktopH) {
         this.desktopH = desktopH;
     }
+
     public interface Listener {
 
         public void sourceUpdated(Stream stream);
@@ -219,30 +224,32 @@ public abstract class Stream {
     }
 
     protected void setAudioLevel(Frame f) {
-        byte[] data = f.getAudioData();
-        if (data != null) {
-            audioLevelLeft = 0;
-            audioLevelRight = 0;
-            int tempValue = 0;
-            for (int i = 0; i < data.length; i += 4) {
-                tempValue = (data[i] << 8 & (data[i + 1])) / 256;
-                if (tempValue < 0) {
-                    tempValue *= -1;
-                }
-                if (audioLevelLeft < tempValue) {
-                    audioLevelLeft = tempValue;
-                }
-                tempValue = (data[i + 2] << 8 & (data[i + 3])) / 256;
+        if (f != null) {
+            byte[] data = f.getAudioData();
+            if (data != null) {
+                audioLevelLeft = 0;
+                audioLevelRight = 0;
+                int tempValue = 0;
+                for (int i = 0; i < data.length; i += 4) {
+                    tempValue = (data[i] << 8 & (data[i + 1])) / 256;
+                    if (tempValue < 0) {
+                        tempValue *= -1;
+                    }
+                    if (audioLevelLeft < tempValue) {
+                        audioLevelLeft = tempValue;
+                    }
+                    tempValue = (data[i + 2] << 8 & (data[i + 3])) / 256;
 
-                if (tempValue < 0) {
-                    tempValue *= -1;
+                    if (tempValue < 0) {
+                        tempValue *= -1;
+                    }
+                    if (audioLevelRight < tempValue) {
+                        audioLevelRight = tempValue;
+                    }
                 }
-                if (audioLevelRight < tempValue) {
-                    audioLevelRight = tempValue;
-                }
+                audioLevelLeft = (int) (audioLevelLeft * volume);
+                audioLevelRight = (int) (audioLevelRight * volume);
             }
-            audioLevelLeft = (int) (audioLevelLeft * volume);
-            audioLevelRight = (int) (audioLevelRight * volume);
         }
     }
 
