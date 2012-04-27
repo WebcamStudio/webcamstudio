@@ -4,6 +4,10 @@
  */
 package webcamstudio.mixers;
 
+import java.awt.AlphaComposite;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
 /**
@@ -67,8 +71,11 @@ public class Frame {
     }
     public void setImage(BufferedImage img){
         if (img!=null){
-            image.getGraphics().clearRect(0, 0, w, h);
-            image.getGraphics().drawImage(img, 0, 0, null);
+            Graphics2D g = image.createGraphics();
+            g.setBackground(new Color(0,0,0,0));
+            g.clearRect(0, 0, w, h);
+            g.drawImage(img, 0, 0, null);
+            g.dispose();
         } else {
             image=null;
         }

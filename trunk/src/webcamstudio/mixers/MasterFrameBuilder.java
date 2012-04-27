@@ -5,6 +5,7 @@
 package webcamstudio.mixers;
 
 import java.awt.AlphaComposite;
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.nio.ByteBuffer;
@@ -51,6 +52,7 @@ public class MasterFrameBuilder implements Runnable {
         BufferedImage image = targetFrame.getImage();
         if (image != null) {
             Graphics2D g = image.createGraphics();
+            g.setBackground(new Color(0,0,0,0));
             g.clearRect(0, 0, image.getWidth(), image.getHeight());
             for (Frame f : orderedFrame.values()) {
                 if (g != null) {
