@@ -74,7 +74,7 @@ public class SourceChannel {
 
         } else if (stream instanceof SourceDesktop) {
             SourceDesktop sd = (SourceDesktop) stream;
-            s.followMouse = sd.followMouse;
+            
 //            s.captureX = sd.captureX;
 //            s.captureY = sd.captureY;
         }
@@ -144,7 +144,7 @@ public class SourceChannel {
                     st.updateContent(getText());
                 } else if (s instanceof SourceDesktop) {
                     SourceDesktop sd = (SourceDesktop) s;
-                    sd.followMouse = isFollowMouse();
+                    
 //                    sd.captureX = getCaptureX();
 //                    sd.captureY = getCaptureY();
                 }
