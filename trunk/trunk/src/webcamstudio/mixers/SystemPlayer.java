@@ -24,24 +24,27 @@ public class SystemPlayer implements Runnable {
     private ArrayList<byte[]> buffer = new ArrayList<byte[]>();
     private FrameBuffer frames = null;
     private Viewer viewer = null;
-    private SystemPlayer(Viewer viewer){
-        this.viewer=viewer;
+
+    private SystemPlayer(Viewer viewer) {
+        this.viewer = viewer;
     }
-    public static SystemPlayer getInstance(Viewer viewer){
-        if (instance==null){
-            instance=new SystemPlayer(viewer);
+
+    public static SystemPlayer getInstance(Viewer viewer) {
+        if (instance == null) {
+            instance = new SystemPlayer(viewer);
         }
         return instance;
     }
-    
-    public void addFrame(Frame frame){
-        if (source!=null){
-            
+
+    public void addFrame(Frame frame) {
+        if (source != null) {
+
             frames.push(frame);
-        } 
+        }
     }
+
     public void play() throws LineUnavailableException {
-        frames = new FrameBuffer(MasterMixer.getInstance().getWidth(),MasterMixer.getInstance().getHeight(),MasterMixer.getInstance().getRate());
+        frames = new FrameBuffer(MasterMixer.getInstance().getWidth(), MasterMixer.getInstance().getHeight(), MasterMixer.getInstance().getRate());
         AudioFormat format = new AudioFormat(44100, 16, 2, true, true);
         source = javax.sound.sampled.AudioSystem.getSourceDataLine(format);
         source.open();
@@ -60,19 +63,23 @@ public class SystemPlayer implements Runnable {
             viewer.setImage(frame.getImage());
             viewer.setAudioLevel(MasterMixer.getInstance().getAudioLevelLeft(), MasterMixer.getInstance().getAudioLevelRight());
             viewer.repaint();
-                byte[] d = frame.getAudioData();
-                if (d!=null){
-                    source.write(d, 0, d.length);
-                }
+            byte[] d = frame.getAudioData();
+            if (d != null) {
+                source.write(d, 0, d.length);
+            }
         }
     }
 
     public void stop() {
         stopMe = true;
-        frames.abort();
-        source.stop();
-        source.close();
-        source = null;
+        if (frames != null) {
+            frames.abort();
+        }
+        if (source != null) {
+            source.stop();
+            source.close();
+            source = null;
+        }
         executor = null;
         System.gc();
     }
