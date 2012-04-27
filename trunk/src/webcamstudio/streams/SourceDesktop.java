@@ -28,7 +28,6 @@ public class SourceDesktop extends Stream {
     Frame frame = null;
     BufferedImage lastPreview = null;
     boolean isPlaying = false;
-    
 
     public SourceDesktop() {
         super();
@@ -38,16 +37,16 @@ public class SourceDesktop extends Stream {
 
     @Override
     public void read() {
-        isPlaying=true;
+        isPlaying = true;
         rate = MasterMixer.getInstance().getRate();
         MasterFrameBuilder.register(this);
-        if (Tools.getOS() == OS.LINUX){
-        capture = new FFMPEGRenderer(this, FFMPEGRenderer.ACTION.CAPTURE, "desktop");
-        capture.read();
+        if (Tools.getOS() == OS.LINUX) {
+            capture = new FFMPEGRenderer(this, FFMPEGRenderer.ACTION.CAPTURE, "desktop");
+            capture.read();
         } else {
             try {
                 defaultCapture = new Robot();
-                frame = new Frame(uuid,null,null);
+                frame = new Frame(uuid, null, null);
                 frame.setOutputFormat(x, y, width, height, opacity, volume);
                 frame.setZOrder(zorder);
             } catch (AWTException ex) {
@@ -58,7 +57,7 @@ public class SourceDesktop extends Stream {
 
     @Override
     public void stop() {
-       isPlaying=false;
+        isPlaying = false;
         if (capture != null) {
             capture.stop();
         }
@@ -74,10 +73,12 @@ public class SourceDesktop extends Stream {
                 lastPreview = f.getImage();
             }
         } else {
-            f = frame;
-            frame.setOutputFormat(x, y, width, height, opacity, volume);
-            frame.setZOrder(zorder);
-            frame.setImage(defaultCapture.createScreenCapture(new Rectangle(desktopX, desktopY, desktopW, desktopH)));
+            if (frame != null) {
+                f = frame;
+                frame.setOutputFormat(x, y, width, height, opacity, volume);
+                frame.setZOrder(zorder);
+                frame.setImage(defaultCapture.createScreenCapture(new Rectangle(desktopX, desktopY, desktopW, desktopH)));
+            }
         }
         return f;
     }
