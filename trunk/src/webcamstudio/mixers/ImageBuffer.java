@@ -14,7 +14,7 @@ import webcamstudio.util.Tools;
  */
 public class ImageBuffer {
     private ArrayList<BufferedImage> buffer = new ArrayList<BufferedImage>();
-    private static final int BUFFER_SIZE = 10;
+    private int bufferSize = 10;
     private static final long TIMEOUT=5000;
     private boolean abort = false;
     private int currentIndex = 0;
@@ -23,30 +23,37 @@ public class ImageBuffer {
     
     
     public ImageBuffer(int w,int h){
-        for (int i = 0;i<BUFFER_SIZE;i++){
+        for (int i = 0;i<bufferSize;i++){
+            BufferedImage img = new BufferedImage(w,h,BufferedImage.TYPE_INT_ARGB);
+            buffer.add(img);
+        }
+    }
+    public ImageBuffer(int w,int h,int bufferSize){
+        this.bufferSize=bufferSize;
+        for (int i = 0;i<bufferSize;i++){
             BufferedImage img = new BufferedImage(w,h,BufferedImage.TYPE_INT_ARGB);
             buffer.add(img);
         }
     }
     public void push(BufferedImage img){
-        while(!abort && (framePushed - framePopped) >= BUFFER_SIZE){
+        while(!abort && (framePushed - framePopped) >= bufferSize){
             Tools.sleep(30);
         }
         currentIndex++;
-        currentIndex = currentIndex % BUFFER_SIZE;
+        currentIndex = currentIndex % bufferSize;
         buffer.get(currentIndex).getGraphics().drawImage(img, 0, 0, null);
         framePushed++;
     }
     public void doneUpdate(){
         currentIndex++;
-        currentIndex = currentIndex % BUFFER_SIZE;
+        currentIndex = currentIndex % bufferSize;
         framePushed++;
     }
     public BufferedImage getImageToUpdate(){
-        while(!abort && (framePushed - framePopped) >= BUFFER_SIZE){
+        while(!abort && (framePushed - framePopped) >= bufferSize){
             Tools.sleep(30);
         }
-        return buffer.get((currentIndex+1)%BUFFER_SIZE);
+        return buffer.get((currentIndex+1)%bufferSize);
     }
     public BufferedImage pop(){
         long mark = System.currentTimeMillis();

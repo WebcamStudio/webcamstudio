@@ -14,7 +14,7 @@ import webcamstudio.util.Tools;
 public class AudioBuffer {
 
     private ArrayList<byte[]> buffer = new ArrayList<byte[]>();
-    private static final int BUFFER_SIZE = 10;
+    private int bufferSize = 10;
     private static final long TIMEOUT = 5000;
     private boolean abort = false;
     int currentIndex = 0;
@@ -22,17 +22,23 @@ public class AudioBuffer {
     long framePopped = 0;
 
     public AudioBuffer(int rate) {
-        for (int i = 0; i < BUFFER_SIZE; i++) {
+        for (int i = 0; i < bufferSize; i++) {
+            buffer.add(new byte[(44100 * 2 * 2) / rate]);
+        }
+    }
+    public AudioBuffer(int rate,int bufferSize) {
+        this.bufferSize=bufferSize;
+        for (int i = 0; i < bufferSize; i++) {
             buffer.add(new byte[(44100 * 2 * 2) / rate]);
         }
     }
 
     public void push(byte[] data) {
-        while (!abort && (framePushed - framePopped) >= BUFFER_SIZE) {
+        while (!abort && (framePushed - framePopped) >= bufferSize) {
             Tools.sleep(30);
         }
         currentIndex++;
-        currentIndex = currentIndex % BUFFER_SIZE;
+        currentIndex = currentIndex % bufferSize;
         byte[] d = buffer.get(currentIndex);
         for (int i = 0; i < d.length; i++) {
             d[i] = data[i];
@@ -42,14 +48,14 @@ public class AudioBuffer {
     }
     public void doneUpdate(){
         currentIndex++;
-        currentIndex = currentIndex % BUFFER_SIZE;
+        currentIndex = currentIndex % bufferSize;
         framePushed++;
     }    
     public byte[] getAudioToUpdate(){
-        while (!abort && (framePushed - framePopped) >= BUFFER_SIZE) {
+        while (!abort && (framePushed - framePopped) >= bufferSize) {
             Tools.sleep(30);
         }
-        return buffer.get((currentIndex+1)%BUFFER_SIZE);
+        return buffer.get((currentIndex+1)%bufferSize);
     }
     public byte[] pop() {
         long mark = System.currentTimeMillis();
