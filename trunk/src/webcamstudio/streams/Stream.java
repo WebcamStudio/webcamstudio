@@ -494,6 +494,8 @@ public abstract class Stream {
                 || ext.endsWith(".m4a")
                 || ext.endsWith(".mp2")) {
             stream = new SourceMusic(file);
+        } else if (ext.endsWith(".wss")){
+            stream = new SourceCustom(file);
         }
         return stream;
     }

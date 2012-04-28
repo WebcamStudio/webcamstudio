@@ -54,7 +54,11 @@ public class FFMPEGRenderer {
         if (plugins == null) {
             plugins = new Properties();
             try {
-                plugins.load(getResource(a).openStream());
+                if (plugin.equals("custom")) {
+                    plugins.load(stream.getFile().toURI().toURL().openStream());
+                } else {
+                    plugins.load(getResource(ACTION.OUTPUT).openStream());
+                }
             } catch (IOException ex) {
                 Logger.getLogger(FFMPEGRenderer.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -62,16 +66,18 @@ public class FFMPEGRenderer {
         process = new ProcessExecutor(s.getName());
         this.plugin = plugin;
     }
-    private String translateTag(String value){
+
+    private String translateTag(String value) {
         String result = value.toUpperCase().replace('.', '_');
-        if (plugins.containsKey("TAG_" + result)){
-            result = plugins.getProperty("TAG_"+ result);
+        if (plugins.containsKey("TAG_" + result)) {
+            result = plugins.getProperty("TAG_" + result);
         }
         return result;
     }
+
     public FFMPEGRenderer(Stream s, FME fme, String plugin) {
         stream = s;
-        this.fme=fme;
+        this.fme = fme;
         if (plugins == null) {
             plugins = new Properties();
             try {
@@ -120,41 +126,41 @@ public class FFMPEGRenderer {
         for (FFMPEGTags tag : FFMPEGTags.values()) {
             switch (tag) {
                 case DESKTOPX:
-                    command = command.replaceAll(FFMPEGTags.DESKTOPX.toString(), stream.getDesktopX()+"");
+                    command = command.replaceAll(FFMPEGTags.DESKTOPX.toString(), stream.getDesktopX() + "");
                     break;
                 case DESKTOPY:
-                    command = command.replaceAll(FFMPEGTags.DESKTOPY.toString(), stream.getDesktopY()+"");
+                    command = command.replaceAll(FFMPEGTags.DESKTOPY.toString(), stream.getDesktopY() + "");
                     break;
                 case DESKTOPW:
-                    command = command.replaceAll(FFMPEGTags.DESKTOPW.toString(), stream.getDesktopW()+"");
+                    command = command.replaceAll(FFMPEGTags.DESKTOPW.toString(), stream.getDesktopW() + "");
                     break;
                 case DESKTOPH:
-                    command = command.replaceAll(FFMPEGTags.DESKTOPH.toString(), stream.getDesktopH()+"");
+                    command = command.replaceAll(FFMPEGTags.DESKTOPH.toString(), stream.getDesktopH() + "");
                     break;
                 case VCODEC:
-                    if (fme!=null){
+                    if (fme != null) {
                         command = command.replaceAll(FFMPEGTags.VCODEC.toString(), translateTag(fme.getVcodec()));
                     }
                     break;
                 case ACODEC:
-                    if (fme!=null){
+                    if (fme != null) {
                         command = command.replaceAll(FFMPEGTags.ACODEC.toString(), translateTag(fme.getAcodec()));
                     }
                     break;
                 case VBITRATE:
-                    if (fme!=null){
+                    if (fme != null) {
                         command = command.replaceAll(FFMPEGTags.VBITRATE.toString(), fme.getVbitrate());
                     }
                     break;
                 case ABITRATE:
-                    if (fme!=null){
+                    if (fme != null) {
                         command = command.replaceAll(FFMPEGTags.ABITRATE.toString(), fme.getAbitrate());
                     }
                     break;
                 case URL:
-                    if (fme!=null){
-                        command = command.replaceAll(FFMPEGTags.URL.toString(), fme.getUrl()+"/"+fme.getStream());
-                     } else if (stream.getURL() != null) {
+                    if (fme != null) {
+                        command = command.replaceAll(FFMPEGTags.URL.toString(), fme.getUrl() + "/" + fme.getStream());
+                    } else if (stream.getURL() != null) {
                         command = command.replaceAll(FFMPEGTags.URL.toString(), "" + stream.getURL());
                     }
                     break;
@@ -227,7 +233,13 @@ public class FFMPEGRenderer {
                 if (stream.hasAudio()) {
                     audioPort = capture.getAudioPort();
                 }
-                String command = plugins.getProperty(plugin).replaceAll("  ", " "); //Making sure there is no double spaces
+                String command = "";
+                if (plugin.equals("custom")) {
+                    command = plugins.getProperty("source").replaceAll("  ", " "); //Making sure there is no double spaces
+                } else {
+                    command = plugins.getProperty(plugin).replaceAll("  ", " "); //Making sure there is no double spaces
+                }
+
                 command = command.replaceAll(" ", "ABCDE");
                 command = setParameters(command);
                 String[] parms = command.split("ABCDE");
@@ -289,7 +301,7 @@ public class FFMPEGRenderer {
         }
 
         stopMe = false;
-        stopped=true;
+        stopped = true;
     }
 
     public boolean isStopped() {
