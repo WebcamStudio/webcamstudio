@@ -11,10 +11,12 @@
 package webcamstudio.components;
 
 import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetDropEvent;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.InputStream;
 import java.io.Reader;
@@ -27,6 +29,7 @@ import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import javax.swing.JFileChooser;
 import javax.swing.JToggleButton;
+import webcamstudio.channels.MasterChannels;
 import webcamstudio.exporter.vloopback.VideoDevice;
 import webcamstudio.ffmpeg.FME;
 import webcamstudio.mixers.MasterMixer;
@@ -188,6 +191,13 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener {
 
     public void savePrefs(Preferences prefs) {
         Preferences fmePrefs = prefs.node("fme");
+        try {
+            fmePrefs.removeNode();
+            fmePrefs.flush();
+            fmePrefs = prefs.node("fme");
+        } catch (BackingStoreException ex) {
+            Logger.getLogger(OutputPanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
         for (FME fme : fmes.values()) {
             Preferences service = fmePrefs.node(fme.getName());
             service.put("url", fme.getUrl());
@@ -235,6 +245,33 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener {
                 }
             }
         });
+        button.addMouseMotionListener(new java.awt.event.MouseMotionListener() {
+
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                if (e.getX() > getWidth()) {
+                    JToggleButton button = ((JToggleButton) e.getSource());
+                    if (!button.isSelected()) {
+                        if (e.getX() > getWidth()) {
+                            System.out.println(button.getText());
+                            SinkBroadcast broadcast = broadcasts.remove(button.getText());
+                            if (broadcast != null) {
+                                MasterChannels.getInstance().unregister(broadcast);
+                            }
+                            FME fme = fmes.remove(button.getText());
+                            ResourceMonitorLabel label = labels.remove(fme.getName());
+                            remove(button);
+                            revalidate();
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void mouseMoved(MouseEvent e) {
+            }
+        });
+
         this.add(button);
         this.revalidate();
     }
