@@ -49,7 +49,11 @@ public class Frame {
         BufferedImage imageSrc = frame.getImage();
         byte[] audioSrc = frame.getAudioData();
         if (imageSrc!=null){
-            image.getGraphics().drawImage(imageSrc, 0, 0, null);
+            Graphics2D g = image.createGraphics();
+            g.setBackground(new Color(0,0,0,0));
+            g.clearRect(0, 0, w, h);
+            g.drawImage(imageSrc, 0, 0, null);
+            g.dispose();
         }
         if (audioSrc!=null && audioSrc.length==audioData.length){
             for (int i = 0;i<audioSrc.length;i++){
