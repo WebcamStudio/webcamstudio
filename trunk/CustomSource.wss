@@ -1,0 +1,24 @@
+# Key = Category
+# TAGS:
+# @CWIDTH : Capture Width
+# @CHEIGHT: Capture Height
+# @SEEK : Starting seek position
+# @FILE: source input file/device
+# @RATE: Frame rate
+# @VPORT: Port used for receiving video data
+# @APORT: Port used for receiving audio data
+# @URL: When an url is used instead of a file
+#
+# How to use:
+# The key must be "source", tags are used to pass configurations to ffmpeg
+# It is important that sound frequency, channels and source rate match WebcamStudio. 
+# If you omit these tags for the TCP output, WebcamStudio may not be able to read from that source
+# Output must always be : rawvideo in ARGB format for video.  Audio must be 44100 in s16be, two channels
+# Future version may be more flexible...
+# 
+# Drag'n drop this file in the source panel to add it as other media files.
+# You can also copy this file in "~/.webcamstudio/sources" so they will be loaded automatically when WebcamStudio starts
+#
+# There can be only one "source" for each file 
+source=ffmpeg -v 0 -r 15 -s @CWIDTHx@CHEIGHT -f video4linux2 -i /dev/video0 -f alsa -ac 2 -ar 44100 -i pulse -f rawvideo -pix_fmt argb -r @RATE tcp://127.0.0.1:@VPORT -ar @FREQ -ac @CHANNELS -f s@BITSIZEbe tcp://127.0.0.1:@APORT
+
