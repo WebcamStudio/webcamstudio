@@ -155,7 +155,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
 
         loadPrefs();
         MasterMixer.getInstance().start();
-        panSources.add(new MasterPanel(), BorderLayout.WEST);
+        this.add(new MasterPanel(), BorderLayout.WEST);
         initAnimations();
         loadCustomSources();
     }
@@ -246,6 +246,8 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        mainSplit = new javax.swing.JSplitPane();
+        panSources = new javax.swing.JPanel();
         toolbar = new javax.swing.JToolBar();
         btnAddFile = new javax.swing.JButton();
         btnAddDesktop = new javax.swing.JButton();
@@ -254,8 +256,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         btnAddMic = new javax.swing.JButton();
         cboAnimations = new javax.swing.JComboBox();
         btnAddAnimation = new javax.swing.JButton();
-        mainSplit = new javax.swing.JSplitPane();
-        panSources = new javax.swing.JPanel();
+        btnMinimizeAll = new javax.swing.JButton();
         desktop = new javax.swing.JDesktopPane();
         panControls = new javax.swing.JPanel();
         tabControls = new javax.swing.JTabbedPane();
@@ -269,6 +270,14 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
             }
         });
 
+        mainSplit.setDividerLocation(400);
+        mainSplit.setName("mainSplit"); // NOI18N
+        mainSplit.setOneTouchExpandable(true);
+
+        panSources.setMinimumSize(new java.awt.Dimension(400, 400));
+        panSources.setName("panSources"); // NOI18N
+
+        toolbar.setFloatable(false);
         toolbar.setRollover(true);
         toolbar.setName("toolbar"); // NOI18N
 
@@ -355,22 +364,43 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         });
         toolbar.add(btnAddAnimation);
 
-        getContentPane().add(toolbar, java.awt.BorderLayout.NORTH);
-
-        mainSplit.setDividerLocation(400);
-        mainSplit.setName("mainSplit"); // NOI18N
-        mainSplit.setOneTouchExpandable(true);
-
-        panSources.setMinimumSize(new java.awt.Dimension(400, 400));
-        panSources.setName("panSources"); // NOI18N
-        panSources.setLayout(new java.awt.BorderLayout());
+        btnMinimizeAll.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/go-down.png"))); // NOI18N
+        btnMinimizeAll.setToolTipText(bundle.getString("ICON_ALL")); // NOI18N
+        btnMinimizeAll.setFocusable(false);
+        btnMinimizeAll.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnMinimizeAll.setName("btnMinimizeAll"); // NOI18N
+        btnMinimizeAll.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnMinimizeAll.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMinimizeAllActionPerformed(evt);
+            }
+        });
+        toolbar.add(btnMinimizeAll);
 
         desktop.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("SOURCES"))); // NOI18N
         desktop.setToolTipText(bundle.getString("DROP_SOURCSE")); // NOI18N
         desktop.setAutoscrolls(true);
         desktop.setMinimumSize(new java.awt.Dimension(400, 400));
         desktop.setName("desktop"); // NOI18N
-        panSources.add(desktop, java.awt.BorderLayout.CENTER);
+
+        javax.swing.GroupLayout panSourcesLayout = new javax.swing.GroupLayout(panSources);
+        panSources.setLayout(panSourcesLayout);
+        panSourcesLayout.setHorizontalGroup(
+            panSourcesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panSourcesLayout.createSequentialGroup()
+                .addGroup(panSourcesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(desktop, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
+                    .addComponent(toolbar, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        panSourcesLayout.setVerticalGroup(
+            panSourcesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panSourcesLayout.createSequentialGroup()
+                .addComponent(toolbar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(desktop, javax.swing.GroupLayout.DEFAULT_SIZE, 423, Short.MAX_VALUE)
+                .addContainerGap())
+        );
 
         mainSplit.setLeftComponent(panSources);
 
@@ -478,6 +508,19 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         }
     }//GEN-LAST:event_btnAddMicActionPerformed
 
+    private void btnMinimizeAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMinimizeAllActionPerformed
+        for (Component c : desktop.getComponents()){
+            if (c instanceof StreamDesktop){
+                StreamDesktop d = (StreamDesktop)c;
+                try {
+                    d.setIcon(true);
+                } catch (PropertyVetoException ex) {
+                    Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+    }//GEN-LAST:event_btnMinimizeAllActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -526,6 +569,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
     private javax.swing.JButton btnAddMic;
     private javax.swing.JButton btnAddQRCode;
     private javax.swing.JButton btnAddText;
+    private javax.swing.JButton btnMinimizeAll;
     private javax.swing.JComboBox cboAnimations;
     private javax.swing.JDesktopPane desktop;
     private javax.swing.JLabel lblSourceSelected;
