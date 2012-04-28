@@ -24,6 +24,7 @@ public class SourceImageGif extends Stream {
     boolean stop = false;
     Frame frame = null;
     GifDecoder decoder = new GifDecoder();
+    int index = 0;
 
     public SourceImageGif(File img) {
         super();
@@ -55,29 +56,12 @@ public class SourceImageGif extends Stream {
 
     private void updateImage() {
         if (decoder != null) {
-            int index = 0;
             while (!stop) {
-                image = decoder.getFrame(index);
-//                image.getGraphics().setColor(new Color(0,0,0,0));
-//                image.getGraphics().clearRect(0, 0, image.getWidth(), image.getHeight());
-//                image.getGraphics().drawImage(tmpImage, 0, 0, null);
-                if (image != null) {
-                    captureWidth = image.getWidth();
-                    captureHeight = image.getHeight();
-                    if (frame != null) {
-                        frame.setImage(image);
-                        applyEffects(frame.getImage());
-                        frame.setOutputFormat(x, y, width, height, opacity, volume);
-                        frame.setZOrder(zorder);
-                    }
-                    index++;
-                    if (index >= decoder.getFrameCount()) {
-                        index = 0;
-                    }
-                    Tools.sleep(decoder.getDelay(index));
-                } else {
-                    stop = true;
+                index++;
+                if (index >= decoder.getFrameCount()) {
+                    index = 0;
                 }
+                Tools.sleep(decoder.getDelay(index));
             }
         }
     }
@@ -87,9 +71,7 @@ public class SourceImageGif extends Stream {
         stop = false;
         try {
             loadImage(file);
-            frame = new Frame(image.getWidth(),image.getHeight(),rate);
-            frame.setID(uuid);
-            frame.setImage(image);
+            frame = new Frame(uuid, image, null);
             frame.setOutputFormat(x, y, width, height, opacity, volume);
             frame.setZOrder(zorder);
             MasterFrameBuilder.register(this);
@@ -106,6 +88,10 @@ public class SourceImageGif extends Stream {
 
     @Override
     public Frame getFrame() {
+        image = decoder.getFrame(index);
+        frame = new Frame(uuid, image, null);
+        frame.setOutputFormat(x, y, width, height, opacity, volume);
+        frame.setZOrder(zorder);
         return frame;
     }
 
