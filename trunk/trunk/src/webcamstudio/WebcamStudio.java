@@ -68,15 +68,11 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
                 StreamDesktop frame = new StreamDesktop(webcam, this);
                 desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
                 try {
-                    frame.setSelected(true);
+                    frame.setIcon(true);
                 } catch (PropertyVetoException ex) {
                     Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-        } else if (Tools.getOS() == OS.WINDOWS) {
-            Stream webcam = new SourceWebcam("Default");
-            StreamDesktop frame = new StreamDesktop(webcam, this);
-            desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
         }
         desktop.setDropTarget(new DropTarget() {
 
@@ -113,11 +109,11 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
                         char[] text = new char[65536];
                         int count = reader.read(text);
                         files = new String(text).trim();
-                    }else if (data instanceof String) {
+                    } else if (data instanceof String) {
                         files = data.toString().trim();
                     } else {
-                        List list = (List)data;
-                        for (Object o : list){
+                        List list = (List) data;
+                        for (Object o : list) {
                             files += new File(o.toString()).toURI().toURL().toString() + "\n";
                         }
                     }
@@ -161,10 +157,36 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         MasterMixer.getInstance().start();
         panSources.add(new MasterPanel(), BorderLayout.WEST);
         initAnimations();
+        loadCustomSources();
     }
 
     private StreamDesktop getNewStreamDesktop(Stream s) {
         return new StreamDesktop(s, this);
+    }
+
+    private void loadCustomSources() {
+        File userSettings = new File(System.getProperty("user.home") + "/.webcamstudio");
+        if (userSettings.exists() && userSettings.isDirectory()) {
+            File sources = new File(userSettings, "sources");
+            if (sources.exists() && sources.isDirectory()) {
+                File[] custom = sources.listFiles();
+                for (File f : custom) {
+                    if (f.getName().toLowerCase().endsWith(".wss")) {
+                        SourceCustom stream = new SourceCustom(f);
+                        StreamDesktop frame = new StreamDesktop(stream, this);
+                        desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+                        frame.setClosable(false);
+                        try {
+                            frame.setIcon(true);
+                        } catch (PropertyVetoException ex) {
+                            Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                }
+            }
+        }
+
+
     }
 
     private void initAnimations() {
