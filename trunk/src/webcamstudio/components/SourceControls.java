@@ -40,9 +40,7 @@ public class SourceControls {
             c.setName("Effects");
             comps.add(c);
         } else if (source instanceof SourceImageGif) {
-             c = new SourceControlEffects(source);
-            c.setName("Effects");
-            comps.add(c);
+            
         } else if (source instanceof SourceQRCode) {
         }
 
