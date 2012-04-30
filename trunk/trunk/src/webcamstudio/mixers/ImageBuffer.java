@@ -4,6 +4,7 @@
  */
 package webcamstudio.mixers;
 
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import webcamstudio.util.Tools;
@@ -41,7 +42,11 @@ public class ImageBuffer {
         }
         currentIndex++;
         currentIndex = currentIndex % bufferSize;
-        buffer.get(currentIndex).getGraphics().drawImage(img, 0, 0, null);
+        BufferedImage image = buffer.get(currentIndex);
+        Graphics2D g = image.createGraphics();
+        g.clearRect(0, 0, image.getWidth(), image.getHeight());
+        g.drawImage(img, 0, 0, null);
+        g.dispose();
         framePushed++;
     }
     public void doneUpdate(){
