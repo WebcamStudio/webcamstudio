@@ -172,7 +172,6 @@ public class SourceText extends Stream {
         buffer.drawString(content, (captureWidth-textWidth)/2, (captureHeight/2)+(textHeight/2)-fm.getDescent());
         buffer.dispose();
         frame.setImage(image);
-        applyEffects(image);
         if (frame != null) {
             frame.setImage(image);
             frame.setOutputFormat(x, y, width, height, opacity, volume);
@@ -210,6 +209,8 @@ public class SourceText extends Stream {
 
     @Override
     public Frame getFrame() {
+        frame.setImage(image);
+        applyEffects(frame.getImage());
         return frame;
     }
 
