@@ -11,7 +11,6 @@
 package webcamstudio.components;
 
 import java.awt.Color;
-import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
 import webcamstudio.streams.SourceText;
 import webcamstudio.streams.SourceText.Shape;
@@ -41,6 +40,9 @@ public class SourceControlsText extends javax.swing.JPanel {
             case OVAL:
                 rdOval.setSelected(true);
                 break;
+            case ROUNDRECT:
+                rdRoundRect.setSelected(true);
+                break;
         }
         spinBGOpacity.setValue((int)stream.getBackgroundOpacity()*100);
     }
@@ -63,6 +65,7 @@ public class SourceControlsText extends javax.swing.JPanel {
         rdOval = new javax.swing.JRadioButton();
         jLabel2 = new javax.swing.JLabel();
         spinBGOpacity = new javax.swing.JSpinner();
+        rdRoundRect = new javax.swing.JRadioButton();
 
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("webcamstudio/Languages"); // NOI18N
         setName(bundle.getString("TEXT")); // NOI18N
@@ -135,6 +138,15 @@ public class SourceControlsText extends javax.swing.JPanel {
             }
         });
 
+        grpShape.add(rdRoundRect);
+        rdRoundRect.setText(bundle.getString("ROUND_RECTANGLE")); // NOI18N
+        rdRoundRect.setName("rdRoundRect"); // NOI18N
+        rdRoundRect.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rdRoundRectActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -142,22 +154,26 @@ public class SourceControlsText extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(rdOval)
-                    .addComponent(rdRect)
-                    .addComponent(rdNone)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                .addComponent(jLabel2)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(spinBGOpacity, javax.swing.GroupLayout.DEFAULT_SIZE, 112, Short.MAX_VALUE))
-                            .addGroup(layout.createSequentialGroup()
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(rdRoundRect)
+                        .addContainerGap())
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(rdOval)
+                            .addComponent(rdRect)
+                            .addComponent(rdNone)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addComponent(jLabel1)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtHexColor, javax.swing.GroupLayout.DEFAULT_SIZE, 129, Short.MAX_VALUE)))
+                                .addComponent(txtHexColor, javax.swing.GroupLayout.DEFAULT_SIZE, 104, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnSelectColor)))
+                        .addContainerGap())
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnSelectColor)))
-                .addContainerGap())
+                        .addComponent(spinBGOpacity, javax.swing.GroupLayout.DEFAULT_SIZE, 87, Short.MAX_VALUE)
+                        .addGap(44, 44, 44))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -174,10 +190,12 @@ public class SourceControlsText extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(rdOval)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(rdRoundRect)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(spinBGOpacity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(215, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -220,6 +238,10 @@ public class SourceControlsText extends javax.swing.JPanel {
         stream.setBackgroundOpacity((float)((Integer)spinBGOpacity.getValue())/100f);
     }//GEN-LAST:event_spinBGOpacityStateChanged
 
+    private void rdRoundRectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdRoundRectActionPerformed
+        stream.setBackground(Shape.ROUNDRECT);
+    }//GEN-LAST:event_rdRoundRectActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnSelectColor;
     private javax.swing.ButtonGroup grpShape;
@@ -228,6 +250,7 @@ public class SourceControlsText extends javax.swing.JPanel {
     private javax.swing.JRadioButton rdNone;
     private javax.swing.JRadioButton rdOval;
     private javax.swing.JRadioButton rdRect;
+    private javax.swing.JRadioButton rdRoundRect;
     private javax.swing.JSpinner spinBGOpacity;
     private javax.swing.JFormattedTextField txtHexColor;
     // End of variables declaration//GEN-END:variables
