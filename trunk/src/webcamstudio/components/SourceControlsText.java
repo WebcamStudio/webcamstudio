@@ -44,7 +44,7 @@ public class SourceControlsText extends javax.swing.JPanel {
                 rdRoundRect.setSelected(true);
                 break;
         }
-        spinBGOpacity.setValue((int)stream.getBackgroundOpacity()*100);
+        spinBGOpacity.setValue((int)(stream.getBackgroundOpacity()*100f));
     }
 
     /** This method is called from within the constructor to
