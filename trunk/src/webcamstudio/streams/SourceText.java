@@ -54,6 +54,11 @@ public class SourceText extends Stream {
     public String getFont(){
         return fontName;
     }
+    @Override
+    public void setZOrder(int layer){
+        zorder=layer;
+        updateContent(content);
+    }
     public void updateContent(String content) {
         this.content = content;
         captureWidth=width;
@@ -115,10 +120,6 @@ public class SourceText extends Stream {
 
     @Override
     public Frame getFrame() {
-        frame.setImage(image);
-        applyEffects(frame.getImage());
-        frame.setOutputFormat(x, y, width, height, opacity, volume);
-        frame.setZOrder(zorder);
         return frame;
     }
 
