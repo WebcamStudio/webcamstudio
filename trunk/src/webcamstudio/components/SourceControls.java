@@ -20,7 +20,7 @@ public class SourceControls {
         c = new SourceControlTransitions(source);
         comps.add(c);
         if (source instanceof SourceDesktop) {
-            c = new SourceControlDesktop((SourceDesktop)source);
+            c = new SourceControlDesktop((SourceDesktop) source);
             comps.add(c);
         } else if (source instanceof SourceMovie) {
             c = new SourceControlEffects(source);
@@ -31,16 +31,17 @@ public class SourceControls {
             c.setName("Effects");
             comps.add(c);
         } else if (source instanceof SourceText) {
-             c = new SourceControlEffects(source);
+            c = new SourceControlsText((SourceText) source);
+            comps.add(c);
+            c = new SourceControlEffects(source);
             c.setName("Effects");
             comps.add(c);
         } else if (source instanceof SourceMusic) {
         } else if (source instanceof SourceImage) {
-             c = new SourceControlEffects(source);
+            c = new SourceControlEffects(source);
             c.setName("Effects");
             comps.add(c);
         } else if (source instanceof SourceImageGif) {
-            
         } else if (source instanceof SourceQRCode) {
         }
 
