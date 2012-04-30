@@ -146,7 +146,7 @@ public class SourceText extends Stream {
         frame = new Frame(captureWidth, captureHeight, rate);
         
 
-        buffer.setBackground(Color.BLACK);
+        buffer.setBackground(new Color(0,0,0,0));
         buffer.clearRect(0, 0, captureWidth, captureHeight);
         switch (shape) {
             case RECTANGLE:
