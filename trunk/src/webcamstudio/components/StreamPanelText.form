@@ -23,40 +23,34 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="0" attributes="0">
+          <Group type="102" alignment="1" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="103" groupAlignment="1" attributes="0">
+                  <Component id="txtContent" alignment="0" pref="245" max="32767" attributes="1"/>
+                  <Component id="tglActiveStream" alignment="0" pref="245" max="32767" attributes="1"/>
+                  <Component id="lblText" alignment="0" min="-2" max="-2" attributes="0"/>
                   <Group type="102" alignment="0" attributes="0">
-                      <Component id="lblText" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace pref="238" max="-2" attributes="0"/>
-                  </Group>
-                  <Group type="102" alignment="0" attributes="0">
-                      <Group type="103" groupAlignment="1" attributes="0">
-                          <Group type="102" alignment="1" attributes="0">
-                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                  <Component id="labelZ" max="32767" attributes="1"/>
-                                  <Component id="lblColor" alignment="0" max="32767" attributes="1"/>
-                                  <Component id="labelFont" alignment="0" max="32767" attributes="1"/>
-                                  <Component id="labelH" alignment="0" max="32767" attributes="1"/>
-                                  <Component id="labelW" alignment="0" max="32767" attributes="1"/>
-                                  <Component id="labelY" alignment="0" max="32767" attributes="1"/>
-                                  <Component id="labelX" alignment="0" min="-2" pref="72" max="-2" attributes="1"/>
-                              </Group>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="txtHexColor" pref="186" max="32767" attributes="0"/>
-                                  <Component id="cboFonts" pref="186" max="32767" attributes="0"/>
-                                  <Component id="spinZOrder" alignment="0" pref="186" max="32767" attributes="1"/>
-                                  <Component id="spinX" alignment="0" pref="186" max="32767" attributes="1"/>
-                                  <Component id="spinY" alignment="0" pref="186" max="32767" attributes="1"/>
-                                  <Component id="spinW" alignment="0" pref="186" max="32767" attributes="0"/>
-                                  <Component id="spinH" alignment="0" pref="186" max="32767" attributes="0"/>
-                              </Group>
-                          </Group>
-                          <Component id="txtContent" alignment="0" pref="270" max="32767" attributes="1"/>
-                          <Component id="tglActiveStream" alignment="0" pref="270" max="32767" attributes="1"/>
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Component id="labelZ" max="32767" attributes="1"/>
+                          <Component id="lblColor" alignment="0" max="32767" attributes="1"/>
+                          <Component id="labelFont" alignment="0" max="32767" attributes="1"/>
+                          <Component id="labelH" alignment="0" max="32767" attributes="1"/>
+                          <Component id="labelW" alignment="0" max="32767" attributes="1"/>
+                          <Component id="labelY" alignment="0" max="32767" attributes="1"/>
+                          <Component id="labelX" alignment="0" min="-2" pref="72" max="-2" attributes="1"/>
                       </Group>
-                      <EmptySpace min="-2" pref="16" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="spinZOrder" pref="129" max="32767" attributes="1"/>
+                          <Component id="spinY" alignment="0" pref="129" max="32767" attributes="1"/>
+                          <Component id="spinX" alignment="1" pref="129" max="32767" attributes="1"/>
+                          <Component id="txtHexColor" alignment="0" pref="129" max="32767" attributes="0"/>
+                          <Component id="spinW" alignment="0" pref="129" max="32767" attributes="0"/>
+                          <Component id="spinH" alignment="1" pref="129" max="32767" attributes="0"/>
+                          <Component id="cboFonts" alignment="0" pref="129" max="32767" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="btnSelectColor" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
@@ -71,34 +65,39 @@
               <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
               <Component id="txtContent" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="labelX" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="spinX" alignment="3" min="-2" max="-2" attributes="0"/>
-              </Group>
-              <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="labelY" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="spinY" alignment="3" min="-2" max="-2" attributes="0"/>
-              </Group>
-              <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="labelW" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="spinW" alignment="3" min="-2" max="-2" attributes="0"/>
-              </Group>
-              <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="labelH" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="spinH" alignment="3" min="-2" max="-2" attributes="0"/>
-              </Group>
-              <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="labelFont" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="cboFonts" alignment="3" min="-2" max="-2" attributes="0"/>
-              </Group>
-              <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="lblColor" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="txtHexColor" alignment="3" min="-2" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="1" attributes="0">
+                  <Group type="102" attributes="0">
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="labelX" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="spinX" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="labelY" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="spinY" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="labelW" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="spinW" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="labelH" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="spinH" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="labelFont" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="cboFonts" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="lblColor" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="txtHexColor" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                  </Group>
+                  <Component id="btnSelectColor" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
@@ -151,7 +150,6 @@
           <Image iconType="3" name="/webcamstudio/resources/tango/media-playback-start.png"/>
         </Property>
         <Property name="name" type="java.lang.String" value="tglActiveStream" noResource="true"/>
-        <Property name="rolloverEnabled" type="boolean" value="false"/>
         <Property name="selectedIcon" type="javax.swing.Icon" noResource="true" editor="org.netbeans.modules.form.editors2.IconEditor">
           <Image iconType="3" name="/webcamstudio/resources/tango/media-playback-stop.png"/>
         </Property>
@@ -267,6 +265,23 @@
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtHexColorActionPerformed"/>
         <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="txtHexColorFocusLost"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="btnSelectColor">
+      <Properties>
+        <Property name="icon" type="javax.swing.Icon" noResource="true" editor="org.netbeans.modules.form.editors2.IconEditor">
+          <Image iconType="3" name="/webcamstudio/resources/tango/applications-graphics.png"/>
+        </Property>
+        <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="webcamstudio/Languages.properties" key="COLOR" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+        </Property>
+        <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+          <Insets value="[0, 0, 0, 0]"/>
+        </Property>
+        <Property name="name" type="java.lang.String" value="btnSelectColor" noResource="true"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSelectColorActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>
