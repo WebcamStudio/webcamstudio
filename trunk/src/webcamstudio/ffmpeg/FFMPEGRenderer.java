@@ -49,7 +49,7 @@ public class FFMPEGRenderer {
     Exporter exporter;
     FME fme = null;
 
-    public FFMPEGRenderer(Stream s, ACTION a, String plugin) {
+    public FFMPEGRenderer(Stream s, ACTION action, String plugin) {
         stream = s;
         if (plugins == null) {
             plugins = new Properties();
@@ -57,7 +57,7 @@ public class FFMPEGRenderer {
                 if (plugin.equals("custom")) {
                     plugins.load(stream.getFile().toURI().toURL().openStream());
                 } else {
-                    plugins.load(getResource(ACTION.OUTPUT).openStream());
+                    plugins.load(getResource(action).openStream());
                 }
             } catch (IOException ex) {
                 Logger.getLogger(FFMPEGRenderer.class.getName()).log(Level.SEVERE, null, ex);
