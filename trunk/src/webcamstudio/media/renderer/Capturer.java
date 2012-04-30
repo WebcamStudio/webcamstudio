@@ -79,10 +79,10 @@ public class Capturer {
                     DataInputStream din = new DataInputStream(connection.getInputStream());
                     
                     imageBuffer.clear();
-                    videoBufferSize = stream.getCaptureWidth() * stream.getCaptureHeight() * 4;
+                    videoBufferSize = stream.getCaptureWidth() * stream.getCaptureHeight() * 3;
                     byte[] vbuffer = new byte[videoBufferSize];
-                    
-                    int[] rgb = new int[videoBufferSize / 4];
+                    int[] rgb = new int[videoBufferSize / 3];
+                    int counter = 0;
 //                    long mark = 0;
 //                    long delta = 0;
                     while (!stopMe) {
@@ -91,12 +91,10 @@ public class Capturer {
                             BufferedImage image = imageBuffer.getImageToUpdate();
                             rgb = ((DataBufferInt)(image).getRaster().getDataBuffer()).getData();
                             din.readFully(vbuffer);
-//                            //Setting opacity to 100%
-                            for (int i = 0;i<vbuffer.length;i+=4){
-                                vbuffer[i] = (byte)0xFF;
+                            counter = 0;
+                            for (int i = 0;i<rgb.length;i++){
+                                rgb[i] = (vbuffer[counter++] <<16) + (vbuffer[counter++] << 8) + (vbuffer[counter++]);
                             }
-                            IntBuffer intData = ByteBuffer.wrap(vbuffer).order(ByteOrder.BIG_ENDIAN).asIntBuffer();
-                            intData.get(rgb);
 //                            //Special Effects...
                             stream.applyEffects(image);
                             imageBuffer.doneUpdate();

@@ -24,14 +24,14 @@ public class ImageBuffer {
     
     public ImageBuffer(int w,int h){
         for (int i = 0;i<bufferSize;i++){
-            BufferedImage img = new BufferedImage(w,h,BufferedImage.TYPE_INT_ARGB);
+            BufferedImage img = new BufferedImage(w,h,BufferedImage.TYPE_INT_RGB);
             buffer.add(img);
         }
     }
     public ImageBuffer(int w,int h,int bufferSize){
         this.bufferSize=bufferSize;
         for (int i = 0;i<bufferSize;i++){
-            BufferedImage img = new BufferedImage(w,h,BufferedImage.TYPE_INT_ARGB);
+            BufferedImage img = new BufferedImage(w,h,BufferedImage.TYPE_INT_RGB);
             buffer.add(img);
         }
     }
@@ -58,14 +58,6 @@ public class ImageBuffer {
     public BufferedImage pop(){
         long mark = System.currentTimeMillis();
         while(!abort && framePopped >= framePushed){
-//            if (System.currentTimeMillis()-mark >= TIMEOUT){
-//                //Resetting everyting;
-//                System.err.println("Resetting video!");
-//                currentIndex=0;
-//                framePopped=0;
-//                framePushed=0;
-//                break;
-//            }
             Tools.sleep(10);
         }
         framePopped++;
