@@ -32,6 +32,7 @@ public class SourceText extends Stream {
 
         NONE,
         RECTANGLE,
+        ROUNDRECT,
         OVAL
     }
     private Shape shape = Shape.NONE;
@@ -43,6 +44,16 @@ public class SourceText extends Stream {
         updateContent(content);
     }
 
+    @Override
+    public void setX(int x){
+        this.x=x;
+        updateContent(content);
+    }
+    @Override
+    public void setY(int y){
+        this.y=y;
+        updateContent(content);
+    }
     public void setBackgroundOpacity(float o){
         bgOpacity=o;
         updateContent(content);
@@ -141,12 +152,18 @@ public class SourceText extends Stream {
             case RECTANGLE:
                 buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC, bgOpacity));
                 buffer.setColor(new Color(bgColor));
-                buffer.fillRect(0, 0, captureWidth, captureHeight);
+                buffer.fill3DRect(0, 0, captureWidth, captureHeight,true);
                 break;
             case OVAL:
                 buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC, bgOpacity));
                 buffer.setColor(new Color(bgColor));
                 buffer.fillOval(0, 0, captureWidth, captureHeight);
+                break;
+            case ROUNDRECT:
+                buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC, bgOpacity));
+                buffer.setColor(new Color(bgColor));
+                buffer.fillRoundRect(0, 0, captureWidth, captureHeight,captureWidth/5,captureHeight/5);
+                
                 break;
         }
 
