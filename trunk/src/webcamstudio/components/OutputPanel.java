@@ -220,6 +220,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener {
         button.setIcon(tglRecordToFile.getIcon());
         button.setSelectedIcon(tglRecordToFile.getSelectedIcon());
         button.setRolloverEnabled(false);
+        button.setToolTipText("Drag to the right to remove...");
         button.addActionListener(new java.awt.event.ActionListener() {
 
             public void actionPerformed(java.awt.event.ActionEvent evt) {
