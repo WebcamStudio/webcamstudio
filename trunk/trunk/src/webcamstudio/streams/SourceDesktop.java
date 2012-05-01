@@ -48,7 +48,8 @@ public class SourceDesktop extends Stream {
         } else {
             try {
                 defaultCapture = new Robot();
-                frame = new Frame(uuid, null, null);
+                frame = new Frame(desktopW, desktopH, rate);
+                frame.setID(uuid);
                 area = new Rectangle(desktopX, desktopY, desktopW, desktopH);
                 frame.setOutputFormat(x, y, width, height, opacity, volume);
                 frame.setZOrder(zorder);
