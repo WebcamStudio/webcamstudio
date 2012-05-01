@@ -30,6 +30,8 @@ public class SourceImage extends Stream{
     
     private void loadImage(File f) throws IOException{
         image = ImageIO.read(f);
+        captureWidth = image.getWidth();
+        captureHeight = image.getHeight();
     }
     
     @Override
