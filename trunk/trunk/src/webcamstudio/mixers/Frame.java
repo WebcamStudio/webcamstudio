@@ -4,9 +4,7 @@
  */
 package webcamstudio.mixers;
 
-import java.awt.AlphaComposite;
 import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
@@ -26,8 +24,8 @@ public class Frame {
     private int zOrder = 0;
     private String uuid = null;
     private long frameNb = 0;
-  
-    public Frame(String id,BufferedImage img, byte[] audio){
+   
+   public Frame(String id,BufferedImage img, byte[] audio){
         image=img;
         audioData=audio;
         uuid=id;
