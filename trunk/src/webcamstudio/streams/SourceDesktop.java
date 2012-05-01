@@ -26,10 +26,10 @@ public class SourceDesktop extends Stream {
     FFMPEGRenderer capture = null;
     Robot defaultCapture = null;
     Frame frame = null;
-    BufferedImage lastPreview = null;
     boolean isPlaying = false;
     OS os = Tools.getOS();
     long timeCode = 0;
+    Rectangle area = null;
 
     public SourceDesktop() {
         super();
@@ -41,7 +41,6 @@ public class SourceDesktop extends Stream {
     public void read() {
         isPlaying = true;
         rate = MasterMixer.getInstance().getRate();
-        lastPreview = new BufferedImage(captureWidth, captureHeight, BufferedImage.TYPE_INT_ARGB);
         MasterFrameBuilder.register(this);
         if (os == OS.LINUX) {
             capture = new FFMPEGRenderer(this, FFMPEGRenderer.ACTION.CAPTURE, "desktop");
@@ -50,39 +49,13 @@ public class SourceDesktop extends Stream {
             try {
                 defaultCapture = new Robot();
                 frame = new Frame(uuid, null, null);
+                area = new Rectangle(desktopX, desktopY, desktopW, desktopH);
                 frame.setOutputFormat(x, y, width, height, opacity, volume);
                 frame.setZOrder(zorder);
             } catch (AWTException ex) {
                 Logger.getLogger(SourceDesktop.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        Thread t = new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-                timeCode = System.currentTimeMillis();
-                long timeDelta = 1000/rate;
-                while (isPlaying) {
-                    timeCode += timeDelta;
-                    if (os == OS.LINUX) {
-                        frame = capture.getFrame();
-                        if (frame!=null){
-                            lastPreview = frame.getImage();
-                        }
-                    } else {
-                        if (frame != null) {
-                            frame.setOutputFormat(x, y, width, height, opacity, volume);
-                            frame.setZOrder(zorder);
-                            frame.setImage(defaultCapture.createScreenCapture(new Rectangle(desktopX, desktopY, desktopW, desktopH)));
-                            lastPreview = frame.getImage();
-                            Tools.sleep(990/rate);
-                        }
-                    }
-                    Tools.sleep(10);
-                }
-            }
-        });
-        t.start();
     }
 
     @Override
@@ -90,14 +63,24 @@ public class SourceDesktop extends Stream {
         isPlaying = false;
         if (capture != null) {
             capture.stop();
-            capture=null;
+            capture = null;
         }
         MasterFrameBuilder.unregister(this);
     }
 
     @Override
     public Frame getFrame() {
-        return frame;
+        if (capture != null) {
+            frame = capture.getFrame();
+            return frame;
+        } else if (defaultCapture != null) {
+            frame.setImage(defaultCapture.createScreenCapture(area));
+            frame.setOutputFormat(x, y, width, height, opacity, volume);
+            frame.setZOrder(zorder);
+            return frame;
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -107,7 +90,11 @@ public class SourceDesktop extends Stream {
 
     @Override
     public BufferedImage getPreview() {
-        return lastPreview;
+        if (frame != null) {
+            return frame.getImage();
+        } else {
+            return null;
+        }
     }
 
     @Override

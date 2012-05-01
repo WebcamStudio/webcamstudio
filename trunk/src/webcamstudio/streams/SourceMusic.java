@@ -18,7 +18,6 @@ import webcamstudio.mixers.MasterMixer;
 public class SourceMusic extends Stream {
 
     FFMPEGRenderer capture = null;
-    BufferedImage lastPreview = null;
 
     public SourceMusic(File music) {
         super();
@@ -57,7 +56,7 @@ public class SourceMusic extends Stream {
 
     @Override
     public BufferedImage getPreview() {
-        return lastPreview;
+        return null;
     }
 
     @Override
@@ -67,7 +66,6 @@ public class SourceMusic extends Stream {
             f = capture.getFrame();
             if (f != null) {
                 setAudioLevel(f);
-                lastPreview = f.getImage();
             }
         }
         return f;
