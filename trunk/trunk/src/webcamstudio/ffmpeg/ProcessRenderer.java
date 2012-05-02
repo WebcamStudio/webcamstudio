@@ -23,7 +23,7 @@ import webcamstudio.util.Tools.OS;
  *
  * @author patrick
  */
-public class FFMPEGRenderer {
+public class ProcessRenderer {
 
     final static String RES_CAP = "ffmpeg-capture_OS.properties";
     final static String RES_OUT = "ffmpeg-output_OS.properties";
@@ -49,7 +49,7 @@ public class FFMPEGRenderer {
     Exporter exporter;
     FME fme = null;
 
-    public FFMPEGRenderer(Stream s, ACTION action, String plugin) {
+    public ProcessRenderer(Stream s, ACTION action, String plugin) {
         stream = s;
         if (plugins == null) {
             plugins = new Properties();
@@ -60,7 +60,7 @@ public class FFMPEGRenderer {
                     plugins.load(getResource(action).openStream());
                 }
             } catch (IOException ex) {
-                Logger.getLogger(FFMPEGRenderer.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         process = new ProcessExecutor(s.getName());
@@ -75,7 +75,7 @@ public class FFMPEGRenderer {
         return result;
     }
 
-    public FFMPEGRenderer(Stream s, FME fme, String plugin) {
+    public ProcessRenderer(Stream s, FME fme, String plugin) {
         stream = s;
         this.fme = fme;
         if (plugins == null) {
@@ -83,7 +83,7 @@ public class FFMPEGRenderer {
             try {
                 plugins.load(getResource(ACTION.OUTPUT).openStream());
             } catch (IOException ex) {
-                Logger.getLogger(FFMPEGRenderer.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         process = new ProcessExecutor(s.getName());
@@ -115,7 +115,7 @@ public class FFMPEGRenderer {
                     path = "/webcamstudio/ffmpeg/ffmpeg-output_" + Tools.getOSName() + ".properties";
                     break;
             }
-            res = FFMPEGRenderer.class.getResource(path);
+            res = ProcessRenderer.class.getResource(path);
         }
         System.out.println("Resource Used: " + res.toString());
         return res;
@@ -123,88 +123,88 @@ public class FFMPEGRenderer {
 
     private String setParameters(String cmd) {
         String command = cmd;
-        for (FFMPEGTags tag : FFMPEGTags.values()) {
+        for (Tags tag : Tags.values()) {
             switch (tag) {
                 case DESKTOPX:
-                    command = command.replaceAll(FFMPEGTags.DESKTOPX.toString(), stream.getDesktopX() + "");
+                    command = command.replaceAll(Tags.DESKTOPX.toString(), stream.getDesktopX() + "");
                     break;
                 case DESKTOPY:
-                    command = command.replaceAll(FFMPEGTags.DESKTOPY.toString(), stream.getDesktopY() + "");
+                    command = command.replaceAll(Tags.DESKTOPY.toString(), stream.getDesktopY() + "");
                     break;
                 case DESKTOPW:
-                    command = command.replaceAll(FFMPEGTags.DESKTOPW.toString(), stream.getDesktopW() + "");
+                    command = command.replaceAll(Tags.DESKTOPW.toString(), stream.getDesktopW() + "");
                     break;
                 case DESKTOPH:
-                    command = command.replaceAll(FFMPEGTags.DESKTOPH.toString(), stream.getDesktopH() + "");
+                    command = command.replaceAll(Tags.DESKTOPH.toString(), stream.getDesktopH() + "");
                     break;
                 case VCODEC:
                     if (fme != null) {
-                        command = command.replaceAll(FFMPEGTags.VCODEC.toString(), translateTag(fme.getVcodec()));
+                        command = command.replaceAll(Tags.VCODEC.toString(), translateTag(fme.getVcodec()));
                     }
                     break;
                 case ACODEC:
                     if (fme != null) {
-                        command = command.replaceAll(FFMPEGTags.ACODEC.toString(), translateTag(fme.getAcodec()));
+                        command = command.replaceAll(Tags.ACODEC.toString(), translateTag(fme.getAcodec()));
                     }
                     break;
                 case VBITRATE:
                     if (fme != null) {
-                        command = command.replaceAll(FFMPEGTags.VBITRATE.toString(), fme.getVbitrate());
+                        command = command.replaceAll(Tags.VBITRATE.toString(), fme.getVbitrate());
                     }
                     break;
                 case ABITRATE:
                     if (fme != null) {
-                        command = command.replaceAll(FFMPEGTags.ABITRATE.toString(), fme.getAbitrate());
+                        command = command.replaceAll(Tags.ABITRATE.toString(), fme.getAbitrate());
                     }
                     break;
                 case URL:
                     if (fme != null) {
-                        command = command.replaceAll(FFMPEGTags.URL.toString(), fme.getUrl() + "/" + fme.getStream());
+                        command = command.replaceAll(Tags.URL.toString(), fme.getUrl() + "/" + fme.getStream());
                     } else if (stream.getURL() != null) {
-                        command = command.replaceAll(FFMPEGTags.URL.toString(), "" + stream.getURL());
+                        command = command.replaceAll(Tags.URL.toString(), "" + stream.getURL());
                     }
                     break;
                 case APORT:
-                    command = command.replaceAll(FFMPEGTags.APORT.toString(), "" + audioPort);
+                    command = command.replaceAll(Tags.APORT.toString(), "" + audioPort);
                     break;
                 case CHEIGHT:
-                    command = command.replaceAll(FFMPEGTags.CHEIGHT.toString(), "" + stream.getCaptureHeight());
+                    command = command.replaceAll(Tags.CHEIGHT.toString(), "" + stream.getCaptureHeight());
                     break;
                 case CWIDTH:
-                    command = command.replaceAll(FFMPEGTags.CWIDTH.toString(), "" + stream.getCaptureWidth());
+                    command = command.replaceAll(Tags.CWIDTH.toString(), "" + stream.getCaptureWidth());
                     break;
                 case FILE:
                     if (stream.getFile() != null) {
                         if (Tools.getOS() == OS.WINDOWS) {
-                            command = command.replaceAll(FFMPEGTags.FILE.toString(), "\"" + stream.getFile().getAbsolutePath().replaceAll("\\\\", "\\\\\\\\") + "\"");
+                            command = command.replaceAll(Tags.FILE.toString(), "\"" + stream.getFile().getAbsolutePath().replaceAll("\\\\", "\\\\\\\\") + "\"");
                         } else {
-                            command = command.replaceAll(FFMPEGTags.FILE.toString(), "" + stream.getFile().getAbsolutePath().replaceAll(" ", "\\ ") + "");
+                            command = command.replaceAll(Tags.FILE.toString(), "" + stream.getFile().getAbsolutePath().replaceAll(" ", "\\ ") + "");
                         }
                     }
                     break;
                 case OHEIGHT:
-                    command = command.replaceAll(FFMPEGTags.OHEIGHT.toString(), "" + stream.getHeight());
+                    command = command.replaceAll(Tags.OHEIGHT.toString(), "" + stream.getHeight());
                     break;
                 case OWIDTH:
-                    command = command.replaceAll(FFMPEGTags.OWIDTH.toString(), "" + stream.getWidth());
+                    command = command.replaceAll(Tags.OWIDTH.toString(), "" + stream.getWidth());
                     break;
                 case RATE:
-                    command = command.replaceAll(FFMPEGTags.RATE.toString(), "" + stream.getRate());
+                    command = command.replaceAll(Tags.RATE.toString(), "" + stream.getRate());
                     break;
                 case SEEK:
-                    command = command.replaceAll(FFMPEGTags.SEEK.toString(), "" + stream.getSeek());
+                    command = command.replaceAll(Tags.SEEK.toString(), "" + stream.getSeek());
                     break;
                 case VPORT:
-                    command = command.replaceAll(FFMPEGTags.VPORT.toString(), "" + videoPort);
+                    command = command.replaceAll(Tags.VPORT.toString(), "" + videoPort);
                     break;
                 case FREQ:
-                    command = command.replaceAll(FFMPEGTags.FREQ.toString(), "" + frequency);
+                    command = command.replaceAll(Tags.FREQ.toString(), "" + frequency);
                     break;
                 case BITSIZE:
-                    command = command.replaceAll(FFMPEGTags.BITSIZE.toString(), "" + bitSize);
+                    command = command.replaceAll(Tags.BITSIZE.toString(), "" + bitSize);
                     break;
                 case CHANNELS:
-                    command = command.replaceAll(FFMPEGTags.CHANNELS.toString(), "" + channels);
+                    command = command.replaceAll(Tags.CHANNELS.toString(), "" + channels);
                     break;
             }
         }
