@@ -73,4 +73,7 @@ public class MasterChannels {
             s.stop();
         }
     }
+    public ArrayList<Stream> getStreams(){
+        return streams;
+    }
 }

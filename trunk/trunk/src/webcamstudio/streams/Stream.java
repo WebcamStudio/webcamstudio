@@ -274,48 +274,6 @@ public abstract class Stream {
         return file;
     }
 
-    public void save(XMLStreamWriter writer) throws XMLStreamException, IllegalArgumentException, IllegalArgumentException, IllegalAccessException {
-        writer.writeStartElement(getClass().getCanonicalName());
-        for (Field f : getClass().getSuperclass().getDeclaredFields()) {
-            if (f.getType() == String.class) {
-                f.setAccessible(true);
-                writer.writeStartElement(f.getName());
-                writer.writeCharacters(f.get(this).toString());
-                writer.writeEndElement();
-            }
-        }
-        for (Field f : getClass().getDeclaredFields()) {
-            if (f.getType() == String.class) {
-                f.setAccessible(true);
-                writer.writeStartElement(f.getName());
-                writer.writeCharacters(f.get(this).toString());
-                writer.writeEndElement();
-            }
-        }
-        writer.writeEndElement();
-    }
-
-    public void load(XMLStreamReader reader) throws XMLStreamException, NoSuchFieldException, IllegalAccessException {
-        boolean elementReading = true;
-        while (elementReading && reader.hasNext()) {
-            int event = reader.getEventType();
-            switch (event) {
-                case XMLStreamConstants.START_ELEMENT:
-                    String property = reader.getName().getLocalPart();
-                    String value = reader.getText();
-                    Field f = getClass().getField(property);
-                    f.setAccessible(true);
-                    f.set(this, value);
-                    break;
-                case XMLStreamConstants.END_ELEMENT:
-                    if (reader.getName().equals(getClass().getCanonicalName())) {
-                        elementReading = false;
-                    }
-                    break;
-            }
-        }
-    }
-
     public void setZOrder(int z) {
         zorder = z;
     }
