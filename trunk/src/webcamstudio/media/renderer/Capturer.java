@@ -80,10 +80,7 @@ public class Capturer {
                     byte[] vbuffer = new byte[videoBufferSize];
                     int[] rgb = new int[videoBufferSize / 3];
                     int counter = 0;
-//                    long mark = 0;
-//                    long delta = 0;
                     while (!stopMe) {
-//                        mark = System.currentTimeMillis();
                         try {
                             BufferedImage image = imageBuffer.getImageToUpdate();
                             rgb = ((DataBufferInt)(image).getRaster().getDataBuffer()).getData();
@@ -101,8 +98,6 @@ public class Capturer {
                             stream.updateStatus();
                             //ioe.printStackTrace();
                         }
-//                        delta = System.currentTimeMillis()-mark;
-//                        System.out.println(delta);
                     }
                     imageBuffer.clear();
                     din.close();

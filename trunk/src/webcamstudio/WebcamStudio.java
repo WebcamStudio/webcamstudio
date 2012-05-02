@@ -32,12 +32,16 @@ import java.util.prefs.Preferences;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
 import webcamstudio.channels.MasterChannels;
 import webcamstudio.components.*;
 import webcamstudio.exporter.vloopback.VideoDevice;
 import webcamstudio.mixers.MasterMixer;
 import webcamstudio.mixers.SystemPlayer;
 import webcamstudio.streams.*;
+import webcamstudio.studio.Studio;
 import webcamstudio.util.Tools;
 import webcamstudio.util.Tools.OS;
 
@@ -261,6 +265,8 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         panControls = new javax.swing.JPanel();
         tabControls = new javax.swing.JTabbedPane();
         lblSourceSelected = new javax.swing.JLabel();
+        mainToolbar = new javax.swing.JToolBar();
+        btnSaveStudio = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("WebcamStudio");
@@ -398,7 +404,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
             .addGroup(panSourcesLayout.createSequentialGroup()
                 .addComponent(toolbar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(desktop, javax.swing.GroupLayout.DEFAULT_SIZE, 423, Short.MAX_VALUE)
+                .addComponent(desktop, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -417,6 +423,24 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         mainSplit.setRightComponent(panControls);
 
         getContentPane().add(mainSplit, java.awt.BorderLayout.CENTER);
+
+        mainToolbar.setFloatable(false);
+        mainToolbar.setName("mainToolbar"); // NOI18N
+
+        btnSaveStudio.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/document-save.png"))); // NOI18N
+        btnSaveStudio.setToolTipText(bundle.getString("SAVE")); // NOI18N
+        btnSaveStudio.setFocusable(false);
+        btnSaveStudio.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnSaveStudio.setName("btnSaveStudio"); // NOI18N
+        btnSaveStudio.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnSaveStudio.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSaveStudioActionPerformed(evt);
+            }
+        });
+        mainToolbar.add(btnSaveStudio);
+
+        getContentPane().add(mainToolbar, java.awt.BorderLayout.PAGE_START);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -509,9 +533,9 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
     }//GEN-LAST:event_btnAddMicActionPerformed
 
     private void btnMinimizeAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMinimizeAllActionPerformed
-        for (Component c : desktop.getComponents()){
-            if (c instanceof StreamDesktop){
-                StreamDesktop d = (StreamDesktop)c;
+        for (Component c : desktop.getComponents()) {
+            if (c instanceof StreamDesktop) {
+                StreamDesktop d = (StreamDesktop) c;
                 try {
                     d.setIcon(true);
                 } catch (PropertyVetoException ex) {
@@ -520,6 +544,31 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
             }
         }
     }//GEN-LAST:event_btnMinimizeAllActionPerformed
+
+    private void btnSaveStudioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveStudioActionPerformed
+        try {
+            File file = null;
+            JFileChooser chooser = new JFileChooser();
+            chooser.setDialogTitle("WebcamStudio");
+            chooser.setDialogType(JFileChooser.SAVE_DIALOG);
+            chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            chooser.showSaveDialog(this);
+            file = chooser.getSelectedFile();
+            if (file!=null){
+                if (!file.getName().endsWith(".studio")){
+                    file = new File(file.getParent(),file.getName()+".studio");
+                }
+                Studio.save(file);
+            }
+            ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Studio is saved!");
+            ResourceMonitor.getInstance().addMessage(label);
+            
+        } catch (Exception ex) {
+            Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
+            ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Error: " + ex.getMessage());
+            ResourceMonitor.getInstance().addMessage(label);
+        } 
+    }//GEN-LAST:event_btnSaveStudioActionPerformed
 
     /**
      * @param args the command line arguments
@@ -570,10 +619,12 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
     private javax.swing.JButton btnAddQRCode;
     private javax.swing.JButton btnAddText;
     private javax.swing.JButton btnMinimizeAll;
+    private javax.swing.JButton btnSaveStudio;
     private javax.swing.JComboBox cboAnimations;
     private javax.swing.JDesktopPane desktop;
     private javax.swing.JLabel lblSourceSelected;
     private javax.swing.JSplitPane mainSplit;
+    private javax.swing.JToolBar mainToolbar;
     private javax.swing.JPanel panControls;
     private javax.swing.JPanel panSources;
     private javax.swing.JTabbedPane tabControls;
