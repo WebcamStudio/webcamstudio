@@ -6,7 +6,7 @@ package webcamstudio.streams;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
-import webcamstudio.ffmpeg.FFMPEGRenderer;
+import webcamstudio.ffmpeg.ProcessRenderer;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterFrameBuilder;
 import webcamstudio.mixers.MasterMixer;
@@ -17,7 +17,7 @@ import webcamstudio.mixers.MasterMixer;
  */
 public class SourceMovie extends Stream {
 
-    FFMPEGRenderer capture = null;
+    ProcessRenderer capture = null;
     BufferedImage lastPreview = null;
 
     public SourceMovie(File movie) {
@@ -32,7 +32,7 @@ public class SourceMovie extends Stream {
         rate = MasterMixer.getInstance().getRate();
         lastPreview = new BufferedImage(captureWidth,captureHeight,BufferedImage.TYPE_INT_ARGB);
         MasterFrameBuilder.register(this);
-        capture = new FFMPEGRenderer(this, FFMPEGRenderer.ACTION.CAPTURE, "movie");
+        capture = new ProcessRenderer(this, ProcessRenderer.ACTION.CAPTURE, "movie");
         capture.read();
     }
 

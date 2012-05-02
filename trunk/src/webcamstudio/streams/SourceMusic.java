@@ -6,7 +6,7 @@ package webcamstudio.streams;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
-import webcamstudio.ffmpeg.FFMPEGRenderer;
+import webcamstudio.ffmpeg.ProcessRenderer;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterFrameBuilder;
 import webcamstudio.mixers.MasterMixer;
@@ -17,7 +17,7 @@ import webcamstudio.mixers.MasterMixer;
  */
 public class SourceMusic extends Stream {
 
-    FFMPEGRenderer capture = null;
+    ProcessRenderer capture = null;
 
     public SourceMusic(File music) {
         super();
@@ -30,7 +30,7 @@ public class SourceMusic extends Stream {
     @Override
     public void read() {
         MasterFrameBuilder.register(this);
-        capture = new FFMPEGRenderer(this, FFMPEGRenderer.ACTION.CAPTURE, "music");
+        capture = new ProcessRenderer(this, ProcessRenderer.ACTION.CAPTURE, "music");
         capture.read();
     }
 

@@ -5,7 +5,7 @@
 package webcamstudio.streams;
 
 import java.awt.image.BufferedImage;
-import webcamstudio.ffmpeg.FFMPEGRenderer;
+import webcamstudio.ffmpeg.ProcessRenderer;
 import webcamstudio.ffmpeg.FME;
 import webcamstudio.mixers.MasterMixer;
 
@@ -15,7 +15,7 @@ import webcamstudio.mixers.MasterMixer;
  */
 public class SinkBroadcast extends Stream {
 
-    private FFMPEGRenderer capture = null;
+    private ProcessRenderer capture = null;
     private FME fme = null;
     private boolean isPlaying = false;
     public SinkBroadcast(FME fme) {
@@ -34,7 +34,7 @@ public class SinkBroadcast extends Stream {
         captureWidth = MasterMixer.getInstance().getWidth();
         captureHeight = MasterMixer.getInstance().getHeight();
         rate = MasterMixer.getInstance().getRate();
-        capture = new FFMPEGRenderer(this,fme,"broadcast");
+        capture = new ProcessRenderer(this,fme,"broadcast");
         capture.write();
     }
 

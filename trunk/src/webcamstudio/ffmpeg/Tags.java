@@ -8,7 +8,7 @@ package webcamstudio.ffmpeg;
  *
  * @author patrick
  */
-public enum FFMPEGTags {
+public enum Tags {
    
         OWIDTH("@OWIDTH"),
         OHEIGHT("@OHEIGHT"),
@@ -33,7 +33,7 @@ public enum FFMPEGTags {
         URL("@URL");
         
     private String name = "";
-    private FFMPEGTags(String name) {
+    private Tags(String name) {
         this.name = name;
     }
     public String toString() {

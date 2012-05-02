@@ -10,7 +10,7 @@ import java.awt.Robot;
 import java.awt.image.BufferedImage;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import webcamstudio.ffmpeg.FFMPEGRenderer;
+import webcamstudio.ffmpeg.ProcessRenderer;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterFrameBuilder;
 import webcamstudio.mixers.MasterMixer;
@@ -23,7 +23,7 @@ import webcamstudio.util.Tools.OS;
  */
 public class SourceDesktop extends Stream {
 
-    FFMPEGRenderer capture = null;
+    ProcessRenderer capture = null;
     Robot defaultCapture = null;
     Frame frame = null;
     boolean isPlaying = false;
@@ -43,7 +43,7 @@ public class SourceDesktop extends Stream {
         rate = MasterMixer.getInstance().getRate();
         MasterFrameBuilder.register(this);
         if (os == OS.LINUX) {
-            capture = new FFMPEGRenderer(this, FFMPEGRenderer.ACTION.CAPTURE, "desktop");
+            capture = new ProcessRenderer(this, ProcessRenderer.ACTION.CAPTURE, "desktop");
             capture.read();
         } else {
             try {

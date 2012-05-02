@@ -7,7 +7,7 @@ package webcamstudio;
 import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import webcamstudio.ffmpeg.FFMPEGRenderer;
+import webcamstudio.ffmpeg.ProcessRenderer;
 import webcamstudio.streams.SourceDesktop;
 import webcamstudio.streams.SourceMovie;
 import webcamstudio.streams.SourceWebcam;
