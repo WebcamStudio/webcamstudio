@@ -31,7 +31,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JToggleButton;
 import webcamstudio.channels.MasterChannels;
 import webcamstudio.exporter.vloopback.VideoDevice;
-import webcamstudio.ffmpeg.FME;
+import webcamstudio.externals.FME;
 import webcamstudio.mixers.MasterMixer;
 import webcamstudio.streams.SinkBroadcast;
 import webcamstudio.streams.SinkFile;

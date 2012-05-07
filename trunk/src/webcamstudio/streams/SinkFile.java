@@ -6,7 +6,7 @@ package webcamstudio.streams;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
-import webcamstudio.ffmpeg.ProcessRenderer;
+import webcamstudio.externals.ProcessRenderer;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterMixer;
 

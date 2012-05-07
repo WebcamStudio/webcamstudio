@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package webcamstudio.ffmpeg;
+package webcamstudio.externals;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,8 +25,8 @@ import webcamstudio.util.Tools.OS;
  */
 public class ProcessRenderer {
 
-    final static String RES_CAP = "ffmpeg-capture_OS.properties";
-    final static String RES_OUT = "ffmpeg-output_OS.properties";
+    final static String RES_CAP = "capture_OS.properties";
+    final static String RES_OUT = "output_OS.properties";
 
     public enum ACTION {
 
@@ -109,10 +109,12 @@ public class ProcessRenderer {
             String path = null;
             switch (a) {
                 case CAPTURE:
-                    path = "/webcamstudio/ffmpeg/ffmpeg-capture_" + Tools.getOSName() + ".properties";
+                    path = "/webcamstudio/externals/" + RES_CAP;
+                    path = path.replaceAll("OS", Tools.getOSName());
                     break;
                 case OUTPUT:
-                    path = "/webcamstudio/ffmpeg/ffmpeg-output_" + Tools.getOSName() + ".properties";
+                    path = "/webcamstudio/externals/" + RES_OUT;
+                    path = path.replaceAll("OS", Tools.getOSName());
                     break;
             }
             res = ProcessRenderer.class.getResource(path);
