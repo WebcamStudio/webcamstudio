@@ -4,20 +4,17 @@
  */
 package webcamstudio.media.renderer;
 
-import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferInt;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import webcamstudio.mixers.AudioBuffer;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.ImageBuffer;
 import webcamstudio.mixers.MasterMixer;
+import webcamstudio.mixers.WSImage;
 import webcamstudio.streams.Stream;
 
 /**
@@ -65,22 +62,13 @@ public class Exporter implements MasterMixer.SinkListener {
                     System.out.println("Video output accepted");
                     videoOutput = connection.getOutputStream();
                     imageBuffer.clear();
-                    byte[] data = new byte[MasterMixer.getInstance().getWidth() * MasterMixer.getInstance().getHeight() * 3];
                     int counter = 0;
                     while (!cancel) {
-                        BufferedImage image = imageBuffer.pop();
+                        WSImage image = imageBuffer.pop();
                         if (image != null) {
-                            int[] imgData = ((DataBufferInt)(image).getRaster().getDataBuffer()).getData();
-                            counter=0;
-                            for (int i = 0;i<imgData.length;i++){
-                                int pixel = imgData[i];
-                                data[counter++] = (byte)((pixel >> 16) & 0xff);
-                                data[counter++] = (byte)((pixel >> 8) & 0xff);
-                                data[counter++] = (byte)((pixel) & 0xff);
-                            }
                             vCounter++;
                             if (videoOutput != null) {
-                                videoOutput.write(data);
+                                videoOutput.write(image.getBytes());
                             } else {
                                 cancel = true;
                             }

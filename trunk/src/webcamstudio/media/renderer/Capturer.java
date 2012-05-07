@@ -5,7 +5,6 @@
 package webcamstudio.media.renderer;
 
 import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferInt;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -17,6 +16,7 @@ import webcamstudio.components.ResourceMonitorLabel;
 import webcamstudio.mixers.AudioBuffer;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.ImageBuffer;
+import webcamstudio.mixers.WSImage;
 import webcamstudio.streams.Stream;
 
 /**
@@ -29,8 +29,6 @@ public class Capturer {
     private int aport = 0;
     private boolean stopMe = false;
     private Stream stream;
-    private int audioBufferSize = 0;
-    private int videoBufferSize = 0;
     private ServerSocket videoServer = null;
     private ServerSocket audioServer = null;
     // private FrameBuffer frameBuffer = new FrameBuffer();
@@ -39,8 +37,6 @@ public class Capturer {
     private Frame frame = null;
     public Capturer(Stream s) {
         stream = s;
-        audioBufferSize = (44100 * 2 * 2) / stream.getRate();
-        videoBufferSize = stream.getCaptureWidth() * stream.getCaptureHeight() * 4;
         imageBuffer = new ImageBuffer(stream.getCaptureWidth(), stream.getCaptureHeight());
         audioBuffer = new AudioBuffer(stream.getRate());
         frame = new Frame(stream.getCaptureWidth(),stream.getCaptureHeight(),stream.getRate());
@@ -74,21 +70,11 @@ public class Capturer {
                     connection = videoServer.accept();
                     System.out.println(stream.getName() + " video accepted...");
                     DataInputStream din = new DataInputStream(connection.getInputStream());
-                    
                     imageBuffer.clear();
-                    videoBufferSize = stream.getCaptureWidth() * stream.getCaptureHeight() * 3;
-                    byte[] vbuffer = new byte[videoBufferSize];
-                    int[] rgb = new int[videoBufferSize / 3];
-                    int counter = 0;
                     while (!stopMe) {
                         try {
-                            BufferedImage image = imageBuffer.getImageToUpdate();
-                            rgb = ((DataBufferInt)(image).getRaster().getDataBuffer()).getData();
-                            din.readFully(vbuffer);
-                            counter = 0;
-                            for (int i = 0;i<rgb.length;i++){
-                                rgb[i] = (vbuffer[counter++] <<16) + (vbuffer[counter++] << 8) + (vbuffer[counter++]);
-                            }
+                            WSImage image = imageBuffer.getImageToUpdate();
+                            image.readFully(din);
 //                            //Special Effects...
                             stream.applyEffects(image);
                             imageBuffer.doneUpdate();
