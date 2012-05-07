@@ -30,6 +30,8 @@ public enum Tags {
         DESKTOPY("@DESKTOPY"),
         DESKTOPW("@DESKTOPW"),
         DESKTOPH("@DESKTOPH"),
+        DESKTOPENDX("@DESKTOPENDX"),
+        DESKTOPENDY("@DESKTOPENDY"),
         URL("@URL");
         
     private String name = "";

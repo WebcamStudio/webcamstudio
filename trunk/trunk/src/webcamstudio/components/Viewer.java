@@ -30,10 +30,10 @@ public class Viewer extends javax.swing.JPanel {
     }
 
     public void setImage(BufferedImage image) {
-//        Graphics g = img.getGraphics();
-//        g.clearRect(0, 0, img.getWidth(), img.getHeight());
-//        g.drawImage(image, 0, 0,img.getWidth(),img.getHeight(), this);
-        img=image;
+        Graphics g = img.getGraphics();
+        g.clearRect(0, 0, img.getWidth(), img.getHeight());
+        g.drawImage(image, 0, 0,img.getWidth(),img.getHeight(), this);
+        
     }
 
     public void setAudioLevel(int l, int r){

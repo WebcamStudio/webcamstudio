@@ -133,6 +133,12 @@ public class ProcessRenderer {
                 case DESKTOPY:
                     command = command.replaceAll(Tags.DESKTOPY.toString(), stream.getDesktopY() + "");
                     break;
+                case DESKTOPENDX:
+                    command = command.replaceAll(Tags.DESKTOPENDX.toString(), stream.getDesktopEndX() + "");
+                    break;
+                case DESKTOPENDY:
+                    command = command.replaceAll(Tags.DESKTOPENDY.toString(), stream.getDesktopEndY() + "");
+                    break;
                 case DESKTOPW:
                     command = command.replaceAll(Tags.DESKTOPW.toString(), stream.getDesktopW() + "");
                     break;

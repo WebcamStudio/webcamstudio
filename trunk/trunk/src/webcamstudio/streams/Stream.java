@@ -106,6 +106,12 @@ public abstract class Stream {
         this.desktopY = desktopY;
     }
 
+    public int getDesktopEndX(){
+        return desktopX + desktopW;
+    }
+    public int getDesktopEndY(){
+        return desktopY+desktopH;
+    }
     /**
      * @return the desktopW
      */
