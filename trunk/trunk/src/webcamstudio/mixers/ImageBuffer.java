@@ -6,6 +6,7 @@ package webcamstudio.mixers;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
 import java.util.ArrayList;
 import webcamstudio.util.Tools;
 
@@ -14,7 +15,7 @@ import webcamstudio.util.Tools;
  * @author patrick
  */
 public class ImageBuffer {
-    private ArrayList<BufferedImage> buffer = new ArrayList<BufferedImage>();
+    private ArrayList<WSImage> buffer = new ArrayList<WSImage>();
     private int bufferSize = MasterMixer.BUFFER_SIZE;
     private static final long TIMEOUT=5000;
     private boolean abort = false;
@@ -25,14 +26,14 @@ public class ImageBuffer {
     
     public ImageBuffer(int w,int h){
         for (int i = 0;i<bufferSize;i++){
-            BufferedImage img = new BufferedImage(w,h,BufferedImage.TYPE_INT_RGB);
+            WSImage img = new WSImage(w,h,BufferedImage.TYPE_INT_RGB);
             buffer.add(img);
         }
     }
     public ImageBuffer(int w,int h,int bufferSize){
         this.bufferSize=bufferSize;
         for (int i = 0;i<bufferSize;i++){
-            BufferedImage img = new BufferedImage(w,h,BufferedImage.TYPE_INT_RGB);
+            WSImage img = new WSImage(w,h,BufferedImage.TYPE_INT_RGB);
             buffer.add(img);
         }
     }
@@ -42,11 +43,9 @@ public class ImageBuffer {
         }
         currentIndex++;
         currentIndex = currentIndex % bufferSize;
-        BufferedImage image = buffer.get(currentIndex);
-        Graphics2D g = image.createGraphics();
-        g.clearRect(0, 0, image.getWidth(), image.getHeight());
-        g.drawImage(img, 0, 0, null);
-        g.dispose();
+        int[] data = ((DataBufferInt) img.getRaster().getDataBuffer()).getData();
+        WSImage image = buffer.get(currentIndex);
+        image.setData(data);
         framePushed++;
     }
     public void doneUpdate(){
@@ -54,13 +53,13 @@ public class ImageBuffer {
         currentIndex = currentIndex % bufferSize;
         framePushed++;
     }
-    public BufferedImage getImageToUpdate(){
+    public WSImage getImageToUpdate(){
         while(!abort && (framePushed - framePopped) >= bufferSize){
             Tools.sleep(30);
         }
         return buffer.get((currentIndex+1)%bufferSize);
     }
-    public BufferedImage pop(){
+    public WSImage pop(){
         long mark = System.currentTimeMillis();
         while(!abort && framePopped >= framePushed){
             Tools.sleep(10);

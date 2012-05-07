@@ -39,11 +39,11 @@ public class ProcessExecutor {
                         if (count > 0){
                             System.out.println("FFMPEG Err: " + new String(buffer,0,count));
                         }
-                        count = in2.read(buffer);
-                        if (count > 0){
-                            System.out.println("FFMPEG Out: " + new String(buffer,0,count));
-                        }
-                        Tools.sleep(1);
+//                        count = in2.read(buffer);
+//                        if (count > 0){
+//                            System.out.println("FFMPEG Out: " + new String(buffer,0,count));
+//                        }
+                        Tools.sleep(100);
                         
                     } catch (IOException ex) {
                         Logger.getLogger(ProcessExecutor.class.getName()).log(Level.SEVERE, null, ex);
@@ -59,11 +59,12 @@ public class ProcessExecutor {
     public void execute(String[] params) throws IOException, InterruptedException {
         process = Runtime.getRuntime().exec(params);
         processRunning = true;
-        //readOutput(process);
+        readOutput(process);
         
     }
 
     public void destroy() {
+        //Tools.sleep(10000);
         processRunning=false;
         if (process!=null){
             process.destroy();
