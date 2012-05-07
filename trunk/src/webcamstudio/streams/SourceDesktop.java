@@ -30,6 +30,7 @@ public class SourceDesktop extends Stream {
     OS os = Tools.getOS();
     long timeCode = 0;
     Rectangle area = null;
+    BufferedImage preview = null;
 
     public SourceDesktop() {
         super();
@@ -73,11 +74,15 @@ public class SourceDesktop extends Stream {
     public Frame getFrame() {
         if (capture != null) {
             frame = capture.getFrame();
+            if (frame != null) {
+                preview = frame.getImage();
+            }
             return frame;
         } else if (defaultCapture != null) {
             frame.setImage(defaultCapture.createScreenCapture(area));
             frame.setOutputFormat(x, y, width, height, opacity, volume);
             frame.setZOrder(zorder);
+            preview = frame.getImage();
             return frame;
         } else {
             return null;
@@ -91,11 +96,7 @@ public class SourceDesktop extends Stream {
 
     @Override
     public BufferedImage getPreview() {
-        if (frame != null) {
-            return frame.getImage();
-        } else {
-            return null;
-        }
+        return preview;
     }
 
     @Override
