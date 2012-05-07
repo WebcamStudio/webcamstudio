@@ -39,6 +39,21 @@ public class MasterChannels {
             s.addChannel(SourceChannel.getChannel(name, s));
         }
     }
+    public void updateChannel(String name){
+        for (Stream s : streams){
+            SourceChannel sc = null;
+            for (SourceChannel ssc : s.getChannels()){
+                if (ssc.getName().equals(name)){
+                    sc=ssc;
+                    break;
+                }
+            }
+            if (sc!=null){
+                s.removeChannel(sc);
+            }
+            s.addChannel(SourceChannel.getChannel(name, s));
+        }
+    }
     public void removeChannel(String name){
         channelNames.remove(name);
         for (Stream s : streams){
