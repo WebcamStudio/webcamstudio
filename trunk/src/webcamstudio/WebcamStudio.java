@@ -280,11 +280,11 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         mainSplit.setName("mainSplit"); // NOI18N
         mainSplit.setOneTouchExpandable(true);
 
-        panSources.setMinimumSize(new java.awt.Dimension(400, 400));
         panSources.setName("panSources"); // NOI18N
 
         toolbar.setFloatable(false);
         toolbar.setRollover(true);
+        toolbar.setMinimumSize(new java.awt.Dimension(200, 34));
         toolbar.setName("toolbar"); // NOI18N
 
         btnAddFile.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/list-add.png"))); // NOI18N
@@ -386,25 +386,21 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         desktop.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("SOURCES"))); // NOI18N
         desktop.setToolTipText(bundle.getString("DROP_SOURCSE")); // NOI18N
         desktop.setAutoscrolls(true);
-        desktop.setMinimumSize(new java.awt.Dimension(400, 400));
         desktop.setName("desktop"); // NOI18N
 
         javax.swing.GroupLayout panSourcesLayout = new javax.swing.GroupLayout(panSources);
         panSources.setLayout(panSourcesLayout);
         panSourcesLayout.setHorizontalGroup(
             panSourcesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panSourcesLayout.createSequentialGroup()
-                .addGroup(panSourcesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(desktop, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
-                    .addComponent(toolbar, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE))
-                .addContainerGap())
+            .addComponent(desktop)
+            .addComponent(toolbar, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
         );
         panSourcesLayout.setVerticalGroup(
             panSourcesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panSourcesLayout.createSequentialGroup()
                 .addComponent(toolbar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(desktop, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
+                .addComponent(desktop, javax.swing.GroupLayout.DEFAULT_SIZE, 393, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
