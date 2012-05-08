@@ -426,7 +426,6 @@ public abstract class Stream {
     public static Stream getInstance(File file) {
         Stream stream = null;
         String ext = file.getName().toLowerCase().trim();
-        System.out.println("DEBUG EXT: " + ext);
         if (ext.endsWith(".avi")
                 || ext.endsWith(".ogg")
                 || ext.endsWith(".ogv")
@@ -455,6 +454,8 @@ public abstract class Stream {
             stream = new SourceMusic(file);
         } else if (ext.endsWith(".wss")){
             stream = new SourceCustom(file);
+        } else if (ext.startsWith("/dev/video")){
+            stream = new SourceWebcam(file);
         }
         return stream;
     }
