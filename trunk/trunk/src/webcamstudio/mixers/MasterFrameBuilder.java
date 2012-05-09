@@ -27,6 +27,7 @@ public class MasterFrameBuilder implements Runnable {
     private static int fps = 0;
     private long mark = System.currentTimeMillis();
     private FrameBuffer frameBuffer = null;
+    private TreeMap<Integer, Frame> orderedFrames = new TreeMap<Integer, Frame>();
 
     public MasterFrameBuilder(int w, int h, int r) {
         frameBuffer = new FrameBuffer(w, h, r);
@@ -47,9 +48,8 @@ public class MasterFrameBuilder implements Runnable {
     }
 
     private void mixImages(Collection<Frame> frames, Frame targetFrame) {
-        TreeMap<Integer, Frame> orderedFrame = new TreeMap<Integer, Frame>();
         for (Frame f : frames) {
-            orderedFrame.put(f.getZOrder(), f);
+            orderedFrames.put(f.getZOrder(), f);
         }
         BufferedImage image = targetFrame.getImage();
         if (image != null) {
@@ -61,14 +61,13 @@ public class MasterFrameBuilder implements Runnable {
             g.setRenderingHint(java.awt.RenderingHints.KEY_RENDERING, java.awt.RenderingHints.VALUE_RENDER_QUALITY);
             g.setRenderingHint(java.awt.RenderingHints.KEY_DITHERING, java.awt.RenderingHints.VALUE_DITHER_ENABLE);
             g.setRenderingHint(java.awt.RenderingHints.KEY_COLOR_RENDERING, java.awt.RenderingHints.VALUE_COLOR_RENDER_QUALITY);
-            for (Frame f : orderedFrame.values()) {
-                if (g != null) {
-                    g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, ((float) f.getOpacity()) / 100F));
-                    g.drawImage(f.getImage(), f.getX(), f.getY(), f.getWidth(), f.getHeight(), null);
-                }
+            for (Frame f : orderedFrames.values()) {
+                g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, ((float) f.getOpacity()) / 100F));
+                g.drawImage(f.getImage(), f.getX(), f.getY(), f.getWidth(), f.getHeight(), null);
             }
             g.dispose();
         }
+        orderedFrames.clear();
     }
 
     private void mixAudio(Collection<Frame> frames, Frame targetFrame) {
