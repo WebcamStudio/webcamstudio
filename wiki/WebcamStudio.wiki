@@ -35,11 +35,4 @@ Also, one of the goal of WebcamStudio is to implements has much features as poss
 
 Things you'll want to checkout:
 
-    * [Components Components]
-    * [LinuxSupport Linux Support]
-    * [WindowsSupport Windows Support]
-    * [GUIDesign GUI Design]
-    * [VideoOuput  Video Output]
-    * [VideoMixer Video Mixer]
-    * [Libraries]
-    * [Translations Translations]
+    * [BasicDesign Basic Design]
