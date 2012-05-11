@@ -78,16 +78,12 @@ public class Frame {
             g.clearRect(0, 0, w, h);
             g.drawImage(img, 0, 0, null);
             g.dispose();
-        } else {
-            image=null;
-        }
+        } 
     }
     public void setAudio(byte[] data){
         if (data!=null){
             audioData = data.clone();
-        } else {
-            audioData=null;
-        }
+        } 
     }
     public void setOutputFormat(int x, int y, int w, int h, int opacity,float volume){
         this.x=x;

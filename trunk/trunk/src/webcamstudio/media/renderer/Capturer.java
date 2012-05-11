@@ -13,9 +13,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import webcamstudio.components.ResourceMonitor;
 import webcamstudio.components.ResourceMonitorLabel;
-import webcamstudio.mixers.AudioBuffer;
 import webcamstudio.mixers.Frame;
-import webcamstudio.mixers.ImageBuffer;
 import webcamstudio.mixers.WSImage;
 import webcamstudio.streams.Stream;
 
@@ -32,14 +30,17 @@ public class Capturer {
     private ServerSocket videoServer = null;
     private ServerSocket audioServer = null;
     // private FrameBuffer frameBuffer = new FrameBuffer();
-    private ImageBuffer imageBuffer = null;
-    private AudioBuffer audioBuffer = null;
+    private WSImage image = null;
+    private byte[] audio = null;
     private Frame frame = null;
+    private DataInputStream videoIn = null;
+    private DataInputStream audioIn = null;
+
     public Capturer(Stream s) {
         stream = s;
-        imageBuffer = new ImageBuffer(stream.getCaptureWidth(), stream.getCaptureHeight());
-        audioBuffer = new AudioBuffer(stream.getRate());
-        frame = new Frame(stream.getCaptureWidth(),stream.getCaptureHeight(),stream.getRate());
+        frame = new Frame(stream.getCaptureWidth(), stream.getCaptureHeight(), stream.getRate());
+        image = new WSImage(stream.getCaptureWidth(), stream.getCaptureHeight(), BufferedImage.TYPE_INT_RGB);
+        audio = new byte[(44100 * 2 * 2) / stream.getRate()];
         frame.setID(stream.getID());
         if (stream.hasAudio()) {
             try {
@@ -60,7 +61,6 @@ public class Capturer {
 
         }
         System.out.println("Port used is Video:" + vport + "/Audio:" + aport);
-        System.out.println("Size: " + stream.getCaptureWidth() + "X" + stream.getCaptureHeight());
         Thread vCapture = new Thread(new Runnable() {
 
             @Override
@@ -69,24 +69,7 @@ public class Capturer {
                 try {
                     connection = videoServer.accept();
                     System.out.println(stream.getName() + " video accepted...");
-                    DataInputStream din = new DataInputStream(connection.getInputStream());
-                    imageBuffer.clear();
-                    while (!stopMe) {
-                        try {
-                            WSImage image = imageBuffer.getImageToUpdate();
-                            image.readFully(din);
-//                            //Special Effects...
-                            stream.applyEffects(image);
-                            imageBuffer.doneUpdate();
-                        } catch (IOException ioe) {
-                            stopMe = true;
-                            stream.stop();
-                            stream.updateStatus();
-                            //ioe.printStackTrace();
-                        }
-                    }
-                    imageBuffer.clear();
-                    din.close();
+                    videoIn = new DataInputStream(connection.getInputStream());
                 } catch (IOException ex) {
                     Logger.getLogger(Capturer.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -103,20 +86,7 @@ public class Capturer {
                 try {
                     Socket connection = audioServer.accept();
                     System.out.println(stream.getName() + " audio accepted...");
-                    DataInputStream din = new DataInputStream(connection.getInputStream());
-                    audioBuffer.clear();
-                    while (!stopMe) {
-                        try {
-                            din.readFully(audioBuffer.getAudioToUpdate());
-                            audioBuffer.doneUpdate();
-                        } catch (IOException ioe) {
-                            stopMe = true;
-                            stream.stop();
-                            stream.updateStatus();
-                            //ioe.printStackTrace();
-                        }
-                    }
-                    din.close();
+                    audioIn = new DataInputStream(connection.getInputStream());
                 } catch (IOException ex) {
                     Logger.getLogger(Capturer.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -131,8 +101,6 @@ public class Capturer {
 
     public void abort() {
         stopMe = true;
-        audioBuffer.abort();
-        imageBuffer.abort();
         try {
             if (videoServer != null) {
                 videoServer.close();
@@ -155,23 +123,46 @@ public class Capturer {
         return aport;
     }
 
+    private WSImage getNextImage() throws IOException {
+        if (videoIn != null) {
+            image.readFully(videoIn);
+            stream.applyEffects(image);
+            return image;
+        } else {
+            return null;
+        }
+    }
+
+    private byte[] getNextAudio() throws IOException {
+        if (audioIn != null) {
+            audioIn.readFully(audio);
+            return audio;
+        } else {
+            return null;
+        }
+    }
+
     public Frame getFrame() {
         long mark = System.currentTimeMillis();
-        BufferedImage image = null;
-        if (stream.hasVideo()) {
-            image = imageBuffer.pop();
-        }
-        byte[] audio = null;
-        if (stream.hasAudio()) {
-            audio = audioBuffer.pop();
-        }
-        if (System.currentTimeMillis() - mark < 5000) {
-            frame.setAudio(audio);
-            frame.setImage(image);
-            frame.setOutputFormat(stream.getX(), stream.getY(), stream.getWidth(), stream.getHeight(), stream.getOpacity(), stream.getVolume());
-            frame.setZOrder(stream.getZOrder());
-        } else {
-            ResourceMonitor.getInstance().addMessage(new ResourceMonitorLabel(System.currentTimeMillis() + 10000, stream.getName() + " is too slow! Stopping stream..."));
+        BufferedImage nextImage = null;
+        byte[] nextAudio = null;
+        try {
+            if (stream.hasVideo()) {
+                nextImage = getNextImage();
+            }
+            if (stream.hasAudio()) {
+                nextAudio = getNextAudio();
+            }
+            if (System.currentTimeMillis() - mark < 5000) {
+                frame.setAudio(nextAudio);
+                frame.setImage(nextImage);
+                frame.setOutputFormat(stream.getX(), stream.getY(), stream.getWidth(), stream.getHeight(), stream.getOpacity(), stream.getVolume());
+                frame.setZOrder(stream.getZOrder());
+            } else {
+                ResourceMonitor.getInstance().addMessage(new ResourceMonitorLabel(System.currentTimeMillis() + 10000, stream.getName() + " is too slow! Stopping stream..."));
+                stream.stop();
+            }
+        } catch (IOException ioe) {
             stream.stop();
         }
         return frame;
