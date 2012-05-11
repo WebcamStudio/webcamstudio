@@ -76,14 +76,4 @@ public class SourceWebcam extends Stream {
         }
         return f;
     }
-
-    @Override
-    public boolean hasAudio() {
-        return true;
-    }
-
-    @Override
-    public boolean hasVideo() {
-        return true;
-    }
 }

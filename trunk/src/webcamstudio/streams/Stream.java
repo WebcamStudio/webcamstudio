@@ -41,6 +41,8 @@ public abstract class Stream {
     protected int desktopY = 0;
     protected int desktopW = 1024;
     protected int desktopH = 768;
+    protected boolean hasVideo=true;
+    protected boolean hasAudio=true;
     ArrayList<Transition> startTransitions = new ArrayList<Transition>();
     ArrayList<Transition> endTransitions = new ArrayList<Transition>();
     Listener listener = null;
@@ -163,10 +165,20 @@ public abstract class Stream {
 
     public abstract BufferedImage getPreview();
 
-    public abstract boolean hasAudio();
+    public boolean hasAudio(){
+        return hasAudio;
+    }
 
-    public abstract boolean hasVideo();
+    public boolean hasVideo(){
+        return hasVideo;
+    }
 
+    public void setVideo(boolean hasIt){
+        hasVideo=hasIt;
+    }
+    public void setAudio(boolean hasIt){
+        hasAudio = hasIt;
+    }
     public int getAudioLevelLeft() {
         return audioLevelLeft;
     }
