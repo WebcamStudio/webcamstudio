@@ -140,6 +140,7 @@ public abstract class Stream {
     public interface Listener {
 
         public void sourceUpdated(Stream stream);
+        public void updatePreview(BufferedImage image);
     }
 
     public void setListener(Listener l) {
@@ -151,7 +152,11 @@ public abstract class Stream {
             listener.sourceUpdated(this);
         }
     }
-
+    public void updatePreview(){
+        if (listener != null) {
+            listener.updatePreview(this.getPreview());
+        }
+    }
     public void destroy() {
         stop();
         MasterChannels.getInstance().unregister(this);

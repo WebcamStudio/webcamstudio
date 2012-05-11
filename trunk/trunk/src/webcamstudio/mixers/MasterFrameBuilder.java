@@ -66,6 +66,7 @@ public class MasterFrameBuilder implements Runnable {
                 g.drawImage(f.getImage(), f.getX(), f.getY(), f.getWidth(), f.getHeight(), null);
             }
             g.dispose();
+            
         }
         orderedFrames.clear();
     }
@@ -114,7 +115,9 @@ public class MasterFrameBuilder implements Runnable {
             Frame targetFrame = frameBuffer.getFrameToUpdate();
             frames = new ArrayList<Frame>();
             for (int i = 0; i < streams.size(); i++) {
-                Frame f = streams.get(i).getFrame();
+                Stream s = streams.get(i);
+                Frame f = s.getFrame();
+                s.updatePreview();
                 if (f != null) {
                     frames.add(f);
                 }

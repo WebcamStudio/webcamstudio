@@ -11,12 +11,12 @@
 package webcamstudio.components;
 
 import java.awt.Component;
-import java.awt.Cursor;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetDropEvent;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.InputStream;
 import java.io.Reader;
@@ -355,5 +355,10 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener {
                 }
             }
         }
+    }
+
+    @Override
+    public void updatePreview(BufferedImage image) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }
