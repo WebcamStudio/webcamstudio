@@ -67,7 +67,7 @@ public class ProcessRenderer {
         }
         processVideo = new ProcessExecutor(s.getName());
         processAudio = new ProcessExecutor(s.getName());
-        
+
     }
 
     private String translateTag(String value) {
@@ -92,7 +92,7 @@ public class ProcessRenderer {
         }
         processVideo = new ProcessExecutor(s.getName());
         processAudio = new ProcessExecutor(s.getName());
-        
+
     }
 
     private URL getResource(ACTION a) throws MalformedURLException {
@@ -250,17 +250,11 @@ public class ProcessRenderer {
                 String commandVideo = null;
                 String commandAudio = null;
                 //System.out.println(plugins.keySet().toString());
-                        
-                if (plugin.equals("custom")) {
-                    commandVideo = plugins.getProperty("source").replaceAll("  ", " "); //Making sure there is no double spaces
-                } else {
-                    if (plugins.containsKey("video")) {
-                        commandVideo = plugins.getProperty("video").replaceAll("  ", " "); //Making sure there is no double spaces
-                    }
-                    if (plugins.containsKey("audio")) {
-                        commandAudio = plugins.getProperty("audio").replaceAll("  ", " "); //Making sure there is no double spaces
-                    }
-
+                if (plugins.containsKey("video")) {
+                    commandVideo = plugins.getProperty("video").replaceAll("  ", " "); //Making sure there is no double spaces
+                }
+                if (plugins.containsKey("audio")) {
+                    commandAudio = plugins.getProperty("audio").replaceAll("  ", " "); //Making sure there is no double spaces
                 }
                 //System.out.println(commandVideo);
                 //System.out.println(commandAudio);
@@ -339,9 +333,9 @@ public class ProcessRenderer {
         if (processVideo != null) {
             processVideo.destroy();
         }
-        if (processAudio!=null){
+        if (processAudio != null) {
             processAudio.destroy();
-            processAudio=null;
+            processAudio = null;
         }
         stopMe = false;
         stopped = true;
