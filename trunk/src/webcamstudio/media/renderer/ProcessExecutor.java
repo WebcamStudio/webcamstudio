@@ -37,7 +37,7 @@ public class ProcessExecutor {
                     try {
                         count = in1.read(buffer);
                         if (count > 0){
-                            System.out.println("FFMPEG Err: " + new String(buffer,0,count));
+                            System.out.println("Process Err: " + new String(buffer,0,count));
                         }
 //                        count = in2.read(buffer);
 //                        if (count > 0){
@@ -51,7 +51,7 @@ public class ProcessExecutor {
                     }
                     
                 }
-                System.out.println("FFMPEG Closing streams");
+                System.out.println("Process Closing streams");
                 
             }
         }).start();
