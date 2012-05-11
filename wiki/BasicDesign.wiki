@@ -1,0 +1,46 @@
+#summary One-sentence summary of this page.
+#labels Featured,Phase-Implementation
+
+= Introduction =
+
+An over view of the basic design of WebcamStudio
+
+
+= Details =
+
+Overall, WebcamStudio is just a video and audio mixer (audio now supported in 0.60+).  It feeds on external applications such as FFMpeg (avconv) or GStreamer by launching a sub-process with proper parameters.  In previous versions of WebcamStudio, libraries were used to interact with these components.  But as it has shown over time, it becomes quite complex to get good performances and stability.  Also, the portability can be hazardous from one OS to another.
+
+To solve this issue, WebcamStudio 0.60 was completely redesigned from scratch to implement a new mechanism that would allow the use of any external applications, regardless of the system architecture (32bits vs 64 bits).  Another benefit is that using external sub-processes ensure maximum efficiency when the computer is able to use multi-core, or when the application has been locally compiled for maximum performances.
+
+The format currently supported by WebcamStudio for capturing and rendering is:
+ * Video: RGB24 pixel format of any size
+ * Audio: Big Endian 16 bits, 2 channels.  (s16be)
+
+This raw data must be made available thru a TCP/IP connection (local).  This means that the external application must be able to output the raw data to a TCP/IP server connection (which WebcamStudio is handling) as fast or faster than a realtime playback.
+
+For example, if WebcamStudio is running it's internal mixer at 15 frames per second, each source must be able to feed WebcamStudio at 15 frames per second or faster.  Otherwise, the mixer won't be able to keep up with a realtime rendering and lags will occur.
+
+Some external application usage:
+
+* ffmpeg -f video4linux2 -i /dev/video0 -s 320x240 -r 15 -f rawvideo -pix_fmt rgb24 tcp://127.0.0.1:2342
+* gst-launch v4l2src ! videoscale ! video/x-raw-rgb,width=320,height=240,framerate=15/1 ! ffmpegcolorspace ! video/x-raw-rgb,width=320,height=240,depth=24,bpp=24 ... ! tcpclientsink port=2342
+
+Since some parameters need to be set when the process is launching (like the local port), WebcamStudio is using configuration files to keep the launching command is included tags to fill the proper parameter values.
+
+ffmpeg ... -s @CWIDTHx@CHEIGHT -r @RATE ... tcp://127.0.0.1:@VPORT
+
+Those tags can be found in /webcamstudio/externals/Tags.java
+
+The default configuration files can be found in:
+* /webcamstudio/externals/linux/sources
+* /webcamstudio/externals/linux/outputs
+* /webcamstudio/externals/windows/sources
+* /webcamstudio/externals/windows/outputs
+* /webcamstudio/externals/osx/sources
+* /webcamstudio/externals/osx/outputs
+
+In "sources", there are 4 configuration files by default, representing webcam, music, movie and desktop.
+
+A user can override those files by having those files in a dedicated folder ".webcamstudio" is his home directory.  For example, having "webcam.properties" in "~/.webcamstudio" will override the default available in the package.
+
+If for some reasons a video/audio source is not available in WebcamStudio, a user can create a file with the extention ".wss" with the same structure of the source configuration files.  This file can be added as another source or put in "~/.webcamstudio/sources" to be automatically loaded on startup.  This mechanism can then help a user to have a specific device integrated in WebcamStudio that can provide a video/audio source.
