@@ -44,12 +44,14 @@ public class ProcessRenderer {
     int channels = 2;
     int bitSize = 16;
     Stream stream;
-    ProcessExecutor process;
+    ProcessExecutor processVideo;
+    ProcessExecutor processAudio;
     Capturer capture;
     Exporter exporter;
     FME fme = null;
 
     public ProcessRenderer(Stream s, ACTION action, String plugin) {
+        this.plugin = plugin;
         stream = s;
         if (plugins == null) {
             plugins = new Properties();
@@ -63,8 +65,9 @@ public class ProcessRenderer {
                 Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        process = new ProcessExecutor(s.getName());
-        this.plugin = plugin;
+        processVideo = new ProcessExecutor(s.getName());
+        processAudio = new ProcessExecutor(s.getName());
+        
     }
 
     private String translateTag(String value) {
@@ -77,6 +80,7 @@ public class ProcessRenderer {
 
     public ProcessRenderer(Stream s, FME fme, String plugin) {
         stream = s;
+        this.plugin = plugin;
         this.fme = fme;
         if (plugins == null) {
             plugins = new Properties();
@@ -86,11 +90,12 @@ public class ProcessRenderer {
                 Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        process = new ProcessExecutor(s.getName());
-        this.plugin = plugin;
+        processVideo = new ProcessExecutor(s.getName());
+        processAudio = new ProcessExecutor(s.getName());
+        
     }
 
-    private static URL getResource(ACTION a) throws MalformedURLException {
+    private URL getResource(ACTION a) throws MalformedURLException {
 
         File userSettings = null;
         switch (a) {
@@ -102,21 +107,22 @@ public class ProcessRenderer {
                 break;
         }
         URL res = null;
-        System.out.println(userSettings.getAbsolutePath());
+        //System.out.println(userSettings.getAbsolutePath());
         if (userSettings.exists()) {
             res = userSettings.toURI().toURL();
         } else {
             String path = null;
             switch (a) {
                 case CAPTURE:
-                    path = "/webcamstudio/externals/" + RES_CAP;
+                    path = "/webcamstudio/externals/OS/sources/" + plugin + ".properties";
                     path = path.replaceAll("OS", Tools.getOSName());
                     break;
                 case OUTPUT:
-                    path = "/webcamstudio/externals/" + RES_OUT;
+                    path = "/webcamstudio/externals/OS/outputs/output.properties";
                     path = path.replaceAll("OS", Tools.getOSName());
                     break;
             }
+            System.out.println(path);
             res = ProcessRenderer.class.getResource(path);
         }
         System.out.println("Resource Used: " + res.toString());
@@ -241,24 +247,50 @@ public class ProcessRenderer {
                 if (stream.hasAudio()) {
                     audioPort = capture.getAudioPort();
                 }
-                String command = "";
+                String commandVideo = null;
+                String commandAudio = null;
+                //System.out.println(plugins.keySet().toString());
+                        
                 if (plugin.equals("custom")) {
-                    command = plugins.getProperty("source").replaceAll("  ", " "); //Making sure there is no double spaces
+                    commandVideo = plugins.getProperty("source").replaceAll("  ", " "); //Making sure there is no double spaces
                 } else {
-                    command = plugins.getProperty(plugin).replaceAll("  ", " "); //Making sure there is no double spaces
-                }
-
-                command = command.replaceAll(" ", "ABCDE");
-                command = setParameters(command);
-                String[] parms = command.split("ABCDE");
-                try {
-                    for (String p : parms) {
-                        System.out.print(p + " ");
+                    if (plugins.containsKey("video")) {
+                        commandVideo = plugins.getProperty("video").replaceAll("  ", " "); //Making sure there is no double spaces
                     }
-                    System.out.println();
-                    process.execute(parms);
-                } catch (Exception e) {
-                    e.printStackTrace();
+                    if (plugins.containsKey("audio")) {
+                        commandAudio = plugins.getProperty("audio").replaceAll("  ", " "); //Making sure there is no double spaces
+                    }
+
+                }
+                //System.out.println(commandVideo);
+                //System.out.println(commandAudio);
+                if (commandVideo != null) {
+                    commandVideo = commandVideo.replaceAll(" ", "ABCDE");
+                    commandVideo = setParameters(commandVideo);
+                    String[] parmsVideo = commandVideo.split("ABCDE");
+                    try {
+                        for (String p : parmsVideo) {
+                            System.out.print(p + " ");
+                        }
+                        System.out.println();
+                        processVideo.execute(parmsVideo);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                if (commandAudio != null) {
+                    commandAudio = commandAudio.replaceAll(" ", "ABCDE");
+                    commandAudio = setParameters(commandAudio);
+                    String[] parmsAudio = commandAudio.split("ABCDE");
+                    try {
+                        for (String p : parmsAudio) {
+                            System.out.print(p + " ");
+                        }
+                        System.out.println();
+                        processAudio.execute(parmsAudio);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
 
             }
@@ -284,11 +316,11 @@ public class ProcessRenderer {
 
                 final String[] parms = command.split(" ");
                 try {
-                    process.execute(parms);
+                    processVideo.execute(parms);
+                    //We don't need processAudio on export.  Only 1 process is required...
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
             }
         }).start();
 
@@ -304,10 +336,13 @@ public class ProcessRenderer {
             exporter.abort();
             exporter = null;
         }
-        if (process != null) {
-            process.destroy();
+        if (processVideo != null) {
+            processVideo.destroy();
         }
-
+        if (processAudio!=null){
+            processAudio.destroy();
+            processAudio=null;
+        }
         stopMe = false;
         stopped = true;
     }
