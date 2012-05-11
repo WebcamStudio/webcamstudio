@@ -14,8 +14,6 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.awt.image.BufferedImage;
-import java.util.Timer;
-import java.util.TimerTask;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import webcamstudio.streams.SourceQRCode;
@@ -31,7 +29,7 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
 
     SourceText stream = null;
     Viewer viewer = new Viewer();
-    Timer timer = new Timer();
+    
 
     /** Creates new form StreamPanel */
     public StreamPanelText(SourceText stream) {
@@ -57,7 +55,7 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
         cboFonts.setSelectedItem(stream.getFont());
         txtHexColor.setText(Integer.toHexString(stream.getColor()));
         spinZOrder.setValue(stream.getZOrder());
-        timer.scheduleAtFixedRate(new RefreshPanelText(this), 0, 200);
+        
         txtContent.setText(stream.getContent());
         setToolTipText(stream.getContent());
         cboFonts.setEnabled(!(stream instanceof SourceQRCode));
@@ -74,8 +72,6 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
         return icon;
     }
     public void remove() {
-        timer.cancel();
-        timer = null;
         stream.stop();
         stream = null;
 
@@ -219,7 +215,6 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
 
         btnSelectColor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/applications-graphics.png"))); // NOI18N
         btnSelectColor.setToolTipText(bundle.getString("COLOR")); // NOI18N
-        btnSelectColor.setMargin(new java.awt.Insets(0, 0, 0, 0));
         btnSelectColor.setName("btnSelectColor"); // NOI18N
         btnSelectColor.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -396,24 +391,13 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
         cboFonts.setSelectedItem(this.stream.getFont());
         txtHexColor.setText(Integer.toHexString(this.stream.getColor()));
         spinZOrder.setValue(stream.getZOrder());
-        timer.scheduleAtFixedRate(new RefreshPanelText(this), 0, 200);
         txtContent.setText(this.stream.getContent());
         tglActiveStream.setSelected(stream.isPlaying());
     }
-}
-class RefreshPanelText extends TimerTask {
-
-    StreamPanelText panel = null;
-
-    public RefreshPanelText(StreamPanelText p) {
-        panel = p;
-    }
 
     @Override
-    public void run() {
-        if (panel != null) {
-            panel.viewer.setImage(panel.stream.getPreview());
-            panel.viewer.repaint();
-        }
+    public void updatePreview(BufferedImage image) {
+        viewer.setImage(image);
+        viewer.repaint();
     }
 }

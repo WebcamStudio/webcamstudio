@@ -13,11 +13,11 @@ package webcamstudio.components;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
-import java.util.Timer;
-import java.util.TimerTask;
 import javax.swing.ImageIcon;
 import javax.swing.SpinnerNumberModel;
 import webcamstudio.streams.Stream;
+
+
 
 /**
  *
@@ -27,7 +27,7 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener{
 
     Stream stream = null;
     Viewer viewer = new Viewer();
-    Timer timer = new Timer();
+    
 
     /** Creates new form StreamPanel */
     public StreamPanel(Stream stream) {
@@ -51,7 +51,6 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener{
         spinZOrder.setValue(stream.getZOrder());
         spinH1.setValue(stream.getCaptureHeight());
         spinW1.setValue(stream.getCaptureWidth());
-        timer.scheduleAtFixedRate(new RefreshPanel(this), 0, 200);
         stream.setListener(this);
         if (!stream.hasVideo()){
             spinX.setEnabled(false);
@@ -82,8 +81,6 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener{
         return icon;
     }
     public void remove() {
-        timer.cancel();
-        timer = null;
         stream.stop();
         stream = null;
 
@@ -364,22 +361,11 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener{
     private javax.swing.JSpinner spinZOrder;
     private javax.swing.JToggleButton tglActiveStream;
     // End of variables declaration//GEN-END:variables
-}
-
-class RefreshPanel extends TimerTask {
-
-    StreamPanel panel = null;
-
-    public RefreshPanel(StreamPanel p) {
-        panel = p;
-    }
 
     @Override
-    public void run() {
-        if (panel != null) {
-            panel.viewer.setImage(panel.stream.getPreview());
-            panel.viewer.setAudioLevel(panel.stream.getAudioLevelLeft(), panel.stream.getAudioLevelRight());
-            panel.viewer.repaint();
-        }
+    public void updatePreview(BufferedImage image) {
+        viewer.setImage(image);
+        viewer.setAudioLevel(stream.getAudioLevelLeft(), stream.getAudioLevelRight());
+        viewer.repaint();
     }
 }

@@ -62,12 +62,14 @@ public class SourceDesktop extends Stream {
 
     @Override
     public void stop() {
+        
         isPlaying = false;
         if (capture != null) {
             capture.stop();
             capture = null;
         }
         MasterFrameBuilder.unregister(this);
+        preview=null;
     }
 
     @Override
