@@ -22,8 +22,8 @@ public class SourceMicrophone extends Stream {
 
     private boolean isPlaying = false;
     private TargetDataLine line;
-    private AudioBuffer audioBuffer = null;
     private Frame frame = null;
+    private byte[] audio = null;
 
     public SourceMicrophone() {
         super();
@@ -35,8 +35,8 @@ public class SourceMicrophone extends Stream {
     public void read() {
         isPlaying = true;
         rate = MasterMixer.getInstance().getRate();
-        audioBuffer = new AudioBuffer(rate);
-
+        audio = new byte[44100 * 2 * 2 / rate];
+        frame = new Frame(captureWidth, captureHeight, rate);
         Thread t = new Thread(new Runnable() {
 
             @Override
@@ -51,22 +51,11 @@ public class SourceMicrophone extends Stream {
                     line = (TargetDataLine) AudioSystem.getLine(info);
                     line.open(format);
                     line.start();
-                    frame = new Frame(captureWidth, captureHeight, rate);
-                    frame.setImage(null);
-                    audioBuffer.clear();
-                    //long mark = 0;
-                    while (isPlaying) {
-                        //mark= System.currentTimeMillis();
-                        byte[] data = audioBuffer.getAudioToUpdate();
-                        line.read(data, 0, data.length);
-                        audioBuffer.doneUpdate();
-                        //System.out.println("delta= " + (System.currentTimeMillis()-mark));
-                    }
                 } catch (Exception e) {
                     isPlaying = false;
                     stop();
                 }
-                
+
             }
         });
         t.setPriority(Thread.MIN_PRIORITY);
@@ -77,9 +66,6 @@ public class SourceMicrophone extends Stream {
     @Override
     public void stop() {
         isPlaying = false;
-        if (audioBuffer!=null){
-            audioBuffer.abort();
-        }
         if (line != null) {
             line.stop();
             line.close();
@@ -98,15 +84,21 @@ public class SourceMicrophone extends Stream {
         return null;
     }
 
+    private byte[] getNextAudio() {
+        if (line != null) {
+            line.read(audio, 0, audio.length);
+            return audio;
+        } else {
+            return null;
+        }
+    }
+
     @Override
     public Frame getFrame() {
-        if (frame != null) {
-            frame.setAudio(audioBuffer.pop());
-            this.setAudioLevel(frame);
-            frame.setOutputFormat(x, y, width, height, opacity, volume);
-            frame.setZOrder(zorder);
-            frame.setImage(null);
-        }
+        byte[] nextAudio = getNextAudio();
+        frame.setAudio(nextAudio);
+        frame.setOutputFormat(x, y, width, height, opacity, volume);
+        frame.setZOrder(zorder);
         return frame;
     }
 

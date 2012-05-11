@@ -240,6 +240,8 @@ public class ProcessRenderer {
 
             @Override
             public void run() {
+                stream.setVideo(plugins.containsKey("video"));
+                stream.setAudio(plugins.containsKey("audio"));
                 capture = new Capturer(stream);
                 if (stream.hasVideo()) {
                     videoPort = capture.getVideoPort();
