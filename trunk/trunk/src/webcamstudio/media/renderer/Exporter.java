@@ -135,8 +135,10 @@ public class Exporter implements MasterMixer.SinkListener {
         if (audioServer != null) {
             try {
                 audioServer.close();
-                audioOutput.close();
-                audioOutput = null;
+                if (audioOutput!=null){
+                    audioOutput.close();
+                    audioOutput = null;
+                }
             } catch (IOException ex) {
                 Logger.getLogger(Exporter.class.getName()).log(Level.SEVERE, null, ex);
             }
