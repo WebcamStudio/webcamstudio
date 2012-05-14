@@ -59,7 +59,7 @@ public class ProcessExecutor {
     public void execute(String[] params) throws IOException, InterruptedException {
         process = Runtime.getRuntime().exec(params);
         processRunning = true;
-        readOutput(process);
+        //readOutput(process);
         
     }
 
