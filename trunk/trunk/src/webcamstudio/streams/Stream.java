@@ -7,6 +7,7 @@ package webcamstudio.streams;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.concurrent.Callable;
 import webcamstudio.channels.MasterChannels;
 import webcamstudio.channels.transitions.Transition;
 import webcamstudio.mixers.Frame;
@@ -16,7 +17,7 @@ import webcamstudio.sources.effects.Effect;
  *
  * @author patrick
  */
-public abstract class Stream implements Runnable{
+public abstract class Stream implements Callable<Frame>{
 
     protected String uuid = java.util.UUID.randomUUID().toString();
     protected int captureWidth = 320;
@@ -173,9 +174,6 @@ public abstract class Stream implements Runnable{
     
     public abstract void readNext();
 
-    public void run(){
-        readNext();
-    }
     public boolean hasAudio(){
         return hasAudio;
     }
@@ -286,8 +284,7 @@ public abstract class Stream implements Runnable{
     }
 
     public Frame getFrame() {
-        Frame f = null;
-        return f;
+        return nextFrame;
     }
 
     public String getID() {
@@ -481,5 +478,11 @@ public abstract class Stream implements Runnable{
             stream = new SourceWebcam(file);
         }
         return stream;
+    }
+    @Override
+     public Frame call() throws Exception {
+        readNext();
+        updatePreview();
+        return nextFrame;
     }
 }

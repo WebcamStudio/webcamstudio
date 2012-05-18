@@ -89,5 +89,5 @@ public class SourceImage extends Stream{
         frame.setZOrder(zorder);
         nextFrame=frame;
     }
-    
+
 }
