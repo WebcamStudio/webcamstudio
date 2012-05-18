@@ -66,4 +66,9 @@ public class SinkBroadcast extends Stream {
     public boolean hasVideo() {
         return true;
     }
+
+    @Override
+    public void readNext() {
+        
+    }
 }

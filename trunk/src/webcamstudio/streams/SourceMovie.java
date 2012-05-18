@@ -61,6 +61,12 @@ public class SourceMovie extends Stream {
 
     @Override
     public Frame getFrame() {
+        
+        return nextFrame;
+    }
+
+    @Override
+    public void readNext() {
         Frame f = null;
         if (capture != null) {
             f = capture.getFrame();
@@ -69,7 +75,7 @@ public class SourceMovie extends Stream {
                 lastPreview.getGraphics().drawImage(f.getImage(), 0, 0, null);
             }
         }
-        return f;
+        nextFrame=f;
     }
 
 }

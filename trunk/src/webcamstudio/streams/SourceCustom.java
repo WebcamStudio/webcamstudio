@@ -16,19 +16,21 @@ import webcamstudio.mixers.MasterMixer;
  * @author patrick
  */
 public class SourceCustom extends Stream {
+
     ProcessRenderer capture = null;
     BufferedImage lastPreview = null;
     boolean isPlaying = false;
 
-    public SourceCustom(File custom){
+    public SourceCustom(File custom) {
         super();
         file = custom;
         name = file.getName();
     }
+
     @Override
     public void read() {
-        isPlaying=true;
-        lastPreview = new BufferedImage(captureWidth,captureHeight,BufferedImage.TYPE_INT_ARGB);
+        isPlaying = true;
+        lastPreview = new BufferedImage(captureWidth, captureHeight, BufferedImage.TYPE_INT_ARGB);
         rate = MasterMixer.getInstance().getRate();
         MasterFrameBuilder.register(this);
         capture = new ProcessRenderer(this, ProcessRenderer.ACTION.CAPTURE, "custom");
@@ -37,7 +39,7 @@ public class SourceCustom extends Stream {
 
     @Override
     public void stop() {
-        isPlaying=false;
+        isPlaying = false;
         if (capture != null) {
             capture.stop();
         }
@@ -53,18 +55,20 @@ public class SourceCustom extends Stream {
     public BufferedImage getPreview() {
         return lastPreview;
     }
-    
+
     @Override
     public Frame getFrame() {
-        Frame f = null;
-        if (capture != null) {
-            f = capture.getFrame();
-            if (f != null) {
-                setAudioLevel(f);
-                lastPreview.getGraphics().drawImage(f.getImage(), 0, 0, null);
-            }
-        }
-        return f;
+        return nextFrame;
     }
 
+    @Override
+    public void readNext() {
+        if (capture != null) {
+            nextFrame = capture.getFrame();
+            if (nextFrame != null) {
+                setAudioLevel(nextFrame);
+                lastPreview.getGraphics().drawImage(nextFrame.getImage(), 0, 0, null);
+            }
+        }
+    }
 }

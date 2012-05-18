@@ -74,21 +74,7 @@ public class SourceDesktop extends Stream {
 
     @Override
     public Frame getFrame() {
-        if (capture != null) {
-            frame = capture.getFrame();
-            if (frame != null) {
-                preview = frame.getImage();
-            }
-            return frame;
-        } else if (defaultCapture != null) {
-            frame.setImage(defaultCapture.createScreenCapture(area));
-            frame.setOutputFormat(x, y, width, height, opacity, volume);
-            frame.setZOrder(zorder);
-            preview = frame.getImage();
-            return frame;
-        } else {
-            return null;
-        }
+       return nextFrame;
     }
 
     @Override
@@ -109,5 +95,22 @@ public class SourceDesktop extends Stream {
     @Override
     public boolean hasVideo() {
         return true;
+    }
+
+    @Override
+    public void readNext() {
+         if (capture != null) {
+            nextFrame = capture.getFrame();
+            if (nextFrame != null) {
+                preview = nextFrame.getImage();
+            }
+        } else if (defaultCapture != null) {
+            frame.setImage(defaultCapture.createScreenCapture(area));
+            frame.setOutputFormat(x, y, width, height, opacity, volume);
+            frame.setZOrder(zorder);
+            nextFrame=frame;
+            preview = frame.getImage();
+            
+        } 
     }
 }

@@ -13,6 +13,10 @@ import java.nio.ShortBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.TreeMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import webcamstudio.streams.Stream;
 import webcamstudio.util.Tools;
 
@@ -66,7 +70,7 @@ public class MasterFrameBuilder implements Runnable {
                 g.drawImage(f.getImage(), f.getX(), f.getY(), f.getWidth(), f.getHeight(), null);
             }
             g.dispose();
-            
+
         }
         orderedFrames.clear();
     }
@@ -109,35 +113,50 @@ public class MasterFrameBuilder implements Runnable {
         int r = MasterMixer.getInstance().getRate();
         long frameDelay = 1000 / r;
         long timeCode = System.currentTimeMillis();
+        frames = new ArrayList<Frame>();
+        ArrayList<Stream> cachedStreams = new ArrayList<Stream>();
         while (!stopMe) {
             long start = System.currentTimeMillis();
             timeCode += frameDelay;
             Frame targetFrame = frameBuffer.getFrameToUpdate();
-            frames = new ArrayList<Frame>();
-            for (int i = 0; i < streams.size(); i++) {
-                Stream s = streams.get(i);
-                Frame f = s.getFrame();
-                s.updatePreview();
-                if (f != null) {
-                    frames.add(f);
+            frames.clear();
+            cachedStreams.clear();
+            cachedStreams.addAll(streams);
+            ExecutorService pool = java.util.concurrent.Executors.newCachedThreadPool();
+            for (Stream stream : cachedStreams) {
+                pool.submit(stream);
+            }
+            pool.shutdown();
+            try {
+                pool.awaitTermination(3000, TimeUnit.MILLISECONDS);
+                //System.out.println(System.currentTimeMillis()-start + " ms...");
+                for (Stream stream : cachedStreams) {
+                    Frame f = stream.getFrame();
+                    stream.updatePreview();
+                    if (f != null) {
+                        frames.add(f);
+                    }
                 }
+                mixAudio(frames, targetFrame);
+                mixImages(frames, targetFrame);
+                targetFrame = null;
+                frameBuffer.doneUpdate();
+                MasterMixer.getInstance().setCurrentFrame(frameBuffer.pop());
+                fps++;
+                float delta = System.currentTimeMillis() - mark;
+                if (delta >= 1000) {
+                    mark = System.currentTimeMillis();
+                    MasterMixer.getInstance().setFPS((((float) fps) / (delta / 1000F)));
+                    fps = 0;
+                }
+                long sleepTime = timeCode - System.currentTimeMillis();
+                if (sleepTime > 0) {
+                    Tools.sleep(sleepTime + 10);
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(MasterFrameBuilder.class.getName()).log(Level.SEVERE, null, ex);
             }
-            mixAudio(frames, targetFrame);
-            mixImages(frames, targetFrame);
-            targetFrame = null;
-            frameBuffer.doneUpdate();
-            MasterMixer.getInstance().setCurrentFrame(frameBuffer.pop());
-            fps++;
-            float delta = System.currentTimeMillis() - mark;
-            if (delta >= 1000) {
-                mark = System.currentTimeMillis();
-                MasterMixer.getInstance().setFPS((((float) fps) / (delta / 1000F)));
-                fps = 0;
-            }
-            long sleepTime = timeCode - System.currentTimeMillis();
-            if (sleepTime > 0) {
-                Tools.sleep(sleepTime + 10);
-            }
+
         }
     }
 }

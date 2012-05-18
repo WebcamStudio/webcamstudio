@@ -16,7 +16,7 @@ import webcamstudio.sources.effects.Effect;
  *
  * @author patrick
  */
-public abstract class Stream {
+public abstract class Stream implements Runnable{
 
     protected String uuid = java.util.UUID.randomUUID().toString();
     protected int captureWidth = 320;
@@ -43,6 +43,7 @@ public abstract class Stream {
     protected int desktopH = 768;
     protected boolean hasVideo=true;
     protected boolean hasAudio=true;
+    protected Frame nextFrame = null;
     ArrayList<Transition> startTransitions = new ArrayList<Transition>();
     ArrayList<Transition> endTransitions = new ArrayList<Transition>();
     Listener listener = null;
@@ -169,7 +170,12 @@ public abstract class Stream {
     public abstract boolean isPlaying();
 
     public abstract BufferedImage getPreview();
+    
+    public abstract void readNext();
 
+    public void run(){
+        readNext();
+    }
     public boolean hasAudio(){
         return hasAudio;
     }
