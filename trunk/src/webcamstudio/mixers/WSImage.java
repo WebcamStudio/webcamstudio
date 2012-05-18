@@ -37,10 +37,12 @@ public class WSImage extends BufferedImage {
     }
 
     public void readFully(DataInputStream din) throws IOException {
-        din.readFully(byteData);
-        counter = 0;
-        for (int i = 0; i < data.length; i++) {
-            data[i] = 0xff000000 + (byteData[counter++] << 16) + (byteData[counter++] << 8) + (byteData[counter++]);
+        if (din.available() > 0) {
+            din.readFully(byteData);
+            counter = 0;
+            for (int i = 0; i < data.length; i++) {
+                data[i] = 0xff000000 + (byteData[counter++] << 16) + (byteData[counter++] << 8) + (byteData[counter++]);
+            }
         }
     }
 
