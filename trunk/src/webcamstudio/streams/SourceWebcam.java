@@ -78,9 +78,6 @@ public class SourceWebcam extends Stream {
             if (f != null) {
                 setAudioLevel(f);
                 lastPreview=f.getImage();
-//                if (lastPreview!=null){
-//                    lastPreview.getGraphics().drawImage(f.getImage(), 0, 0, null);
-//                }
             }
         }
         nextFrame=f;

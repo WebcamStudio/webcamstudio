@@ -12,9 +12,10 @@ import java.nio.ByteBuffer;
 import java.nio.ShortBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.TreeMap;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import webcamstudio.streams.Stream;
@@ -113,29 +114,19 @@ public class MasterFrameBuilder implements Runnable {
         int r = MasterMixer.getInstance().getRate();
         long frameDelay = 1000 / r;
         long timeCode = System.currentTimeMillis();
-        frames = new ArrayList<Frame>();
-        ArrayList<Stream> cachedStreams = new ArrayList<Stream>();
+        ExecutorService pool = java.util.concurrent.Executors.newCachedThreadPool();
         while (!stopMe) {
             long start = System.currentTimeMillis();
             timeCode += frameDelay;
             Frame targetFrame = frameBuffer.getFrameToUpdate();
             frames.clear();
-            cachedStreams.clear();
-            cachedStreams.addAll(streams);
-            ExecutorService pool = java.util.concurrent.Executors.newCachedThreadPool();
-            for (Stream stream : cachedStreams) {
-                pool.submit(stream);
-            }
-            pool.shutdown();
             try {
-                pool.awaitTermination(3000, TimeUnit.MILLISECONDS);
-                //System.out.println(System.currentTimeMillis()-start + " ms...");
-                for (Stream stream : cachedStreams) {
-                    Frame f = stream.getFrame();
-                    stream.updatePreview();
+                List<Future<Frame>> results = pool.invokeAll(streams);
+                for (Future stream : results) {
+                    Frame f = (Frame)stream.get();
                     if (f != null) {
                         frames.add(f);
-                    }
+                    } 
                 }
                 mixAudio(frames, targetFrame);
                 mixImages(frames, targetFrame);
