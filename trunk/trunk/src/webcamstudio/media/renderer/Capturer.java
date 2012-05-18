@@ -11,8 +11,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import webcamstudio.components.ResourceMonitor;
-import webcamstudio.components.ResourceMonitorLabel;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.WSImage;
 import webcamstudio.streams.Stream;
@@ -134,7 +132,7 @@ public class Capturer {
     }
 
     private byte[] getNextAudio() throws IOException {
-        if (audioIn != null) {
+        if (audioIn != null && audioIn.available()>0) {
             audioIn.readFully(audio);
             return audio;
         } else {
@@ -154,10 +152,10 @@ public class Capturer {
                 nextAudio = getNextAudio();
             }
 //            if (System.currentTimeMillis() - mark < 5000) {
-                frame.setAudio(nextAudio);
-                frame.setImage(nextImage);
-                frame.setOutputFormat(stream.getX(), stream.getY(), stream.getWidth(), stream.getHeight(), stream.getOpacity(), stream.getVolume());
-                frame.setZOrder(stream.getZOrder());
+            frame.setAudio(nextAudio);
+            frame.setImage(nextImage);
+            frame.setOutputFormat(stream.getX(), stream.getY(), stream.getWidth(), stream.getHeight(), stream.getOpacity(), stream.getVolume());
+            frame.setZOrder(stream.getZOrder());
 //            } else {
 //                ResourceMonitor.getInstance().addMessage(new ResourceMonitorLabel(System.currentTimeMillis() + 10000, stream.getName() + " is too slow! Stopping stream..."));
 //                stream.stop();

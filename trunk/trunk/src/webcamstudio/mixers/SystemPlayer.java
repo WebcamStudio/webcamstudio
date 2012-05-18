@@ -37,8 +37,10 @@ public class SystemPlayer implements Runnable {
     }
 
     public void addFrame(Frame frame) {
+        viewer.setImage(frame.getImage());
+        viewer.setAudioLevel(MasterMixer.getInstance().getAudioLevelLeft(), MasterMixer.getInstance().getAudioLevelRight());
+        viewer.repaint();
         if (source != null) {
-
             frames.push(frame);
         }
     }
@@ -60,9 +62,6 @@ public class SystemPlayer implements Runnable {
         frames.clear();
         while (!stopMe) {
             Frame frame = frames.pop();
-            viewer.setImage(frame.getImage());
-            viewer.setAudioLevel(MasterMixer.getInstance().getAudioLevelLeft(), MasterMixer.getInstance().getAudioLevelRight());
-            viewer.repaint();
             byte[] d = frame.getAudioData();
             if (d != null) {
                 source.write(d, 0, d.length);

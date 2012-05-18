@@ -53,7 +53,6 @@ public class AudioBuffer {
     }    
     public byte[] getAudioToUpdate(){
         while (!abort && (framePushed - framePopped) >= bufferSize) {
-            Thread.yield();
             Tools.sleep(30);
         }
         return buffer.get((currentIndex+1)%bufferSize);
@@ -61,15 +60,14 @@ public class AudioBuffer {
     public byte[] pop() {
         long mark = System.currentTimeMillis();
         while (!abort && framePopped >= framePushed) {
-            if (System.currentTimeMillis()-mark >= TIMEOUT){
-                //Resetting everyting;
-                System.err.println("Resetting audio!");
-                currentIndex=0;
-                framePopped=0;
-                framePushed=0;
-                break;
-            }
-            Thread.yield();
+//            if (System.currentTimeMillis()-mark >= TIMEOUT){
+//                //Resetting everyting;
+//                System.err.println("Resetting audio!");
+//                currentIndex=0;
+//                framePopped=0;
+//                framePushed=0;
+//                break;
+//            }
             Tools.sleep(10);
         }
         framePopped++;

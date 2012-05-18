@@ -20,7 +20,7 @@ import webcamstudio.streams.Stream;
 public class Exporter implements MasterMixer.SinkListener {
 
     private boolean cancel = false;
-    final static int FRAME_LIMIT = 5;
+    //final static int FRAME_LIMIT = 5;
     ServerSocket videoServer = null;
     ServerSocket audioServer = null;
     OutputStream videoOutput = null;
