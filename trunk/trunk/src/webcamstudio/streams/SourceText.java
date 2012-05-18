@@ -28,6 +28,13 @@ public class SourceText extends Stream {
     Frame frame = null;
     float bgOpacity = 1f;
 
+    @Override
+    public void readNext() {
+        frame.setImage(image);
+        applyEffects(frame.getImage());
+        nextFrame=frame;
+    }
+
     public enum Shape {
 
         NONE,
@@ -209,9 +216,8 @@ public class SourceText extends Stream {
 
     @Override
     public Frame getFrame() {
-        frame.setImage(image);
-        applyEffects(frame.getImage());
-        return frame;
+        
+        return nextFrame;
     }
 
     @Override

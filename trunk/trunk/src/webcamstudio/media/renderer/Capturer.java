@@ -153,15 +153,15 @@ public class Capturer {
             if (stream.hasAudio()) {
                 nextAudio = getNextAudio();
             }
-            if (System.currentTimeMillis() - mark < 5000) {
+//            if (System.currentTimeMillis() - mark < 5000) {
                 frame.setAudio(nextAudio);
                 frame.setImage(nextImage);
                 frame.setOutputFormat(stream.getX(), stream.getY(), stream.getWidth(), stream.getHeight(), stream.getOpacity(), stream.getVolume());
                 frame.setZOrder(stream.getZOrder());
-            } else {
-                ResourceMonitor.getInstance().addMessage(new ResourceMonitorLabel(System.currentTimeMillis() + 10000, stream.getName() + " is too slow! Stopping stream..."));
-                stream.stop();
-            }
+//            } else {
+//                ResourceMonitor.getInstance().addMessage(new ResourceMonitorLabel(System.currentTimeMillis() + 10000, stream.getName() + " is too slow! Stopping stream..."));
+//                stream.stop();
+//            }
         } catch (IOException ioe) {
             stream.stop();
         }

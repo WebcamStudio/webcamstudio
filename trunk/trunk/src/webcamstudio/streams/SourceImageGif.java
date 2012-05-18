@@ -88,11 +88,7 @@ public class SourceImageGif extends Stream {
 
     @Override
     public Frame getFrame() {
-        image = decoder.getFrame(index);
-        frame = new Frame(uuid, image, null);
-        frame.setOutputFormat(x, y, width, height, opacity, volume);
-        frame.setZOrder(zorder);
-        return frame;
+        return nextFrame;
     }
 
     @Override
@@ -113,5 +109,14 @@ public class SourceImageGif extends Stream {
     @Override
     public boolean hasVideo() {
         return true;
+    }
+
+    @Override
+    public void readNext() {
+        image = decoder.getFrame(index);
+        frame = new Frame(uuid, image, null);
+        frame.setOutputFormat(x, y, width, height, opacity, volume);
+        frame.setZOrder(zorder);
+        nextFrame=frame;
     }
 }

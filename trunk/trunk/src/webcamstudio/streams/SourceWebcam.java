@@ -67,16 +67,22 @@ public class SourceWebcam extends Stream {
 
     @Override
     public synchronized Frame getFrame() {
+        return nextFrame;
+    }
+
+    @Override
+    public void readNext() {
         Frame f = null;
         if (capture != null) {
             f = capture.getFrame();
             if (f != null) {
                 setAudioLevel(f);
-                if (lastPreview!=null){
-                    lastPreview.getGraphics().drawImage(f.getImage(), 0, 0, null);
-                }
+                lastPreview=f.getImage();
+//                if (lastPreview!=null){
+//                    lastPreview.getGraphics().drawImage(f.getImage(), 0, 0, null);
+//                }
             }
         }
-        return f;
+        nextFrame=f;
     }
 }

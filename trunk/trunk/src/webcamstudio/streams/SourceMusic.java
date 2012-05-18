@@ -61,13 +61,19 @@ public class SourceMusic extends Stream {
 
     @Override
     public Frame getFrame() {
-        Frame f = null;
+       
+        return nextFrame;
+    }
+
+    @Override
+    public void readNext() {
+         Frame f = null;
         if (capture != null) {
             f = capture.getFrame();
             if (f != null) {
                 setAudioLevel(f);
             }
         }
-        return f;
+        nextFrame=f;
     }
 }

@@ -81,4 +81,9 @@ public class SinkLinuxDevice extends Stream implements MasterMixer.SinkListener 
             }
         }
     }
+
+    @Override
+    public void readNext() {
+        
+    }
 }

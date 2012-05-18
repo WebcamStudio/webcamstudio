@@ -59,11 +59,7 @@ public class SourceImage extends Stream{
 
     @Override
     public Frame getFrame(){
-        frame.setImage(image);
-        applyEffects(frame.getImage());
-        frame.setOutputFormat(x, y, width, height, opacity, volume);
-        frame.setZOrder(zorder);
-        return frame;
+        return nextFrame;
     }
     @Override
     public boolean isPlaying() {
@@ -83,6 +79,15 @@ public class SourceImage extends Stream{
     @Override
     public boolean hasVideo() {
         return true;
+    }
+
+    @Override
+    public void readNext() {
+        frame.setImage(image);
+        applyEffects(frame.getImage());
+        frame.setOutputFormat(x, y, width, height, opacity, volume);
+        frame.setZOrder(zorder);
+        nextFrame=frame;
     }
     
 }

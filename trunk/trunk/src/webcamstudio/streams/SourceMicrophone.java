@@ -9,7 +9,6 @@ import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.TargetDataLine;
-import webcamstudio.mixers.AudioBuffer;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterFrameBuilder;
 import webcamstudio.mixers.MasterMixer;
@@ -95,11 +94,7 @@ public class SourceMicrophone extends Stream {
 
     @Override
     public Frame getFrame() {
-        byte[] nextAudio = getNextAudio();
-        frame.setAudio(nextAudio);
-        frame.setOutputFormat(x, y, width, height, opacity, volume);
-        frame.setZOrder(zorder);
-        return frame;
+        return nextFrame;
     }
 
     @Override
@@ -110,5 +105,14 @@ public class SourceMicrophone extends Stream {
     @Override
     public boolean hasVideo() {
         return false;
+    }
+
+    @Override
+    public void readNext() {
+        byte[] nextAudio = getNextAudio();
+        frame.setAudio(nextAudio);
+        frame.setOutputFormat(x, y, width, height, opacity, volume);
+        frame.setZOrder(zorder);
+        nextFrame=frame;
     }
 }
