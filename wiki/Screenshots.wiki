@@ -1,0 +1,8 @@
+#summary Screenshots of WebcamStudio
+= Introduction =
+
+Here are some screenshots of the WebcamStudio application.
+
+= Screenshots =
+
+Screenshots to be added...
