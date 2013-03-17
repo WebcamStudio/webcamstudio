@@ -1,0 +1,12 @@
+#summary WebcamStudio developers team.
+
+= Introduction =
+
+This is a list of the developers involved in the WebcamStudio project.
+
+
+= Details =
+
+    * *Patrick Balleux*: _Initiator of WebcamStudio, Former Developer of the WebcamStudio project, Project Admin_
+    * *Karl Ellis*: _Current lead Developer of the WebcamStudio project, Project Admin_
+    * *PhobosK*: _Support Developer, Package & Release Manager, Q&A, Web presence manager, Project Admin_
