@@ -53,9 +53,9 @@ public class MasterFrameBuilder implements Runnable {
     }
 
     private void mixImages(Collection<Frame> frames, Frame targetFrame) {
-        for (Frame f : frames) {
-            orderedFrames.put(f.getZOrder(), f);
-        }
+        for (Frame f : frames) {       
+            orderedFrames.put(f.getZOrder(), f);         
+            }        
         BufferedImage image = targetFrame.getImage();
         if (image != null) {
             Graphics2D g = image.createGraphics();
@@ -66,7 +66,7 @@ public class MasterFrameBuilder implements Runnable {
             g.setRenderingHint(java.awt.RenderingHints.KEY_RENDERING, java.awt.RenderingHints.VALUE_RENDER_QUALITY);
             g.setRenderingHint(java.awt.RenderingHints.KEY_DITHERING, java.awt.RenderingHints.VALUE_DITHER_ENABLE);
             g.setRenderingHint(java.awt.RenderingHints.KEY_COLOR_RENDERING, java.awt.RenderingHints.VALUE_COLOR_RENDER_QUALITY);
-            for (Frame f : orderedFrames.values()) {
+            for (Frame f : orderedFrames.values()) {                    
                 g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, ((float) f.getOpacity()) / 100F));
                 g.drawImage(f.getImage(), f.getX(), f.getY(), f.getWidth(), f.getHeight(), null);
             }
@@ -90,22 +90,26 @@ public class MasterFrameBuilder implements Runnable {
                 while (buffer.hasRemaining()) {
                     float mix = (float) buffer.get() * f.getVolume();
                     outputBuffer.mark();
-                    mix += outputBuffer.get();
-                    outputBuffer.reset();
+                    if (outputBuffer.position()< outputBuffer.limit()){                      
+                      mix += outputBuffer.get();             
+                    }                    
+                outputBuffer.reset();
                     if (mix > Short.MAX_VALUE) {
                         mix = Short.MAX_VALUE;
                     } else if (mix < Short.MIN_VALUE) {
                         mix = Short.MIN_VALUE;
                     }
-                    outputBuffer.put((short) mix);
-                }
-                f.setAudio(null);
+                    if (outputBuffer.position()< outputBuffer.limit()){                           
+                    outputBuffer.put((short) mix);      
+                    }
+                }                
+                f.setAudio(null);              
             }
         }
     }
 
     @Override
-    public void run() {
+    public void run() { //synchronized
         stopMe = false;
         ArrayList<Frame> frames = new ArrayList<Frame>();
         mark = System.currentTimeMillis();
@@ -128,14 +132,14 @@ public class MasterFrameBuilder implements Runnable {
                         frames.add(f);
                     } 
                 }
-                mixAudio(frames, targetFrame);
+                mixAudio(frames, targetFrame);            
                 mixImages(frames, targetFrame);
                 targetFrame = null;
                 frameBuffer.doneUpdate();
                 MasterMixer.getInstance().setCurrentFrame(frameBuffer.pop());
                 fps++;
                 float delta = System.currentTimeMillis() - mark;
-                if (delta >= 1000) {
+                    if (delta >= 1000) {
                     mark = System.currentTimeMillis();
                     MasterMixer.getInstance().setFPS((((float) fps) / (delta / 1000F)));
                     fps = 0;
@@ -143,7 +147,7 @@ public class MasterFrameBuilder implements Runnable {
                 long sleepTime = timeCode - System.currentTimeMillis();
                 if (sleepTime > 0) {
                     Tools.sleep(sleepTime + 10);
-                }
+                }           
             } catch (Exception ex) {
                 Logger.getLogger(MasterFrameBuilder.class.getName()).log(Level.SEVERE, null, ex);
             }

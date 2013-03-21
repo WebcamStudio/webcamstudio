@@ -15,6 +15,7 @@ import webcamstudio.streams.Stream;
 public class MasterChannels {
     ArrayList<String> channelNames = new ArrayList<String>();
     ArrayList<Stream> streams = new ArrayList<Stream>();
+    ArrayList<ArrayList<String>> CHOfSource = new ArrayList<ArrayList<String>>();
     static MasterChannels instance = null;
     
     private MasterChannels(){

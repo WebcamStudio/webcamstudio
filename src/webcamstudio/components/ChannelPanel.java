@@ -10,8 +10,20 @@
  */
 package webcamstudio.components;
 
+import java.beans.PropertyVetoException;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.DefaultComboBoxModel;
+import java.util.Timer;
+import java.util.TimerTask;
 import javax.swing.DefaultListModel;
+import webcamstudio.WebcamStudio.*;
 import webcamstudio.channels.MasterChannels;
+import webcamstudio.util.Tools;
+
+
+
 
 /**
  *
@@ -19,15 +31,29 @@ import webcamstudio.channels.MasterChannels;
  */
 public class ChannelPanel extends javax.swing.JPanel {
 
-    MasterChannels master = MasterChannels.getInstance();
-    DefaultListModel model = new DefaultListModel();
-
+    public static MasterChannels master = MasterChannels.getInstance();
+    public static DefaultListModel model = new DefaultListModel();
+    public static DefaultComboBoxModel aModel = new DefaultComboBoxModel();
+    public static ArrayList<String> CHCurrNext = new ArrayList<String>();
+    public static ArrayList<Integer> CHTimers = new ArrayList<Integer>();
+    public static ArrayList<String> ListChannels = new ArrayList<String>();
+    String selectChannel=null;   
+    int CHon =0;
+ // int n = 0;
+    String CHNxName = null;
+    int CHNextTime =0;
+    int CHTimer = 0;
+    Timer CHt=new Timer();
+    String CHptS= null;
+    Boolean StopCHpt=false;
+    static int IsLoading=0;
     /**
      * Creates new form ChannelPanel
      */
     public ChannelPanel() {
         initComponents();
         lstChannels.setModel(model);
+        lstNextChannel.setModel(aModel);
     }
 
     /**
@@ -47,6 +73,13 @@ public class ChannelPanel extends javax.swing.JPanel {
         btnRemove = new javax.swing.JButton();
         btnSelect = new javax.swing.JButton();
         btnUpdate = new javax.swing.JButton();
+        lstNextChannel = new javax.swing.JComboBox();
+        ChDuration = new javax.swing.JSpinner();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        StopCHTimer = new javax.swing.JButton();
+        jLabel4 = new javax.swing.JLabel();
+        CHProgressTime = new javax.swing.JProgressBar();
 
         lstChannelsScroll.setName("lstChannelsScroll"); // NOI18N
 
@@ -78,6 +111,7 @@ public class ChannelPanel extends javax.swing.JPanel {
         });
 
         btnRemove.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/process-stop.png"))); // NOI18N
+        btnRemove.setToolTipText("Remove Channel");
         btnRemove.setEnabled(false);
         btnRemove.setName("btnRemove"); // NOI18N
         btnRemove.addActionListener(new java.awt.event.ActionListener() {
@@ -87,6 +121,7 @@ public class ChannelPanel extends javax.swing.JPanel {
         });
 
         btnSelect.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-start.png"))); // NOI18N
+        btnSelect.setToolTipText("Apply Channel");
         btnSelect.setEnabled(false);
         btnSelect.setName("btnSelect"); // NOI18N
         btnSelect.addActionListener(new java.awt.event.ActionListener() {
@@ -98,33 +133,80 @@ public class ChannelPanel extends javax.swing.JPanel {
         btnUpdate.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/view-refresh.png"))); // NOI18N
         btnUpdate.setToolTipText(bundle.getString("UPDATE")); // NOI18N
         btnUpdate.setEnabled(false);
-        btnUpdate.setName("btnUpdate");
+        btnUpdate.setName("btnUpdate"); // NOI18N
         btnUpdate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnUpdateActionPerformed(evt);
             }
         });
 
+        lstNextChannel.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        lstNextChannel.setName("lstNextChannel"); // NOI18N
+        lstNextChannel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                lstNextChannelActionPerformed(evt);
+            }
+        });
+
+        ChDuration.setToolTipText("0 = Infinite");
+        ChDuration.setName("ChDuration"); // NOI18N
+        ChDuration.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                ChDurationStateChanged(evt);
+            }
+        });
+
+        jLabel2.setText("Next Channel");
+        jLabel2.setName("jLabel2"); // NOI18N
+
+        jLabel3.setText("Duration (sec)");
+        jLabel3.setName("jLabel3"); // NOI18N
+
+        StopCHTimer.setText("[STOP] CH-Timer");
+        StopCHTimer.setName("StopCHTimer"); // NOI18N
+        StopCHTimer.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
+        StopCHTimer.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                StopCHTimerActionPerformed(evt);
+            }
+        });
+
+        jLabel4.setText("       Current Channel Timer (sec)");
+        jLabel4.setName("jLabel4"); // NOI18N
+
+        CHProgressTime.setName("CHProgressTime"); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(lstChannelsScroll, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 198, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(StopCHTimer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtName, javax.swing.GroupLayout.DEFAULT_SIZE, 107, Short.MAX_VALUE)
+                        .addComponent(txtName)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnAdd))
+                    .addComponent(lstChannelsScroll)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnUpdate)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnSelect)
+                        .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnRemove)))
+                        .addComponent(btnSelect, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnRemove, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel3))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(ChDuration)
+                            .addComponent(lstNextChannel, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(CHProgressTime, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 255, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -136,8 +218,22 @@ public class ChannelPanel extends javax.swing.JPanel {
                     .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnAdd))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lstChannelsScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 145, Short.MAX_VALUE)
+                .addComponent(lstChannelsScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 202, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(lstNextChannel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(ChDuration))
+                .addGap(13, 13, 13)
+                .addComponent(jLabel4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(CHProgressTime, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(36, 36, 36)
+                .addComponent(StopCHTimer)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(btnRemove)
                     .addComponent(btnSelect)
@@ -147,49 +243,179 @@ public class ChannelPanel extends javax.swing.JPanel {
 
     private void lstChannelsValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_lstChannelsValueChanged
         if (lstChannels.getSelectedIndex() != -1) {
+            selectChannel = lstChannels.getSelectedValue().toString();
+            int SelectCHIndex = lstChannels.getSelectedIndex();
+            lstNextChannel.setSelectedItem(CHCurrNext.get(SelectCHIndex));
+            if (IsLoading==1) { // Tempo for avoid exceptions
+              ChDuration.setValue(0);
+              for (int h=0; h<=ListChannels.size(); h++){
+              CHTimers.add(h, 0);
+              }
+              IsLoading=0;
+            } else {
+            ChDuration.setValue(CHTimers.get(SelectCHIndex)/1000);
+            }
             btnRemove.setEnabled(true);
             btnSelect.setEnabled(true);
             btnUpdate.setEnabled(true);
-        } else {
+            } else {
             btnRemove.setEnabled(false);
             btnSelect.setEnabled(false);
             btnUpdate.setEnabled(false);
         }
     }//GEN-LAST:event_lstChannelsValueChanged
-
+ 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
         String name = txtName.getText();
         if (name.length() > 0) {
             master.addChannel(name);
             model.addElement(name);
+            aModel.addElement(name);
+            CHCurrNext.add(name);
+            CHTimers.add(CHTimer);
+            ListChannels.add(name);
             lstChannels.revalidate();
+            lstNextChannel.revalidate();
         }
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveActionPerformed
         String name = lstChannels.getSelectedValue().toString();
+        int SelectCHIndex = lstChannels.getSelectedIndex();
         master.removeChannel(name);
         model.removeElement(name);
+        aModel.removeElement(name);
+        CHCurrNext.remove(name);
+        CHTimers.remove(SelectCHIndex);
+        ListChannels.remove(name);
         lstChannels.revalidate();
+        lstNextChannel.revalidate();
     }//GEN-LAST:event_btnRemoveActionPerformed
 
+    public static void AddLoadingChannel(String name) {
+       if (name.length() > 0) {
+            master.addChannel(name);
+            model.addElement(name);
+            aModel.addElement(name);
+            CHCurrNext.add(name);
+            ListChannels.add(name);
+            IsLoading=1;
+       }
+   }
+   
+    class UpdateCHtUITask extends TimerTask {
+        @Override
+        public synchronized void run() {
+            CHptS=null;
+            int CHpt=0;
+            int CHpTemptime = CHNextTime/1000;
+            CHProgressTime.setValue(0);
+            CHProgressTime.setStringPainted(true);
+            CHProgressTime.setMaximum(CHpTemptime);             
+            while (CHpt<CHpTemptime && StopCHpt==false){
+              CHptS = Integer.toString(CHpt);
+              CHProgressTime.setValue(CHpt);
+              CHProgressTime.setString(CHptS);
+              Tools.sleep(1000);
+              CHpt += 1;
+            }
+            UpdateCHtUITask.this.stop();
+        }
+        public void stop() {
+            StopCHpt=true;
+    }
+   }
+    class TSelectActionPerformed extends TimerTask {
+        @Override
+        public synchronized void run(){  
+            CHon = lstChannels.getSelectedIndex();
+            CHNxName = CHCurrNext.get(CHon);
+            int n =0;
+            for (String h : ListChannels) {
+                 if (h.equals(CHNxName)) {
+                    CHNextTime = CHTimers.get(n);
+                 }
+                 n += 1;
+            }
+            lstChannels.setSelectedValue(CHNxName, true);
+            Tools.sleep(1000);
+            master.selectChannel(CHNxName);
+	    CHt=new Timer();
+            CHt.schedule(new TSelectActionPerformed(),CHNextTime);
+            CHNextTime = CHTimers.get(lstChannels.getSelectedIndex());
+            StopCHpt=false;
+            CHt.schedule(new UpdateCHtUITask(),0);
+	}        
+    }
+    private void btnSelectFalseCapture (java.awt.event.ActionEvent evt) { 
+        
+    }
     private void btnSelectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSelectActionPerformed
         String name = lstChannels.getSelectedValue().toString();
+        System.out.println("Apply Select: "+name);
+        Tools.sleep(500);
         master.selectChannel(name);
+        if (CHTimers.get(lstChannels.getSelectedIndex()) != 0) {
+            lstChannels.setEnabled(false);
+            ChDuration.setEnabled(false);
+            CHt=new Timer();
+            CHt.schedule(new TSelectActionPerformed(),CHTimers.get(lstChannels.getSelectedIndex()));
+            CHNextTime = CHTimers.get(lstChannels.getSelectedIndex());
+            StopCHpt=false;
+            CHt.schedule(new UpdateCHtUITask(),0);
+        }
     }//GEN-LAST:event_btnSelectActionPerformed
-
+    
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
         String name = lstChannels.getSelectedValue().toString();
         master.updateChannel(name);
     }//GEN-LAST:event_btnUpdateActionPerformed
+
+    private void lstNextChannelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lstNextChannelActionPerformed
+        if (lstChannels.getSelectedIndex() != -1) {
+           String currChannel = lstChannels.getSelectedValue().toString();
+           String nextChannel = lstNextChannel.getSelectedItem().toString();
+           int ChIndex = lstChannels.getSelectedIndex();
+           String t = CHCurrNext.get(ChIndex);
+           CHCurrNext.set(ChIndex, nextChannel);
+           } 
+    }//GEN-LAST:event_lstNextChannelActionPerformed
+
+    private void ChDurationStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_ChDurationStateChanged
+       CHTimer = ChDuration.getValue().hashCode()* 1000;
+       if (lstChannels.getSelectedIndex() != -1) {
+           int ChIndex = lstChannels.getSelectedIndex();
+           int tm = CHTimers.get(ChIndex);
+           CHTimers.set(ChIndex, CHTimer);
+           System.out.println("Current Channel: "+lstChannels.getSelectedValue().toString() +" His Timer is: "+CHTimers.get(ChIndex).toString());
+       }
+    }//GEN-LAST:event_ChDurationStateChanged
+
+    private void StopCHTimerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_StopCHTimerActionPerformed
+    CHt.cancel();
+    CHt.purge();
+    StopCHpt=true;
+    lstChannels.setEnabled(true);
+    ChDuration.setEnabled(true);
+    System.out.println("Channel Timer Stopped.");
+    }//GEN-LAST:event_StopCHTimerActionPerformed
+    
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JProgressBar CHProgressTime;
+    private javax.swing.JSpinner ChDuration;
+    private javax.swing.JButton StopCHTimer;
     private javax.swing.JButton btnAdd;
     private javax.swing.JButton btnRemove;
     private javax.swing.JButton btnSelect;
     private javax.swing.JButton btnUpdate;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JList lstChannels;
     private javax.swing.JScrollPane lstChannelsScroll;
+    private javax.swing.JComboBox lstNextChannel;
     private javax.swing.JTextField txtName;
     // End of variables declaration//GEN-END:variables
 }

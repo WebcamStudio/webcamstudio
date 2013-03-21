@@ -10,6 +10,7 @@ import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 import webcamstudio.components.Viewer;
+import webcamstudio.util.Tools;
 
 /**
  *
@@ -72,13 +73,18 @@ public class SystemPlayer implements Runnable {
     public void stop() {
         stopMe = true;
         if (frames != null) {
+            Tools.sleep(30);
             frames.abort();
         }
         if (source != null) {
+            Tools.sleep(30);
             source.stop();
+            Tools.sleep(30);
             source.close();
+            Tools.sleep(30);
             source = null;
         }
+        Tools.sleep(30);
         executor = null;
         System.gc();
     }

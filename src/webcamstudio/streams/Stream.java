@@ -38,6 +38,7 @@ public abstract class Stream implements Callable<Frame>{
     protected int audioLevelRight = 0;
     protected ArrayList<Effect> effects = new ArrayList<Effect>();
     protected ArrayList<SourceChannel> channels = new ArrayList<SourceChannel>();
+    protected SourceChannel channel = new SourceChannel();
     protected int desktopX = 0;
     protected int desktopY = 0;
     protected int desktopW = 1024;
@@ -215,6 +216,10 @@ public abstract class Stream implements Callable<Frame>{
 
     public ArrayList<SourceChannel> getChannels() {
         return channels;
+    }
+    
+    public SourceChannel getChannel() {
+        return channel;
     }
 
     public void setName(String n) {

@@ -20,6 +20,7 @@ public class AudioBuffer {
     int currentIndex = 0;
     long framePushed = 0;
     long framePopped = 0;
+   // webcamstudio.media.config.Format.Type(FILE)
 
     public AudioBuffer(int rate) {
         for (int i = 0; i < bufferSize; i++) {

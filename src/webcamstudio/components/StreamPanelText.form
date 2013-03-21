@@ -23,12 +23,11 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="1" attributes="0">
+          <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="1" attributes="0">
+              <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="txtContent" alignment="0" pref="245" max="32767" attributes="1"/>
                   <Component id="tglActiveStream" alignment="0" pref="245" max="32767" attributes="1"/>
-                  <Component id="lblText" alignment="0" min="-2" max="-2" attributes="0"/>
                   <Group type="102" alignment="0" attributes="0">
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Component id="labelZ" max="32767" attributes="1"/>
@@ -41,16 +40,20 @@
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="spinZOrder" pref="129" max="32767" attributes="1"/>
-                          <Component id="spinY" alignment="0" pref="129" max="32767" attributes="1"/>
-                          <Component id="spinX" alignment="1" pref="129" max="32767" attributes="1"/>
-                          <Component id="txtHexColor" alignment="0" pref="129" max="32767" attributes="0"/>
-                          <Component id="spinW" alignment="0" pref="129" max="32767" attributes="0"/>
-                          <Component id="spinH" alignment="1" pref="129" max="32767" attributes="0"/>
-                          <Component id="cboFonts" alignment="0" pref="129" max="32767" attributes="0"/>
+                          <Component id="spinZOrder" pref="123" max="32767" attributes="1"/>
+                          <Component id="spinY" alignment="0" pref="123" max="32767" attributes="1"/>
+                          <Component id="spinX" alignment="1" pref="123" max="32767" attributes="1"/>
+                          <Component id="txtHexColor" alignment="0" pref="123" max="32767" attributes="0"/>
+                          <Component id="spinW" alignment="0" pref="123" max="32767" attributes="0"/>
+                          <Component id="spinH" alignment="1" pref="123" max="32767" attributes="0"/>
+                          <Component id="cboFonts" alignment="0" pref="123" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="btnSelectColor" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <Group type="102" attributes="0">
+                      <Component id="lblText" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
@@ -101,10 +104,10 @@
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="labelZ" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="spinZOrder" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="labelZ" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace max="-2" attributes="0"/>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Component id="tglActiveStream" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="32767" attributes="0"/>
           </Group>
