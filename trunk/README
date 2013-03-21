@@ -1,0 +1,57 @@
+******************************
+* WebcamStudio for GNU/Linux *
+******************************
+
+To compile from the command line simply run:
+
+ant clean jar
+
+The binaries will be in the dist folder.
+
+
+WebcamStudio 0.60 ALPHA 1
+*************************
+
+Hello and welcome to the new WebcamStudio.  This release is a buggy and unstable one, so be gentle.
+
+There is still missing features compared to WS0.57, but they will come.
+
+What you need:
+- Java > 1.6
+- FFMPEG - Windows users should download the proper ffmpeg static binary and put it in their PATH.
+  The URL is: http://ffmpeg.zeranoe.com/builds
+- Some patience ;)
+
+
+How to use:
+-----------
+
+- Drag'n drop your sources (movies, images, music) into the "Sources" panel (the middle one)
+- Webcams are auto-detected on startup.
+- Preview is not activated by default, click the "Preview" tab, and click the little speaker to activate it.
+  Carefull with audio feedback!
+- Each source has a layer to use. Only one source can be on a layer. If more than one have the same layer,
+  only one of them will be displayed.
+- "Record" button will record audio and video into a selected file. AVI, FLV, OGG are well supported.
+  MPG cannot be used at the moment. WebM needs some tweaks.
+- To broadcast to Justin.tv or Bambuser, download your FME configuration file (XML), and drag'n drop the file in the "Output" panel.
+- You may need to tweak the FME file if the broadcasting bitrate is too high for your internet access.
+- To remove a "broadcast button", drag it to the right, it will be removed.
+- VLOOPBACK (v4l2loopback, webcamstudio) are auto detected in the "Output" panel.  They are not activated by default.
+- There is currently no way to save your setup in a Studio file in this version.
+- For high res mixing (640x480), you should use a compiled version of FFMPEG on your computer.  This really helps the encoding part!
+- Start with a small setup first (320x240@10fps) before doing the hardcore stuff.
+- This version is mostly stable under linux.  Windows and OSX need more testing.
+- You can create your own source, by creating a file "Something.wss".  See the "CustomSource.wss" example in the archive's "docs" folder
+- Have fun!
+
+
+Some testing to do:
+-------------------
+
+- Start a webcam, check if audio/video are lagging after a while.
+- Start a Desktop source. There is no audio with desktop.  See if computer is dying.
+- Record a mix of audio/video into an AVI file. Check if the file is readable and have audio/video in sync.
+- Use the vloopback output.  Check if video is stuttering (No audio in this mode).
+- Add an FME file to broadcast to Justin.tv or Bambuser (Other services are still not supported for now).
+

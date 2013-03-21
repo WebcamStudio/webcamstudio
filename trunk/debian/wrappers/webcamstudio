@@ -1,0 +1,43 @@
+#!/bin/sh
+# WebcamStudio for GNU/Linux Launcher wrapper
+# Copyright (C) 2008 Patrick Balleux <patrick.balleux@gmail.com>
+# Copyright (C) 2013 PhobosK <phobosk@kbfx.net>
+# Version 1.0
+
+INSTALLDIR=/usr/lib/webcamstudio
+
+# Check if webcamstudio or v4l2loopback module are available...
+lsmod | grep webcamstudio >/dev/null
+if [ "$?" -eq "1" ]; then
+    lsmod | grep v4l2loopback >/dev/null
+    if [ "$?" -eq "1" ]; then
+		echo "None of the kernel modules webcamstudio/v4l2loopback are loaded..."
+		zenity --warning --text "None of the kernel modules webcamstudio/v4l2loopback are loaded...\nThe virtual webcam will not be available..."
+	fi
+fi
+
+
+# Include java-wrappers
+. /usr/lib/java-wrappers/java-wrappers.sh
+
+JAVA_CLASSPATH="${INSTALLDIR}/*:${INSTALLDIR}/lib/*"
+
+find_java_runtime openjdk sunmin5
+
+find_jars AbsoluteLayout \
+  AppFramework \
+  commons-cli \
+  commons-codec \
+  commons-httpclient \
+  commons-lang3 \
+  jcl-over-slf4j \
+  jna \
+  jna-platform \
+  jsr305 \
+  log4j-1.2 \
+  netty \
+  slf4j-api \
+  slf4j-log4j12 \
+  swing-worker
+
+run_java webcamstudio.WebcamStudio "$@"

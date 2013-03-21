@@ -1,0 +1,121 @@
+#! /bin/sh
+#
+# WebcamStudio for GNU/Linux kernel module init script
+# Linux kernel module init script
+# Version 1.0
+#
+# Copyright (C) 2006-2009 Sun Microsystems, Inc.
+# Copyright (C) 2009 Patrick Balleux
+# Copyright (C) 2013 PhobosK
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License as
+# published by the Free Software Foundation; either version 2, or (at
+# your option) any later version.
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+
+# chkconfig: 35 30 70
+# description: WebcamStudio Linux kernel modules loader (webcamstudio or v4l2loopback)
+#
+### BEGIN INIT INFO
+# Provides:       webcamstudio
+# Required-Start: $syslog
+# Required-Stop:
+# Default-Start:  2 3 4 5
+# Default-Stop:
+# Short-Description: WebcamStudio kernel modules loader
+### END INIT INFO
+
+. /lib/lsb/init-functions
+
+running()
+{
+    lsmod | grep -q "$1[^_-]"
+}
+
+start()
+{
+	log_begin_msg "Loading WebcamStudio kernel modules"
+	
+	if find /lib/modules/`uname -r` -name "webcamstudio\.*" 2>/dev/null|grep -q webcamstudio; then
+		if ! running webcamstudio; then
+			if ! modprobe webcamstudio > /dev/null 2>&1; then
+				log_failure_msg "'modprobe webcamstudio' failed. Please use 'dmesg' to find out why"
+				log_end_msg 1
+				return 1
+			fi
+		fi
+	elif find /lib/modules/`uname -r` -name "v4l2loopback\.*" 2>/dev/null|grep -q v4l2loopback; then
+		if ! running v4l2loopback; then
+			if ! modprobe v4l2loopback > /dev/null 2>&1; then
+				log_failure_msg "'modprobe v4l2loopback' failed. Please use 'dmesg' to find out why"
+				log_end_msg 1
+				return 1
+			fi
+		fi
+	else
+		log_warning_msg "No suitable WebcamStudio modules for the running kernel found"
+	fi
+
+	log_end_msg 0
+}
+
+stop()
+{
+	log_begin_msg "Stopping WebcamStudio kernel modules"
+	
+	if running webcamstudio; then
+		if ! rmmod webcamstudio 2>/dev/null; then
+			log_failure_msg "Cannot unload module webcamstudio"
+			log_end_msg 1
+			return 1
+		fi
+	elif running v4l2loopback; then
+		if ! rmmod v4l2loopback 2>/dev/null; then
+			log_failure_msg "Cannot unload module v4l2loopback"
+			log_end_msg 1
+			return 1
+		fi
+	else
+		log_warning_msg "No WebcamStudio kernel modules loaded"
+	fi	
+
+	log_end_msg 0
+}
+
+wcs_status()
+{
+	if running webcamstudio || running v4l2loopback; then
+		echo "WebcamStudio kernel modules are loaded"
+		return 0
+	else
+		echo "WebcamStudio kernel modules are not loaded"
+		return 3
+	fi
+}
+
+case "$1" in
+start)
+	start
+	;;
+stop)
+	stop
+	;;
+restart|force-reload)
+	stop && start
+	;;
+status)
+	wcs_status
+	;;
+*)
+	echo "Usage: $0 {start|stop|restart|force-reload|status}"
+	exit 1
+esac

@@ -1,0 +1,11 @@
+webcamstudio for Debian
+-------------------------
+
+ - Starting with version 0.60 WebcamStudio uses dkms(8) to build the
+   modules automatically. The dkms package recommends the linux-headers
+   package needed to build modules for the current distribution kernel. If this
+   for whatever reason does not work or you are using a non-distribution kernel
+   please make sure the right set of kernel headers is installed.
+
+ -- PhobosK <phobosk@kbfx.net>  Mon, 18 Mar 2013 16:35:17 +0200
+
