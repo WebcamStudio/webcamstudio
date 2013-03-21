@@ -31,6 +31,7 @@ import org.xml.sax.SAXException;
 import webcamstudio.channels.MasterChannels;
 import webcamstudio.mixers.MasterMixer;
 import webcamstudio.streams.*;
+import webcamstudio.util.Tools;
 
 /**
  *
@@ -46,31 +47,48 @@ public class Studio {
     private static final String ELEMENT_CHANNEL = "Channel";
     private static final String ELEMENT_ROOT = "WebcamStudio";
     private static final String ELEMENT_MIXER = "Mixer";
-
+    public static ArrayList<Stream> extstream = new ArrayList<Stream>();
+    public static File filename;
+    public static ArrayList<SourceText> LText = new ArrayList<SourceText>();
+    public static ArrayList<String> ImgMovMus = new ArrayList<String>();
+    static boolean FirstChannel=false;
     protected Studio() {
     }
-
+    public ArrayList<String> getStrings() {
+        return ImgMovMus;
+    }
     public ArrayList<String> getChannels() {
         return channels;
     }
-
+    
     public ArrayList<Stream> getStreams() {
         return streams;
     }
-
-    public static Studio load(File file) throws ParserConfigurationException, SAXException, IOException, XPathExpressionException {
+// Studio removed, put Void
+    public static void load(File file) throws ParserConfigurationException, SAXException, IOException, XPathExpressionException {
         Studio studio = new Studio();
+        System.out.println("Start LoadStudio");
+        filename = file; 
         Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(file);
         XPath path = XPathFactory.newInstance().newXPath();
 
         //Loading channels
         NodeList nodeChannels = (NodeList) path.evaluate("/WebcamStudio/Channels/Channel", doc.getDocumentElement(), XPathConstants.NODESET);
         for (int i = 0; i < nodeChannels.getLength(); i++) {
-            Node channel = nodeChannels.item(i);
-            String name = channel.getAttributes().getNamedItem("name").getTextContent();
-            System.out.println("Channel " + name);
-            studio.channels.add(name);
+           Node channel = nodeChannels.item(i);
+           String name = channel.getAttributes().getNamedItem("name").getTextContent();
+           System.out.println("Channel " + name);
+           
+   //        studio.channels.add(name);
+           
+           
+           webcamstudio.components.ChannelPanel.AddLoadingChannel(name);
+   //        webcamstudio.components.ChannelPanel.ListChannels.add(name);
+    //     webcamstudio.components.ChannelPanel.master.addChannel(name);
+   //        webcamstudio.components.ChannelPanel.model.addElement(name);
+   //       webcamstudio.components.ChannelPanel.lstChannels.revalidate();
         }
+        
 
         // Loading mixer settings
         Node nodeMixer = (Node) path.evaluate("/WebcamStudio/Mixer", doc.getDocumentElement(), XPathConstants.NODE);
@@ -79,7 +97,7 @@ public class Studio {
         String rate = nodeMixer.getAttributes().getNamedItem("rate").getTextContent();
         System.out.println("Mixer: " + width + "X" + height + "@" + rate + "fps");
 
-        return studio;
+ //       return studio;
     }
 
     public static void save(File file) throws IOException, XMLStreamException, TransformerConfigurationException, TransformerException, IllegalArgumentException, IllegalAccessException {
@@ -92,15 +110,19 @@ public class Studio {
         xml.writeStartElement(ELEMENT_ROOT);
         //Channels
         xml.writeStartElement(ELEMENT_CHANNELS);
+
         for (String c : channels) {
             xml.writeStartElement(ELEMENT_CHANNEL);
+            System.out.println("Channel: "+c);
             xml.writeAttribute("name", c);
             xml.writeEndElement();
+            
         }
         xml.writeEndElement();
 
         xml.writeStartElement(ELEMENT_SOURCES);
         for (Stream s : streams) {
+            System.out.println(streams);
             xml.writeStartElement(ELEMENT_SOURCE);
             writeObject(s, xml);
             xml.writeEndElement(); // source
@@ -132,18 +154,25 @@ public class Studio {
     private static void writeObject(Object o, XMLStreamWriter xml) throws IllegalArgumentException, IllegalAccessException, XMLStreamException {
 
         Field[] fields = o.getClass().getDeclaredFields();
+        System.out.println("Fields lenght: "+fields.length);
+        System.out.println("Start WriteObject");
         Field[] superFields = null;
         if (o instanceof Stream) {
             superFields = o.getClass().getSuperclass().getDeclaredFields();
+            System.out.println("Is a Stream.");
         }
         String clazz = o.getClass().getCanonicalName();
         if (clazz != null) {
+            System.out.println("Clazz: "+clazz);
+            Tools.sleep(50);
             xml.writeAttribute("clazz", clazz);
         }
+        Tools.sleep(50);
         if (superFields != null) {
             for (Field f : superFields) {
                 f.setAccessible(true);
                 String name = f.getName();
+                System.out.println("SuperFields: "+name);
                 Object value = f.get(o);
                 if (value instanceof Integer) {
                     xml.writeAttribute(name, f.getInt(o) + "");
@@ -153,9 +182,11 @@ public class Studio {
 
             }
         }
+        Tools.sleep(50);
         for (Field f : fields) {
             f.setAccessible(true);
             String name = f.getName();
+            System.out.println("Fields: "+name);
             Object value = f.get(o);
             if (value instanceof Integer) {
                 xml.writeAttribute(name, f.getInt(o) + "");
@@ -163,10 +194,12 @@ public class Studio {
                 xml.writeAttribute(name, f.getFloat(o) + "");
             }
         }
+        Tools.sleep(50);        
         if (superFields != null) {
             for (Field f : superFields) {
                 f.setAccessible(true);
                 String name = f.getName();
+                System.out.println("Superfield2: "+name);
                 Object value = f.get(o);
                 if (value instanceof String) {
                     xml.writeStartElement(name);
@@ -179,10 +212,11 @@ public class Studio {
                 }
             }
         }
-
+        Tools.sleep(50);
         for (Field f : fields) {
             f.setAccessible(true);
             String name = f.getName();
+            System.out.println("Fields2: "+name);
             Object value = f.get(o);
             if (value instanceof String) {
                 xml.writeStartElement(name);
@@ -194,24 +228,44 @@ public class Studio {
                 xml.writeEndElement();
             }
         }
+        Tools.sleep(50);
         if (superFields != null) {
             for (Field f : superFields) {
                 f.setAccessible(true);
                 String name = f.getName();
+                System.out.println("sub0Name: "+name);
                 Object value = f.get(o);
-                if (value instanceof List) {
+                System.out.println("sub0ObjectValue: "+value);
+                if (value instanceof List) { 
+                    if (name == "channels") {
+                        xml.writeStartElement(ELEMENT_CHANNELS);
+                        for (Object subO : ((List) value)) {
+                        if (clazz != null){
+                        xml.writeStartElement(ELEMENT_CHANNEL);
+                        System.out.println("sub0: "+subO);
+                        writeObject(subO, xml);
+                        xml.writeEndElement(); 
+                        }
+                        }
+                    } else {
                     xml.writeStartElement(name);
                     for (Object subO : ((List) value)) {
+                        if (clazz != null){
+                        System.out.println("sub0: "+subO);
                         writeObject(subO, xml);
+                        }
+                        
+                    }
                     }
                     xml.writeEndElement();
                 }
             }
         }
-
+        Tools.sleep(50);
         for (Field f : fields) {
             f.setAccessible(true);
             String name = f.getName();
+            System.out.println("Fields3: "+name);
             Object value = f.get(o);
             if (value instanceof List) {
                 xml.writeStartElement(name);
@@ -225,29 +279,56 @@ public class Studio {
 
     private static void readStreams(Document xml) throws IllegalArgumentException, IllegalAccessException, XPathExpressionException {
         XPath path = XPathFactory.newInstance().newXPath();
+       // Studio studio = new Studio();
         NodeList sources = (NodeList) path.evaluate("/" + ELEMENT_ROOT + "/" + ELEMENT_SOURCES + "/" + ELEMENT_SOURCE, xml.getDocumentElement(), XPathConstants.NODESET);
         if (sources != null) {
             for (int i = 0; i < sources.getLength(); i++) {
                 Node source = sources.item(i);
+                
                 String clazz = source.getAttributes().getNamedItem("clazz").getTextContent();
+                System.out.println(clazz);
                 String file = null;
+                String ObjText = null;
                 Stream stream = null;
+                SourceText text = null;
                 for (int j = 0; j < source.getChildNodes().getLength(); j++) {
                     Node child = source.getChildNodes().item(j);
-                    if (child.getNodeName().equals("file")) {
+                    if (child.getNodeName().equals("file")) {                       
                         file = child.getTextContent();
+                        System.out.println(file);
+                        Studio.ImgMovMus.add(file);
+                    }
+                    if (child.getNodeName().equals("content")) {
+                        ObjText = child.getTextContent();
+                        System.out.println(ObjText);
                     }
                 }
                 if (file != null) {
                     stream = Stream.getInstance(new File(file));
+                    Studio.extstream.add(stream);  // extstream = stream;
+                     
+                    readObject(stream, source);
+                    SourceChannel.getChannel(clazz, stream);
                 } else if (clazz.toLowerCase().endsWith("sourcedesktop")) {
                     stream = new SourceDesktop();
+                    
+                    readObject(stream, source);
+                    SourceChannel.getChannel(clazz, stream);
                 } else if (clazz.toLowerCase().endsWith("sourcetext")) {
-                    stream = new SourceText("");
+                    text = new SourceText(ObjText);
+                    Studio.LText.add(text);
+                    readObject(text, source);
+                    SourceChannel.getChannel(clazz, text);
                 } else if (clazz.toLowerCase().endsWith("sourceqrcode")) {
                     stream = new SourceQRCode("");
+                                      
+                    readObject(stream, source);
+                    SourceChannel.getChannel(clazz, stream);  
                 } else if (clazz.toLowerCase().endsWith("sourcemicrophone")) {
                     stream = new SourceMicrophone();
+                    
+                    readObject(stream, source);
+                    SourceChannel.getChannel(clazz, stream);
                 } else {
                     System.err.println("Cannot handle " + clazz);
                 }
@@ -288,9 +369,11 @@ public class Studio {
         for (Field field : fields) {
             field.setAccessible(true);
             String name = field.getName();
+            System.out.println(name);
             String value = null;
             if (source.getAttributes().getNamedItem(name) != null) {
                 value = source.getAttributes().getNamedItem(name).getTextContent();
+                System.out.println(value);
                 if (field.get(stream) instanceof Integer) {
                     field.setInt(stream, new Integer(value));
                 } else if (field.get(stream) instanceof Integer) {
@@ -310,10 +393,10 @@ public class Studio {
         
     }
 
-    public static void main(String[] args) {
+    public static void main() { //String[] args
         try {
             try {
-                Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new File("/home/patrick/Desktop/test.studio"));
+                Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(Studio.filename);
                 readStreams(doc);
 
             } catch (IllegalArgumentException ex) {

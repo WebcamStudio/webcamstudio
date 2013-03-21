@@ -92,7 +92,6 @@ public class SourceControlsText extends javax.swing.JPanel {
 
         btnSelectColor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/applications-graphics.png"))); // NOI18N
         btnSelectColor.setToolTipText(bundle.getString("COLOR")); // NOI18N
-        btnSelectColor.setMargin(new java.awt.Insets(0, 0, 0, 0));
         btnSelectColor.setName("btnSelectColor"); // NOI18N
         btnSelectColor.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

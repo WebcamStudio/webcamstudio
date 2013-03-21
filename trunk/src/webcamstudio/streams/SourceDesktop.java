@@ -27,6 +27,7 @@ public class SourceDesktop extends Stream {
     Robot defaultCapture = null;
     Frame frame = null;
     boolean isPlaying = false;
+    boolean stop = false;
     OS os = Tools.getOS();
     long timeCode = 0;
     Rectangle area = null;
@@ -40,6 +41,7 @@ public class SourceDesktop extends Stream {
 
     @Override
     public void read() {
+        stop = false;
         isPlaying = true;
         rate = MasterMixer.getInstance().getRate();
         MasterFrameBuilder.register(this);
@@ -62,7 +64,7 @@ public class SourceDesktop extends Stream {
 
     @Override
     public void stop() {
-        
+        stop = true;
         isPlaying = false;
         if (capture != null) {
             capture.stop();

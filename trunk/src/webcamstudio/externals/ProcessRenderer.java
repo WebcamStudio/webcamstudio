@@ -192,7 +192,11 @@ public class ProcessRenderer {
                         if (Tools.getOS() == OS.WINDOWS) {
                             command = command.replaceAll(Tags.FILE.toString(), "\"" + stream.getFile().getAbsolutePath().replaceAll("\\\\", "\\\\\\\\") + "\"");
                         } else {
+                            if (stream.getFile().getAbsolutePath().contains("http")) {
+                        command = command.replaceAll(Tags.FILE.toString(), "" + stream.getFile().getAbsolutePath().replace(System.getProperty("user.home")+"/", "") + "");
+                            } else {
                             command = command.replaceAll(Tags.FILE.toString(), "" + stream.getFile().getAbsolutePath().replaceAll(" ", "\\ ") + "");
+                        }
                         }
                     }
                     break;

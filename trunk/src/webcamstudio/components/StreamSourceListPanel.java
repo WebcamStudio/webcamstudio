@@ -23,21 +23,21 @@ import webcamstudio.streams.Stream;
  *
  * @author patrick
  */
-public class StreamPanel extends javax.swing.JPanel implements Stream.Listener{
+public class StreamSourceListPanel extends javax.swing.JPanel implements Stream.Listener{
 
     Stream stream = null;
     Viewer viewer = new Viewer();
     
 
     /** Creates new form StreamPanel */
-    public StreamPanel(Stream stream) {
+    public StreamSourceListPanel(Stream stream) {
 
         initComponents();
         
         viewer.setOpaque(true);
         viewer.setVisible(true);
         viewer.setBackground(Color.red);
-        panPreview.add(viewer, BorderLayout.CENTER);
+//      panPreview.add(viewer, BorderLayout.CENTER);
         this.stream = stream;
         spinX.setValue(stream.getX());
         spinY.setValue(stream.getY());
@@ -60,18 +60,18 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener{
             spinH1.setEnabled(false);
             spinW1.setEnabled(false);
             spinOpacity.setEnabled(false);
-        }        
+        }
     }
-    public Viewer detachViewer(){
-        panPreview.remove(viewer);
-        panPreview.revalidate();
-        return viewer;
-    }
-    public Viewer attachViewer(){
-        panPreview.add(viewer, BorderLayout.CENTER);
-        panPreview.revalidate();
-        return viewer;
-    }
+ //   public Viewer detachViewer(){
+ //       panPreview.remove(viewer);
+ //       panPreview.revalidate();
+ //       return viewer;
+//    }
+//    public Viewer attachViewer(){
+//        panPreview.add(viewer, BorderLayout.CENTER);
+//        panPreview.revalidate();
+//        return viewer;
+//    }
     public ImageIcon getIcon(){
         ImageIcon icon = null;
         if (stream.getPreview()!=null){
@@ -97,10 +97,6 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener{
         spinVolume.setValue(stream.getVolume() * 100);
         spinZOrder.setValue(stream.getZOrder());
         tglActiveStream.setSelected(stream.isPlaying());
-        if (stream.isPlaying()){
-            spinH1.setEnabled(false);
-            spinW1.setEnabled(false);            
-        }
         tglActiveStream.revalidate();
     }
     /** This method is called from within the constructor to
@@ -112,7 +108,6 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener{
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        panPreview = new javax.swing.JPanel();
         spinX = new javax.swing.JSpinner();
         spinY = new javax.swing.JSpinner();
         spinW = new javax.swing.JSpinner();
@@ -132,21 +127,14 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener{
         spinW1 = new javax.swing.JSpinner();
         labelCH = new javax.swing.JLabel();
         spinH1 = new javax.swing.JSpinner();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jList1 = new javax.swing.JList();
 
         setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
         setMaximumSize(new java.awt.Dimension(138, 350));
         setMinimumSize(new java.awt.Dimension(138, 350));
         setPreferredSize(new java.awt.Dimension(138, 350));
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        panPreview.setBackground(new java.awt.Color(113, 113, 113));
-        panPreview.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
-        panPreview.setMaximumSize(new java.awt.Dimension(90, 60));
-        panPreview.setMinimumSize(new java.awt.Dimension(90, 60));
-        panPreview.setName("panPreview"); // NOI18N
-        panPreview.setPreferredSize(new java.awt.Dimension(90, 60));
-        panPreview.setLayout(new java.awt.BorderLayout());
-        add(panPreview, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 120, 101));
 
         spinX.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         spinX.setName("spinX"); // NOI18N
@@ -203,6 +191,7 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener{
         add(spinVolume, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 260, 60, -1));
 
         tglActiveStream.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-start.png"))); // NOI18N
+        tglActiveStream.setToolTipText("Play List");
         tglActiveStream.setName("tglActiveStream"); // NOI18N
         tglActiveStream.setRolloverEnabled(false);
         tglActiveStream.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-stop.png"))); // NOI18N
@@ -285,7 +274,20 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener{
             }
         });
         add(spinH1, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 180, 60, -1));
+
+        jScrollPane1.setName("jScrollPane1"); // NOI18N
+
+        jList1.setModel(new javax.swing.AbstractListModel() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public Object getElementAt(int i) { return strings[i]; }
+        });
+        jList1.setName("jList1"); // NOI18N
+        jScrollPane1.setViewportView(jList1);
+
+        add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 120, 100));
     }// </editor-fold>//GEN-END:initComponents
+
     private void tglActiveStreamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglActiveStreamActionPerformed
         if (tglActiveStream.isSelected()) {
             spinW1.setEnabled(false);
@@ -343,6 +345,8 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener{
     }//GEN-LAST:event_spinH1StateChanged
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JList jList1;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel labelCH;
     private javax.swing.JLabel labelCW;
     private javax.swing.JLabel labelH;
@@ -352,7 +356,6 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener{
     private javax.swing.JLabel labelX;
     private javax.swing.JLabel labelY;
     private javax.swing.JLabel labelZ;
-    private javax.swing.JPanel panPreview;
     private javax.swing.JSpinner spinH;
     private javax.swing.JSpinner spinH1;
     private javax.swing.JSpinner spinOpacity;

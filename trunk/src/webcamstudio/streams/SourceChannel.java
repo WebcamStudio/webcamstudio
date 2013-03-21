@@ -16,7 +16,7 @@ import webcamstudio.sources.effects.Effect;
  *
  * @author patrick
  */
-public class SourceChannel {
+public class SourceChannel  {
 
     private int x = 0;
     private int y = 0;
@@ -39,7 +39,7 @@ public class SourceChannel {
     ArrayList<Transition> startTransitions = new ArrayList<Transition>();
     ArrayList<Transition> endTransitions = new ArrayList<Transition>();
 
-    private SourceChannel() {
+    public SourceChannel() {
     }
 
     public String getName() {
@@ -80,7 +80,7 @@ public class SourceChannel {
         }
         return s;
     }
-
+    
     public void apply(final Stream s) {
         final SourceChannel instance = this;
         new Thread(new Runnable() {
@@ -257,5 +257,12 @@ public class SourceChannel {
      */
     public int getCaptureY() {
         return captureY;
+    }
+    public int getisPlaying() {
+        int ISPlay = 0;
+        if (isPlaying) {
+            ISPlay = 1;
+        }
+        return ISPlay;
     }
 }
