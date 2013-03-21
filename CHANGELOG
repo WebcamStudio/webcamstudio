@@ -1,0 +1,159 @@
+webcamstudio-0.60
+
+  * Rewritten from scratch
+
+
+webcamstudio-0.56
+
+  * Removed output tab for better performance
+  * Fixed the Youtube browser
+  * Made app resizable, new layout presentation
+  * Added console mode
+  * Added detection for iPhone's iWebcamera
+  * Added plugin for tags showing current song in Text source
+  * Added background splash in the output webcam
+  * Added Source Browser on the left, new GUI
+  * Added new GStreamer Effects
+  * Fixed Animated Gifs rendering
+  * Added Thumbnail preview of images in source browser
+  * Updated preview to be more fluid
+  * Added an update button to load the source browser
+  * Added a preview button at the bottom
+  * Fixed text scrolling
+  * Added Seek function on video source
+  * Added new effect ZoomZoom
+
+	
+webcamstudio-0.55
+
+  * Fixed image flickering
+
+
+webcamstudio-0.54
+
+  * Fixed bug in singlepaint module
+  * Fixed cursor in desktop source
+  * Renamed module to webcamstudio
+  * Added Swedish Translation
+  * Fixed Russian Translation
+  * Added new effect RGB
+  * Added support for animated gif
+  * Added no background effect
+  * Added option to ignore layout transition on source
+  * Changed source order list to be more intuitive
+  * Fixed memory issue when loading model for face detection
+  * Added memory for last folder
+  * Updated sp icon
+  * Fixed dv source
+  * Fixed vertigotv and shadadelictv effect
+  * Modified v4l(2) source with a simpler pipeline
+  * Fixed bug on fade transition
+  * Fixed bug on audio volume mute
+  * Fixed bug on shapes
+  * Added twitter posting
+  * Added more resolutions on output
+  * Added text-to-speech on IRC
+  * Fixed color chooser in irc control
+  * Added face detection on movies,dv,pipeline
+  * Added a script to check for gstreamer plugins
+  * Activated rescaling by default
+  * Fixed the bug when an error is occuring and not displaying correctly the message box
+  * Fixed bug in movie playing
+  * Added face detection
+  * Added new shapes, added option to swap a shape mask
+  * Femoved avi export, fixed some minor bugs
+  * Added activity detection
+  * Renamed plugins as pipelines.  extention is now wspl
+  * Added more speed on text scrolling
+  * Fixed loading shapes from studio files
+  * Removed tag for webcam capture
+  * Modified the capture settings on movies/dv/webcams.  Using the rescale method now
+  * Updated webcam resolution support
+  * Bug fixes on text display, mosaic effect and usage improvement
+  * Bug fixes on layout saving, display, splash background
+  * Added new transition
+  * Added new effects
+  * Added efects saving in studio files
+  * Added opacity effect
+  * Added new shapes
+  * Added layouts to studio files
+  * Make yuv format default for webcams since it seems to be faster
+  * Added selectable transitions
+  * Fixed effects on animations
+  * Added a layer manager to help components
+  * Added new glow effect
+  * Added new contrast effect, and removed corresponding elements from gst pipeline
+  * Added chromakey effect
+  * Added rotation effect
+  * Added transition effect when switching layout
+  * A new logo
+  * Added control irc
+  * Added text control, removed RSS feed to be replace by widgets
+  * Added Shapes
+  * Added languages japanese and czech
+  * Added plugins and fixed order of widgets in source browser
+
+  
+webcamstudio-0.53
+
+  * Added Italian Language
+  * Added Dutch Language
+  * Added Spanish Language (+2 locales)
+  * Added Russian Language
+  * Some cleanup in classes
+  * Added Animations in Source Browser
+  * Moved menu WS4GL Animations into Source Browser
+  * Added new Widget feature
+  * Fixed performance issues
+  * Added Wide mode support for main window
+  * Added mini 16:9 format
+  * Added broadcasting capacity for FME/Wowza/Red5 servers (FME 2.5)
+  * Added Source Browser (Can add Devices, Images, Animations, Widgets and Movies)
+  * Added option to hide/show mouse cursor on Desktop source
+  * Added the GISS Caster to output live to the GISS server
+  * Added auto command to give read access to /dev/raw1394
+  * Added a new source list
+  * Added output framerate
+  * Added DV source
+  * Improved performance on recorders
+  * Changed AVI format to xvid instead of mjpeg
+  * Added option to display or not the splash background
+  * Added audio level input in animations
+  * Fixed scrolling speed in text sources
+  * Improved text rendering
+  * Added output Quality selection
+  * Minor fix on Desktop source
+  * Hot pluging of webcams supported
+
+
+webcamstudio-0.52
+
+  * Added tips on the open URL dialog
+  * Added RFB support (VNC) in Movie stream
+  * Fixed minor bug in Desktop source
+  * Added Full Screen mode to Desktop capture
+  * Added Animation Creator for easy packaging
+  * Fixed french translation for video recorder
+  * Set audio volume at 50%
+  * Improved http server efficiency
+  * Fixed prefs loading in broadcaster
+  * Added missing french translation for About menu
+  * Added some feed back on the HTTP Server to the broadcaster
+  * Added Playlist video source
+  * Added output size for 160x120, 320x240, 640x480...
+  * Improved performances on display
+  * Fixed the lipsync issue with webcams
+  * Added Next,Previous in YoutubeBrowser
+  * Added password protect in Broadcaster HTTP stream
+  * Added HTTP Server wrapper to the broadcaster to the stream can be viewed by any media player
+  * Adding HTTP Server for Broadcaster
+  * Added background logo
+  * Added borders
+  * Added last 10 url to the openurl dialog
+  * Added a Movie Viewer
+  * Increased performance on vloopback class
+  * Increased performance on Recorder
+  * Fixed the big delay when using Broadcaster
+  * Fixed youtube browser
+  * Added auto restart to gstreamer effects in videosource
+  * Fixed bug in Advanced Options
