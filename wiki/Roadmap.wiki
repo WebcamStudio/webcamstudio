@@ -20,6 +20,7 @@ Here you can find what the [WebcamStudioTeam WebcamStudio Team] plans for the ap
    # Adding images to the Screenshots wiki page. Please refer to the [http://code.google.com/p/support/wiki/WikiSyntax#Links Links wiki syntax] on howto -> *[WebcamStudioTeam WebcamStudio Team]*
    # Adding videos to the [VideoDemos Video Demos] wiki page. Please refer to the [http://code.google.com/p/support/wiki/WikiSyntax#Videos Video wiki syntax] on howto. Videos could be uploaded either to any team member youtube account (best option) and link them here or be uploaded to the [https://plus.google.com/communities/110329269823088092206 WebcamStudio Community page]. Other options exist too but they should use permanent url links -> *[WebcamStudioTeam WebcamStudio Team]*
    # Adding a donate buttons/links etc (preferably Paypal?) to the SupportWebcamStudio page -> *[WebcamStudioTeam WebcamStudio Team]*
+ * All developers should join the [https://launchpad.net/~webcamstudio WebcamStudio Team] on Launchpad. Please confirm in a private email to PhobosK -> *[WebcamStudioTeam WebcamStudio Team]*
  * Fixing all the [https://code.google.com/p/webcamstudio/issues/list issues] related to the current development branch (which is 0.6 series) -> *[WebcamStudioTeam WebcamStudio Team]*
  * Adding all older branch features (0.57) to the current branch development version (0.60 series) -> *[WebcamStudioTeam WebcamStudio Team]*
  * Start working on a better user interface with better accessibility  -> *to be assigned*
