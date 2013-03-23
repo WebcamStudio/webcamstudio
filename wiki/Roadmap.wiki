@@ -1,0 +1,43 @@
+#summary This is the Roadmap for WebcamStudio
+#labels Phase-Requirements
+= Introduction =
+
+Here you can find what the [WebcamStudioTeam WebcamStudio Team] plans for the application, who is in charge of the planned changes etc.
+
+ * Tasks are listed by priority in order they appear from top priority to less important.
+ * The format of this is:
+   _TASK -> PERSON ASSIGNED TO_
+ * Developers of the Team, when a task is completed, please use the wiki strikeout font to acknowledge this (surround the text with two tildes ~TEXT~)
+
+= One time tasks Roadmap =
+ * Decide on versioning support and specific issues with svnversion command, build.txt and Version.java -> *[WebcamStudioTeam WebcamStudio Team]*
+ * Fixing all the [https://code.google.com/p/webcamstudio/issues/list issues] related to the current development branch (which is 0.6 series) -> *[WebcamStudioTeam WebcamStudio Team]*
+ * Adding all older branch features (0.57) to the current branch development version (0.60 series) -> *[WebcamStudioTeam WebcamStudio Team]*
+ * Start working on a better user interface with better accessibility  -> *to be assigned*
+ * Adding new features to the application
+   # Support for other streaming sites
+     * [http://www.justin.tv/ JustinTV] ->  *to be assigned*
+ * Finding a designer for the look of the application its icons etc. This may be one of the already existing members  ->  *to be assigned*
+   * Filing an ad on SourceForge for a designer wanted for the project -> *PhobosK*
+ * Start working on the cross-platform compatibility
+   # On other than Debian derivatives Linux distros
+     * RPM based distros packaging -> *PhobosK*
+     * Gentoo ebuild support -> *PhobosK*
+   # On Windows systems -> *to be assigned*
+     * Windows installer creation with packaging all the necessary additional packages like Java, FFMPEG etc-> *PhobosK*
+   # On Mac -> *to be assigned*
+   # Other platforms to be listed here -> *to be assigned*
+ * Start working on the user documentation about the application -> *to be assigned*
+
+
+= Recurrent tasks Roadmap =
+ * [https://code.google.com/p/webcamstudio/issues/list Issues] review, assignment and fixing -> *[WebcamStudioTeam WebcamStudio Team]*
+ * Testing and debugging all new stable releases -> *[WebcamStudioTeam WebcamStudio Team]* and *a specific person should be assigned* here...
+ * Release new versions on Launchpad and here -> *PhobosK*
+ * Google code home page updates and support -> *PhobosK* and *[WebcamStudioTeam WebcamStudio Team]*
+   # Adding [Workflow] wiki page
+   # Keeping WebcamstudioTeam wiki page updated
+   # Adding a translators wanted info for keeping the translations updated
+ * Regular [WebcamStudioTeam WebcamStudio Team] meetings at least once per month according to schedule available to all the [WebcamStudioTeam WebcamStudio Team] at their [https://www.google.com/calendar/render Google Calendar] page. Team members please look at the shared calendar named *"WebcamStudio Devs Calendar"* in you Google account, watch it and add needed events etc All the timing there is(and should be) in GMT.
+ * Regular application documentation update and support -> *[WebcamStudioTeam WebcamStudio Team]* though *a specific person should be assigned* here...
+ * Regular application translations update and support -> *[WebcamStudioTeam WebcamStudio Team]* though *a specific person should be assigned* here...
