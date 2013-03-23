@@ -15,12 +15,13 @@ Here you can find what the [WebcamStudioTeam WebcamStudio Team] plans for the ap
  * Updating the [WebcamStudioTeam WebcamStudio Team] page with all the developers info needed -> better be done by every developer involved i.e. assigned to *[WebcamStudioTeam WebcamStudio Team]*
  * Updating the all the [https://code.google.com/p/webcamstudio/w/list Wiki pages of the project] -> *[WebcamStudioTeam WebcamStudio Team]*
    # Adding [Workflow] wiki page -> *PhobosK*
-   # Adding [News] wiki page -> *PhobosK*
+   # ~~Adding [News] wiki page -> *PhobosK*~~
    # Adding a translators and designers wanted info -> *PhobosK*
    # Adding images to the Screenshots wiki page. Please refer to the [http://code.google.com/p/support/wiki/WikiSyntax#Links Links wiki syntax] on howto -> *[WebcamStudioTeam WebcamStudio Team]*
    # Adding videos to the [VideoDemos Video Demos] wiki page. Please refer to the [http://code.google.com/p/support/wiki/WikiSyntax#Videos Video wiki syntax] on howto. Videos could be uploaded either to any team member youtube account (best option) and link them here or be uploaded to the [https://plus.google.com/communities/110329269823088092206 WebcamStudio Community page]. Other options exist too but they should use permanent url links -> *[WebcamStudioTeam WebcamStudio Team]*
    # Adding a donate buttons/links etc (preferably Paypal?) to the SupportWebcamStudio page -> *[WebcamStudioTeam WebcamStudio Team]*
  * All developers should join the [https://launchpad.net/~webcamstudio WebcamStudio Team] on Launchpad. Please confirm in a private email to PhobosK -> *[WebcamStudioTeam WebcamStudio Team]*
+ * ~~Adding an official IRC channel #webcamstudio for communication on irc.freenode.net-> *PhobosK*~~
  * Fixing all the [https://code.google.com/p/webcamstudio/issues/list issues] related to the current development branch (which is 0.6 series) -> *[WebcamStudioTeam WebcamStudio Team]*
  * Adding all older branch features (0.57) to the current branch development version (0.60 series) -> *[WebcamStudioTeam WebcamStudio Team]*
  * Start working on a better user interface with better accessibility  -> *to be assigned*
