@@ -47,6 +47,6 @@ Here you can find what the [WebcamStudioTeam WebcamStudio Team] plans for the ap
  * Release new versions on Launchpad and here -> *PhobosK*
  * Google code home page updates and support -> *PhobosK* and *[WebcamStudioTeam WebcamStudio Team]*
    # Keeping WebcamStudioTeam wiki page updated
- * Regular [WebcamStudioTeam WebcamStudio Team] meetings at least once per month according to schedule available to all the [WebcamStudioTeam WebcamStudio Team] at their [https://www.google.com/calendar/render Google Calendar] page. Team members please look at the shared calendar named *"WebcamStudio Devs Calendar"* in you Google account, watch it and add needed events etc All the timing there is(and should be) in GMT.
+ * Regular [WebcamStudioTeam WebcamStudio Team] meetings at least once per month according to schedule available to all the [WebcamStudioTeam WebcamStudio Team] at their [https://www.google.com/calendar/render Google Calendar] page. Team members please look at the shared calendar named *"!WebcamStudio Devs Calendar"* in you Google account, watch it and add needed events etc All the timing there is(and should be) in GMT.
  * Regular application documentation update and support -> *[WebcamStudioTeam WebcamStudio Team]* though *a specific person should be assigned* here...
  * Regular application translations update and support -> *[WebcamStudioTeam WebcamStudio Team]* though *a specific person should be assigned* here...
