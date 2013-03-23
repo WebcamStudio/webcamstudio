@@ -10,7 +10,15 @@ Here you can find what the [WebcamStudioTeam WebcamStudio Team] plans for the ap
  * Developers of the Team, when a task is completed, please use the wiki strikeout font to acknowledge this (surround the text with two tildes ~TEXT~)
 
 = One time tasks Roadmap =
+ * Discussion on this !Roadmap - acceptance of assignments, adding new tasks etc -> [WebcamStudioTeam WebcamStudio Team]
  * Decide on versioning support and specific issues with svnversion command, build.txt and Version.java -> *[WebcamStudioTeam WebcamStudio Team]*
+ * Updating the [WebcamStudioTeam WebcamStudio Team] page with all the developers info needed -> better be done by every developer involved i.e. assigned to *[WebcamStudioTeam WebcamStudio Team]*
+ * Updating the all the [https://code.google.com/p/webcamstudio/w/list Wiki pages of the project] -> *[WebcamStudioTeam WebcamStudio Team]*
+   # Adding [Workflow] wiki page -> *PhobosK*
+   # Adding [News] wiki page -> *PhobosK*
+   # Adding a translators and designers wanted info -> *PhobosK*
+   # Adding images to the Screenshots wiki page. Please refer to the [http://code.google.com/p/support/wiki/WikiSyntax#Links Links wiki syntax] on howto -> *[WebcamStudioTeam WebcamStudio Team]*
+   # Adding videos to the [VideoDemos Video Demos] wiki page. Please refer to the [http://code.google.com/p/support/wiki/WikiSyntax#Videos Video wiki syntax] on howto. Videos could be uploaded either to any team member youtube account (best option) and link them here or be uploaded to the [https://plus.google.com/communities/110329269823088092206 WebcamStudio Community page]. Other options exist too but they should use permanent url links -> *[WebcamStudioTeam WebcamStudio Team]*
  * Fixing all the [https://code.google.com/p/webcamstudio/issues/list issues] related to the current development branch (which is 0.6 series) -> *[WebcamStudioTeam WebcamStudio Team]*
  * Adding all older branch features (0.57) to the current branch development version (0.60 series) -> *[WebcamStudioTeam WebcamStudio Team]*
  * Start working on a better user interface with better accessibility  -> *to be assigned*
@@ -35,9 +43,7 @@ Here you can find what the [WebcamStudioTeam WebcamStudio Team] plans for the ap
  * Testing and debugging all new stable releases -> *[WebcamStudioTeam WebcamStudio Team]* and *a specific person should be assigned* here...
  * Release new versions on Launchpad and here -> *PhobosK*
  * Google code home page updates and support -> *PhobosK* and *[WebcamStudioTeam WebcamStudio Team]*
-   # Adding [Workflow] wiki page
-   # Keeping WebcamstudioTeam wiki page updated
-   # Adding a translators wanted info for keeping the translations updated
+   # Keeping WebcamStudioTeam wiki page updated
  * Regular [WebcamStudioTeam WebcamStudio Team] meetings at least once per month according to schedule available to all the [WebcamStudioTeam WebcamStudio Team] at their [https://www.google.com/calendar/render Google Calendar] page. Team members please look at the shared calendar named *"WebcamStudio Devs Calendar"* in you Google account, watch it and add needed events etc All the timing there is(and should be) in GMT.
  * Regular application documentation update and support -> *[WebcamStudioTeam WebcamStudio Team]* though *a specific person should be assigned* here...
  * Regular application translations update and support -> *[WebcamStudioTeam WebcamStudio Team]* though *a specific person should be assigned* here...
