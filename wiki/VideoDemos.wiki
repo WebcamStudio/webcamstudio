@@ -6,4 +6,4 @@ Here are some video demos of the WebcamStudio application, showing it in action.
 
 = Video Demos =
 
-Video Demos to be added...
+<wiki:video url="https://www.youtube.com/watch?v=NJiHoEzsoL8"/>
