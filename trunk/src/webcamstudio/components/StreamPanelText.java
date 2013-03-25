@@ -32,6 +32,7 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
     
 
     /** Creates new form StreamPanel */
+    @SuppressWarnings("unchecked") 
     public StreamPanelText(SourceText stream) {
 
         initComponents();

@@ -16,6 +16,7 @@ import java.awt.image.BufferedImage;
 import javax.swing.ImageIcon;
 import javax.swing.SpinnerNumberModel;
 import webcamstudio.streams.Stream;
+import webcamstudio.media.renderer.Capturer;
 
 
 
@@ -51,6 +52,10 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener{
         spinZOrder.setValue(stream.getZOrder());
         spinH1.setValue(stream.getCaptureHeight());
         spinW1.setValue(stream.getCaptureWidth());
+        spinVDelay.setValue(stream.getVDelay());
+        spinADelay.setValue(stream.getADelay());
+        spinVDelay.setEnabled(stream.hasAudio());
+        spinADelay.setEnabled(stream.hasAudio());
         stream.setListener(this);
         if (!stream.hasVideo()){
             spinX.setEnabled(false);
@@ -99,7 +104,14 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener{
         tglActiveStream.setSelected(stream.isPlaying());
         if (stream.isPlaying()){
             spinH1.setEnabled(false);
-            spinW1.setEnabled(false);            
+            spinW1.setEnabled(false);
+            spinVDelay.setEnabled(false);
+            spinADelay.setEnabled(false);
+        } else {
+            spinH1.setEnabled(true);
+            spinW1.setEnabled(true);
+            spinVDelay.setEnabled(true);
+            spinADelay.setEnabled(true);
         }
         tglActiveStream.revalidate();
     }
@@ -132,11 +144,15 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener{
         spinW1 = new javax.swing.JSpinner();
         labelCH = new javax.swing.JLabel();
         spinH1 = new javax.swing.JSpinner();
+        labelAD = new javax.swing.JLabel();
+        labelVD = new javax.swing.JLabel();
+        spinVDelay = new javax.swing.JSpinner();
+        spinADelay = new javax.swing.JSpinner();
 
         setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
-        setMaximumSize(new java.awt.Dimension(138, 350));
-        setMinimumSize(new java.awt.Dimension(138, 350));
-        setPreferredSize(new java.awt.Dimension(138, 350));
+        setMaximumSize(new java.awt.Dimension(138, 400));
+        setMinimumSize(new java.awt.Dimension(138, 400));
+        setPreferredSize(new java.awt.Dimension(138, 400));
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         panPreview.setBackground(new java.awt.Color(113, 113, 113));
@@ -211,7 +227,7 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener{
                 tglActiveStreamActionPerformed(evt);
             }
         });
-        add(tglActiveStream, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 310, 120, -1));
+        add(tglActiveStream, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 350, 120, -1));
 
         spinZOrder.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         spinZOrder.setName("spinZOrder"); // NOI18N
@@ -220,7 +236,7 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener{
                 spinZOrderStateChanged(evt);
             }
         });
-        add(spinZOrder, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 280, 60, -1));
+        add(spinZOrder, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 320, 60, -1));
 
         labelX.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("webcamstudio/Languages"); // NOI18N
@@ -255,8 +271,11 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener{
 
         labelZ.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         labelZ.setText(bundle.getString("LAYER")); // NOI18N
+        labelZ.setMaximumSize(new java.awt.Dimension(30, 10));
+        labelZ.setMinimumSize(new java.awt.Dimension(30, 10));
         labelZ.setName("labelZ"); // NOI18N
-        add(labelZ, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 290, 30, -1));
+        labelZ.setPreferredSize(new java.awt.Dimension(30, 10));
+        add(labelZ, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 330, 40, 9));
 
         labelCW.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         labelCW.setText(bundle.getString("CAPTUREWIDTH")); // NOI18N
@@ -285,15 +304,55 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener{
             }
         });
         add(spinH1, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 180, 60, -1));
+
+        labelAD.setFont(new java.awt.Font("Ubuntu Light", 0, 8)); // NOI18N
+        labelAD.setText("A Delay");
+        labelAD.setToolTipText("");
+        labelAD.setMaximumSize(new java.awt.Dimension(30, 10));
+        labelAD.setMinimumSize(new java.awt.Dimension(30, 10));
+        labelAD.setName("labelAD"); // NOI18N
+        labelAD.setPreferredSize(new java.awt.Dimension(30, 10));
+        add(labelAD, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 310, 40, 9));
+
+        labelVD.setFont(new java.awt.Font("Ubuntu Light", 0, 8)); // NOI18N
+        labelVD.setText("V Delay");
+        labelVD.setToolTipText("");
+        labelVD.setMaximumSize(new java.awt.Dimension(30, 10));
+        labelVD.setMinimumSize(new java.awt.Dimension(30, 10));
+        labelVD.setName("labelVD"); // NOI18N
+        labelVD.setPreferredSize(new java.awt.Dimension(30, 10));
+        add(labelVD, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 290, 40, 9));
+
+        spinVDelay.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
+        spinVDelay.setName("spinVDelay"); // NOI18N
+        spinVDelay.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                spinVDelayStateChanged(evt);
+            }
+        });
+        add(spinVDelay, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 280, 60, -1));
+
+        spinADelay.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
+        spinADelay.setName("spinADelay"); // NOI18N
+        spinADelay.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                spinADelayStateChanged(evt);
+            }
+        });
+        add(spinADelay, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 300, 60, -1));
     }// </editor-fold>//GEN-END:initComponents
     private void tglActiveStreamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglActiveStreamActionPerformed
         if (tglActiveStream.isSelected()) {
             spinW1.setEnabled(false);
             spinH1.setEnabled(false);
+            spinVDelay.setEnabled(false);
+            spinADelay.setEnabled(false);
             stream.read();
         } else {
             spinW1.setEnabled(true);
             spinH1.setEnabled(true);
+            spinVDelay.setEnabled(stream.hasAudio());
+            spinADelay.setEnabled(stream.hasAudio());
             stream.stop();
         }
     }//GEN-LAST:event_tglActiveStreamActionPerformed
@@ -342,20 +401,32 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener{
         stream.setCaptureHeight((Integer)spinH1.getValue());
     }//GEN-LAST:event_spinH1StateChanged
 
+    private void spinVDelayStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinVDelayStateChanged
+        stream.setVDelay((Integer)spinVDelay.getValue()); // TODO add your handling code here:
+    }//GEN-LAST:event_spinVDelayStateChanged
+
+    private void spinADelayStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinADelayStateChanged
+        stream.setADelay((Integer)spinADelay.getValue());// TODO add your handling code here:
+    }//GEN-LAST:event_spinADelayStateChanged
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel labelAD;
     private javax.swing.JLabel labelCH;
     private javax.swing.JLabel labelCW;
     private javax.swing.JLabel labelH;
     private javax.swing.JLabel labelO;
     private javax.swing.JLabel labelV;
+    private javax.swing.JLabel labelVD;
     private javax.swing.JLabel labelW;
     private javax.swing.JLabel labelX;
     private javax.swing.JLabel labelY;
     private javax.swing.JLabel labelZ;
     private javax.swing.JPanel panPreview;
+    private javax.swing.JSpinner spinADelay;
     private javax.swing.JSpinner spinH;
     private javax.swing.JSpinner spinH1;
     private javax.swing.JSpinner spinOpacity;
+    private javax.swing.JSpinner spinVDelay;
     private javax.swing.JSpinner spinVolume;
     private javax.swing.JSpinner spinW;
     private javax.swing.JSpinner spinW1;

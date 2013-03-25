@@ -32,6 +32,7 @@ import webcamstudio.channels.MasterChannels;
 import webcamstudio.mixers.MasterMixer;
 import webcamstudio.streams.*;
 import webcamstudio.util.Tools;
+import webcamstudio.components.*;
 
 /**
  *
@@ -39,8 +40,13 @@ import webcamstudio.util.Tools;
  */
 public class Studio {
 
-    ArrayList<String> channels = MasterChannels.getInstance().getChannels();
+    private ArrayList<String> channels = MasterChannels.getInstance().getChannels();
+    private ArrayList<Integer> Durations = ChannelPanel.CHTimers;
+    private ArrayList<String> nextChannel = ChannelPanel.CHCurrNext;
+    public static ArrayList<String> channez = MasterChannels.getInstance().getChannels();
+    public static MasterChannels channelSC = MasterChannels.getInstance();
     ArrayList<Stream> streams = MasterChannels.getInstance().getStreams();
+    Stream streamC = null;
     private static final String ELEMENT_SOURCES = "Sources";
     private static final String ELEMENT_CHANNELS = "Channels";
     private static final String ELEMENT_SOURCE = "Source";
@@ -64,8 +70,8 @@ public class Studio {
     public ArrayList<Stream> getStreams() {
         return streams;
     }
-// Studio removed, put Void
-    public static void load(File file) throws ParserConfigurationException, SAXException, IOException, XPathExpressionException {
+// Void removed, reput Studio
+    public static Studio load(File file) throws ParserConfigurationException, SAXException, IOException, XPathExpressionException {
         Studio studio = new Studio();
         System.out.println("Start LoadStudio");
         filename = file; 
@@ -77,16 +83,14 @@ public class Studio {
         for (int i = 0; i < nodeChannels.getLength(); i++) {
            Node channel = nodeChannels.item(i);
            String name = channel.getAttributes().getNamedItem("name").getTextContent();
-           System.out.println("Channel " + name);
-           
-   //        studio.channels.add(name);
-           
-           
-           webcamstudio.components.ChannelPanel.AddLoadingChannel(name);
-   //        webcamstudio.components.ChannelPanel.ListChannels.add(name);
-    //     webcamstudio.components.ChannelPanel.master.addChannel(name);
-   //        webcamstudio.components.ChannelPanel.model.addElement(name);
-   //       webcamstudio.components.ChannelPanel.lstChannels.revalidate();
+           String nxname = channel.getAttributes().getNamedItem("NextChannel").getTextContent();
+           String Sduration = channel.getAttributes().getNamedItem("duration").getTextContent();
+           int duration = Integer.parseInt(Sduration);
+           System.out.println("Channel " + name);  
+           studio.channels.add(name);
+           studio.nextChannel.add(nxname);
+           studio.Durations.add(duration);
+           System.out.println("Duration " + duration);  
         }
         
 
@@ -97,12 +101,14 @@ public class Studio {
         String rate = nodeMixer.getAttributes().getNamedItem("rate").getTextContent();
         System.out.println("Mixer: " + width + "X" + height + "@" + rate + "fps");
 
- //       return studio;
+        return studio;
     }
 
     public static void save(File file) throws IOException, XMLStreamException, TransformerConfigurationException, TransformerException, IllegalArgumentException, IllegalAccessException {
         ArrayList<String> channels = MasterChannels.getInstance().getChannels();
         ArrayList<Stream> streams = MasterChannels.getInstance().getStreams();
+        ArrayList<Integer> Durations = ChannelPanel.CHTimers;
+        ArrayList<String> nextChannel = ChannelPanel.CHCurrNext;
         StringWriter writer = new StringWriter();
 
         XMLStreamWriter xml = javax.xml.stream.XMLOutputFactory.newFactory().createXMLStreamWriter(writer);
@@ -112,9 +118,12 @@ public class Studio {
         xml.writeStartElement(ELEMENT_CHANNELS);
 
         for (String c : channels) {
+            int index = channels.indexOf(c);
             xml.writeStartElement(ELEMENT_CHANNEL);
             System.out.println("Channel: "+c);
             xml.writeAttribute("name", c);
+            xml.writeAttribute("duration", Durations.get(index) + "");
+            xml.writeAttribute("NextChannel", nextChannel.get(index) + "");
             xml.writeEndElement();
             
         }
@@ -174,10 +183,13 @@ public class Studio {
                 String name = f.getName();
                 System.out.println("SuperFields: "+name);
                 Object value = f.get(o);
+                System.out.println("Value: "+value);
                 if (value instanceof Integer) {
                     xml.writeAttribute(name, f.getInt(o) + "");
                 } else if (value instanceof Float) {
                     xml.writeAttribute(name, f.getFloat(o) + "");
+                } else if (value instanceof Boolean) {
+                    xml.writeAttribute(name, f.getBoolean(o) + "");
                 }
 
             }
@@ -192,6 +204,8 @@ public class Studio {
                 xml.writeAttribute(name, f.getInt(o) + "");
             } else if (value instanceof Float) {
                 xml.writeAttribute(name, f.getFloat(o) + "");
+            } else if (value instanceof Boolean) {
+                    xml.writeAttribute(name, f.getBoolean(o) + "");
             }
         }
         Tools.sleep(50);        
@@ -237,11 +251,11 @@ public class Studio {
                 Object value = f.get(o);
                 System.out.println("sub0ObjectValue: "+value);
                 if (value instanceof List) { 
-                    if (name == "channels") {
+                    if ("channels".equals(name)) {
                         xml.writeStartElement(ELEMENT_CHANNELS);
                         for (Object subO : ((List) value)) {
                         if (clazz != null){
-                        xml.writeStartElement(ELEMENT_CHANNEL);
+                        xml.writeStartElement(name);
                         System.out.println("sub0: "+subO);
                         writeObject(subO, xml);
                         xml.writeEndElement(); 
@@ -279,7 +293,6 @@ public class Studio {
 
     private static void readStreams(Document xml) throws IllegalArgumentException, IllegalAccessException, XPathExpressionException {
         XPath path = XPathFactory.newInstance().newXPath();
-       // Studio studio = new Studio();
         NodeList sources = (NodeList) path.evaluate("/" + ELEMENT_ROOT + "/" + ELEMENT_SOURCES + "/" + ELEMENT_SOURCE, xml.getDocumentElement(), XPathConstants.NODESET);
         if (sources != null) {
             for (int i = 0; i < sources.getLength(); i++) {
@@ -289,59 +302,108 @@ public class Studio {
                 System.out.println(clazz);
                 String file = null;
                 String ObjText = null;
+                ArrayList<String> SubChNames = new ArrayList<String>();
+                ArrayList<String> SubText = new ArrayList<String>();
+                ArrayList<String> SubFont = new ArrayList<String>();
                 Stream stream = null;
+                SourceChannel sc = null; 
+                ArrayList<SourceChannel> SCL = new ArrayList<SourceChannel>();
                 SourceText text = null;
                 for (int j = 0; j < source.getChildNodes().getLength(); j++) {
                     Node child = source.getChildNodes().item(j);
                     if (child.getNodeName().equals("file")) {                       
                         file = child.getTextContent();
                         System.out.println(file);
-                        Studio.ImgMovMus.add(file);
+                        ImgMovMus.add(file);
                     }
                     if (child.getNodeName().equals("content")) {
                         ObjText = child.getTextContent();
                         System.out.println(ObjText);
                     }
+                    if (child.getNodeName().equals("Channels")) {
+                        for (int nc = 0; nc < child.getChildNodes().getLength(); nc++) {
+                        Node SuperChild = child.getChildNodes().item(nc);
+                        for (int ncc = 0; ncc < SuperChild.getChildNodes().getLength(); ncc++) {
+                            Node SSuperChild = SuperChild.getChildNodes().item(ncc);                        
+                            if (SSuperChild.getNodeName().equals("name")) {
+                                System.out.println("SuperChild: "+SSuperChild.getTextContent());
+                                SubChNames.add(SSuperChild.getTextContent()); 
+                                sc = new SourceChannel();
+                                readObjectSC(sc, SuperChild);
+                                SCL.add(sc);
+                            }  if (SSuperChild.getNodeName().equals("text") && SSuperChild.getTextContent() != null) {
+                                System.out.println("SuperChild Text: "+SSuperChild.getTextContent());
+                                SubText.add(SSuperChild.getTextContent());
+                            }  if (SSuperChild.getNodeName().equals("font") && SSuperChild.getTextContent() != null) {
+                                System.out.println("SuperChild Font: "+SSuperChild.getTextContent());
+                                SubFont.add(SSuperChild.getTextContent());
+                            }
+                                
+                            
+                        } 
+                    }
+                  }
                 }
                 if (file != null) {
                     stream = Stream.getInstance(new File(file));
-                    Studio.extstream.add(stream);  // extstream = stream;
-                     
+                    extstream.add(stream);  // extstream = stream;
                     readObject(stream, source);
-                    SourceChannel.getChannel(clazz, stream);
+                    int op=0;
+                    for (SourceChannel scs : SCL) {
+                    scs.setName(SubChNames.get(op));
+                    stream.addChannel(scs);                    
+                    System.out.println("Add Channel: "+scs);
+                    op+=1;
+                    }
+                    SCL.clear();
                 } else if (clazz.toLowerCase().endsWith("sourcedesktop")) {
-                    stream = new SourceDesktop();
-                    
+                    stream = new SourceDesktop();                   
                     readObject(stream, source);
-                    SourceChannel.getChannel(clazz, stream);
+                    for (SourceChannel scs : SCL) {
+                    stream.addChannel(scs);
+                    }
+                    SCL.clear();
                 } else if (clazz.toLowerCase().endsWith("sourcetext")) {
                     text = new SourceText(ObjText);
                     Studio.LText.add(text);
                     readObject(text, source);
-                    SourceChannel.getChannel(clazz, text);
+                    int op=0;
+                    for (SourceChannel scs : SCL) {
+                    scs.setName(SubChNames.get(op));
+                    scs.setText(SubText.get(op));
+                    scs.setFont(SubFont.get(op));
+                    text.addChannel(scs);                    
+                    System.out.println("Add Channel: "+scs);
+                    op+=1;
+                    }
+                    SCL.clear();
                 } else if (clazz.toLowerCase().endsWith("sourceqrcode")) {
                     stream = new SourceQRCode("");
                                       
                     readObject(stream, source);
-                    SourceChannel.getChannel(clazz, stream);  
+                    for (SourceChannel scs : SCL) {
+                    stream.addChannel(scs);
+                    }
+                    SCL.clear();
                 } else if (clazz.toLowerCase().endsWith("sourcemicrophone")) {
-                    stream = new SourceMicrophone();
-                    
+                    stream = new SourceMicrophone();                    
                     readObject(stream, source);
-                    SourceChannel.getChannel(clazz, stream);
+                    for (SourceChannel scs : SCL) {
+                    stream.addChannel(scs);
+                    }
+                    SCL.clear();
                 } else {
                     System.err.println("Cannot handle " + clazz);
                 }
             }
         }
-
     }
 
     private static void readObject(Stream stream, Node source) throws IllegalArgumentException, IllegalAccessException {
         XPath path = XPathFactory.newInstance().newXPath();
 
         Field[] fields = stream.getClass().getDeclaredFields();
-        Field[] superFields = superFields = stream.getClass().getSuperclass().getDeclaredFields();
+        Field[] superFields = stream.getClass().getSuperclass().getDeclaredFields();
         // Read integer and floats
         for (Field field : superFields) {
             field.setAccessible(true);
@@ -351,9 +413,12 @@ public class Studio {
                 value = source.getAttributes().getNamedItem(name).getTextContent();
                 if (field.get(stream) instanceof Integer) {
                     field.setInt(stream, new Integer(value));
-                } else if (field.get(stream) instanceof Integer) {
+                } else if (field.get(stream) instanceof Float) {
                     field.setFloat(stream, new Float(value));
+                } else if (field.get(stream) instanceof Boolean) {
+                    field.setBoolean(stream, new Boolean (value));
                 } else if (field.get(stream) instanceof String) {
+                    System.out.println("Field String: "+field.get(stream));
                     for (int i = 0; i < source.getChildNodes().getLength(); i++) {
                         Node node = source.getChildNodes().item(i);
                         if (node.getNodeName().equals(name)) {
@@ -376,9 +441,12 @@ public class Studio {
                 System.out.println(value);
                 if (field.get(stream) instanceof Integer) {
                     field.setInt(stream, new Integer(value));
-                } else if (field.get(stream) instanceof Integer) {
+                } else if (field.get(stream) instanceof Float) {
                     field.setFloat(stream, new Float(value));
+                } else if (field.get(stream) instanceof Boolean) {
+                    field.setBoolean(stream, new Boolean (value));
                 } else if (field.get(stream) instanceof String) {
+                    System.out.println("Field String: "+field.get(stream));
                     for (int i = 0; i < source.getChildNodes().getLength(); i++) {
                         Node node = source.getChildNodes().item(i);
                         if (node.getNodeName().equals(name)) {
@@ -392,12 +460,74 @@ public class Studio {
         // Read List
         
     }
+    private static void readObjectSC(SourceChannel sc, Node source) throws IllegalArgumentException, IllegalAccessException {
+        XPath path = XPathFactory.newInstance().newXPath();
 
-    public static void main() { //String[] args
+        Field[] fields = sc.getClass().getDeclaredFields();
+        Field[] superFields = sc.getClass().getSuperclass().getDeclaredFields();
+        // Read integer and floats
+        for (Field field : superFields) {
+            field.setAccessible(true);
+            String name = field.getName();
+            String value = null;
+            if (source.getAttributes().getNamedItem(name) != null) {
+                value = source.getAttributes().getNamedItem(name).getTextContent();
+                if (field.get(sc) instanceof Integer) {
+                    field.setInt(sc, new Integer(value));
+                } else if (field.get(sc) instanceof Float) {
+                    field.setFloat(sc, new Float(value));
+                } else if (field.get(sc) instanceof Boolean) {
+                    field.setBoolean(sc, new Boolean (value));
+                } else if (field.get(sc) instanceof String) {
+                    System.out.println("Field String: "+field.get(sc));
+                    for (int i = 0; i < source.getChildNodes().getLength(); i++) {
+                        Node node = source.getChildNodes().item(i);
+                        if (node.getNodeName().equals(name)) {
+                            field.set(sc, node.getTextContent());
+                        }
+                    }                       
+                    
+                } 
+
+            }
+        }
+
+
+        for (Field field : fields) {
+            field.setAccessible(true);
+            String name = field.getName();
+            System.out.println(name);
+            String value = null;
+            if (source.getAttributes().getNamedItem(name) != null) {
+                value = source.getAttributes().getNamedItem(name).getTextContent();
+                System.out.println(value);
+                if (field.get(sc) instanceof Integer) {
+                    field.setInt(sc, new Integer(value));
+                } else if (field.get(sc) instanceof Float) {
+                    field.setFloat(sc, new Float(value));
+                } else if (field.get(sc) instanceof Boolean) {
+                    field.setBoolean(sc, new Boolean (value));
+                } else if (field.get(sc) instanceof String) {
+                    System.out.println("Field String: "+field.get(sc));
+                    for (int i = 0; i < source.getChildNodes().getLength(); i++) {
+                        Node node = source.getChildNodes().item(i);
+                        if (node.getNodeName().equals(name)) {
+                            field.set(sc, node.getTextContent());
+                        }
+                    }
+                }
+
+            }
+        }
+        // Read List 
+        
+    }
+    public static void main() { // removed (String[] args) from main
         try {
             try {
                 Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(Studio.filename);
                 readStreams(doc);
+                
 
             } catch (IllegalArgumentException ex) {
                 Logger.getLogger(Studio.class.getName()).log(Level.SEVERE, null, ex);

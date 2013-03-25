@@ -19,6 +19,7 @@ public class OpenURL extends javax.swing.JDialog {
     private javax.swing.DefaultComboBoxModel model = new javax.swing.DefaultComboBoxModel();
 
     /** Creates new form OpenURL */
+    @SuppressWarnings("unchecked") 
     public OpenURL(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
@@ -119,7 +120,7 @@ public class OpenURL extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+    @SuppressWarnings("unchecked") 
     private void btnSelectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSelectActionPerformed
         String url = cboURL.getEditor().getItem().toString();
         if (model.getIndexOf(url) == -1) {
@@ -145,7 +146,7 @@ public class OpenURL extends javax.swing.JDialog {
         prefs.put("urls", urls);
         prefs = null;
     }//GEN-LAST:event_formWindowClosing
-
+    @SuppressWarnings("unchecked") 
     private void cboURLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboURLActionPerformed
         String url = cboURL.getEditor().getItem().toString();
         if (model.getIndexOf(url) == -1) {

@@ -48,6 +48,7 @@
                   </Group>
                   <Component id="CHProgressTime" alignment="0" max="32767" attributes="0"/>
                   <Component id="jLabel4" alignment="0" pref="255" max="32767" attributes="0"/>
+                  <Component id="btnStopAllStream" alignment="0" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -63,7 +64,7 @@
                   <Component id="btnAdd" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" max="-2" attributes="0"/>
-              <Component id="lstChannelsScroll" pref="202" max="32767" attributes="0"/>
+              <Component id="lstChannelsScroll" pref="196" max="32767" attributes="0"/>
               <EmptySpace min="-2" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jLabel2" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -78,7 +79,9 @@
               <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="CHProgressTime" min="-2" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="36" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="btnStopAllStream" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
               <Component id="StopCHTimer" min="-2" max="-2" attributes="0"/>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="1" attributes="0">
@@ -234,7 +237,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel4">
       <Properties>
-        <Property name="text" type="java.lang.String" value="       Current Channel Timer (sec)"/>
+        <Property name="text" type="java.lang.String" value="         Current Channel Timer (sec)"/>
         <Property name="name" type="java.lang.String" value="jLabel4" noResource="true"/>
       </Properties>
     </Component>
@@ -242,6 +245,15 @@
       <Properties>
         <Property name="name" type="java.lang.String" value="CHProgressTime" noResource="true"/>
       </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="btnStopAllStream">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="[STOP] All Streams"/>
+        <Property name="name" type="java.lang.String" value="btnStopAllStream" noResource="true"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnStopAllStreamActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>
