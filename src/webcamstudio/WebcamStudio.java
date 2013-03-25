@@ -59,6 +59,8 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
     Properties animations = new Properties();
     OutputPanel recorder = new OutputPanel();
     Frame about = new Frame();
+    Stream stream = null;
+    private ArrayList<String> channelz = MasterChannels.getInstance().getChannels();
 
     /**
      * Creates new form WebcamStudio
@@ -204,13 +206,13 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
 
 
     }
-
+    @SuppressWarnings("unchecked")  
     private void initAnimations() {
         try {
             animations.load(getClass().getResourceAsStream("/webcamstudio/resources/animations/animations.properties"));
             DefaultComboBoxModel model = new DefaultComboBoxModel();
             for (Object o : animations.keySet()) {
-                model.addElement(o);
+                model.addElement(o); 
             }
             cboAnimations.setModel(model);
         } catch (IOException ex) {
@@ -602,14 +604,20 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
             chooser.showSaveDialog(this);
             file = chooser.getSelectedFile();
             if (file!=null){
+                SystemPlayer.getInstance(null).stop();
+                MasterChannels.getInstance().stopAllStream();
                 if (!file.getName().endsWith(".studio")){
                     file = new File(file.getParent(),file.getName()+".studio");
                 }
                 Studio.save(file);
             }
+            if (file!=null){
             ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Studio is saved!");
             ResourceMonitor.getInstance().addMessage(label);
-            
+            }  else {
+            ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "No File Selected!");
+            ResourceMonitor.getInstance().addMessage(label);    
+            }          
         } catch (Exception ex) {
             Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
             ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Error: " + ex.getMessage());
@@ -625,10 +633,12 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         chooser.showOpenDialog(this);
         File file = chooser.getSelectedFile();
         
+        SystemPlayer.getInstance(null).stop();
+        MasterChannels.getInstance().stopAllStream();
+        if (file != null) {
         try {
             Studio.load(file);
-//          System.out.println(Studio.load(file).getStreams());
-            Studio.main();
+            Studio.main();            
             System.out.println(Studio.ImgMovMus);
         } catch (ParserConfigurationException ex) {
             Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
@@ -639,11 +649,11 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         } catch (XPathExpressionException ex) {
             Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
         }
-        if (file != null) {
+        
             for (int u = 0; u < Studio.ImgMovMus.size(); u++) {
                 if (Studio.ImgMovMus.get(u).contains("/dev")) {
-                        System.out.println("Video Device");}
-                        else {
+                        System.out.println("Video Device");
+                } else {
             Stream s = Studio.extstream.get(u);
             if (s != null) {
                 StreamDesktop frame = new StreamDesktop(s, this);
@@ -659,18 +669,29 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
             
             Studio.extstream = new ArrayList<Stream>();
             Studio.ImgMovMus = new ArrayList<String>();
-         for (int t = 0; t < Studio.LText.size(); t++) {
-             SourceText text = Studio.LText.get(t);
-             StreamDesktop frame = new StreamDesktop(text, this);
-        desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+            for (int t = 0; t < Studio.LText.size(); t++) {
+                 SourceText text = Studio.LText.get(t);
+                 StreamDesktop frame = new StreamDesktop(text, this);
+                 desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
         try {
             frame.setSelected(true);
         } catch (PropertyVetoException ex) {
             Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
-        }// TODO add your handling code here:
+        }
         }
         Studio.LText =  new ArrayList<SourceText>();
+        Tools.sleep(500);
+        for (String chsc : MasterChannels.getInstance().getChannels()) {
+                    ChannelPanel.AddLoadingChannel(chsc);
+                    }
       }  
+      if (file!=null){
+            ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Studio is loaded!");
+            ResourceMonitor.getInstance().addMessage(label);
+            }  else {
+            ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "No File Selected!");
+            ResourceMonitor.getInstance().addMessage(label);    
+            }            
     }//GEN-LAST:event_btnLoadStudioActionPerformed
 
     private void WCSAboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_WCSAboutActionPerformed

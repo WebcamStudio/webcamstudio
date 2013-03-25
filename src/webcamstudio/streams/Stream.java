@@ -45,6 +45,8 @@ public abstract class Stream implements Callable<Frame>{
     protected int desktopH = 768;
     protected boolean hasVideo=true;
     protected boolean hasAudio=true;
+    protected int ADelay = 0;
+    protected int VDelay = 0;
     protected Frame nextFrame = null;
     ArrayList<Transition> startTransitions = new ArrayList<Transition>();
     ArrayList<Transition> endTransitions = new ArrayList<Transition>();
@@ -170,7 +172,7 @@ public abstract class Stream implements Callable<Frame>{
     public abstract void stop();
 
     public abstract boolean isPlaying();
-
+ 
     public abstract BufferedImage getPreview();
     
     public abstract void readNext();
@@ -446,6 +448,18 @@ public abstract class Stream implements Callable<Frame>{
      */
     public void setSeek(int seek) {
         this.seek = seek;
+    }
+    public void setVDelay (int VDealy) {
+        this.VDelay = VDealy;
+    }
+    public void setADelay (int ADealy) {
+        this.ADelay = ADealy;
+    }
+    public int getVDelay () {
+        return VDelay;
+    }
+    public int getADelay () {
+        return ADelay;
     }
 
     public static Stream getInstance(File file) {

@@ -20,6 +20,7 @@ public class SourceControlEffects extends javax.swing.JPanel {
     /**
      * Creates new form SourceControlEffects
      */
+    @SuppressWarnings("unchecked") 
     public SourceControlEffects(Stream s) {
         initComponents();
         stream = s;
@@ -149,7 +150,7 @@ public class SourceControlEffects extends javax.swing.JPanel {
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
-
+    @SuppressWarnings("unchecked") 
     private void btnAddEffectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddEffectActionPerformed
         listModel.addElement((Effect) cboEffects.getSelectedItem());
         stream.addEffect((Effect) cboEffects.getSelectedItem());
@@ -175,7 +176,7 @@ public class SourceControlEffects extends javax.swing.JPanel {
             lstEffects.revalidate();
         }
     }//GEN-LAST:event_btnDeleteEffectActionPerformed
-
+    @SuppressWarnings("unchecked") 
     private void btnMoveUpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMoveUpActionPerformed
         if (lstEffects.getSelectedValue()!=null){
             int indexSelected = lstEffects.getSelectedIndex();
@@ -192,7 +193,7 @@ public class SourceControlEffects extends javax.swing.JPanel {
             lstEffects.revalidate();
         }
     }//GEN-LAST:event_btnMoveUpActionPerformed
-
+    @SuppressWarnings("unchecked") 
     private void btnMoveDownActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMoveDownActionPerformed
         if (lstEffects.getSelectedValue()!=null){
             int indexSelected = lstEffects.getSelectedIndex();

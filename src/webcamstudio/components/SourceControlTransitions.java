@@ -21,6 +21,7 @@ import webcamstudio.streams.Stream;
 public class SourceControlTransitions extends javax.swing.JPanel {
     Stream source = null;
     /** Creates new form SourceControlTransitions */
+    @SuppressWarnings("unchecked") 
     public SourceControlTransitions(Stream source) {
         initComponents();
         this.source=source;
@@ -98,7 +99,7 @@ public class SourceControlTransitions extends javax.swing.JPanel {
 
         add(jScrollPane2);
     }// </editor-fold>//GEN-END:initComponents
-
+    @SuppressWarnings("deprecation") 
     private void lstStartTransitionsValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_lstStartTransitionsValueChanged
         Object[] list = lstStartTransitions.getSelectedValues();
         source.getStartTransitions().clear();
@@ -106,7 +107,7 @@ public class SourceControlTransitions extends javax.swing.JPanel {
             source.addStartTransition(Transition.getInstance(source, t.toString()));
         }
     }//GEN-LAST:event_lstStartTransitionsValueChanged
-
+    @SuppressWarnings("deprecation") 
     private void lstEndTransitionsValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_lstEndTransitionsValueChanged
         Object[] list = lstEndTransitions.getSelectedValues();
         source.getEndTransitions().clear();

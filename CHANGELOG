@@ -1,3 +1,10 @@
+webcamstudio-0.61    25 Mar 2013
+
+  * Fixes: Loading - Saving Sections. Need fixes Desktop-Animations loading.  
+  * Adds: Streams Audio-Video Dealy controls - Stop all Stream button.
+  * Changes: Changed Channel Timer Section.
+
+
 webcamstudio-0.61    22 Mar 2013
 
   * New upstream version - the last one from Patrick Balleux

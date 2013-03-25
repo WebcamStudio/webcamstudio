@@ -22,8 +22,8 @@ import webcamstudio.util.Tools;
  */
 public class Capturer {
 
-    private int hasaudio=0;
-    private int hasvideo=0;
+    private boolean hasaudio = false;
+    private boolean hasvideo = false;
     private int vport = 0;
     private int aport = 0;
     private boolean stopMe = false;
@@ -69,23 +69,24 @@ public class Capturer {
                 Socket connection = null;
                 try {
                     connection = videoServer.accept();
-                    hasvideo=1;                    
+                    hasvideo = true;                    
                     System.out.println(stream.getName() + " video accepted...");
                     do {
                         Tools.sleep(10);
-                        if (hasaudio == 1 || stream.getName().contains("Desktop")) {
-   //                     Tools.sleep(460); // Delay Video for 460 millisecs: Use Only if necessary.
-                          videoIn = new DataInputStream(connection.getInputStream());
+                        if (hasaudio || stream.getName().contains("Desktop")) {
+                            Tools.sleep(stream.getVDelay());
+   //                       Tools.sleep(460); // Delay Video for 460 millisecs: Use Only if necessary.
+                            videoIn = new DataInputStream(connection.getInputStream());
                         }
                     }
-                    while (hasaudio== 0 || hasvideo == 0);              
+                    while (!hasaudio || !hasvideo);              
                 } catch (IOException ex) {
                     Logger.getLogger(Capturer.class.getName()).log(Level.SEVERE, null, ex);
                 }
             } 
         });
         vCapture.setPriority(Thread.MIN_PRIORITY);
-        if (stream.hasVideo()) {         
+        if (stream.hasVideo() || hasaudio) {         
             vCapture.start();
         }
         Thread aCapture = new Thread(new Runnable() {
@@ -94,13 +95,15 @@ public class Capturer {
             public void run() {
                 try {                    
                     Socket connection = audioServer.accept();
-                    hasaudio=1;
+                    hasaudio = true;
                     System.out.println(stream.getName() + " audio accepted...");
                      do {
                       Tools.sleep(10);
-                      if (hasvideo == 1 || stream.getName().contains("mp3")) {
-                      audioIn = new DataInputStream(connection.getInputStream());
-                      }}while (hasvideo == 0 || hasaudio == 0);          
+                      if (hasvideo || stream.getName().contains("mp3")) {
+                          Tools.sleep(stream.getADelay());
+                          audioIn = new DataInputStream(connection.getInputStream());
+                          }
+                     }while (!hasvideo || !hasaudio);          
                     } catch (IOException ex) {
                     Logger.getLogger(Capturer.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -108,7 +111,7 @@ public class Capturer {
         }});
        
        aCapture.setPriority(Thread.MIN_PRIORITY);
-       if (stream.hasAudio()) {    
+       if (stream.hasAudio()|| hasvideo) { // 
             aCapture.start();            
        }
 
@@ -181,5 +184,5 @@ public class Capturer {
             stream.stop();
         }
         return frame;
-    }
+    }    
 }

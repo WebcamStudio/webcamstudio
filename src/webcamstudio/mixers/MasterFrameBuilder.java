@@ -90,7 +90,7 @@ public class MasterFrameBuilder implements Runnable {
                 while (buffer.hasRemaining()) {
                     float mix = (float) buffer.get() * f.getVolume();
                     outputBuffer.mark();
-                    if (outputBuffer.position()< outputBuffer.limit()){                      
+                    if (outputBuffer.position()< outputBuffer.limit()){ //25fps IOException                     
                       mix += outputBuffer.get();             
                     }                    
                 outputBuffer.reset();
@@ -99,7 +99,7 @@ public class MasterFrameBuilder implements Runnable {
                     } else if (mix < Short.MIN_VALUE) {
                         mix = Short.MIN_VALUE;
                     }
-                    if (outputBuffer.position()< outputBuffer.limit()){                           
+                    if (outputBuffer.position()< outputBuffer.limit()){ //25fps IOException                          
                     outputBuffer.put((short) mix);      
                     }
                 }                

@@ -49,6 +49,12 @@ public class SourceChannel  {
     public void setName(String n) {
         name = n;
     }
+    public void setText(String nt) {
+        text = nt;
+    }
+    public void setFont(String nf) {
+        font = nf;
+    }
 
     public static SourceChannel getChannel(String channelName, Stream stream) {
         SourceChannel s = new SourceChannel();
@@ -257,12 +263,5 @@ public class SourceChannel  {
      */
     public int getCaptureY() {
         return captureY;
-    }
-    public int getisPlaying() {
-        int ISPlay = 0;
-        if (isPlaying) {
-            ISPlay = 1;
-        }
-        return ISPlay;
     }
 }
