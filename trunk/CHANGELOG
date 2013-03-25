@@ -1,7 +1,7 @@
-webcamstudio-0.61    25 Mar 2013
+webcamstudio-0.62    25 Mar 2013
 
   * Fixes: Loading - Saving Sections. Need fixes Desktop-Animations loading.  
-  * Adds: Streams Audio-Video Dealy controls - Stop all Stream button.
+  * Adds: Streams Audio-Video Delay controls - Stop all Stream button.
   * Changes: Changed Channel Timer Section.
 
 

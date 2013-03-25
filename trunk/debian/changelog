@@ -1,9 +1,5 @@
-webcamstudio (0.61) unstable; urgency=low
+webcamstudio (0.62) unstable; urgency=low
 
-  * DELETE ME - PUT HERE ONLY CHANGES CONCERNING THE DEB PACKAGES
-  * Fixes: PLEASE CHANGE ME
-  * Adds: PLEASE CHANGE ME
-  * Changes: PLEASE CHANGE ME
   * New upstream version
 
  -- PhobosK <phobosk@kbfx.net>  Mon, 25 Mar 2013 17:56:33 +0100
