@@ -1,0 +1,22 @@
+#summary This page is to list all the current code changes that are WIP
+#labels Phase-Implementation
+= Introduction =
+This page is for the Developers of WebcamStudio.
+
+Please edit this document as you add here all the tasks/code you are working on, so the others from the WCS Team be aware of what is currently being done in the code of WCS.
+When the task is done, just use the strikeout wiki syntax (i.e. surround the task with double tilde ~)
+
+The format of this document should be:
+
+*Task being worked on at the moment* -> *Developer* -> *Approximate time to get the task done*
+
+OR
+
+~~ *Finished task* -> *Developer* -> *Approximate time to get the task done* ~~
+
+
+
+= Details =
+
+* This is an example task template -> *PhobosK* -> _5 Apr 2013_
+* ~~ An example task that has been finished already -> *PhobosK* -> _5 Apr 2013_ ~~
