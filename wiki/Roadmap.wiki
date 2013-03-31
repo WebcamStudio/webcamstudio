@@ -37,6 +37,7 @@ Here you can find what the [WebcamStudioTeam WebcamStudio Team] plans for the ap
      * Gentoo ebuild support -> *PhobosK*
    # On Windows systems -> *to be assigned*
      * Windows installer creation with packaging all the necessary additional packages like Java, FFMPEG etc-> *PhobosK*
+     * Creating/bundling/working on a virtual webcam driver for Windows, so the app could be used as in Linux. A project that may help: http://code.google.com/p/ucanvcam/ -> *to be assigned*
    # On Mac -> *to be assigned*
    # Other platforms to be listed here -> *to be assigned*
  * Start working on the user documentation about the application -> *to be assigned*
