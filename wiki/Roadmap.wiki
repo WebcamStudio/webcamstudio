@@ -26,6 +26,7 @@ Here you can find what the [WebcamStudioTeam WebcamStudio Team] plans for the ap
  * Adding all older branch features (0.57) to the current branch development version (0.60 series) -> *[WebcamStudioTeam WebcamStudio Team]*
  * Start working on a better user interface with better accessibility  -> *to be assigned*
  * Adding new features to the application
+   # Creating a plugin API, so it would be easier to add new features ->  *to be assigned*
    # Support for other streaming sites
      * [http://www.justin.tv/ JustinTV] ->  *to be assigned*
  * Finding a designer for the look of the application its icons etc. This may be one of the already existing members  ->  *to be assigned*
