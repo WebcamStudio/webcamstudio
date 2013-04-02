@@ -9,3 +9,5 @@ libraries/jffmpeg-*.jar usr/lib/webcamstudio/lib
 libraries/jtwitter*.jar usr/lib/webcamstudio/lib
 libraries/mail.jar usr/lib/webcamstudio/lib
 libraries/zxing*.jar usr/lib/webcamstudio/lib
+
+src/webcamstudio/resources/start.gif usr/lib/webcamstudio
