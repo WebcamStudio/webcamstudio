@@ -20,3 +20,4 @@ OR
 
  * This is an example task template -> *PhobosK* -> _5 Apr 2013_
  * ~~ An example task that has been finished already -> *PhobosK* -> _5 Apr 2013_ ~~
+ * Working on adding base 0.57 features and on stability of code -> Karl Ellis -> 30 Apr 2013 
