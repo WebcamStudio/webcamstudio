@@ -47,6 +47,15 @@ pre-build::
 clean::
 	# Clean the revision text file
 	rm -f src/webcamstudio/build.txt
+	# Clean the libwebcamstudio helper
+	$(MAKE) -C vloopback clean-libwebcamstudio
+
+build/webcamstudio::
+	$(MAKE) -C vloopback libwebcamstudio
+
+install/webcamstudio::
+	# Install the libwebcamstudio helper
+	dh_install -p$(cdbs_curpkg) vloopback/libwebcamstudio.so* usr/lib
 
 debian/webcamstudio-dkms.dkms: debian/webcamstudio-dkms.dkms.in
 	sed \

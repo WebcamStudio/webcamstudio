@@ -1,3 +1,11 @@
+webcamstudio (0.63) unstable; urgency=low
+
+  * Fixes: Missing libwebcamstudio helper module to webcamstudio
+  * Adds: start.gif splash to the java wrapper in webcamstudio
+  * New upstream version
+
+ -- PhobosK <phobosk@kbfx.net>  Wed, 03 Apr 2013 01:25:07 +0300
+
 webcamstudio (0.62) unstable; urgency=low
 
   * New upstream version

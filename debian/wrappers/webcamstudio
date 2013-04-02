@@ -21,6 +21,7 @@ fi
 . /usr/lib/java-wrappers/java-wrappers.sh
 
 JAVA_CLASSPATH="${INSTALLDIR}/*:${INSTALLDIR}/lib/*"
+JAVA_ARGS="-splash:start.gif"
 
 find_java_runtime openjdk sunmin5
 
@@ -39,5 +40,7 @@ find_jars AbsoluteLayout \
   slf4j-api \
   slf4j-log4j12 \
   swing-worker
+
+cd ${INSTALLDIR}
 
 run_java webcamstudio.WebcamStudio "$@"
