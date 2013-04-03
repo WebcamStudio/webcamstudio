@@ -3,7 +3,7 @@
 = How can you help WebcamStudio =
     * You can help us by applying as a developer for the project. We are in need of Java developer to help out with the coding.
     * You can help us sending feedback, bug reports, ideas.
-    * You can help us translate the application.
+    * You can help us [TranslatingTheProject translate the application].
     * You can help us in any way you can figure out :)
     * And finally you can support WebcamStudio by donating via Paypal. 
 
