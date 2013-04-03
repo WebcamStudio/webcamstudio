@@ -1,12 +1,13 @@
 #summary Linux Support and Stuff
+#labels Phase-Design,Phase-Implementation,Phase-Support,Phase-QA
 
 = Introduction =
-
-On Linux, GStreamer is mostly available from the package manager.  The virtual webcam module is the thing that is a little harder to deploy
-
+Here are discussed the Linux specifics about !WebcamStudio.
 
 = Details =
-
-Under the Linux OS, the different solutions to create a virtual webcam is using a module like vloopback or v4l2loopback.  Mostly these modules works quite well, but requires the user to install those module and recompile them on each kernel update.
-
-WebcamStudio is installing a forked module of v4l2loopback (previously vloopback) renamed to webcamstudio.  On each boot, the module is recompile to ensure the availability of the module for the user.
+  * GStreamer, ffmpeg and libav are available from the package manager of most of the contemporary distributions.  
+  * The virtual webcam module is the thing that is a little harder to deploy.
+    * !WebcamStudio is using a forked module of [https://github.com/umlaeute/v4l2loopback v4l2loopback] (previously vloopback) renamed to webcamstudio.
+    * The problem with the recompiling the module for each kernel is fixed for versions 0.60+ on Debian like systems, since it uses [http://en.wikipedia.org/wiki/Dynamic_Kernel_Module_Support DKMS]
+  * The original [https://github.com/umlaeute/v4l2loopback v4l2loopback] kernel module could be used since versions 0.60+ on Debian like systems
+  * On some distributions GStreamer works much better and faster than ffmpeg/libav on the same system (for example this is the case with Gentoo). This should be further investigated.
