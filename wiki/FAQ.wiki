@@ -7,10 +7,10 @@
 Here you can find some answers to frequently asked questions about WebcamStudio.
 
 = Definitions =
-=== What is V4L2 ? ===
+== What is !V4L2 ? ==
 In the Linux world, the input video is managed using the V4L and V4L2 frameworks. Actually the Video For Linux (V4L) is an API that provides unified access to various video capturing devices, such as TV tuners, USB web cameras, etc. The V4L2 interface, is a successor of V4L, which fixes bugs found in V4L, and supports a wider range of devices.For more info look at [http://www.linuxfordevices.com/c/a/Linux-For-Devices-Articles/Intro-to-V4L2/ The Intro to V4L2 Article] or at [https://www.kernel.org/doc/Documentation/video4linux/v4l2-framework.txt The Kernel Documentation].
 
-=== What is VLoopback device ? ===
+== What is a VLoopback device ? ==
 A VLoopback device is a virtual device that provides a way to simulate a video input in Linux.
 
 When you connect a webcam to a linux computer, a special device is created in the _/dev_ folder, generally the name is _/dev/video0_. If you have more of those devices, then the names will increase in numbering like _/dev/video1_, _/dev/video2_, etc...
@@ -23,8 +23,8 @@ For example: The original vloopback module from the Motion project, is a V4L dev
 
 _*Note: Since those devices are virtual, if your browser is started before WebcamStudio for example, it is possible that Flash will not recognize those device as video input.  Make sure to start WebcamStudio first, then your browser (or any other software that uses the virtual devices) so they will be detected properly.*_
 
-=== What is ChromaKey and ChromaKeying ? ===
-ChromaKeying is a way of selecting a colour in an image and then replacing that colour with a transparent one.  For example, the Weather guy is in front of a green wall, and all greens are removed to be replaced by a background image/video.
+== What is Chroma Key and Chroma Keying ? ==
+Chroma Keying is a way of selecting a colour in an image and then replacing that colour with a transparent one.  For example, the Weather guy is in front of a green wall, and all greens are removed to be replaced by a background image/video.
 
 = General Questions =
 = Installation =
