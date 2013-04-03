@@ -1,0 +1,31 @@
+#summary Frequently Asked Questions about WebcamStudio
+#labels Featured
+
+<wiki:toc/>
+
+= Introduction =
+Here you can find some answers to frequently asked questions about WebcamStudio.
+
+= Definitions =
+== What is V4L2? ==
+In the Linux world, the input video is managed using the V4L and V4L2 frameworks. Actually the Video For Linux (V4L) is an API that provides unified access to various video capturing devices, such as TV tuners, USB web cameras, etc. The V4L2 interface, is a successor of V4L, which fixes bugs found in V4L, and supports a wider range of devices.For more info look at [http://www.linuxfordevices.com/c/a/Linux-For-Devices-Articles/Intro-to-V4L2/ The Intro to V4L2 Article] or at [https://www.kernel.org/doc/Documentation/video4linux/v4l2-framework.txt The Kernel Documentation].
+
+== What is VLoopback device? ==
+A VLoopback device is a virtual device that provides a way to simulate a video input in Linux.
+
+When you connect a webcam to a linux computer, a special device is created in the _/dev_ folder, generally the name is _/dev/video0_. If you have more of those devices, then the names will increase in numbering like _/dev/video1_, _/dev/video2_, etc...
+
+A VLoopback device is a module loaded dynamically in the kernel to provide a virtual video input device. To make it work, this device has to be fed by a video stream with a predefined format: size, frame, rate and colour format.
+
+For example: The original vloopback module from the Motion project, is a V4L device supporting a wide range of sizes and framerates, but only in RGB format.
+
+[https://github.com/umlaeute/v4l2loopback Another project] ported that code to V4L2Loopback to provide compatibility with V4L2 hardware. It's a bit more complex, but instead of having 2 virtual device (video1 input, video2 output), it creates only one device that can read and export a video stream.
+
+_*Note: Since those devices are virtual, if your browser is started before WebcamStudio for example, it is possible that Flash will not recognize those device as video input.  Make sure to start WebcamStudio first, then your browser (or any other software that uses the virtual devices) so they will be detected properly.*_
+
+== What is ChromaKey/ChromaKeying? ==
+ChromaKeying is a way of selecting a colour in an image and then replacing that colour with a transparent one.  For example, the Weather guy is in front of a green wall, and all greens are removed to be replaced by a background image/video.
+
+= General Questions =
+= Installation =
+= Usage =
