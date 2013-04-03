@@ -40,12 +40,12 @@ ffmpeg ... -s @CWIDTHx@CHEIGHT -r @RATE ... tcp://127.0.0.1:@VPORT
 Those tags can be found in [https://code.google.com/p/webcamstudio/source/browse/trunk/src/webcamstudio/externals/Tags.java src/webcamstudio/externals/Tags.java]
 
 The default configuration files can be found in:
-* [https://code.google.com/p/webcamstudio/source/browse/trunk/src/webcamstudio/externals/linux/sources src/webcamstudio/externals/linux/sources]
-* [https://code.google.com/p/webcamstudio/source/browse/trunk/src/webcamstudio/externals/linux/outputs src/webcamstudio/externals/linux/outputs]
-* [https://code.google.com/p/webcamstudio/source/browse/trunk/src/webcamstudio/externals/windows/sources src/webcamstudio/externals/windows/sources]
-* [https://code.google.com/p/webcamstudio/source/browse/trunk/src/webcamstudio/externals/windows/outputs src/webcamstudio/externals/windows/outputs]
-* [https://code.google.com/p/webcamstudio/source/browse/trunk/src/webcamstudio/externals/osx/sources src/webcamstudio/externals/osx/sources]
-* [https://code.google.com/p/webcamstudio/source/browse/trunk/src/webcamstudio/externals/osx/outputs src/webcamstudio/externals/osx/outputs]
+  * [https://code.google.com/p/webcamstudio/source/browse/trunk/src/webcamstudio/externals/linux/sources src/webcamstudio/externals/linux/sources]
+  * [https://code.google.com/p/webcamstudio/source/browse/trunk/src/webcamstudio/externals/linux/outputs src/webcamstudio/externals/linux/outputs]
+  * [https://code.google.com/p/webcamstudio/source/browse/trunk/src/webcamstudio/externals/windows/sources src/webcamstudio/externals/windows/sources]
+  * [https://code.google.com/p/webcamstudio/source/browse/trunk/src/webcamstudio/externals/windows/outputs src/webcamstudio/externals/windows/outputs]
+  * [https://code.google.com/p/webcamstudio/source/browse/trunk/src/webcamstudio/externals/osx/sources src/webcamstudio/externals/osx/sources]
+  * [https://code.google.com/p/webcamstudio/source/browse/trunk/src/webcamstudio/externals/osx/outputs src/webcamstudio/externals/osx/outputs]
 
 In any _*"sources"*_ folder, there are 4 configuration files by default, representing _webcam_, _music_, _movie_ and _desktop_.
 
