@@ -8,7 +8,7 @@ This is a short description of the basic design of WebcamStudio.
 
 = Details =
 
-Overall, WebcamStudio is just a video and audio mixer (audio now supported in 0.60+ versions). It feeds on external applications such as [http://www.ffmpeg.org/ FFMpeg] ([http://libav.org/ libav) or [http://gstreamer.freedesktop.org/ GStreamer] by launching a sub-process with the proper parameters.
+Overall, WebcamStudio is just a video and audio mixer (audio now supported in 0.60+ versions). It feeds on external applications such as [http://www.ffmpeg.org/ FFMpeg] ([http://libav.org/ libav]) or [http://gstreamer.freedesktop.org/ GStreamer] by launching a sub-process with the proper parameters.
 
 In previous versions of !WebcamStudio, libraries were used to interact with these components. But in time it became clear that it is quite complex to get good performance and stability. Also, the portability could be hazardous from one OS to another.
 
