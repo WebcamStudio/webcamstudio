@@ -265,9 +265,6 @@ if [ "$confirm_answer" = "y" -o "$confirm_answer" = "yes" ]; then
 	if [ $? -ne 0 ]; then
 		prog_err "Creating the dist official source tarball..."
 		
-		# Remove the added SVN revision of the app
-		rm -f "${SVN_DIR}/src/webcamstudio/build.txt"
-		
 		cd "${CUR_DIR}"
 		exit 1
 	fi

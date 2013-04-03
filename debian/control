@@ -30,7 +30,7 @@ Vcs-Svn: http://webcamstudio.googlecode.com/svn/trunk
 Vcs-Browser: https://code.google.com/p/webcamstudio/source/browse
 
 Package: webcamstudio
-Architecture: all
+Architecture: amd64 i386
 Depends: openjdk-7-jre | openjdk-6-jre | sun-java5-jre | sun-java6-jre,
   java-wrappers,
   libappframework-java,

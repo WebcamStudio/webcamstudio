@@ -40,13 +40,7 @@ DEB_JARS := AbsoluteLayout \
   slf4j-log4j12 \
   swing-worker
 
-pre-build::
-	# Ensure the revision text file in the package
-	svnversion > src/webcamstudio/build.txt
-	
 clean::
-	# Clean the revision text file
-	rm -f src/webcamstudio/build.txt
 	# Clean the libwebcamstudio helper
 	$(MAKE) -C vloopback clean-libwebcamstudio
 
