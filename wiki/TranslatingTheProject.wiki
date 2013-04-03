@@ -31,10 +31,10 @@ You have two options translating the application:
     * All Languages.properties files are in there
     * Add or Update the proper language file
     * Rebuild and test
-    * Once everything is working, commit the modification (_if you are a project developer and have commit permissions_). If you are not a project developer with commit permissions, you may send to anyone from the WebcamStudioTeam your changes.
+    * Once everything is working, commit the modification (_if you are a project developer and have commit permissions_). If you are not a project developer with commit permissions, you may send to anyone from the WebcamStudioTeam (using the email addresses listed in [https://code.google.com/p/webcamstudio/people/list People]) your changes.
     * *Important for developers*, set the commit message as a comment saying what was changed and why
   # Using an ordinary code editor like Kate, GEdit etc
     * Download the raw [https://code.google.com/p/webcamstudio/source/browse/trunk/src/webcamstudio/Languages.properties Languages.properties] file.
     * Rename it to the desired language (using the 2 letters of the language). For example for French the file must be named: *Languages_fr.properties* 
     * Translate each label in the file as needed.
-    * When ready please send your file to anyone from the WebcamStudioTeam.
+    * When ready please send your file to anyone from the WebcamStudioTeam (using the email addresses listed in [https://code.google.com/p/webcamstudio/people/list People]).
