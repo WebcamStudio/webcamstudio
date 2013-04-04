@@ -9,8 +9,8 @@ Build-Depends: debhelper (>= 7.2.7~),
   bzip2,
   subversion,
   linux-headers-generic,
-  ant
-Build-Depends-Indep: default-jdk,
+  ant,
+  default-jdk,
   libappframework-java,
   libcommons-cli-java,
   libcommons-codec-java,
@@ -88,7 +88,6 @@ Architecture: all
 Depends: dkms (>= 2.1.1.1),
   python-apport, 
   ${misc:Depends}
-Conflicts: v4l2loopback-dkms, v4l2loopback-source
 Suggests: webcamstudio
 Description: Source for the webcamstudio driver (DKMS)
  This module allows you to create "virtual video devices".
