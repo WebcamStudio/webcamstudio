@@ -1,3 +1,19 @@
+webcamstudio-0.64    05 Apr 2013
+
+  * Fixes: Load/Save problems
+  * Fixes: Iconize all button
+  * Fixes: Transitions are loaded now
+  * Fixes: Audio/video delay
+  * Fixes: Debian packaging multi architecture support
+  * Adds: Seek button
+  * Adds: New animations
+  * Adds: Add video sources button
+  * Adds: New studio button
+  * Adds: Rename channel button
+  * Changes: webcamstudio kernel module updated to the v0.6.3 of v4l2loopback
+  * New upstream version
+
+
 webcamstudio-0.63    03 Apr 2013
 
   * Fixes: Fixed missing libwebcamstudio dependency
