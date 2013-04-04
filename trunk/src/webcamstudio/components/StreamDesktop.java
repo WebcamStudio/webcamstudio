@@ -14,6 +14,7 @@ import java.awt.BorderLayout;
 import webcamstudio.streams.SourceText;
 import webcamstudio.streams.SourceWebcam;
 import webcamstudio.streams.Stream;
+import webcamstudio.util.Tools;
 
 /**
  *
@@ -48,11 +49,16 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
         }
         this.setVisible(true);
         this.setDesktopIcon(new DesktopIcon(this,s));
-        this.setClosable(!(stream instanceof SourceWebcam));
+        this.setClosable(true);
+ //     this.setClosable(!(stream instanceof SourceWebcam));
         this.setToolTipText(stream.getName());
         pack();
     }
-
+ //   public static void removeSD(Stream str){
+ //       str.destroy();
+ //       str = null;
+ //       panel = null;
+ //   }
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -119,7 +125,7 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
         
         if (listener!=null){
             new Thread(new Runnable(){
-
+                
                 @Override
                 public void run() {
                     listener.selectedSource(stream);

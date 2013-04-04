@@ -32,4 +32,5 @@ public abstract class StudioConstants {
     public static final String ATTRIBUTE_DESKTOPNUM = "desktopnum";
     public static final String ATTRIBUTE_ISPLAYING = "isPlaying";
     public static final String ATTRIBUTE_DURATION = "Duration";
+    public static final String ATTRIBUTE_SEEK = "seek";
 }

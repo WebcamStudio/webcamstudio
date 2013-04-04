@@ -72,7 +72,9 @@ public class SourceMicrophone extends Stream {
         }
         MasterFrameBuilder.unregister(this);
     }
-
+    @Override
+    public void fakeStop() {
+    }
     @Override
     public boolean isPlaying() {
         return isPlaying;

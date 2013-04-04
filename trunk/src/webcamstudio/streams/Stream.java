@@ -48,8 +48,8 @@ public abstract class Stream implements Callable<Frame>{
     protected int ADelay = 0;
     protected int VDelay = 0;
     protected Frame nextFrame = null;
-    ArrayList<Transition> startTransitions = new ArrayList<Transition>();
-    ArrayList<Transition> endTransitions = new ArrayList<Transition>();
+    public ArrayList<Transition> startTransitions = new ArrayList<Transition>();
+    public ArrayList<Transition> endTransitions = new ArrayList<Transition>();
     Listener listener = null;
 
     protected Stream() {
@@ -141,7 +141,9 @@ public abstract class Stream implements Callable<Frame>{
     public void setDesktopH(int desktopH) {
         this.desktopH = desktopH;
     }
-
+    public interface chListener {
+        public void loadingPostOP();
+    }
     public interface Listener {
 
         public void sourceUpdated(Stream stream);
@@ -166,10 +168,14 @@ public abstract class Stream implements Callable<Frame>{
         stop();
         MasterChannels.getInstance().unregister(this);
     }
+     
 
+    
     public abstract void read();
 
     public abstract void stop();
+    
+    public abstract void fakeStop();
 
     public abstract boolean isPlaying();
  

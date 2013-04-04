@@ -39,12 +39,14 @@ public class ProcessRenderer {
     private Properties plugins = null;
     String plugin = "";
     int videoPort = 0;
+    int fakeVideoPort = 0;
     int audioPort = 0;
     int frequency = 44100;
     int channels = 2;
     int bitSize = 16;
     Stream stream;
     ProcessExecutor processVideo;
+    ProcessExecutor fakeProcessVideo;
     ProcessExecutor processAudio;
     Capturer capture;
     Exporter exporter;
@@ -66,6 +68,7 @@ public class ProcessRenderer {
             }
         }
         processVideo = new ProcessExecutor(s.getName());
+        fakeProcessVideo = new ProcessExecutor(s.getName());        
         processAudio = new ProcessExecutor(s.getName());
 
     }
@@ -91,6 +94,7 @@ public class ProcessRenderer {
             }
         }
         processVideo = new ProcessExecutor(s.getName());
+        fakeProcessVideo = new ProcessExecutor(s.getName());
         processAudio = new ProcessExecutor(s.getName());
 
     }
@@ -215,6 +219,9 @@ public class ProcessRenderer {
                 case VPORT:
                     command = command.replaceAll(Tags.VPORT.toString(), "" + videoPort);
                     break;
+                case FVPORT:
+                    command = command.replaceAll(Tags.FVPORT.toString(), "" + fakeVideoPort);
+                    break;   
                 case FREQ:
                     command = command.replaceAll(Tags.FREQ.toString(), "" + frequency);
                     break;
@@ -249,15 +256,20 @@ public class ProcessRenderer {
                 capture = new Capturer(stream);
                 if (stream.hasVideo()) {
                     videoPort = capture.getVideoPort();
+                    fakeVideoPort = capture.getFakeVideoPort();
                 }
                 if (stream.hasAudio()) {
                     audioPort = capture.getAudioPort();
                 }
                 String commandVideo = null;
+                String fakeCommandVideo = null;
                 String commandAudio = null;
                 //System.out.println(plugins.keySet().toString());
                 if (plugins.containsKey("video")) {
                     commandVideo = plugins.getProperty("video").replaceAll("  ", " "); //Making sure there is no double spaces
+                }
+                if (plugins.containsKey("fakeVideo")) {
+                    fakeCommandVideo = plugins.getProperty("fakeVideo").replaceAll("  ", " "); //Making sure there is no double spaces
                 }
                 if (plugins.containsKey("audio")) {
                     commandAudio = plugins.getProperty("audio").replaceAll("  ", " "); //Making sure there is no double spaces
@@ -274,6 +286,20 @@ public class ProcessRenderer {
                         }
                         System.out.println();
                         processVideo.execute(parmsVideo);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                if (fakeCommandVideo != null) {
+                    fakeCommandVideo = fakeCommandVideo.replaceAll(" ", "ABCDE");
+                    fakeCommandVideo = setParameters(fakeCommandVideo);
+                    String[] fakeParmsVideo = fakeCommandVideo.split("ABCDE");
+                    try {
+                        for (String fp : fakeParmsVideo) {
+                            System.out.print(fp + " ");
+                        }
+                        System.out.println();
+                        fakeProcessVideo.execute(fakeParmsVideo);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -345,6 +371,12 @@ public class ProcessRenderer {
         }
         stopMe = false;
         stopped = true;
+    }
+    public void fakeStop() {
+        if (fakeProcessVideo != null) {
+            fakeProcessVideo.destroy();
+        }
+        
     }
 
     public boolean isStopped() {

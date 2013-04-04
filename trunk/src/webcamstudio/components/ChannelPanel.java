@@ -18,10 +18,12 @@ import javax.swing.DefaultComboBoxModel;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.swing.DefaultListModel;
+import webcamstudio.WebcamStudio;
 import webcamstudio.WebcamStudio.*;
 import webcamstudio.channels.MasterChannels;
 import webcamstudio.mixers.MasterMixer;
 import webcamstudio.mixers.SystemPlayer;
+import webcamstudio.streams.Stream;
 import webcamstudio.util.Tools;
 
 
@@ -31,7 +33,7 @@ import webcamstudio.util.Tools;
  *
  * @author patrick
  */
-public class ChannelPanel extends javax.swing.JPanel {
+public class ChannelPanel extends javax.swing.JPanel{
 
     public static MasterChannels master = MasterChannels.getInstance();
     public static DefaultListModel model = new DefaultListModel();
@@ -39,14 +41,16 @@ public class ChannelPanel extends javax.swing.JPanel {
     public static ArrayList<String> CHCurrNext = new ArrayList<String>();
     public static ArrayList<Integer> CHTimers = new ArrayList<Integer>();
     public static ArrayList<String> ListChannels = new ArrayList<String>();
+
+    
     String selectChannel=null;   
     int CHon =0;
     String CHNxName = null;
     int CHNextTime =0;
     int CHTimer = 0;
-    Timer CHt=new Timer();
-    String CHptS= null;
-    Boolean StopCHpt=false;
+    public static Timer CHt=new Timer();
+    public static String CHptS= null;
+    public static Boolean StopCHpt=false;
 //  static int IsLoading=0;
     /**
      * Creates new form ChannelPanel
@@ -83,6 +87,7 @@ public class ChannelPanel extends javax.swing.JPanel {
         jLabel4 = new javax.swing.JLabel();
         CHProgressTime = new javax.swing.JProgressBar();
         btnStopAllStream = new javax.swing.JButton();
+        btnRenameCh = new javax.swing.JButton();
 
         lstChannelsScroll.setName("lstChannelsScroll"); // NOI18N
 
@@ -106,6 +111,7 @@ public class ChannelPanel extends javax.swing.JPanel {
         txtName.setName("txtName"); // NOI18N
 
         btnAdd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/list-add.png"))); // NOI18N
+        btnAdd.setToolTipText(bundle.getString("ADD_CHANNEL")); // NOI18N
         btnAdd.setName("btnAdd"); // NOI18N
         btnAdd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -114,7 +120,7 @@ public class ChannelPanel extends javax.swing.JPanel {
         });
 
         btnRemove.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/process-stop.png"))); // NOI18N
-        btnRemove.setToolTipText("Remove Channel");
+        btnRemove.setToolTipText(bundle.getString("REMOVE_CHANNEL")); // NOI18N
         btnRemove.setEnabled(false);
         btnRemove.setName("btnRemove"); // NOI18N
         btnRemove.addActionListener(new java.awt.event.ActionListener() {
@@ -124,7 +130,7 @@ public class ChannelPanel extends javax.swing.JPanel {
         });
 
         btnSelect.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-start.png"))); // NOI18N
-        btnSelect.setToolTipText("Apply Channel");
+        btnSelect.setToolTipText(bundle.getString("APPLY_CHANNEL")); // NOI18N
         btnSelect.setEnabled(false);
         btnSelect.setName("btnSelect"); // NOI18N
         btnSelect.addActionListener(new java.awt.event.ActionListener() {
@@ -134,7 +140,7 @@ public class ChannelPanel extends javax.swing.JPanel {
         });
 
         btnUpdate.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/view-refresh.png"))); // NOI18N
-        btnUpdate.setToolTipText(bundle.getString("UPDATE")); // NOI18N
+        btnUpdate.setToolTipText(bundle.getString("UPDATE_CHANNEL")); // NOI18N
         btnUpdate.setEnabled(false);
         btnUpdate.setName("btnUpdate"); // NOI18N
         btnUpdate.addActionListener(new java.awt.event.ActionListener() {
@@ -179,11 +185,20 @@ public class ChannelPanel extends javax.swing.JPanel {
 
         CHProgressTime.setName("CHProgressTime"); // NOI18N
 
-        btnStopAllStream.setText("[STOP] All Streams");
+        btnStopAllStream.setText("[STOP] All");
         btnStopAllStream.setName("btnStopAllStream"); // NOI18N
         btnStopAllStream.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnStopAllStreamActionPerformed(evt);
+            }
+        });
+
+        btnRenameCh.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/view-refresh.png"))); // NOI18N
+        btnRenameCh.setToolTipText(bundle.getString("RENAME_CHANNEL")); // NOI18N
+        btnRenameCh.setName("btnRenameCh"); // NOI18N
+        btnRenameCh.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRenameChActionPerformed(evt);
             }
         });
 
@@ -199,6 +214,8 @@ public class ChannelPanel extends javax.swing.JPanel {
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtName)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnRenameCh)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnAdd))
                     .addComponent(lstChannelsScroll)
@@ -217,7 +234,7 @@ public class ChannelPanel extends javax.swing.JPanel {
                             .addComponent(ChDuration)
                             .addComponent(lstNextChannel, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addComponent(CHProgressTime, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 255, Short.MAX_VALUE)
+                    .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 282, Short.MAX_VALUE)
                     .addComponent(btnStopAllStream, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -225,10 +242,12 @@ public class ChannelPanel extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnAdd))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel1)
+                        .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnAdd))
+                    .addComponent(btnRenameCh, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lstChannelsScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 196, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -265,10 +284,10 @@ public class ChannelPanel extends javax.swing.JPanel {
             btnSelect.setEnabled(true);
             btnUpdate.setEnabled(true);
             } else {
-            btnRemove.setEnabled(false);
-            btnSelect.setEnabled(false);
-            btnUpdate.setEnabled(false);
-        }
+                btnRemove.setEnabled(false);
+                btnSelect.setEnabled(false);
+                btnUpdate.setEnabled(false);
+            }
     }//GEN-LAST:event_lstChannelsValueChanged
     @SuppressWarnings("unchecked") 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
@@ -302,14 +321,18 @@ public class ChannelPanel extends javax.swing.JPanel {
        if (name.length() > 0) {
             model.addElement(name);
             aModel.addElement(name);
-            CHCurrNext.add(name);
+//            CHCurrNext.add(name);
             ListChannels.add(name);
        }
-   } 
+    }   
+    
+    
+    
+    
    
     class UpdateCHtUITask extends TimerTask {
         @Override
-        public synchronized void run() {
+        public void run() { //synchronized
             CHptS=null;
             int CHpt=0;
             int CHpTemptime = CHNextTime/1000;
@@ -317,21 +340,21 @@ public class ChannelPanel extends javax.swing.JPanel {
             CHProgressTime.setStringPainted(true);
             CHProgressTime.setMaximum(CHpTemptime);             
             while (CHpt<CHpTemptime && StopCHpt==false){
-              CHptS = Integer.toString(CHpt);
-              CHProgressTime.setValue(CHpt);
-              CHProgressTime.setString(CHptS);
-              Tools.sleep(1000);
-              CHpt += 1;
+                CHptS = Integer.toString(CHpt);
+                CHProgressTime.setValue(CHpt);
+                CHProgressTime.setString(CHptS);
+                Tools.sleep(1000);
+                CHpt += 1;
             }
             UpdateCHtUITask.this.stop();
         }
         public void stop() {
             StopCHpt=true;
-    }
+        }
    }
-    class TSelectActionPerformed extends TimerTask {
+   class TSelectActionPerformed extends TimerTask {
         @Override
-        public synchronized void run(){  
+        public void run(){ // synchronized
             CHon = lstChannels.getSelectedIndex();
             CHNxName = CHCurrNext.get(CHon);
             int n =0;
@@ -342,12 +365,12 @@ public class ChannelPanel extends javax.swing.JPanel {
                  n += 1;
             }
             lstChannels.setSelectedValue(CHNxName, true);
-            Tools.sleep(1000);
             master.selectChannel(CHNxName);
 	    CHt=new Timer();
             CHt.schedule(new TSelectActionPerformed(),CHNextTime);
             CHNextTime = CHTimers.get(lstChannels.getSelectedIndex());
             StopCHpt=false;
+            CHProgressTime.setValue(0);
             CHt.schedule(new UpdateCHtUITask(),0);
 	}        
     }    
@@ -355,7 +378,6 @@ public class ChannelPanel extends javax.swing.JPanel {
     private void btnSelectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSelectActionPerformed
         String name = lstChannels.getSelectedValue().toString();
         System.out.println("Apply Select: "+name);
-        Tools.sleep(500);
         master.selectChannel(name);
         if (CHTimers.get(lstChannels.getSelectedIndex()) != 0) {
             lstChannels.setEnabled(false);
@@ -376,7 +398,7 @@ public class ChannelPanel extends javax.swing.JPanel {
 
     private void lstNextChannelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lstNextChannelActionPerformed
         if (lstChannels.getSelectedIndex() != -1) {
-           String currChannel = lstChannels.getSelectedValue().toString();
+ //        String currChannel = lstChannels.getSelectedValue().toString();
            String nextChannel = lstNextChannel.getSelectedItem().toString();
            int ChIndex = lstChannels.getSelectedIndex();
            String t = CHCurrNext.get(ChIndex);
@@ -385,29 +407,55 @@ public class ChannelPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_lstNextChannelActionPerformed
 
     private void ChDurationStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_ChDurationStateChanged
-       CHTimer = ChDuration.getValue().hashCode()* 1000;
-       if (lstChannels.getSelectedIndex() != -1) {
-           int ChIndex = lstChannels.getSelectedIndex();
-           int tm = CHTimers.get(ChIndex);
-           CHTimers.set(ChIndex, CHTimer);
-           System.out.println("Current Channel: "+lstChannels.getSelectedValue().toString() +" His Timer is: "+CHTimers.get(ChIndex).toString());
-       }
+        CHTimer = ChDuration.getValue().hashCode()* 1000;
+        if (lstChannels.getSelectedIndex() != -1) {
+            int ChIndex = lstChannels.getSelectedIndex();
+ //         int tm = CHTimers.get(ChIndex);
+            CHTimers.set(ChIndex, CHTimer);
+ //         System.out.println("Current Channel: "+lstChannels.getSelectedValue().toString() +" His Timer is: "+CHTimers.get(ChIndex).toString());
+        }
     }//GEN-LAST:event_ChDurationStateChanged
 
     private void StopCHTimerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_StopCHTimerActionPerformed
-    CHt.cancel();
-    CHt.purge();
-    StopCHpt=true;
-    lstChannels.setEnabled(true);
-    ChDuration.setEnabled(true);
-    btnStopAllStream.setEnabled(true);
-    System.out.println("Channel Timer Stopped.");
+        CHt.cancel();
+        CHt.purge();
+        StopCHpt=true;
+        lstChannels.setEnabled(true);
+        ChDuration.setEnabled(true);
+        btnStopAllStream.setEnabled(true);
+        ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Channel Timer Stopped.");
+        ResourceMonitor.getInstance().addMessage(label);
     }//GEN-LAST:event_StopCHTimerActionPerformed
 
     private void btnStopAllStreamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStopAllStreamActionPerformed
         SystemPlayer.getInstance(null).stop();
+        Tools.sleep(50);
         MasterChannels.getInstance().stopAllStream();
+        ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "All Stopped.");
+        ResourceMonitor.getInstance().addMessage(label);
     }//GEN-LAST:event_btnStopAllStreamActionPerformed
+
+    private void btnRenameChActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRenameChActionPerformed
+        String rnName = txtName.getText();
+        String chName = lstChannels.getSelectedValue().toString();
+        int SelectCHIndex = lstChannels.getSelectedIndex();
+        master.removeChannel(chName);
+        model.removeElement(chName);
+        aModel.removeElement(chName);
+        CHCurrNext.remove(chName);
+        CHTimers.remove(SelectCHIndex);
+        ListChannels.remove(chName);
+        lstChannels.revalidate();
+        lstNextChannel.revalidate();
+        master.addChannel(rnName);
+        model.addElement(rnName);
+        aModel.addElement(rnName);
+        CHCurrNext.add(rnName);
+        CHTimers.add(CHTimer);
+        ListChannels.add(rnName);
+        lstChannels.revalidate();
+        lstNextChannel.revalidate();
+    }//GEN-LAST:event_btnRenameChActionPerformed
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -416,6 +464,7 @@ public class ChannelPanel extends javax.swing.JPanel {
     private javax.swing.JButton StopCHTimer;
     private javax.swing.JButton btnAdd;
     private javax.swing.JButton btnRemove;
+    private javax.swing.JButton btnRenameCh;
     private javax.swing.JButton btnSelect;
     private javax.swing.JButton btnStopAllStream;
     private javax.swing.JButton btnUpdate;
@@ -428,4 +477,5 @@ public class ChannelPanel extends javax.swing.JPanel {
     private javax.swing.JComboBox lstNextChannel;
     private javax.swing.JTextField txtName;
     // End of variables declaration//GEN-END:variables
+    
 }

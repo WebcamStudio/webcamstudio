@@ -43,6 +43,9 @@ public class SinkLinuxDevice extends Stream implements MasterMixer.SinkListener 
         }
         MasterMixer.getInstance().unregister(this);
     }
+    @Override
+    public void fakeStop() {
+    }
 
     @Override
     public boolean isPlaying() {

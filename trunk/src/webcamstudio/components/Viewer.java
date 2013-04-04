@@ -34,10 +34,10 @@ public class Viewer extends javax.swing.JPanel {
         img=image;
         
     }
-
+         
     public void setAudioLevel(int l, int r){
         audioLeft = l;
-        audioRight=r;
+        audioRight = r;
     }
     @Override
     public void paintComponent(Graphics g) {

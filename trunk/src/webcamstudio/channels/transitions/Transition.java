@@ -41,6 +41,8 @@ public abstract class Transition implements Runnable{
             t= new Resize(source);
         } else if (name.equals("RevealLeft")){
             t = new RevealLeft(source);
+        } else if (name.equals("ShrinkOut")){
+            t = new ShrinkOut(source);
         }
         return t;
     }
@@ -50,7 +52,7 @@ public abstract class Transition implements Runnable{
         return ts;
     }
     public static String[] getEndTransitions(){
-        String[] ts = {"FadeOut","Shrink"};
+        String[] ts = {"FadeOut","ShrinkOut"};
         return ts;
     }
 }

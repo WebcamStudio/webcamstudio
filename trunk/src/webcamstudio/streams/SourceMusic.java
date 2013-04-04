@@ -43,6 +43,9 @@ public class SourceMusic extends Stream {
         }
 
     }
+    @Override
+    public void fakeStop() {
+    }
 
     @Override
     public boolean isPlaying() {

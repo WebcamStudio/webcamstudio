@@ -213,7 +213,9 @@ public class SourceText extends Stream {
         frame = null;
         MasterFrameBuilder.unregister(this);
     }
-
+    @Override
+    public void fakeStop() {
+    }
     @Override
     public Frame getFrame() {
         

@@ -17,6 +17,7 @@ public enum Tags {
         RATE("@RATE"),
         SEEK("@SEEK"),
         VPORT("@VPORT"),
+        FVPORT("@FVPORT"),
         APORT("@APORT"),
         FILE("@FILE"),
         FREQ("@FREQ"),

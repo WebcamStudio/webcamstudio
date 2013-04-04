@@ -54,7 +54,10 @@ public class SourceWebcam extends Stream {
         MasterFrameBuilder.unregister(this);
         lastPreview=null;
     }
-
+    @Override
+    public void fakeStop() {
+            capture.fakeStop();
+    }
     @Override
     public boolean isPlaying() {
         return isPlaying;
