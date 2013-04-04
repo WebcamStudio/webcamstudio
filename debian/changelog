@@ -1,3 +1,11 @@
+webcamstudio (0.64) unstable; urgency=low
+
+  * Fixes: Multiarch - Build-Depends-Indep to Build-Depends
+  * Removes: Conflicts entry with v4l2loopback-dkms
+  * New upstream version
+
+ -- PhobosK <phobosk@kbfx.net>  Fri, 05 Apr 2013 00:52:41 +0300
+
 webcamstudio (0.63) unstable; urgency=low
 
   * Fixes: Missing libwebcamstudio helper module to webcamstudio
