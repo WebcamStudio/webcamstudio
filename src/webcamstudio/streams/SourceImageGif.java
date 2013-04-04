@@ -85,7 +85,9 @@ public class SourceImageGif extends Stream {
         stop = true;
         MasterFrameBuilder.unregister(this);
     }
-
+    @Override
+    public void fakeStop() {
+    }
     @Override
     public Frame getFrame() {
         return nextFrame;

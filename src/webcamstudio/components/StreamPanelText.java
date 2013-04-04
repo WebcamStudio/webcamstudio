@@ -91,7 +91,6 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
         spinY = new javax.swing.JSpinner();
         spinW = new javax.swing.JSpinner();
         spinH = new javax.swing.JSpinner();
-        tglActiveStream = new javax.swing.JToggleButton();
         spinZOrder = new javax.swing.JSpinner();
         labelX = new javax.swing.JLabel();
         labelY = new javax.swing.JLabel();
@@ -105,6 +104,7 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
         cboFonts = new javax.swing.JComboBox();
         txtHexColor = new javax.swing.JFormattedTextField();
         btnSelectColor = new javax.swing.JButton();
+        tglActiveStream = new javax.swing.JToggleButton();
 
         setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
 
@@ -133,15 +133,6 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
         spinH.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 spinHStateChanged(evt);
-            }
-        });
-
-        tglActiveStream.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-start.png"))); // NOI18N
-        tglActiveStream.setName("tglActiveStream"); // NOI18N
-        tglActiveStream.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-stop.png"))); // NOI18N
-        tglActiveStream.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                tglActiveStreamActionPerformed(evt);
             }
         });
 
@@ -223,6 +214,16 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
             }
         });
 
+        tglActiveStream.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-start.png"))); // NOI18N
+        tglActiveStream.setName("tglActiveStream"); // NOI18N
+        tglActiveStream.setRolloverEnabled(false);
+        tglActiveStream.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-stop.png"))); // NOI18N
+        tglActiveStream.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tglActiveStreamActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -231,7 +232,6 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(txtContent, javax.swing.GroupLayout.DEFAULT_SIZE, 245, Short.MAX_VALUE)
-                    .addComponent(tglActiveStream, javax.swing.GroupLayout.DEFAULT_SIZE, 245, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(labelZ, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -254,7 +254,8 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
                         .addComponent(btnSelectColor))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(lblText)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(tglActiveStream, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 245, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -295,19 +296,11 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(spinZOrder, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(labelZ))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(tglActiveStream)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(18, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-
-    private void tglActiveStreamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglActiveStreamActionPerformed
-        if (tglActiveStream.isSelected()) {
-            stream.read();
-        } else {
-            stream.stop();
-        }
-    }//GEN-LAST:event_tglActiveStreamActionPerformed
 
     private void spinZOrderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinZOrderStateChanged
         stream.setZOrder((Integer) spinZOrder.getValue());
@@ -363,6 +356,14 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
         
         
     }//GEN-LAST:event_btnSelectColorActionPerformed
+
+    private void tglActiveStreamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglActiveStreamActionPerformed
+        if (tglActiveStream.isSelected()) {
+            stream.read();
+        } else {
+            stream.stop();
+        }
+    }//GEN-LAST:event_tglActiveStreamActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnSelectColor;

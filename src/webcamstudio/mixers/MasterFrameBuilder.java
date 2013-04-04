@@ -125,6 +125,7 @@ public class MasterFrameBuilder implements Runnable {
             Frame targetFrame = frameBuffer.getFrameToUpdate();
             frames.clear();
             try {
+                Tools.sleep(20);
                 List<Future<Frame>> results = pool.invokeAll(streams);
                 for (Future stream : results) {
                     Frame f = (Frame)stream.get();

@@ -18,12 +18,16 @@ public class Resize extends Transition{
     }
     @Override
     protected void execute() {
-        int oldW = source.getWidth();
-        int oldH = source.getHeight();
+        int oldW = 0;
+        int oldH = 0;
+        
+        
         int newW = channel.getWidth();
         int newH = channel.getHeight();
+        System.out.println("NewW: "+newW+" NewH: "+newH);
         int deltaW = newW - oldW;
         int deltaH = newH - oldH;
+        System.out.println("DeltaW: "+deltaW+" DeltaH: "+deltaH);
         int rate = source.getRate();
         int totalFrames = rate * 1;
         
@@ -31,6 +35,7 @@ public class Resize extends Transition{
         for (int i = 0; i<totalFrames;i++){
             source.setWidth(oldW + ((i*deltaW/totalFrames)));
             source.setHeight(oldH + ((i*deltaH/totalFrames)));
+            source.setOpacity(i*100/totalFrames);
             Tools.sleep(1000/rate);
             
         }

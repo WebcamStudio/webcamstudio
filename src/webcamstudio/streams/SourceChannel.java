@@ -36,8 +36,8 @@ public class SourceChannel  {
     private boolean followMouse = false;
     private int captureX = 0;
     private int captureY = 0;
-    ArrayList<Transition> startTransitions = new ArrayList<Transition>();
-    ArrayList<Transition> endTransitions = new ArrayList<Transition>();
+    public ArrayList<Transition> startTransitions = new ArrayList<Transition>();
+    public ArrayList<Transition> endTransitions = new ArrayList<Transition>();
 
     public SourceChannel() {
     }
@@ -55,6 +55,7 @@ public class SourceChannel  {
     public void setFont(String nf) {
         font = nf;
     }
+
 
     public static SourceChannel getChannel(String channelName, Stream stream) {
         SourceChannel s = new SourceChannel();

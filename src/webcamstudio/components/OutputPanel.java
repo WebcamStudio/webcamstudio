@@ -296,7 +296,6 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener {
         tglRecordToFile.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-record.png"))); // NOI18N
         tglRecordToFile.setText(bundle.getString("RECORD")); // NOI18N
         tglRecordToFile.setName("tglRecordToFile"); // NOI18N
-        tglRecordToFile.setRolloverEnabled(false);
         tglRecordToFile.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-stop.png"))); // NOI18N
         tglRecordToFile.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -311,7 +310,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener {
             File f = null;
             JFileChooser chooser = new JFileChooser();
             chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-            chooser.setDialogTitle("WebcamStudio");
+            chooser.setDialogTitle("WebcamStudio - Choose a File to record on ...");
             chooser.showSaveDialog(this);
             f = chooser.getSelectedFile();
             if (f != null) {

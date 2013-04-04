@@ -47,6 +47,10 @@ public class SinkBroadcast extends Stream {
             capture=null;
         }
     }
+    @Override
+    public void fakeStop() {
+            capture.fakeStop();
+    }
 
     @Override
     public boolean isPlaying() {

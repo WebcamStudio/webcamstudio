@@ -56,6 +56,7 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener{
         spinADelay.setValue(stream.getADelay());
         spinVDelay.setEnabled(stream.hasAudio());
         spinADelay.setEnabled(stream.hasAudio());
+        spinSeek.setValue(stream.getSeek());
         stream.setListener(this);
         if (!stream.hasVideo()){
             spinX.setEnabled(false);
@@ -107,11 +108,13 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener{
             spinW1.setEnabled(false);
             spinVDelay.setEnabled(false);
             spinADelay.setEnabled(false);
+            spinSeek.setEnabled(false);
         } else {
             spinH1.setEnabled(true);
             spinW1.setEnabled(true);
             spinVDelay.setEnabled(true);
             spinADelay.setEnabled(true);
+            spinSeek.setEnabled(true);
         }
         tglActiveStream.revalidate();
     }
@@ -148,11 +151,13 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener{
         labelVD = new javax.swing.JLabel();
         spinVDelay = new javax.swing.JSpinner();
         spinADelay = new javax.swing.JSpinner();
+        spinSeek = new javax.swing.JSpinner();
+        labelSeek = new javax.swing.JLabel();
 
         setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
-        setMaximumSize(new java.awt.Dimension(138, 400));
-        setMinimumSize(new java.awt.Dimension(138, 400));
-        setPreferredSize(new java.awt.Dimension(138, 400));
+        setMaximumSize(new java.awt.Dimension(139, 428));
+        setMinimumSize(new java.awt.Dimension(139, 428));
+        setPreferredSize(new java.awt.Dimension(139, 428));
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         panPreview.setBackground(new java.awt.Color(113, 113, 113));
@@ -227,7 +232,7 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener{
                 tglActiveStreamActionPerformed(evt);
             }
         });
-        add(tglActiveStream, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 350, 120, -1));
+        add(tglActiveStream, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 380, 120, -1));
 
         spinZOrder.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         spinZOrder.setName("spinZOrder"); // NOI18N
@@ -236,7 +241,7 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener{
                 spinZOrderStateChanged(evt);
             }
         });
-        add(spinZOrder, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 320, 60, -1));
+        add(spinZOrder, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 340, 60, -1));
 
         labelX.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("webcamstudio/Languages"); // NOI18N
@@ -275,7 +280,7 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener{
         labelZ.setMinimumSize(new java.awt.Dimension(30, 10));
         labelZ.setName("labelZ"); // NOI18N
         labelZ.setPreferredSize(new java.awt.Dimension(30, 10));
-        add(labelZ, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 330, 40, 9));
+        add(labelZ, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 350, 40, 9));
 
         labelCW.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         labelCW.setText(bundle.getString("CAPTUREWIDTH")); // NOI18N
@@ -340,6 +345,23 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener{
             }
         });
         add(spinADelay, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 300, 60, -1));
+
+        spinSeek.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
+        spinSeek.setName("spinSeek"); // NOI18N
+        spinSeek.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                spinSeekStateChanged(evt);
+            }
+        });
+        add(spinSeek, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 320, 60, -1));
+
+        labelSeek.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
+        labelSeek.setText(bundle.getString("SEEK")); // NOI18N
+        labelSeek.setMaximumSize(new java.awt.Dimension(30, 10));
+        labelSeek.setMinimumSize(new java.awt.Dimension(30, 10));
+        labelSeek.setName("labelSeek"); // NOI18N
+        labelSeek.setPreferredSize(new java.awt.Dimension(30, 10));
+        add(labelSeek, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 330, 50, 9));
     }// </editor-fold>//GEN-END:initComponents
     private void tglActiveStreamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglActiveStreamActionPerformed
         if (tglActiveStream.isSelected()) {
@@ -347,12 +369,14 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener{
             spinH1.setEnabled(false);
             spinVDelay.setEnabled(false);
             spinADelay.setEnabled(false);
+            spinSeek.setEnabled(false);
             stream.read();
         } else {
             spinW1.setEnabled(true);
             spinH1.setEnabled(true);
             spinVDelay.setEnabled(stream.hasAudio());
             spinADelay.setEnabled(stream.hasAudio());
+            spinSeek.setEnabled(stream.hasAudio());
             stream.stop();
         }
     }//GEN-LAST:event_tglActiveStreamActionPerformed
@@ -402,12 +426,16 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener{
     }//GEN-LAST:event_spinH1StateChanged
 
     private void spinVDelayStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinVDelayStateChanged
-        stream.setVDelay((Integer)spinVDelay.getValue()); // TODO add your handling code here:
+        stream.setVDelay((Integer)spinVDelay.getValue()); 
     }//GEN-LAST:event_spinVDelayStateChanged
 
     private void spinADelayStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinADelayStateChanged
-        stream.setADelay((Integer)spinADelay.getValue());// TODO add your handling code here:
+        stream.setADelay((Integer)spinADelay.getValue());
     }//GEN-LAST:event_spinADelayStateChanged
+
+    private void spinSeekStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinSeekStateChanged
+        stream.setSeek((Integer) spinSeek.getValue());
+    }//GEN-LAST:event_spinSeekStateChanged
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel labelAD;
@@ -415,6 +443,7 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener{
     private javax.swing.JLabel labelCW;
     private javax.swing.JLabel labelH;
     private javax.swing.JLabel labelO;
+    private javax.swing.JLabel labelSeek;
     private javax.swing.JLabel labelV;
     private javax.swing.JLabel labelVD;
     private javax.swing.JLabel labelW;
@@ -426,6 +455,7 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener{
     private javax.swing.JSpinner spinH;
     private javax.swing.JSpinner spinH1;
     private javax.swing.JSpinner spinOpacity;
+    private javax.swing.JSpinner spinSeek;
     private javax.swing.JSpinner spinVDelay;
     private javax.swing.JSpinner spinVolume;
     private javax.swing.JSpinner spinW;

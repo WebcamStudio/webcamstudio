@@ -45,6 +45,10 @@ public class SourceCustom extends Stream {
         }
         MasterFrameBuilder.unregister(this);
     }
+    @Override
+    public void fakeStop() {
+            capture.fakeStop();
+    }
 
     @Override
     public boolean isPlaying() {

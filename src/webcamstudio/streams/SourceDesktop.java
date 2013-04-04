@@ -73,6 +73,10 @@ public class SourceDesktop extends Stream {
         MasterFrameBuilder.unregister(this);
         preview=null;
     }
+    @Override
+    public void fakeStop() {
+            capture.fakeStop();
+    }
 
     @Override
     public Frame getFrame() {

@@ -59,7 +59,9 @@ public class SourceImage extends Stream{
         frame = null;
         MasterFrameBuilder.unregister(this);
     }
-
+    @Override
+    public void fakeStop() {
+    }
     @Override
     public Frame getFrame(){
         return nextFrame;
