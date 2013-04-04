@@ -1,15 +1,12 @@
 /* 
- * How to test v4l2loopback:
- * 1. launch this test program (even in background), it will initialize the
- *    loopback device and keep it open so it won't loose the settings.
- * 2. Feed the video device with data according to the settings specified
- *    below: size, pixelformat, etc.
- *    For instance, you can try the default settings with this command:
- *    mencoder video.avi -ovc raw -nosound -vf scale=640:480,format=yuy2 -o /dev/video1
- *    TODO: a command that limits the fps would be better :)
+ * How to test the webcamstudio virtual video device:
+ *   Feed the video device with data according to the settings specified below:
+ *   size, pixelformat, etc.
+ *   For instance, you can try the default settings with this command:
+ *       mencoder video.avi -ovc raw -nosound -vf scale=640:480,format=yuy2 -o /dev/video1
  *
- * Test the video in your favourite viewer, for instance:
- *   luvcview -d /dev/video1 -f yuyv
+ *   Test the video in your favourite viewer, for instance:
+ *       luvcview -d /dev/video1 -f yuyv
  */
 
 #include <linux/videodev2.h>
@@ -29,12 +26,12 @@ int open_device(char* dev,int width,int height,int pixFormat){
 	vid_format.fmt.pix.height = height;
 	switch(pixFormat){
 		case 1:
-		        vid_format.fmt.pix.pixelformat = V4L2_PIX_FMT_RGB24;
+			vid_format.fmt.pix.pixelformat = V4L2_PIX_FMT_RGB24;
 			vid_format.fmt.pix.bytesperline = width *3;
 			vid_format.fmt.pix.sizeimage = width*height*3;
-	break;
+			break;
 		case 2:
-		        vid_format.fmt.pix.pixelformat = V4L2_PIX_FMT_UYVY;
+			vid_format.fmt.pix.pixelformat = V4L2_PIX_FMT_UYVY;
 			vid_format.fmt.pix.bytesperline = width *2;
 			vid_format.fmt.pix.sizeimage = width*height*2;
 			break;
@@ -54,5 +51,3 @@ int writeData(int devfd,__u8 data[],int length){
 	int retValue = write(devfd, data, length);
 	return retValue;
 }
-
-
