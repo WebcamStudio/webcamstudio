@@ -1,0 +1,20 @@
+#summary Developers' discussion on the WCS architecture.
+#labels Phase-Requirements,Phase-QA
+<wiki:toc/>
+
+= Introduction =
+
+Here anyone of the developers can add his ideas about the architecture of WebcamStudio, its GUI, plugins etc. and discuss all this in the comments below.
+
+
+= GUI =
+
+Content to be added...
+
+= Plugins =
+
+Content to be added...
+
+= Misc =
+
+Content to be added...
