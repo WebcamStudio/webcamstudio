@@ -15,5 +15,6 @@ You can get more info about them and their email addresses from the [https://cod
     * *Navin Ravindran*: _Support Developer, Windows tester and developer, Q&A_
     * *Rohith Mandala*: _Support Developer, Tester, API and plugin developer_
     * *Bharadwaj Desikan*: _Support Developer, Tester, API and plugin developer_
+    * *Sreejit Purushothaman*: _Support Developer, Tester, API and plugin developer, UI accessibility_
     * *Ami Shao*: _Support Developer, Tester, Package and Build tools supporter, Documentation Management_
     * *Josh Sedler*: _UI and media designer, Tester_
