@@ -252,11 +252,14 @@ public class ProcessRenderer {
             @Override
             public void run() {
                 stream.setVideo(plugins.containsKey("video"));
+                stream.setFakeVideo(plugins.containsKey("fakeVideo"));
                 stream.setAudio(plugins.containsKey("audio"));
                 capture = new Capturer(stream);
                 if (stream.hasVideo()) {
                     videoPort = capture.getVideoPort();
-                    fakeVideoPort = capture.getFakeVideoPort();
+                }
+                if (stream.hasFakeVideo()) {
+                     fakeVideoPort = capture.getFakeVideoPort();
                 }
                 if (stream.hasAudio()) {
                     audioPort = capture.getAudioPort();

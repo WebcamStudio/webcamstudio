@@ -44,6 +44,7 @@ public abstract class Stream implements Callable<Frame>{
     protected int desktopW = 1024;
     protected int desktopH = 768;
     protected boolean hasVideo=true;
+    protected boolean hasFakeVideo=true;
     protected boolean hasAudio=true;
     protected int ADelay = 0;
     protected int VDelay = 0;
@@ -141,6 +142,7 @@ public abstract class Stream implements Callable<Frame>{
     public void setDesktopH(int desktopH) {
         this.desktopH = desktopH;
     }
+
     public interface chListener {
         public void loadingPostOP();
     }
@@ -191,8 +193,15 @@ public abstract class Stream implements Callable<Frame>{
         return hasVideo;
     }
 
+    public boolean hasFakeVideo(){
+        return hasFakeVideo;
+    }
+
     public void setVideo(boolean hasIt){
         hasVideo=hasIt;
+    }
+    public void setFakeVideo(boolean hasIt) {
+        hasFakeVideo=hasIt;
     }
     public void setAudio(boolean hasIt){
         hasAudio = hasIt;

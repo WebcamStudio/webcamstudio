@@ -60,15 +60,20 @@ public class Capturer {
         if (stream.hasVideo()) {
             try {
                 videoServer = new ServerSocket(0);
-                fakeVideoServer = new ServerSocket(0);
                 vport = videoServer.getLocalPort();
+            } catch (IOException ex) {
+                Logger.getLogger(Capturer.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        if (stream.hasFakeVideo()) {
+            try {
+                fakeVideoServer = new ServerSocket(0);
                 fVport = fakeVideoServer.getLocalPort();
             } catch (IOException ex) {
                 Logger.getLogger(Capturer.class.getName()).log(Level.SEVERE, null, ex);
             }
-
         }
-        System.out.println("Port used is Video:" + vport+ "fake: "+fVport + "/Audio:" + aport);
+        System.out.println("Port used is Video:" + vport+ "/fakeVideo:"+ fVport + "/Audio:" + aport);
   /*      Thread Vsync = new Thread(new Runnable() {
 
             @Override
@@ -132,25 +137,34 @@ public class Capturer {
                 
                 try {
                     Socket connection = videoServer.accept();
-                    Socket fakeConnection = fakeVideoServer.accept();
+                    Socket fakeConnection = null;
+
+                    if (stream.hasFakeVideo()) {
+                        fakeConnection = fakeVideoServer.accept();
+                    }
+
                     hasvideo = true;                    
                     System.out.println(stream.getName() + " video accepted...");
                     do {
                         Tools.sleep(10);
                         if (hasaudio || stream.getName().contains("Desktop")) {
   //                      if (hasaudio) {
-                            System.out.println("Start Fake Video.");
-                            fakeVideoIn = new DataInputStream(fakeConnection.getInputStream());
-                            if (stream.getSeek() != 0) {
-                            Tools.sleep(stream.getVDelay()*10);
-                            } else {
-                            Tools.sleep(stream.getVDelay());    
+                            if (stream.hasFakeVideo()) {
+                                fakeVideoIn = new DataInputStream(fakeConnection.getInputStream());
+                                System.out.println("Start Fake Video.");
                             }
+
+                            if (stream.getSeek() != 0) {
+                                Tools.sleep(stream.getVDelay()*10);
+                            } else {
+                                Tools.sleep(stream.getVDelay());
+                            }
+
                             videoIn = new DataInputStream(connection.getInputStream());
                             System.out.println("Start Video.");
                              
                         }
-                    } while (!hasaudio || !hasvideo); //  (aPres);           
+                    } while (!hasvideo); //  (aPres);           
                 } catch (IOException ex) {
                     Logger.getLogger(Capturer.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -228,6 +242,10 @@ public class Capturer {
             if (audioServer != null) {
                 audioServer.close();
                 audioServer = null;
+            }
+            if (fakeVideoServer != null) {
+                fakeVideoServer.close();
+                fakeVideoServer = null;
             }
         } catch (IOException ex) {
             Logger.getLogger(Capturer.class.getName()).log(Level.SEVERE, null, ex);
