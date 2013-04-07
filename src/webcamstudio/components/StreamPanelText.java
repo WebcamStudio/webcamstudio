@@ -388,6 +388,7 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
 
     @Override
     public void sourceUpdated(Stream stream) {
+//        System.out.println("StreamPanelText Updating ...");
         spinX.setValue(stream.getX());
         spinY.setValue(stream.getY());
         spinW.setValue(stream.getWidth());

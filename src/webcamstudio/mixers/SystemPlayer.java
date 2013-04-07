@@ -19,6 +19,7 @@ import webcamstudio.util.Tools;
 public class SystemPlayer implements Runnable {
 
     boolean stopMe = false;
+    public boolean stopMePub = stopMe;
     private SourceDataLine source;
     private ExecutorService executor = null;
     private static SystemPlayer instance = null;
@@ -87,5 +88,6 @@ public class SystemPlayer implements Runnable {
         Tools.sleep(30);
         executor = null;
         System.gc();
+        webcamstudio.components.MasterPanel.tglSound.setSelected(false);
     }
 }

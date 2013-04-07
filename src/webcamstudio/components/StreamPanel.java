@@ -54,9 +54,10 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener{
         spinW1.setValue(stream.getCaptureWidth());
         spinVDelay.setValue(stream.getVDelay());
         spinADelay.setValue(stream.getADelay());
-        spinVDelay.setEnabled(stream.hasAudio());
+        spinVDelay.setEnabled(stream.hasVideo());
         spinADelay.setEnabled(stream.hasAudio());
         spinSeek.setValue(stream.getSeek());
+        spinSeek.setEnabled(stream.needSeekCTRL());//stream.hasAudio() && !stream.getName().contains("Desktop") && !stream.getClass().getName().endsWith("SourceWebcam"));
         stream.setListener(this);
         if (!stream.hasVideo()){
             spinX.setEnabled(false);
@@ -374,9 +375,9 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener{
         } else {
             spinW1.setEnabled(true);
             spinH1.setEnabled(true);
-            spinVDelay.setEnabled(stream.hasAudio());
+            spinVDelay.setEnabled(stream.hasVideo());
             spinADelay.setEnabled(stream.hasAudio());
-            spinSeek.setEnabled(stream.hasAudio());
+            spinSeek.setEnabled(stream.needSeekCTRL()); //stream.hasAudio() && !stream.getName().contains("Desktop") && !stream.getClass().getName().endsWith("SourceWebcam"));
             stream.stop();
         }
     }//GEN-LAST:event_tglActiveStreamActionPerformed

@@ -48,8 +48,8 @@ public class SinkBroadcast extends Stream {
         }
     }
     @Override
-    public void fakeStop() {
-            capture.fakeStop();
+    public boolean needSeek() {
+            return needSeekCTRL=false;
     }
 
     @Override

@@ -30,6 +30,7 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
     private SystemPlayer player = null;
     private MasterMixer mixer = MasterMixer.getInstance();
     final static public Dimension PANEL_SIZE = new Dimension(150, 400);
+    
 
     /** Creates new form MasterPanel */
     public MasterPanel() {
@@ -146,7 +147,7 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
         );
         panMixerLayout.setVerticalGroup(
             panMixerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 188, Short.MAX_VALUE)
+            .addGap(0, 189, Short.MAX_VALUE)
             .addGroup(panMixerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(panMixerLayout.createSequentialGroup()
                     .addContainerGap()
@@ -165,7 +166,7 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
                     .addGroup(panMixerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(tglSound)
                         .addComponent(btnApply))
-                    .addContainerGap(42, Short.MAX_VALUE)))
+                    .addContainerGap(43, Short.MAX_VALUE)))
         );
 
         tabMixers.addTab(bundle.getString("MIXER"), panMixer); // NOI18N
@@ -174,6 +175,9 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
         tabMixers.getAccessibleContext().setAccessibleName(bundle.getString("MIXER")); // NOI18N
     }// </editor-fold>//GEN-END:initComponents
 
+    public void releaseTglButton(){
+        tglSound.setEnabled(!player.stopMePub);
+    }
     private void tglSoundActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglSoundActionPerformed
         if (tglSound.isSelected()) {
             try {
@@ -217,7 +221,7 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
     private javax.swing.JSpinner spinHeight;
     private javax.swing.JSpinner spinWidth;
     private javax.swing.JTabbedPane tabMixers;
-    private javax.swing.JToggleButton tglSound;
+    public static javax.swing.JToggleButton tglSound;
     // End of variables declaration//GEN-END:variables
 
     @Override

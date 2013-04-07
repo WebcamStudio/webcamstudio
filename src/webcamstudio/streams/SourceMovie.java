@@ -46,8 +46,8 @@ public class SourceMovie extends Stream {
         }
     }
     @Override
-    public void fakeStop() {
-            capture.fakeStop();
+    public boolean needSeek() {
+            return needSeekCTRL=true;
     }
     @Override
     public boolean isPlaying() {

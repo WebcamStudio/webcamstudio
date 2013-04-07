@@ -45,6 +45,7 @@ public abstract class Stream implements Callable<Frame>{
     protected int desktopH = 768;
     protected boolean hasVideo=true;
     protected boolean hasFakeVideo=true;
+    protected boolean needSeekCTRL=true;
     protected boolean hasAudio=true;
     protected int ADelay = 0;
     protected int VDelay = 0;
@@ -177,7 +178,7 @@ public abstract class Stream implements Callable<Frame>{
 
     public abstract void stop();
     
-    public abstract void fakeStop();
+    public abstract boolean needSeek();
 
     public abstract boolean isPlaying();
  
@@ -192,7 +193,10 @@ public abstract class Stream implements Callable<Frame>{
     public boolean hasVideo(){
         return hasVideo;
     }
-
+    public boolean needSeekCTRL(){
+        needSeekCTRL = needSeek();
+        return needSeekCTRL;
+    }
     public boolean hasFakeVideo(){
         return hasFakeVideo;
     }
