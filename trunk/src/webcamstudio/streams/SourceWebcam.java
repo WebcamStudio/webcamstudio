@@ -55,8 +55,8 @@ public class SourceWebcam extends Stream {
         lastPreview=null;
     }
     @Override
-    public void fakeStop() {
-            capture.fakeStop();
+    public boolean needSeek() {
+            return needSeekCTRL=false;
     }
     @Override
     public boolean isPlaying() {

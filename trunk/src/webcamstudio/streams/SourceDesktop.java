@@ -74,8 +74,8 @@ public class SourceDesktop extends Stream {
         preview=null;
     }
     @Override
-    public void fakeStop() {
-            capture.fakeStop();
+    public boolean needSeek() {
+            return needSeekCTRL=false;
     }
 
     @Override

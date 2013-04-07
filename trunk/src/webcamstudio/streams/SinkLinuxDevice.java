@@ -10,6 +10,7 @@ import webcamstudio.exporter.vloopback.V4L2Loopback;
 import webcamstudio.exporter.vloopback.VideoOutput;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterMixer;
+import webcamstudio.util.Tools;
 
 /**
  *
@@ -44,12 +45,14 @@ public class SinkLinuxDevice extends Stream implements MasterMixer.SinkListener 
         MasterMixer.getInstance().unregister(this);
     }
     @Override
-    public void fakeStop() {
+    public boolean needSeek() {
+            return needSeekCTRL=false;
     }
 
     @Override
     public boolean isPlaying() {
-        return false;
+        Tools.sleep(50);
+        return !stop;
     }
 
     @Override

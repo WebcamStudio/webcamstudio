@@ -73,7 +73,8 @@ public class SourceMicrophone extends Stream {
         MasterFrameBuilder.unregister(this);
     }
     @Override
-    public void fakeStop() {
+    public boolean needSeek() {
+            return needSeekCTRL=false;
     }
     @Override
     public boolean isPlaying() {

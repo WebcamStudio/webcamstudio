@@ -46,8 +46,8 @@ public class SourceCustom extends Stream {
         MasterFrameBuilder.unregister(this);
     }
     @Override
-    public void fakeStop() {
-            capture.fakeStop();
+    public boolean needSeek() {
+            return needSeekCTRL=true;
     }
 
     @Override

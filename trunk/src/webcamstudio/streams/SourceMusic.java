@@ -44,7 +44,8 @@ public class SourceMusic extends Stream {
 
     }
     @Override
-    public void fakeStop() {
+    public boolean needSeek() {
+            return needSeekCTRL=true;
     }
 
     @Override
@@ -67,7 +68,15 @@ public class SourceMusic extends Stream {
        
         return nextFrame;
     }
+    @Override
+    public boolean hasAudio() {
+        return true;
+    }
 
+    @Override
+    public boolean hasVideo() {
+        return false;
+    }
     @Override
     public void readNext() {
          Frame f = null;

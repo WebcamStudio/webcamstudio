@@ -42,8 +42,8 @@ public class SinkFile extends Stream {
         }
     }
     @Override
-    public void fakeStop() {
-            capture.fakeStop();
+    public boolean needSeek() {
+            return needSeekCTRL=false;
     }
     @Override
     public boolean isPlaying() {

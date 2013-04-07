@@ -41,11 +41,11 @@ import webcamstudio.channels.transitions.Transition;
  */
 public class Studio {
 
-/*    public static*/ private ArrayList<String> channels = MasterChannels.getInstance().getChannels();
+/*  public static*/ private ArrayList<String> channels = MasterChannels.getInstance().getChannels();
     private ArrayList<Integer> Durations = ChannelPanel.CHTimers;
     private ArrayList<String> nextChannel = ChannelPanel.CHCurrNext;
-//    public static ArrayList<String> channez = MasterChannels.getInstance().getChannels();
-//    public static MasterChannels channelSC = MasterChannels.getInstance();
+//  public static ArrayList<String> channez = MasterChannels.getInstance().getChannels();
+//  public static MasterChannels channelSC = MasterChannels.getInstance();
     ArrayList<Stream> streams = MasterChannels.getInstance().getStreams();
     Stream streamC = null;
     private static final String ELEMENT_SOURCES = "Sources";

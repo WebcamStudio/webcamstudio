@@ -41,6 +41,7 @@ public class ChannelPanel extends javax.swing.JPanel{
     public static ArrayList<String> CHCurrNext = new ArrayList<String>();
     public static ArrayList<Integer> CHTimers = new ArrayList<Integer>();
     public static ArrayList<String> ListChannels = new ArrayList<String>();
+    ArrayList<Stream> streamS = MasterChannels.getInstance().getStreams();
 
     
     String selectChannel=null;   
@@ -332,7 +333,7 @@ public class ChannelPanel extends javax.swing.JPanel{
    
     class UpdateCHtUITask extends TimerTask {
         @Override
-        public void run() { //synchronized
+        public void run() {
             CHptS=null;
             int CHpt=0;
             int CHpTemptime = CHNextTime/1000;
@@ -431,6 +432,10 @@ public class ChannelPanel extends javax.swing.JPanel{
         SystemPlayer.getInstance(null).stop();
         Tools.sleep(50);
         MasterChannels.getInstance().stopAllStream();
+        for (Stream s : streamS){
+            s.updateStatus();
+        }
+        Tools.sleep(50);
         ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "All Stopped.");
         ResourceMonitor.getInstance().addMessage(label);
     }//GEN-LAST:event_btnStopAllStreamActionPerformed

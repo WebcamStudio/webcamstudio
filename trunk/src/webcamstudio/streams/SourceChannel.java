@@ -94,6 +94,7 @@ public class SourceChannel  {
 
             @Override
             public void run() {
+                if (!s.getClass().toString().contains("SinkLinuxDevice")){ // Don't Update SinkDevices
                 ExecutorService pool = java.util.concurrent.Executors.newCachedThreadPool();
                 for (Transition t : s.endTransitions) {
                     System.out.println(t.getClass().getName());
@@ -123,8 +124,8 @@ public class SourceChannel  {
 
                 } else {
                     if (s.isPlaying()) {
-                        s.stop();
-                        s.updateStatus();
+                            s.stop();
+                            s.updateStatus();
                     }
                 }
 
@@ -154,8 +155,9 @@ public class SourceChannel  {
                     
 //                    sd.captureX = getCaptureX();
 //                    sd.captureY = getCaptureY();
-                }
+                }               
                 s.updateStatus();
+            }
             }
         }).start();
 

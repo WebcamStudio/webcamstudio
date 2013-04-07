@@ -568,7 +568,8 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         FileURL = file.getAbsolutePath();
         String FileName = file.getName();
         System.out.println("Name: " + FileName + "URL: " + FileURL);
-        System.out.println("URL: " + FileURL); }
+//      System.out.println("URL: " + FileURL); 
+        }
         if (file != null) {
             Stream s = Stream.getInstance(file);
             if (s != null) {
@@ -631,7 +632,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         try {
             File file = null;
             JFileChooser chooser = new JFileChooser();
-            chooser.setDialogTitle("WebcamStudio - Save a Studio ...");
+            chooser.setDialogTitle("WebcamStudio - Save a Studio ... ** All Will Be Stopped **");
             chooser.setDialogType(JFileChooser.SAVE_DIALOG);
             chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
             chooser.showSaveDialog(this);
@@ -640,6 +641,9 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
                 SystemPlayer.getInstance(null).stop();
                 Tools.sleep(50);
                 MasterChannels.getInstance().stopAllStream();
+                for (Stream s : MasterChannels.getInstance().getStreams()){
+                s.updateStatus();
+            }
                 if (!file.getName().endsWith(".studio")){
                     file = new File(file.getParent(),file.getName()+".studio");
                 }
@@ -669,6 +673,9 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         if (file != null) {
             SystemPlayer.getInstance(null).stop();
             MasterChannels.getInstance().stopAllStream();
+            for (Stream s : MasterChannels.getInstance().getStreams()){              
+                s.updateStatus();
+            }
             for (int k=0;k<=5;k++) {
                 ArrayList<Stream> streamz = MasterChannels.getInstance().getStreams();
                 ArrayList<String> sourceCh = MasterChannels.getInstance().getChannels();
@@ -725,7 +732,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
                         Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     }
-                    System.out.println("**** Adding Source: "+s);
+                    System.out.println("Adding Source: "+s);
                 }
             
             Studio.extstream.clear();
@@ -776,6 +783,11 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         }
     }//GEN-LAST:event_btnAddWebcamsActionPerformed
     private void btnNewStudioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewStudioActionPerformed
+        SystemPlayer.getInstance(null).stop();
+        MasterChannels.getInstance().stopAllStream();
+        for (Stream s : MasterChannels.getInstance().getStreams()){
+                s.updateStatus();
+        }
         for (int k=0;k<=5;k++) {
 
             ArrayList<Stream> streamz = MasterChannels.getInstance().getStreams();
@@ -797,8 +809,6 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
                 webcamstudio.components.ChannelPanel.ListChannels.remove(removeSc);
             }
         }
-        SystemPlayer.getInstance(null).stop();
-        MasterChannels.getInstance().stopAllStream();
         webcamstudio.components.ChannelPanel.CHt.cancel();
         webcamstudio.components.ChannelPanel.CHt.purge();
         webcamstudio.components.ChannelPanel.StopCHpt=true;

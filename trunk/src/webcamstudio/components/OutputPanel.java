@@ -55,6 +55,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener {
     /** Creates new form OutputPanel */
     public OutputPanel() {
         initComponents();
+        final OutputPanel instanceSink = this;
         if (Tools.getOS() == OS.LINUX) {
             for (VideoDevice d : VideoDevice.getInputDevices()) {
                 JToggleButton button = new JToggleButton();
@@ -73,12 +74,12 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener {
                             stream.setRate(MasterMixer.getInstance().getRate());
                             stream.setWidth(MasterMixer.getInstance().getWidth());
                             stream.setHeight(MasterMixer.getInstance().getHeight());
+                            stream.setListener(instanceSink);
                             stream.read();
                             devices.put(button.getText(), stream);
-                            ResourceMonitorLabel label = new ResourceMonitorLabel(0, "Rendering to " + button.getText());
+                            ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Rendering to " + button.getText());
                             labels.put(button.getText(), label);
                             ResourceMonitor.getInstance().addMessage(label);
-
 
                         } else {
                             SinkLinuxDevice stream = devices.get(button.getText());
@@ -95,7 +96,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener {
                 this.revalidate();
             }
         }
-
+        
         this.setDropTarget(new DropTarget() {
 
             public synchronized void drop(DropTargetDropEvent evt) {
@@ -339,6 +340,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener {
     private javax.swing.JToggleButton tglRecordToFile;
     // End of variables declaration//GEN-END:variables
 
+    
     @Override
     public void sourceUpdated(Stream stream) {
         if (stream instanceof SinkFile) {
@@ -353,8 +355,28 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener {
                     }
                 }
             }
-        }
-    }
+                    }  else if (stream instanceof SinkLinuxDevice) {
+            String name = stream.getName();
+//            System.out.println("Sink: "+name);
+//            System.out.println("isPlaying: "+stream.isPlaying());
+            for (Component c : this.getComponents()) {
+                if (c instanceof JToggleButton) {
+                    JToggleButton b = (JToggleButton) c;
+                    if (b.getText().equals(name)) {
+                        b.setSelected(stream.isPlaying());
+                     /*if (!stream.isPlaying()){
+                        devices.remove(b.getText());
+                        ResourceMonitorLabel label = labels.remove(b.getText());
+                        if (label != null) {
+                        ResourceMonitor.getInstance().removeMessage(label);
+                        }
+                        }*/
+                    }
+                }
+            }
+            
+                    } 
+                }
 
     @Override
     public void updatePreview(BufferedImage image) {
