@@ -12,6 +12,7 @@ import java.nio.ByteBuffer;
 import java.nio.ShortBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.TreeMap;
 import java.util.concurrent.ExecutorService;
@@ -27,7 +28,7 @@ import webcamstudio.util.Tools;
  */
 public class MasterFrameBuilder implements Runnable {
 
-    static ArrayList<Stream> streams = new ArrayList<Stream>();
+    private static ArrayList<Stream> streams = new ArrayList<Stream>();// add private
     private boolean stopMe = false;
     private static int fps = 0;
     private long mark = System.currentTimeMillis();
@@ -82,7 +83,8 @@ public class MasterFrameBuilder implements Runnable {
         for (int i = 0; i < audioData.length; i++) {
             audioData[i] = 0;
         }
-        for (Frame f : frames) {
+        for (Iterator<Frame> it = frames.iterator(); it.hasNext();) {
+            Frame f = it.next();
             byte[] data = f.getAudioData();
             if (data != null) {
                 ShortBuffer buffer = ByteBuffer.wrap(data).asShortBuffer();
@@ -125,7 +127,7 @@ public class MasterFrameBuilder implements Runnable {
             Frame targetFrame = frameBuffer.getFrameToUpdate();
             frames.clear();
             try {
-                Tools.sleep(20);
+//              Tools.sleep(10);
                 List<Future<Frame>> results = pool.invokeAll(streams);
                 for (Future stream : results) {
                     Frame f = (Frame)stream.get();

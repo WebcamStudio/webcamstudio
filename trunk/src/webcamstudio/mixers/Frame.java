@@ -54,9 +54,7 @@ public class Frame {
             g.dispose();
         }
         if (audioSrc!=null && audioSrc.length==audioData.length){
-            for (int i = 0;i<audioSrc.length;i++){
-                audioData[i]=audioSrc[i];
-            }
+            System.arraycopy(audioSrc, 0, audioData, 0, audioSrc.length);
         }
     }
     public String getID(){

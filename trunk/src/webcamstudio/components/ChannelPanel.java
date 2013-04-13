@@ -35,7 +35,7 @@ import webcamstudio.util.Tools;
  */
 public class ChannelPanel extends javax.swing.JPanel{
 
-    public static MasterChannels master = MasterChannels.getInstance();
+    MasterChannels master = MasterChannels.getInstance();
     public static DefaultListModel model = new DefaultListModel();
     public static DefaultComboBoxModel aModel = new DefaultComboBoxModel();
     public static ArrayList<String> CHCurrNext = new ArrayList<String>();
@@ -50,9 +50,9 @@ public class ChannelPanel extends javax.swing.JPanel{
     int CHNextTime =0;
     int CHTimer = 0;
     public static Timer CHt=new Timer();
-    public static String CHptS= null;
+    String CHptS= null;
     public static Boolean StopCHpt=false;
-//  static int IsLoading=0;
+    boolean inTimer=false;
     /**
      * Creates new form ChannelPanel
      */
@@ -196,6 +196,7 @@ public class ChannelPanel extends javax.swing.JPanel{
 
         btnRenameCh.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/view-refresh.png"))); // NOI18N
         btnRenameCh.setToolTipText(bundle.getString("RENAME_CHANNEL")); // NOI18N
+        btnRenameCh.setEnabled(false);
         btnRenameCh.setName("btnRenameCh"); // NOI18N
         btnRenameCh.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -282,7 +283,9 @@ public class ChannelPanel extends javax.swing.JPanel{
             lstNextChannel.setSelectedItem(CHCurrNext.get(SelectCHIndex));
             ChDuration.setValue(CHTimers.get(SelectCHIndex)/1000);
             btnRemove.setEnabled(true);
-            btnSelect.setEnabled(true);
+            btnSelect.setEnabled(!inTimer);
+            btnRenameCh.setEnabled(!inTimer);
+            btnAdd.setEnabled(!inTimer);
             btnUpdate.setEnabled(true);
             } else {
                 btnRemove.setEnabled(false);
@@ -366,6 +369,8 @@ public class ChannelPanel extends javax.swing.JPanel{
                  n += 1;
             }
             lstChannels.setSelectedValue(CHNxName, true);
+            String name = lstChannels.getSelectedValue().toString();
+            System.out.println("Apply Select: "+name);
             master.selectChannel(CHNxName);
 	    CHt=new Timer();
             CHt.schedule(new TSelectActionPerformed(),CHNextTime);
@@ -381,9 +386,13 @@ public class ChannelPanel extends javax.swing.JPanel{
         System.out.println("Apply Select: "+name);
         master.selectChannel(name);
         if (CHTimers.get(lstChannels.getSelectedIndex()) != 0) {
+            inTimer=true;
+            btnRenameCh.setEnabled(false);
+            btnAdd.setEnabled(false);
             lstChannels.setEnabled(false);
             ChDuration.setEnabled(false);
             btnStopAllStream.setEnabled(false);
+            btnSelect.setEnabled(false);
             CHt=new Timer();
             CHt.schedule(new TSelectActionPerformed(),CHTimers.get(lstChannels.getSelectedIndex()));
             CHNextTime = CHTimers.get(lstChannels.getSelectedIndex());
@@ -424,6 +433,12 @@ public class ChannelPanel extends javax.swing.JPanel{
         lstChannels.setEnabled(true);
         ChDuration.setEnabled(true);
         btnStopAllStream.setEnabled(true);
+        btnSelect.setEnabled(true);
+        btnRenameCh.setEnabled(true);
+        btnAdd.setEnabled(true);
+        inTimer=false;
+        CHProgressTime.setValue(0);
+        CHProgressTime.setString("0");
         ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Channel Timer Stopped.");
         ResourceMonitor.getInstance().addMessage(label);
     }//GEN-LAST:event_StopCHTimerActionPerformed

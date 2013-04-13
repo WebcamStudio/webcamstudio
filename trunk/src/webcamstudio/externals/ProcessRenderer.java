@@ -126,10 +126,10 @@ public class ProcessRenderer {
                     path = path.replaceAll("OS", Tools.getOSName());
                     break;
             }
-            System.out.println(path);
+//            System.out.println(path);
             res = ProcessRenderer.class.getResource(path);
         }
-        System.out.println("Resource Used: " + res.toString());
+//        System.out.println("Resource Used: " + res.toString());
         return res;
     }
 
@@ -253,6 +253,7 @@ public class ProcessRenderer {
             public void run() {
                 stream.setVideo(plugins.containsKey("video"));
                 stream.setFakeVideo(plugins.containsKey("fakeVideo"));
+                stream.setFakeAudio(plugins.containsKey("fakeAudio"));
                 stream.setAudio(plugins.containsKey("audio"));
                 capture = new Capturer(stream);
                 if (stream.hasVideo()) {
@@ -285,9 +286,9 @@ public class ProcessRenderer {
                     String[] parmsVideo = commandVideo.split("ABCDE");
                     try {
                         for (String p : parmsVideo) {
-                            System.out.print(p + " ");
+ //                           System.out.print(p + " ");
                         }
-                        System.out.println();
+ //                       System.out.println();
                         processVideo.execute(parmsVideo);
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -313,9 +314,9 @@ public class ProcessRenderer {
                     String[] parmsAudio = commandAudio.split("ABCDE");
                     try {
                         for (String p : parmsAudio) {
-                            System.out.print(p + " ");
+//                            System.out.print(p + " ");
                         }
-                        System.out.println();
+//                        System.out.println();
                         processAudio.execute(parmsAudio);
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -341,7 +342,7 @@ public class ProcessRenderer {
                 stopped = false;
                 String command = plugins.getProperty(plugin).replaceAll("  ", " "); //Making sure there is no double spaces
                 command = setParameters(command);
-                System.out.println(command);
+//                System.out.println(command);
 
                 final String[] parms = command.split(" ");
                 try {

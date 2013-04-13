@@ -56,7 +56,7 @@ import webcamstudio.util.Tools.OS;
 public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Listener {
 
     Preferences prefs = null;
-    Properties animations = new Properties();
+    public static Properties animations = new Properties();
     OutputPanel recorder = new OutputPanel();
     Frame about = new Frame();
     Stream stream = null;
@@ -388,6 +388,11 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         cboAnimations.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         cboAnimations.setToolTipText(bundle.getString("ANIMATIONS")); // NOI18N
         cboAnimations.setName("cboAnimations"); // NOI18N
+        cboAnimations.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cboAnimationsActionPerformed(evt);
+            }
+        });
         toolbar.add(cboAnimations);
 
         btnAddAnimation.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/emotes/face-cool.png"))); // NOI18N
@@ -517,7 +522,9 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         savePrefs();
         SystemPlayer.getInstance(null).stop();
+        Tools.sleep(10);
         MasterChannels.getInstance().stopAllStream();
+        Tools.sleep(10);
         MasterMixer.getInstance().stop();
         System.exit(0);
         System.err.close();
@@ -567,8 +574,8 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         String FileURL;
         FileURL = file.getAbsolutePath();
         String FileName = file.getName();
-        System.out.println("Name: " + FileName + "URL: " + FileURL);
-//      System.out.println("URL: " + FileURL); 
+        System.out.println("Name: " + FileName);
+        System.out.println("URL: " + FileURL); 
         }
         if (file != null) {
             Stream s = Stream.getInstance(file);
@@ -583,16 +590,20 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
             }
         } else {
             ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "No File Selected!");
-            ResourceMonitor.getInstance().addMessage(label);  
- //         System.out.println("No file Selected !!");
+            ResourceMonitor.getInstance().addMessage(label);
         }
 
     }//GEN-LAST:event_btnAddFileActionPerformed
 
     private void btnAddAnimationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddAnimationActionPerformed
         String key = cboAnimations.getSelectedItem().toString();
+        System.out.println("Key: "+key);
         String res = animations.getProperty(key);
+        System.out.println("Res: "+res);
+        String name = WebcamStudio.class.getResource("/webcamstudio/resources/animations/").toString();
+        System.out.println("MyClass: "+name);
         URL url = getClass().getResource("/webcamstudio/resources/animations/" + res);
+        System.out.println(url);
         Stream stream = new SourceImageGif(key, url);
         StreamDesktop frame = new StreamDesktop(stream, this);
         desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
@@ -632,7 +643,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         try {
             File file = null;
             JFileChooser chooser = new JFileChooser();
-            chooser.setDialogTitle("WebcamStudio - Save a Studio ... ** All Will Be Stopped **");
+            chooser.setDialogTitle("Save a Studio ... ** All Streams will be Stopped **");
             chooser.setDialogType(JFileChooser.SAVE_DIALOG);
             chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
             chooser.showSaveDialog(this);
@@ -666,7 +677,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
     private void btnLoadStudioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoadStudioActionPerformed
         JFileChooser chooser = new JFileChooser();
         chooser.setMultiSelectionEnabled(false);
-        chooser.setDialogTitle("WebcamStudio - Load a Studio ...");
+        chooser.setDialogTitle("Load a Studio ... ** The Current Studio will be deleted. **");
         chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         chooser.showOpenDialog(this);
         File file = chooser.getSelectedFile();
@@ -688,7 +699,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
                 }
                 for (int a=0; a< sourceCh.size(); a++) {
                     String removeSc = sourceCh.get(a);
-                    webcamstudio.components.ChannelPanel.master.removeChannel(removeSc);
+                    MasterChannels.getInstance().removeChannel(removeSc);
                     webcamstudio.components.ChannelPanel.model.removeElement(removeSc);
                     webcamstudio.components.ChannelPanel.aModel.removeElement(removeSc);
                     webcamstudio.components.ChannelPanel.CHCurrNext.remove(removeSc);
@@ -748,7 +759,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
                 }
             }
             Studio.LText.clear();
-                        Tools.sleep(500);
+          Tools.sleep(500);
             for (String chsc : MasterChannels.getInstance().getChannels()) { // Studio.channels
                 ChannelPanel.AddLoadingChannel(chsc);               
             }
@@ -801,7 +812,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
             }
             for (int a=0; a< sourceCh.size(); a++) {
                 String removeSc = sourceCh.get(a);
-                webcamstudio.components.ChannelPanel.master.removeChannel(removeSc);
+                MasterChannels.getInstance().removeChannel(removeSc);
                 webcamstudio.components.ChannelPanel.model.removeElement(removeSc);
                 webcamstudio.components.ChannelPanel.aModel.removeElement(removeSc);
                 webcamstudio.components.ChannelPanel.CHCurrNext.remove(removeSc);
@@ -820,6 +831,10 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         desktop.removeAll();
         desktop.repaint();
     }//GEN-LAST:event_btnNewStudioActionPerformed
+
+    private void cboAnimationsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboAnimationsActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cboAnimationsActionPerformed
     /**
      * @param args the command line arguments
      */
@@ -874,7 +889,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
     private javax.swing.JButton btnMinimizeAll;
     private javax.swing.JButton btnNewStudio;
     private javax.swing.JButton btnSaveStudio;
-    private javax.swing.JComboBox cboAnimations;
+    public static javax.swing.JComboBox cboAnimations;
     private javax.swing.JDesktopPane desktop;
     private javax.swing.JLabel lblSourceSelected;
     private javax.swing.JSplitPane mainSplit;

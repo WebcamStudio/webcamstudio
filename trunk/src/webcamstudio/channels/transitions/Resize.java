@@ -24,10 +24,10 @@ public class Resize extends Transition{
         
         int newW = channel.getWidth();
         int newH = channel.getHeight();
-        System.out.println("NewW: "+newW+" NewH: "+newH);
+//        System.out.println("NewW: "+newW+" NewH: "+newH);
         int deltaW = newW - oldW;
         int deltaH = newH - oldH;
-        System.out.println("DeltaW: "+deltaW+" DeltaH: "+deltaH);
+//        System.out.println("DeltaW: "+deltaW+" DeltaH: "+deltaH);
         int rate = source.getRate();
         int totalFrames = rate * 1;
         
