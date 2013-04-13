@@ -297,6 +297,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener {
         tglRecordToFile.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-record.png"))); // NOI18N
         tglRecordToFile.setText(bundle.getString("RECORD")); // NOI18N
         tglRecordToFile.setName("tglRecordToFile"); // NOI18N
+        tglRecordToFile.setRolloverEnabled(false);
         tglRecordToFile.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-stop.png"))); // NOI18N
         tglRecordToFile.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -324,6 +325,8 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener {
                 ResourceMonitorLabel label = new ResourceMonitorLabel(0, "Recording in " + f.getName());
                 labels.put("RECORD", label);
                 ResourceMonitor.getInstance().addMessage(label);
+            } else {
+                tglRecordToFile.setSelected(false);
             }
         } else {
             SinkFile fileStream = files.get("RECORD");
@@ -335,6 +338,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener {
                 ResourceMonitor.getInstance().removeMessage(label);
             }
         }
+        
     }//GEN-LAST:event_tglRecordToFileActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JToggleButton tglRecordToFile;

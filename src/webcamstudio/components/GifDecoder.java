@@ -296,7 +296,7 @@ public class GifDecoder {
 		init();
 		if (is != null) {
 			if (!(is instanceof BufferedInputStream))
-				is = new BufferedInputStream(is);
+                        is = new BufferedInputStream(is);
 			in = (BufferedInputStream) is;
 			readHeader();
 			if (!err()) {
@@ -399,7 +399,7 @@ public class GifDecoder {
 						// Read a new data block.
 						count = readBlock();
 						if (count <= 0)
-							break;
+                                                break;
 						bi = 0;
 					}
 					datum += (((int) block[bi]) & 0xff) << bits;
@@ -418,7 +418,7 @@ public class GifDecoder {
 				//  Interpret the code
 
 				if ((code > available) || (code == end_of_information))
-					break;
+                                break;
 				if (code == clear) {
 					//  Reset decoder.
 					code_size = data_size + 1;
@@ -447,7 +447,7 @@ public class GifDecoder {
 				//  Add a new string to the string table,
 
 				if (available >= MaxStackSize)
-					break;
+                                break;
 				pixelStack[top++] = (byte) first;
 				prefix[available] = (short) old_code;
 				suffix[available] = (byte) first;
@@ -518,7 +518,7 @@ public class GifDecoder {
 				while (n < blockSize) {
 					count = in.read(block, n, blockSize - n);
 					if (count == -1) 
-						break;
+                                        break;
 					n += count;
 				}
 			} catch (IOException e) {
@@ -672,8 +672,8 @@ public class GifDecoder {
 		} else {
 			act = gct; // make global table active
 			if (bgIndex == transIndex)
-				bgColor = 0;
-		}
+                        bgColor = 0;
+                    }
 		int save = 0;
 		if (transparency) {
 			save = act[transIndex];

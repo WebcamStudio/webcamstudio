@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.reflect.Field;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -28,6 +29,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+import webcamstudio.WebcamStudio;
 import webcamstudio.channels.MasterChannels;
 import webcamstudio.mixers.MasterMixer;
 import webcamstudio.streams.*;
@@ -58,20 +60,11 @@ public class Studio {
     public static File filename;
     public static ArrayList<SourceText> LText = new ArrayList<SourceText>();
     public static ArrayList<String> ImgMovMus = new ArrayList<String>();
+    public static ArrayList<String> aGifKeys = new ArrayList<String>();
     static boolean FirstChannel=false;
     
     protected Studio() {
     }
-//    public ArrayList<String> getStrings() {
-//        return ImgMovMus;
-//    }
-//    public ArrayList<String> getChannels() {
-//        return channels;
-//    }
-    
- //   public ArrayList<Stream> getStreams() {
- //       return streams;
- //   }
 // Studio removed, put void
     public static void load(File file) throws ParserConfigurationException, SAXException, IOException, XPathExpressionException {
         Studio studio = new Studio();
@@ -178,7 +171,7 @@ public class Studio {
         String clazz = o.getClass().getCanonicalName();
         if (clazz != null) {
             System.out.println("Clazz: "+clazz);
-            Tools.sleep(50);
+//            Tools.sleep(50);
             xml.writeAttribute("clazz", clazz);
         }
  //       Tools.sleep(50);
@@ -295,7 +288,7 @@ public class Studio {
             }
         }
     }
-
+   
     private static void readStreams(Document xml) throws IllegalArgumentException, IllegalAccessException, XPathExpressionException {
         XPath path = XPathFactory.newInstance().newXPath();
         NodeList sources = (NodeList) path.evaluate("/" + ELEMENT_ROOT + "/" + ELEMENT_SOURCES + "/" + ELEMENT_SOURCE, xml.getDocumentElement(), XPathConstants.NODESET);
@@ -318,7 +311,7 @@ public class Studio {
                 String sName = null;
                 String subContent = null;
                 Stream stream = null;
-                SourceChannel sc = null; 
+                SourceChannel sc = null;
                 ArrayList<SourceChannel> SCL = new ArrayList<SourceChannel>();
                 SourceText text = null;
                 for (int j = 0; j < source.getChildNodes().getLength(); j++) {
@@ -539,6 +532,56 @@ public class Studio {
                     subSTrans.clear();
                     subETrans.clear();
                     System.out.println("Subs Cleared **** ");
+                } else if (clazz.toLowerCase().endsWith("sourceimagegif")) {
+                    for (int an=0;an < webcamstudio.WebcamStudio.cboAnimations.getItemCount(); an++){
+                        for (String aKey : sNames){
+                            System.out.println("Gif Name:"+webcamstudio.WebcamStudio.cboAnimations.getItemAt(an).toString());
+                            System.out.println("Current Gif Name:"+aKey);
+                            if (aKey == null ? webcamstudio.WebcamStudio.cboAnimations.getItemAt(an).toString() == null : aKey.equals(webcamstudio.WebcamStudio.cboAnimations.getItemAt(an).toString())){
+                                System.out.println("Loading Gif Key: "+aKey);
+                                String res = webcamstudio.WebcamStudio.animations.getProperty(aKey);
+                                System.out.println("Res: "+res);
+                                URL url = WebcamStudio.class.getResource("/webcamstudio/resources/animations/" + res);
+                                stream = new SourceImageGif(aKey, url);
+                                extstream.add(stream);
+                                extstreamBis.add(stream);
+                                ImgMovMus.add("ImageGif");
+                                readObject(stream, source);                    
+                                int op=0;
+                                for (SourceChannel scs : SCL) {
+                                    scs.setName(SubChNames.get(op));
+                                    String sNamet=SubChNames.get(op);
+                                    if (!subSTrans.isEmpty()){
+                                        if (subSTrans.get(op) != null) {
+                                            if ("webcamstudio.channels.transitions.FadeIn".equals(subSTrans.get(op))){
+                                                Transition t = Transition.getInstance(stream, "FadeIn");
+                                                stream.addStartTransition(t);
+                                                scs.startTransitions.add(stream.startTransitions.get(0));
+                                }
+                            }
+                        }                                
+                        if (subETrans.size() != 0){
+                            if (subETrans.get(op) != null) {
+                                if ("webcamstudio.channels.transitions.FadeOut".equals(subETrans.get(op))){
+                                    Transition t = Transition.getInstance(stream, "FadeOut");
+                                    stream.addEndTransition(t);
+                                    scs.endTransitions.add(stream.endTransitions.get(0));
+                                }
+                            }
+                        }
+                        stream.addChannel(scs);                    
+                        System.out.println("Add Channel: "+scs);
+                        op+=1;                    
+                    }
+                    SCL.clear();
+                    SubChNames.clear();
+                    subSTrans.clear();
+                    subETrans.clear();
+                    System.out.println("Subs Cleared **** ");
+                            }
+                        }                   
+                    System.out.println("Out of aGifKeys Routine:");
+                    }
                 } else {
                     System.err.println("Cannot handle " + clazz);
                 }
@@ -558,13 +601,9 @@ public class Studio {
                         System.out.println(dST+" Removed ****");
                         System.out.println(streamName+" Removed ****");
                         multi=0;
-                }
-                    
-             }
-                        
-               
-        }
-        
+                }                 
+             }          
+        }   
     }
 
     private static void readObject(Stream stream, Node source) throws IllegalArgumentException, IllegalAccessException {
@@ -594,7 +633,6 @@ public class Studio {
                         }
                     }
                 }
-
             }
         }
 

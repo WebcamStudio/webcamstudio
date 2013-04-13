@@ -20,8 +20,8 @@ import webcamstudio.util.Tools;
 public class SourceImageGif extends Stream {
 
     BufferedImage image = null;
-    boolean playing = true;
-    boolean stop = false;
+    boolean playing = false;
+    boolean stop = true;
     Frame frame = null;
     GifDecoder decoder = new GifDecoder();
     int index = 0;
@@ -68,6 +68,7 @@ public class SourceImageGif extends Stream {
 
     @Override
     public void read() {
+        playing=true;
         stop = false;
         try {
             loadImage(file);
@@ -82,6 +83,7 @@ public class SourceImageGif extends Stream {
 
     @Override
     public void stop() {
+        playing=false;
         stop = true;
         MasterFrameBuilder.unregister(this);
     }

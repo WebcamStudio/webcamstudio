@@ -41,9 +41,7 @@ public class AudioBuffer {
         currentIndex++;
         currentIndex = currentIndex % bufferSize;
         byte[] d = buffer.get(currentIndex);
-        for (int i = 0; i < d.length; i++) {
-            d[i] = data[i];
-        }
+        System.arraycopy(data, 0, d, 0, d.length);
         framePushed++;
 
     }

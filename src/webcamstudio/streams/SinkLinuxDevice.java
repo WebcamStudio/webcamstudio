@@ -51,7 +51,7 @@ public class SinkLinuxDevice extends Stream implements MasterMixer.SinkListener 
 
     @Override
     public boolean isPlaying() {
-        Tools.sleep(50);
+//        Tools.sleep(50);
         return !stop;
     }
 
