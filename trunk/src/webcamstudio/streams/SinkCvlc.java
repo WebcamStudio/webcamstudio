@@ -5,8 +5,8 @@
 package webcamstudio.streams;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
 import webcamstudio.externals.ProcessRenderer;
-import webcamstudio.externals.FME;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterMixer;
 
@@ -14,50 +14,52 @@ import webcamstudio.mixers.MasterMixer;
  *
  * @author patrick
  */
-public class SinkBroadcast extends Stream {
+public class SinkCvlc extends Stream {
 
     private ProcessRenderer capture = null;
-    private FME fme = null;
-    private boolean isPlaying = false;
-    public SinkBroadcast(FME fme) {
-        this.fme=fme;
-        name=fme.getName();
-        url = fme.getUrl()+"/"+fme.getStream();
+
+    public SinkCvlc() {
+        name = "Cvlc";
+
     }
-    @Override
-    public String getName(){
-        return name;
-    }
+
     @Override
     public void read() {
-        isPlaying=true;
         rate = MasterMixer.getInstance().getRate();
         captureWidth = MasterMixer.getInstance().getWidth();
         captureHeight = MasterMixer.getInstance().getHeight();
-        capture = new ProcessRenderer(this,fme,"broadcast");
+        rate = MasterMixer.getInstance().getRate();
+        capture = new ProcessRenderer(this, ProcessRenderer.ACTION.OUTPUT, "cvlc");
         capture.writeCom();
     }
 
     @Override
     public void stop() {
-        isPlaying=false;
-        if  (capture!=null){
+        if (capture != null) {
             capture.stop();
-            capture=null;
+            capture = null;
         }
     }
     @Override
     public boolean needSeek() {
             return needSeekCTRL=false;
     }
-
     @Override
     public boolean isPlaying() {
-        return isPlaying;
+        if (capture != null) {
+            return !capture.isStopped();
+        } else {
+            return false;
         }
+    }
 
     @Override
     public BufferedImage getPreview() {
+        return null;
+    }
+
+    @Override
+    public Frame getFrame() {
         return null;
     }
 

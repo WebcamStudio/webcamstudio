@@ -49,6 +49,9 @@ public abstract class Stream implements Callable<Frame>{
     protected boolean hasAudio=true;
     protected int ADelay = 0;
     protected int VDelay = 0;
+    protected int frequencyDVB = 0;
+    protected int bandwidthDVB = 0;
+    protected int chDVB = 0;
     protected Frame nextFrame = null;
     public ArrayList<Transition> startTransitions = new ArrayList<Transition>();
     public ArrayList<Transition> endTransitions = new ArrayList<Transition>();
@@ -85,6 +88,24 @@ public abstract class Stream implements Callable<Frame>{
     /**
      * @return the desktopX
      */
+    public void setDVBChannelNumber(int chDVB) {
+        this.chDVB = chDVB;
+    }
+    public void setDVBFrequency(int frequencyDVB) {
+        this.frequencyDVB = frequencyDVB;
+    }
+    public void setDVBBandwidth(int bandwidthDVB) {
+        this.bandwidthDVB = bandwidthDVB;
+    }
+    public int getDVBChannelNumber() {
+        return chDVB;
+    }
+    public int getDVBFrequency() {
+        return frequencyDVB;
+    }
+    public int getDVBBandwidth() {
+        return bandwidthDVB;
+    }
     public int getDesktopX() {
         return desktopX;
     }

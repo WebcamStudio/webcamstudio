@@ -270,6 +270,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         toolbar = new javax.swing.JToolBar();
         btnAddFile = new javax.swing.JButton();
         btnAddWebcams = new javax.swing.JButton();
+        btnAddDVB = new javax.swing.JButton();
         btnAddDesktop = new javax.swing.JButton();
         btnAddText = new javax.swing.JButton();
         btnAddQRCode = new javax.swing.JButton();
@@ -331,6 +332,19 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
             }
         });
         toolbar.add(btnAddWebcams);
+
+        btnAddDVB.setText("DVB-T");
+        btnAddDVB.setToolTipText("Add DVB Stream");
+        btnAddDVB.setFocusable(false);
+        btnAddDVB.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnAddDVB.setName("btnAddDVB"); // NOI18N
+        btnAddDVB.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnAddDVB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddDVBActionPerformed(evt);
+            }
+        });
+        toolbar.add(btnAddDVB);
 
         btnAddDesktop.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/user-desktop.png"))); // NOI18N
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("webcamstudio/Languages"); // NOI18N
@@ -716,7 +730,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
             ChannelPanel.CHTimers.clear();
             tabControls.removeAll();
             tabControls.repaint();
-            Tools.sleep(500);
+            Tools.sleep(250);
             desktop.removeAll();
             desktop.repaint();
             try {
@@ -759,7 +773,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
                 }
             }
             Studio.LText.clear();
-          Tools.sleep(500);
+          Tools.sleep(250);
             for (String chsc : MasterChannels.getInstance().getChannels()) { // Studio.channels
                 ChannelPanel.AddLoadingChannel(chsc);               
             }
@@ -827,7 +841,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         ChannelPanel.CHTimers.clear();
         tabControls.removeAll();
         tabControls.repaint();
-        Tools.sleep(500);
+        Tools.sleep(250);
         desktop.removeAll();
         desktop.repaint();
     }//GEN-LAST:event_btnNewStudioActionPerformed
@@ -835,10 +849,28 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
     private void cboAnimationsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboAnimationsActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_cboAnimationsActionPerformed
+
+    private void btnAddDVBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddDVBActionPerformed
+        SourceDVB stream = new SourceDVB();
+        StreamDesktop frame = new StreamDesktop(stream, this);
+        desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        try {
+            frame.setSelected(true);
+        } catch (PropertyVetoException ex) {
+            Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnAddDVBActionPerformed
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
+    public static void main(String args[]) { 
+            if (System.getProperty("jna.nosys") == null) {
+                System.setProperty("jna.nosys", "true");
+            }
+            File dir = new File(System.getProperty("user.home"), ".webcamstudio");
+        if (!dir.exists()) {
+            dir.mkdir();
+        }
         /*
          * Set the Nimbus look and feel
          */
@@ -871,7 +903,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
          */
         java.awt.EventQueue.invokeLater(new Runnable() {
 
-            public void run() {
+            public void run() {            
                 new WebcamStudio().setVisible(true);
             }
         });
@@ -879,6 +911,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton WCSAbout;
     private javax.swing.JButton btnAddAnimation;
+    private javax.swing.JButton btnAddDVB;
     private javax.swing.JButton btnAddDesktop;
     private javax.swing.JButton btnAddFile;
     private javax.swing.JButton btnAddMic;

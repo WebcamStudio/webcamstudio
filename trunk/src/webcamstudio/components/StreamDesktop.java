@@ -11,6 +11,7 @@
 package webcamstudio.components;
 
 import java.awt.BorderLayout;
+import webcamstudio.streams.SourceDVB;
 import webcamstudio.streams.SourceText;
 import webcamstudio.streams.SourceWebcam;
 import webcamstudio.streams.Stream;
@@ -23,6 +24,7 @@ import webcamstudio.util.Tools;
 public class StreamDesktop extends javax.swing.JInternalFrame {
 
     StreamPanel panel = null;
+    StreamPanelDVB panelDVB = null;
     Stream stream = null;
     Listener listener = null;
     public interface Listener{
@@ -39,6 +41,13 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
             this.add(p, BorderLayout.CENTER);
             this.setTitle(s.getName());
             this.setVisible(true);
+        } else if (s instanceof SourceDVB) {
+            StreamPanelDVB p = new StreamPanelDVB(s);
+            this.setLayout(new BorderLayout());
+            this.add(p, BorderLayout.CENTER);
+            this.setTitle(s.getName());
+            this.setVisible(true);
+            panelDVB = p;
         } else {
             StreamPanel p = new StreamPanel(s);
             this.setLayout(new BorderLayout());

@@ -24,7 +24,7 @@ public class FlipVertical extends Effect{
         BufferedImage tempimage = cloneImage(img);
         buffer.setBackground(new java.awt.Color(0,0,0,0));
         buffer.clearRect(0,0,img.getWidth(),img.getHeight());
-        buffer.drawImage(tempimage, w, 0, 0, h, 0, 0, w, h, null);
+        buffer.drawImage(tempimage, 0, h, w, 0, 0, 0, w, h, null);
     }
 
     @Override

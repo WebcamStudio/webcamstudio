@@ -57,12 +57,17 @@ public class ProcessExecutor {
         }).start();
     }
     public void execute(String[] params) throws IOException, InterruptedException {
-        process = Runtime.getRuntime().exec(params);
+        Runtime rt = Runtime.getRuntime();
+        process = rt.exec(params);
         processRunning = true;
-        //readOutput(process);
-        
+//      readOutput(process);      
     }
-
+    public void executeString(String params) throws IOException, InterruptedException {
+        Runtime rt = Runtime.getRuntime();
+        process = rt.exec(params);
+        processRunning = true;
+//      readOutput(process);
+    }
     public void destroy() {
         //Tools.sleep(10000);
         processRunning=false;

@@ -4,6 +4,11 @@
  */
 package webcamstudio.media.renderer;
 
+import java.io.BufferedOutputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.ServerSocket;
@@ -12,6 +17,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import webcamstudio.mixers.*;
 import webcamstudio.streams.Stream;
+import webcamstudio.util.Tools;
+import java.nio.ByteBuffer;
 
 /**
  *
@@ -21,17 +28,19 @@ public class Exporter implements MasterMixer.SinkListener {
 
     private boolean cancel = false;
     //final static int FRAME_LIMIT = 5;
-    ServerSocket videoServer = null;
-    ServerSocket audioServer = null;
-    OutputStream videoOutput = null;
-    OutputStream audioOutput = null;
-    int aport = 0;
-    int vport = 0;
-    ImageBuffer imageBuffer = null;
-    AudioBuffer audioBuffer = null;
-    long vCounter = 0;
-    long aCounter = 0;
-    Stream stream = null;
+    private ServerSocket videoServer = null;
+    private ServerSocket audioServer = null;
+    private BufferedOutputStream videoOutput;    
+    private BufferedOutputStream audioOutput;
+    private int aport = 0;
+    private int vport = 0;
+    private ImageBuffer imageBuffer = null;
+    private AudioBuffer audioBuffer = null;
+    private long vCounter = 0;
+    private long aCounter = 0;
+    private Stream stream = null;
+    private Socket vConnection = null;
+    private Socket aConnection = null;
 
     public Exporter(Stream s) {
         this.stream = s;
@@ -49,54 +58,57 @@ public class Exporter implements MasterMixer.SinkListener {
         } catch (IOException ex) {
             Logger.getLogger(Exporter.class.getName()).log(Level.SEVERE, null, ex);
         }
-        new Thread(new Runnable() {
+        System.out.println("Port used is Video:" + vport+"/Audio:" + aport);
+        Thread vExCapture = new Thread(new Runnable() {
 
             @Override
             public void run() {
                 try {
-                    Socket connection = videoServer.accept();
+                    vConnection = videoServer.accept();
                     System.out.println("Video output accepted");
-                    videoOutput = connection.getOutputStream();
+                    videoOutput = new BufferedOutputStream(vConnection.getOutputStream(), 4096);
                     imageBuffer.clear();
-                    int counter = 0;
+ //                 int counter = 0;
                     while (!cancel) {
-                        WSImage image = imageBuffer.pop();
-                        if (image != null) {
+                        byte[] videoData = imageBuffer.pop().getBytes();
+                        if (videoData == null || videoOutput == null) {                            
+                        } else {
+                            videoOutput.write(videoData);                            
+                            videoOutput.flush();
                             vCounter++;
-                            if (videoOutput != null) {
-                                videoOutput.write(image.getBytes());
-                            } else {
-                                cancel = true;
-                            }
                         }
-                    }
+                    } 
                 } catch (IOException ex) {
                     cancel = true;
                     imageBuffer.abort();
                     stream.stop();
                     stream.updateStatus();
-                    //Logger.getLogger(Exporter.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(Exporter.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 System.out.println("Video output stopped");
             }
-        }).start();
-        new Thread(new Runnable() {
+        });
+        vExCapture.setPriority(Thread.MIN_PRIORITY);
+        if (stream.hasVideo()) {  // || hasaudio       
+            vExCapture.start();
+        }
+        Thread aExCapture = new Thread(new Runnable() {
 
             @Override
             public void run() {
-                try {
-
-                    Socket connection = audioServer.accept();
+                try {                    
+                    aConnection = audioServer.accept();
                     System.out.println("Audio output accepted");
-                    audioOutput = connection.getOutputStream();
+                    audioOutput = new BufferedOutputStream(aConnection.getOutputStream(), 4096);
                     audioBuffer.clear();
-                    while (!cancel) {
+                     while (!cancel) {
                         byte[] audioData = audioBuffer.pop();
-                        if (audioData != null && audioOutput!=null) {
+                        if (audioData == null || audioOutput==null) {
+                        } else {
                             audioOutput.write(audioData);
+                            audioOutput.flush();
                             aCounter++;
-                            audioData = null;
-                        }
+                        }                        
                     }
 
                 } catch (IOException ex) {
@@ -104,11 +116,16 @@ public class Exporter implements MasterMixer.SinkListener {
                     audioBuffer.abort();
                     stream.stop();
                     stream.updateStatus();
-                    //Logger.getLogger(Exporter.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(Exporter.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 System.out.println("Audio output stopped");
             }
-        }).start();
+        });
+        aExCapture.setPriority(Thread.MIN_PRIORITY);
+        if (stream.hasVideo()) {  // || hasaudio       
+            aExCapture.start();
+        }
+        
         cancel = false;
         MasterMixer.getInstance().register(this);
 

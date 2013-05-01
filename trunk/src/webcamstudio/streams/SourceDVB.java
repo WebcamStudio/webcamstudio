@@ -16,17 +16,16 @@ import webcamstudio.sources.effects.Effect;
  *
  * @author patrick
  */
-public class SourceMovie extends Stream {
+public class SourceDVB extends Stream {
 
     ProcessRenderer capture = null;
     BufferedImage lastPreview = null;
 
-    public SourceMovie(File movie) {
+    public SourceDVB() {
         super();
+        name = "DVB-T";
         rate = MasterMixer.getInstance().getRate();
         System.out.println("Frame Rate = " + rate);
-        file = movie;
-        name = movie.getName();
     }
 
     @Override
@@ -34,7 +33,7 @@ public class SourceMovie extends Stream {
         rate = MasterMixer.getInstance().getRate();
         lastPreview = new BufferedImage(captureWidth,captureHeight,BufferedImage.TYPE_INT_ARGB);
         MasterFrameBuilder.register(this);
-        capture = new ProcessRenderer(this, ProcessRenderer.ACTION.CAPTURE, "movie");
+        capture = new ProcessRenderer(this, ProcessRenderer.ACTION.CAPTURE, "DVB");
         capture.read();
     }
 
@@ -48,7 +47,7 @@ public class SourceMovie extends Stream {
     }
     @Override
     public boolean needSeek() {
-            return needSeekCTRL=true;
+            return needSeekCTRL=false;
     }
     @Override
     public boolean isPlaying() {
@@ -69,7 +68,21 @@ public class SourceMovie extends Stream {
         
         return nextFrame;
     }
+    @Override
+    public boolean hasAudio() {
+        return true;
+    }
 
+    @Override
+    public boolean hasVideo() {
+        return true;
+    }
+    public boolean hasFakeVideo(){
+        return true;
+    }
+    public boolean hasFakeAudio(){
+        return true;
+    }
     @Override
     public void readNext() {
         Frame f = null;

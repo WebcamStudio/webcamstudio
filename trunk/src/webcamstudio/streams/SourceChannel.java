@@ -94,7 +94,7 @@ public class SourceChannel  {
 
             @Override
             public void run() {
-                if (!s.getClass().toString().contains("SinkLinuxDevice")){ // Don't Update SinkDevices
+                if (!s.getClass().toString().contains("Sink")){ // Don't Update SinkStreams ...
                 ExecutorService pool = java.util.concurrent.Executors.newCachedThreadPool();
                 for (Transition t : s.endTransitions) {
                     System.out.println(t.getClass().getName());

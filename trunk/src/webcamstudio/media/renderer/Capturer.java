@@ -91,19 +91,24 @@ public class Capturer {
                                 noVideoPres=false;
                                 Tools.sleep(stream.getVDelay());
                                 videoIn = fakeVideoIn;//new DataInputStream(connection.getInputStream());
-                                System.out.println("Start Movie Video.");
+                                System.out.println("Start Movie/DVB Video.");
                             }
                         } else if (stream.getName().contains("Desktop")) { //hasaudio ||
                             noVideoPres=false;
                             Tools.sleep(stream.getVDelay());
                             videoIn = new DataInputStream(connection.getInputStream());
-                            System.out.println("Start Video.");
+                            System.out.println("Start Desktop Video.");
                         } else if (stream.getClass().getName().contains("SourceWebcam")) { //hasaudio ||
                             noVideoPres=false;
                             Tools.sleep(stream.getVDelay());
                             videoIn = new DataInputStream(connection.getInputStream());
-                            System.out.println("Start Video.");
-                        } 
+                            System.out.println("Start Device Video.");
+                        } /* else if (stream.getClass().getName().contains("SourceDVB")) { //hasaudio ||
+                            noVideoPres=false;
+                            Tools.sleep(stream.getVDelay());
+                            videoIn = fakeVideoIn; //new DataInputStream(connection.getInputStream());
+                            System.out.println("Start DVB Video.");
+                        } */
                     } while (noVideoPres); // && !hasaudio
                     System.out.println("Out of Video Loop.");
                 } catch (IOException ex) {
@@ -137,7 +142,7 @@ public class Capturer {
                                 noAudioPres = false; 
                                 Tools.sleep(stream.getADelay());
                                 audioIn = fakeAudioIn;//new DataInputStream(connection.getInputStream());
-                                System.out.println("Start Movie Audio.");
+                                System.out.println("Start Movie/DVB Audio.");
                             }
                       } else if (stream.getName().endsWith(".mp3")) {
                             noAudioPres = false;
@@ -149,7 +154,12 @@ public class Capturer {
                             Tools.sleep(stream.getADelay());
                             audioIn = fakeAudioIn;//new DataInputStream(connection.getInputStream());
                             System.out.println("Start Webcam Audio.");  
-                      }
+                      } /*else if (stream.getClass().getName().contains("SourceDVB")) {
+                            noAudioPres = false;
+                            Tools.sleep(stream.getADelay());
+                            audioIn = fakeAudioIn; //new DataInputStream(connection.getInputStream());
+                            System.out.println("Start DVB Audio.");  
+                      }*/
                     }  while (noAudioPres);// && !hasVideo
                     System.out.println("Out of Audio Loop.");
                 } catch (IOException ex) {

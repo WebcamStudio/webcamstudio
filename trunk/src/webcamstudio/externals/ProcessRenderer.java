@@ -4,7 +4,10 @@
  */
 package webcamstudio.externals;
 
+import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -129,7 +132,7 @@ public class ProcessRenderer {
 //            System.out.println(path);
             res = ProcessRenderer.class.getResource(path);
         }
-//        System.out.println("Resource Used: " + res.toString());
+        System.out.println("Resource Used: " + res.toString());
         return res;
     }
 
@@ -177,7 +180,7 @@ public class ProcessRenderer {
                     break;
                 case URL:
                     if (fme != null) {
-                        command = command.replaceAll(Tags.URL.toString(), fme.getUrl() + "/" + fme.getStream());
+                        command = command.replaceAll(Tags.URL.toString(), "\""+fme.getUrl()+"/"+fme.getStream()+" live=1 flashver=FME/2.520(compatible;20FMSc201.0)"+"\"");
                     } else if (stream.getURL() != null) {
                         command = command.replaceAll(Tags.URL.toString(), "" + stream.getURL());
                     }
@@ -222,6 +225,12 @@ public class ProcessRenderer {
 //              case FVPORT:
 //                  command = command.replaceAll(Tags.FVPORT.toString(), "" + fakeVideoPort);
 //                  break;   
+                case BW:
+                    command = command.replaceAll(Tags.BW.toString(), "" + stream.getDVBBandwidth());
+                case DVBFREQ:
+                    command = command.replaceAll(Tags.DVBFREQ.toString(), "" + stream.getDVBFrequency());
+                case DVBCH:
+                    command = command.replaceAll(Tags.DVBCH.toString(), "" + stream.getDVBChannelNumber());
                 case FREQ:
                     command = command.replaceAll(Tags.FREQ.toString(), "" + frequency);
                     break;
@@ -286,9 +295,9 @@ public class ProcessRenderer {
                     String[] parmsVideo = commandVideo.split("ABCDE");
                     try {
                         for (String p : parmsVideo) {
- //                           System.out.print(p + " ");
+                            System.out.print(p + " ");
                         }
- //                       System.out.println();
+                        System.out.println();
                         processVideo.execute(parmsVideo);
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -314,9 +323,9 @@ public class ProcessRenderer {
                     String[] parmsAudio = commandAudio.split("ABCDE");
                     try {
                         for (String p : parmsAudio) {
-//                            System.out.print(p + " ");
+                            System.out.print(p + " ");
                         }
-//                        System.out.println();
+                        System.out.println();
                         processAudio.execute(parmsAudio);
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -327,7 +336,55 @@ public class ProcessRenderer {
         }).start();
 
     }
+    public void writeCom() {
+        stopped = false;
+        stopMe = false;
+        new  Thread(new Runnable() {
 
+            @Override
+            public void run() {
+
+                exporter = new Exporter(stream);
+                videoPort = exporter.getVideoPort();
+                audioPort = exporter.getAudioPort();
+                stopped = false;
+                stopMe = false;
+                String command = plugins.getProperty(plugin).replaceAll("  ", " "); //Making sure there is no double spaces
+                command = setParameters(command);
+                System.out.println("Command: "+command);
+                File file=new File(System.getProperty("user.home")+"/.webcamstudio/"+"WSBroadcast.sh");
+                FileOutputStream fos;
+                DataOutputStream dos = null;
+                try {
+                    fos = new FileOutputStream(file);
+                    dos= new DataOutputStream(fos);
+                } catch (FileNotFoundException ex) {
+                    Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                try {
+                    dos.writeBytes("#!/bin/bash\n");
+                    dos.writeBytes("echo \"Broadcasting WS Command Start ...\"\n");
+                    dos.writeBytes(command+"\n");
+                } catch (IOException ex) {
+                    Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                Runtime rt = Runtime.getRuntime();
+                try {
+                    Process p = rt.exec("chmod a+x "+System.getProperty("user.home")+"/.webcamstudio/"+"WSBroadcast.sh");
+                } catch (IOException ex) {
+                    Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                String batchCommand = "sh "+System.getProperty("user.home")+"/.webcamstudio/"+"WSBroadcast.sh";
+                try {
+                    processVideo.executeString(batchCommand);
+                    //We don't need processAudio on export.  Only 1 process is required...
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
+    }
     public void write() {
         stopped = false;
         stopMe = false;
@@ -342,11 +399,12 @@ public class ProcessRenderer {
                 stopped = false;
                 String command = plugins.getProperty(plugin).replaceAll("  ", " "); //Making sure there is no double spaces
                 command = setParameters(command);
-//                System.out.println(command);
+                System.out.println(command);
 
                 final String[] parms = command.split(" ");
                 try {
                     processVideo.execute(parms);
+//                    processAudio.execute(parms);
                     //We don't need processAudio on export.  Only 1 process is required...
                 } catch (Exception e) {
                     e.printStackTrace();

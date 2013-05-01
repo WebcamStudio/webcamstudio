@@ -13,6 +13,7 @@ package webcamstudio.sources.effects.controls;
 import java.awt.Color;
 import webcamstudio.components.ColorChooser;
 import webcamstudio.sources.effects.ChromaKey;
+import java.text.DecimalFormat;
 
 /**
  *
@@ -29,7 +30,7 @@ public class ChromaKeyControl extends javax.swing.JPanel {
         slider.setValue(effect.getrTolerance());
         slider1.setValue(effect.getgTolerance());
         slider2.setValue(effect.getbTolerance());
-        lblColor.setBackground(new Color(effect.getColor()));
+        lblColor.setBackground(new Color(effect.getColor()));        
     }
 
     /** This method is called from within the constructor to
@@ -42,7 +43,6 @@ public class ChromaKeyControl extends javax.swing.JPanel {
     private void initComponents() {
 
         label = new javax.swing.JLabel();
-        slider = new javax.swing.JSlider();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
@@ -191,7 +191,19 @@ public class ChromaKeyControl extends javax.swing.JPanel {
 
         }
     }//GEN-LAST:event_btnSelectColorActionPerformed
+public class DoubleJSlider extends javax.swing.JSlider {
 
+    final int scale;
+
+    public DoubleJSlider(int min, int max, int value, int scale) {
+        super(min, max, value);
+        this.scale = scale;
+    }
+
+    public double getScaledValue() {
+        return ((double)super.getValue()) / this.scale;
+    }
+}
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnSelectColor;
     private javax.swing.JLabel jLabel1;
@@ -200,7 +212,7 @@ public class ChromaKeyControl extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel label;
     private javax.swing.JLabel lblColor;
-    private javax.swing.JSlider slider;
+    private final javax.swing.JSlider slider = new DoubleJSlider(0, 100, 0, 1000);
     private javax.swing.JSlider slider1;
     private javax.swing.JSlider slider2;
     // End of variables declaration//GEN-END:variables

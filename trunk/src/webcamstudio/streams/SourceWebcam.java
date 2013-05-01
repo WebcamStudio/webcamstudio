@@ -10,6 +10,7 @@ import webcamstudio.externals.ProcessRenderer;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterFrameBuilder;
 import webcamstudio.mixers.MasterMixer;
+import webcamstudio.sources.effects.Effect;
 
 /**
  *
@@ -78,6 +79,11 @@ public class SourceWebcam extends Stream {
         Frame f = null;
         if (capture != null) {
             f = capture.getFrame();
+            for (Effect fx : this.getEffects()) {
+                if (!fx.getName().contains("Flip")) {
+                    fx.applyEffect(f.getImage());
+                    }
+            }
             if (f != null) {
                 setAudioLevel(f);
                 lastPreview=f.getImage();
