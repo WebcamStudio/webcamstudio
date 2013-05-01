@@ -28,9 +28,9 @@ public class ChromaKey extends Effect {
         int r, g, b, c;
         for (int i = 0; i < data.length; i++) {
             c = data[i];
-            r = (c & 0x00FF0000) >> 16;
-            g = (c & 0x0000FF00) >> 8;
-            b = (c & 0x000000FF) >> 0;
+            r = (c >> 16) & 0xff;
+            g = (c >> 8) & 0xff;
+            b = c & 0xff;
             int rRatio = Math.abs(color.getRed() - r) * 100 / 255;
             int gRatio = Math.abs(color.getGreen() - g) * 100 / 255;
             int bRatio = Math.abs(color.getBlue() - b) * 100 / 255;

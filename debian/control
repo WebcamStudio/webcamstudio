@@ -46,17 +46,17 @@ Depends: openjdk-7-jre | openjdk-6-jre | sun-java5-jre | sun-java6-jre,
   libslf4j-java,
   libswingworker-java,
   libav-tools | ffmpeg,
+  gstreamer-tools,
+  gstreamer0.10-plugins-good,
+  gstreamer0.10-plugins-bad,
+  gstreamer0.10-plugins-bad-multiverse,
+  gstreamer0.10-plugins-ugly,
+  gstreamer0.10-pulseaudio,
   zenity,
   ${shlibs:Depends},
   ${misc:Depends}
 Recommends: webcamstudio-dkms | v4l2loopback-dkms,
   ${shlibs:Recommends}
-Suggests: gstreamer-tools,
-  gstreamer0.10-plugins-good,
-  gstreamer0.10-plugins-bad,
-  gstreamer0.10-plugins-bad-multiverse,
-  gstreamer0.10-plugins-ugly,
-  gstreamer0.10-pulseaudio
 Description: Creates virtual webcam to broadcast over the internet.
  WebcamStudio is a virtual webcam software that can be used with Skype or a
  flash website like UStream, to create a professional looking broadcast, 

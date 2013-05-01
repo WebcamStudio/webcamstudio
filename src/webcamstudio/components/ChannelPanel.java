@@ -454,7 +454,7 @@ public class ChannelPanel extends javax.swing.JPanel{
         ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "All Stopped.");
         ResourceMonitor.getInstance().addMessage(label);
     }//GEN-LAST:event_btnStopAllStreamActionPerformed
-
+    @SuppressWarnings("unchecked")
     private void btnRenameChActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRenameChActionPerformed
         String rnName = txtName.getText();
         String chName = lstChannels.getSelectedValue().toString();

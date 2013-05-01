@@ -33,7 +33,10 @@ public enum Tags {
         DESKTOPH("@DESKTOPH"),
         DESKTOPENDX("@DESKTOPENDX"),
         DESKTOPENDY("@DESKTOPENDY"),
-        URL("@URL");
+        URL("@URL"),
+        BW("@BW"),
+        DVBFREQ("@DVBFREQ"),
+        DVBCH("@DVBCH");
         
     private String name = "";
     private Tags(String name) {

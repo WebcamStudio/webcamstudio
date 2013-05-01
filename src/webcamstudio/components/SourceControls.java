@@ -26,6 +26,10 @@ public class SourceControls {
             c = new SourceControlEffects(source);
             c.setName("Effects");
             comps.add(c);
+        } else if (source instanceof SourceDVB) {
+            c = new SourceControlEffects(source);
+            c.setName("Effects");
+            comps.add(c);
         } else if (source instanceof SourceWebcam) {
             c = new SourceControlEffects(source);
             c.setName("Effects");

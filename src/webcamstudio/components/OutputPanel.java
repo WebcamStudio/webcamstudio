@@ -34,6 +34,7 @@ import webcamstudio.exporter.vloopback.VideoDevice;
 import webcamstudio.externals.FME;
 import webcamstudio.mixers.MasterMixer;
 import webcamstudio.streams.SinkBroadcast;
+import webcamstudio.streams.SinkCvlc;
 import webcamstudio.streams.SinkFile;
 import webcamstudio.streams.SinkLinuxDevice;
 import webcamstudio.streams.Stream;
@@ -49,6 +50,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener {
     TreeMap<String, SinkFile> files = new TreeMap<String, SinkFile>();
     TreeMap<String, SinkBroadcast> broadcasts = new TreeMap<String, SinkBroadcast>();
     TreeMap<String, SinkLinuxDevice> devices = new TreeMap<String, SinkLinuxDevice>();
+    TreeMap<String, SinkCvlc> cvlc = new TreeMap<String, SinkCvlc>();
     TreeMap<String, FME> fmes = new TreeMap<String, FME>();
     TreeMap<String, ResourceMonitorLabel> labels = new TreeMap<String, ResourceMonitorLabel>();
 
@@ -66,6 +68,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener {
                 button.setRolloverEnabled(false);
                 button.addActionListener(new java.awt.event.ActionListener() {
 
+                    @Override
                     public void actionPerformed(java.awt.event.ActionEvent evt) {
                         String device = evt.getActionCommand();
                         JToggleButton button = ((JToggleButton) evt.getSource());
@@ -214,27 +217,35 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener {
     }
 
     private void addButtonBroadcast(FME fme) {
-        final OutputPanel instance = this;
+        final OutputPanel instanceSink = this;
         JToggleButton button = new JToggleButton();
         button.setText(fme.getName());
-        button.setActionCommand(fme.getUrl() + "/" + fme.getStream());
+        button.setActionCommand(fme.getUrl()+"/"+fme.getStream());
         button.setIcon(tglRecordToFile.getIcon());
         button.setSelectedIcon(tglRecordToFile.getSelectedIcon());
         button.setRolloverEnabled(false);
         button.setToolTipText("Drag to the right to remove...");
         button.addActionListener(new java.awt.event.ActionListener() {
 
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 JToggleButton button = ((JToggleButton) evt.getSource());
                 FME fme = fmes.get(button.getText());
                 if (button.isSelected()) {
+                    if (fme != null){
                     SinkBroadcast broadcast = new SinkBroadcast(fme);
-                    broadcast.setListener(instance);
+                    broadcast.setRate(MasterMixer.getInstance().getRate());
+                    broadcast.setWidth(MasterMixer.getInstance().getWidth());
+                    broadcast.setHeight(MasterMixer.getInstance().getHeight());
+                    broadcast.setListener(instanceSink);
                     broadcast.read();
                     broadcasts.put(button.getText(), broadcast);
-                    ResourceMonitorLabel label = new ResourceMonitorLabel(0, "Broadcasting to " + fme.getName());
+                    ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Broadcasting to " + fme.getName());
                     labels.put(fme.getName(), label);
                     ResourceMonitor.getInstance().addMessage(label);
+                    } else {
+                        button.setSelected(false);
+                    }
                 } else {
                     SinkBroadcast broadcast = broadcasts.get(button.getText());
                     if (broadcast != null) {
@@ -288,6 +299,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener {
     private void initComponents() {
 
         tglRecordToFile = new javax.swing.JToggleButton();
+        tglCVLC = new javax.swing.JToggleButton();
 
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("webcamstudio/Languages"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("OUTPUT"))); // NOI18N
@@ -305,6 +317,18 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener {
             }
         });
         add(tglRecordToFile);
+
+        tglCVLC.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-record.png"))); // NOI18N
+        tglCVLC.setText(bundle.getString("RTP Mpeg Out")); // NOI18N
+        tglCVLC.setName("tglCVLC"); // NOI18N
+        tglCVLC.setRolloverEnabled(false);
+        tglCVLC.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-stop.png"))); // NOI18N
+        tglCVLC.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tglCVLCActionPerformed(evt);
+            }
+        });
+        add(tglCVLC);
     }// </editor-fold>//GEN-END:initComponents
 
     private void tglRecordToFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglRecordToFileActionPerformed
@@ -320,9 +344,10 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener {
                 fileStream.setWidth(MasterMixer.getInstance().getWidth());
                 fileStream.setHeight(MasterMixer.getInstance().getHeight());
                 fileStream.setRate(MasterMixer.getInstance().getRate());
+                fileStream.setListener(instanceSink);
                 fileStream.read();
                 files.put("RECORD", fileStream);
-                ResourceMonitorLabel label = new ResourceMonitorLabel(0, "Recording in " + f.getName());
+                ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Recording in " + f.getName());
                 labels.put("RECORD", label);
                 ResourceMonitor.getInstance().addMessage(label);
             } else {
@@ -340,8 +365,36 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener {
         }
         
     }//GEN-LAST:event_tglRecordToFileActionPerformed
+
+    private void tglCVLCActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglCVLCActionPerformed
+        if (tglCVLC.isSelected()) {       
+                SinkCvlc cvlcStream = new SinkCvlc();
+                cvlcStream.setWidth(MasterMixer.getInstance().getWidth());
+                cvlcStream.setHeight(MasterMixer.getInstance().getHeight());
+                cvlcStream.setRate(MasterMixer.getInstance().getRate());
+                cvlcStream.setListener(instanceSink);
+                cvlcStream.read();
+                cvlc.put("VLC Out", cvlcStream);
+                ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Unicast mpeg2 to udp://127.0.0.1:7000");
+                labels.put("VLC Out", label);
+                ResourceMonitor.getInstance().addMessage(label);
+        } else {
+            SinkCvlc cvlcStream = cvlc.get("VLC Out");
+            if (cvlcStream != null) {
+                cvlcStream.stop();
+                cvlcStream = null;
+                cvlc.remove("VLC Out");
+                ResourceMonitorLabel label = labels.get("VLC Out");
+                ResourceMonitor.getInstance().removeMessage(label);
+            }
+        }
+        
+    }//GEN-LAST:event_tglCVLCActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JToggleButton tglCVLC;
     private javax.swing.JToggleButton tglRecordToFile;
+    final OutputPanel instanceSink = this;
     // End of variables declaration//GEN-END:variables
 
     
@@ -349,6 +402,8 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener {
     public void sourceUpdated(Stream stream) {
         if (stream instanceof SinkFile) {
             tglRecordToFile.setSelected(stream.isPlaying());
+        } else if (stream instanceof SinkCvlc) {
+            tglCVLC.setSelected(stream.isPlaying());
         } else if (stream instanceof SinkBroadcast) {
             String name = stream.getName();
             for (Component c : this.getComponents()) {
