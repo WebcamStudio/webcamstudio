@@ -41,7 +41,7 @@ public class WSImage extends BufferedImage {
             din.readFully(byteData);
             counter = 0;
             for (int i = 0; i < data.length; i++) {
-                data[i] = 0xff000000 + (byteData[counter++] << 16) + (byteData[counter++] << 8) + (byteData[counter++]);
+                data[i] = 0xff000000 | ((byteData[counter++]) << 16) | ((byteData[counter++]& 0xff) << 8) | ((byteData[counter++])& 0xff);
             }
         }
     }

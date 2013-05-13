@@ -76,6 +76,10 @@ public class RGB extends Effect {
     }
 
     @Override
+    public boolean needApply(){
+        return needApply=true;
+    }
+    @Override
     public void applyStudioConfig(Preferences prefs) {
         prefs.putInt("rThreshold", rThreshold);
         prefs.putInt("gThreshold", gThreshold);

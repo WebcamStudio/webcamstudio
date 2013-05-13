@@ -56,6 +56,10 @@ public class Mosaic extends Effect {
     }
 
     @Override
+    public boolean needApply(){
+        return needApply=true;
+    }
+    @Override
     public void applyStudioConfig(Preferences prefs) {
         prefs.putInt("nbsquare",nbSquaresWidthHeight);
     }

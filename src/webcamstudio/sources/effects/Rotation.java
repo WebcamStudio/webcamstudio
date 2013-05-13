@@ -31,7 +31,10 @@ public class Rotation extends Effect{
         buffer.drawImage(temp, 0, 0,img.getWidth(),img.getHeight(),0,0,temp.getWidth(),temp.getHeight(),null);
         buffer.dispose();
     }
-
+    @Override
+    public boolean needApply(){
+        return needApply=true;
+    }
    public void setRotation(int value){
        rotation=(float)Math.toRadians(value);
    }

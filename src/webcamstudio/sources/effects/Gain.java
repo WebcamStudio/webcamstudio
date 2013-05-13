@@ -9,22 +9,22 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.prefs.Preferences;
 import javax.swing.JPanel;
-import webcamstudio.sources.effects.controls.ContrastControl;
+import webcamstudio.sources.effects.controls.GainControl;
 
 /**
  *
  * @author pballeux
  */
-public class Contrast extends Effect{
-    private com.jhlabs.image.ContrastFilter filter = new com.jhlabs.image.ContrastFilter();
+public class Gain extends Effect{
+    private com.jhlabs.image.GainFilter filter = new com.jhlabs.image.GainFilter();
     private final float  ratio = 100f;
-    private float brightness = 100f/ratio;
-    private float contrast = 100f/ratio;
+    private float gain = 50f/ratio;
+    private float bias = 50f/ratio;
 
     @Override
     public void applyEffect(BufferedImage img) {
-        filter.setBrightness(brightness);
-        filter.setContrast(contrast);
+        filter.setGain(gain);
+        filter.setBias(bias);
         Graphics2D buffer = img.createGraphics();
         BufferedImage temp = filter.filter(img, null);
         buffer.setBackground(new java.awt.Color(0,0,0,0));
@@ -34,52 +34,52 @@ public class Contrast extends Effect{
     }
 
     @Override
-    public boolean needApply(){
-        return needApply=true;
+    public JPanel getControl() {
+        return new GainControl(this);
     }
     @Override
-    public JPanel getControl() {
-        return new ContrastControl(this);
+    public boolean needApply(){
+        return needApply=true;
     }
 
     /**
      * @return the brightness
      */
-    public int getBrightness() {
-        return (int)(brightness*ratio);
+    public int getGain() {
+        return (int)(gain*ratio);
     }
 
     /**
      * @param brightness the brightness to set
      */
-    public void setBrightness(int brightness) {
-        this.brightness = ((float)brightness)/ratio;
+    public void setGain(int gain) {
+        this.gain = ((float)gain)/ratio;
     }
 
     /**
      * @return the contrast
      */
-    public int getContrast() {
-        return (int)(contrast*ratio);
+    public int getBias() {
+        return (int)(bias*ratio);
     }
 
     /**
      * @param contrast the contrast to set
      */
-    public void setContrast(int contrast) {
-        this.contrast = ((float)contrast)/ratio;
+    public void setBias(int bias) {
+        this.bias = ((float)bias)/ratio;
     }
 
     @Override
     public void applyStudioConfig(Preferences prefs) {
-        prefs.putFloat("brightness", brightness);
-        prefs.putFloat("contrast", contrast);
+        prefs.putFloat("gain", gain);
+        prefs.putFloat("bias", bias);
     }
 
     @Override
     public void loadFromStudioConfig(Preferences prefs) {
-        brightness=prefs.getFloat("brightness", brightness);
-        contrast=prefs.getFloat("contrast", contrast);
+        gain=prefs.getFloat("brightness", gain);
+        bias=prefs.getFloat("contrast", bias);
 
     }
 

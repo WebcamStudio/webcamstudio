@@ -42,5 +42,9 @@ public class Mirror1 extends Effect{
     public void loadFromStudioConfig(Preferences prefs) {
         
     }
+    @Override
+    public boolean needApply(){
+        return needApply=true;
+    }
 
 }

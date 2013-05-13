@@ -57,7 +57,7 @@
           <Image iconType="3" name="/webcamstudio/resources/tango/media-record.png"/>
         </Property>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="webcamstudio/Languages.properties" key="RTP Mpeg Out" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+          <ResourceString bundle="webcamstudio/Languages.properties" key="UDP Mpeg Out" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
         </Property>
         <Property name="name" type="java.lang.String" value="tglCVLC" noResource="true"/>
         <Property name="rolloverEnabled" type="boolean" value="false"/>

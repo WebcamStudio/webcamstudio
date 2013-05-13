@@ -56,6 +56,10 @@ public class Perspective extends Effect {
     }
 
     @Override
+    public boolean needApply(){
+        return needApply=false;
+    }
+    @Override
     public void loadFromStudioConfig(Preferences prefs) {
         x1 = prefs.getFloat("x1", x1);
         y1 = prefs.getFloat("y1", y1);

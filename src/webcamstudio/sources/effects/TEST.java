@@ -19,6 +19,10 @@ public class TEST extends Effect {
     private com.jhlabs.image.CrystallizeFilter filter = new com.jhlabs.image.CrystallizeFilter();
 
     @Override
+    public boolean needApply(){
+        return needApply=true;
+    }
+    @Override
     public void applyEffect(BufferedImage img) {
         
         Graphics2D buffer = img.createGraphics();

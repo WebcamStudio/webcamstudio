@@ -33,4 +33,7 @@ public abstract class StudioConstants {
     public static final String ATTRIBUTE_ISPLAYING = "isPlaying";
     public static final String ATTRIBUTE_DURATION = "Duration";
     public static final String ATTRIBUTE_SEEK = "seek";
+//    public static final String ATTRIBUTE_CHDVB = "chDVB";
+//    public static final String ATTRIBUTE_BANDWIDTHDVB = "bandwidthDVB";
+//    public static final String ATTRIBUTE_FREQUENCYDVB = "frequencyDVB";
 }

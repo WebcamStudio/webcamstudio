@@ -36,6 +36,10 @@ public class Block extends Effect{
        return blockSize;
    }
     @Override
+    public boolean needApply(){
+        return needApply=true;
+    }
+    @Override
     public JPanel getControl() {
         return new BlockControl(this);
     }

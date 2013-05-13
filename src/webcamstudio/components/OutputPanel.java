@@ -319,7 +319,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener {
         add(tglRecordToFile);
 
         tglCVLC.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-record.png"))); // NOI18N
-        tglCVLC.setText(bundle.getString("RTP Mpeg Out")); // NOI18N
+        tglCVLC.setText(bundle.getString("UDP Mpeg Out")); // NOI18N
         tglCVLC.setName("tglCVLC"); // NOI18N
         tglCVLC.setRolloverEnabled(false);
         tglCVLC.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-stop.png"))); // NOI18N
@@ -336,7 +336,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener {
             File f = null;
             JFileChooser chooser = new JFileChooser();
             chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-            chooser.setDialogTitle("WebcamStudio - Choose a File to record on ...");
+            chooser.setDialogTitle("Choose a File to record on ... (Add .mp4 Extension)");
             chooser.showSaveDialog(this);
             f = chooser.getSelectedFile();
             if (f != null) {

@@ -114,8 +114,13 @@
                 </Component>
                 <Component class="javax.swing.JButton" name="btnAddDVB">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="DVB-T"/>
-                    <Property name="toolTipText" type="java.lang.String" value="Add DVB Stream"/>
+                    <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                      <Image iconType="3" name="/webcamstudio/resources/tango/image-x-generic.png"/>
+                    </Property>
+                    <Property name="toolTipText" type="java.lang.String" value="Add DVB-T Stream"/>
+                    <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
+                      <Color id="Cursore predefinito"/>
+                    </Property>
                     <Property name="focusable" type="boolean" value="false"/>
                     <Property name="horizontalTextPosition" type="int" value="0"/>
                     <Property name="name" type="java.lang.String" value="btnAddDVB" noResource="true"/>
@@ -123,6 +128,21 @@
                   </Properties>
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAddDVBActionPerformed"/>
+                  </Events>
+                </Component>
+                <Component class="javax.swing.JButton" name="btnAddURL">
+                  <Properties>
+                    <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                      <Image iconType="3" name="/webcamstudio/resources/tango/rss.png"/>
+                    </Property>
+                    <Property name="toolTipText" type="java.lang.String" value="Add URL Stream"/>
+                    <Property name="focusable" type="boolean" value="false"/>
+                    <Property name="horizontalTextPosition" type="int" value="0"/>
+                    <Property name="name" type="java.lang.String" value="btnAddURL" noResource="true"/>
+                    <Property name="verticalTextPosition" type="int" value="3"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAddURLActionPerformed"/>
                   </Events>
                 </Component>
                 <Component class="javax.swing.JButton" name="btnAddDesktop">
@@ -193,6 +213,18 @@
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAddMicActionPerformed"/>
                   </Events>
                 </Component>
+                <Component class="javax.swing.JToolBar$Separator" name="jSeparator1">
+                  <Properties>
+                    <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
+                      <Color id="Cursore predefinito"/>
+                    </Property>
+                    <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                      <Font name="Ubuntu" size="15" style="1"/>
+                    </Property>
+                    <Property name="name" type="java.lang.String" value="jSeparator1" noResource="true"/>
+                    <Property name="opaque" type="boolean" value="true"/>
+                  </Properties>
+                </Component>
                 <Component class="javax.swing.JComboBox" name="cboAnimations">
                   <Properties>
                     <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
@@ -217,8 +249,8 @@
                 </Component>
                 <Component class="javax.swing.JButton" name="btnAddAnimation">
                   <Properties>
-                    <Property name="icon" type="javax.swing.Icon" noResource="true" editor="org.netbeans.modules.form.editors2.IconEditor">
-                      <Image iconType="3" name="/webcamstudio/resources/emotes/face-cool.png"/>
+                    <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                      <Image iconType="3" name="/webcamstudio/resources/tango/list-add.png"/>
                     </Property>
                     <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                       <ResourceString bundle="webcamstudio/Languages.properties" key="ADD_ANIMATION" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
@@ -231,6 +263,15 @@
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAddAnimationActionPerformed"/>
                   </Events>
+                </Component>
+                <Component class="javax.swing.JToolBar$Separator" name="jSeparator2">
+                  <Properties>
+                    <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                      <Font name="Ubuntu" size="15" style="1"/>
+                    </Property>
+                    <Property name="name" type="java.lang.String" value="jSeparator2" noResource="true"/>
+                    <Property name="opaque" type="boolean" value="true"/>
+                  </Properties>
                 </Component>
                 <Component class="javax.swing.JButton" name="btnMinimizeAll">
                   <Properties>
@@ -293,6 +334,9 @@
                   </Border>
                 </Property>
                 <Property name="name" type="java.lang.String" value="tabControls" noResource="true"/>
+                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[448, 455]"/>
+                </Property>
               </Properties>
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">

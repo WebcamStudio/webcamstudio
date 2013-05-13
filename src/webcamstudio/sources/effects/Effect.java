@@ -12,7 +12,11 @@ import java.awt.image.BufferedImage;
  * @author pballeux
  */
 public abstract class Effect {
+    protected boolean needApply=true;
 
+    public boolean needApply(){
+        return needApply;
+    }
     public abstract void applyEffect(BufferedImage img);
     public abstract void applyStudioConfig(java.util.prefs.Preferences prefs);
     public abstract void loadFromStudioConfig(java.util.prefs.Preferences prefs);
@@ -45,6 +49,8 @@ public abstract class Effect {
         retValue.put(Edge.class.getSimpleName(), new Edge());
         retValue.put(Radar.class.getSimpleName(), new Radar());
         retValue.put(Blink.class.getSimpleName(), new Blink());
+        retValue.put(Gain.class.getSimpleName(), new Gain());
+        retValue.put(HSB.class.getSimpleName(), new HSB());
         //retValue.put(TEST.class.getSimpleName(), new TEST());
 
         return retValue;

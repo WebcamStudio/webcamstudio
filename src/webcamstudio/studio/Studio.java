@@ -302,6 +302,8 @@ public class Studio {
                 System.out.println(clazz);
                 String file = null;
                 String ObjText = null;
+                String webUrl = null;
+                String chNameDvb = null;
                 ArrayList<String> SubChNames = new ArrayList<String>();
                 ArrayList<String> SubText = new ArrayList<String>();
                 ArrayList<String> SubFont = new ArrayList<String>();
@@ -332,7 +334,15 @@ public class Studio {
                     }
                     if (child.getNodeName().equals("content")) {
                         ObjText = child.getTextContent();
-                        System.out.println(ObjText);
+                        System.out.println("Text Content: "+ObjText);
+                    }
+                    if (child.getNodeName().equals("webURL")) {
+                        webUrl = child.getTextContent();
+                        System.out.println("Web URL: "+webUrl);
+                    }
+                    if (child.getNodeName().equals("chNameDVB")) {
+                        chNameDvb = child.getTextContent();
+                        System.out.println("DVB Ch Name: "+chNameDvb);
                     }
                     if (child.getNodeName().equals("Channels")) { // Read SourceChannels
                         for (int nc = 0; nc < child.getChildNodes().getLength(); nc++) {
@@ -509,6 +519,32 @@ public class Studio {
                     extstream.add(stream); 
                     extstreamBis.add(stream);
                     ImgMovMus.add("QRcode");
+                    readObject(stream, source);
+                    int op=0;
+                    for (SourceChannel scs : SCL) {
+                        stream.addChannel(scs);
+                        op+=1;
+                    }
+                    SCL.clear();
+                } else if (clazz.toLowerCase().endsWith("sourcedvb")) {
+                    stream = new SourceDVB();
+                    stream.setChName(chNameDvb);
+                    extstream.add(stream); 
+                    extstreamBis.add(stream);
+                    ImgMovMus.add("DVB-T");
+                    readObject(stream, source);
+                    int op=0;
+                    for (SourceChannel scs : SCL) {
+                        stream.addChannel(scs);
+                        op+=1;
+                    }
+                    SCL.clear();
+                } else if (clazz.toLowerCase().endsWith("sourceurl")) {
+                    stream = new SourceURL();
+                    stream.setWebURL(webUrl);
+                    extstream.add(stream);
+                    extstreamBis.add(stream);
+                    ImgMovMus.add("URL");
                     readObject(stream, source);
                     int op=0;
                     for (SourceChannel scs : SCL) {

@@ -18,6 +18,10 @@ public class Sphere extends Effect{
     private com.jhlabs.image.SphereFilter filter = new com.jhlabs.image.SphereFilter();
     
     @Override
+    public boolean needApply(){
+        return needApply=true;
+    }
+    @Override
     public void applyEffect(BufferedImage img) {
         Graphics2D buffer = img.createGraphics();
         BufferedImage temp = filter.filter(img, null);
