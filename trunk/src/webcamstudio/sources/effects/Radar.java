@@ -65,4 +65,8 @@ public class Radar extends Effect {
     @Override
     public void loadFromStudioConfig(Preferences prefs) {
     }
+    @Override
+    public boolean needApply(){
+        return needApply=true;
+}
 }

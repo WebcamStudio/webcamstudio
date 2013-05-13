@@ -50,6 +50,10 @@ public class Opacity extends Effect {
     public void loadFromStudioConfig(Preferences prefs) {
         opacity=prefs.getInt("opacity", opacity);
     }
+    @Override
+    public boolean needApply(){
+        return needApply=true;
+    }
 
  
 }

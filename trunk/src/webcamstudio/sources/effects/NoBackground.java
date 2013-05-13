@@ -50,7 +50,10 @@ public class NoBackground extends Effect {
             }
         }
     }
-
+    @Override
+    public boolean needApply(){
+        return needApply=true;
+    }
     public void setRThreshold(int t) {
         rThreshold = t;
     }

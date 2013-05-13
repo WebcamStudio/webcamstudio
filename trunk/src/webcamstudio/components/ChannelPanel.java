@@ -110,6 +110,11 @@ public class ChannelPanel extends javax.swing.JPanel{
         jLabel1.setName("jLabel1"); // NOI18N
 
         txtName.setName("txtName"); // NOI18N
+        txtName.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtNameActionPerformed(evt);
+            }
+        });
 
         btnAdd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/list-add.png"))); // NOI18N
         btnAdd.setToolTipText(bundle.getString("ADD_CHANNEL")); // NOI18N
@@ -476,6 +481,10 @@ public class ChannelPanel extends javax.swing.JPanel{
         lstChannels.revalidate();
         lstNextChannel.revalidate();
     }//GEN-LAST:event_btnRenameChActionPerformed
+
+    private void txtNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNameActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtNameActionPerformed
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -80,7 +80,9 @@ public class SourceWebcam extends Stream {
         if (capture != null) {
             f = capture.getFrame();
             for (Effect fx : this.getEffects()) {
-                if (!fx.getName().contains("Flip")) {
+//                String fxName = fx.getName();
+                if (fx.needApply()){//contains("Swap") || fxName.contains("Flip")) {          
+                //} else {
                     fx.applyEffect(f.getImage());
                     }
             }

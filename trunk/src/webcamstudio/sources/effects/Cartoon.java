@@ -22,6 +22,10 @@ public class Cartoon extends Effect {
     int scale = 5;
 
     @Override
+    public boolean needApply(){
+        return needApply=true;
+    }
+    @Override
     public void applyEffect(BufferedImage img) {
         counterFilter.setScale((float) scale / 10F);
         counterFilter.setLevels((float) contourSize / 10F);

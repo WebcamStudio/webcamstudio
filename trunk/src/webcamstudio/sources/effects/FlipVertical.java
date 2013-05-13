@@ -28,6 +28,10 @@ public class FlipVertical extends Effect{
     }
 
     @Override
+    public boolean needApply(){
+        return needApply=false;
+    }
+    @Override
     public JPanel getControl() {
         return null;
     }

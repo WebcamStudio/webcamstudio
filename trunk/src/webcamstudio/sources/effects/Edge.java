@@ -31,6 +31,10 @@ public class Edge extends Effect {
     }
 
     @Override
+    public boolean needApply(){
+        return needApply=true;
+    }
+    @Override
     public JPanel getControl() {
         return null;
     }

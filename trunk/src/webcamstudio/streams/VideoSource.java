@@ -499,6 +499,7 @@ public abstract class VideoSource implements InfoListener {
         return volume;
     }
 
+    @Override
     public void info(String info) {
         if (listener != null) {
             listener.info(info);
@@ -506,6 +507,7 @@ public abstract class VideoSource implements InfoListener {
 
     }
 
+    @Override
     public void error(String message) {
         if (listener != null) {
             listener.error(message);
@@ -513,6 +515,7 @@ public abstract class VideoSource implements InfoListener {
 
     }
 
+    @Override
     public void newTextLine(String line) {
         if (listener != null) {
             listener.newTextLine(line);
@@ -711,14 +714,14 @@ public abstract class VideoSource implements InfoListener {
                 g1 =
                         ((c1 & 0x0000FF00) >> 8) / 16;
                 b1 =
-                        ((c1 & 0x000000FF) >> 0) / 16;
+                        ((c1 & 0x000000FF)) / 16;
 
                 r2 =
                         ((c2 & 0x00FF0000) >> 16) / 16;
                 g2 =
                         ((c2 & 0x0000FF00) >> 8) / 16;
                 b2 =
-                        ((c2 & 0x000000FF) >> 0) / 16;
+                        ((c2 & 0x000000FF)) / 16;
 
                 if (r1 != r2 || b1 != b2 || g1 != g2) {
                     nbDiffPixels++;
@@ -767,6 +770,7 @@ public abstract class VideoSource implements InfoListener {
         if (vlistener != null) {
             new Thread(new Runnable() {
 
+                @Override
                 public void run() {
                     if (vlistener != null) {
                         vlistener.sourceUpdated();

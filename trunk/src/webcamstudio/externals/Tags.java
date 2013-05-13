@@ -36,7 +36,8 @@ public enum Tags {
         URL("@URL"),
         BW("@BW"),
         DVBFREQ("@DVBFREQ"),
-        DVBCH("@DVBCH");
+        DVBCH("@DVBCH"),
+        WEBURL("@WEBURL");
         
     private String name = "";
     private Tags(String name) {

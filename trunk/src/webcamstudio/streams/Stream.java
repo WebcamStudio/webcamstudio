@@ -52,6 +52,8 @@ public abstract class Stream implements Callable<Frame>{
     protected int frequencyDVB = 0;
     protected int bandwidthDVB = 0;
     protected int chDVB = 0;
+    protected String webURL = null;
+    protected String chNameDVB = null;
     protected Frame nextFrame = null;
     public ArrayList<Transition> startTransitions = new ArrayList<Transition>();
     public ArrayList<Transition> endTransitions = new ArrayList<Transition>();
@@ -102,6 +104,18 @@ public abstract class Stream implements Callable<Frame>{
     }
     public int getDVBFrequency() {
         return frequencyDVB;
+    }
+    public String getWebURL() {
+        return webURL;
+    }
+    public void setWebURL(String webURL) {
+        this.webURL = webURL;
+    }
+    public String getChName() {
+        return chNameDVB;
+    }
+    public void setChName(String chName) {
+        this.chNameDVB = chName;
     }
     public int getDVBBandwidth() {
         return bandwidthDVB;

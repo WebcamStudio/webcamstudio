@@ -80,6 +80,10 @@ public class ZoomZoom extends Effect {
         buffer.drawImage(temp, x, y,x+ w, y+h, 0, 0, img.getWidth(), img.getHeight(), null);
         buffer.dispose();
     }
+    @Override
+    public boolean needApply(){
+        return needApply=true;
+    }
 
     @Override
     public JPanel getControl() {

@@ -39,5 +39,9 @@ public class Light extends Effect{
     public void loadFromStudioConfig(Preferences prefs) {
         
     }
+    @Override
+    public boolean needApply(){
+        return needApply=true;
+    }
 
 }

@@ -23,7 +23,11 @@ public class SourceDVB extends Stream {
 
     public SourceDVB() {
         super();
-        name = "DVB-T";
+        if (this.getChName() != null){
+        name = this.getChName();
+        } else {
+        name = "DVB-T";  
+        }
         rate = MasterMixer.getInstance().getRate();
         System.out.println("Frame Rate = " + rate);
     }
@@ -77,9 +81,11 @@ public class SourceDVB extends Stream {
     public boolean hasVideo() {
         return true;
     }
+    @Override
     public boolean hasFakeVideo(){
         return true;
     }
+    @Override
     public boolean hasFakeAudio(){
         return true;
     }
@@ -89,7 +95,9 @@ public class SourceDVB extends Stream {
         if (capture != null) {
             f = capture.getFrame();
             for (Effect fx : this.getEffects()) {
-                if (!fx.getName().contains("Flip")) {
+//                String fxName = fx.getName();
+                if (fx.needApply()){//contains("Swap") || fxName.contains("Flip")) {          
+                //} else {
                     fx.applyEffect(f.getImage());
                     }
             }
