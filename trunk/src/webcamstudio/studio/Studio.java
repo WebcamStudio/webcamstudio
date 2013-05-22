@@ -33,7 +33,7 @@ import webcamstudio.WebcamStudio;
 import webcamstudio.channels.MasterChannels;
 import webcamstudio.mixers.MasterMixer;
 import webcamstudio.streams.*;
-import webcamstudio.util.Tools;
+//import webcamstudio.util.Tools;
 import webcamstudio.components.*;
 import webcamstudio.channels.transitions.Transition;
 
@@ -479,7 +479,7 @@ public class Studio {
                     System.out.println("Subs Cleared **** ");
                 } else if (clazz.toLowerCase().endsWith("sourcetext")) {
                     text = new SourceText(ObjText);
-                    Studio.LText.add(text);
+                    LText.add(text);
                     readObject(text, source);
                     int op=0;
                     for (SourceChannel scs : SCL) {
@@ -522,10 +522,39 @@ public class Studio {
                     readObject(stream, source);
                     int op=0;
                     for (SourceChannel scs : SCL) {
-                        stream.addChannel(scs);
+                        scs.setName(SubChNames.get(op));
+                        String sNamet=SubChNames.get(op);
+                        if (!subSTrans.isEmpty()){
+                            if (subSTrans.get(op) != null) {
+                                if ("webcamstudio.channels.transitions.FadeIn".equals(subSTrans.get(op))){
+                                    Transition t = Transition.getInstance(stream, "FadeIn");
+                                    stream.addStartTransition(t);
+                                    scs.startTransitions.add(stream.startTransitions.get(0));
+                                }
+                            }
+                        }
+                        if (subETrans.size() != 0){
+                            if (subETrans.get(op) != null) {
+                                if ("webcamstudio.channels.transitions.FadeOut".equals(subETrans.get(op))){
+                                    Transition t = Transition.getInstance(stream, "FadeOut");
+                                    stream.addEndTransition(t);
+                                    scs.endTransitions.add(stream.endTransitions.get(0));
+                                }
+                            }
+                        }
+                        stream.addChannel(scs);                    
+                        System.out.println("Add Channel: "+scs);
                         op+=1;
                     }
+//                    for (SourceChannel scs : SCL) {
+//                        stream.addChannel(scs);
+//                        op+=1;
+//                    }
                     SCL.clear();
+                    SubChNames.clear();
+                    subSTrans.clear();
+                    subETrans.clear();
+                    System.out.println("Subs Cleared **** ");
                 } else if (clazz.toLowerCase().endsWith("sourcedvb")) {
                     stream = new SourceDVB();
                     stream.setChName(chNameDvb);
@@ -535,10 +564,40 @@ public class Studio {
                     readObject(stream, source);
                     int op=0;
                     for (SourceChannel scs : SCL) {
-                        stream.addChannel(scs);
+                        scs.setName(SubChNames.get(op));
+                        String sNamet=SubChNames.get(op);
+                        if (!subSTrans.isEmpty()){
+                            if (subSTrans.get(op) != null) {
+                                if ("webcamstudio.channels.transitions.FadeIn".equals(subSTrans.get(op))){
+                                    Transition t = Transition.getInstance(stream, "FadeIn");
+                                    stream.addStartTransition(t);
+                                    scs.startTransitions.add(stream.startTransitions.get(0));
+                                }
+                            }
+                        }
+                        if (subETrans.size() != 0){
+                            if (subETrans.get(op) != null) {
+                                if ("webcamstudio.channels.transitions.FadeOut".equals(subETrans.get(op))){
+                                    Transition t = Transition.getInstance(stream, "FadeOut");
+                                    stream.addEndTransition(t);
+                                    scs.endTransitions.add(stream.endTransitions.get(0));
+                                }
+                            }
+                        }
+                        stream.addChannel(scs);                    
+                        System.out.println("Add Channel: "+scs);
                         op+=1;
                     }
+  //                  for (SourceChannel scs : SCL) {
+  //                      stream.addChannel(scs);
+  //                      System.out.println("Add Channel: "+scs);
+  //                      op+=1;
+  //                  }
                     SCL.clear();
+                    SubChNames.clear();
+                    subSTrans.clear();
+                    subETrans.clear();
+                    System.out.println("Subs Cleared **** ");
                 } else if (clazz.toLowerCase().endsWith("sourceurl")) {
                     stream = new SourceURL();
                     stream.setWebURL(webUrl);
@@ -548,21 +607,76 @@ public class Studio {
                     readObject(stream, source);
                     int op=0;
                     for (SourceChannel scs : SCL) {
-                        stream.addChannel(scs);
+                        scs.setName(SubChNames.get(op));
+                        String sNamet=SubChNames.get(op);
+                        if (!subSTrans.isEmpty()){
+                            if (subSTrans.get(op) != null) {
+                                if ("webcamstudio.channels.transitions.FadeIn".equals(subSTrans.get(op))){
+                                    Transition t = Transition.getInstance(stream, "FadeIn");
+                                    stream.addStartTransition(t);
+                                    scs.startTransitions.add(stream.startTransitions.get(0));
+                                }
+                            }
+                        }
+                        if (subETrans.size() != 0){
+                            if (subETrans.get(op) != null) {
+                                if ("webcamstudio.channels.transitions.FadeOut".equals(subETrans.get(op))){
+                                    Transition t = Transition.getInstance(stream, "FadeOut");
+                                    stream.addEndTransition(t);
+                                    scs.endTransitions.add(stream.endTransitions.get(0));
+                                }
+                            }
+                        }
+                        stream.addChannel(scs);                    
+                        System.out.println("Add Channel: "+scs);
                         op+=1;
                     }
+//                    for (SourceChannel scs : SCL) {
+//                        stream.addChannel(scs);
+//                        System.out.println("Add Channel: "+scs);
+//                        op+=1;
+//                    }
                     SCL.clear();
+                    SubChNames.clear();
+                    subSTrans.clear();
+                    subETrans.clear();
+                    System.out.println("Subs Cleared **** ");
                 } else if (clazz.toLowerCase().endsWith("sourcemicrophone")) {
                     stream = new SourceMicrophone(); 
                     extstream.add(stream);
                     extstreamBis.add(stream);
                     ImgMovMus.add("Mic");
-                    int op=0;
                     readObject(stream, source);
+                    int op=0;                    
                     for (SourceChannel scs : SCL) {
-                        stream.addChannel(scs);
+                        scs.setName(SubChNames.get(op));
+                        String sNamet=SubChNames.get(op);
+                        if (!subSTrans.isEmpty()){
+                            if (subSTrans.get(op) != null) {
+                                if ("webcamstudio.channels.transitions.FadeIn".equals(subSTrans.get(op))){
+                                    Transition t = Transition.getInstance(stream, "FadeIn");
+                                    stream.addStartTransition(t);
+                                    scs.startTransitions.add(stream.startTransitions.get(0));
+                                }
+                            }
+                        }
+                        if (subETrans.size() != 0){
+                            if (subETrans.get(op) != null) {
+                                if ("webcamstudio.channels.transitions.FadeOut".equals(subETrans.get(op))){
+                                    Transition t = Transition.getInstance(stream, "FadeOut");
+                                    stream.addEndTransition(t);
+                                    scs.endTransitions.add(stream.endTransitions.get(0));
+                                }
+                            }
+                        }
+                        stream.addChannel(scs);                    
+                        System.out.println("Add Channel: "+scs);
                         op+=1;
                     }
+//                    for (SourceChannel scs : SCL) {
+//                        stream.addChannel(scs);
+//                        op+=1;
+//                    }
                     SCL.clear();
                     SubChNames.clear();
                     subSTrans.clear();

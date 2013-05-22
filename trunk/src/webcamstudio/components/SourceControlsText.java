@@ -45,8 +45,16 @@ public class SourceControlsText extends javax.swing.JPanel {
                 break;
         }
         spinBGOpacity.setValue((int)(stream.getBackgroundOpacity()*100f));
+        if (stream.getBackgroundOpacity() != 0) {
+            stream.setBackgroundOpacity(stream.getBackgroundOpacity());
+        } else {
         stream.setBackgroundOpacity(0/100f);
-        stream.setBackground(Shape.NONE);
+        }
+        if (stream.getBackground() != null){
+            stream.setBackground(stream.getBackground());
+        } else {
+            stream.setBackground(Shape.NONE);
+        }
     }
 
     /** This method is called from within the constructor to

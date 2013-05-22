@@ -345,10 +345,14 @@ public class ProcessRenderer {
 
             @Override
             public void run() {
-                stream.setVideo(plugins.containsKey("video"));
+                if (stream.isIPCam()){
+                    stream.setVideo(true);
+                } else if (stream.hasVideo()) {
+                    stream.setVideo(plugins.containsKey("video"));
+                }
                 stream.setFakeVideo(plugins.containsKey("fakeVideo"));
                 stream.setFakeAudio(plugins.containsKey("fakeAudio"));
-                stream.setAudio(plugins.containsKey("audio"));
+//                stream.setAudio(plugins.containsKey("audio"));
                 capture = new Capturer(stream);
                 if (stream.hasVideo()) {
                     videoPort = capture.getVideoPort();
@@ -363,7 +367,9 @@ public class ProcessRenderer {
 //              String fakeCommandVideo = null;
                 String commandAudio = null;
                 //System.out.println(plugins.keySet().toString());
-                if (plugins.containsKey("video")) {
+                if (plugins.containsKey("video") && stream.isIPCam()) {
+                    commandVideo = plugins.getProperty("videoIP").replaceAll("  ", " "); //Making sure there is no double spaces
+                } else if (plugins.containsKey("video")) {
                     commandVideo = plugins.getProperty("video").replaceAll("  ", " "); //Making sure there is no double spaces
                 }
 //              if (plugins.containsKey("fakeVideo")) {

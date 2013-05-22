@@ -51,6 +51,8 @@ public class Capturer {
         image = new WSImage(stream.getCaptureWidth(), stream.getCaptureHeight(), BufferedImage.TYPE_INT_RGB);
         audio = new byte[(44100 * 2 * 2) / stream.getRate()];
         frame.setID(stream.getID());
+        System.out.println("Capturer HasVideo: "+stream.hasVideo());
+        System.out.println("Capturer HasAudio: "+stream.hasAudio());
         if (stream.hasAudio()) {
             try {
                 audioServer = new ServerSocket(0);
@@ -92,7 +94,7 @@ public class Capturer {
                                 Tools.sleep(stream.getVDelay());
                                 videoIn = fakeVideoIn;//new DataInputStream(connection.getInputStream());
                                 System.out.println("Start Movie/DVB Video.");
-                            }
+                            } //!stream.hasAudio()
                         } else if (stream.getName().contains("Desktop")) { //hasaudio ||
                             noVideoPres=false;
                             Tools.sleep(stream.getVDelay());
@@ -103,7 +105,12 @@ public class Capturer {
                             Tools.sleep(stream.getVDelay());
                             videoIn = new DataInputStream(connection.getInputStream());
                             System.out.println("Start Device Video.");
-                        } /* else if (stream.getClass().getName().contains("SourceDVB")) { //hasaudio ||
+                        } else if (!stream.hasAudio()) {
+                            noVideoPres=false;
+                            Tools.sleep(stream.getVDelay());
+                            videoIn = fakeVideoIn;
+                            System.out.println("Start Muted Video.");
+                        }/* else if (stream.getClass().getName().contains("SourceDVB")) { //hasaudio ||
                             noVideoPres=false;
                             Tools.sleep(stream.getVDelay());
                             videoIn = fakeVideoIn; //new DataInputStream(connection.getInputStream());
@@ -144,7 +151,7 @@ public class Capturer {
                                 audioIn = fakeAudioIn;//new DataInputStream(connection.getInputStream());
                                 System.out.println("Start Movie/DVB Audio.");
                             }
-                      } else if (stream.getName().endsWith(".mp3")) {
+                      } else if (stream.getName().endsWith(".mp3") || !stream.hasVideo() ) {
                             noAudioPres = false;
                             Tools.sleep(stream.getADelay());
                             audioIn = new DataInputStream(connection.getInputStream());

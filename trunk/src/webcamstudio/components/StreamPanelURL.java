@@ -1,5 +1,5 @@
-/*
- * To change this template, choose Tools | Templates
+/*                                   
+ * To change this template, choose Tools | Templates                                  
  * and open the template in the editor.
  */
 
@@ -130,6 +130,8 @@ public class StreamPanelURL extends javax.swing.JPanel implements Stream.Listene
     private void initComponents() {
 
         panPreview = new javax.swing.JPanel();
+        tglAudio = new javax.swing.JToggleButton();
+        tglIPCam = new javax.swing.JToggleButton();
         spinX = new javax.swing.JSpinner();
         spinY = new javax.swing.JSpinner();
         spinW = new javax.swing.JSpinner();
@@ -171,7 +173,23 @@ public class StreamPanelURL extends javax.swing.JPanel implements Stream.Listene
         panPreview.setName("panPreview"); // NOI18N
         panPreview.setPreferredSize(new java.awt.Dimension(90, 60));
         panPreview.setLayout(new java.awt.BorderLayout());
-        add(panPreview, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 10, 180, 101));
+
+        tglAudio.setFont(new java.awt.Font("Ubuntu", 0, 12)); // NOI18N
+        tglAudio.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/audio-volume-muted.png"))); // NOI18N
+        tglAudio.setToolTipText("No Audio Switch");
+        tglAudio.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        tglAudio.setMaximumSize(new java.awt.Dimension(40, 32));
+        tglAudio.setMinimumSize(new java.awt.Dimension(26, 30));
+        tglAudio.setName("tglAudio"); // NOI18N
+        tglAudio.setPreferredSize(new java.awt.Dimension(40, 30));
+        panPreview.add(tglAudio, java.awt.BorderLayout.LINE_START);
+
+        tglIPCam.setText("IP");
+        tglIPCam.setToolTipText("IP Cam Switch");
+        tglIPCam.setName("tglIPCam"); // NOI18N
+        panPreview.add(tglIPCam, java.awt.BorderLayout.LINE_END);
+
+        add(panPreview, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 10, 220, 100));
 
         spinX.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         spinX.setName("spinX"); // NOI18N
@@ -368,12 +386,12 @@ public class StreamPanelURL extends javax.swing.JPanel implements Stream.Listene
         add(labelSeek, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 260, 50, 9));
 
         labelURL.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
-        labelURL.setText(bundle.getString("URL")); // NOI18N
+        labelURL.setText("Enter URL ...");
         labelURL.setToolTipText("");
         labelURL.setName("labelURL"); // NOI18N
         add(labelURL, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 120, 50, -1));
 
-        txtWebURL.setFont(new java.awt.Font("Ubuntu", 0, 12)); // NOI18N
+        txtWebURL.setFont(new java.awt.Font("Ubuntu Condensed", 0, 12)); // NOI18N
         txtWebURL.setName("txtWebURL"); // NOI18N
         txtWebURL.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -387,6 +405,22 @@ public class StreamPanelURL extends javax.swing.JPanel implements Stream.Listene
             if (txtWebURL.getText() != null) {
             stream.setWebURL((String) txtWebURL.getText());
             }
+            String webURL = stream.getWebURL();
+            if (webURL.contains("mp3") || webURL.contains("ogg")){
+                stream.setHasVideo(false);
+            } else if (tglAudio.isSelected()) {
+                stream.setHasAudio(false);
+            } else {
+                stream.setHasVideo(true);
+                stream.setHasAudio(true);
+            }
+            if (tglIPCam.isSelected()) {
+                stream.setIsIPCam(true);
+            } else {
+                stream.setIsIPCam(false);
+            }
+            System.out.println("hasVideo: "+stream.hasVideo());
+            System.out.println("hasAudio: "+stream.hasAudio());
             spinW1.setEnabled(false);
             spinH1.setEnabled(false);
             spinVDelay.setEnabled(false);
@@ -497,6 +531,8 @@ public class StreamPanelURL extends javax.swing.JPanel implements Stream.Listene
     private javax.swing.JSpinner spinY;
     private javax.swing.JSpinner spinZOrder;
     private javax.swing.JToggleButton tglActiveStream;
+    private javax.swing.JToggleButton tglAudio;
+    private javax.swing.JToggleButton tglIPCam;
     private javax.swing.JTextField txtWebURL;
     // End of variables declaration//GEN-END:variables
 

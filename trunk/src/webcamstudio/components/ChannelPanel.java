@@ -10,18 +10,18 @@
  */
 package webcamstudio.components;
 
-import java.beans.PropertyVetoException;
+//import java.beans.PropertyVetoException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+//import java.util.logging.Level;
+//import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.swing.DefaultListModel;
-import webcamstudio.WebcamStudio;
+//import webcamstudio.WebcamStudio;
 import webcamstudio.WebcamStudio.*;
 import webcamstudio.channels.MasterChannels;
-import webcamstudio.mixers.MasterMixer;
+//import webcamstudio.mixers.MasterMixer;
 import webcamstudio.mixers.SystemPlayer;
 import webcamstudio.streams.Stream;
 import webcamstudio.util.Tools;

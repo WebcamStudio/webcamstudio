@@ -13,7 +13,7 @@ package webcamstudio.sources.effects.controls;
 import java.awt.Color;
 import webcamstudio.components.ColorChooser;
 import webcamstudio.sources.effects.ChromaKey;
-import java.text.DecimalFormat;
+//import java.text.DecimalFormat;
 
 /**
  *

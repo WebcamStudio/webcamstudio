@@ -14,9 +14,9 @@ import java.awt.BorderLayout;
 import webcamstudio.streams.SourceDVB;
 import webcamstudio.streams.SourceURL;
 import webcamstudio.streams.SourceText;
-import webcamstudio.streams.SourceWebcam;
+//import webcamstudio.streams.SourceWebcam;
 import webcamstudio.streams.Stream;
-import webcamstudio.util.Tools;
+//import webcamstudio.util.Tools;
 
 /**
  *
