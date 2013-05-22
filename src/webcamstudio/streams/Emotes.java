@@ -4,8 +4,8 @@
  */
 package webcamstudio.streams;
 
-import java.awt.Image;
-import java.awt.Toolkit;
+//import java.awt.Image;
+//import java.awt.Toolkit;
 import javax.swing.ImageIcon;
 
 /**

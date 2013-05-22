@@ -71,8 +71,12 @@ public class MasterChannels {
     }
     public void selectChannel(String name){
         for (Stream stream : streams){
+            System.out.println("Stream: "+stream.getName());
             for (SourceChannel sc : stream.getChannels()){
+                System.out.println("SourceChannel Name out if: "+sc.getName());
                 if (sc.getName().equals(name)){
+                    System.out.println("SourceChannel Name: "+sc.getName());
+                    System.out.println("Name: "+name);
                     sc.apply(stream);
                     break;
                 }

@@ -47,6 +47,7 @@ public abstract class Stream implements Callable<Frame>{
     protected boolean hasFakeVideo=true;
     protected boolean needSeekCTRL=true;
     protected boolean hasAudio=true;
+    protected boolean isIPCam=false;
     protected int ADelay = 0;
     protected int VDelay = 0;
     protected int frequencyDVB = 0;
@@ -224,7 +225,18 @@ public abstract class Stream implements Callable<Frame>{
     public boolean hasAudio(){
         return hasAudio;
     }
-
+    public boolean isIPCam() {
+        return isIPCam;
+    }
+    public void setIsIPCam(boolean setIsIPCam) {
+        isIPCam = setIsIPCam;
+    }
+    public void setHasAudio(boolean setHasAudio) {
+        hasAudio = setHasAudio;
+    }
+    public void setHasVideo(boolean setHasVideo) {
+        hasVideo = setHasVideo;
+    }
     public boolean hasVideo(){
         return hasVideo;
     }
@@ -535,6 +547,7 @@ public abstract class Stream implements Callable<Frame>{
                 || ext.endsWith(".wmv")
                 || ext.endsWith(".flv")
                 || ext.endsWith(".mov")
+                || ext.endsWith(".mkv")
                 || ext.endsWith(".vob")) {
             stream = new SourceMovie(file);
         } else if (file.getAbsolutePath().toLowerCase().startsWith("/dev/video")) {

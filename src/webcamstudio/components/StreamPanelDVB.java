@@ -16,7 +16,7 @@ import java.awt.image.BufferedImage;
 import javax.swing.ImageIcon;
 import javax.swing.SpinnerNumberModel;
 import webcamstudio.streams.Stream;
-import webcamstudio.media.renderer.Capturer;
+//import webcamstudio.media.renderer.Capturer;
 
 
 

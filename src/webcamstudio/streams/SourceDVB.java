@@ -5,7 +5,7 @@
 package webcamstudio.streams;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
+//import java.io.File;
 import webcamstudio.externals.ProcessRenderer;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterFrameBuilder;
@@ -20,6 +20,7 @@ public class SourceDVB extends Stream {
 
     ProcessRenderer capture = null;
     BufferedImage lastPreview = null;
+    boolean isPlaying = false;
 
     public SourceDVB() {
         super();
@@ -59,7 +60,7 @@ public class SourceDVB extends Stream {
             return !capture.isStopped();
         } else {
             return false;
-        }
+    }
     }
 
     @Override

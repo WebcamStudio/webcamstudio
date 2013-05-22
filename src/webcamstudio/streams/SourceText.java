@@ -11,7 +11,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterFrameBuilder;
-import webcamstudio.util.Tools;
+//import webcamstudio.util.Tools;
 
 /**
  *
@@ -84,6 +84,7 @@ public class SourceText extends Stream {
         updateContent(content);
     }
 
+    @Override
     public void setHeight(int h) {
         height = h;
         updateContent(content);

@@ -6,7 +6,7 @@
 package webcamstudio.sources.effects;
 
 import java.awt.Graphics2D;
-import java.awt.Image;
+//import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.util.prefs.Preferences;
 import javax.swing.JPanel;

@@ -5,7 +5,7 @@
 package webcamstudio.streams;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
+//import java.io.File;
 import webcamstudio.externals.ProcessRenderer;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterFrameBuilder;
@@ -20,6 +20,10 @@ public class SourceURL extends Stream {
 
     ProcessRenderer capture = null;
     BufferedImage lastPreview = null;
+    boolean isPlaying = false;
+    //boolean hasVideo = true;
+    //boolean hasAudio = true;
+    //boolean isIPCam = false;
 
     public SourceURL() {
         super();
@@ -69,13 +73,28 @@ public class SourceURL extends Stream {
         return nextFrame;
     }
     @Override
-    public boolean hasAudio() {
-        return true;
+    public boolean isIPCam() {
+        return isIPCam;
     }
-
+    @Override
+    public void setIsIPCam(boolean setIsIPCam) {
+        isIPCam = setIsIPCam;
+    }
+    @Override
+    public boolean hasAudio() {
+        return hasAudio;
+    }
+    @Override
+    public void setHasAudio(boolean setHasAudio) {
+        hasAudio = setHasAudio;
+    }
     @Override
     public boolean hasVideo() {
-        return true;
+        return hasVideo;
+    }
+    @Override
+    public void setHasVideo(boolean setHasVideo) {
+        hasVideo = setHasVideo;
     }
     @Override
     public boolean hasFakeVideo(){
