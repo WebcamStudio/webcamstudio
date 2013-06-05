@@ -23,4 +23,4 @@ OR
  * ~~ Working on adding base 0.57 features and on stability of code -> *Karl Ellis* -> 30 Apr 2013 ~~
  * ~~Working on using Bytes array instead of Int array. Converting all WS modules to work correctly -> 30 may 2013 ~~
  * ~~ Switch back to Int Array (Due to CPU Overload). Solve Green/Cyan Issue. Implements all Filters to work correctly. -> *Karl Ellis* -> 30 may 2013 ~~
-* Working on memory usages. Close all process when a task finish. Change the way Still Images are displayed to lower CPU usages. -> *Karl Ellis* -> 30 June 2013
+ * Working on memory usages. Close all process when a task finish. Change the way Still Images are displayed to lower CPU usages. -> *Karl Ellis* -> 30 June 2013
