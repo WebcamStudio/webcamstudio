@@ -106,7 +106,6 @@ public class SourceChannel  {
                 } catch (InterruptedException ex) {
                     Logger.getLogger(SourceChannel.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                System.out.println("Stream is Playing: "+s.isPlaying());
                 if (isPlaying) {
                     if (!s.isPlaying()) {
                         s.read();

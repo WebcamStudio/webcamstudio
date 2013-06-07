@@ -43,7 +43,7 @@ import webcamstudio.util.Tools.OS;
 
 /**
  *
- * @author patrick
+ * @author patrick (modified by karl)
  */
 public class OutputPanel extends javax.swing.JPanel implements Stream.Listener {
 
@@ -66,8 +66,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener {
                 button.setIcon(tglRecordToFile.getIcon());
                 button.setSelectedIcon(tglRecordToFile.getSelectedIcon());
                 button.setRolloverEnabled(false);
-                button.addActionListener(new java.awt.event.ActionListener() {
-
+                button.addActionListener(new java.awt.event.ActionListener() {                    
                     @Override
                     public void actionPerformed(java.awt.event.ActionEvent evt) {
                         String device = evt.getActionCommand();
@@ -102,8 +101,9 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener {
         
         this.setDropTarget(new DropTarget() {
 
-            public synchronized void drop(DropTargetDropEvent evt) {
-                try {
+        @Override
+        public synchronized void drop(DropTargetDropEvent evt) {
+            try {
                     String fileName = "";
                     evt.acceptDrop(DnDConstants.ACTION_REFERENCE);
                     boolean success = false;
@@ -319,7 +319,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener {
         add(tglRecordToFile);
 
         tglCVLC.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-record.png"))); // NOI18N
-        tglCVLC.setText(bundle.getString("UDP Mpeg Out")); // NOI18N
+        tglCVLC.setText(bundle.getString("UDP_MPEG_OUT")); // NOI18N
         tglCVLC.setName("tglCVLC"); // NOI18N
         tglCVLC.setRolloverEnabled(false);
         tglCVLC.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-stop.png"))); // NOI18N
@@ -416,20 +416,11 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener {
             }
                     }  else if (stream instanceof SinkLinuxDevice) {
             String name = stream.getName();
-//            System.out.println("Sink: "+name);
-//            System.out.println("isPlaying: "+stream.isPlaying());
             for (Component c : this.getComponents()) {
                 if (c instanceof JToggleButton) {
                     JToggleButton b = (JToggleButton) c;
                     if (b.getText().equals(name)) {
                         b.setSelected(stream.isPlaying());
-                     /*if (!stream.isPlaying()){
-                        devices.remove(b.getText());
-                        ResourceMonitorLabel label = labels.remove(b.getText());
-                        if (label != null) {
-                        ResourceMonitor.getInstance().removeMessage(label);
-                        }
-                        }*/
                     }
                 }
             }

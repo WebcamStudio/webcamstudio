@@ -10,7 +10,7 @@ import webcamstudio.streams.*;
 
 /**
  *
- * @author patrick
+ * @author patrick (modified by karl)
  */
 public class SourceControls {
 
@@ -23,6 +23,10 @@ public class SourceControls {
             c = new SourceControlDesktop((SourceDesktop) source);
             comps.add(c);
         } else if (source instanceof SourceMovie) {
+            c = new SourceControlEffects(source);
+            c.setName("Effects");
+            comps.add(c);
+        } else if (source instanceof SourceImageU) {
             c = new SourceControlEffects(source);
             c.setName("Effects");
             comps.add(c);

@@ -15,7 +15,7 @@ import webcamstudio.sources.effects.Effect;
 
 /**
  *
- * @author patrick
+ * @author patrick (modified by karl)
  */
 public abstract class Stream implements Callable<Frame>{
 
@@ -39,15 +39,18 @@ public abstract class Stream implements Callable<Frame>{
     protected ArrayList<Effect> effects = new ArrayList<Effect>();
     protected ArrayList<SourceChannel> channels = new ArrayList<SourceChannel>();
     protected SourceChannel channel = new SourceChannel();
+    protected int desktopN = 0;
     protected int desktopX = 0;
     protected int desktopY = 0;
     protected int desktopW = 1024;
     protected int desktopH = 768;
     protected boolean hasVideo=true;
-    protected boolean hasFakeVideo=true;
+    protected boolean hasFakeVideo=false;
+    protected boolean hasFakeAudio=false;
     protected boolean needSeekCTRL=true;
     protected boolean hasAudio=true;
     protected boolean isIPCam=false;
+    protected boolean isStillPicture=false;
     protected int ADelay = 0;
     protected int VDelay = 0;
     protected int frequencyDVB = 0;
@@ -120,6 +123,12 @@ public abstract class Stream implements Callable<Frame>{
     }
     public int getDVBBandwidth() {
         return bandwidthDVB;
+    }
+    public int getDesktopN() {
+        return desktopN;
+    }
+    public void setDesktopN(int desktopN) {
+        this.desktopN = desktopN;
     }
     public int getDesktopX() {
         return desktopX;
@@ -225,6 +234,12 @@ public abstract class Stream implements Callable<Frame>{
     public boolean hasAudio(){
         return hasAudio;
     }
+    public boolean isStillPicture() {
+        return isStillPicture;
+    }
+    public void setIsStillPicture(boolean setIsStillPicture) {
+        isStillPicture = setIsStillPicture;
+    }
     public boolean isIPCam() {
         return isIPCam;
     }
@@ -248,7 +263,7 @@ public abstract class Stream implements Callable<Frame>{
         return hasFakeVideo;
     }
     public boolean hasFakeAudio(){
-        return hasFakeVideo;
+        return hasFakeAudio;
     }
 
     public void setVideo(boolean hasIt){
@@ -553,8 +568,9 @@ public abstract class Stream implements Callable<Frame>{
         } else if (file.getAbsolutePath().toLowerCase().startsWith("/dev/video")) {
             stream = new SourceWebcam(file);
         } else if (ext.endsWith(".jpg")
-                || ext.endsWith(".bmp")
-                || ext.endsWith(".png")) {
+                || ext.endsWith(".bmp")) {
+            stream = new SourceImageU(file);
+        } else if (ext.endsWith(".png")) {
             stream = new SourceImage(file);
         } else if (ext.endsWith(".gif")) {
             stream = new SourceImageGif(file);

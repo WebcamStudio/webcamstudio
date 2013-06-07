@@ -9,7 +9,7 @@ import webcamstudio.util.Tools;
 
 /**
  *
- * @author patrick
+ * @author patrick (modified by karl)
  */
 public class Resize extends Transition{
 
@@ -24,14 +24,10 @@ public class Resize extends Transition{
         
         int newW = channel.getWidth();
         int newH = channel.getHeight();
-//        System.out.println("NewW: "+newW+" NewH: "+newH);
         int deltaW = newW - oldW;
         int deltaH = newH - oldH;
-//        System.out.println("DeltaW: "+deltaW+" DeltaH: "+deltaH);
         int rate = source.getRate();
         int totalFrames = rate * 1;
-        
-        //System.out.println(source.getWidth() + "x" + source.getHeight());
         for (int i = 0; i<totalFrames;i++){
             source.setWidth(oldW + ((i*deltaW/totalFrames)));
             source.setHeight(oldH + ((i*deltaH/totalFrames)));

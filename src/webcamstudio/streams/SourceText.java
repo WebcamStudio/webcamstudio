@@ -11,7 +11,6 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterFrameBuilder;
-//import webcamstudio.util.Tools;
 
 /**
  *
@@ -28,6 +27,7 @@ public class SourceText extends Stream {
     int bgColor = 0x000000;
     Frame frame = null;
     float bgOpacity = 1f;
+    private Shape shape = Shape.NONE;
 
     @Override
     public void readNext() {
@@ -43,7 +43,7 @@ public class SourceText extends Stream {
         ROUNDRECT,
         OVAL
     }
-    private Shape shape = Shape.NONE;
+    
 
     public SourceText(String content) {
         super();
@@ -144,17 +144,13 @@ public class SourceText extends Stream {
             textHeight = fm.getHeight();
             textWidth = fm.stringWidth(content);
             
-        }
-        //System.out.println(textHeight + ", " + textWidth );
-        
+        }        
         buffer.setRenderingHint(java.awt.RenderingHints.KEY_TEXT_ANTIALIASING, java.awt.RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         buffer.setRenderingHint(java.awt.RenderingHints.KEY_INTERPOLATION, java.awt.RenderingHints.VALUE_INTERPOLATION_BICUBIC);
         buffer.setRenderingHint(java.awt.RenderingHints.KEY_RENDERING, java.awt.RenderingHints.VALUE_RENDER_QUALITY);
         buffer.setRenderingHint(java.awt.RenderingHints.KEY_DITHERING, java.awt.RenderingHints.VALUE_DITHER_ENABLE);
         buffer.setRenderingHint(java.awt.RenderingHints.KEY_COLOR_RENDERING, java.awt.RenderingHints.VALUE_COLOR_RENDER_QUALITY);
         frame = new Frame(captureWidth, captureHeight, rate);
-        
-
         buffer.setBackground(new Color(0,0,0,0));
         buffer.clearRect(0, 0, captureWidth, captureHeight);
         switch (shape) {

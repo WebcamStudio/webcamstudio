@@ -10,18 +10,13 @@
  */
 package webcamstudio.components;
 
-//import java.beans.PropertyVetoException;
 import java.util.ArrayList;
-//import java.util.logging.Level;
-//import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.swing.DefaultListModel;
-//import webcamstudio.WebcamStudio;
 import webcamstudio.WebcamStudio.*;
 import webcamstudio.channels.MasterChannels;
-//import webcamstudio.mixers.MasterMixer;
 import webcamstudio.mixers.SystemPlayer;
 import webcamstudio.streams.Stream;
 import webcamstudio.util.Tools;
@@ -31,7 +26,7 @@ import webcamstudio.util.Tools;
 
 /**
  *
- * @author patrick
+ * @author patrick (modified by karl)
  */
 public class ChannelPanel extends javax.swing.JPanel{
 
@@ -171,13 +166,13 @@ public class ChannelPanel extends javax.swing.JPanel{
             }
         });
 
-        jLabel2.setText("Next Channel");
+        jLabel2.setText(bundle.getString("NEXT_CHANNEL")); // NOI18N
         jLabel2.setName("jLabel2"); // NOI18N
 
-        jLabel3.setText("Duration (sec)");
+        jLabel3.setText(bundle.getString("DURATION")); // NOI18N
         jLabel3.setName("jLabel3"); // NOI18N
 
-        StopCHTimer.setText("[STOP] CH-Timer");
+        StopCHTimer.setText(bundle.getString("STOP_CHANNEL_TIMER")); // NOI18N
         StopCHTimer.setName("StopCHTimer"); // NOI18N
         StopCHTimer.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
         StopCHTimer.addActionListener(new java.awt.event.ActionListener() {
@@ -186,12 +181,12 @@ public class ChannelPanel extends javax.swing.JPanel{
             }
         });
 
-        jLabel4.setText("         Current Channel Timer (sec)");
+        jLabel4.setText(bundle.getString("CURRENT_CHANNEL_TIMER")); // NOI18N
         jLabel4.setName("jLabel4"); // NOI18N
 
         CHProgressTime.setName("CHProgressTime"); // NOI18N
 
-        btnStopAllStream.setText("[STOP] All");
+        btnStopAllStream.setText(bundle.getString("STOP_ALL")); // NOI18N
         btnStopAllStream.setName("btnStopAllStream"); // NOI18N
         btnStopAllStream.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -296,7 +291,7 @@ public class ChannelPanel extends javax.swing.JPanel{
                 btnRemove.setEnabled(false);
                 btnSelect.setEnabled(false);
                 btnUpdate.setEnabled(false);
-            }
+        }
     }//GEN-LAST:event_lstChannelsValueChanged
     @SuppressWarnings("unchecked") 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
@@ -327,10 +322,9 @@ public class ChannelPanel extends javax.swing.JPanel{
     }//GEN-LAST:event_btnRemoveActionPerformed
     @SuppressWarnings("unchecked") 
     public static void AddLoadingChannel(String name) {
-       if (name.length() > 0) {
+        if (name.length() > 0) {
             model.addElement(name);
             aModel.addElement(name);
-//            CHCurrNext.add(name);
             ListChannels.add(name);
        }
     }   
@@ -363,7 +357,7 @@ public class ChannelPanel extends javax.swing.JPanel{
    }
    class TSelectActionPerformed extends TimerTask {
         @Override
-        public void run(){ // synchronized
+        public void run(){
             CHon = lstChannels.getSelectedIndex();
             CHNxName = CHCurrNext.get(CHon);
             int n =0;
@@ -413,7 +407,6 @@ public class ChannelPanel extends javax.swing.JPanel{
 
     private void lstNextChannelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lstNextChannelActionPerformed
         if (lstChannels.getSelectedIndex() != -1) {
- //        String currChannel = lstChannels.getSelectedValue().toString();
            String nextChannel = lstNextChannel.getSelectedItem().toString();
            int ChIndex = lstChannels.getSelectedIndex();
            String t = CHCurrNext.get(ChIndex);
@@ -425,9 +418,7 @@ public class ChannelPanel extends javax.swing.JPanel{
         CHTimer = ChDuration.getValue().hashCode()* 1000;
         if (lstChannels.getSelectedIndex() != -1) {
             int ChIndex = lstChannels.getSelectedIndex();
- //         int tm = CHTimers.get(ChIndex);
             CHTimers.set(ChIndex, CHTimer);
- //         System.out.println("Current Channel: "+lstChannels.getSelectedValue().toString() +" His Timer is: "+CHTimers.get(ChIndex).toString());
         }
     }//GEN-LAST:event_ChDurationStateChanged
 
@@ -450,12 +441,12 @@ public class ChannelPanel extends javax.swing.JPanel{
 
     private void btnStopAllStreamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStopAllStreamActionPerformed
         SystemPlayer.getInstance(null).stop();
-        Tools.sleep(50);
+        Tools.sleep(30);
         MasterChannels.getInstance().stopAllStream();
         for (Stream s : streamS){
             s.updateStatus();
         }
-        Tools.sleep(50);
+        Tools.sleep(30);
         ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "All Stopped.");
         ResourceMonitor.getInstance().addMessage(label);
     }//GEN-LAST:event_btnStopAllStreamActionPerformed

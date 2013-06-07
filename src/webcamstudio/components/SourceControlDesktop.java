@@ -15,7 +15,7 @@ import webcamstudio.streams.SourceDesktop;
 
 /**
  *
- * @author patrick
+ * @author patrick (modified by karl)
  */
 public class SourceControlDesktop extends javax.swing.JPanel {
 
@@ -56,6 +56,8 @@ public class SourceControlDesktop extends javax.swing.JPanel {
         spinY = new javax.swing.JSpinner();
         spinW = new javax.swing.JSpinner();
         spinH = new javax.swing.JSpinner();
+        jLabel5 = new javax.swing.JLabel();
+        spinN = new javax.swing.JSpinner();
 
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("webcamstudio/Languages"); // NOI18N
         jLabel1.setText(bundle.getString("DESKTOP_CAPTURE_X")); // NOI18N
@@ -98,6 +100,16 @@ public class SourceControlDesktop extends javax.swing.JPanel {
             }
         });
 
+        jLabel5.setText(bundle.getString("DESKTOP_CAPTURE_NUMBER")); // NOI18N
+        jLabel5.setName("jLabel5"); // NOI18N
+
+        spinN.setName("spinN"); // NOI18N
+        spinN.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                spinNStateChanged(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -108,13 +120,15 @@ public class SourceControlDesktop extends javax.swing.JPanel {
                     .addComponent(jLabel1)
                     .addComponent(jLabel2)
                     .addComponent(jLabel3)
-                    .addComponent(jLabel4))
+                    .addComponent(jLabel4)
+                    .addComponent(jLabel5))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(spinH, javax.swing.GroupLayout.DEFAULT_SIZE, 239, Short.MAX_VALUE)
-                    .addComponent(spinY, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 239, Short.MAX_VALUE)
-                    .addComponent(spinX, javax.swing.GroupLayout.DEFAULT_SIZE, 239, Short.MAX_VALUE)
-                    .addComponent(spinW, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 239, Short.MAX_VALUE))
+                    .addComponent(spinN)
+                    .addComponent(spinH, javax.swing.GroupLayout.DEFAULT_SIZE, 235, Short.MAX_VALUE)
+                    .addComponent(spinY, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 235, Short.MAX_VALUE)
+                    .addComponent(spinX, javax.swing.GroupLayout.DEFAULT_SIZE, 235, Short.MAX_VALUE)
+                    .addComponent(spinW, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 235, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -136,6 +150,10 @@ public class SourceControlDesktop extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(spinH, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(spinN, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -156,12 +174,18 @@ public class SourceControlDesktop extends javax.swing.JPanel {
         source.setDesktopH((Integer)spinH.getValue());
     }//GEN-LAST:event_spinHStateChanged
 
+    private void spinNStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinNStateChanged
+        source.setDesktopN((Integer)spinN.getValue());
+    }//GEN-LAST:event_spinNStateChanged
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JSpinner spinH;
+    private javax.swing.JSpinner spinN;
     private javax.swing.JSpinner spinW;
     private javax.swing.JSpinner spinX;
     private javax.swing.JSpinner spinY;

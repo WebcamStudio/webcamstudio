@@ -16,13 +16,12 @@ import java.awt.image.BufferedImage;
 import javax.swing.ImageIcon;
 import javax.swing.SpinnerNumberModel;
 import webcamstudio.streams.Stream;
-//import webcamstudio.media.renderer.Capturer;
 
 
 
 /**
  *
- * @author patrick
+ * @author patrick (modified by karl)
  */
 public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listener{
 
@@ -386,12 +385,12 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         add(frequency, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 170, 60, -1));
 
         labelfreq.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
-        labelfreq.setText(bundle.getString("Frequency")); // NOI18N
+        labelfreq.setText(bundle.getString("FREQUENCY")); // NOI18N
         labelfreq.setName("labelfreq"); // NOI18N
         add(labelfreq, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 180, 80, -1));
 
         labelInv.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
-        labelInv.setText(bundle.getString("Program Number")); // NOI18N
+        labelInv.setText(bundle.getString("PROGRAM_NUMBER")); // NOI18N
         labelInv.setName("labelInv"); // NOI18N
         add(labelInv, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 220, 80, -1));
 
@@ -405,7 +404,7 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         add(bandwidth, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 190, 60, -1));
 
         labelBand.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
-        labelBand.setText(bundle.getString("Bandwidth")); // NOI18N
+        labelBand.setText(bundle.getString("BANDWIDTH")); // NOI18N
         labelBand.setName("labelBand"); // NOI18N
         add(labelBand, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 200, 70, -1));
 
@@ -429,7 +428,7 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         add(txtChName, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 120, 120, 30));
 
         labelfreq1.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
-        labelfreq1.setText(bundle.getString("Channel Name")); // NOI18N
+        labelfreq1.setText(bundle.getString("CHANNEL_NAME")); // NOI18N
         labelfreq1.setName("labelfreq1"); // NOI18N
         add(labelfreq1, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 150, 60, 10));
     }// </editor-fold>//GEN-END:initComponents
@@ -457,6 +456,8 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
             bandwidth.setEnabled(true);
             prgNumber.setEnabled(true);
             stream.stop();
+            System.gc();
+            
         }
     }//GEN-LAST:event_tglActiveStreamActionPerformed
 

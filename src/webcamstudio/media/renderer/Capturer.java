@@ -19,12 +19,10 @@ import webcamstudio.util.Tools;
 
 /**
  *
- * @author patrick
+ * @author patrick (modified by karl)
  */
 public class Capturer {
 
-//  private boolean hasaudio = false;
-//  private boolean hasvideo = false;
     private int vport = 0;
     private int aport = 0;
     private int fVport =0;
@@ -32,8 +30,6 @@ public class Capturer {
     private Stream stream;
     private ServerSocket videoServer = null;
     private ServerSocket audioServer = null;
-//  private ServerSocket fakeVideoServer = null;
-//  private FrameBuffer frameBuffer = new FrameBuffer();
     private WSImage image = null;
     private byte[] audio = null;
     private Frame frame = null;
@@ -43,7 +39,6 @@ public class Capturer {
     private DataInputStream fakeAudioIn = null;
     private boolean noVideoPres = true;
     private boolean noAudioPres = true;
-//  private boolean firstPass = true;
 
     public Capturer(Stream s) {
         stream = s;
@@ -51,8 +46,6 @@ public class Capturer {
         image = new WSImage(stream.getCaptureWidth(), stream.getCaptureHeight(), BufferedImage.TYPE_INT_RGB);
         audio = new byte[(44100 * 2 * 2) / stream.getRate()];
         frame.setID(stream.getID());
-        System.out.println("Capturer HasVideo: "+stream.hasVideo());
-        System.out.println("Capturer HasAudio: "+stream.hasAudio());
         if (stream.hasAudio()) {
             try {
                 audioServer = new ServerSocket(0);
@@ -78,23 +71,21 @@ public class Capturer {
             public void run() {
                 
                 try {
-                    Socket connection = videoServer.accept();
-//                  hasvideo = true;   
+                    Socket connection = videoServer.accept();  
                     System.out.println(stream.getName() + " video accepted...");
                     if (stream.hasFakeVideo()) {
-                        fakeVideoIn = new DataInputStream(new BufferedInputStream(connection.getInputStream(), 4096));
-                        System.out.println("Start Fake Video Connection.");
+                        fakeVideoIn = new DataInputStream(new BufferedInputStream(connection.getInputStream(), 2048));
                     }
                     do {
-//                        Tools.sleep(5);
+
                         if (fakeAudioIn != null) {
                            Tools.sleep(20);
                             if (fakeAudioIn.available() != 0) {
                                 noVideoPres=false;
                                 Tools.sleep(stream.getVDelay());
-                                videoIn = fakeVideoIn;//new DataInputStream(connection.getInputStream());
+                                videoIn = fakeVideoIn;
                                 System.out.println("Start Movie/DVB Video.");
-                            } //!stream.hasAudio()
+                            }
                         } else if (stream.getName().contains("Desktop")) { //hasaudio ||
                             noVideoPres=false;
                             Tools.sleep(stream.getVDelay());
@@ -103,21 +94,16 @@ public class Capturer {
                         } else if (stream.getClass().getName().contains("SourceWebcam")) { //hasaudio ||
                             noVideoPres=false;
                             Tools.sleep(stream.getVDelay());
-                            videoIn = new DataInputStream(connection.getInputStream());
-                            System.out.println("Start Device Video.");
+                            videoIn = new DataInputStream(new BufferedInputStream(connection.getInputStream(), 2048)); //new DataInputStream(connection.getInputStream());
+                            System.out.println("Start Webcam Video.");
                         } else if (!stream.hasAudio()) {
                             noVideoPres=false;
                             Tools.sleep(stream.getVDelay());
                             videoIn = fakeVideoIn;
                             System.out.println("Start Muted Video.");
-                        }/* else if (stream.getClass().getName().contains("SourceDVB")) { //hasaudio ||
-                            noVideoPres=false;
-                            Tools.sleep(stream.getVDelay());
-                            videoIn = fakeVideoIn; //new DataInputStream(connection.getInputStream());
-                            System.out.println("Start DVB Video.");
-                        } */
-                    } while (noVideoPres); // && !hasaudio
-                    System.out.println("Out of Video Loop.");
+                        }
+                    } while (noVideoPres);
+
                 } catch (IOException ex) {
                     Logger.getLogger(Capturer.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -125,7 +111,7 @@ public class Capturer {
         });
         
         vCapture.setPriority(Thread.MIN_PRIORITY);
-        if (stream.hasVideo()) {  // || hasaudio       
+        if (stream.hasVideo()) {
             vCapture.start();
         }
         
@@ -135,47 +121,39 @@ public class Capturer {
             public void run() {
                 try {                    
                     Socket connection = audioServer.accept();
-//                  hasaudio = true;
+                    System.out.println("Stream: "+stream.getClass().getName().toString() );
                     System.out.println(stream.getName() + " audio accepted...");
                     if (stream.hasFakeAudio()) {
-                        fakeAudioIn = new DataInputStream(new BufferedInputStream(connection.getInputStream(), 4096));
-                        System.out.println("Start Fake Audio Connection.");
+                        fakeAudioIn = new DataInputStream(new BufferedInputStream(connection.getInputStream(), 2048));
                     }
                     do {
-//                      Tools.sleep(1);
                         if (fakeVideoIn != null)  {
                             Tools.sleep(20);
                             if (fakeVideoIn.available() != 0) {
                                 noAudioPres = false; 
                                 Tools.sleep(stream.getADelay());
-                                audioIn = fakeAudioIn;//new DataInputStream(connection.getInputStream());
+                                audioIn = fakeAudioIn;
                                 System.out.println("Start Movie/DVB Audio.");
                             }
                       } else if (stream.getName().endsWith(".mp3") || !stream.hasVideo() ) {
                             noAudioPres = false;
                             Tools.sleep(stream.getADelay());
-                            audioIn = new DataInputStream(connection.getInputStream());
+                            audioIn = new DataInputStream(new BufferedInputStream(connection.getInputStream(), 2048)); //new DataInputStream(connection.getInputStream());
                             System.out.println("Start Music Audio.");  
                       } else if (stream.getClass().getName().contains("SourceWebcam")) {
                             noAudioPres = false;
                             Tools.sleep(stream.getADelay());
-                            audioIn = fakeAudioIn;//new DataInputStream(connection.getInputStream());
+                            audioIn = fakeAudioIn;
                             System.out.println("Start Webcam Audio.");  
-                      } /*else if (stream.getClass().getName().contains("SourceDVB")) {
-                            noAudioPres = false;
-                            Tools.sleep(stream.getADelay());
-                            audioIn = fakeAudioIn; //new DataInputStream(connection.getInputStream());
-                            System.out.println("Start DVB Audio.");  
-                      }*/
-                    }  while (noAudioPres);// && !hasVideo
-                    System.out.println("Out of Audio Loop.");
+                      }
+                    }  while (noAudioPres);
                 } catch (IOException ex) {
                     Logger.getLogger(Capturer.class.getName()).log(Level.SEVERE, null, ex);
                 }
         }}); 
         
         aCapture.setPriority(Thread.MIN_PRIORITY);
-        if (stream.hasAudio()) { // || hasvideo
+        if (stream.hasAudio()) {
             aCapture.start();            
         }
     }
@@ -186,10 +164,14 @@ public class Capturer {
             if (videoServer != null) {
                 videoServer.close();
                 videoServer = null;
+                videoIn = null;
+                fakeVideoIn = null;
             }
             if (audioServer != null) {
                 audioServer.close();
                 audioServer = null;
+                audioIn = null;
+                fakeAudioIn = null;
             }
         } catch (IOException ex) {
             Logger.getLogger(Capturer.class.getName()).log(Level.SEVERE, null, ex);

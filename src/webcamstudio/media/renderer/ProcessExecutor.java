@@ -4,21 +4,30 @@
  */
 package webcamstudio.media.renderer;
 
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.lang.reflect.Field;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import webcamstudio.externals.ProcessRenderer;
 import webcamstudio.util.Tools;
 
 /**
  *
- * @author patrick
+ * @author patrick (modified by karl)
  */
 public class ProcessExecutor {
 
     private Process process;
     private boolean processRunning = false;
     private String name = "";
+    private static String childPids = "";
 
     public ProcessExecutor(String name) {
         this.name = name;
@@ -69,10 +78,76 @@ public class ProcessExecutor {
 //      readOutput(process);
     }
     public void destroy() {
-        //Tools.sleep(10000);
+//      Tools.sleep(10000);
+//      if (process!=null){
+//          process.destroy();
+//      }
         processRunning=false;
-        if (process!=null){
-            process.destroy();
+        try {
+            Tools.sleep(50);
+            killUnixProcess(process);
+        } catch (Exception ex) {
+            Logger.getLogger(ProcessExecutor.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    public static int getUnixPID(Process process) throws Exception //Author Martijn Courteaux Code
+{
+//    System.out.println(process.getClass().getName());
+    if (process.getClass().getName().equals("java.lang.UNIXProcess")) {
+        Class cl = process.getClass();
+        Field field = cl.getDeclaredField("pid");
+        field.setAccessible(true);
+        Object pidObject = field.get(process);
+        System.out.println("Parent Pid: "+(Integer) pidObject);
+        return (Integer) pidObject;
+    } else {
+        throw new IllegalArgumentException("Needs to be a UNIXProcess");
+    }
+}
+
+public static void killUnixProcess(Process process) throws Exception //Author Martijn Courteaux Code
+{
+    int pid = getUnixPID(process);
+    Runtime rt = Runtime.getRuntime();
+    String commandPids = "ps -ef | awk '{if ($3 == "+pid+") print $2;}'";
+    File fileP=new File(System.getProperty("user.home")+"/.webcamstudio/"+"WSPidsBuster.sh"); 
+    FileOutputStream fosV;
+    DataOutputStream dosV = null;
+    try {
+        fosV = new FileOutputStream(fileP);
+        dosV= new DataOutputStream(fosV);
+    } catch (FileNotFoundException ex) {
+            Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    try {
+                    dosV.writeBytes("#!/bin/bash\n");
+                    dosV.writeBytes(commandPids+"\n");
+    } catch (IOException ex) {
+        Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    try {
+        Process pV = rt.exec("chmod a+x "+System.getProperty("user.home")+"/.webcamstudio/"+"WSPidsBuster.sh");
+    } catch (IOException ex) {
+        Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    String batchPidCommand = "sh "+System.getProperty("user.home")+"/.webcamstudio/"+"WSPidsBuster.sh";
+    try {
+    Process getChildPids = rt.exec(batchPidCommand);
+    Tools.sleep(30);
+    getChildPids.waitFor(); //Author spoonybard896
+    BufferedReader buf = new BufferedReader(new InputStreamReader(
+    getChildPids.getInputStream()));
+    String line = "";
+    childPids = "";
+    while ((line = buf.readLine()) != null) {
+       childPids += line + "\n";
+    }
+    System.out.println("Child Pid: "+childPids); //Author spoonybard896
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    Runtime.getRuntime().exec("kill -9 " + pid).waitFor();
+    Runtime.getRuntime().exec("kill -9 " + childPids).waitFor();
+    childPids = null;
+}
 }

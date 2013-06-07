@@ -22,7 +22,7 @@ import webcamstudio.mixers.SystemPlayer;
 
 /**
  *
- * @author patrick
+ * @author patrick (modified by karl)
  */
 public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkListener {
 
@@ -217,9 +217,9 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
     private javax.swing.JPanel panChannels;
     private javax.swing.JPanel panMixer;
     private javax.swing.JPanel panelPreview;
-    private javax.swing.JSpinner spinFPS;
-    private javax.swing.JSpinner spinHeight;
-    private javax.swing.JSpinner spinWidth;
+    public static javax.swing.JSpinner spinFPS;
+    public static javax.swing.JSpinner spinHeight;
+    public static javax.swing.JSpinner spinWidth;
     private javax.swing.JTabbedPane tabMixers;
     public static javax.swing.JToggleButton tglSound;
     // End of variables declaration//GEN-END:variables

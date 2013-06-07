@@ -197,11 +197,17 @@
               <Properties>
                 <Property name="name" type="java.lang.String" value="spinWidth" noResource="true"/>
               </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
+              </AuxValues>
             </Component>
             <Component class="javax.swing.JSpinner" name="spinHeight">
               <Properties>
                 <Property name="name" type="java.lang.String" value="spinHeight" noResource="true"/>
               </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
+              </AuxValues>
             </Component>
             <Component class="javax.swing.JButton" name="btnApply">
               <Properties>
@@ -226,6 +232,9 @@
               <Properties>
                 <Property name="name" type="java.lang.String" value="spinFPS" noResource="true"/>
               </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
+              </AuxValues>
             </Component>
           </SubComponents>
         </Container>

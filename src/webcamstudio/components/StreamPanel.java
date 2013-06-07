@@ -16,13 +16,12 @@ import java.awt.image.BufferedImage;
 import javax.swing.ImageIcon;
 import javax.swing.SpinnerNumberModel;
 import webcamstudio.streams.Stream;
-//import webcamstudio.media.renderer.Capturer;
 
 
 
 /**
  *
- * @author patrick
+ * @author patrick (modified by karl)
  */
 public class StreamPanel extends javax.swing.JPanel implements Stream.Listener{
 
@@ -111,11 +110,11 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener{
             spinADelay.setEnabled(false);
             spinSeek.setEnabled(false);
         } else {
-            spinH1.setEnabled(true);
-            spinW1.setEnabled(true);
+            spinH1.setEnabled(stream.hasVideo());
+            spinW1.setEnabled(stream.hasVideo());
             spinVDelay.setEnabled(true);
             spinADelay.setEnabled(true);
-            spinSeek.setEnabled(true);
+            spinSeek.setEnabled(stream.needSeekCTRL());
         }
         tglActiveStream.revalidate();
     }
@@ -373,12 +372,13 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener{
             spinSeek.setEnabled(false);
             stream.read();
         } else {
-            spinW1.setEnabled(true);
-            spinH1.setEnabled(true);
+            spinH1.setEnabled(stream.hasVideo());
+            spinW1.setEnabled(stream.hasVideo());
             spinVDelay.setEnabled(stream.hasVideo());
             spinADelay.setEnabled(stream.hasAudio());
             spinSeek.setEnabled(stream.needSeekCTRL()); //stream.hasAudio() && !stream.getName().contains("Desktop") && !stream.getClass().getName().endsWith("SourceWebcam"));
             stream.stop();
+            System.gc();
         }
     }//GEN-LAST:event_tglActiveStreamActionPerformed
 

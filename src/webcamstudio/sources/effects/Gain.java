@@ -13,7 +13,7 @@ import webcamstudio.sources.effects.controls.GainControl;
 
 /**
  *
- * @author pballeux
+ * @author pballeux (modified by karl)
  */
 public class Gain extends Effect{
     private com.jhlabs.image.GainFilter filter = new com.jhlabs.image.GainFilter();

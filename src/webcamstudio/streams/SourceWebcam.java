@@ -14,7 +14,7 @@ import webcamstudio.sources.effects.Effect;
 
 /**
  *
- * @author patrick
+ * @author patrick (modified by karl)
  */
 public class SourceWebcam extends Stream {
 
@@ -80,9 +80,7 @@ public class SourceWebcam extends Stream {
         if (capture != null) {
             f = capture.getFrame();
             for (Effect fx : this.getEffects()) {
-//                String fxName = fx.getName();
-                if (fx.needApply()){//contains("Swap") || fxName.contains("Flip")) {          
-                //} else {
+                if (fx.needApply()){
                     fx.applyEffect(f.getImage());
                     }
             }

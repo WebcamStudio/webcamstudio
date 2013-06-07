@@ -9,7 +9,7 @@ import webcamstudio.streams.Stream;
 
 /**
  *
- * @author patrick
+ * @author patrick (modified by karl)
  */
 public abstract class Transition implements Runnable{
 

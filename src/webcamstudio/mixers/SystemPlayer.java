@@ -14,7 +14,7 @@ import webcamstudio.util.Tools;
 
 /**
  *
- * @author patrick
+ * @author patrick (modified by karl)
  */
 public class SystemPlayer implements Runnable {
 

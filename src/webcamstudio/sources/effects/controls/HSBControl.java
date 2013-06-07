@@ -4,9 +4,9 @@
  */
 
 /*
- * MosaicControl.java
+ * HSBControl.java
  *
- * Created on 2010-01-15, 01:51:51
+ * Created in 2013.
  */
 
 package webcamstudio.sources.effects.controls;
@@ -15,7 +15,7 @@ import webcamstudio.sources.effects.HSB;
 
 /**
  *
- * @author pballeux
+ * @author pballeux (modified by karl)
  */
 public class HSBControl extends javax.swing.JPanel {
 
