@@ -10,7 +10,6 @@ import webcamstudio.exporter.vloopback.V4L2Loopback;
 import webcamstudio.exporter.vloopback.VideoOutput;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterMixer;
-//import webcamstudio.util.Tools;
 
 /**
  *

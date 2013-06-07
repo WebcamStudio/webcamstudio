@@ -13,7 +13,7 @@ import webcamstudio.sources.effects.controls.HSBControl;
 
 /**
  *
- * @author pballeux
+ * @author pballeux (modified by karl)
  */
 public class HSB extends Effect{
     private com.jhlabs.image.HSBAdjustFilter filter = new com.jhlabs.image.HSBAdjustFilter();

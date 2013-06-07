@@ -9,7 +9,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
-import webcamstudio.externals.Tags;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterFrameBuilder;
 
@@ -38,7 +37,7 @@ public class SourceImage extends Stream{
     @Override
     public void read() {
         stop=false;
-        playing = true;
+        playing = true;   
         try{
             loadImage(file);
             frame = new Frame(captureWidth,captureHeight,rate);

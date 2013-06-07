@@ -9,7 +9,7 @@ import webcamstudio.util.Tools;
 
 /**
  *
- * @author pballeux
+ * @author pballeux (modified by karl)
  */
 public class ShrinkOut extends Transition {
     public ShrinkOut(Stream source){
@@ -36,7 +36,6 @@ public class ShrinkOut extends Transition {
                     source.setWidth(w - (int) (i * deltaW * 2F));
                     source.setHeight(h - (int) (i * deltaH * 2F));
                     source.setOpacity(100-(i*100/frames));
-      //              System.out.println("ShrinkOut");
                     Tools.sleep(1000/rate);
                
     

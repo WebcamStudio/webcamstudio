@@ -12,44 +12,42 @@ import webcamstudio.mixers.MasterFrameBuilder;
 import webcamstudio.mixers.MasterMixer;
 import webcamstudio.sources.effects.Effect;
 
+
 /**
  *
  * @author patrick (modified by karl)
  */
-public class SourceMovie extends Stream {
+public class SourceImageU extends Stream {
 
     ProcessRenderer capture = null;
     BufferedImage lastPreview = null;
+    boolean isPlaying = false;
 
-    public SourceMovie(File movie) {
+    public SourceImageU(File img) {
         super();
-        rate = MasterMixer.getInstance().getRate();
-        System.out.println("Frame Rate = " + rate);
-        file = movie;
-        name = movie.getName();
+        file = img;
+        name = img.getName();
     }
 
     @Override
     public void read() {
-        rate = MasterMixer.getInstance().getRate();
-        lastPreview = new BufferedImage(captureWidth,captureHeight,BufferedImage.TYPE_INT_ARGB);
-        MasterFrameBuilder.register(this);
-        capture = new ProcessRenderer(this, ProcessRenderer.ACTION.CAPTURE, "movie");
-        capture.read();
+            rate = MasterMixer.getInstance().getRate();
+            lastPreview = new BufferedImage(captureWidth,captureHeight,BufferedImage.TYPE_INT_ARGB);
+            MasterFrameBuilder.register(this); 
+            capture = new ProcessRenderer(this, ProcessRenderer.ACTION.CAPTURE, "image");
+            capture.read();           
     }
-
     @Override
-    public void stop() {
+    public void stop() {    
         MasterFrameBuilder.unregister(this);
         if (capture != null) {
             capture.stop();
             capture = null;
-            System.gc();
         }
     }
     @Override
     public boolean needSeek() {
-            return needSeekCTRL=true;
+            return false;
     }
     @Override
     public boolean isPlaying() {
@@ -57,32 +55,39 @@ public class SourceMovie extends Stream {
             return !capture.isStopped();
         } else {
             return false;
-        }
-    }
-    public boolean hasFakeVideo(){
-        return true;
-    }
-    public boolean hasFakeAudio(){
-        return true;
+        } 
     }
     @Override
     public BufferedImage getPreview() {
         return lastPreview;
     }
-
     @Override
-    public Frame getFrame() {
-        
+    public Frame getFrame() {       
         return nextFrame;
     }
-
+    @Override
+    public boolean hasAudio() {
+        return false;
+    }
+    @Override
+    public boolean hasVideo() {
+        return true;
+    }
+    @Override
+    public boolean hasFakeVideo(){
+        return true;
+    }
+    @Override
+    public boolean hasFakeAudio(){
+        return false;
+    }
     @Override
     public void readNext() {
         Frame f = null;
         if (capture != null) {
             f = capture.getFrame();
             for (Effect fx : this.getEffects()) {
-                if (fx.needApply()){   
+                if (fx.needApply()){
                     fx.applyEffect(f.getImage());
                 }
             }
@@ -93,5 +98,4 @@ public class SourceMovie extends Stream {
         }
         nextFrame=f;
     }
-
 }

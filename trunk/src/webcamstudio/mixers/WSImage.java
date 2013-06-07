@@ -11,7 +11,7 @@ import java.io.IOException;
 
 /**
  *
- * @author patrick
+ * @author patrick (modified by karl)
  */
 public class WSImage extends BufferedImage {
 
@@ -41,7 +41,7 @@ public class WSImage extends BufferedImage {
             din.readFully(byteData);
             counter = 0;
             for (int i = 0; i < data.length; i++) {
-                data[i] = 0xff000000 | ((byteData[counter++]) << 16) | ((byteData[counter++]& 0xff) << 8) | ((byteData[counter++])& 0xff);
+                data[i] = 0xff000000 | ((byteData[counter++]) << 16) | ((byteData[counter++]& 0xff) << 8) | ((byteData[counter++])& 0xff); // Correct CyanGreen Issue !!!
             }
         }
     }

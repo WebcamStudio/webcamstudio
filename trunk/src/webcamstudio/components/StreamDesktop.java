@@ -14,13 +14,11 @@ import java.awt.BorderLayout;
 import webcamstudio.streams.SourceDVB;
 import webcamstudio.streams.SourceURL;
 import webcamstudio.streams.SourceText;
-//import webcamstudio.streams.SourceWebcam;
 import webcamstudio.streams.Stream;
-//import webcamstudio.util.Tools;
 
 /**
  *
- * @author patrick
+ * @author patrick (modified by karl)
  */
 public class StreamDesktop extends javax.swing.JInternalFrame {
 
@@ -132,6 +130,7 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
         stream.destroy();
         stream = null;
         panel = null;
+        System.gc();
 
     }//GEN-LAST:event_formInternalFrameClosing
 

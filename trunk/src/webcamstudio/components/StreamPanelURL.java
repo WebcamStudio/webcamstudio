@@ -16,13 +16,12 @@ import java.awt.image.BufferedImage;
 import javax.swing.ImageIcon;
 import javax.swing.SpinnerNumberModel;
 import webcamstudio.streams.Stream;
-import webcamstudio.media.renderer.Capturer;
 
 
 
 /**
  *
- * @author patrick
+ * @author patrick (modified by karl)
  */
 public class StreamPanelURL extends javax.swing.JPanel implements Stream.Listener{
 
@@ -184,8 +183,9 @@ public class StreamPanelURL extends javax.swing.JPanel implements Stream.Listene
         tglAudio.setPreferredSize(new java.awt.Dimension(40, 30));
         panPreview.add(tglAudio, java.awt.BorderLayout.LINE_START);
 
-        tglIPCam.setText("IP");
-        tglIPCam.setToolTipText("IP Cam Switch");
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("webcamstudio/Languages"); // NOI18N
+        tglIPCam.setText(bundle.getString("IP")); // NOI18N
+        tglIPCam.setToolTipText(bundle.getString("IP_CAM_SWITCH")); // NOI18N
         tglIPCam.setName("tglIPCam"); // NOI18N
         panPreview.add(tglIPCam, java.awt.BorderLayout.LINE_END);
 
@@ -266,7 +266,6 @@ public class StreamPanelURL extends javax.swing.JPanel implements Stream.Listene
         add(spinZOrder, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 270, 60, -1));
 
         labelX.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("webcamstudio/Languages"); // NOI18N
         labelX.setText(bundle.getString("X")); // NOI18N
         labelX.setName("labelX"); // NOI18N
         add(labelX, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 180, 60, -1));
@@ -386,7 +385,7 @@ public class StreamPanelURL extends javax.swing.JPanel implements Stream.Listene
         add(labelSeek, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 260, 50, 9));
 
         labelURL.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
-        labelURL.setText("Enter URL ...");
+        labelURL.setText(bundle.getString("ENTER_URL")); // NOI18N
         labelURL.setToolTipText("");
         labelURL.setName("labelURL"); // NOI18N
         add(labelURL, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 120, 50, -1));
@@ -408,6 +407,9 @@ public class StreamPanelURL extends javax.swing.JPanel implements Stream.Listene
             String webURL = stream.getWebURL();
             if (webURL.contains("mp3") || webURL.contains("ogg")){
                 stream.setHasVideo(false);
+            } else if (webURL.contains("jpg") || webURL.contains("png")){
+                stream.setIsStillPicture(true);
+                stream.setHasAudio(false);
             } else if (tglAudio.isSelected()) {
                 stream.setHasAudio(false);
             } else {
@@ -421,24 +423,26 @@ public class StreamPanelURL extends javax.swing.JPanel implements Stream.Listene
             }
             System.out.println("hasVideo: "+stream.hasVideo());
             System.out.println("hasAudio: "+stream.hasAudio());
+            System.out.println("Is Still Picture: "+stream.isStillPicture());
+            spinX.setEnabled(stream.hasVideo());
+            spinY.setEnabled(stream.hasVideo());
             spinW1.setEnabled(false);
             spinH1.setEnabled(false);
+            spinW.setEnabled(stream.hasVideo());
+            spinH.setEnabled(stream.hasVideo());
+            spinOpacity.setEnabled(stream.hasVideo());
             spinVDelay.setEnabled(false);
             spinADelay.setEnabled(false);
             spinSeek.setEnabled(false);
-//            frequency.setEnabled(false);
-//            bandwidth.setEnabled(false);
-//            prgNumber.setEnabled(false);
             stream.read();
         } else {
-            spinW1.setEnabled(true);
-            spinH1.setEnabled(true);
+            spinW1.setEnabled(stream.hasVideo());
+            spinH1.setEnabled(stream.hasVideo());
+            spinW.setEnabled(stream.hasVideo());
+            spinH.setEnabled(stream.hasVideo());
             spinVDelay.setEnabled(stream.hasVideo());
             spinADelay.setEnabled(stream.hasAudio());
-            spinSeek.setEnabled(stream.needSeekCTRL()); //stream.hasAudio() && !stream.getName().contains("Desktop") && !stream.getClass().getName().endsWith("SourceWebcam"));
-//            frequency.setEnabled(true);
-//            bandwidth.setEnabled(true);
-//            prgNumber.setEnabled(true);
+            spinSeek.setEnabled(stream.needSeekCTRL());
             stream.stop();
         }
     }//GEN-LAST:event_tglActiveStreamActionPerformed

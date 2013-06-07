@@ -24,7 +24,7 @@ import webcamstudio.util.Tools;
 
 /**
  *
- * @author patrick
+ * @author patrick (modified by karl)
  */
 public class MasterFrameBuilder implements Runnable {
 
@@ -111,7 +111,7 @@ public class MasterFrameBuilder implements Runnable {
     }
 
     @Override
-    public void run() { //synchronized
+    public void run() {
         stopMe = false;
         ArrayList<Frame> frames = new ArrayList<Frame>();
         mark = System.currentTimeMillis();
@@ -127,7 +127,6 @@ public class MasterFrameBuilder implements Runnable {
             Frame targetFrame = frameBuffer.getFrameToUpdate();
             frames.clear();
             try {
-//              Tools.sleep(10);
                 List<Future<Frame>> results = pool.invokeAll(streams);
                 for (Future stream : results) {
                     Frame f = (Frame)stream.get();

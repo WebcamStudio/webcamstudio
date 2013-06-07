@@ -149,6 +149,8 @@ public class SourceControlEffects extends javax.swing.JPanel {
                 .addComponent(panSettings, javax.swing.GroupLayout.DEFAULT_SIZE, 83, Short.MAX_VALUE)
                 .addContainerGap())
         );
+
+        panSettings.getAccessibleContext().setAccessibleName(bundle.getString("SETTINGS")); // NOI18N
     }// </editor-fold>//GEN-END:initComponents
     @SuppressWarnings("unchecked") 
     private void btnAddEffectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddEffectActionPerformed

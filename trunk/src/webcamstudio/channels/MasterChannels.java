@@ -7,10 +7,11 @@ package webcamstudio.channels;
 import java.util.ArrayList;
 import webcamstudio.streams.SourceChannel;
 import webcamstudio.streams.Stream;
+import webcamstudio.util.Tools;
 
 /**
  *
- * @author patrick
+ * @author patrick (modified by karl)
  */
 public class MasterChannels {
     ArrayList<String> channelNames = new ArrayList<String>();
@@ -27,7 +28,7 @@ public class MasterChannels {
         return instance;
     }
     public void register(Stream s){
-        System.out.println(s.getName() + " registered");
+        System.out.println(s.getClass().getName().toString() + " registered");
         streams.add(s);
     }
     public void unregister(Stream s){
@@ -71,12 +72,10 @@ public class MasterChannels {
     }
     public void selectChannel(String name){
         for (Stream stream : streams){
-            System.out.println("Stream: "+stream.getName());
             for (SourceChannel sc : stream.getChannels()){
-                System.out.println("SourceChannel Name out if: "+sc.getName());
+                Tools.sleep(10); //To let WSPidsBuster work correctly.
                 if (sc.getName().equals(name)){
-                    System.out.println("SourceChannel Name: "+sc.getName());
-                    System.out.println("Name: "+name);
+                    Tools.sleep(10); //To let WSPidsBuster work correctly.
                     sc.apply(stream);
                     break;
                 }
@@ -90,6 +89,7 @@ public class MasterChannels {
     
     public void stopAllStream(){
         for (Stream s : streams){
+            Tools.sleep(30);
             s.stop();
         }
     }

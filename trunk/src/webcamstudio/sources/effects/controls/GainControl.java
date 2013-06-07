@@ -4,9 +4,9 @@
  */
 
 /*
- * MosaicControl.java
+ * GainControl.java
  *
- * Created on 2010-01-15, 01:51:51
+ * Created in 2013
  */
 package webcamstudio.sources.effects.controls;
 
@@ -14,7 +14,7 @@ import webcamstudio.sources.effects.Gain;
 
 /**
  *
- * @author pballeux
+ * @author pballeux (modified by karl)
  */
 public class GainControl extends javax.swing.JPanel {
 

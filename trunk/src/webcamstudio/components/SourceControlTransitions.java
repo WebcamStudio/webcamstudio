@@ -80,6 +80,7 @@ public class SourceControlTransitions extends javax.swing.JPanel {
         jScrollPane1.setViewportView(lstStartTransitions);
 
         add(jScrollPane1);
+        jScrollPane1.getAccessibleContext().setAccessibleName(bundle.getString("STARTING")); // NOI18N
 
         jScrollPane2.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ENDING"))); // NOI18N
         jScrollPane2.setName("jScrollPane2"); // NOI18N
@@ -98,6 +99,7 @@ public class SourceControlTransitions extends javax.swing.JPanel {
         jScrollPane2.setViewportView(lstEndTransitions);
 
         add(jScrollPane2);
+        jScrollPane2.getAccessibleContext().setAccessibleName(bundle.getString("ENDING")); // NOI18N
     }// </editor-fold>//GEN-END:initComponents
     @SuppressWarnings("deprecation") 
     private void lstStartTransitionsValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_lstStartTransitionsValueChanged

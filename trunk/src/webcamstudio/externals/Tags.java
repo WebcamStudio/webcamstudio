@@ -6,7 +6,7 @@ package webcamstudio.externals;
 
 /**
  *
- * @author patrick
+ * @author patrick (modified by karl)
  */
 public enum Tags {
    
@@ -33,6 +33,7 @@ public enum Tags {
         DESKTOPH("@DESKTOPH"),
         DESKTOPENDX("@DESKTOPENDX"),
         DESKTOPENDY("@DESKTOPENDY"),
+        DESKTOPN("@DESKTOPN"),
         URL("@URL"),
         BW("@BW"),
         DVBFREQ("@DVBFREQ"),

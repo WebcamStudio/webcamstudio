@@ -5,7 +5,7 @@
 package webcamstudio.streams;
 
 import java.awt.image.BufferedImage;
-//import java.io.File;
+import java.io.File;
 import webcamstudio.externals.ProcessRenderer;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterFrameBuilder;
@@ -14,17 +14,14 @@ import webcamstudio.sources.effects.Effect;
 
 /**
  *
- * @author patrick
+ * @author patrick (modified by karl)
  */
 public class SourceURL extends Stream {
 
     ProcessRenderer capture = null;
     BufferedImage lastPreview = null;
     boolean isPlaying = false;
-    //boolean hasVideo = true;
-    //boolean hasAudio = true;
-    //boolean isIPCam = false;
-
+    
     public SourceURL() {
         super();
         name = "URL";
@@ -34,11 +31,11 @@ public class SourceURL extends Stream {
 
     @Override
     public void read() {
-        rate = MasterMixer.getInstance().getRate();
-        lastPreview = new BufferedImage(captureWidth,captureHeight,BufferedImage.TYPE_INT_ARGB);
-        MasterFrameBuilder.register(this);
-        capture = new ProcessRenderer(this, ProcessRenderer.ACTION.CAPTURE, "url");
-        capture.readCom();
+            rate = MasterMixer.getInstance().getRate();
+            lastPreview = new BufferedImage(captureWidth,captureHeight,BufferedImage.TYPE_INT_ARGB);
+            MasterFrameBuilder.register(this);
+            capture = new ProcessRenderer(this, ProcessRenderer.ACTION.CAPTURE, "url");
+            capture.readCom();           
     }
 
     @Override
@@ -47,11 +44,16 @@ public class SourceURL extends Stream {
         if (capture != null) {
             capture.stop();
             capture = null;
+            File directory = new File(System.getProperty("user.home")+"/.webcamstudio");
+            for(File f: directory.listFiles())
+                if(f.getName().startsWith("WSFrom"))
+                f.delete();
         }
+        isStillPicture = false;
     }
     @Override
     public boolean needSeek() {
-            return needSeekCTRL=false;
+        return needSeekCTRL=false;
     }
     @Override
     public boolean isPlaying() {
@@ -79,6 +81,14 @@ public class SourceURL extends Stream {
     @Override
     public void setIsIPCam(boolean setIsIPCam) {
         isIPCam = setIsIPCam;
+    }
+    @Override
+    public boolean isStillPicture() {
+        return isStillPicture;
+    }
+    @Override
+    public void setIsStillPicture(boolean setIsStillPicture) {
+        isStillPicture = setIsStillPicture;
     }
     @Override
     public boolean hasAudio() {
@@ -110,9 +120,7 @@ public class SourceURL extends Stream {
         if (capture != null) {
             f = capture.getFrame();
             for (Effect fx : this.getEffects()) {
-//                String fxName = fx.getName();
-                if (fx.needApply()){//contains("Swap") || fxName.contains("Flip")) {          
-                //} else {
+                if (fx.needApply()){   
                     fx.applyEffect(f.getImage());
                     }
             }
