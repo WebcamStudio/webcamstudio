@@ -49,7 +49,7 @@ public class SystemPlayer implements Runnable {
 
     public void play() throws LineUnavailableException {
         frames = new FrameBuffer(MasterMixer.getInstance().getWidth(), MasterMixer.getInstance().getHeight(), MasterMixer.getInstance().getRate());
-        AudioFormat format = new AudioFormat(44100, 16, 2, true, true);
+        AudioFormat format = new AudioFormat(22050, 16, 2, true, true);
         source = javax.sound.sampled.AudioSystem.getSourceDataLine(format);
         source.open();
         source.start();

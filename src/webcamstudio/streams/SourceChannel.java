@@ -97,7 +97,7 @@ public class SourceChannel  {
                 if (!s.getClass().toString().contains("Sink")){ // Don't Update SinkStreams ...
                 ExecutorService pool = java.util.concurrent.Executors.newCachedThreadPool();
                 for (Transition t : s.endTransitions) {
-                    System.out.println(t.getClass().getName());
+//                    System.out.println(t.getClass().getName());
                     pool.submit(t.run(instance));
                 }
                 pool.shutdown();

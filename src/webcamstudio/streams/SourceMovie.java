@@ -24,7 +24,7 @@ public class SourceMovie extends Stream {
     public SourceMovie(File movie) {
         super();
         rate = MasterMixer.getInstance().getRate();
-        System.out.println("Frame Rate = " + rate);
+//        System.out.println("Frame Rate = " + rate);
         file = movie;
         name = movie.getName();
     }

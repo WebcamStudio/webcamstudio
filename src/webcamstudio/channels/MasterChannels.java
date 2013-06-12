@@ -73,9 +73,9 @@ public class MasterChannels {
     public void selectChannel(String name){
         for (Stream stream : streams){
             for (SourceChannel sc : stream.getChannels()){
-                Tools.sleep(10); //To let WSPidsBuster work correctly.
+                Tools.sleep(5); //To let WSPidsBuster work correctly.
                 if (sc.getName().equals(name)){
-                    Tools.sleep(10); //To let WSPidsBuster work correctly.
+                    Tools.sleep(5); //To let WSPidsBuster work correctly.
                     sc.apply(stream);
                     break;
                 }

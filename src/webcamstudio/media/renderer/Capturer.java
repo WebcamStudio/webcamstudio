@@ -44,7 +44,7 @@ public class Capturer {
         stream = s;
         frame = new Frame(stream.getCaptureWidth(), stream.getCaptureHeight(), stream.getRate());
         image = new WSImage(stream.getCaptureWidth(), stream.getCaptureHeight(), BufferedImage.TYPE_INT_RGB);
-        audio = new byte[(44100 * 2 * 2) / stream.getRate()];
+        audio = new byte[(22050 * 2 * 2) / stream.getRate()];
         frame.setID(stream.getID());
         if (stream.hasAudio()) {
             try {
@@ -121,7 +121,7 @@ public class Capturer {
             public void run() {
                 try {                    
                     Socket connection = audioServer.accept();
-                    System.out.println("Stream: "+stream.getClass().getName().toString() );
+ //                   System.out.println("Stream: "+stream.getClass().getName().toString() );
                     System.out.println(stream.getName() + " audio accepted...");
                     if (stream.hasFakeAudio()) {
                         fakeAudioIn = new DataInputStream(new BufferedInputStream(connection.getInputStream(), 2048));
@@ -139,13 +139,13 @@ public class Capturer {
                             noAudioPres = false;
                             Tools.sleep(stream.getADelay());
                             audioIn = new DataInputStream(new BufferedInputStream(connection.getInputStream(), 2048)); //new DataInputStream(connection.getInputStream());
-                            System.out.println("Start Music Audio.");  
-                      } else if (stream.getClass().getName().contains("SourceWebcam")) {
+                            System.out.println("Start Music/Mic Audio.");  
+                      } /*else if (stream.getClass().getName().contains("SourceWebcam")) {
                             noAudioPres = false;
                             Tools.sleep(stream.getADelay());
                             audioIn = fakeAudioIn;
                             System.out.println("Start Webcam Audio.");  
-                      }
+                      }*/
                     }  while (noAudioPres);
                 } catch (IOException ex) {
                     Logger.getLogger(Capturer.class.getName()).log(Level.SEVERE, null, ex);

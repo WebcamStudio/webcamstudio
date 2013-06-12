@@ -38,6 +38,7 @@
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
           <ResourceString bundle="webcamstudio/Languages.properties" key="RECORD" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
         </Property>
+        <Property name="toolTipText" type="java.lang.String" value="Save to File. Remeber to add video extension (.avi or .mp4)."/>
         <Property name="name" type="java.lang.String" value="tglRecordToFile" noResource="true"/>
         <Property name="rolloverEnabled" type="boolean" value="false"/>
         <Property name="selectedIcon" type="javax.swing.Icon" noResource="true" editor="org.netbeans.modules.form.editors2.IconEditor">
@@ -51,7 +52,7 @@
         <AuxValue name="JavaCodeGenerator_DeclarationPost" type="java.lang.String" value="final OutputPanel instanceSink = this;"/>
       </AuxValues>
     </Component>
-    <Component class="javax.swing.JToggleButton" name="tglCVLC">
+    <Component class="javax.swing.JToggleButton" name="tglUDP">
       <Properties>
         <Property name="icon" type="javax.swing.Icon" noResource="true" editor="org.netbeans.modules.form.editors2.IconEditor">
           <Image iconType="3" name="/webcamstudio/resources/tango/media-record.png"/>
@@ -59,14 +60,15 @@
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
           <ResourceString bundle="webcamstudio/Languages.properties" key="UDP_MPEG_OUT" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
         </Property>
-        <Property name="name" type="java.lang.String" value="tglCVLC" noResource="true"/>
+        <Property name="toolTipText" type="java.lang.String" value="Stream to udp://@127.0.0.1:7000"/>
+        <Property name="name" type="java.lang.String" value="tglUDP" noResource="true"/>
         <Property name="rolloverEnabled" type="boolean" value="false"/>
         <Property name="selectedIcon" type="javax.swing.Icon" noResource="true" editor="org.netbeans.modules.form.editors2.IconEditor">
           <Image iconType="3" name="/webcamstudio/resources/tango/media-playback-stop.png"/>
         </Property>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="tglCVLCActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="tglUDPActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>

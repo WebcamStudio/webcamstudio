@@ -570,6 +570,8 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         MasterChannels.getInstance().stopAllStream();
         Tools.sleep(10);
         MasterMixer.getInstance().stop();
+        System.out.println("Thanks for using WebcamStudio ...");
+        System.out.println("GoodBye!");
         System.exit(0);
         System.err.close();
     }//GEN-LAST:event_formWindowClosing
@@ -737,7 +739,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         ArrayList<Stream> streamz = MasterChannels.getInstance().getStreams();
         ArrayList<String> sourceCh = MasterChannels.getInstance().getChannels();
         do {          
-            System.out.println("Stream:"+streamz.size()+" SourceCh:"+sourceCh.size());
+//            System.out.println("Stream:"+streamz.size()+" SourceCh:"+sourceCh.size());
         
             for (int l=0; l< streamz.size(); l++) {
                 Stream removeS = streamz.get(l);
@@ -786,6 +788,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
             }
         
             for (int u = 0; u < Studio.ImgMovMus.size(); u++) {
+                Tools.sleep(10);
                 Stream s = Studio.extstream.get(u);
                 if (s != null) {
                 StreamDesktop frame = new StreamDesktop(s, this);
@@ -796,7 +799,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
                     Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
-                System.out.println("Adding Source: "+s);
+                System.out.println("Adding Source: "+s.getName());
             }
             Studio.extstream.clear();
             Studio.extstream = null;
@@ -857,7 +860,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         ArrayList<Stream> streamz = MasterChannels.getInstance().getStreams();
         ArrayList<String> sourceCh = MasterChannels.getInstance().getChannels();
         do {          
-            System.out.println("Stream:"+streamz.size()+" SourceCh:"+sourceCh.size());    
+//            System.out.println("Stream:"+streamz.size()+" SourceCh:"+sourceCh.size());    
             for (int l=0; l< streamz.size(); l++) {
                 Stream removeS = streamz.get(l);
                 removeS.destroy();
@@ -926,6 +929,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         if (!dir.exists()) {
             dir.mkdir();
         }
+        System.out.println("Welcome to WebcamStudio ...");
         /*
          * Set the Nimbus look and feel
          */
