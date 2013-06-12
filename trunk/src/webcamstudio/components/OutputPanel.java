@@ -34,7 +34,7 @@ import webcamstudio.exporter.vloopback.VideoDevice;
 import webcamstudio.externals.FME;
 import webcamstudio.mixers.MasterMixer;
 import webcamstudio.streams.SinkBroadcast;
-import webcamstudio.streams.SinkCvlc;
+import webcamstudio.streams.SinkUDP;
 import webcamstudio.streams.SinkFile;
 import webcamstudio.streams.SinkLinuxDevice;
 import webcamstudio.streams.Stream;
@@ -50,7 +50,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener {
     TreeMap<String, SinkFile> files = new TreeMap<String, SinkFile>();
     TreeMap<String, SinkBroadcast> broadcasts = new TreeMap<String, SinkBroadcast>();
     TreeMap<String, SinkLinuxDevice> devices = new TreeMap<String, SinkLinuxDevice>();
-    TreeMap<String, SinkCvlc> cvlc = new TreeMap<String, SinkCvlc>();
+    TreeMap<String, SinkUDP> udpOut = new TreeMap<String, SinkUDP>();
     TreeMap<String, FME> fmes = new TreeMap<String, FME>();
     TreeMap<String, ResourceMonitorLabel> labels = new TreeMap<String, ResourceMonitorLabel>();
 
@@ -299,7 +299,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener {
     private void initComponents() {
 
         tglRecordToFile = new javax.swing.JToggleButton();
-        tglCVLC = new javax.swing.JToggleButton();
+        tglUDP = new javax.swing.JToggleButton();
 
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("webcamstudio/Languages"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("OUTPUT"))); // NOI18N
@@ -308,6 +308,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener {
 
         tglRecordToFile.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-record.png"))); // NOI18N
         tglRecordToFile.setText(bundle.getString("RECORD")); // NOI18N
+        tglRecordToFile.setToolTipText("Save to File. Remeber to add video extension (.avi or .mp4).");
         tglRecordToFile.setName("tglRecordToFile"); // NOI18N
         tglRecordToFile.setRolloverEnabled(false);
         tglRecordToFile.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-stop.png"))); // NOI18N
@@ -318,17 +319,18 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener {
         });
         add(tglRecordToFile);
 
-        tglCVLC.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-record.png"))); // NOI18N
-        tglCVLC.setText(bundle.getString("UDP_MPEG_OUT")); // NOI18N
-        tglCVLC.setName("tglCVLC"); // NOI18N
-        tglCVLC.setRolloverEnabled(false);
-        tglCVLC.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-stop.png"))); // NOI18N
-        tglCVLC.addActionListener(new java.awt.event.ActionListener() {
+        tglUDP.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-record.png"))); // NOI18N
+        tglUDP.setText(bundle.getString("UDP_MPEG_OUT")); // NOI18N
+        tglUDP.setToolTipText("Stream to udp://@127.0.0.1:7000");
+        tglUDP.setName("tglUDP"); // NOI18N
+        tglUDP.setRolloverEnabled(false);
+        tglUDP.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-stop.png"))); // NOI18N
+        tglUDP.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                tglCVLCActionPerformed(evt);
+                tglUDPActionPerformed(evt);
             }
         });
-        add(tglCVLC);
+        add(tglUDP);
     }// </editor-fold>//GEN-END:initComponents
 
     private void tglRecordToFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglRecordToFileActionPerformed
@@ -336,7 +338,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener {
             File f = null;
             JFileChooser chooser = new JFileChooser();
             chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-            chooser.setDialogTitle("Choose a File to record on ... (Add .mp4 Extension)");
+            chooser.setDialogTitle("Choose Destination File ... >> Add .avi or .mp4 Extension !!! <<");
             chooser.showSaveDialog(this);
             f = chooser.getSelectedFile();
             if (f != null) {
@@ -347,7 +349,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener {
                 fileStream.setListener(instanceSink);
                 fileStream.read();
                 files.put("RECORD", fileStream);
-                ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Recording in " + f.getName());
+                ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Recording to " + f.getName());
                 labels.put("RECORD", label);
                 ResourceMonitor.getInstance().addMessage(label);
             } else {
@@ -366,35 +368,35 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener {
         
     }//GEN-LAST:event_tglRecordToFileActionPerformed
 
-    private void tglCVLCActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglCVLCActionPerformed
-        if (tglCVLC.isSelected()) {       
-                SinkCvlc cvlcStream = new SinkCvlc();
-                cvlcStream.setWidth(MasterMixer.getInstance().getWidth());
-                cvlcStream.setHeight(MasterMixer.getInstance().getHeight());
-                cvlcStream.setRate(MasterMixer.getInstance().getRate());
-                cvlcStream.setListener(instanceSink);
-                cvlcStream.read();
-                cvlc.put("VLC Out", cvlcStream);
+    private void tglUDPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglUDPActionPerformed
+        if (tglUDP.isSelected()) {       
+                SinkUDP udpStream = new SinkUDP();
+                udpStream.setWidth(MasterMixer.getInstance().getWidth());
+                udpStream.setHeight(MasterMixer.getInstance().getHeight());
+                udpStream.setRate(MasterMixer.getInstance().getRate());
+                udpStream.setListener(instanceSink);
+                udpStream.read();
+                udpOut.put("UDPOut", udpStream);
                 ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Unicast mpeg2 to udp://127.0.0.1:7000");
-                labels.put("VLC Out", label);
+                labels.put("UDPOut", label);
                 ResourceMonitor.getInstance().addMessage(label);
         } else {
-            SinkCvlc cvlcStream = cvlc.get("VLC Out");
-            if (cvlcStream != null) {
-                cvlcStream.stop();
-                cvlcStream = null;
-                cvlc.remove("VLC Out");
-                ResourceMonitorLabel label = labels.get("VLC Out");
+            SinkUDP udpStream = udpOut.get("UDPOut");
+            if (udpStream != null) {
+                udpStream.stop();
+                udpStream = null;
+                udpOut.remove("UDPOut");
+                ResourceMonitorLabel label = labels.get("UDPOut");
                 ResourceMonitor.getInstance().removeMessage(label);
             }
         }
         
-    }//GEN-LAST:event_tglCVLCActionPerformed
+    }//GEN-LAST:event_tglUDPActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JToggleButton tglCVLC;
     private javax.swing.JToggleButton tglRecordToFile;
     final OutputPanel instanceSink = this;
+    private javax.swing.JToggleButton tglUDP;
     // End of variables declaration//GEN-END:variables
 
     
@@ -402,8 +404,8 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener {
     public void sourceUpdated(Stream stream) {
         if (stream instanceof SinkFile) {
             tglRecordToFile.setSelected(stream.isPlaying());
-        } else if (stream instanceof SinkCvlc) {
-            tglCVLC.setSelected(stream.isPlaying());
+        } else if (stream instanceof SinkUDP) {
+            tglUDP.setSelected(stream.isPlaying());
         } else if (stream instanceof SinkBroadcast) {
             String name = stream.getName();
             for (Component c : this.getComponents()) {

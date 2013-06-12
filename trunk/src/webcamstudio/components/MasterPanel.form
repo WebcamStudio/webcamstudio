@@ -114,13 +114,13 @@
                                   </Group>
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="spinFPS" pref="84" max="32767" attributes="0"/>
+                                      <Component id="spinFPS" pref="83" max="32767" attributes="0"/>
                                       <Component id="spinHeight" alignment="0" pref="84" max="32767" attributes="0"/>
                                       <Component id="spinWidth" alignment="1" pref="84" max="32767" attributes="0"/>
                                   </Group>
                               </Group>
                               <Group type="102" alignment="1" attributes="0">
-                                  <Component id="btnApply" pref="131" max="32767" attributes="0"/>
+                                  <Component id="btnApply" max="32767" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="tglSound" min="-2" max="-2" attributes="0"/>
                               </Group>
@@ -151,9 +151,9 @@
                               <Component id="spinFPS" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="tglSound" min="-2" max="-2" attributes="0"/>
-                              <Component id="btnApply" min="-2" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                              <Component id="tglSound" max="32767" attributes="0"/>
+                              <Component id="btnApply" max="32767" attributes="0"/>
                           </Group>
                           <EmptySpace pref="43" max="32767" attributes="0"/>
                       </Group>

@@ -29,7 +29,7 @@ public class SourceDVB extends Stream {
         name = "DVB-T";  
         }
         rate = MasterMixer.getInstance().getRate();
-        System.out.println("Frame Rate = " + rate);
+//        System.out.println("Frame Rate = " + rate);
     }
 
     @Override

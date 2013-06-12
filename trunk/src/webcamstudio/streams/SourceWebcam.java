@@ -55,6 +55,20 @@ public class SourceWebcam extends Stream {
         MasterFrameBuilder.unregister(this);
         lastPreview=null;
     }
+    public boolean hasFakeVideo(){
+        return true;
+    }
+    public boolean hasFakeAudio(){
+        return false;
+    }
+    @Override
+    public boolean hasVideo() {
+        return true;
+    }
+    @Override
+    public boolean hasAudio() {
+        return false;
+    }
     @Override
     public boolean needSeek() {
             return needSeekCTRL=false;

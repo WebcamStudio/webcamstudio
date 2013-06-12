@@ -24,13 +24,13 @@ public class AudioBuffer {
 
     public AudioBuffer(int rate) {
         for (int i = 0; i < bufferSize; i++) {
-            buffer.add(new byte[(44100 * 2 * 2) / rate]);
+            buffer.add(new byte[(22050 * 2 * 2) / rate]);
         }
     }
     public AudioBuffer(int rate,int bufferSize) {
         this.bufferSize=bufferSize;
         for (int i = 0; i < bufferSize; i++) {
-            buffer.add(new byte[(44100 * 2 * 2) / rate]);
+            buffer.add(new byte[(22050 * 2 * 2) / rate]);
         }
     }
 

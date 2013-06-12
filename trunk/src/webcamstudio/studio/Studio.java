@@ -65,7 +65,7 @@ public class Studio {
     // Studio removed, put void
     public static void load(File file) throws ParserConfigurationException, SAXException, IOException, XPathExpressionException {
         Studio studio = new Studio();
-        System.out.println("Start LoadStudio");
+        System.out.println("Loading Studio ...");
         filename = file; 
         Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(file);
         XPath path = XPathFactory.newInstance().newXPath();
@@ -78,11 +78,10 @@ public class Studio {
            String nxname = channel.getAttributes().getNamedItem("NextChannel").getTextContent();
            String Sduration = channel.getAttributes().getNamedItem("duration").getTextContent();
            int duration = Integer.parseInt(Sduration);
-           System.out.println("Channel " + name);  
            studio.channels.add(name);
            studio.nextChannel.add(nxname);
            studio.Durations.add(duration);
-           System.out.println("Duration " + duration);  
+           System.out.println("Channel: " + name + " - Duration: " + duration);  
         }
         
 
@@ -107,6 +106,7 @@ public class Studio {
         ArrayList<Integer> Durations = ChannelPanel.CHTimers;
         ArrayList<String> nextChannel = ChannelPanel.CHCurrNext;
         StringWriter writer = new StringWriter();
+        System.out.println("Saving Studio ...");
 
         XMLStreamWriter xml = javax.xml.stream.XMLOutputFactory.newFactory().createXMLStreamWriter(writer);
         xml.writeStartDocument();
@@ -117,7 +117,7 @@ public class Studio {
         for (String c : channels) {
             int index = channels.indexOf(c);
             xml.writeStartElement(ELEMENT_CHANNEL);
-            System.out.println("Channel: "+c);
+            System.out.println("Saving Channel: "+c);
             xml.writeAttribute("name", c);
             xml.writeAttribute("duration", Durations.get(index) + "");
             xml.writeAttribute("NextChannel", nextChannel.get(index) + "");
@@ -129,13 +129,13 @@ public class Studio {
         xml.writeStartElement(ELEMENT_SOURCES);
         for (Stream s : streams) {
             String clazzSink = s.getClass().getCanonicalName();
-            if (!clazzSink.contains("SinkLinuxDevice")){
-                System.out.println(streams);
+            if (clazzSink.contains("Sink")){
+                System.out.println("Skipping Sink: "+clazzSink);
+            } else {
+                System.out.println("Saving Stream: "+s.getName());
                 xml.writeStartElement(ELEMENT_SOURCE);
                 writeObject(s, xml);
                 xml.writeEndElement(); // source
-            } else {
-                System.out.println("SinkLinuxDevice: "+clazzSink);
             }
         }
         xml.writeEndElement();  //Sources
@@ -164,7 +164,7 @@ public class Studio {
 
         Field[] fields = o.getClass().getDeclaredFields();
 //        System.out.println("Fields lenght: "+fields.length);
-        System.out.println("Start WriteObject");
+//        System.out.println("Start WriteObject");
         Field[] superFields = null;
         if (o instanceof Stream) {
             superFields = o.getClass().getSuperclass().getDeclaredFields();
@@ -706,7 +706,7 @@ public class Studio {
             for (Stream dST : extstreamBis) {
                 int multi=0;
                 String streamName = dST.getName();
-                System.out.println(" ****** Stream Name: "+streamName);
+                System.out.println("Found Stream Name: "+streamName);
                     for (String vDev : videoDevs){
                         if (vDev.contains(streamName)){
                                     multi += 1;
@@ -715,8 +715,8 @@ public class Studio {
                     if (multi>1) {
                         extstream.remove(dST);
                         ImgMovMus.remove("/dev/"+streamName);
-                        System.out.println(dST+" Removed ****");
-                        System.out.println(streamName+" Removed ****");
+                        System.out.println(dST+" Removed ...");
+                        System.out.println(streamName+" Removed ...");
                         multi=0;
                 }                 
              }          

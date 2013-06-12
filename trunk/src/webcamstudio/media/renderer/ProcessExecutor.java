@@ -98,14 +98,14 @@ public class ProcessExecutor {
         Field field = cl.getDeclaredField("pid");
         field.setAccessible(true);
         Object pidObject = field.get(process);
-        System.out.println("Parent Pid: "+(Integer) pidObject);
+//        System.out.println("Parent Pid: "+(Integer) pidObject);
         return (Integer) pidObject;
     } else {
         throw new IllegalArgumentException("Needs to be a UNIXProcess");
     }
 }
 
-public static void killUnixProcess(Process process) throws Exception //Author Martijn Courteaux Code
+public static void killUnixProcess(Process process) throws Exception //Modified from Martijn Courteaux Code
 {
     int pid = getUnixPID(process);
     Runtime rt = Runtime.getRuntime();
@@ -125,15 +125,15 @@ public static void killUnixProcess(Process process) throws Exception //Author Ma
     } catch (IOException ex) {
         Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
     }
-    try {
-        Process pV = rt.exec("chmod a+x "+System.getProperty("user.home")+"/.webcamstudio/"+"WSPidsBuster.sh");
-    } catch (IOException ex) {
-        Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
-    }
+    /*try {
+     * Process pV = rt.exec("chmod a+x "+System.getProperty("user.home")+"/.webcamstudio/"+"WSPidsBuster.sh");
+     * } catch (IOException ex) {
+     * Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
+     * }*/
     String batchPidCommand = "sh "+System.getProperty("user.home")+"/.webcamstudio/"+"WSPidsBuster.sh";
     try {
     Process getChildPids = rt.exec(batchPidCommand);
-    Tools.sleep(30);
+    Tools.sleep(10);
     getChildPids.waitFor(); //Author spoonybard896
     BufferedReader buf = new BufferedReader(new InputStreamReader(
     getChildPids.getInputStream()));
@@ -141,8 +141,8 @@ public static void killUnixProcess(Process process) throws Exception //Author Ma
     childPids = "";
     while ((line = buf.readLine()) != null) {
        childPids += line + "\n";
-    }
-    System.out.println("Child Pid: "+childPids); //Author spoonybard896
+    } //Author spoonybard896
+//    System.out.println("Child Pid: "+childPids); 
     } catch (Exception e) {
         e.printStackTrace();
     }

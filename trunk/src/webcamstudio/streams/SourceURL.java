@@ -26,7 +26,7 @@ public class SourceURL extends Stream {
         super();
         name = "URL";
         rate = MasterMixer.getInstance().getRate();
-        System.out.println("Frame Rate = " + rate);
+//        System.out.println("Frame Rate = " + rate);
     }
 
     @Override

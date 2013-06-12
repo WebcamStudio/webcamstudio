@@ -40,7 +40,7 @@ public class Frame {
         this.w=w;
         this.h=h;
         image = new BufferedImage(w,h,BufferedImage.TYPE_INT_ARGB);
-        audioData= new byte[(44100 *2 *2) / rate];
+        audioData= new byte[(22050 *2 *2) / rate];
     }
     public void copyFrame(Frame frame){
         

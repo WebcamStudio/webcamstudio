@@ -43,7 +43,7 @@ public class ProcessRenderer {
     String plugin = "";
     int videoPort = 0;
     int audioPort = 0;
-    int frequency = 44100;
+    int frequency = 22050;
     int channels = 2;
     int bitSize = 16;
     Stream stream;
@@ -431,7 +431,6 @@ public class ProcessRenderer {
                 }
                 try {
                     dos.writeBytes("#!/bin/bash\n");
-                    dos.writeBytes("echo \"Broadcasting WS Command Start ...\"\n");
                     dos.writeBytes(command+"\n");
                 } catch (IOException ex) {
                     Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
@@ -494,6 +493,10 @@ public class ProcessRenderer {
             exporter = null;
         }
         if (processVideo != null) {
+            if (stream.getClass().getName().contains("SinkFile")) {
+                System.out.println("Delay for SinkFile ...");
+                Tools.sleep(100);
+            }
             System.out.println(stream.getName()+" Video Killed ...");
                 processVideo.destroy();
                 processVideo = null;

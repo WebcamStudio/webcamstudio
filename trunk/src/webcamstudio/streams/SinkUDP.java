@@ -13,12 +13,12 @@ import webcamstudio.mixers.MasterMixer;
  *
  * @author patrick (modified by karl)
  */
-public class SinkCvlc extends Stream {
+public class SinkUDP extends Stream {
 
     private ProcessRenderer capture = null;
 
-    public SinkCvlc() {
-        name = "Cvlc";
+    public SinkUDP() {
+        name = "UDP";
 
     }
 
@@ -28,7 +28,7 @@ public class SinkCvlc extends Stream {
         captureWidth = MasterMixer.getInstance().getWidth();
         captureHeight = MasterMixer.getInstance().getHeight();
         rate = MasterMixer.getInstance().getRate();
-        capture = new ProcessRenderer(this, ProcessRenderer.ACTION.OUTPUT, "cvlc");
+        capture = new ProcessRenderer(this, ProcessRenderer.ACTION.OUTPUT, "udp");
         capture.writeCom();
     }
 
