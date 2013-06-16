@@ -31,8 +31,6 @@ DEB_JARS := AbsoluteLayout \
   commons-httpclient \
   commons-lang3 \
   jcl-over-slf4j \
-  jna \
-  jna-platform \
   jsr305 \
   log4j-1.2 \
   netty \

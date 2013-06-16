@@ -21,7 +21,7 @@ fi
 . /usr/lib/java-wrappers/java-wrappers.sh
 
 JAVA_CLASSPATH="${INSTALLDIR}/*:${INSTALLDIR}/lib/*"
-JAVA_ARGS="-splash:start.gif"
+JAVA_ARGS="-Djna.nosys=true -splash:start.gif"
 
 find_java_runtime openjdk sunmin5
 
@@ -32,8 +32,6 @@ find_jars AbsoluteLayout \
   commons-httpclient \
   commons-lang3 \
   jcl-over-slf4j \
-  jna \
-  jna-platform \
   jsr305 \
   log4j-1.2 \
   netty \
