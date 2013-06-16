@@ -38,7 +38,7 @@ DEPEND=">=virtual/jdk-1.6
 	dev-java/commons-httpclient:3
 	dev-java/commons-io
 	dev-java/commons-lang:2.1
-	dev-java/jna
+	>=dev-java/jna-3.4.0
 	dev-java/jsr305
 	dev-java/log4j
 	java-virtuals/javamail
@@ -49,16 +49,6 @@ DEPEND=">=virtual/jdk-1.6
 RDEPEND="${DEPEND}"
 
 java_prepare() {
-	# Fix avconv to gstreamer since avconv fails on some webcams
-	einfo "Fixing webcam source command line..."
-	sed -i \
-		-e "s?#video=gst-launch-0.10?video=gst-launch-0.10?" \
-		-e "s?#audio=gst-launch-0.10?audio=gst-launch-0.10?" \
-		-e "s?video=avconv?#video=avconv?" \
-		-e "s?audio=avconv?#audio=avconv?" \
-		src/webcamstudio/externals/linux/sources/webcam.properties \
-		|| die "Failed to fix webcam source command line"
-
 	# Fix avconv/gstreamer/ffmpeg binaries absolute paths
 	einfo "Fixing some binaries' paths..."
 	sed -i \
@@ -93,8 +83,8 @@ java_prepare() {
 	java-pkg_jar-from commons-cli-1 commons-cli.jar commons-cli-1.2.jar
 	java-pkg_jar-from commons-codec commons-codec.jar commons-codec-1.6.jar
 	java-pkg_jar-from commons-httpclient-3 commons-httpclient.jar commons-httpclient-3.1.jar
-	java-pkg_jar-from jna jna.jar jna-3.2.7.jar
-	java-pkg_jar-from jna platform.jar jna-platform-3.2.7.jar
+	java-pkg_jar-from jna jna.jar jna-3.4.0.jar
+	java-pkg_jar-from jna platform.jar jna-platform-3.4.0.jar
 	java-pkg_jar-from commons-io-1,commons-lang-2.1,jsr305,log4j,sun-javamail,slf4j-api,slf4j-nop,swing-worker
 }
 
