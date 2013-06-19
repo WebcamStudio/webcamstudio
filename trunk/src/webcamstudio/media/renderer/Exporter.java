@@ -20,7 +20,6 @@ import webcamstudio.streams.Stream;
 public class Exporter implements MasterMixer.SinkListener {
 
     private boolean cancel = false;
-    //final static int FRAME_LIMIT = 5;
     private ServerSocket videoServer = null;
     private ServerSocket audioServer = null;
     private BufferedOutputStream videoOutput;    
@@ -59,9 +58,8 @@ public class Exporter implements MasterMixer.SinkListener {
                 try {
                     vConnection = videoServer.accept();
                     System.out.println("Video output accepted");
-                    videoOutput = new BufferedOutputStream(vConnection.getOutputStream(), 2048);
+                    videoOutput = new BufferedOutputStream(vConnection.getOutputStream(), 4096);
                     imageBuffer.clear();
- //                 int counter = 0;
                     while (!cancel) {
                         byte[] videoData = imageBuffer.pop().getBytes();
                         if (videoData == null || videoOutput == null) {                            
@@ -73,8 +71,10 @@ public class Exporter implements MasterMixer.SinkListener {
                     } 
                 } catch (IOException ex) {
                     cancel = true;
-                    imageBuffer.abort();
-                    stream.stop();
+                    if (imageBuffer != null){
+                        imageBuffer.abort();
+                    }
+                    stream.stop();                   
                     stream.updateStatus();
                     Logger.getLogger(Exporter.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -92,7 +92,7 @@ public class Exporter implements MasterMixer.SinkListener {
                 try {                    
                     aConnection = audioServer.accept();
                     System.out.println("Audio output accepted");
-                    audioOutput = new BufferedOutputStream(aConnection.getOutputStream(), 2048);
+                    audioOutput = new BufferedOutputStream(aConnection.getOutputStream(), 4096);
                     audioBuffer.clear();
                      while (!cancel) {
                         byte[] audioData = audioBuffer.pop();

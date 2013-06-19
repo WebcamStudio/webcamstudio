@@ -14,6 +14,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.awt.image.BufferedImage;
+import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import webcamstudio.streams.SourceQRCode;
@@ -359,8 +360,12 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
 
     private void tglActiveStreamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglActiveStreamActionPerformed
         if (tglActiveStream.isSelected()) {
+            this.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.green));
+//            viewer.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.green));
             stream.read();
         } else {
+            this.setBorder(BorderFactory.createEmptyBorder());
+//            viewer.setBorder(BorderFactory.createEmptyBorder());
             stream.stop();
         }
     }//GEN-LAST:event_tglActiveStreamActionPerformed
@@ -389,6 +394,11 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
     @Override
     public void sourceUpdated(Stream stream) {
 //        System.out.println("StreamPanelText Updating ...");
+        if (stream.isPlaying()){
+            this.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.green));
+        } else {
+            this.setBorder(BorderFactory.createEmptyBorder());
+        }
         spinX.setValue(stream.getX());
         spinY.setValue(stream.getY());
         spinW.setValue(stream.getWidth());

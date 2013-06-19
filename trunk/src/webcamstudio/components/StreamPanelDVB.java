@@ -13,6 +13,7 @@ package webcamstudio.components;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.SpinnerNumberModel;
 import webcamstudio.streams.Stream;
@@ -108,12 +109,14 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         spinZOrder.setValue(stream.getZOrder());
         tglActiveStream.setSelected(stream.isPlaying());
         if (stream.isPlaying()){
+            this.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.green));
             spinH1.setEnabled(false);
             spinW1.setEnabled(false);
             spinVDelay.setEnabled(false);
             spinADelay.setEnabled(false);
             spinSeek.setEnabled(false);
         } else {
+            this.setBorder(BorderFactory.createEmptyBorder());
             spinH1.setEnabled(true);
             spinW1.setEnabled(true);
             spinVDelay.setEnabled(true);
@@ -434,6 +437,8 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
     }// </editor-fold>//GEN-END:initComponents
     private void tglActiveStreamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglActiveStreamActionPerformed
         if (tglActiveStream.isSelected()) {
+            this.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.green));
+//            viewer.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.green));
             if (txtChName.getText() != null) {
             stream.setChName((String) txtChName.getText());
             }
@@ -447,6 +452,8 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
             prgNumber.setEnabled(false);
             stream.read();
         } else {
+            this.setBorder(BorderFactory.createEmptyBorder());
+//            viewer.setBorder(BorderFactory.createEmptyBorder());
             spinW1.setEnabled(true);
             spinH1.setEnabled(true);
             spinVDelay.setEnabled(stream.hasVideo());

@@ -13,6 +13,7 @@ package webcamstudio.components;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.SpinnerNumberModel;
 import webcamstudio.streams.Stream;
@@ -105,12 +106,14 @@ public class StreamPanelURL extends javax.swing.JPanel implements Stream.Listene
         spinZOrder.setValue(stream.getZOrder());
         tglActiveStream.setSelected(stream.isPlaying());
         if (stream.isPlaying()){
+            this.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.green));
             spinH1.setEnabled(false);
             spinW1.setEnabled(false);
             spinVDelay.setEnabled(false);
             spinADelay.setEnabled(false);
             spinSeek.setEnabled(false);
         } else {
+            this.setBorder(BorderFactory.createEmptyBorder());
             spinH1.setEnabled(true);
             spinW1.setEnabled(true);
             spinVDelay.setEnabled(true);
@@ -401,6 +404,8 @@ public class StreamPanelURL extends javax.swing.JPanel implements Stream.Listene
     }// </editor-fold>//GEN-END:initComponents
     private void tglActiveStreamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglActiveStreamActionPerformed
         if (tglActiveStream.isSelected()) {
+            this.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.green));
+//            viewer.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.green));
             if (txtWebURL.getText() != null) {
             stream.setWebURL((String) txtWebURL.getText());
             }
@@ -421,9 +426,9 @@ public class StreamPanelURL extends javax.swing.JPanel implements Stream.Listene
             } else {
                 stream.setIsIPCam(false);
             }
-            System.out.println("hasVideo: "+stream.hasVideo());
-            System.out.println("hasAudio: "+stream.hasAudio());
-            System.out.println("Is Still Picture: "+stream.isStillPicture());
+//            System.out.println("hasVideo: "+stream.hasVideo());
+//            System.out.println("hasAudio: "+stream.hasAudio());
+//            System.out.println("Is Still Picture: "+stream.isStillPicture());
             spinX.setEnabled(stream.hasVideo());
             spinY.setEnabled(stream.hasVideo());
             spinW1.setEnabled(false);
@@ -436,6 +441,8 @@ public class StreamPanelURL extends javax.swing.JPanel implements Stream.Listene
             spinSeek.setEnabled(false);
             stream.read();
         } else {
+            this.setBorder(BorderFactory.createEmptyBorder());
+//            viewer.setBorder(BorderFactory.createEmptyBorder());
             spinW1.setEnabled(stream.hasVideo());
             spinH1.setEnabled(stream.hasVideo());
             spinW.setEnabled(stream.hasVideo());

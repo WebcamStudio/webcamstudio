@@ -24,6 +24,7 @@ public class Viewer extends javax.swing.JPanel {
     private BufferedImage img = new BufferedImage(320,240,BufferedImage.TYPE_INT_ARGB);
     private int audioLeft = 0;
     private int audioRight=0;
+    private boolean play = false;
     /** Creates new form Viewer */
     public Viewer() {
         initComponents();
@@ -56,7 +57,7 @@ public class Viewer extends javax.swing.JPanel {
         }
         if (audioLeft > 0 || audioRight > 0){
             //graph.drawString(audioLeft + "," + audioRight, 10, 50);
-            graph.setColor(Color.CYAN);
+            graph.setColor(Color.yellow);
             graph.fillRect(0, h - (audioLeft * h / 128), 20, (audioLeft * h / 128));
             graph.fillRect(w-20, h - (audioRight * h / 128), 20, (audioRight * h / 128));
         }

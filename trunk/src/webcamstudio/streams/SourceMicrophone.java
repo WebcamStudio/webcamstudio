@@ -17,6 +17,7 @@ import webcamstudio.mixers.MasterMixer;
 public class SourceMicrophone extends Stream {
 
     ProcessRenderer capture = null;
+    BufferedImage lastPreview = null;
 
     public SourceMicrophone() {
         super();
@@ -28,6 +29,7 @@ public class SourceMicrophone extends Stream {
     @Override
     public void read() {
         MasterFrameBuilder.register(this);
+        lastPreview = new BufferedImage(captureWidth,captureHeight,BufferedImage.TYPE_INT_ARGB);
         capture = new ProcessRenderer(this, ProcessRenderer.ACTION.CAPTURE, "mic");
         capture.read();
     }
@@ -58,7 +60,7 @@ public class SourceMicrophone extends Stream {
 
     @Override
     public BufferedImage getPreview() {
-        return null;
+        return lastPreview;
     }
 
     @Override

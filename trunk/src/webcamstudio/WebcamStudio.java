@@ -96,7 +96,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
                     }
                     Object data = evt.getTransferable().getTransferData(dataFlavor);
                     String files = "";
-                    System.out.println(data.getClass().getCanonicalName());
+                    //System.out.println(data.getClass().getCanonicalName());
                     if (data instanceof Reader) {
                         Reader reader = (Reader) data;
                         char[] text = new char[65536];
@@ -617,12 +617,12 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         chooser.showOpenDialog(this);
         File file = chooser.getSelectedFile();
         if (file != null) {
-        String FileURL;
-        FileURL = file.getAbsolutePath();
-        lastFolder = file.getParentFile();
-        String FileName = file.getName();
-        System.out.println("Name: " + FileName);
-        System.out.println("URL: " + FileURL); 
+            String FileURL;
+            FileURL = file.getAbsolutePath();
+            lastFolder = file.getParentFile();
+            String FileName = file.getName();
+            System.out.println("Name: " + FileName);
+            System.out.println("URL: " + FileURL); 
         }
         if (file != null) {
             Stream s = Stream.getInstance(file);

@@ -31,7 +31,7 @@ public class SourceDesktop extends Stream {
     OS os = Tools.getOS();
     long timeCode = 0;
     Rectangle area = null;
-    BufferedImage preview = null;
+    BufferedImage lastPreview = null;
 
     public SourceDesktop() {
         super();
@@ -44,6 +44,7 @@ public class SourceDesktop extends Stream {
         stop = false;
         isPlaying = true;
         rate = MasterMixer.getInstance().getRate();
+        lastPreview = new BufferedImage(captureWidth,captureHeight,BufferedImage.TYPE_INT_ARGB);
         MasterFrameBuilder.register(this);
         if (os == OS.LINUX) {
             capture = new ProcessRenderer(this, ProcessRenderer.ACTION.CAPTURE, "desktop");
@@ -71,7 +72,7 @@ public class SourceDesktop extends Stream {
             capture = null;
         }
         MasterFrameBuilder.unregister(this);
-        preview=null;
+//        lastPreview=null;
     }
     @Override
     public boolean needSeek() {
@@ -90,7 +91,7 @@ public class SourceDesktop extends Stream {
 
     @Override
     public BufferedImage getPreview() {
-        return preview;
+        return lastPreview;
     }
 
     @Override
@@ -108,14 +109,14 @@ public class SourceDesktop extends Stream {
          if (capture != null) {
             nextFrame = capture.getFrame();
             if (nextFrame != null) {
-                preview = nextFrame.getImage();
+                lastPreview = nextFrame.getImage();
             }
         } else if (defaultCapture != null) {
             frame.setImage(defaultCapture.createScreenCapture(area));
             frame.setOutputFormat(x, y, width, height, opacity, volume);
             frame.setZOrder(zorder);
             nextFrame=frame;
-            preview = frame.getImage();
+            lastPreview = frame.getImage();
             
         } 
     }

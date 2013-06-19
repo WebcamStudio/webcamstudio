@@ -308,7 +308,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener {
 
         tglRecordToFile.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-record.png"))); // NOI18N
         tglRecordToFile.setText(bundle.getString("RECORD")); // NOI18N
-        tglRecordToFile.setToolTipText("Save to File. Remeber to add video extension (.avi or .mp4).");
+        tglRecordToFile.setToolTipText("Save to AVI.");
         tglRecordToFile.setName("tglRecordToFile"); // NOI18N
         tglRecordToFile.setRolloverEnabled(false);
         tglRecordToFile.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-stop.png"))); // NOI18N
@@ -338,9 +338,12 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener {
             File f = null;
             JFileChooser chooser = new JFileChooser();
             chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-            chooser.setDialogTitle("Choose Destination File ... >> Add .avi or .mp4 Extension !!! <<");
+            chooser.setDialogTitle("Choose Destination File ...");
             chooser.showSaveDialog(this);
             f = chooser.getSelectedFile();
+            if(!chooser.getSelectedFile().getAbsolutePath().endsWith(".avi")){
+                f =  new File(chooser.getSelectedFile() + ".avi");
+            }
             if (f != null) {
                 SinkFile fileStream = new SinkFile(f);
                 fileStream.setWidth(MasterMixer.getInstance().getWidth());
