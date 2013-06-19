@@ -13,6 +13,7 @@ package webcamstudio.components;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.SpinnerNumberModel;
 import webcamstudio.streams.Stream;
@@ -104,12 +105,14 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener{
         spinZOrder.setValue(stream.getZOrder());
         tglActiveStream.setSelected(stream.isPlaying());
         if (stream.isPlaying()){
+            this.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.green));
             spinH1.setEnabled(false);
             spinW1.setEnabled(false);
             spinVDelay.setEnabled(false);
             spinADelay.setEnabled(false);
             spinSeek.setEnabled(false);
         } else {
+            this.setBorder(BorderFactory.createEmptyBorder());
             spinH1.setEnabled(stream.hasVideo());
             spinW1.setEnabled(stream.hasVideo());
             spinVDelay.setEnabled(true);
@@ -365,6 +368,7 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener{
     }// </editor-fold>//GEN-END:initComponents
     private void tglActiveStreamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglActiveStreamActionPerformed
         if (tglActiveStream.isSelected()) {
+            this.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.green));
             spinW1.setEnabled(false);
             spinH1.setEnabled(false);
             spinVDelay.setEnabled(false);
@@ -372,6 +376,7 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener{
             spinSeek.setEnabled(false);
             stream.read();
         } else {
+            this.setBorder(BorderFactory.createEmptyBorder());
             spinH1.setEnabled(stream.hasVideo());
             spinW1.setEnabled(stream.hasVideo());
             spinVDelay.setEnabled(stream.hasVideo());

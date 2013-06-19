@@ -11,6 +11,7 @@ import java.util.concurrent.Callable;
 import webcamstudio.channels.MasterChannels;
 import webcamstudio.channels.transitions.Transition;
 import webcamstudio.mixers.Frame;
+import webcamstudio.mixers.MasterMixer;
 import webcamstudio.sources.effects.Effect;
 
 /**
@@ -19,16 +20,17 @@ import webcamstudio.sources.effects.Effect;
  */
 public abstract class Stream implements Callable<Frame>{
 
+    private MasterMixer mixer = MasterMixer.getInstance();
     protected String uuid = java.util.UUID.randomUUID().toString();
-    protected int captureWidth = 320;
-    protected int captureHeight = 240;
-    protected int width = 320;
-    protected int height = 240;
+    protected int captureWidth = mixer.getWidth();
+    protected int captureHeight = mixer.getHeight();
+    protected int width = mixer.getWidth();
+    protected int height = mixer.getHeight();
     protected int x = 0;
     protected int y = 0;
     protected float volume = 0.5f;
     protected int opacity = 100;
-    protected int rate = 15;
+    protected int rate = mixer.getRate();
     protected int seek = 0;
     protected int zorder = 0;
     protected File file = null;

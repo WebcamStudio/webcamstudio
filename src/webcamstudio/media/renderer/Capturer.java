@@ -74,7 +74,7 @@ public class Capturer {
                     Socket connection = videoServer.accept();  
                     System.out.println(stream.getName() + " video accepted...");
                     if (stream.hasFakeVideo()) {
-                        fakeVideoIn = new DataInputStream(new BufferedInputStream(connection.getInputStream(), 2048));
+                        fakeVideoIn = new DataInputStream(new BufferedInputStream(connection.getInputStream(), 4096));
                     }
                     do {
 
@@ -86,7 +86,7 @@ public class Capturer {
                                 videoIn = fakeVideoIn;
                                 System.out.println("Start Movie/DVB Video.");
                             }
-                        } else if (stream.getName().contains("Desktop")) { //hasaudio ||
+                        } else if (stream.getName().contains("Desktop")) {
                             noVideoPres=false;
                             Tools.sleep(stream.getVDelay());
                             videoIn = new DataInputStream(connection.getInputStream());
@@ -94,7 +94,7 @@ public class Capturer {
                         } else if (stream.getClass().getName().contains("SourceWebcam")) { //hasaudio ||
                             noVideoPres=false;
                             Tools.sleep(stream.getVDelay());
-                            videoIn = new DataInputStream(new BufferedInputStream(connection.getInputStream(), 2048)); //new DataInputStream(connection.getInputStream());
+                            videoIn = new DataInputStream(new BufferedInputStream(connection.getInputStream(), 4096));
                             System.out.println("Start Webcam Video.");
                         } else if (!stream.hasAudio()) {
                             noVideoPres=false;
@@ -121,10 +121,9 @@ public class Capturer {
             public void run() {
                 try {                    
                     Socket connection = audioServer.accept();
- //                   System.out.println("Stream: "+stream.getClass().getName().toString() );
                     System.out.println(stream.getName() + " audio accepted...");
                     if (stream.hasFakeAudio()) {
-                        fakeAudioIn = new DataInputStream(new BufferedInputStream(connection.getInputStream(), 2048));
+                        fakeAudioIn = new DataInputStream(new BufferedInputStream(connection.getInputStream(), 4096));
                     }
                     do {
                         if (fakeVideoIn != null)  {
@@ -138,14 +137,9 @@ public class Capturer {
                       } else if (stream.getName().endsWith(".mp3") || !stream.hasVideo() ) {
                             noAudioPres = false;
                             Tools.sleep(stream.getADelay());
-                            audioIn = new DataInputStream(new BufferedInputStream(connection.getInputStream(), 2048)); //new DataInputStream(connection.getInputStream());
+                            audioIn = new DataInputStream(new BufferedInputStream(connection.getInputStream(), 4096));
                             System.out.println("Start Music/Mic Audio.");  
-                      } /*else if (stream.getClass().getName().contains("SourceWebcam")) {
-                            noAudioPres = false;
-                            Tools.sleep(stream.getADelay());
-                            audioIn = fakeAudioIn;
-                            System.out.println("Start Webcam Audio.");  
-                      }*/
+                      } 
                     }  while (noAudioPres);
                 } catch (IOException ex) {
                     Logger.getLogger(Capturer.class.getName()).log(Level.SEVERE, null, ex);
@@ -219,15 +213,10 @@ public class Capturer {
             if (stream.hasAudio()) {
                 nextAudio = getNextAudio();
             }
-//            if (System.currentTimeMillis() - mark < 5000) {
             frame.setAudio(nextAudio);
             frame.setImage(nextImage);
             frame.setOutputFormat(stream.getX(), stream.getY(), stream.getWidth(), stream.getHeight(), stream.getOpacity(), stream.getVolume());
             frame.setZOrder(stream.getZOrder());
-//            } else {
-//                ResourceMonitor.getInstance().addMessage(new ResourceMonitorLabel(System.currentTimeMillis() + 10000, stream.getName() + " is too slow! Stopping stream..."));
-//                stream.stop();
-//            }
         } catch (IOException ioe) {
             stream.stop();
         }
