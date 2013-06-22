@@ -11,7 +11,6 @@
 
 package webcamstudio.sources.effects.controls;
 
-//import webcamstudio.sources.effects.Block;
 import webcamstudio.sources.effects.Opacity;
 
 /**

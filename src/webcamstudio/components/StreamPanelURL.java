@@ -58,7 +58,7 @@ public class StreamPanelURL extends javax.swing.JPanel implements Stream.Listene
         spinADelay.setEnabled(stream.hasAudio());
         spinSeek.setValue(stream.getSeek());
         spinSeek.setEnabled(stream.needSeekCTRL());
-        txtWebURL.setText(stream.getWebURL());//stream.hasAudio() && !stream.getName().contains("Desktop") && !stream.getClass().getName().endsWith("SourceWebcam"));
+        txtWebURL.setText(stream.getWebURL());
         stream.setListener(this);
         if (!stream.hasVideo()){
             spinX.setEnabled(false);
@@ -405,7 +405,6 @@ public class StreamPanelURL extends javax.swing.JPanel implements Stream.Listene
     private void tglActiveStreamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglActiveStreamActionPerformed
         if (tglActiveStream.isSelected()) {
             this.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.green));
-//            viewer.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.green));
             if (txtWebURL.getText() != null) {
             stream.setWebURL((String) txtWebURL.getText());
             }
@@ -426,9 +425,6 @@ public class StreamPanelURL extends javax.swing.JPanel implements Stream.Listene
             } else {
                 stream.setIsIPCam(false);
             }
-//            System.out.println("hasVideo: "+stream.hasVideo());
-//            System.out.println("hasAudio: "+stream.hasAudio());
-//            System.out.println("Is Still Picture: "+stream.isStillPicture());
             spinX.setEnabled(stream.hasVideo());
             spinY.setEnabled(stream.hasVideo());
             spinW1.setEnabled(false);
@@ -442,7 +438,6 @@ public class StreamPanelURL extends javax.swing.JPanel implements Stream.Listene
             stream.read();
         } else {
             this.setBorder(BorderFactory.createEmptyBorder());
-//            viewer.setBorder(BorderFactory.createEmptyBorder());
             spinW1.setEnabled(stream.hasVideo());
             spinH1.setEnabled(stream.hasVideo());
             spinW.setEnabled(stream.hasVideo());

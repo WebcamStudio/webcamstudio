@@ -24,7 +24,6 @@ public class SourceMovie extends Stream {
     public SourceMovie(File movie) {
         super();
         rate = MasterMixer.getInstance().getRate();
-//        System.out.println("Frame Rate = " + rate);
         file = movie;
         name = movie.getName();
     }
@@ -59,9 +58,11 @@ public class SourceMovie extends Stream {
             return false;
         }
     }
+    @Override
     public boolean hasFakeVideo(){
         return true;
     }
+    @Override
     public boolean hasFakeAudio(){
         return true;
     }

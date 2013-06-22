@@ -23,7 +23,7 @@ public class SystemPlayer implements Runnable {
     private SourceDataLine source;
     private ExecutorService executor = null;
     private static SystemPlayer instance = null;
-    private ArrayList<byte[]> buffer = new ArrayList<byte[]>();
+//    private ArrayList<byte[]> buffer = new ArrayList<byte[]>();
     private FrameBuffer frames = null;
     private Viewer viewer = null;
 

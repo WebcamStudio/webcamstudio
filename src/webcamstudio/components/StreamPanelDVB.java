@@ -438,7 +438,6 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
     private void tglActiveStreamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglActiveStreamActionPerformed
         if (tglActiveStream.isSelected()) {
             this.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.green));
-//            viewer.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.green));
             if (txtChName.getText() != null) {
             stream.setChName((String) txtChName.getText());
             }
@@ -453,7 +452,6 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
             stream.read();
         } else {
             this.setBorder(BorderFactory.createEmptyBorder());
-//            viewer.setBorder(BorderFactory.createEmptyBorder());
             spinW1.setEnabled(true);
             spinH1.setEnabled(true);
             spinVDelay.setEnabled(stream.hasVideo());

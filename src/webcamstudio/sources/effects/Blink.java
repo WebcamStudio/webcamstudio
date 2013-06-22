@@ -8,7 +8,6 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.prefs.Preferences;
 import javax.swing.JPanel;
-//import webcamstudio.sources.effects.controls.BlockControl;
 
 /**
  *

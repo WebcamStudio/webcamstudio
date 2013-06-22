@@ -329,10 +329,6 @@ public class ChannelPanel extends javax.swing.JPanel{
        }
     }   
     
-    
-    
-    
-   
     class UpdateCHtUITask extends TimerTask {
         @Override
         public void run() {
@@ -355,6 +351,7 @@ public class ChannelPanel extends javax.swing.JPanel{
             StopCHpt=true;
         }
    }
+    
    class TSelectActionPerformed extends TimerTask {
         @Override
         public void run(){

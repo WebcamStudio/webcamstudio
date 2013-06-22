@@ -111,7 +111,6 @@ public class ProcessRenderer {
                 break;
         }
         URL res = null;
-        //System.out.println(userSettings.getAbsolutePath());
         if (userSettings.exists()) {
             res = userSettings.toURI().toURL();
         } else {
@@ -342,7 +341,6 @@ public class ProcessRenderer {
                 }
                 String commandVideo = null;
                 String commandAudio = null;
-                //System.out.println(plugins.keySet().toString());
                 if (plugins.containsKey("video") && stream.isIPCam()) {
                     commandVideo = plugins.getProperty("videoIP").replaceAll("  ", " "); //Making sure there is no double spaces
                 } else if (plugins.containsKey("video") && stream.isStillPicture()) {
@@ -382,12 +380,6 @@ public class ProcessRenderer {
                     Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 Runtime rt = Runtime.getRuntime();
-/*                try {
-                    Process pV = rt.exec("chmod a+x "+System.getProperty("user.home")+"/.webcamstudio/"+"WSFromUrlVideo"+stream.getID()+".sh");
-                    Process pA = rt.exec("chmod a+x "+System.getProperty("user.home")+"/.webcamstudio/"+"WSFromUrlAudio"+stream.getID()+".sh");
-                } catch (IOException ex) {
-                    Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
-                }*/
                 String batchVideoCommand = "sh "+System.getProperty("user.home")+"/.webcamstudio/"+"WSFromUrlVideo"+stream.getID()+".sh";
                 String batchAudioCommand = "sh "+System.getProperty("user.home")+"/.webcamstudio/"+"WSFromUrlAudio"+stream.getID()+".sh";
                 try {

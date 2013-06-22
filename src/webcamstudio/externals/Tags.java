@@ -44,6 +44,7 @@ public enum Tags {
     private Tags(String name) {
         this.name = name;
     }
+        @Override
     public String toString() {
     return name;
     }

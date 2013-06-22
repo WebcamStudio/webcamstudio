@@ -16,7 +16,7 @@ import webcamstudio.util.Tools;
 public class ImageBuffer {
     private ArrayList<WSImage> buffer = new ArrayList<WSImage>();
     private int bufferSize = MasterMixer.BUFFER_SIZE;
-    private static final long TIMEOUT=5000;
+//    private static final long TIMEOUT=5000;
     private boolean abort = false;
     private int currentIndex = 0;
     private long framePushed = 0;
@@ -59,7 +59,7 @@ public class ImageBuffer {
         return buffer.get((currentIndex+1)%bufferSize);
     }
     public WSImage pop(){
-        long mark = System.currentTimeMillis();
+//        long mark = System.currentTimeMillis();
         while(!abort && framePopped >= framePushed){
             Tools.sleep(10);
         }

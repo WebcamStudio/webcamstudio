@@ -51,7 +51,6 @@ public abstract class Effect {
         retValue.put(Blink.class.getSimpleName(), new Blink());
         retValue.put(Gain.class.getSimpleName(), new Gain());
         retValue.put(HSB.class.getSimpleName(), new HSB());
-        //retValue.put(TEST.class.getSimpleName(), new TEST());
 
         return retValue;
     }
@@ -65,6 +64,7 @@ public abstract class Effect {
     public String getName(){
         return getClass().getSimpleName();
     }
+    @Override
     public String toString(){
         return getClass().getSimpleName();
     }

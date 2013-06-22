@@ -200,7 +200,7 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
         mixer.setWidth(w);
         mixer.setHeight(h);
         mixer.setRate((Integer) spinFPS.getValue());
-        mixer.getInstance().start();
+        MasterMixer.getInstance().start();
         if (tglSound.isSelected()) {
             try {
                 player.play();

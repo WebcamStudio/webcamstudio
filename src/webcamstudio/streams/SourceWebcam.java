@@ -53,7 +53,6 @@ public class SourceWebcam extends Stream {
             capture.stop();
         }
         MasterFrameBuilder.unregister(this);
-//        lastPreview=null;
     }
     @Override
     public boolean hasFakeVideo(){

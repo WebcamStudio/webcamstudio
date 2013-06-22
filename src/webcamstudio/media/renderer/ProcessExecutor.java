@@ -78,10 +78,6 @@ public class ProcessExecutor {
 //      readOutput(process);
     }
     public void destroy() {
-//      Tools.sleep(10000);
-//      if (process!=null){
-//          process.destroy();
-//      }
         processRunning=false;
         try {
             Tools.sleep(50);
@@ -92,13 +88,11 @@ public class ProcessExecutor {
     }
     public static int getUnixPID(Process process) throws Exception //Author Martijn Courteaux Code
 {
-//    System.out.println(process.getClass().getName());
     if (process.getClass().getName().equals("java.lang.UNIXProcess")) {
         Class cl = process.getClass();
         Field field = cl.getDeclaredField("pid");
         field.setAccessible(true);
         Object pidObject = field.get(process);
-//        System.out.println("Parent Pid: "+(Integer) pidObject);
         return (Integer) pidObject;
     } else {
         throw new IllegalArgumentException("Needs to be a UNIXProcess");
@@ -125,11 +119,6 @@ public static void killUnixProcess(Process process) throws Exception //Modified 
     } catch (IOException ex) {
         Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
     }
-    /*try {
-     * Process pV = rt.exec("chmod a+x "+System.getProperty("user.home")+"/.webcamstudio/"+"WSPidsBuster.sh");
-     * } catch (IOException ex) {
-     * Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
-     * }*/
     String batchPidCommand = "sh "+System.getProperty("user.home")+"/.webcamstudio/"+"WSPidsBuster.sh";
     try {
     Process getChildPids = rt.exec(batchPidCommand);
@@ -142,7 +131,6 @@ public static void killUnixProcess(Process process) throws Exception //Modified 
     while ((line = buf.readLine()) != null) {
        childPids += line + "\n";
     } //Author spoonybard896
-//    System.out.println("Child Pid: "+childPids); 
     } catch (Exception e) {
         e.printStackTrace();
     }

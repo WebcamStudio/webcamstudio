@@ -122,7 +122,7 @@ public class MasterFrameBuilder implements Runnable {
         long timeCode = System.currentTimeMillis();
         ExecutorService pool = java.util.concurrent.Executors.newCachedThreadPool();
         while (!stopMe) {
-            long start = System.currentTimeMillis();
+//            long start = System.currentTimeMillis();
             timeCode += frameDelay;
             Frame targetFrame = frameBuffer.getFrameToUpdate();
             frames.clear();

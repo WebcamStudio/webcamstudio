@@ -72,7 +72,6 @@ public class SourceDesktop extends Stream {
             capture = null;
         }
         MasterFrameBuilder.unregister(this);
-//        lastPreview=null;
     }
     @Override
     public boolean needSeek() {
