@@ -72,16 +72,15 @@ public class ColorChooser extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
-    color=null;
+        color=null;
         dispose();
-
     }//GEN-LAST:event_btnCancelActionPerformed
 
     private void btnApproveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnApproveActionPerformed
-
         color = jColorChooser1.getColor();
         dispose();
     }//GEN-LAST:event_btnApproveActionPerformed
+
     public java.awt.Color getColor(){
         return color;
     }
@@ -90,9 +89,11 @@ public class ColorChooser extends javax.swing.JDialog {
      */
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 ColorChooser dialog = new ColorChooser(new javax.swing.JFrame(), true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                    @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
                         System.exit(0);
                     }

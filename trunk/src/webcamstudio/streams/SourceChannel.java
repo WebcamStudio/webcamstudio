@@ -81,9 +81,6 @@ public class SourceChannel  {
 
         } else if (stream instanceof SourceDesktop) {
             SourceDesktop sd = (SourceDesktop) stream;
-            
-//            s.captureX = sd.captureX;
-//            s.captureY = sd.captureY;
         }
         return s;
     }
@@ -97,7 +94,6 @@ public class SourceChannel  {
                 if (!s.getClass().toString().contains("Sink")){ // Don't Update SinkStreams ...
                 ExecutorService pool = java.util.concurrent.Executors.newCachedThreadPool();
                 for (Transition t : s.endTransitions) {
-//                    System.out.println(t.getClass().getName());
                     pool.submit(t.run(instance));
                 }
                 pool.shutdown();
@@ -152,9 +148,6 @@ public class SourceChannel  {
                     st.updateContent(getText());
                 } else if (s instanceof SourceDesktop) {
                     SourceDesktop sd = (SourceDesktop) s;
-                    
-//                    sd.captureX = getCaptureX();
-//                    sd.captureY = getCaptureY();
                 }               
                 s.updateStatus();
             }

@@ -28,7 +28,9 @@ import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.JToggleButton;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import webcamstudio.channels.MasterChannels;
 import webcamstudio.exporter.vloopback.VideoDevice;
 import webcamstudio.externals.FME;
@@ -308,7 +310,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener {
 
         tglRecordToFile.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-record.png"))); // NOI18N
         tglRecordToFile.setText(bundle.getString("RECORD")); // NOI18N
-        tglRecordToFile.setToolTipText("Save to AVI.");
+        tglRecordToFile.setToolTipText("Save to FIle.");
         tglRecordToFile.setName("tglRecordToFile"); // NOI18N
         tglRecordToFile.setRolloverEnabled(false);
         tglRecordToFile.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-stop.png"))); // NOI18N
@@ -335,16 +337,47 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener {
 
     private void tglRecordToFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglRecordToFileActionPerformed
         if (tglRecordToFile.isSelected()) {
-            File f = null;
+            boolean overWrite = true;
+            boolean lastChoose = false;
+            File f;
             JFileChooser chooser = new JFileChooser();
+            FileNameExtensionFilter aviFilter = new FileNameExtensionFilter("AVI files (*.avi)", "avi");
+            FileNameExtensionFilter ogvFilter = new FileNameExtensionFilter("OGV files (*.ogv)", "ogv");
+            chooser.setFileFilter(aviFilter);
+            chooser.setFileFilter(ogvFilter);
             chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
             chooser.setDialogTitle("Choose Destination File ...");
-            chooser.showSaveDialog(this);
+            int retval = chooser.showSaveDialog(this);
             f = chooser.getSelectedFile();
-            if(!chooser.getSelectedFile().getAbsolutePath().endsWith(".avi")){
-                f =  new File(chooser.getSelectedFile() + ".avi");
-            }
             if (f != null) {
+                if (chooser.getFileFilter().equals(aviFilter)) {
+                    if(!chooser.getSelectedFile().getAbsolutePath().endsWith(".avi")){
+                        f =  new File(chooser.getSelectedFile() + ".avi");
+                    }
+                } else if (chooser.getFileFilter().equals(ogvFilter)) {
+                    if(!chooser.getSelectedFile().getAbsolutePath().endsWith(".ogv")){
+                        f =  new File(chooser.getSelectedFile() + ".ogv");
+                    }
+                }
+                if(f.exists()){
+                    int result = JOptionPane.showConfirmDialog(this,"File exists, overwrite?","WS Warning Message.",JOptionPane.YES_NO_CANCEL_OPTION);
+                    switch(result){
+                        case JOptionPane.YES_OPTION:
+                            overWrite = true;
+                            break;
+                        case JOptionPane.NO_OPTION:
+                            overWrite = false;
+                            break;
+                        case JOptionPane.CANCEL_OPTION:
+                            overWrite = false;
+                            break;
+                        case JOptionPane.CLOSED_OPTION:
+                            overWrite = false;
+                            break;
+                    }
+                }
+            }
+            if (retval == JFileChooser.APPROVE_OPTION && overWrite) {
                 SinkFile fileStream = new SinkFile(f);
                 fileStream.setWidth(MasterMixer.getInstance().getWidth());
                 fileStream.setHeight(MasterMixer.getInstance().getHeight());
@@ -357,6 +390,8 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener {
                 ResourceMonitor.getInstance().addMessage(label);
             } else {
                 tglRecordToFile.setSelected(false);
+                ResourceMonitorLabel label3 = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Record Cancelled!");
+                ResourceMonitor.getInstance().addMessage(label3);
             }
         } else {
             SinkFile fileStream = files.get("RECORD");
@@ -366,6 +401,9 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener {
                 files.remove("RECORD");
                 ResourceMonitorLabel label = labels.get("RECORD");
                 ResourceMonitor.getInstance().removeMessage(label);
+
+                ResourceMonitorLabel label2 = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Stop Recording!");
+                ResourceMonitor.getInstance().addMessage(label2);
             }
         }
         

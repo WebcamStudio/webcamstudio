@@ -9,7 +9,6 @@ import java.io.File;
 import webcamstudio.externals.ProcessRenderer;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterMixer;
-import webcamstudio.util.Tools;
 
 /**
  *

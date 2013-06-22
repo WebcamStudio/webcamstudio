@@ -72,11 +72,6 @@ public class FME {
         url = (String)path.evaluate(root + "/output/rtmp/url", doc,XPathConstants.STRING);
         stream = (String)path.evaluate(root + "/output/rtmp/stream", doc,XPathConstants.STRING);
 
-//        System.out.println(getName());
-//        System.out.println(getWidth()+"X"+getHeight());
-//        System.out.println(getVcodec() + "/" + getAcodec());
-//        System.out.println(getVbitrate() + "/" + getAbitrate());
-//        System.out.println(getUrl()+"/"+getStream());
     }
 
     /**

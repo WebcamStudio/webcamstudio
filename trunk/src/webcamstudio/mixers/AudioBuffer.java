@@ -20,7 +20,6 @@ public class AudioBuffer {
     int currentIndex = 0;
     long framePushed = 0;
     long framePopped = 0;
-   // webcamstudio.media.config.Format.Type(FILE)
 
     public AudioBuffer(int rate) {
         for (int i = 0; i < bufferSize; i++) {
@@ -57,16 +56,8 @@ public class AudioBuffer {
         return buffer.get((currentIndex+1)%bufferSize);
     }
     public byte[] pop() {
-        long mark = System.currentTimeMillis();
+//        long mark = System.currentTimeMillis();
         while (!abort && framePopped >= framePushed) {
-//            if (System.currentTimeMillis()-mark >= TIMEOUT){
-//                //Resetting everyting;
-//                System.err.println("Resetting audio!");
-//                currentIndex=0;
-//                framePopped=0;
-//                framePushed=0;
-//                break;
-//            }
             Tools.sleep(10);
         }
         framePopped++;

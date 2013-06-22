@@ -65,10 +65,6 @@ abstract public class VideoOutput{
                     int G = color >> 8 & 0xff;
                     int B = color & 0xff;
 
-                    //~ int y = (int) ((0.257 * red) + (0.504 * green) + (0.098 * blue) + 16);
-                    //~ int v = (int) ((0.439 * red) - (0.368 * green) - (0.071 * blue) + 128);
-                    //~ int u = (int) (-(0.148 * red) - (0.291 * green) + (0.439 * blue) + 128);
-
                     int Y = (int) (R * .299000 + G * .587000 + B * 0.114000);
                     int U = (int) (R * -.168736 + G * -.331264 + B * 0.500000 + 128);
                     int V = (int) (R * .500000 + G * -.418688 + B * -0.081312 + 128);

@@ -12,7 +12,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JInternalFrame;
 import javax.swing.JInternalFrame.JDesktopIcon;
-import webcamstudio.streams.SourceMicrophone;
 import webcamstudio.streams.SourceText;
 import webcamstudio.streams.Stream;
 
@@ -79,11 +78,11 @@ public class DesktopIcon extends JDesktopIcon {
         }).start();
         
     }
-    private BufferedImage clImage(BufferedImage src){
+/*    private BufferedImage clImage(BufferedImage src){
         BufferedImage tempimage = java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().createCompatibleImage(src.getWidth(), src.getHeight(), java.awt.image.BufferedImage.TRANSLUCENT);
         Graphics2D tempbuffer = tempimage.createGraphics();
         tempbuffer.drawImage(src, 0, 0, null);
         tempbuffer.dispose();
         return tempimage;
-}
+}*/
 }

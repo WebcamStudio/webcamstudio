@@ -93,9 +93,6 @@ public abstract class Stream implements Callable<Frame>{
         return endTransitions;
     }
 
-    /**
-     * @return the desktopX
-     */
     public void setDVBChannelNumber(int chDVB) {
         this.chDVB = chDVB;
     }
@@ -570,7 +567,8 @@ public abstract class Stream implements Callable<Frame>{
         } else if (file.getAbsolutePath().toLowerCase().startsWith("/dev/video")) {
             stream = new SourceWebcam(file);
         } else if (ext.endsWith(".jpg")
-                || ext.endsWith(".bmp")) {
+                || ext.endsWith(".bmp")
+                || ext.endsWith(".jpeg")) {
             stream = new SourceImageU(file);
         } else if (ext.endsWith(".png")) {
             stream = new SourceImage(file);

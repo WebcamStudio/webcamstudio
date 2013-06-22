@@ -37,7 +37,7 @@ public class Cartoon extends Effect {
             c = data[i];
             r = (c & 0x00FF0000) >> 16;
             g = (c & 0x0000FF00) >> 8;
-            b = (c & 0x000000FF) >> 0;
+            b = (c & 0x000000FF);
             a = (c & 0xFF000000) >> 24;
 
             delta1 = r - g;

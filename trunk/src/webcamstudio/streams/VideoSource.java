@@ -192,7 +192,7 @@ public abstract class VideoSource implements InfoListener {
         prefs.putBoolean("ignorelayouttransition", ignoreLayoutTransition);
         prefs.putByteArray("password", encrypt(password).getBytes());
         prefs.putBoolean("keepration", keepRatio);
-        int index = 0;
+//        int index = 0;
         for (Effect effect : effects) {
             prefs.node("Effects").node(key).put("name", effect.getName());
             effect.applyStudioConfig(prefs.node("Effects").node(key));
