@@ -18,6 +18,7 @@ import webcamstudio.media.renderer.Capturer;
 import webcamstudio.media.renderer.Exporter;
 import webcamstudio.media.renderer.ProcessExecutor;
 import webcamstudio.mixers.Frame;
+import webcamstudio.streams.SinkFile;
 import webcamstudio.streams.Stream;
 import webcamstudio.util.Tools;
 import webcamstudio.util.Tools.OS;
@@ -198,10 +199,14 @@ public class ProcessRenderer {
                             command = command.replaceAll(Tags.FILE.toString(), "\"" + stream.getFile().getAbsolutePath().replaceAll("\\\\", "\\\\\\\\") + "\"");
                         } else {
                             if (stream.getFile().getAbsolutePath().contains("http")) {
-                        command = command.replaceAll(Tags.FILE.toString(), "" + stream.getFile().getAbsolutePath().replace(System.getProperty("user.home")+"/", "") + "");
+                                command = command.replaceAll(Tags.FILE.toString(), "" + stream.getFile().getAbsolutePath().replace(System.getProperty("user.home")+"/", "") + "");
                             } else {
-                            command = command.replaceAll(Tags.FILE.toString(), "" + stream.getFile().getAbsolutePath().replaceAll(" ", "\\ ") + "");
-                        }
+                                String sFile = stream.getFile().getAbsolutePath().replaceAll(" ", "\\ ");
+                                if (stream instanceof SinkFile){
+                                    sFile = sFile.replaceAll(" ", "_");
+                                }
+                                command = command.replaceAll(Tags.FILE.toString(), "" + sFile + "");
+                            }
                         }
                     }
                     break;
@@ -485,9 +490,9 @@ public class ProcessRenderer {
             exporter = null;
         }
         if (processVideo != null) {
-            if (stream.getClass().getName().contains("SinkFile")) {
+            if (stream instanceof SinkFile) {
                 System.out.println("Delay for SinkFile ...");
-                Tools.sleep(100);
+                Tools.sleep(1500);
             }
             System.out.println(stream.getName()+" Video Killed ...");
                 processVideo.destroy();

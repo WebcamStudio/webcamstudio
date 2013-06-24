@@ -13,7 +13,9 @@ import java.util.logging.Logger;
 import javax.swing.JInternalFrame;
 import javax.swing.JInternalFrame.JDesktopIcon;
 import webcamstudio.streams.SourceText;
+import webcamstudio.streams.SourceDVB;
 import webcamstudio.streams.Stream;
+import webcamstudio.streams.SourceURL;
 
 /**
  *
@@ -67,6 +69,14 @@ public class DesktopIcon extends JDesktopIcon {
                             if (stream instanceof SourceText){
                                 SourceText sc = (SourceText)stream;
                                 setToolTipText(sc.getContent());
+                            }
+                            if (stream instanceof SourceDVB){
+                                SourceDVB sD = (SourceDVB)stream;
+                                setToolTipText(sD.getChName());
+                            }
+                            if (stream instanceof SourceURL){
+                                SourceURL sU = (SourceURL)stream;
+                                setToolTipText(sU.getWebURL());
                             }
                         }
                         Thread.sleep(200);
