@@ -115,6 +115,10 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
             spinVDelay.setEnabled(false);
             spinADelay.setEnabled(false);
             spinSeek.setEnabled(false);
+            frequency.setEnabled(false);
+            bandwidth.setEnabled(false);
+            prgNumber.setEnabled(false);
+            txtChName.setEditable(false);
         } else {
             this.setBorder(BorderFactory.createEmptyBorder());
             spinH1.setEnabled(true);
@@ -122,6 +126,10 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
             spinVDelay.setEnabled(true);
             spinADelay.setEnabled(true);
             spinSeek.setEnabled(true);
+            frequency.setEnabled(true);
+            bandwidth.setEnabled(true);
+            prgNumber.setEnabled(true);
+            txtChName.setEditable(true);
         }
         tglActiveStream.revalidate();
     }
@@ -428,6 +436,11 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
                 txtChNameActionPerformed(evt);
             }
         });
+        txtChName.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtChNameFocusLost(evt);
+            }
+        });
         add(txtChName, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 120, 120, 30));
 
         labelfreq1.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
@@ -449,6 +462,7 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
             frequency.setEnabled(false);
             bandwidth.setEnabled(false);
             prgNumber.setEnabled(false);
+            txtChName.setEditable(false);
             stream.read();
         } else {
             this.setBorder(BorderFactory.createEmptyBorder());
@@ -460,6 +474,7 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
             frequency.setEnabled(true);
             bandwidth.setEnabled(true);
             prgNumber.setEnabled(true);
+            txtChName.setEditable(true);
             stream.stop();
             System.gc();
             
@@ -535,8 +550,14 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
     }//GEN-LAST:event_prgNumberStateChanged
 
     private void txtChNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtChNameActionPerformed
-        stream.setName(txtChName.getText());// TODO add your handling code here:
+        stream.setName(txtChName.getText());
+        setToolTipText(txtChName.getText());
     }//GEN-LAST:event_txtChNameActionPerformed
+
+    private void txtChNameFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtChNameFocusLost
+        stream.setName(txtChName.getText());
+        setToolTipText(txtChName.getText());
+    }//GEN-LAST:event_txtChNameFocusLost
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JSpinner bandwidth;

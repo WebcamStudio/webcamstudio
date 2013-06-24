@@ -56,6 +56,8 @@ public class StreamPanelURL extends javax.swing.JPanel implements Stream.Listene
         spinADelay.setValue(stream.getADelay());
         spinVDelay.setEnabled(stream.hasVideo());
         spinADelay.setEnabled(stream.hasAudio());
+        tglAudio.setSelected(!stream.hasAudio());
+        tglIPCam.setSelected(stream.isIPCam());
         spinSeek.setValue(stream.getSeek());
         spinSeek.setEnabled(stream.needSeekCTRL());
         txtWebURL.setText(stream.getWebURL());
@@ -112,6 +114,9 @@ public class StreamPanelURL extends javax.swing.JPanel implements Stream.Listene
             spinVDelay.setEnabled(false);
             spinADelay.setEnabled(false);
             spinSeek.setEnabled(false);
+            txtWebURL.setEditable(false);
+            tglAudio.setEnabled(false);
+            tglIPCam.setEnabled(false);
         } else {
             this.setBorder(BorderFactory.createEmptyBorder());
             spinH1.setEnabled(true);
@@ -119,6 +124,9 @@ public class StreamPanelURL extends javax.swing.JPanel implements Stream.Listene
             spinVDelay.setEnabled(true);
             spinADelay.setEnabled(true);
             spinSeek.setEnabled(true);
+            txtWebURL.setEditable(true);
+            tglAudio.setEnabled(true);
+            tglIPCam.setEnabled(true);
         }
         tglActiveStream.revalidate();
     }
@@ -395,9 +403,9 @@ public class StreamPanelURL extends javax.swing.JPanel implements Stream.Listene
 
         txtWebURL.setFont(new java.awt.Font("Ubuntu Condensed", 0, 12)); // NOI18N
         txtWebURL.setName("txtWebURL"); // NOI18N
-        txtWebURL.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtWebURLActionPerformed(evt);
+        txtWebURL.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtWebURLFocusLost(evt);
             }
         });
         add(txtWebURL, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 130, 260, -1));
@@ -407,6 +415,7 @@ public class StreamPanelURL extends javax.swing.JPanel implements Stream.Listene
             this.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.green));
             if (txtWebURL.getText() != null) {
             stream.setWebURL((String) txtWebURL.getText());
+            setToolTipText(txtWebURL.getText());
             }
             String webURL = stream.getWebURL();
             if (webURL.contains("mp3") || webURL.contains("ogg")){
@@ -435,6 +444,9 @@ public class StreamPanelURL extends javax.swing.JPanel implements Stream.Listene
             spinVDelay.setEnabled(false);
             spinADelay.setEnabled(false);
             spinSeek.setEnabled(false);
+            txtWebURL.setEditable(false);
+            tglAudio.setEnabled(false);
+            tglIPCam.setEnabled(false);
             stream.read();
         } else {
             this.setBorder(BorderFactory.createEmptyBorder());
@@ -445,6 +457,9 @@ public class StreamPanelURL extends javax.swing.JPanel implements Stream.Listene
             spinVDelay.setEnabled(stream.hasVideo());
             spinADelay.setEnabled(stream.hasAudio());
             spinSeek.setEnabled(stream.needSeekCTRL());
+            txtWebURL.setEditable(true);
+            tglAudio.setEnabled(true);
+            tglIPCam.setEnabled(true);
             stream.stop();
         }
     }//GEN-LAST:event_tglActiveStreamActionPerformed
@@ -505,9 +520,9 @@ public class StreamPanelURL extends javax.swing.JPanel implements Stream.Listene
         stream.setSeek((Integer) spinSeek.getValue());
     }//GEN-LAST:event_spinSeekStateChanged
 
-    private void txtWebURLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtWebURLActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtWebURLActionPerformed
+    private void txtWebURLFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtWebURLFocusLost
+    setToolTipText(txtWebURL.getText());
+    }//GEN-LAST:event_txtWebURLFocusLost
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel labelAD;
