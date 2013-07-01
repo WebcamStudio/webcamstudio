@@ -85,6 +85,8 @@ public class ChannelPanel extends javax.swing.JPanel{
         btnStopAllStream = new javax.swing.JButton();
         btnRenameCh = new javax.swing.JButton();
 
+        setPreferredSize(new java.awt.Dimension(238, 499));
+
         lstChannelsScroll.setName("lstChannelsScroll"); // NOI18N
 
         lstChannels.setModel(new javax.swing.AbstractListModel() {
@@ -105,11 +107,6 @@ public class ChannelPanel extends javax.swing.JPanel{
         jLabel1.setName("jLabel1"); // NOI18N
 
         txtName.setName("txtName"); // NOI18N
-        txtName.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtNameActionPerformed(evt);
-            }
-        });
 
         btnAdd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/list-add.png"))); // NOI18N
         btnAdd.setToolTipText(bundle.getString("ADD_CHANNEL")); // NOI18N
@@ -236,7 +233,7 @@ public class ChannelPanel extends javax.swing.JPanel{
                             .addComponent(ChDuration)
                             .addComponent(lstNextChannel, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addComponent(CHProgressTime, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 282, Short.MAX_VALUE)
+                    .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnStopAllStream, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -244,12 +241,13 @@ public class ChannelPanel extends javax.swing.JPanel{
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(btnAdd)
+                        .addComponent(btnRenameCh, javax.swing.GroupLayout.Alignment.TRAILING))
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel1)
                         .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btnAdd))
-                    .addComponent(btnRenameCh, javax.swing.GroupLayout.Alignment.TRAILING))
+                        .addComponent(jLabel1)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lstChannelsScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 196, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -319,6 +317,9 @@ public class ChannelPanel extends javax.swing.JPanel{
         ListChannels.remove(name);
         lstChannels.revalidate();
         lstNextChannel.revalidate();
+        if (lstChannels.getModel().getSize() == 0){
+            btnRenameCh.setEnabled(false);
+        }
     }//GEN-LAST:event_btnRemoveActionPerformed
     @SuppressWarnings("unchecked") 
     public static void AddLoadingChannel(String name) {
@@ -449,30 +450,28 @@ public class ChannelPanel extends javax.swing.JPanel{
     }//GEN-LAST:event_btnStopAllStreamActionPerformed
     @SuppressWarnings("unchecked")
     private void btnRenameChActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRenameChActionPerformed
-        String rnName = txtName.getText();
-        String chName = lstChannels.getSelectedValue().toString();
-        int SelectCHIndex = lstChannels.getSelectedIndex();
-        master.removeChannel(chName);
-        model.removeElement(chName);
-        aModel.removeElement(chName);
-        CHCurrNext.remove(chName);
-        CHTimers.remove(SelectCHIndex);
-        ListChannels.remove(chName);
-        lstChannels.revalidate();
-        lstNextChannel.revalidate();
-        master.addChannel(rnName);
-        model.addElement(rnName);
-        aModel.addElement(rnName);
-        CHCurrNext.add(rnName);
-        CHTimers.add(CHTimer);
-        ListChannels.add(rnName);
-        lstChannels.revalidate();
-        lstNextChannel.revalidate();
+        if (lstChannels != null) {
+            String rnName = txtName.getText();
+            String chName = lstChannels.getSelectedValue().toString();
+            int SelectCHIndex = lstChannels.getSelectedIndex();
+            master.removeChannel(chName);
+            model.removeElement(chName);
+            aModel.removeElement(chName);
+            CHCurrNext.remove(chName);
+            CHTimers.remove(SelectCHIndex);
+            ListChannels.remove(chName);
+            lstChannels.revalidate();
+            lstNextChannel.revalidate();
+            master.addChannel(rnName);
+            model.addElement(rnName);
+            aModel.addElement(rnName);
+            CHCurrNext.add(rnName);
+            CHTimers.add(CHTimer);
+            ListChannels.add(rnName);
+            lstChannels.revalidate();
+            lstNextChannel.revalidate();
+        }
     }//GEN-LAST:event_btnRenameChActionPerformed
-
-    private void txtNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNameActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtNameActionPerformed
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables

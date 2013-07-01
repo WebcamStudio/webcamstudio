@@ -110,6 +110,8 @@ public class MasterFrameBuilder implements Runnable {
         }
     }
 
+    
+    @SuppressWarnings("all")
     @Override
     public void run() {
         stopMe = false;
