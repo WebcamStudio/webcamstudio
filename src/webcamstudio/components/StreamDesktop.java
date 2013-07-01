@@ -11,6 +11,8 @@
 package webcamstudio.components;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
+//import java.awt.event.ActionListener;
 import webcamstudio.streams.SourceDVB;
 import webcamstudio.streams.SourceURL;
 import webcamstudio.streams.SourceText;
@@ -27,6 +29,10 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
     StreamPanelURL panelURL = null;
     Stream stream = null;
     Listener listener = null;
+
+/*    StreamDesktop(Stream webcam, ActionListener aThis) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }*/
     public interface Listener{
         public void selectedSource(Stream source);
     }
@@ -41,6 +47,8 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
             this.add(p, BorderLayout.CENTER);
             this.setTitle(s.getName());
             this.setVisible(true);
+            jMenu2.setEnabled(false);
+            s.setPanelType("PanelText");
         } else if (s instanceof SourceDVB) {
             StreamPanelDVB p = new StreamPanelDVB(s);
             this.setLayout(new BorderLayout());
@@ -48,6 +56,8 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
             this.setTitle(s.getName());
             this.setVisible(true);
             panelDVB = p;
+            s.setPanelType("PanelDVB");
+//            jCBMoreOptions.setEnabled(false);
         } else if (s instanceof SourceURL) {
             StreamPanelURL p = new StreamPanelURL(s);
             this.setLayout(new BorderLayout());
@@ -55,6 +65,8 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
             this.setTitle(s.getName());
             this.setVisible(true);
             panelURL = p;
+            s.setPanelType("PanelURL");
+            jCBShowSliders.setEnabled(false);
         } else {
             StreamPanel p = new StreamPanel(s);
             this.setLayout(new BorderLayout());
@@ -62,6 +74,8 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
             this.setTitle(s.getName());
             this.setVisible(true);
             panel = p;
+            s.setPanelType("Panel");
+            jCBMoreOptions.setEnabled(true);
         }
         this.setVisible(true);
         this.setDesktopIcon(new DesktopIcon(this,s));
@@ -78,10 +92,15 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jMenuBar1 = new javax.swing.JMenuBar();
+        jMenu2 = new javax.swing.JMenu();
+        jCBMoreOptions = new javax.swing.JCheckBoxMenuItem();
+        jCBShowSliders = new javax.swing.JCheckBoxMenuItem();
+
         setClosable(true);
         setIconifiable(true);
-        setMaximizable(true);
         setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/user-desktop.png"))); // NOI18N
+        setVisible(true);
         addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
             public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
             }
@@ -108,6 +127,38 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
             }
         });
 
+        jMenuBar1.setName("jMenuBar1"); // NOI18N
+        jMenuBar1.setPreferredSize(new java.awt.Dimension(74, 13));
+
+        jMenu2.setText("Controls");
+        jMenu2.setName("jMenu2"); // NOI18N
+
+        jCBMoreOptions.setText("Show more Options");
+        jCBMoreOptions.setName("jCBMoreOptions"); // NOI18N
+        jCBMoreOptions.setPreferredSize(new java.awt.Dimension(169, 15));
+        jCBMoreOptions.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCBMoreOptionsActionPerformed(evt);
+            }
+        });
+        jMenu2.add(jCBMoreOptions);
+        jCBMoreOptions.getAccessibleContext().setAccessibleParent(jMenu2);
+
+        jCBShowSliders.setText("Show Control Sliders");
+        jCBShowSliders.setName("jCBShowSliders"); // NOI18N
+        jCBShowSliders.setPreferredSize(new java.awt.Dimension(177, 15));
+        jCBShowSliders.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCBShowSlidersActionPerformed(evt);
+            }
+        });
+        jMenu2.add(jCBShowSliders);
+        jCBShowSliders.getAccessibleContext().setAccessibleParent(jMenu2);
+
+        jMenuBar1.add(jMenu2);
+
+        setJMenuBar(jMenuBar1);
+
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
@@ -125,7 +176,6 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
         stream = null;
         panel = null;
         System.gc();
-
     }//GEN-LAST:event_formInternalFrameClosing
 
     private void formFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_formFocusGained
@@ -146,6 +196,56 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_formInternalFrameActivated
 
+    private void jCBMoreOptionsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCBMoreOptionsActionPerformed
+        if (stream.getPanelType().equals("Panel")) {
+            if (jCBMoreOptions.isSelected()){
+                this.setSize(new Dimension(this.getWidth(),440));
+                this.revalidate();
+                this.repaint();   
+            } else {
+                this.setSize(new Dimension(this.getWidth(),334));
+                this.revalidate();
+                this.repaint();
+            }
+        } else if (stream.getPanelType().equals("PanelDVB")) {
+            if (jCBMoreOptions.isSelected()){
+                this.setSize(new Dimension(this.getWidth(),550));
+                this.revalidate();
+                this.repaint();   
+            } else {
+                this.setSize(new Dimension(this.getWidth(),444));
+                this.revalidate();
+                this.repaint();
+            }
+        } else if (stream.getPanelType().equals("PanelURL")) {
+            if (jCBMoreOptions.isSelected()){
+                this.setSize(new Dimension(this.getWidth(),480));
+                this.revalidate();
+                this.repaint();   
+            } else {
+                this.setSize(new Dimension(this.getWidth(),374));
+                this.revalidate();
+                this.repaint();
+            }
+        }
+    }//GEN-LAST:event_jCBMoreOptionsActionPerformed
+
+    private void jCBShowSlidersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCBShowSlidersActionPerformed
+        if (jCBShowSliders.isSelected()){
+            this.setSize(new Dimension(298,this.getHeight()));
+            this.revalidate();
+            this.repaint();
+        } else {
+            this.setSize(new Dimension(136,this.getHeight()));
+            this.revalidate();
+            this.repaint();
+        }
+    }//GEN-LAST:event_jCBShowSlidersActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBoxMenuItem jCBMoreOptions;
+    private javax.swing.JCheckBoxMenuItem jCBShowSliders;
+    private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenuBar jMenuBar1;
     // End of variables declaration//GEN-END:variables
 }

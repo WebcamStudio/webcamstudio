@@ -64,6 +64,7 @@ public abstract class Stream implements Callable<Frame>{
     public ArrayList<Transition> startTransitions = new ArrayList<Transition>();
     public ArrayList<Transition> endTransitions = new ArrayList<Transition>();
     Listener listener = null;
+    protected String panelType = "Panel";
 
     protected Stream() {
         MasterChannels.getInstance().register(this);
@@ -253,6 +254,12 @@ public abstract class Stream implements Callable<Frame>{
     }
     public boolean hasVideo(){
         return hasVideo;
+    }
+    public void setPanelType(String sPanelType) {
+        panelType = sPanelType;
+    }
+    public String getPanelType(){
+        return panelType;
     }
     public boolean needSeekCTRL(){
         needSeekCTRL = needSeek();

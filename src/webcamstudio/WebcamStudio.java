@@ -53,7 +53,7 @@ import webcamstudio.util.Tools.OS;
  *
  * @author patrick (modified by karl)
  */
-public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Listener {
+public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Listener, StreamFullDesktop.Listener {
 
     Preferences prefs = null;
     public static Properties animations = new Properties();
@@ -159,6 +159,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         MasterMixer.getInstance().start();
         this.add(new MasterPanel(), BorderLayout.WEST);
         initAnimations();
+        initWebcam();
         loadCustomSources();
     }
 
@@ -204,6 +205,23 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         } catch (IOException ex) {
             Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
         }
+
+    }
+    @SuppressWarnings("unchecked")
+    private void initWebcam() {
+//        try {
+            
+            DefaultComboBoxModel model = new DefaultComboBoxModel();
+            ArrayList<String> camNames = new ArrayList<String>();
+            if (Tools.getOS() == OS.LINUX) {
+                for (VideoDevice d : VideoDevice.getOutputDevices()) {
+                    model.addElement(d.getName());
+                }
+            }
+            cboWebcam.setModel(model);            
+//        } catch (IOException ex) {
+//            Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
+//        }
 
     }
 
@@ -258,7 +276,6 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         panSources = new javax.swing.JPanel();
         toolbar = new javax.swing.JToolBar();
         btnAddFile = new javax.swing.JButton();
-        btnAddWebcams = new javax.swing.JButton();
         btnAddDVB = new javax.swing.JButton();
         btnAddURL = new javax.swing.JButton();
         btnAddDesktop = new javax.swing.JButton();
@@ -279,7 +296,12 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         btnLoadStudio = new javax.swing.JButton();
         btnNewStudio = new javax.swing.JButton();
         WCSAbout = new javax.swing.JButton();
+        jSeparator5 = new javax.swing.JToolBar.Separator();
+        cboWebcam = new javax.swing.JComboBox();
+        btnAddWebcams = new javax.swing.JButton();
+        btnRefreshWebcam = new javax.swing.JButton();
         btnVideoDevInfo = new javax.swing.JButton();
+        jSeparator6 = new javax.swing.JToolBar.Separator();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("WebcamStudio");
@@ -312,19 +334,6 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
             }
         });
         toolbar.add(btnAddFile);
-
-        btnAddWebcams.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/camera-video.png"))); // NOI18N
-        btnAddWebcams.setToolTipText("Add Video Devices");
-        btnAddWebcams.setFocusable(false);
-        btnAddWebcams.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnAddWebcams.setName("btnAddWebcams"); // NOI18N
-        btnAddWebcams.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnAddWebcams.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAddWebcamsActionPerformed(evt);
-            }
-        });
-        toolbar.add(btnAddWebcams);
 
         btnAddDVB.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/image-x-generic.png"))); // NOI18N
         btnAddDVB.setToolTipText("Add DVB-T Stream");
@@ -477,11 +486,12 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         mainSplit.setLeftComponent(panSources);
 
         panControls.setName("panControls"); // NOI18N
+        panControls.setPreferredSize(new java.awt.Dimension(200, 455));
         panControls.setLayout(new java.awt.BorderLayout());
 
         tabControls.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("PROPERTIES"))); // NOI18N
         tabControls.setName("tabControls"); // NOI18N
-        tabControls.setPreferredSize(new java.awt.Dimension(448, 455));
+        tabControls.setPreferredSize(new java.awt.Dimension(200, 455));
         panControls.add(tabControls, java.awt.BorderLayout.CENTER);
 
         lblSourceSelected.setName("lblSourceSelected"); // NOI18N
@@ -547,6 +557,49 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         });
         mainToolbar.add(WCSAbout);
 
+        jSeparator5.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jSeparator5.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
+        jSeparator5.setName("jSeparator5"); // NOI18N
+        jSeparator5.setOpaque(true);
+        mainToolbar.add(jSeparator5);
+
+        cboWebcam.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cboWebcam.setToolTipText("Detected Video Devices");
+        cboWebcam.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        cboWebcam.setName("cboWebcam"); // NOI18N
+        cboWebcam.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cboWebcamActionPerformed(evt);
+            }
+        });
+        mainToolbar.add(cboWebcam);
+
+        btnAddWebcams.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/camera-video.png"))); // NOI18N
+        btnAddWebcams.setToolTipText("Add Selected Device");
+        btnAddWebcams.setFocusable(false);
+        btnAddWebcams.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnAddWebcams.setName("btnAddWebcams"); // NOI18N
+        btnAddWebcams.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnAddWebcams.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddWebcamsActionPerformed(evt);
+            }
+        });
+        mainToolbar.add(btnAddWebcams);
+
+        btnRefreshWebcam.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/view-refresh.png"))); // NOI18N
+        btnRefreshWebcam.setToolTipText("Refresh Video Devices Detection");
+        btnRefreshWebcam.setFocusable(false);
+        btnRefreshWebcam.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnRefreshWebcam.setName("btnRefreshWebcam"); // NOI18N
+        btnRefreshWebcam.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnRefreshWebcam.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRefreshWebcamActionPerformed(evt);
+            }
+        });
+        mainToolbar.add(btnRefreshWebcam);
+
         btnVideoDevInfo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/camera-photo.png"))); // NOI18N
         btnVideoDevInfo.setToolTipText(bundle.getString("VIDEO_DEVICE_INFO")); // NOI18N
         btnVideoDevInfo.setFocusable(false);
@@ -559,6 +612,12 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
             }
         });
         mainToolbar.add(btnVideoDevInfo);
+
+        jSeparator6.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jSeparator6.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
+        jSeparator6.setName("jSeparator6"); // NOI18N
+        jSeparator6.setOpaque(true);
+        mainToolbar.add(jSeparator6);
 
         getContentPane().add(mainToolbar, java.awt.BorderLayout.PAGE_START);
 
@@ -902,16 +961,19 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
     }//GEN-LAST:event_WCSAboutActionPerformed
 
     private void btnAddWebcamsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddWebcamsActionPerformed
+        final String wCam = cboWebcam.getSelectedItem().toString();
         if (Tools.getOS() == OS.LINUX) {
             for (VideoDevice d : VideoDevice.getOutputDevices()) {
-                Stream webcam = new SourceWebcam(d.getFile());
-                webcam.setName(d.getName());
-                StreamDesktop frame = new StreamDesktop(webcam, this);
-                desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
-                try {
-                    frame.setSelected(true);
-                } catch (PropertyVetoException ex) {
-                    Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
+                if (d.getName().equals(wCam)){
+                    Stream webcam = new SourceWebcam(d.getFile());
+                    webcam.setName(d.getName());
+                    StreamDesktop frame = new StreamDesktop(webcam, this);
+                    desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+                    try {
+                        frame.setSelected(true);
+                    } catch (PropertyVetoException ex) {
+                        Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
             }
         }
@@ -1009,6 +1071,14 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         VideoDeviceInfo vDevsI = new VideoDeviceInfo(vDevInfo, true); 
         vDevsI.setVisible(true);
     }//GEN-LAST:event_btnVideoDevInfoActionPerformed
+
+    private void cboWebcamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboWebcamActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cboWebcamActionPerformed
+
+    private void btnRefreshWebcamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshWebcamActionPerformed
+        initWebcam();            // TODO add your handling code here:
+    }//GEN-LAST:event_btnRefreshWebcamActionPerformed
     /**
      * @param args the command line arguments
      */
@@ -1073,12 +1143,16 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
     private javax.swing.JButton btnLoadStudio;
     private javax.swing.JButton btnMinimizeAll;
     private javax.swing.JButton btnNewStudio;
+    private javax.swing.JButton btnRefreshWebcam;
     private javax.swing.JButton btnSaveStudio;
     private javax.swing.JButton btnVideoDevInfo;
     public static javax.swing.JComboBox cboAnimations;
+    private javax.swing.JComboBox cboWebcam;
     private javax.swing.JDesktopPane desktop;
     private javax.swing.JToolBar.Separator jSeparator1;
     private javax.swing.JToolBar.Separator jSeparator2;
+    private javax.swing.JToolBar.Separator jSeparator5;
+    private javax.swing.JToolBar.Separator jSeparator6;
     private javax.swing.JLabel lblSourceSelected;
     private javax.swing.JSplitPane mainSplit;
     private javax.swing.JToolBar mainToolbar;

@@ -59,7 +59,7 @@ public class VideoDeviceInfo extends javax.swing.JDialog {
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("webcamstudio/Languages"); // NOI18N
         setTitle(bundle.getString("VIDEODEVICEINFO")); // NOI18N
 
-        scroller.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 3, true));
+        scroller.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
         scroller.setName("scroller"); // NOI18N
 
         tableInfo.setModel(new javax.swing.table.DefaultTableModel(
@@ -94,6 +94,7 @@ public class VideoDeviceInfo extends javax.swing.JDialog {
         btnClose.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/process-stop.png"))); // NOI18N
         btnClose.setText(bundle.getString("CLOSE")); // NOI18N
         btnClose.setName("btnClose"); // NOI18N
+        btnClose.setPreferredSize(new java.awt.Dimension(75, 20));
         btnClose.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCloseActionPerformed(evt);
@@ -106,9 +107,11 @@ public class VideoDeviceInfo extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(scroller, javax.swing.GroupLayout.DEFAULT_SIZE, 495, Short.MAX_VALUE)
-                    .addComponent(btnClose))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnClose, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -117,7 +120,7 @@ public class VideoDeviceInfo extends javax.swing.JDialog {
                 .addContainerGap()
                 .addComponent(scroller, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnClose)
+                .addComponent(btnClose, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
