@@ -26,4 +26,5 @@ OR
  * ~~ Switch back to Int Array (Due to CPU Overload). Solve Green/Cyan Issue. Implements all Filters to work correctly. -> *Karl Ellis* -> 30 may 2013 ~~
  * ~~Working on memory usages. Close all process when a task finish. Change the way Still Images are displayed to lower CPU usages. -> *Karl Ellis* -> 30 June 2013 ~~
  * ~~Working on stability of code. -> *Karl Ellis* -> 30 June 2013 ~~
- * Working on JFileChooser to work better (Warning message when overwrite, Cancel, file types, etc.) -> *Karl Ellis* -> 30 June 2013
+ * ~~Working on JFileChooser to work better (Warning message when overwrite, Cancel, file types, etc.) -> *Karl Ellis* -> 30 June 2013~~
+ * Working on better quality output Back-End commands (Avconv GStreamer) to choose Standard or HQ mode. User will be also able to switch between Back-Ends. Try to add a Stereo Audio Monitor Input Stream to capture system audio. -> *Karl Ellis* -> 30 August 2013  
