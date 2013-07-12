@@ -16,6 +16,7 @@ import webcamstudio.mixers.MasterMixer;
 public class SinkUDP extends Stream {
 
     private ProcessRenderer capture = null;
+    private String standard = "STD";
 
     public SinkUDP() {
         name = "UDP";
@@ -28,7 +29,11 @@ public class SinkUDP extends Stream {
         captureWidth = MasterMixer.getInstance().getWidth();
         captureHeight = MasterMixer.getInstance().getHeight();
         rate = MasterMixer.getInstance().getRate();
-        capture = new ProcessRenderer(this, ProcessRenderer.ACTION.OUTPUT, "udp");
+        if (standard.equals("STD")) {
+            capture = new ProcessRenderer(this, ProcessRenderer.ACTION.OUTPUT, "udp");
+        } else {
+            capture = new ProcessRenderer(this, ProcessRenderer.ACTION.OUTPUT, "udpHQ");
+        }
         capture.writeCom();
     }
 
@@ -56,7 +61,15 @@ public class SinkUDP extends Stream {
     public BufferedImage getPreview() {
         return null;
     }
-
+    
+    public void setStandard(String gStandard) {
+        standard = gStandard;
+    }
+    
+    public String getStandard() {
+        return standard;
+    }
+    
     @Override
     public Frame getFrame() {
         return null;

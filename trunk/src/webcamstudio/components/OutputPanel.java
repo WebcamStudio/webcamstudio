@@ -30,6 +30,7 @@ import java.util.prefs.Preferences;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JToggleButton;
+import javax.swing.UIManager;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import webcamstudio.channels.MasterChannels;
 import webcamstudio.exporter.vloopback.VideoDevice;
@@ -236,6 +237,22 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener {
                 if (button.isSelected()) {
                     if (fme != null){
                     SinkBroadcast broadcast = new SinkBroadcast(fme);
+                    UIManager.put("OptionPane.noButtonText", "HQ");
+                    UIManager.put("OptionPane.yesButtonText", "Standard");
+                    int resultHQ = JOptionPane.showConfirmDialog(instanceSink,"HQ or Standard mode?","WS Dialog Message.",JOptionPane.YES_NO_OPTION);
+                    switch(resultHQ){
+                        case JOptionPane.YES_OPTION:
+                            broadcast.setStandard("STD");
+                            break;
+                        case JOptionPane.NO_OPTION:
+                            broadcast.setStandard("HQ");
+                            break;
+                        case JOptionPane.CLOSED_OPTION:
+                            broadcast.setStandard("STD");
+                            break;
+                    }
+                    UIManager.put("OptionPane.noButtonText", "No");
+                    UIManager.put("OptionPane.yesButtonText", "Yes");     
                     broadcast.setRate(MasterMixer.getInstance().getRate());
                     broadcast.setWidth(MasterMixer.getInstance().getWidth());
                     broadcast.setHeight(MasterMixer.getInstance().getHeight());
@@ -338,7 +355,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener {
     private void tglRecordToFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglRecordToFileActionPerformed
         if (tglRecordToFile.isSelected()) {
             boolean overWrite = true;
-            boolean lastChoose = false;
+//            boolean lastChoose = false;
             File f;
             JFileChooser chooser = new JFileChooser();
             FileNameExtensionFilter aviFilter = new FileNameExtensionFilter("AVI files (*.avi)", "avi");
@@ -410,17 +427,33 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener {
     }//GEN-LAST:event_tglRecordToFileActionPerformed
 
     private void tglUDPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglUDPActionPerformed
-        if (tglUDP.isSelected()) {       
-                SinkUDP udpStream = new SinkUDP();
-                udpStream.setWidth(MasterMixer.getInstance().getWidth());
-                udpStream.setHeight(MasterMixer.getInstance().getHeight());
-                udpStream.setRate(MasterMixer.getInstance().getRate());
-                udpStream.setListener(instanceSink);
-                udpStream.read();
-                udpOut.put("UDPOut", udpStream);
-                ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Unicast mpeg2 to udp://127.0.0.1:7000");
-                labels.put("UDPOut", label);
-                ResourceMonitor.getInstance().addMessage(label);
+        if (tglUDP.isSelected()) {
+            SinkUDP udpStream = new SinkUDP();
+            UIManager.put("OptionPane.noButtonText", "HQ");
+            UIManager.put("OptionPane.yesButtonText", "Standard");
+            int resultHQ = JOptionPane.showConfirmDialog(this,"HQ or Standard mode?","WS Dialog Message.",JOptionPane.YES_NO_OPTION);
+            switch(resultHQ){
+                case JOptionPane.YES_OPTION:
+                    udpStream.setStandard("STD");
+                    break;
+                case JOptionPane.NO_OPTION:
+                    udpStream.setStandard("HQ");
+                    break;
+                case JOptionPane.CLOSED_OPTION:
+                    udpStream.setStandard("STD");
+                    break;
+            }
+            UIManager.put("OptionPane.noButtonText", "No");
+            UIManager.put("OptionPane.yesButtonText", "Yes");     
+            udpStream.setWidth(MasterMixer.getInstance().getWidth());
+            udpStream.setHeight(MasterMixer.getInstance().getHeight());
+            udpStream.setRate(MasterMixer.getInstance().getRate());
+            udpStream.setListener(instanceSink);
+            udpStream.read();
+            udpOut.put("UDPOut", udpStream);
+            ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Unicast mpeg2 to udp://127.0.0.1:7000");
+            labels.put("UDPOut", label);
+            ResourceMonitor.getInstance().addMessage(label);
         } else {
             SinkUDP udpStream = udpOut.get("UDPOut");
             if (udpStream != null) {

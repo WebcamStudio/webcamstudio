@@ -100,7 +100,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
                     Object data = evt.getTransferable().getTransferData(dataFlavor);
                     String files = "";
                     if (data instanceof Reader) {
-                        Reader reader = (Reader) data;
+//                        Reader reader = (Reader) data;
                         char[] text = new char[65536];
 //                        int count = reader.read(text);
                         files = new String(text).trim();
@@ -282,6 +282,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         btnAddText = new javax.swing.JButton();
         btnAddQRCode = new javax.swing.JButton();
         btnAddMic = new javax.swing.JButton();
+        btnAddMon = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JToolBar.Separator();
         cboAnimations = new javax.swing.JComboBox();
         btnAddAnimation = new javax.swing.JButton();
@@ -414,6 +415,19 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
             }
         });
         toolbar.add(btnAddMic);
+
+        btnAddMon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/audio-volume-high.png"))); // NOI18N
+        btnAddMon.setToolTipText("Sound Monitor");
+        btnAddMon.setFocusable(false);
+        btnAddMon.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnAddMon.setName("btnAddMon"); // NOI18N
+        btnAddMon.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnAddMon.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddMonActionPerformed(evt);
+            }
+        });
+        toolbar.add(btnAddMon);
 
         jSeparator1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jSeparator1.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
@@ -897,6 +911,13 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
                     spinWidth.setValue(MasterMixer.getInstance().getWidth());
                     spinHeight.setValue(MasterMixer.getInstance().getHeight());
                     spinFPS.setValue(MasterMixer.getInstance().getRate());
+                    int mW = (Integer) spinWidth.getValue();
+                    int mH = (Integer) spinHeight.getValue();
+                    MasterMixer.getInstance().stop();
+                    MasterMixer.getInstance().setWidth(mW);
+                    MasterMixer.getInstance().setHeight(mH);
+                    MasterMixer.getInstance().setRate((Integer) spinFPS.getValue());
+                    MasterMixer.getInstance().start();
                 } catch (ParserConfigurationException ex) {
                     Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (SAXException ex) {
@@ -1079,6 +1100,17 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
     private void btnRefreshWebcamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshWebcamActionPerformed
         initWebcam();            // TODO add your handling code here:
     }//GEN-LAST:event_btnRefreshWebcamActionPerformed
+
+    private void btnAddMonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddMonActionPerformed
+        SourceSoundMonitor source = new SourceSoundMonitor();
+        StreamDesktop frame = new StreamDesktop(source, this);
+        desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        try {
+            frame.setSelected(true);
+        } catch (PropertyVetoException ex) {
+            Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnAddMonActionPerformed
     /**
      * @param args the command line arguments
      */
@@ -1136,6 +1168,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
     private javax.swing.JButton btnAddDesktop;
     private javax.swing.JButton btnAddFile;
     private javax.swing.JButton btnAddMic;
+    private javax.swing.JButton btnAddMon;
     private javax.swing.JButton btnAddQRCode;
     private javax.swing.JButton btnAddText;
     private javax.swing.JButton btnAddURL;

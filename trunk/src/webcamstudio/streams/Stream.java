@@ -53,11 +53,13 @@ public abstract class Stream implements Callable<Frame>{
     protected boolean hasAudio=true;
     protected boolean isIPCam=false;
     protected boolean isStillPicture=false;
+    protected boolean loaded=false;
     protected int ADelay = 0;
     protected int VDelay = 0;
     protected int frequencyDVB = 0;
     protected int bandwidthDVB = 0;
     protected int chDVB = 0;
+    protected String comm = "AV";
     protected String webURL = null;
     protected String chNameDVB = null;
     protected Frame nextFrame = null;
@@ -93,7 +95,12 @@ public abstract class Stream implements Callable<Frame>{
     public ArrayList<Transition> getEndTransitions() {
         return endTransitions;
     }
-
+    public String getComm() {
+        return comm;
+    }
+    public void setComm(String sComm) {
+        this.comm = sComm;
+    }
     public void setDVBChannelNumber(int chDVB) {
         this.chDVB = chDVB;
     }
@@ -114,6 +121,12 @@ public abstract class Stream implements Callable<Frame>{
     }
     public void setWebURL(String webURL) {
         this.webURL = webURL;
+    }
+    public boolean getLoaded() {
+        return loaded;
+    }
+    public void setLoaded(boolean sLoaded) {
+        this.loaded = sLoaded;
     }
     public String getChName() {
         return chNameDVB;
@@ -156,10 +169,10 @@ public abstract class Stream implements Callable<Frame>{
     }
 
     public int getDesktopEndX(){
-        return desktopX + desktopW;
+        return desktopX + desktopW - 1;
     }
     public int getDesktopEndY(){
-        return desktopY+desktopH;
+        return desktopY + desktopH - 1;
     }
     /**
      * @return the desktopW

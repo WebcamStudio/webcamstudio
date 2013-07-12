@@ -15,7 +15,7 @@ public class AudioBuffer {
 
     private ArrayList<byte[]> buffer = new ArrayList<byte[]>();
     private int bufferSize = MasterMixer.BUFFER_SIZE;
-    private static final long TIMEOUT = 5000;
+//    private static final long TIMEOUT = 5000;
     private boolean abort = false;
     int currentIndex = 0;
     long framePushed = 0;

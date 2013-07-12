@@ -179,7 +179,11 @@ public class ProcessRenderer {
                     break;
                 case URL:
                     if (fme != null) {
-                        command = command.replaceAll(Tags.URL.toString(), "\""+fme.getUrl()+"/"+fme.getStream()+" live=1 flashver=FME/2.520(compatible;20FMSc201.0)"+"\"");
+                        if (fme.getName().toLowerCase().equals("red5")){
+                            command = command.replaceAll(Tags.URL.toString(), "" + fme.getUrl() + "/" + fme.getStream());
+                        } else {
+                            command = command.replaceAll(Tags.URL.toString(), "\""+fme.getUrl()+"/"+fme.getStream()+" live=1 flashver=FME/2.520(compatible;20FMSc201.0)"+"\"");
+                        }
                     } else if (stream.getURL() != null) {
                         command = command.replaceAll(Tags.URL.toString(), "" + stream.getURL());
                     }
@@ -277,10 +281,18 @@ public class ProcessRenderer {
                 String commandAudio = null;
                 //System.out.println(plugins.keySet().toString());
                 if (plugins.containsKey("video")) {
-                    commandVideo = plugins.getProperty("video").replaceAll("  ", " "); //Making sure there is no double spaces
+                    if ("AV".equals(stream.getComm())){
+                        commandVideo = plugins.getProperty("AVvideo").replaceAll("  ", " "); //Making sure there is no double spaces
+                    } else {
+                        commandVideo = plugins.getProperty("GSvideo").replaceAll("  ", " "); //Making sure there is no double spaces
+                    }
                 }
                 if (plugins.containsKey("audio")) {
-                    commandAudio = plugins.getProperty("audio").replaceAll("  ", " "); //Making sure there is no double spaces
+                    if ("AV".equals(stream.getComm())){
+                        commandAudio = plugins.getProperty("AVaudio").replaceAll("  ", " "); //Making sure there is no double spaces
+                    } else {
+                        commandAudio = plugins.getProperty("GSaudio").replaceAll("  ", " "); //Making sure there is no double spaces
+                    }
                 }
                 if (commandVideo != null) {
                     commandVideo = commandVideo.replaceAll(" ", "ABCDE");

@@ -142,6 +142,10 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener, 
         jSlSpinW.setValue(stream.getWidth());
         spinH.setValue(stream.getHeight());
         jSlSpinH.setValue(stream.getHeight());
+        spinW1.setValue(stream.getCaptureWidth());
+        jSlSpinCW.setValue(stream.getCaptureWidth());
+        spinH1.setValue(stream.getCaptureHeight());
+        jSlSpinCH.setValue(stream.getCaptureHeight());
         spinOpacity.setValue(stream.getOpacity());
         jSlSpinO.setValue(stream.getOpacity());
         spinVolume.setValue(stream.getVolume() * 100);
@@ -797,7 +801,7 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener, 
                     Stream webcam = new SourceWebcam(d.getFile());
                     webcam.setName(d.getName());
                     StreamFullDesktop frame = new StreamFullDesktop(webcam, this);
-                    FullScreenWindow window = new FullScreenWindow();
+                    FullScreenWindow window = new FullScreenWindow(webcam, this);
                     window.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
                     try {
                         frame.setSelected(true);
