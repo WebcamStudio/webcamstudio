@@ -12,10 +12,15 @@ package webcamstudio.components;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import javax.swing.Box;
 //import java.awt.event.ActionListener;
 import webcamstudio.streams.SourceDVB;
+import webcamstudio.streams.SourceImageGif;
+import webcamstudio.streams.SourceImageU;
+import webcamstudio.streams.SourceMicrophone;
 import webcamstudio.streams.SourceURL;
 import webcamstudio.streams.SourceText;
+import webcamstudio.streams.SourceWebcam;
 import webcamstudio.streams.Stream;
 
 /**
@@ -47,7 +52,8 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
             this.add(p, BorderLayout.CENTER);
             this.setTitle(s.getName());
             this.setVisible(true);
-            jMenu2.setEnabled(false);
+            jMControls.setEnabled(false);
+            JMBackEnd.setEnabled(false);
             s.setPanelType("PanelText");
         } else if (s instanceof SourceDVB) {
             StreamPanelDVB p = new StreamPanelDVB(s);
@@ -55,15 +61,17 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
             this.add(p, BorderLayout.CENTER);
             this.setTitle(s.getName());
             this.setVisible(true);
+            JMBackEnd.setEnabled(false);
+            stream.setComm("GS");
             panelDVB = p;
             s.setPanelType("PanelDVB");
-//            jCBMoreOptions.setEnabled(false);
         } else if (s instanceof SourceURL) {
             StreamPanelURL p = new StreamPanelURL(s);
             this.setLayout(new BorderLayout());
             this.add(p, BorderLayout.CENTER);
             this.setTitle(s.getName());
             this.setVisible(true);
+            JMBackEnd.setEnabled(false);
             panelURL = p;
             s.setPanelType("PanelURL");
             jCBShowSliders.setEnabled(false);
@@ -73,6 +81,40 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
             this.add(p, BorderLayout.CENTER);
             this.setTitle(s.getName());
             this.setVisible(true);
+            if (stream.getLoaded()){
+                if ("AV".equals(stream.getComm())){
+                    jCBAVConv.setSelected(true);
+                    stream.setComm("AV");
+                    jCBGStreamer.setSelected(false);
+                } else if ("GS".equals(stream.getComm())){
+                    jCBGStreamer.setSelected(true);
+                    stream.setComm("GS");
+                    jCBAVConv.setSelected(false);
+                } else {
+                    if (stream instanceof SourceWebcam || stream instanceof SourceMicrophone ||stream instanceof SourceImageU) {
+                    jCBGStreamer.setSelected(true);
+                    stream.setComm("GS");
+                    jCBAVConv.setSelected(false);
+                    } else {
+                    jCBAVConv.setSelected(true);
+                    stream.setComm("AV");
+                    jCBGStreamer.setSelected(false);
+                    }
+                }
+            } else {
+                if (stream instanceof SourceWebcam || stream instanceof SourceMicrophone ||stream instanceof SourceImageU) {
+                    jCBGStreamer.setSelected(true);
+                    stream.setComm("GS");
+                    jCBAVConv.setSelected(false);
+                } else {
+                    jCBAVConv.setSelected(true);
+                    stream.setComm("AV");
+                    jCBGStreamer.setSelected(false);
+                }
+            }
+            if (stream instanceof SourceImageGif){
+                JMBackEnd.setEnabled(false);
+            }
             panel = p;
             s.setPanelType("Panel");
             jCBMoreOptions.setEnabled(true);
@@ -92,10 +134,13 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jMenuBar1 = new javax.swing.JMenuBar();
-        jMenu2 = new javax.swing.JMenu();
+        jMBOptions = new javax.swing.JMenuBar();
+        jMControls = new javax.swing.JMenu();
         jCBMoreOptions = new javax.swing.JCheckBoxMenuItem();
         jCBShowSliders = new javax.swing.JCheckBoxMenuItem();
+        JMBackEnd = new javax.swing.JMenu();
+        jCBGStreamer = new javax.swing.JCheckBoxMenuItem();
+        jCBAVConv = new javax.swing.JCheckBoxMenuItem();
 
         setClosable(true);
         setIconifiable(true);
@@ -127,11 +172,13 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
             }
         });
 
-        jMenuBar1.setName("jMenuBar1"); // NOI18N
-        jMenuBar1.setPreferredSize(new java.awt.Dimension(74, 13));
+        jMBOptions.setName("jMBOptions"); // NOI18N
+        jMBOptions.setPreferredSize(new java.awt.Dimension(74, 13));
 
-        jMenu2.setText("Controls");
-        jMenu2.setName("jMenu2"); // NOI18N
+        jMControls.setForeground(new java.awt.Color(74, 7, 1));
+        jMControls.setText("Controls");
+        jMControls.setFont(new java.awt.Font("Ubuntu", 0, 12)); // NOI18N
+        jMControls.setName("jMControls"); // NOI18N
 
         jCBMoreOptions.setText("Show more Options");
         jCBMoreOptions.setName("jCBMoreOptions"); // NOI18N
@@ -141,8 +188,8 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
                 jCBMoreOptionsActionPerformed(evt);
             }
         });
-        jMenu2.add(jCBMoreOptions);
-        jCBMoreOptions.getAccessibleContext().setAccessibleParent(jMenu2);
+        jMControls.add(jCBMoreOptions);
+        jCBMoreOptions.getAccessibleContext().setAccessibleParent(jMControls);
 
         jCBShowSliders.setText("Show Control Sliders");
         jCBShowSliders.setName("jCBShowSliders"); // NOI18N
@@ -152,12 +199,42 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
                 jCBShowSlidersActionPerformed(evt);
             }
         });
-        jMenu2.add(jCBShowSliders);
-        jCBShowSliders.getAccessibleContext().setAccessibleParent(jMenu2);
+        jMControls.add(jCBShowSliders);
+        jCBShowSliders.getAccessibleContext().setAccessibleParent(jMControls);
 
-        jMenuBar1.add(jMenu2);
+        jMBOptions.add(jMControls);
 
-        setJMenuBar(jMenuBar1);
+        JMBackEnd.setForeground(new java.awt.Color(74, 7, 1));
+        JMBackEnd.setText("BkEnd");
+        JMBackEnd.setBorderPainted(true);
+        JMBackEnd.setFont(new java.awt.Font("Ubuntu", 0, 12)); // NOI18N
+        JMBackEnd.setName("JMBackEnd"); // NOI18N
+
+        jCBGStreamer.setText("GStreamer");
+        jCBGStreamer.setName("jCBGStreamer"); // NOI18N
+        jCBGStreamer.setPreferredSize(new java.awt.Dimension(107, 15));
+        jCBGStreamer.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCBGStreamerActionPerformed(evt);
+            }
+        });
+        JMBackEnd.add(jCBGStreamer);
+
+        jCBAVConv.setText("AVConv");
+        jCBAVConv.setName("jCBAVConv"); // NOI18N
+        jCBAVConv.setPreferredSize(new java.awt.Dimension(107, 15));
+        jCBAVConv.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCBAVConvActionPerformed(evt);
+            }
+        });
+        JMBackEnd.add(jCBAVConv);
+
+        jMBOptions.add(Box.createHorizontalGlue());
+
+        jMBOptions.add(JMBackEnd);
+
+        setJMenuBar(jMBOptions);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -242,10 +319,35 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_jCBShowSlidersActionPerformed
 
+    private void jCBGStreamerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCBGStreamerActionPerformed
+        if (jCBGStreamer.isSelected()){
+            stream.setComm("GS");
+            jCBAVConv.setSelected(false);
+        } else {
+            jCBAVConv.setSelected(true);
+            jCBGStreamer.setSelected(false);
+            stream.setComm("AV");
+        }
+    }//GEN-LAST:event_jCBGStreamerActionPerformed
+
+    private void jCBAVConvActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCBAVConvActionPerformed
+        if (jCBAVConv.isSelected()){
+            stream.setComm("AV");
+            jCBGStreamer.setSelected(false);
+        } else {
+            jCBGStreamer.setSelected(true);
+            jCBAVConv.setSelected(false);
+            stream.setComm("GS");
+        }
+    }//GEN-LAST:event_jCBAVConvActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenu JMBackEnd;
+    private javax.swing.JCheckBoxMenuItem jCBAVConv;
+    private javax.swing.JCheckBoxMenuItem jCBGStreamer;
     private javax.swing.JCheckBoxMenuItem jCBMoreOptions;
     private javax.swing.JCheckBoxMenuItem jCBShowSliders;
-    private javax.swing.JMenu jMenu2;
-    private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuBar jMBOptions;
+    private javax.swing.JMenu jMControls;
     // End of variables declaration//GEN-END:variables
 }

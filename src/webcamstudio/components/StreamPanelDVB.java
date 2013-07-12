@@ -133,6 +133,10 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         jSlSpinW.setValue(stream.getWidth());
         spinH.setValue(stream.getHeight());
         jSlSpinH.setValue(stream.getHeight());
+        spinW1.setValue(stream.getCaptureWidth());
+        jSlSpinCW.setValue(stream.getCaptureWidth());
+        spinH1.setValue(stream.getCaptureHeight());
+        jSlSpinCH.setValue(stream.getCaptureHeight());
         spinOpacity.setValue(stream.getOpacity());
         jSlSpinO.setValue(stream.getOpacity());
         spinVolume.setValue(stream.getVolume() * 100);

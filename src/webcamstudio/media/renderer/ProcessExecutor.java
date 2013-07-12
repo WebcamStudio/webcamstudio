@@ -29,8 +29,8 @@ public class ProcessExecutor {
     private String name = "";
     private static String childPids = "";
 
-    public ProcessExecutor(String name) {
-        this.name = name;
+    public ProcessExecutor(String gName) {
+        this.name = gName;
     }
 
     private void readOutput(final Process p){

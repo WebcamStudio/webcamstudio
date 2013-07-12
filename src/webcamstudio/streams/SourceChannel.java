@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import webcamstudio.channels.transitions.Transition;
+import webcamstudio.mixers.MasterMixer;
 import webcamstudio.sources.effects.Effect;
 
 /**
@@ -38,6 +39,7 @@ public class SourceChannel  {
     private int captureY = 0;
     public ArrayList<Transition> startTransitions = new ArrayList<Transition>();
     public ArrayList<Transition> endTransitions = new ArrayList<Transition>();
+    private MasterMixer mixer = MasterMixer.getInstance();
 
     public SourceChannel() {
     }
@@ -176,26 +178,35 @@ public class SourceChannel  {
     public int getCapWidth() {
         return capWidth;
     }
-
+    public void setCapWidth(int cWidth) {
+        capWidth = cWidth;
+    }
     /**
      * @return the capHeight
      */
     public int getCapHeight() {
         return capHeight;
     }
-
+    public void setCapHeight(int cHeight) {
+        capHeight = cHeight;
+    }
     /**
      * @return the width
      */
     public int getWidth() {
         return width;
     }
-
+    public void setWidth(int cWidth) {
+        width = cWidth;
+    }
     /**
      * @return the height
      */
     public int getHeight() {
         return height;
+    }
+    public void setHeight(int cHeight) {
+        height = cHeight;
     }
 
     /**

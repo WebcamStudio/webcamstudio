@@ -232,15 +232,17 @@ public class SourceControlsText extends javax.swing.JPanel {
 
     private void rdNoneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdNoneActionPerformed
         stream.setBackground(Shape.NONE);
+        stream.setStrBackground("none");
     }//GEN-LAST:event_rdNoneActionPerformed
 
     private void rdRectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdRectActionPerformed
         stream.setBackground(Shape.RECTANGLE);
-        
+        stream.setStrBackground("rectangle");
     }//GEN-LAST:event_rdRectActionPerformed
 
     private void rdOvalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdOvalActionPerformed
         stream.setBackground(Shape.OVAL);
+        stream.setStrBackground("oval");
     }//GEN-LAST:event_rdOvalActionPerformed
 
     private void spinBGOpacityStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinBGOpacityStateChanged
@@ -249,6 +251,7 @@ public class SourceControlsText extends javax.swing.JPanel {
 
     private void rdRoundRectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdRoundRectActionPerformed
         stream.setBackground(Shape.ROUNDRECT);
+        stream.setStrBackground("roundrect");
     }//GEN-LAST:event_rdRoundRectActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

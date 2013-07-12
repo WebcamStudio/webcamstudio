@@ -52,12 +52,17 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
         
         this.stream = stream;
         spinX.setValue(stream.getX());
+        jSlSpinX.setValue(stream.getX());
         spinY.setValue(stream.getY());
+        jSlSpinY.setValue(stream.getY());
         spinW.setValue(stream.getWidth());
+        jSlSpinW.setValue(stream.getWidth());
         spinH.setValue(stream.getHeight());
+        jSlSpinH.setValue(stream.getHeight());
         cboFonts.setSelectedItem(stream.getFont());
         txtHexColor.setText(Integer.toHexString(stream.getColor()));
         spinZOrder.setValue(stream.getZOrder());
+        jSlSpinZOrder.setValue(stream.getZOrder());
         
         txtContent.setText(stream.getContent());
         setToolTipText(stream.getContent());
@@ -509,12 +514,17 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
             this.setBorder(BorderFactory.createEmptyBorder());
         }
         spinX.setValue(stream.getX());
+        jSlSpinX.setValue(stream.getX());
         spinY.setValue(stream.getY());
+        jSlSpinY.setValue(stream.getY());
         spinW.setValue(stream.getWidth());
+        jSlSpinW.setValue(stream.getWidth());
         spinH.setValue(stream.getHeight());
+        jSlSpinH.setValue(stream.getHeight());
         cboFonts.setSelectedItem(this.stream.getFont());
         txtHexColor.setText(Integer.toHexString(this.stream.getColor()));
         spinZOrder.setValue(stream.getZOrder());
+        jSlSpinZOrder.setValue(stream.getZOrder());
         txtContent.setText(this.stream.getContent());
         tglActiveStream.setSelected(stream.isPlaying());
     }

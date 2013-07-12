@@ -5,7 +5,6 @@
 package webcamstudio.streams;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
 import webcamstudio.externals.ProcessRenderer;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterFrameBuilder;
@@ -13,18 +12,17 @@ import webcamstudio.mixers.MasterMixer;
 
 /**
  *
- * @author patrick
+ * @author patrick (modified by Karl)
  */
-public class SourceMusic extends Stream {
+public class SourceSoundMonitor extends Stream {
 
     ProcessRenderer capture = null;
     BufferedImage lastPreview = null;
 
-    public SourceMusic(File music) {
+    public SourceSoundMonitor() {
         super();
         rate = MasterMixer.getInstance().getRate();
-        file = music;
-        name = music.getName();
+        name = "SoundMonitor";
 
     }
 
@@ -32,7 +30,7 @@ public class SourceMusic extends Stream {
     public void read() {
         MasterFrameBuilder.register(this);
         lastPreview = new BufferedImage(captureWidth,captureHeight,BufferedImage.TYPE_INT_ARGB);
-        capture = new ProcessRenderer(this, ProcessRenderer.ACTION.CAPTURE, "music");
+        capture = new ProcessRenderer(this, ProcessRenderer.ACTION.CAPTURE, "monitor");
         capture.read();
     }
 
@@ -47,7 +45,7 @@ public class SourceMusic extends Stream {
     }
     @Override
     public boolean needSeek() {
-            return needSeekCTRL=true;
+            return needSeekCTRL=false;
     }
 
     @Override
@@ -69,6 +67,14 @@ public class SourceMusic extends Stream {
     public Frame getFrame() {
        
         return nextFrame;
+    }
+    @Override
+    public boolean hasFakeVideo(){
+        return false;
+    }
+    @Override
+    public boolean hasFakeAudio(){
+        return true;
     }
     @Override
     public boolean hasAudio() {

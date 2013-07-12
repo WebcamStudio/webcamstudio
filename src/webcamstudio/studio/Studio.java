@@ -35,6 +35,11 @@ import webcamstudio.mixers.MasterMixer;
 import webcamstudio.streams.*;
 import webcamstudio.components.*;
 import webcamstudio.channels.transitions.Transition;
+import static webcamstudio.streams.SourceText.Shape.NONE;
+import static webcamstudio.streams.SourceText.Shape.OVAL;
+import static webcamstudio.streams.SourceText.Shape.RECTANGLE;
+import static webcamstudio.streams.SourceText.Shape.ROUNDRECT;
+import webcamstudio.util.Tools;
 
 /**
  *
@@ -206,6 +211,7 @@ public class Studio {
                 if (value instanceof String) {
                     xml.writeStartElement(name);
                     xml.writeCData(value.toString());
+                    Tools.sleep(20);
                     xml.writeEndElement();
                 } else if (value instanceof File) {
                     xml.writeStartElement(name);
@@ -221,6 +227,7 @@ public class Studio {
             if (value instanceof String) {
                 xml.writeStartElement(name);
                 xml.writeCData(value.toString());
+                Tools.sleep(20);
                 xml.writeEndElement();
             } else if (value instanceof File) {
                 xml.writeStartElement(name);
@@ -283,6 +290,8 @@ public class Studio {
                 String file = null;
                 String ObjText = null;
                 String webUrl = null;
+                String comm = null;
+                String strShapez = null;
                 String chNameDvb = null;
                 ArrayList<String> SubChNames = new ArrayList<String>();
                 ArrayList<String> SubText = new ArrayList<String>();
@@ -313,11 +322,17 @@ public class Studio {
                     if (child.getNodeName().equals("content")) {
                         ObjText = child.getTextContent();
                     }
+                    if (child.getNodeName().equals("strShape")) {
+                        strShapez = child.getTextContent();
+                    }
                     if (child.getNodeName().equals("webURL")) {
                         webUrl = child.getTextContent();
                     }
                     if (child.getNodeName().equals("chNameDVB")) {
                         chNameDvb = child.getTextContent();
+                    }
+                    if (child.getNodeName().equals("comm")) {                       
+                        comm = child.getTextContent();
                     }
                     if (child.getNodeName().equals("Channels")) { // Read SourceChannels
                         for (int nc = 0; nc < child.getChildNodes().getLength(); nc++) {
@@ -362,6 +377,8 @@ public class Studio {
                     extstream.add(stream); 
                     extstreamBis.add(stream);
                     readObject(stream, source);
+                    stream.setComm(comm);
+                    stream.setLoaded(true);
                     int op=0;
                     for (SourceChannel scs : SCL) {
                         scs.setName(SubChNames.get(op));
@@ -447,6 +464,17 @@ public class Studio {
                     text = new SourceText(ObjText);
                     LText.add(text);
                     readObject(text, source);
+                    if (strShapez != null) {
+                        if (strShapez.equals("none")){
+                                text.setBackground(NONE);
+                        } else if (strShapez.equals("rectangle")) {
+                                text.setBackground(RECTANGLE);
+                        } else if (strShapez.equals("oval")) {
+                                text.setBackground(OVAL);
+                        } else if (strShapez.equals("roundrect")) {
+                                text.setBackground(ROUNDRECT);
+                        }
+                    }
                     int op=0;
                     for (SourceChannel scs : SCL) {
                         scs.setName(SubChNames.get(op));

@@ -130,6 +130,10 @@ public class StreamPanelURL extends javax.swing.JPanel implements Stream.Listene
         jSlSpinW.setValue(stream.getWidth());
         spinH.setValue(stream.getHeight());
         jSlSpinH.setValue(stream.getHeight());
+        spinW1.setValue(stream.getCaptureWidth());
+        jSlSpinCW.setValue(stream.getCaptureWidth());
+        spinH1.setValue(stream.getCaptureHeight());
+        jSlSpinCH.setValue(stream.getCaptureHeight());
         spinOpacity.setValue(stream.getOpacity());
         jSlSpinO.setValue(stream.getOpacity());
         spinVolume.setValue(stream.getVolume() * 100);
@@ -444,7 +448,7 @@ public class StreamPanelURL extends javax.swing.JPanel implements Stream.Listene
         labelURL.setText(bundle.getString("ENTER_URL")); // NOI18N
         labelURL.setToolTipText("");
         labelURL.setName("labelURL"); // NOI18N
-        add(labelURL, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 142, 50, -1));
+        add(labelURL, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 142, 60, -1));
 
         txtWebURL.setFont(new java.awt.Font("Ubuntu Condensed", 0, 12)); // NOI18N
         txtWebURL.setToolTipText("Enter Url ...");

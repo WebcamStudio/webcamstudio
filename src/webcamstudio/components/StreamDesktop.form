@@ -1,19 +1,25 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<Form version="1.3" maxVersion="1.7" type="org.netbeans.modules.form.forminfo.JInternalFrameFormInfo">
+<Form version="1.5" maxVersion="1.7" type="org.netbeans.modules.form.forminfo.JInternalFrameFormInfo">
   <NonVisualComponents>
-    <Menu class="javax.swing.JMenuBar" name="jMenuBar1">
+    <Menu class="javax.swing.JMenuBar" name="jMBOptions">
       <Properties>
-        <Property name="name" type="java.lang.String" value="jMenuBar1" noResource="true"/>
+        <Property name="name" type="java.lang.String" value="jMBOptions" noResource="true"/>
         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
           <Dimension value="[74, 13]"/>
         </Property>
       </Properties>
       <SubComponents>
-        <Menu class="javax.swing.JMenu" name="jMenu2">
+        <Menu class="javax.swing.JMenu" name="jMControls">
           <Properties>
+            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="1" green="7" red="4a" type="rgb"/>
+            </Property>
             <Property name="text" type="java.lang.String" value="Controls"/>
-            <Property name="name" type="java.lang.String" value="jMenu2" noResource="true"/>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Ubuntu" size="12" style="0"/>
+            </Property>
+            <Property name="name" type="java.lang.String" value="jMControls" noResource="true"/>
           </Properties>
           <SubComponents>
             <MenuItem class="javax.swing.JCheckBoxMenuItem" name="jCBMoreOptions">
@@ -26,7 +32,7 @@
               </Properties>
               <AccessibilityProperties>
                 <Property name="AccessibleContext.accessibleParent" type="javax.accessibility.Accessible" editor="org.netbeans.modules.form.ComponentChooserEditor">
-                  <ComponentRef name="jMenu2"/>
+                  <ComponentRef name="jMControls"/>
                 </Property>
               </AccessibilityProperties>
               <Events>
@@ -43,11 +49,53 @@
               </Properties>
               <AccessibilityProperties>
                 <Property name="AccessibleContext.accessibleParent" type="javax.accessibility.Accessible" editor="org.netbeans.modules.form.ComponentChooserEditor">
-                  <ComponentRef name="jMenu2"/>
+                  <ComponentRef name="jMControls"/>
                 </Property>
               </AccessibilityProperties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jCBShowSlidersActionPerformed"/>
+              </Events>
+            </MenuItem>
+          </SubComponents>
+        </Menu>
+        <Menu class="javax.swing.JMenu" name="JMBackEnd">
+          <Properties>
+            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="1" green="7" red="4a" type="rgb"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="BkEnd"/>
+            <Property name="borderPainted" type="boolean" value="true"/>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Ubuntu" size="12" style="0"/>
+            </Property>
+            <Property name="name" type="java.lang.String" value="JMBackEnd" noResource="true"/>
+          </Properties>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_LayoutCodePost" type="java.lang.String" value="jMBOptions.add(Box.createHorizontalGlue());"/>
+          </AuxValues>
+          <SubComponents>
+            <MenuItem class="javax.swing.JCheckBoxMenuItem" name="jCBGStreamer">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="GStreamer"/>
+                <Property name="name" type="java.lang.String" value="jCBGStreamer" noResource="true"/>
+                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[107, 15]"/>
+                </Property>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jCBGStreamerActionPerformed"/>
+              </Events>
+            </MenuItem>
+            <MenuItem class="javax.swing.JCheckBoxMenuItem" name="jCBAVConv">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="AVConv"/>
+                <Property name="name" type="java.lang.String" value="jCBAVConv" noResource="true"/>
+                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[107, 15]"/>
+                </Property>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jCBAVConvActionPerformed"/>
               </Events>
             </MenuItem>
           </SubComponents>
@@ -64,7 +112,7 @@
     <Property name="visible" type="boolean" value="true"/>
   </Properties>
   <SyntheticProperties>
-    <SyntheticProperty name="menuBar" type="java.lang.String" value="jMenuBar1"/>
+    <SyntheticProperty name="menuBar" type="java.lang.String" value="jMBOptions"/>
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
   </SyntheticProperties>
   <Events>

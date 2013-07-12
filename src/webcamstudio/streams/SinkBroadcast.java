@@ -18,6 +18,7 @@ public class SinkBroadcast extends Stream {
     private ProcessRenderer capture = null;
     private FME fme = null;
     private boolean isPlaying = false;
+    private String standard = "STD";
     public SinkBroadcast(FME fme) {
         this.fme=fme;
         name=fme.getName();
@@ -33,7 +34,15 @@ public class SinkBroadcast extends Stream {
         rate = MasterMixer.getInstance().getRate();
         captureWidth = MasterMixer.getInstance().getWidth();
         captureHeight = MasterMixer.getInstance().getHeight();
-        capture = new ProcessRenderer(this,fme,"broadcast");
+        if (name.toLowerCase().equals("red5")){
+            capture = new ProcessRenderer(this,fme,"broadcastR5");
+        } else {
+            if (standard.equals("STD")) {
+                capture = new ProcessRenderer(this,fme,"broadcast");
+            } else {
+                capture = new ProcessRenderer(this,fme,"broadcastHQ");
+            }
+        }
         capture.writeCom();
     }
 
@@ -59,7 +68,14 @@ public class SinkBroadcast extends Stream {
     public BufferedImage getPreview() {
         return null;
     }
-
+    public void setStandard(String gStandard) {
+        standard = gStandard;
+    }
+    
+    public String getStandard() {
+        return standard;
+    }
+    
     @Override
     public boolean hasAudio() {
         return true;

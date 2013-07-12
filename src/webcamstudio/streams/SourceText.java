@@ -28,6 +28,7 @@ public class SourceText extends Stream {
     Frame frame = null;
     float bgOpacity = 1f;
     private Shape shape = Shape.NONE;
+    private String strShape = "";
 
     @Override
     public void readNext() {
@@ -77,7 +78,14 @@ public class SourceText extends Stream {
     public Shape getBackground() {
         return shape;
     }
+    public void setStrBackground(String strS) {
+        strShape = strS;
+    }
 
+    public String getStrBackground() {
+        return strShape;
+    }
+    
     @Override
     public void setWidth(int w) {
         width = w;

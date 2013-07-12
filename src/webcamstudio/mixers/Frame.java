@@ -53,7 +53,7 @@ public class Frame {
             g.drawImage(imageSrc, 0, 0, null);
             g.dispose();
         }
-        if (audioSrc!=null && audioSrc.length==audioData.length){
+        if (audioSrc != null && audioSrc.length==audioData.length){
             System.arraycopy(audioSrc, 0, audioData, 0, audioSrc.length);
         }
     }
@@ -70,7 +70,7 @@ public class Frame {
         uuid=id;
     }
     public void setImage(BufferedImage img){
-        if (img!=null){
+        if (img != null){
             Graphics2D g = image.createGraphics();
             g.setBackground(new Color(0,0,0,0));
             g.clearRect(0, 0, w, h);
