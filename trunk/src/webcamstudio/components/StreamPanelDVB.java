@@ -457,7 +457,7 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         labelInv.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         labelInv.setText(bundle.getString("PROGRAM_NUMBER")); // NOI18N
         labelInv.setName("labelInv"); // NOI18N
-        add(labelInv, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 240, 80, -1));
+        add(labelInv, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 240, 50, -1));
 
         bandwidth.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         bandwidth.setToolTipText("(7/8)");
@@ -481,7 +481,7 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
                 prgNumberStateChanged(evt);
             }
         });
-        add(prgNumber, new org.netbeans.lib.awtextra.AbsoluteConstraints(68, 230, 50, -1));
+        add(prgNumber, new org.netbeans.lib.awtextra.AbsoluteConstraints(58, 230, 60, -1));
 
         txtChName.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtChName.setToolTipText("Enter Channel Name");

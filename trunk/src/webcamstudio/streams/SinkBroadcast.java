@@ -35,7 +35,11 @@ public class SinkBroadcast extends Stream {
         captureWidth = MasterMixer.getInstance().getWidth();
         captureHeight = MasterMixer.getInstance().getHeight();
         if (name.toLowerCase().equals("red5")){
-            capture = new ProcessRenderer(this,fme,"broadcastR5");
+            if (standard.equals("STD")) {
+                capture = new ProcessRenderer(this,fme,"broadcastR5");
+            } else {
+                capture = new ProcessRenderer(this,fme,"broadcastR5HQ");
+            }  
         } else {
             if (standard.equals("STD")) {
                 capture = new ProcessRenderer(this,fme,"broadcast");

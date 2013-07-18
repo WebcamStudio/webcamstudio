@@ -117,14 +117,11 @@ public class MasterFrameBuilder implements Runnable {
         stopMe = false;
         ArrayList<Frame> frames = new ArrayList<Frame>();
         mark = System.currentTimeMillis();
-//        int w = MasterMixer.getInstance().getWidth();
-//        int h = MasterMixer.getInstance().getHeight();
         int r = MasterMixer.getInstance().getRate();
         long frameDelay = 1000 / r;
         long timeCode = System.currentTimeMillis();
         ExecutorService pool = java.util.concurrent.Executors.newCachedThreadPool();
         while (!stopMe) {
-//            long start = System.currentTimeMillis();
             timeCode += frameDelay;
             Frame targetFrame = frameBuffer.getFrameToUpdate();
             frames.clear();

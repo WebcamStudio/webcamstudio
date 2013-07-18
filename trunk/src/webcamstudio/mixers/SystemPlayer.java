@@ -4,7 +4,6 @@
  */
 package webcamstudio.mixers;
 
-import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.LineUnavailableException;
@@ -23,7 +22,6 @@ public class SystemPlayer implements Runnable {
     private SourceDataLine source;
     private ExecutorService executor = null;
     private static SystemPlayer instance = null;
-//    private ArrayList<byte[]> buffer = new ArrayList<byte[]>();
     private FrameBuffer frames = null;
     private Viewer viewer = null;
 

@@ -211,7 +211,7 @@ public class Studio {
                 if (value instanceof String) {
                     xml.writeStartElement(name);
                     xml.writeCData(value.toString());
-                    Tools.sleep(20);
+                    Tools.sleep(5);
                     xml.writeEndElement();
                 } else if (value instanceof File) {
                     xml.writeStartElement(name);
@@ -227,7 +227,7 @@ public class Studio {
             if (value instanceof String) {
                 xml.writeStartElement(name);
                 xml.writeCData(value.toString());
-                Tools.sleep(20);
+                Tools.sleep(5);
                 xml.writeEndElement();
             } else if (value instanceof File) {
                 xml.writeStartElement(name);
