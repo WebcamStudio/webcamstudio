@@ -62,6 +62,13 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
     Frame vDevInfo = new Frame();
     Stream stream = null;
     private File lastFolder = null;
+    public interface Listener {
+            public void stopChTime(java.awt.event.ActionEvent evt);
+    }
+    static Listener listener = null;
+    public static void setListener(Listener l) {
+        listener = l;
+    }
     
     /**
      * Creates new form WebcamStudio
@@ -106,7 +113,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
                         files = new String(text).trim();
                     } else if (data instanceof InputStream) {
                         InputStream list = (InputStream) data;
-                        java.io.InputStreamReader reader = new java.io.InputStreamReader(list);
+//                        java.io.InputStreamReader reader = new java.io.InputStreamReader(list);
                         char[] text = new char[65536];
 //                        int count = reader.read(text);
                         files = new String(text).trim();
@@ -209,20 +216,13 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
     }
     @SuppressWarnings("unchecked")
     private void initWebcam() {
-//        try {
-            
             DefaultComboBoxModel model = new DefaultComboBoxModel();
-            ArrayList<String> camNames = new ArrayList<String>();
             if (Tools.getOS() == OS.LINUX) {
                 for (VideoDevice d : VideoDevice.getOutputDevices()) {
                     model.addElement(d.getName());
                 }
             }
             cboWebcam.setModel(model);            
-//        } catch (IOException ex) {
-//            Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-
     }
 
     private void loadPrefs() {
@@ -438,11 +438,6 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         cboAnimations.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         cboAnimations.setToolTipText(bundle.getString("ANIMATIONS")); // NOI18N
         cboAnimations.setName("cboAnimations"); // NOI18N
-        cboAnimations.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cboAnimationsActionPerformed(evt);
-            }
-        });
         toolbar.add(cboAnimations);
 
         btnAddAnimation.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/list-add.png"))); // NOI18N
@@ -581,11 +576,6 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         cboWebcam.setToolTipText("Detected Video Devices");
         cboWebcam.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         cboWebcam.setName("cboWebcam"); // NOI18N
-        cboWebcam.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cboWebcamActionPerformed(evt);
-            }
-        });
         mainToolbar.add(cboWebcam);
 
         btnAddWebcams.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/camera-video.png"))); // NOI18N
@@ -725,13 +715,10 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
 
     private void btnAddAnimationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddAnimationActionPerformed
         String key = cboAnimations.getSelectedItem().toString();
-        System.out.println("Key: "+key);
+        System.out.println("Animation: "+key);
         String res = animations.getProperty(key);
-        System.out.println("Res: "+res);
         String name = WebcamStudio.class.getResource("/webcamstudio/resources/animations/").toString();
-        System.out.println("MyClass: "+name);
         URL url = getClass().getResource("/webcamstudio/resources/animations/" + res);
-        System.out.println(url);
         Stream stream = new SourceImageGif(key, url);
         StreamDesktop frame = new StreamDesktop(stream, this);
         desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
@@ -776,7 +763,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
             if (streamzI.size()>0 || sourceChI.size()>0) {
                 Object[] options = {"OK"};
                 JOptionPane.showOptionDialog(this,
-                       "All Streams will be Stopped !!!","WS Warning Message.",
+                       "All Playing Streams will be Stopped !!!","WS Warning Message.",
                        JOptionPane.PLAIN_MESSAGE,
                        JOptionPane.INFORMATION_MESSAGE,
                        null,
@@ -816,6 +803,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
                     SystemPlayer.getInstance(null).stop();
                     Tools.sleep(50);
                     MasterChannels.getInstance().stopAllStream();
+                    listener.stopChTime(evt);
                     for (Stream s : MasterChannels.getInstance().getStreams()){
                     s.updateStatus();
                 }
@@ -834,7 +822,6 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
             } else {
                 ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Saving Cancelled!");
                 ResourceMonitor.getInstance().addMessage(label);
-//                overWrite = true;
             }
             } catch (Exception ex) {
                 Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
@@ -892,9 +879,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
             } while (streamz.size()>0 || sourceCh.size()>0);
                 SystemPlayer.getInstance(null).stop();
                 MasterChannels.getInstance().stopAllStream();
-                webcamstudio.components.ChannelPanel.CHt.cancel();
-                webcamstudio.components.ChannelPanel.CHt.purge();
-                webcamstudio.components.ChannelPanel.StopCHpt=true;
+                listener.stopChTime(evt);
                 ChannelPanel.CHCurrNext.clear();
                 ChannelPanel.CHTimers.clear();
                 tabControls.removeAll();
@@ -1043,9 +1028,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
                         webcamstudio.components.ChannelPanel.ListChannels.remove(removeSc);
                     }
                 } while (streamz.size()>0 || sourceCh.size()>0);
-                webcamstudio.components.ChannelPanel.CHt.cancel();
-                webcamstudio.components.ChannelPanel.CHt.purge();
-                webcamstudio.components.ChannelPanel.StopCHpt=true;
+                listener.stopChTime(evt);
                 ChannelPanel.CHCurrNext.clear();
                 ChannelPanel.CHTimers.clear();
                 tabControls.removeAll();
@@ -1061,10 +1044,6 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
             }
         }
     }//GEN-LAST:event_btnNewStudioActionPerformed
-
-    private void cboAnimationsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboAnimationsActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_cboAnimationsActionPerformed
 
     private void btnAddDVBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddDVBActionPerformed
         SourceDVB stream = new SourceDVB();
@@ -1092,10 +1071,6 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         VideoDeviceInfo vDevsI = new VideoDeviceInfo(vDevInfo, true); 
         vDevsI.setVisible(true);
     }//GEN-LAST:event_btnVideoDevInfoActionPerformed
-
-    private void cboWebcamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboWebcamActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_cboWebcamActionPerformed
 
     private void btnRefreshWebcamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshWebcamActionPerformed
         initWebcam();            // TODO add your handling code here:

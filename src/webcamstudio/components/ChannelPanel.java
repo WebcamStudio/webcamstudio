@@ -15,7 +15,7 @@ import javax.swing.DefaultComboBoxModel;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.swing.DefaultListModel;
-import webcamstudio.WebcamStudio.*;
+import webcamstudio.WebcamStudio;
 import webcamstudio.channels.MasterChannels;
 import webcamstudio.mixers.SystemPlayer;
 import webcamstudio.streams.Stream;
@@ -28,7 +28,7 @@ import webcamstudio.util.Tools;
  *
  * @author patrick (modified by karl)
  */
-public class ChannelPanel extends javax.swing.JPanel{
+public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Listener {
 
     MasterChannels master = MasterChannels.getInstance();
     public static DefaultListModel model = new DefaultListModel();
@@ -36,9 +36,7 @@ public class ChannelPanel extends javax.swing.JPanel{
     public static ArrayList<String> CHCurrNext = new ArrayList<String>();
     public static ArrayList<Integer> CHTimers = new ArrayList<Integer>();
     public static ArrayList<String> ListChannels = new ArrayList<String>();
-    ArrayList<Stream> streamS = MasterChannels.getInstance().getStreams();
-
-    
+    ArrayList<Stream> streamS = MasterChannels.getInstance().getStreams();   
     String selectChannel=null;   
     int CHon =0;
     String CHNxName = null;
@@ -48,14 +46,17 @@ public class ChannelPanel extends javax.swing.JPanel{
     String CHptS= null;
     public static Boolean StopCHpt=false;
     boolean inTimer=false;
+    
     /**
      * Creates new form ChannelPanel
      */
     @SuppressWarnings("unchecked") 
     public ChannelPanel() {
         initComponents();
+        final ChannelPanel instanceChPnl = this;
         lstChannels.setModel(model);
         lstNextChannel.setModel(aModel);
+        WebcamStudio.setListener(instanceChPnl);
     }
 
     /**
@@ -272,6 +273,8 @@ public class ChannelPanel extends javax.swing.JPanel{
                     .addComponent(btnSelect)
                     .addComponent(btnUpdate)))
         );
+
+        btnStopAllStream.getAccessibleContext().setAccessibleParent(StopCHTimer);
     }// </editor-fold>//GEN-END:initComponents
 
     private void lstChannelsValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_lstChannelsValueChanged
@@ -329,7 +332,11 @@ public class ChannelPanel extends javax.swing.JPanel{
             ListChannels.add(name);
        }
     }   
-    
+    @Override
+    public void stopChTime(java.awt.event.ActionEvent evt) {
+        StopCHTimerActionPerformed(evt);
+    }
+
     class UpdateCHtUITask extends TimerTask {
         @Override
         public void run() {
