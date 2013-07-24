@@ -128,15 +128,15 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener {
                     String files = "";
                     System.out.println(data.getClass().getCanonicalName());
                     if (data instanceof Reader) {
-                        Reader reader = (Reader) data;
+//                        Reader reader = (Reader) data;
                         char[] text = new char[65536];
-                        int count = reader.read(text);
+//                        int count = reader.read(text);
                         files = new String(text).trim();
                     } else if (data instanceof InputStream) {
                         InputStream list = (InputStream) data;
-                        java.io.InputStreamReader reader = new java.io.InputStreamReader(list);
+//                        java.io.InputStreamReader reader = new java.io.InputStreamReader(list);
                         char[] text = new char[65536];
-                        int count = reader.read(text);
+//                        int count = reader.read(text);
                         files = new String(text).trim();
                     } else if (data instanceof String) {
                         files = data.toString().trim();
@@ -186,7 +186,10 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener {
                 String width = service.get("width", "");
                 String height = service.get("height", "");
                 String stream = service.get("stream", "");
-                FME fme = new FME(url, stream, name, abitrate, vbitrate, vcodec, acodec, width, height);
+                String mount = service.get("mount", "");
+                String password = service.get("password", "");
+                String port = service.get("port", "");
+                FME fme = new FME(url, stream, name, abitrate, vbitrate, vcodec, acodec, width, height, mount, password, port);
                 fmes.put(fme.getName(), fme);
                 addButtonBroadcast(fme);
             }
@@ -216,6 +219,9 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener {
             service.put("width", fme.getWidth());
             service.put("height", fme.getHeight());
             service.put("stream", fme.getStream());
+            service.put("mount", fme.getMount());
+            service.put("password", fme.getPassword());
+            service.put("port", fme.getPort());
         }
     }
 
