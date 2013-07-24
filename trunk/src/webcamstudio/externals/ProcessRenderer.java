@@ -181,6 +181,8 @@ public class ProcessRenderer {
                     if (fme != null) {
                         if (fme.getName().toLowerCase().equals("red5")){
                             command = command.replaceAll(Tags.URL.toString(), "" + fme.getUrl() + "/" + fme.getStream());
+                        } else if (fme.getName().toLowerCase().equals("icecast")){
+                            command = command.replaceAll(Tags.URL.toString(), "" + fme.getUrl());
                         } else {
                             command = command.replaceAll(Tags.URL.toString(), "\""+fme.getUrl()+"/"+fme.getStream()+" live=1 flashver=FME/2.520(compatible;20FMSc201.0)"+"\"");
                         }
@@ -188,6 +190,24 @@ public class ProcessRenderer {
                         command = command.replaceAll(Tags.URL.toString(), "" + stream.getURL());
                     }
                     break;
+                case MOUNT:
+                    if (fme != null) {
+                        if (fme.getName().toLowerCase().equals("icecast")){
+                            command = command.replaceAll(Tags.MOUNT.toString(), "" + fme.getMount());
+                        }
+                    }    
+                case PASSWORD:
+                    if (fme != null) {
+                        if (fme.getName().toLowerCase().equals("icecast")){
+                            command = command.replaceAll(Tags.PASSWORD.toString(), "" + fme.getPassword());
+                        }
+                    }
+                case PORT:
+                    if (fme != null) {
+                        if (fme.getName().toLowerCase().equals("icecast")){
+                            command = command.replaceAll(Tags.PORT.toString(), "" + fme.getPort());
+                        }
+                    }    
                 case APORT:
                     command = command.replaceAll(Tags.APORT.toString(), "" + audioPort);
                     break;

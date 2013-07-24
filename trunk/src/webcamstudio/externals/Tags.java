@@ -38,7 +38,10 @@ public enum Tags {
         BW("@BW"),
         DVBFREQ("@DVBFREQ"),
         DVBCH("@DVBCH"),
-        WEBURL("@WEBURL");
+        WEBURL("@WEBURL"),
+        MOUNT("@MOUNT"),
+        PASSWORD("@PASSWORD"),
+        PORT("@PORT");
         
     private String name = "";
     private Tags(String name) {

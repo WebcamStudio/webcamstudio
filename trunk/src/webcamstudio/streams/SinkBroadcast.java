@@ -40,7 +40,13 @@ public class SinkBroadcast extends Stream {
             } else {
                 capture = new ProcessRenderer(this,fme,"broadcastR5HQ");
             }  
-        } else {
+        } else if (name.toLowerCase().equals("icecast")){
+            if (standard.equals("STD")) {
+                capture = new ProcessRenderer(this,fme,"iceCast");
+            } else {
+                capture = new ProcessRenderer(this,fme,"iceCastHQ");
+            }
+            } else {
             if (standard.equals("STD")) {
                 capture = new ProcessRenderer(this,fme,"broadcast");
             } else {

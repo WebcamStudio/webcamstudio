@@ -30,6 +30,9 @@ public class FME {
     private String width = "";
     private String height = "";
     private String stream = "";
+    private String mount = "";
+    private String password = "";
+    private String port = "";
     
     public FME(File xml) {
         try{
@@ -39,7 +42,7 @@ public class FME {
         }
     }
     
-    public FME(String url,String stream, String name, String abitrate,String vbitrate, String vcodec, String acodec, String width, String height){
+    public FME(String url,String stream, String name, String abitrate,String vbitrate, String vcodec, String acodec, String width, String height, String mount, String password, String port){
         this.name = name;
         this.width = width;
         this.height = height;
@@ -49,6 +52,10 @@ public class FME {
         this.abitrate = abitrate;
         this.url = url;
         this.stream = stream;
+        this.mount = mount;
+        this.password = password;
+        this.port = port;
+        
     }
     private void parse(File xml) throws ParserConfigurationException, SAXException, IOException, XPathExpressionException {
         XPath path = XPathFactory.newInstance().newXPath();
@@ -71,7 +78,10 @@ public class FME {
         abitrate = (String)path.evaluate(root + "/encode/audio/datarate", doc,XPathConstants.STRING);
         url = (String)path.evaluate(root + "/output/rtmp/url", doc,XPathConstants.STRING);
         stream = (String)path.evaluate(root + "/output/rtmp/stream", doc,XPathConstants.STRING);
-
+        mount = (String)path.evaluate(root + "/output/rtmp/mount", doc,XPathConstants.STRING);
+        password = (String)path.evaluate(root + "/output/rtmp/password", doc,XPathConstants.STRING);
+        port = (String)path.evaluate(root + "/output/rtmp/port", doc,XPathConstants.STRING);
+        
     }
 
     /**
@@ -135,5 +145,17 @@ public class FME {
      */
     public String getStream() {
         return stream;
+    }
+    /**
+     * @return
+     */
+    public String getMount() {
+        return mount;
+    }
+    public String getPassword() {
+        return password;
+    }
+    public String getPort() {
+        return port;
     }
 }
