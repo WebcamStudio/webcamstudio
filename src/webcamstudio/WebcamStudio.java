@@ -18,9 +18,14 @@ import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetDropEvent;
 import java.beans.PropertyVetoException;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
 import java.util.ArrayList;
@@ -42,6 +47,7 @@ import webcamstudio.channels.MasterChannels;
 import webcamstudio.components.*;
 import static webcamstudio.components.MasterPanel.*;
 import webcamstudio.exporter.vloopback.VideoDevice;
+import webcamstudio.externals.ProcessRenderer;
 import webcamstudio.mixers.MasterMixer;
 import webcamstudio.mixers.SystemPlayer;
 import webcamstudio.streams.*;
@@ -88,6 +94,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
             public synchronized void drop(DropTargetDropEvent evt) {
                 try {
                     String fileName = "";
+                    Runtime rt = Runtime.getRuntime();
                     evt.acceptDrop(DnDConstants.ACTION_REFERENCE);
                     boolean success = false;
                     DataFlavor dataFlavor = null;
@@ -134,6 +141,56 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
                                 fileName = file.getName();
                                 Stream stream = Stream.getInstance(file);
                                 if (stream != null) {
+                                    if (stream instanceof SourceMovie || stream instanceof SourceMusic) {
+                                        String commandDuration = "avconv -i " + "\"" + file.getAbsolutePath() + "\"";
+                                        File fileD=new File(System.getProperty("user.home")+"/.webcamstudio/"+"DurationCalc.sh");
+                                        FileOutputStream fosD;
+                                        DataOutputStream dosD = null;
+                                        try {
+                                        fosD = new FileOutputStream(fileD);
+                                        dosD= new DataOutputStream(fosD);
+                                        } catch (FileNotFoundException ex) {
+                                        Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
+                                        }
+                                         try {
+                                         dosD.writeBytes("#!/bin/bash\n");
+                                         dosD.writeBytes(commandDuration+"\n");
+                                         } catch (IOException ex) {
+                                         Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
+                                         }
+                                         String batchDurationComm = "sh "+System.getProperty("user.home")+"/.webcamstudio/"+"DurationCalc.sh";
+                                         System.out.println(batchDurationComm);
+                                         try {
+                                         Process duration = rt.exec(batchDurationComm);
+                                         Tools.sleep(10);
+                                         duration.waitFor(); //Author spoonybard896
+                                         InputStream lsOut = lsOut = duration.getErrorStream();
+                                         InputStreamReader isr = new InputStreamReader(lsOut);
+                                         BufferedReader in = new BufferedReader(isr);
+                                         String lineR = "";
+                                         while ((lineR = in.readLine()) != null) {
+                                         if(lineR.contains("Duration:"))
+                                         {
+                                         lineR = lineR.replaceFirst("Duration: ", "");
+                                         lineR = lineR.trim();
+
+                                         String resu = lineR.substring(0, 8);
+                                         System.out.println("Duration: " + resu);
+                                         String[] temp;
+                                         temp = resu.split(":");
+                                         int hours = Integer.parseInt(temp[0]);
+                                         int minutes = Integer.parseInt(temp[1]);
+                                         int seconds = Integer.parseInt(temp[2]);
+                                         int totalTime = (hours*3600)+(minutes*60)+seconds;
+                                         String strDuration = Integer.toString(totalTime);
+                                         System.out.println("Duration in Sec: "+strDuration);
+                                         stream.setStreamTime(strDuration+"s");
+                                         }
+                                         } //Author spoonybard896
+                                         } catch (Exception e) {
+                                         e.printStackTrace();
+                                         }
+                                    }
                                     StreamDesktop frame = getNewStreamDesktop(stream);
                                     desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
                                     frame.setLocation(evt.getLocation());
@@ -678,6 +735,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         JFileChooser chooser = new JFileChooser(lastFolder);
         FileNameExtensionFilter mediaFilter = new FileNameExtensionFilter("Supported Media files", "avi", "ogg", "jpeg", "ogv", "mp4", "m4v", "mpg", "divx", "wmv", "flv", "mov", "mkv", "vob", "jpg", "bmp", "png", "gif", "mp3", "wav", "wma", "m4a", ".mp2");
         chooser.setFileFilter(mediaFilter);
+        Runtime rt = Runtime.getRuntime();
         chooser.setMultiSelectionEnabled(false);
         chooser.setDialogTitle("WebcamStudio - Add Media file ...");
         chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -695,6 +753,56 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
             if (file != null) {
                 Stream s = Stream.getInstance(file);
                 if (s != null) {
+                    if (s instanceof SourceMovie || s instanceof SourceMusic) {
+                        String commandDuration = "avconv -i " + "\"" + file.getAbsolutePath() + "\"";
+                        File fileD=new File(System.getProperty("user.home")+"/.webcamstudio/"+"DurationCalc.sh");
+                        FileOutputStream fosD;
+                        DataOutputStream dosD = null;
+                        try {
+                        fosD = new FileOutputStream(fileD);
+                        dosD= new DataOutputStream(fosD);
+                        } catch (FileNotFoundException ex) {
+                        Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                         try {
+                         dosD.writeBytes("#!/bin/bash\n");
+                         dosD.writeBytes(commandDuration+"\n");
+                         } catch (IOException ex) {
+                         Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
+                         }
+                         String batchDurationComm = "sh "+System.getProperty("user.home")+"/.webcamstudio/"+"DurationCalc.sh";
+                         System.out.println(batchDurationComm);
+                         try {
+                         Process duration = rt.exec(batchDurationComm);
+                         Tools.sleep(10);
+                         duration.waitFor(); //Author spoonybard896
+                         InputStream lsOut = lsOut = duration.getErrorStream();
+                         InputStreamReader isr = new InputStreamReader(lsOut);
+                         BufferedReader in = new BufferedReader(isr);
+                         String line = "";
+                         while ((line = in.readLine()) != null) {
+                         if(line.contains("Duration:"))
+                         {
+                         line = line.replaceFirst("Duration: ", "");
+                         line = line.trim();
+
+                         String resu = line.substring(0, 8);
+                         System.out.println("Duration: " + resu);
+                         String[] temp;
+                         temp = resu.split(":");
+                         int hours = Integer.parseInt(temp[0]);
+                         int minutes = Integer.parseInt(temp[1]);
+                         int seconds = Integer.parseInt(temp[2]);
+                         int totalTime = (hours*3600)+(minutes*60)+seconds;
+                         String strDuration = Integer.toString(totalTime);
+                         System.out.println("Duration in Sec: "+strDuration);
+                         s.setStreamTime(strDuration+"s");
+                         }
+                         } //Author spoonybard896
+                         } catch (Exception e) {
+                         e.printStackTrace();
+                         }
+                    }
                     StreamDesktop frame = new StreamDesktop(s, this);
                     desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
                     try {

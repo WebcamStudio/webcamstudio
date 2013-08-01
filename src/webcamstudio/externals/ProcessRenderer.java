@@ -383,10 +383,20 @@ public class ProcessRenderer {
                 } else if (plugins.containsKey("video") && stream.isStillPicture()) {
                     commandVideo = plugins.getProperty("videoPic").replaceAll("  ", " "); //Making sure there is no double spaces
                 } else if (plugins.containsKey("video")) {
-                    commandVideo = plugins.getProperty("video").replaceAll("  ", " "); //Making sure there is no double spaces
+                    if ("AV".equals(stream.getComm())){
+                        commandVideo = plugins.getProperty("AVvideo").replaceAll("  ", " "); //Making sure there is no double spaces
+                    } else {
+                        commandVideo = plugins.getProperty("GSvideo").replaceAll("  ", " "); //Making sure there is no double spaces
+                    }
+//                    commandVideo = plugins.getProperty("video").replaceAll("  ", " "); //Making sure there is no double spaces
                 }
                 if (plugins.containsKey("audio")) {
-                    commandAudio = plugins.getProperty("audio").replaceAll("  ", " "); //Making sure there is no double spaces
+                    if ("AV".equals(stream.getComm())){
+                        commandAudio = plugins.getProperty("AVaudio").replaceAll("  ", " "); //Making sure there is no double spaces
+                    } else {
+                        commandAudio = plugins.getProperty("GSaudio").replaceAll("  ", " "); //Making sure there is no double spaces
+                    }
+//                    commandAudio = plugins.getProperty("audio").replaceAll("  ", " "); //Making sure there is no double spaces
                 }
                 if (commandVideo != null) {
                     commandVideo = setParameters(commandVideo);

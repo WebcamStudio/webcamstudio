@@ -71,7 +71,22 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
             this.add(p, BorderLayout.CENTER);
             this.setTitle(s.getName());
             this.setVisible(true);
-            JMBackEnd.setEnabled(false);
+            if (stream.getLoaded()){
+                if ("AV".equals(stream.getComm())){
+                    jCBAVConv.setSelected(true);
+                    stream.setComm("AV");
+                    jCBGStreamer.setSelected(false);
+                } else if ("GS".equals(stream.getComm())){
+                    jCBGStreamer.setSelected(true);
+                    stream.setComm("GS");
+                    jCBAVConv.setSelected(false);
+                }
+            } else {
+                    jCBAVConv.setSelected(true);
+                    stream.setComm("AV");
+                    jCBGStreamer.setSelected(false);
+            }
+            JMBackEnd.setEnabled(true);
             panelURL = p;
             s.setPanelType("PanelURL");
             jCBShowSliders.setEnabled(false);
