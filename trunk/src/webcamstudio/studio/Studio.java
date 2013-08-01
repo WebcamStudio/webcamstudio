@@ -4,8 +4,14 @@
  */
 package webcamstudio.studio;
 
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.reflect.Field;
@@ -35,6 +41,7 @@ import webcamstudio.mixers.MasterMixer;
 import webcamstudio.streams.*;
 import webcamstudio.components.*;
 import webcamstudio.channels.transitions.Transition;
+import webcamstudio.externals.ProcessRenderer;
 import static webcamstudio.streams.SourceText.Shape.NONE;
 import static webcamstudio.streams.SourceText.Shape.OVAL;
 import static webcamstudio.streams.SourceText.Shape.RECTANGLE;
@@ -291,6 +298,7 @@ public class Studio {
                 String ObjText = null;
                 String webUrl = null;
                 String comm = null;
+                String streamTime = null;
                 String strShapez = null;
                 String chNameDvb = null;
                 ArrayList<String> SubChNames = new ArrayList<String>();
@@ -333,6 +341,9 @@ public class Studio {
                     }
                     if (child.getNodeName().equals("comm")) {                       
                         comm = child.getTextContent();
+                    }
+                    if (child.getNodeName().equals("streamTime")) {                       
+                        streamTime = child.getTextContent();
                     }
                     if (child.getNodeName().equals("Channels")) { // Read SourceChannels
                         for (int nc = 0; nc < child.getChildNodes().getLength(); nc++) {
@@ -378,6 +389,60 @@ public class Studio {
                     extstreamBis.add(stream);
                     readObject(stream, source);
                     stream.setComm(comm);
+                    if (streamTime != null){
+                        stream.setStreamTime(streamTime+"s");
+                    } else {
+                        if (stream instanceof SourceMovie || stream instanceof SourceMusic) {
+                        Runtime rt = Runtime.getRuntime();
+                        String commandDuration = "avconv -i " + "\"" + file + "\"";
+                        File fileD=new File(System.getProperty("user.home")+"/.webcamstudio/"+"DurationCalc.sh");
+                        FileOutputStream fosD;
+                        DataOutputStream dosD = null;
+                        try {
+                        fosD = new FileOutputStream(fileD);
+                        dosD= new DataOutputStream(fosD);
+                        } catch (FileNotFoundException ex) {
+                        Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                         try {
+                         dosD.writeBytes("#!/bin/bash\n");
+                         dosD.writeBytes(commandDuration+"\n");
+                         } catch (IOException ex) {
+                         Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
+                         }
+                         String batchDurationComm = "sh "+System.getProperty("user.home")+"/.webcamstudio/"+"DurationCalc.sh";
+                         System.out.println(batchDurationComm);
+                         try {
+                         Process duration = rt.exec(batchDurationComm);
+                         Tools.sleep(10);
+                         duration.waitFor(); //Author spoonybard896
+                         InputStream lsOut = lsOut = duration.getErrorStream();
+                         InputStreamReader isr = new InputStreamReader(lsOut);
+                         BufferedReader in = new BufferedReader(isr);
+                         String line = "";
+                         while ((line = in.readLine()) != null) {
+                         if(line.contains("Duration:"))
+                         {
+                         line = line.replaceFirst("Duration: ", "");
+                         line = line.trim();
+                         String resu = line.substring(0, 8);
+                         String[] temp;
+                         temp = resu.split(":");
+                         int hours = Integer.parseInt(temp[0]);
+                         int minutes = Integer.parseInt(temp[1]);
+                         int seconds = Integer.parseInt(temp[2]);
+                         int totalTime = (hours*3600)+(minutes*60)+seconds;
+                         String strDuration = Integer.toString(totalTime);
+                         System.out.println("Duration in Sec: "+strDuration);
+                         stream.setStreamTime(strDuration+"s");
+                         //                                    break;
+                         }
+                         } //Author spoonybard896
+                         } catch (Exception e) {
+                         e.printStackTrace();
+                         }
+                        }
+                    }
                     stream.setLoaded(true);
                     int op=0;
                     for (SourceChannel scs : SCL) {
@@ -584,6 +649,8 @@ public class Studio {
                     extstreamBis.add(stream);
                     ImgMovMus.add("URL");
                     readObject(stream, source);
+                    stream.setComm(comm);
+                    stream.setLoaded(true);
                     int op=0;
                     for (SourceChannel scs : SCL) {
                         scs.setName(SubChNames.get(op));

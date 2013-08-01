@@ -84,6 +84,7 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener, 
         jSlSpinSeek.setValue(stream.getSeek());
         spinSeek.setEnabled(stream.needSeekCTRL());
         jSlSpinSeek.setEnabled(stream.needSeekCTRL());
+        jlbDuration.setText("Play Time "+stream.getStreamTime());
         stream.setListener(this);
         if (!stream.hasVideo()){
             spinX.setEnabled(false);
@@ -194,6 +195,7 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener, 
     private void initComponents() {
 
         panPreview = new javax.swing.JPanel();
+        jlbDuration = new javax.swing.JLabel();
         spinX = new javax.swing.JSpinner();
         spinY = new javax.swing.JSpinner();
         spinW = new javax.swing.JSpinner();
@@ -253,6 +255,14 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener, 
         panPreview.setName("panPreview"); // NOI18N
         panPreview.setPreferredSize(new java.awt.Dimension(90, 60));
         panPreview.setLayout(new java.awt.BorderLayout());
+
+        jlbDuration.setFont(new java.awt.Font("Ubuntu Mono", 0, 12)); // NOI18N
+        jlbDuration.setForeground(java.awt.Color.white);
+        jlbDuration.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jlbDuration.setText("Sec.");
+        jlbDuration.setName("jlbDuration"); // NOI18N
+        panPreview.add(jlbDuration, java.awt.BorderLayout.PAGE_END);
+
         add(panPreview, new org.netbeans.lib.awtextra.AbsoluteConstraints(7, 7, 110, 100));
 
         spinX.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
@@ -839,6 +849,7 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener, 
     private javax.swing.JSlider jSlSpinX;
     private javax.swing.JSlider jSlSpinY;
     private javax.swing.JSlider jSlSpinZOrder;
+    private javax.swing.JLabel jlbDuration;
     private javax.swing.JLabel labelAD;
     private javax.swing.JLabel labelCH;
     private javax.swing.JLabel labelCW;

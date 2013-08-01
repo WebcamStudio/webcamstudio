@@ -67,6 +67,7 @@ public abstract class Stream implements Callable<Frame>{
     public ArrayList<Transition> endTransitions = new ArrayList<Transition>();
     Listener listener = null;
     protected String panelType = "Panel";
+    protected String streamTime = "N/A";
 
     protected Stream() {
         MasterChannels.getInstance().register(this);
@@ -273,6 +274,12 @@ public abstract class Stream implements Callable<Frame>{
     }
     public String getPanelType(){
         return panelType;
+    }
+    public void setStreamTime(String sStreamTime) {
+        streamTime = sStreamTime;
+    }
+    public String getStreamTime(){
+        return streamTime;
     }
     public boolean needSeekCTRL(){
         needSeekCTRL = needSeek();

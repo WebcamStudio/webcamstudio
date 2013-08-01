@@ -101,8 +101,10 @@ public class SourceControlDesktop extends javax.swing.JPanel {
         });
 
         jLabel5.setText(bundle.getString("DESKTOP_CAPTURE_NUMBER")); // NOI18N
+        jLabel5.setEnabled(false);
         jLabel5.setName("jLabel5"); // NOI18N
 
+        spinN.setEnabled(false);
         spinN.setName("spinN"); // NOI18N
         spinN.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
