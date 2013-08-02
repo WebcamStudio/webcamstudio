@@ -7,3 +7,13 @@ Here are some video demos of the WebcamStudio application, showing it in action.
 = Video Demos =
 
 <wiki:video url="https://www.youtube.com/watch?v=NJiHoEzsoL8"/>
+
+<wiki:video url="https://www.youtube.com/watch?v=adGujG3hSQE"/>
+
+<wiki:video url="https://www.youtube.com/watch?v=7Wcr_hl4kjk"/>
+
+<wiki:video url="https://www.youtube.com/watch?v=8U6RSvELcuI"/>
+
+<wiki:video url="https://www.youtube.com/watch?v=KoqJZSKXThI"/>
+
+<wiki:video url="https://www.youtube.com/watch?v=2xTxdyrDWGA"/>
