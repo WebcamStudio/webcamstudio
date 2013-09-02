@@ -16,19 +16,20 @@ public class AudioBuffer {
     private ArrayList<byte[]> buffer = new ArrayList<byte[]>();
     private int bufferSize = MasterMixer.BUFFER_SIZE;
     private boolean abort = false;
+    private int aFreq = webcamstudio.WebcamStudio.audioFreq;
     int currentIndex = 0;
     long framePushed = 0;
     long framePopped = 0;
 
     public AudioBuffer(int rate) {
         for (int i = 0; i < bufferSize; i++) {
-            buffer.add(new byte[(22050 * 2 * 2) / rate]);
+            buffer.add(new byte[(aFreq * 2 * 2) / rate]);
         }
     }
     public AudioBuffer(int rate,int bufferSize) {
         this.bufferSize=bufferSize;
         for (int i = 0; i < bufferSize; i++) {
-            buffer.add(new byte[(22050 * 2 * 2) / rate]);
+            buffer.add(new byte[(aFreq * 2 * 2) / rate]);
         }
     }
 

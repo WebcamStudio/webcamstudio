@@ -34,13 +34,13 @@ public class SourceMicrophone_OLD extends Stream {
     public void read() {
         isPlaying = true;
         rate = MasterMixer.getInstance().getRate();
-        audio = new byte[22050 * 2 * 2 / rate];
+        audio = new byte[webcamstudio.WebcamStudio.audioFreq * 2 * 2 / rate];
         frame = new Frame(captureWidth, captureHeight, rate);
         Thread t = new Thread(new Runnable() {
 
             @Override
             public void run() {
-                AudioFormat format = new AudioFormat(22050, 16, 2, true, true);
+                AudioFormat format = new AudioFormat(webcamstudio.WebcamStudio.audioFreq, 16, 2, true, true);
                 DataLine.Info info = new DataLine.Info(TargetDataLine.class, format); // format is an AudioFormat object
                 if (!AudioSystem.isLineSupported(info)) {
                     isPlaying = false;

@@ -24,6 +24,7 @@ public class Frame {
     private int zOrder = 0;
     private String uuid = null;
     private long frameNb = 0;
+    private int aFreq = webcamstudio.WebcamStudio.audioFreq;
    
    public Frame(String id,BufferedImage img, byte[] audio){
         image=img;
@@ -40,7 +41,7 @@ public class Frame {
         this.w=w;
         this.h=h;
         image = new BufferedImage(w,h,BufferedImage.TYPE_INT_ARGB);
-        audioData= new byte[(22050 *2 *2) / rate];
+        audioData= new byte[(aFreq *2 *2) / rate];
     }
     public void copyFrame(Frame frame){
         

@@ -24,14 +24,22 @@ public class PerspectiveControl extends javax.swing.JPanel {
     public PerspectiveControl(Perspective effect) {
         initComponents();
         this.effect=effect;
-        txtX1.setText((int)effect.getX1()+"");
+/*        txtX1.setText((int)effect.getX1()+"");
         txtY1.setText((int)effect.getY1()+"");
         txtX2.setText((int)effect.getX2()+"");
         txtY2.setText((int)effect.getY2()+"");
         txtX3.setText((int)effect.getX3()+"");
         txtY3.setText((int)effect.getY3()+"");
         txtX4.setText((int)effect.getX4()+"");
-        txtY4.setText((int)effect.getY4()+"");
+        txtY4.setText((int)effect.getY4()+""); */
+        jSpinX1.setValue((int)effect.getX1());
+        jSpinY1.setValue((int)effect.getY1());
+        jSpinX2.setValue((int)effect.getX2());
+        jSpinY2.setValue((int)effect.getY2());
+        jSpinX3.setValue((int)effect.getX3());
+        jSpinY3.setValue((int)effect.getY3());
+        jSpinX4.setValue((int)effect.getX4());
+        jSpinY4.setValue((int)effect.getY4());
     }
 
     /** This method is called from within the constructor to
@@ -47,218 +55,158 @@ public class PerspectiveControl extends javax.swing.JPanel {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        txtX1 = new javax.swing.JFormattedTextField();
-        txtX2 = new javax.swing.JFormattedTextField();
-        txtX3 = new javax.swing.JFormattedTextField();
-        txtX4 = new javax.swing.JFormattedTextField();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
-        txtY1 = new javax.swing.JFormattedTextField();
-        txtY2 = new javax.swing.JFormattedTextField();
-        txtY3 = new javax.swing.JFormattedTextField();
-        txtY4 = new javax.swing.JFormattedTextField();
+        jSpinX1 = new javax.swing.JSpinner();
+        jSpinY1 = new javax.swing.JSpinner();
+        jSpinX2 = new javax.swing.JSpinner();
+        jSpinY2 = new javax.swing.JSpinner();
+        jSpinX3 = new javax.swing.JSpinner();
+        jSpinY3 = new javax.swing.JSpinner();
+        jSpinX4 = new javax.swing.JSpinner();
+        jSpinY4 = new javax.swing.JSpinner();
 
-        label.setText("X1");
+        setPreferredSize(new java.awt.Dimension(414, 154));
+        setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        label.setFont(new java.awt.Font("Ubuntu", 0, 14)); // NOI18N
+        label.setText("X Top L corner");
         label.setName("label"); // NOI18N
+        add(label, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 30, -1, -1));
 
-        jLabel1.setText("X2");
+        jLabel1.setFont(new java.awt.Font("Ubuntu", 0, 14)); // NOI18N
+        jLabel1.setText("X Top R corner");
         jLabel1.setName("jLabel1"); // NOI18N
+        add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 60, -1, -1));
 
-        jLabel2.setText("X3");
+        jLabel2.setFont(new java.awt.Font("Ubuntu", 0, 14)); // NOI18N
+        jLabel2.setText("X Bottom R corner");
         jLabel2.setName("jLabel2"); // NOI18N
+        add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 90, -1, -1));
 
-        jLabel3.setText("X4");
+        jLabel3.setFont(new java.awt.Font("Ubuntu", 0, 14)); // NOI18N
+        jLabel3.setText("X Bottom L corner");
         jLabel3.setName("jLabel3"); // NOI18N
+        add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 120, -1, -1));
 
-        txtX1.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
-        txtX1.setText("0");
-        txtX1.setName("txtX1"); // NOI18N
-        txtX1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtX1ActionPerformed(evt);
-            }
-        });
-
-        txtX2.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
-        txtX2.setText("0");
-        txtX2.setName("txtX2"); // NOI18N
-        txtX2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtX2ActionPerformed(evt);
-            }
-        });
-
-        txtX3.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
-        txtX3.setText("0");
-        txtX3.setName("txtX3"); // NOI18N
-        txtX3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtX3ActionPerformed(evt);
-            }
-        });
-
-        txtX4.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
-        txtX4.setText("0");
-        txtX4.setName("txtX4"); // NOI18N
-        txtX4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtX4ActionPerformed(evt);
-            }
-        });
-
-        jLabel4.setText("Y1");
+        jLabel4.setFont(new java.awt.Font("Ubuntu", 0, 14)); // NOI18N
+        jLabel4.setText("Y Top L corner");
         jLabel4.setName("jLabel4"); // NOI18N
+        add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 30, -1, -1));
 
-        jLabel5.setText("Y2");
+        jLabel5.setFont(new java.awt.Font("Ubuntu", 0, 14)); // NOI18N
+        jLabel5.setText("Y Top R corner");
         jLabel5.setName("jLabel5"); // NOI18N
+        add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 60, -1, -1));
 
-        jLabel6.setText("Y3");
+        jLabel6.setFont(new java.awt.Font("Ubuntu", 0, 14)); // NOI18N
+        jLabel6.setText("Y Bottom R corner");
         jLabel6.setName("jLabel6"); // NOI18N
+        add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 90, -1, -1));
 
-        jLabel7.setText("Y4");
+        jLabel7.setFont(new java.awt.Font("Ubuntu", 0, 14)); // NOI18N
+        jLabel7.setText("Y Bottom L corner");
         jLabel7.setName("jLabel7"); // NOI18N
+        add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 120, -1, -1));
 
-        txtY1.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
-        txtY1.setText("0");
-        txtY1.setName("txtY1"); // NOI18N
-        txtY1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtY1ActionPerformed(evt);
+        jSpinX1.setName("jSpinX1"); // NOI18N
+        jSpinX1.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSpinX1StateChanged(evt);
             }
         });
+        add(jSpinX1, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 20, 64, -1));
 
-        txtY2.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
-        txtY2.setText("0");
-        txtY2.setName("txtY2"); // NOI18N
-        txtY2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtY2ActionPerformed(evt);
+        jSpinY1.setName("jSpinY1"); // NOI18N
+        jSpinY1.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSpinY1StateChanged(evt);
             }
         });
+        add(jSpinY1, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 20, 63, -1));
 
-        txtY3.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
-        txtY3.setText("0");
-        txtY3.setName("txtY3"); // NOI18N
-        txtY3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtY3ActionPerformed(evt);
+        jSpinX2.setName("jSpinX2"); // NOI18N
+        jSpinX2.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSpinX2StateChanged(evt);
             }
         });
+        add(jSpinX2, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 50, 63, -1));
 
-        txtY4.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
-        txtY4.setText("0");
-        txtY4.setName("txtY4"); // NOI18N
-        txtY4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtY4ActionPerformed(evt);
+        jSpinY2.setName("jSpinY2"); // NOI18N
+        jSpinY2.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSpinY2StateChanged(evt);
             }
         });
+        add(jSpinY2, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 50, 63, -1));
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(label)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtX1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtY1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtX2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel5)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtY2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtX3, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel6)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtY3, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtX4, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel7)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtY4, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(108, Short.MAX_VALUE))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(label)
-                    .addComponent(txtX1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel4)
-                    .addComponent(txtY1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(txtX2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel5)
-                    .addComponent(txtY2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(txtX3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel6)
-                    .addComponent(txtY3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(txtX4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel7)
-                    .addComponent(txtY4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+        jSpinX3.setName("jSpinX3"); // NOI18N
+        jSpinX3.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSpinX3StateChanged(evt);
+            }
+        });
+        add(jSpinX3, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 80, 63, -1));
+
+        jSpinY3.setName("jSpinY3"); // NOI18N
+        jSpinY3.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSpinY3StateChanged(evt);
+            }
+        });
+        add(jSpinY3, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 80, 63, -1));
+
+        jSpinX4.setName("jSpinX4"); // NOI18N
+        jSpinX4.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSpinX4StateChanged(evt);
+            }
+        });
+        add(jSpinX4, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 110, 63, -1));
+
+        jSpinY4.setName("jSpinY4"); // NOI18N
+        jSpinY4.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSpinY4StateChanged(evt);
+            }
+        });
+        add(jSpinY4, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 110, 63, -1));
     }// </editor-fold>//GEN-END:initComponents
 
-    private void txtX1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtX1ActionPerformed
-        effect.setX1(new Integer(txtX1.getText()));
-    }//GEN-LAST:event_txtX1ActionPerformed
+    private void jSpinX1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinX1StateChanged
+        effect.setX1((Integer) jSpinX1.getValue());
+    }//GEN-LAST:event_jSpinX1StateChanged
 
-    private void txtX2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtX2ActionPerformed
-        effect.setX2(new Integer(txtX2.getText()));
-    }//GEN-LAST:event_txtX2ActionPerformed
+    private void jSpinY1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinY1StateChanged
+        effect.setY1((Integer) jSpinY1.getValue());
+    }//GEN-LAST:event_jSpinY1StateChanged
 
-    private void txtX3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtX3ActionPerformed
-        effect.setX3(new Integer(txtX3.getText()));
-    }//GEN-LAST:event_txtX3ActionPerformed
+    private void jSpinX2StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinX2StateChanged
+        effect.setX2((Integer) jSpinX2.getValue());
+    }//GEN-LAST:event_jSpinX2StateChanged
 
-    private void txtX4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtX4ActionPerformed
-        effect.setX4(new Integer(txtX4.getText()));
-    }//GEN-LAST:event_txtX4ActionPerformed
+    private void jSpinY2StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinY2StateChanged
+        effect.setY2((Integer) jSpinY2.getValue());
+    }//GEN-LAST:event_jSpinY2StateChanged
 
-    private void txtY1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtY1ActionPerformed
-        effect.setY1(new Integer(txtY1.getText()));
-    }//GEN-LAST:event_txtY1ActionPerformed
+    private void jSpinX3StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinX3StateChanged
+        effect.setX3((Integer) jSpinX3.getValue());
+    }//GEN-LAST:event_jSpinX3StateChanged
 
-    private void txtY2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtY2ActionPerformed
-        effect.setY2(new Integer(txtY2.getText()));
-    }//GEN-LAST:event_txtY2ActionPerformed
+    private void jSpinY3StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinY3StateChanged
+        effect.setY3((Integer) jSpinY3.getValue());
+    }//GEN-LAST:event_jSpinY3StateChanged
 
-    private void txtY3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtY3ActionPerformed
-        effect.setY3(new Integer(txtY3.getText()));
-    }//GEN-LAST:event_txtY3ActionPerformed
+    private void jSpinX4StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinX4StateChanged
+        effect.setX4((Integer) jSpinX4.getValue());
+    }//GEN-LAST:event_jSpinX4StateChanged
 
-    private void txtY4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtY4ActionPerformed
-        effect.setY4(new Integer(txtY4.getText()));
-    }//GEN-LAST:event_txtY4ActionPerformed
+    private void jSpinY4StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinY4StateChanged
+        effect.setY4((Integer) jSpinY4.getValue());
+    }//GEN-LAST:event_jSpinY4StateChanged
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -269,15 +217,15 @@ public class PerspectiveControl extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JSpinner jSpinX1;
+    private javax.swing.JSpinner jSpinX2;
+    private javax.swing.JSpinner jSpinX3;
+    private javax.swing.JSpinner jSpinX4;
+    private javax.swing.JSpinner jSpinY1;
+    private javax.swing.JSpinner jSpinY2;
+    private javax.swing.JSpinner jSpinY3;
+    private javax.swing.JSpinner jSpinY4;
     private javax.swing.JLabel label;
-    private javax.swing.JFormattedTextField txtX1;
-    private javax.swing.JFormattedTextField txtX2;
-    private javax.swing.JFormattedTextField txtX3;
-    private javax.swing.JFormattedTextField txtX4;
-    private javax.swing.JFormattedTextField txtY1;
-    private javax.swing.JFormattedTextField txtY2;
-    private javax.swing.JFormattedTextField txtY3;
-    private javax.swing.JFormattedTextField txtY4;
     // End of variables declaration//GEN-END:variables
 
 }

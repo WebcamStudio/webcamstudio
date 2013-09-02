@@ -282,8 +282,8 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
         add(labelH1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 250, 40, -1));
 
         jSlSpinX.setMajorTickSpacing(10);
-        jSlSpinX.setMaximum(720);
-        jSlSpinX.setMinimum(-720);
+        jSlSpinX.setMaximum(1920);
+        jSlSpinX.setMinimum(-1920);
         jSlSpinX.setMinorTickSpacing(1);
         jSlSpinX.setSnapToTicks(true);
         jSlSpinX.setValue(0);
@@ -297,8 +297,8 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
         add(jSlSpinX, new org.netbeans.lib.awtextra.AbsoluteConstraints(127, 180, 150, 20));
 
         jSlSpinY.setMajorTickSpacing(10);
-        jSlSpinY.setMaximum(720);
-        jSlSpinY.setMinimum(-720);
+        jSlSpinY.setMaximum(1080);
+        jSlSpinY.setMinimum(-1080);
         jSlSpinY.setMinorTickSpacing(1);
         jSlSpinY.setValue(0);
         jSlSpinY.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -311,7 +311,7 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
         });
         add(jSlSpinY, new org.netbeans.lib.awtextra.AbsoluteConstraints(127, 200, 150, 20));
 
-        jSlSpinW.setMaximum(1080);
+        jSlSpinW.setMaximum(1920);
         jSlSpinW.setSnapToTicks(true);
         jSlSpinW.setValue(0);
         jSlSpinW.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
