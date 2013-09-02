@@ -22,6 +22,9 @@ public class SourceControls {
         if (source instanceof SourceDesktop) {
             c = new SourceControlDesktop((SourceDesktop) source);
             comps.add(c);
+            c = new SourceControlEffects(source);
+            c.setName("Effects");
+            comps.add(c);
         } else if (source instanceof SourceMovie) {
             c = new SourceControlEffects(source);
             c.setName("Effects");

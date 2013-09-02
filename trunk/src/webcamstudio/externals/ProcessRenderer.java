@@ -22,6 +22,7 @@ import webcamstudio.streams.SinkFile;
 import webcamstudio.streams.Stream;
 import webcamstudio.util.Tools;
 import webcamstudio.util.Tools.OS;
+//import webcamstudio.WebcamStudio.*;
 
 /**
  *
@@ -44,7 +45,7 @@ public class ProcessRenderer {
     String plugin = "";
     int videoPort = 0;
     int audioPort = 0;
-    int frequency = 22050;
+    int frequency = webcamstudio.WebcamStudio.audioFreq;
     int channels = 2;
     int bitSize = 16;
     Stream stream;
@@ -383,6 +384,9 @@ public class ProcessRenderer {
                 } else if (plugins.containsKey("video") && stream.isStillPicture()) {
                     commandVideo = plugins.getProperty("videoPic").replaceAll("  ", " "); //Making sure there is no double spaces
                 } else if (plugins.containsKey("video")) {
+                    if (stream.getWebURL().toLowerCase().contains("udp")) {
+                        commandVideo = plugins.getProperty("GSvideoUDP").replaceAll("  ", " "); //Making sure there is no double spaces
+                    } else {
                     if ("AV".equals(stream.getComm())){
                         commandVideo = plugins.getProperty("AVvideo").replaceAll("  ", " "); //Making sure there is no double spaces
                     } else {
@@ -390,13 +394,18 @@ public class ProcessRenderer {
                     }
 //                    commandVideo = plugins.getProperty("video").replaceAll("  ", " "); //Making sure there is no double spaces
                 }
+                }
                 if (plugins.containsKey("audio")) {
+                    if (stream.getWebURL().toLowerCase().contains("udp")) {
+                        commandAudio = plugins.getProperty("GSaudioUDP").replaceAll("  ", " "); //Making sure there is no double spaces
+                    } else {
                     if ("AV".equals(stream.getComm())){
                         commandAudio = plugins.getProperty("AVaudio").replaceAll("  ", " "); //Making sure there is no double spaces
                     } else {
                         commandAudio = plugins.getProperty("GSaudio").replaceAll("  ", " "); //Making sure there is no double spaces
                     }
 //                    commandAudio = plugins.getProperty("audio").replaceAll("  ", " "); //Making sure there is no double spaces
+                }
                 }
                 if (commandVideo != null) {
                     commandVideo = setParameters(commandVideo);

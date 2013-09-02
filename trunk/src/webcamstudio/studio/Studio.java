@@ -390,7 +390,7 @@ public class Studio {
                     readObject(stream, source);
                     stream.setComm(comm);
                     if (streamTime != null){
-                        stream.setStreamTime(streamTime+"s");
+                        stream.setStreamTime(streamTime);
                     } else {
                         if (stream instanceof SourceMovie || stream instanceof SourceMusic) {
                         Runtime rt = Runtime.getRuntime();

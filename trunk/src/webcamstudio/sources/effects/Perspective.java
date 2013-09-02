@@ -57,7 +57,7 @@ public class Perspective extends Effect {
 
     @Override
     public boolean needApply(){
-        return needApply=false;
+        return needApply=true;
     }
     @Override
     public void loadFromStudioConfig(Preferences prefs) {

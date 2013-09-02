@@ -24,6 +24,7 @@ public class SystemPlayer implements Runnable {
     private static SystemPlayer instance = null;
     private FrameBuffer frames = null;
     private Viewer viewer = null;
+    private int aFreq = webcamstudio.WebcamStudio.audioFreq;
 
     private SystemPlayer(Viewer viewer) {
         this.viewer = viewer;
@@ -46,8 +47,10 @@ public class SystemPlayer implements Runnable {
     }
 
     public void play() throws LineUnavailableException {
+        aFreq = webcamstudio.WebcamStudio.audioFreq;
         frames = new FrameBuffer(MasterMixer.getInstance().getWidth(), MasterMixer.getInstance().getHeight(), MasterMixer.getInstance().getRate());
-        AudioFormat format = new AudioFormat(22050, 16, 2, true, true);
+        AudioFormat format = new AudioFormat(aFreq, 16, 2, true, true);
+        System.out.println("SysPlayer AFreq: "+aFreq);
         source = javax.sound.sampled.AudioSystem.getSourceDataLine(format);
         source.open();
         source.start();

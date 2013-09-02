@@ -67,6 +67,8 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
     Frame about = new Frame();
     Frame vDevInfo = new Frame();
     Stream stream = null;
+    public static int audioFreq = 22050;
+    ArrayList<Stream> streamS = MasterChannels.getInstance().getStreams();
     private File lastFolder = null;
     public interface Listener {
             public void stopChTime(java.awt.event.ActionEvent evt);
@@ -82,7 +84,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
     
     public WebcamStudio() {
         
-        initComponents();
+        initComponents(); 
         String build = new Version().getBuild();
         setTitle("WebcamStudio " + Version.version + " (" + build + ")");
         ImageIcon icon = new ImageIcon(this.getClass().getResource("/webcamstudio/resources/icon.png"));
@@ -224,13 +226,13 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         this.add(new MasterPanel(), BorderLayout.WEST);
         initAnimations();
         initWebcam();
+        initAudioSW();
         loadCustomSources();
     }
 
     private StreamDesktop getNewStreamDesktop(Stream s) {
         return new StreamDesktop(s, this);
     }
-    
 
 
     private void loadCustomSources() {
@@ -280,6 +282,13 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
                 }
             }
             cboWebcam.setModel(model);            
+    }
+    @SuppressWarnings("unchecked")
+    private void initAudioSW() {
+            DefaultComboBoxModel model = new DefaultComboBoxModel();
+            model.addElement("22050Hz");
+            model.addElement("44100Hz");
+            cboAudioHz.setModel(model);            
     }
 
     private void loadPrefs() {
@@ -360,6 +369,8 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         btnRefreshWebcam = new javax.swing.JButton();
         btnVideoDevInfo = new javax.swing.JButton();
         jSeparator6 = new javax.swing.JToolBar.Separator();
+        jLabel2 = new javax.swing.JLabel();
+        cboAudioHz = new javax.swing.JComboBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("WebcamStudio");
@@ -679,6 +690,22 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         jSeparator6.setName("jSeparator6"); // NOI18N
         jSeparator6.setOpaque(true);
         mainToolbar.add(jSeparator6);
+
+        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/audio-Hz.png"))); // NOI18N
+        jLabel2.setToolTipText("Master Audio Sample Rate");
+        jLabel2.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 5, 1, 1));
+        jLabel2.setName("jLabel2"); // NOI18N
+        mainToolbar.add(jLabel2);
+
+        cboAudioHz.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cboAudioHz.setToolTipText("Choose Default Audio Output Quality.");
+        cboAudioHz.setName("cboAudioHz"); // NOI18N
+        cboAudioHz.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cboAudioHzActionPerformed(evt);
+            }
+        });
+        mainToolbar.add(cboAudioHz);
 
         getContentPane().add(mainToolbar, java.awt.BorderLayout.PAGE_START);
 
@@ -1181,7 +1208,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
     }//GEN-LAST:event_btnVideoDevInfoActionPerformed
 
     private void btnRefreshWebcamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshWebcamActionPerformed
-        initWebcam();            // TODO add your handling code here:
+        initWebcam();
     }//GEN-LAST:event_btnRefreshWebcamActionPerformed
 
     private void btnAddMonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddMonActionPerformed
@@ -1194,6 +1221,27 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
             Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnAddMonActionPerformed
+
+    private void cboAudioHzActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboAudioHzActionPerformed
+        final String audioHz = cboAudioHz.getSelectedItem().toString();
+        if (audioHz.equals("22050Hz")) {
+            audioFreq = 22050;
+        } else {
+            audioFreq = 44100;
+        }
+        MasterMixer.getInstance().stop();
+        Tools.sleep(100);
+        SystemPlayer.getInstance(null).stop();
+        Tools.sleep(30);
+        MasterChannels.getInstance().stopAllStream();
+        for (Stream s : streamS){
+            s.updateStatus();
+        }
+        MasterMixer.getInstance().start();
+        ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Overall Audio Output set to: "+audioFreq+"Hz");
+        ResourceMonitor.getInstance().addMessage(label);
+//        System.out.println("Overall Audio Output set to: "+audioFreq+"Hz");
+    }//GEN-LAST:event_cboAudioHzActionPerformed
     /**
      * @param args the command line arguments
      */
@@ -1263,8 +1311,10 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
     private javax.swing.JButton btnSaveStudio;
     private javax.swing.JButton btnVideoDevInfo;
     public static javax.swing.JComboBox cboAnimations;
+    private javax.swing.JComboBox cboAudioHz;
     private javax.swing.JComboBox cboWebcam;
     private javax.swing.JDesktopPane desktop;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JToolBar.Separator jSeparator1;
     private javax.swing.JToolBar.Separator jSeparator2;
     private javax.swing.JToolBar.Separator jSeparator5;

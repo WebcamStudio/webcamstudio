@@ -14,6 +14,7 @@ import webcamstudio.externals.ProcessRenderer;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterFrameBuilder;
 import webcamstudio.mixers.MasterMixer;
+import webcamstudio.sources.effects.Effect;
 import webcamstudio.util.Tools;
 import webcamstudio.util.Tools.OS;
 
@@ -107,13 +108,19 @@ public class SourceDesktop extends Stream {
     public void readNext() {
          if (capture != null) {
             nextFrame = capture.getFrame();
+            for (Effect fx : this.getEffects()) {
+                if (fx.needApply() && nextFrame != null){   
+                    fx.applyEffect(nextFrame.getImage());
+                }
+            }
             if (nextFrame != null) {
                 lastPreview = nextFrame.getImage();
             }
         } else if (defaultCapture != null) {
-            frame.setImage(defaultCapture.createScreenCapture(area));
+            frame.setImage(defaultCapture.createScreenCapture(area));           
             frame.setOutputFormat(x, y, width, height, opacity, volume);
             frame.setZOrder(zorder);
+            applyEffects(frame.getImage());
             nextFrame=frame;
             lastPreview = frame.getImage();
             

@@ -44,7 +44,7 @@ public class Capturer {
         stream = s;
         frame = new Frame(stream.getCaptureWidth(), stream.getCaptureHeight(), stream.getRate());
         image = new WSImage(stream.getCaptureWidth(), stream.getCaptureHeight(), BufferedImage.TYPE_INT_RGB);
-        audio = new byte[(22050 * 2 * 2) / stream.getRate()];
+        audio = new byte[(webcamstudio.WebcamStudio.audioFreq * 2 * 2) / stream.getRate()];
         frame.setID(stream.getID());
         if (stream.hasAudio()) {
             try {
