@@ -150,8 +150,10 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener, 
         spinOpacity.setValue(stream.getOpacity());
         jSlSpinO.setValue(stream.getOpacity());
         spinVolume.setValue(stream.getVolume() * 100);
-        String jSVol = spinVolume.getValue().toString().replace(".0", "");
-        int jVol = Integer.parseInt(jSVol);
+        String jSVol;
+        jSVol = spinVolume.getValue().toString().replace(".0", "");
+        int jVol;
+        jVol = Integer.parseInt(jSVol);
         jSlSpinV.setValue(jVol);
         spinZOrder.setValue(stream.getZOrder());
         jSlSpinZOrder.setValue(stream.getZOrder());

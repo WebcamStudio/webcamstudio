@@ -81,6 +81,10 @@ public class SourceText extends Stream {
     public void setStrBackground(String strS) {
         strShape = strS;
     }
+    @Override
+    public void setIsPlaying(boolean setIsPlaying) {
+        playing = setIsPlaying;
+    }
 
     public String getStrBackground() {
         return strShape;

@@ -11,6 +11,7 @@ import java.net.URL;
 import webcamstudio.components.GifDecoder;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterFrameBuilder;
+import webcamstudio.sources.effects.Effect;
 import webcamstudio.util.Tools;
 
 /**
@@ -100,7 +101,10 @@ public class SourceImageGif extends Stream {
     public boolean isPlaying() {
         return playing;
     }
-
+    @Override
+    public void setIsPlaying(boolean setIsPlaying) {
+        playing = setIsPlaying;
+    }
     @Override
     public BufferedImage getPreview() {
         return image;
@@ -120,6 +124,14 @@ public class SourceImageGif extends Stream {
     public void readNext() {
         image = decoder.getFrame(index);
         frame = new Frame(uuid, image, null);
+//       applyEffects(frame.getImage());
+        for (Effect fx : this.getEffects()) {
+            if (frame != null) {
+                if (fx.needApply()){   
+                    fx.applyEffect(frame.getImage());
+                }
+            }
+        }
         frame.setOutputFormat(x, y, width, height, opacity, volume);
         frame.setZOrder(zorder);
         nextFrame=frame;

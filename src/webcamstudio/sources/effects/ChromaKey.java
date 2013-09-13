@@ -19,11 +19,11 @@ public class ChromaKey extends Effect {
     private int rTolerance = 0;
     private int gTolerance = 0;
     private int bTolerance = 0;
-    private Color color = new Color(0x00ff00);
-
+    private int colorInt = -16711936;
+    private Color color = new Color(colorInt);
     @Override
     public void applyEffect(BufferedImage img) {
-        
+        color = new Color(colorInt);
         int[] data = ((java.awt.image.DataBufferInt) img.getRaster().getDataBuffer()).getData();
         int r, g, b, c;
         for (int i = 0; i < data.length; i++) {
@@ -41,11 +41,12 @@ public class ChromaKey extends Effect {
     }
 
     public int getColor() {
-        return color.getRGB();
+        return colorInt;
     }
 
-    public void setColor(int c) {
-        color = new Color(c);
+    public void setColor(int col) {
+//        color = new Color(c);
+        colorInt = col;
     }
 
     @Override

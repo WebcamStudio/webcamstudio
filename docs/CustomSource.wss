@@ -20,5 +20,5 @@
 # You can also copy this file in "~/.webcamstudio/sources" so they will be loaded automatically when WebcamStudio starts
 #
 # There can be only one "source" for each file 
-source=ffmpeg -v 0 -r 15 -s @CWIDTHx@CHEIGHT -f video4linux2 -i /dev/video0 -f alsa -ac 2 -ar 22050 -i pulse -f rawvideo -pix_fmt rgb24 -r @RATE tcp://127.0.0.1:@VPORT -ar @FREQ -ac @CHANNELS -f s@BITSIZEbe tcp://127.0.0.1:@APORT
+source=ffmpeg -v 0 -r 15 -s @CWIDTHx@CHEIGHT -f video4linux2 -i /dev/video0 -f alsa -ac 2 -ar @FREQ -i pulse -f rawvideo -pix_fmt rgb24 -r @RATE tcp://127.0.0.1:@VPORT -ar @FREQ -ac @CHANNELS -f s@BITSIZEbe tcp://127.0.0.1:@APORT
 
