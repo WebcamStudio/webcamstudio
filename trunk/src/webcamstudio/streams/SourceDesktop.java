@@ -88,7 +88,10 @@ public class SourceDesktop extends Stream {
     public boolean isPlaying() {
         return isPlaying;
     }
-
+    @Override
+    public void setIsPlaying(boolean setIsPlaying) {
+        isPlaying = setIsPlaying;
+    }
     @Override
     public BufferedImage getPreview() {
         return lastPreview;

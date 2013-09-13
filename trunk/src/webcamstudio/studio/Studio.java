@@ -42,6 +42,7 @@ import webcamstudio.streams.*;
 import webcamstudio.components.*;
 import webcamstudio.channels.transitions.Transition;
 import webcamstudio.externals.ProcessRenderer;
+import webcamstudio.sources.effects.*;
 import static webcamstudio.streams.SourceText.Shape.NONE;
 import static webcamstudio.streams.SourceText.Shape.OVAL;
 import static webcamstudio.streams.SourceText.Shape.RECTANGLE;
@@ -61,11 +62,13 @@ public class Studio {
     Stream streamC = null;
     private static final String ELEMENT_SOURCES = "Sources";
     private static final String ELEMENT_CHANNELS = "Channels";
+    private static final String ELEMENT_EFFECTS = "Effects";
     private static final String ELEMENT_SOURCE = "Source";
     private static final String ELEMENT_CHANNEL = "Channel";
     private static final String ELEMENT_ROOT = "WebcamStudio";
-    private static final String ELEMENT_MIXER = "Mixer";
+    private static final String ELEMENT_MIXER = "Mixer";   
     public static ArrayList<Stream> extstream = new ArrayList<Stream>();
+    public static ArrayList<SourceChannel> chanLoad = new ArrayList<SourceChannel>();
     public static File filename;
     public static ArrayList<SourceText> LText = new ArrayList<SourceText>();
     public static ArrayList<String> ImgMovMus = new ArrayList<String>();
@@ -137,7 +140,6 @@ public class Studio {
             
         }
         xml.writeEndElement();
-
         xml.writeStartElement(ELEMENT_SOURCES);
         for (Stream s : streams) {
             String clazzSink = s.getClass().getCanonicalName();
@@ -167,7 +169,6 @@ public class Studio {
         Transformer transformer = factory.newTransformer();
         transformer.setOutputProperty(OutputKeys.INDENT, "yes");
         transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
-
 //        StringWriter formattedStringWriter = new StringWriter();
         transformer.transform(new StreamSource(new StringReader(writer.getBuffer().toString())), new StreamResult(file));
 
@@ -194,7 +195,7 @@ public class Studio {
                     xml.writeAttribute(name, f.getFloat(o) + "");
                 } else if (value instanceof Boolean) {
                     xml.writeAttribute(name, f.getBoolean(o) + "");
-                }
+                } 
 
             }
         }
@@ -208,7 +209,7 @@ public class Studio {
                 xml.writeAttribute(name, f.getFloat(o) + "");
             } else if (value instanceof Boolean) {
                     xml.writeAttribute(name, f.getBoolean(o) + "");
-            }
+            } 
         }    
         if (superFields != null) {
             for (Field f : superFields) {
@@ -257,14 +258,23 @@ public class Studio {
                         xml.writeEndElement(); 
                         }
                         }
-                    } else {
-                    xml.writeStartElement(name);
-                    for (Object subO : ((List) value)) {
+                    } else if ("effects".equals(name)) {
+                        xml.writeStartElement(ELEMENT_EFFECTS);
+                        for (Object subO : ((List) value)) {
                         if (clazz != null){
+                        xml.writeStartElement(name);
                         writeObject(subO, xml);
+                        xml.writeEndElement(); 
                         }
+                        }
+                    } else {
+                        xml.writeStartElement(name);
+                        for (Object subO : ((List) value)) {
+                            if (clazz != null){
+                            writeObject(subO, xml);
+                            }
                         
-                    }
+                        }
                     }
                     xml.writeEndElement();
                 }
@@ -275,9 +285,20 @@ public class Studio {
             String name = f.getName();
             Object value = f.get(o);
             if (value instanceof List) {
-                xml.writeStartElement(name);
-                for (Object subO : ((List) value)) {
-                    writeObject(subO, xml);
+                if ("effects".equals(name)) {
+                    xml.writeStartElement(ELEMENT_EFFECTS);
+                    for (Object subO : ((List) value)) {
+                        if (clazz != null){
+                            xml.writeStartElement(name);
+                            writeObject(subO, xml);
+                            xml.writeEndElement(); 
+                        }
+                    }
+                } else {
+                    xml.writeStartElement(name);
+                    for (Object subO : ((List) value)) {
+                        writeObject(subO, xml);
+                    }
                 }
                 xml.writeEndElement();
             }
@@ -310,8 +331,10 @@ public class Studio {
                 String sName = null;
 //                String subContent = null;
                 Stream stream = null;
-                SourceChannel sc;
+                SourceChannel sc = null;
+                Effect effeX = null;
                 ArrayList<SourceChannel> SCL = new ArrayList<SourceChannel>();
+                ArrayList<Effect> fXL = new ArrayList<Effect>();
                 SourceText text;
                 for (int j = 0; j < source.getChildNodes().getLength(); j++) {
                     Node child = source.getChildNodes().item(j);
@@ -345,6 +368,157 @@ public class Studio {
                     if (child.getNodeName().equals("streamTime")) {                       
                         streamTime = child.getTextContent();
                     }
+                    if (child.getNodeName().equals("Effects")) { // Read Effects
+//                        System.out.println("childnodename: "+child.getNodeName());
+                        for (int nc = 0; nc < child.getChildNodes().getLength(); nc++) {
+                            Node SuperChild = child.getChildNodes().item(nc);
+//                            System.out.println("SuperChildnodename: "+SuperChild.getNodeName());
+                            if (SuperChild.getNodeName().equals("effects")) {     
+                                String sClazz = SuperChild.getAttributes().getNamedItem("clazz").getTextContent();
+//                                System.out.println("effect clazz: "+ sClazz);        
+                                if (sClazz.endsWith("ChromaKey")) {
+                                    effeX = new ChromaKey();
+                                    readObjectFx(effeX, SuperChild);
+                                    fXL.add(effeX);
+                                } else
+                                if (sClazz.endsWith("Blink")) {
+                                    effeX = new Blink();
+                                    readObjectFx(effeX, SuperChild);
+                                    fXL.add(effeX);
+                                } else
+                                if (sClazz.endsWith("Block")) {
+                                    effeX = new Block();
+                                    readObjectFx(effeX, SuperChild);
+                                    fXL.add(effeX);
+                                } else
+                                if (sClazz.endsWith("Cartoon")) {
+                                    effeX = new Cartoon();
+                                    readObjectFx(effeX, SuperChild);
+                                    fXL.add(effeX);
+                                } else
+                                if (sClazz.endsWith("Contrast")) {
+                                    effeX = new Contrast();
+                                    readObjectFx(effeX, SuperChild);
+                                    fXL.add(effeX);
+                                } else
+                                if (sClazz.endsWith("Edge")) {
+                                    effeX = new Edge();
+                                    readObjectFx(effeX, SuperChild);
+                                    fXL.add(effeX);
+                                } else
+                                if (sClazz.endsWith("FlipHorizontal")) {
+                                    effeX = new FlipHorizontal();
+                                    readObjectFx(effeX, SuperChild);
+                                    fXL.add(effeX);
+                                } else
+                                if (sClazz.endsWith("FlipVertical")) {
+                                    effeX = new FlipVertical();
+                                    readObjectFx(effeX, SuperChild);
+                                    fXL.add(effeX);
+                                } else
+                                if (sClazz.endsWith("Gain")) {
+                                    effeX = new Gain();
+                                    readObjectFx(effeX, SuperChild);
+                                    fXL.add(effeX);
+                                } else
+                                if (sClazz.endsWith("Gray")) {
+                                    effeX = new Gray();
+                                    readObjectFx(effeX, SuperChild);
+                                    fXL.add(effeX);
+                                } else
+                                if (sClazz.endsWith("HSB")) {
+                                    effeX = new HSB();
+                                    readObjectFx(effeX, SuperChild);
+                                    fXL.add(effeX);
+                                } else
+                                if (sClazz.endsWith("Light")) {
+                                    effeX = new Light();
+                                    readObjectFx(effeX, SuperChild);
+                                    fXL.add(effeX);
+                                } else
+                                if (sClazz.endsWith("MegaMind")) {
+                                    effeX = new MegaMind();
+                                    readObjectFx(effeX, SuperChild);
+                                    fXL.add(effeX);
+                                } else
+                                if (sClazz.endsWith("Mirror1")) {
+                                    effeX = new Mirror1();
+                                    readObjectFx(effeX, SuperChild);
+                                    fXL.add(effeX);
+                                } else
+                                if (sClazz.endsWith("Mirror2")) {
+                                    effeX = new Mirror2();
+                                    readObjectFx(effeX, SuperChild);
+                                    fXL.add(effeX);
+                                } else
+                                if (sClazz.endsWith("Mirror3")) {
+                                    effeX = new Mirror3();
+                                    readObjectFx(effeX, SuperChild);
+                                    fXL.add(effeX);
+                                } else
+                                if (sClazz.endsWith("Mirror4")) {
+                                    effeX = new Mirror4();
+                                    readObjectFx(effeX, SuperChild);
+                                    fXL.add(effeX);
+                                } else
+                                if (sClazz.endsWith("Mosaic")) {
+                                    effeX = new Mosaic();
+                                    readObjectFx(effeX, SuperChild);
+                                    fXL.add(effeX);
+                                } else
+                                if (sClazz.endsWith("NoBackground")) {
+                                    effeX = new NoBackground();
+                                    readObjectFx(effeX, SuperChild);
+                                    fXL.add(effeX);
+                                } else
+                                if (sClazz.endsWith("Opacity")) {
+                                    effeX = new Opacity();
+                                    readObjectFx(effeX, SuperChild);
+                                    fXL.add(effeX);
+                                } else
+                                if (sClazz.endsWith("Perspective")) {
+                                    effeX = new Perspective();
+                                    readObjectFx(effeX, SuperChild);
+                                    fXL.add(effeX);
+                                } else
+                                if (sClazz.endsWith("RGB")) {
+                                    effeX = new RGB();
+                                    readObjectFx(effeX, SuperChild);
+                                    fXL.add(effeX);
+                                } else
+                                if (sClazz.endsWith("Radar")) {
+                                    effeX = new Radar();
+                                    readObjectFx(effeX, SuperChild);
+                                    fXL.add(effeX);
+                                } else
+                                if (sClazz.endsWith("Rotation")) {
+                                    effeX = new Rotation();
+                                    readObjectFx(effeX, SuperChild);
+                                    fXL.add(effeX);
+                                } else
+                                if (sClazz.endsWith("Sphere")) {
+                                    effeX = new Sphere();
+                                    readObjectFx(effeX, SuperChild);
+                                    fXL.add(effeX);
+                                } else
+                                if (sClazz.endsWith("SwapRedBlue")) {
+                                    effeX = new SwapRedBlue();
+                                    readObjectFx(effeX, SuperChild);
+                                    fXL.add(effeX);
+                                } else
+                                if (sClazz.endsWith("Twirl")) {
+                                    effeX = new Twirl();
+                                    readObjectFx(effeX, SuperChild);
+                                    fXL.add(effeX);
+                                } else
+                                if (sClazz.endsWith("ZoomZoom")) {
+                                    effeX = new ZoomZoom();
+                                    readObjectFx(effeX, SuperChild);
+                                    fXL.add(effeX);
+                                }
+                            }
+                    }
+                    }
                     if (child.getNodeName().equals("Channels")) { // Read SourceChannels
                         for (int nc = 0; nc < child.getChildNodes().getLength(); nc++) {
                             Node SuperChild = child.getChildNodes().item(nc);
@@ -352,10 +526,133 @@ public class Studio {
                                 Node SSuperChild = SuperChild.getChildNodes().item(ncc);                        
                                 if (SSuperChild.getNodeName().equals("name")) {
                                     SubChNames.add(SSuperChild.getTextContent()); 
-                                    sc = new SourceChannel();
+                                    sc = new SourceChannel();                                    
                                     readObjectSC(sc, SuperChild);
-                                    SCL.add(sc);
+                                    SCL.add(sc);                                    
+                                    chanLoad.add(sc);
                                 }  
+                                if (SSuperChild.getNodeName().equals("Effects")) {
+                                    for (int ncs = 0; ncs < SSuperChild.getChildNodes().getLength(); ncs++) {
+                                        Node SSSuperChild = SSuperChild.getChildNodes().item(ncs);            
+                                        if (SSSuperChild.getNodeName().equals("effects")) {     
+                                            String sClazz = SSSuperChild.getAttributes().getNamedItem("clazz").getTextContent();
+//                                            System.out.println("channel effect clazz: "+ sClazz);     
+                                            if (sClazz.endsWith("ChromaKey")) {
+                                                effeX = new ChromaKey();
+                                                readObjectFx(effeX, SSSuperChild);
+                                            } else
+                                            if (sClazz.endsWith("Blink")) {
+                                                effeX = new Blink();
+                                                readObjectFx(effeX, SSSuperChild);
+                                            } else
+                                            if (sClazz.endsWith("Block")) {
+                                                effeX = new Block();
+                                                readObjectFx(effeX, SSSuperChild);
+                                            } else
+                                            if (sClazz.endsWith("Cartoon")) {
+                                                effeX = new Cartoon();
+                                                readObjectFx(effeX, SSSuperChild);
+                                            } else
+                                            if (sClazz.endsWith("Contrast")) {
+                                                effeX = new Contrast();
+                                                readObjectFx(effeX, SSSuperChild);
+                                            } else
+                                            if (sClazz.endsWith("Edge")) {
+                                                effeX = new Edge();
+                                                readObjectFx(effeX, SSSuperChild);
+                                            } else
+                                            if (sClazz.endsWith("FlipHorizontal")) {
+                                                effeX = new FlipHorizontal();
+                                                readObjectFx(effeX, SSSuperChild);
+                                            } else
+                                            if (sClazz.endsWith("FlipVertical")) {
+                                                effeX = new FlipVertical();
+                                                readObjectFx(effeX, SSSuperChild);
+                                            } else
+                                            if (sClazz.endsWith("Gain")) {
+                                                effeX = new Gain();
+                                                readObjectFx(effeX, SSSuperChild);
+                                            } else
+                                            if (sClazz.endsWith("Gray")) {
+                                                effeX = new Gray();
+                                                readObjectFx(effeX, SSSuperChild);
+                                            } else
+                                            if (sClazz.endsWith("HSB")) {
+                                                effeX = new HSB();
+                                                readObjectFx(effeX, SSSuperChild);
+                                            } else
+                                            if (sClazz.endsWith("Light")) {
+                                                effeX = new Light();
+                                                readObjectFx(effeX, SSSuperChild);
+                                            } else
+                                            if (sClazz.endsWith("MegaMind")) {
+                                                effeX = new MegaMind();
+                                                readObjectFx(effeX, SSSuperChild);
+                                            } else
+                                            if (sClazz.endsWith("Mirror1")) {
+                                                effeX = new Mirror1();
+                                                readObjectFx(effeX, SSSuperChild);
+                                            } else
+                                            if (sClazz.endsWith("Mirror2")) {
+                                                effeX = new Mirror2();
+                                                readObjectFx(effeX, SSSuperChild);
+                                            } else
+                                            if (sClazz.endsWith("Mirror3")) {
+                                                effeX = new Mirror3();
+                                                readObjectFx(effeX, SSSuperChild);
+                                            } else
+                                            if (sClazz.endsWith("Mirror4")) {
+                                                effeX = new Mirror4();
+                                                readObjectFx(effeX, SSSuperChild);
+                                            } else
+                                            if (sClazz.endsWith("Mosaic")) {
+                                                effeX = new Mosaic();
+                                                readObjectFx(effeX, SSSuperChild);
+                                            } else
+                                            if (sClazz.endsWith("NoBackground")) {
+                                                effeX = new NoBackground();
+                                                readObjectFx(effeX, SSSuperChild);
+                                            } else
+                                            if (sClazz.endsWith("Opacity")) {
+                                                effeX = new Opacity();
+                                                readObjectFx(effeX, SSSuperChild);
+                                            } else
+                                            if (sClazz.endsWith("Perspective")) {
+                                                effeX = new Perspective();
+                                                readObjectFx(effeX, SSSuperChild);
+                                            } else
+                                            if (sClazz.endsWith("RGB")) {
+                                                effeX = new RGB();
+                                                readObjectFx(effeX, SSSuperChild);
+                                            } else
+                                            if (sClazz.endsWith("Radar")) {
+                                                effeX = new Radar();
+                                                readObjectFx(effeX, SSSuperChild);
+                                            } else
+                                            if (sClazz.endsWith("Rotation")) {
+                                                effeX = new Rotation();
+                                                readObjectFx(effeX, SSSuperChild);
+                                            } else
+                                            if (sClazz.endsWith("Sphere")) {
+                                                effeX = new Sphere();
+                                                readObjectFx(effeX, SSSuperChild);
+                                            } else
+                                            if (sClazz.endsWith("SwapRedBlue")) {
+                                                effeX = new SwapRedBlue();
+                                                readObjectFx(effeX, SSSuperChild);
+                                            } else
+                                            if (sClazz.endsWith("Twirl")) {
+                                                effeX = new Twirl();
+                                                readObjectFx(effeX, SSSuperChild);
+                                            } else
+                                            if (sClazz.endsWith("ZoomZoom")) {
+                                                effeX = new ZoomZoom();
+                                                readObjectFx(effeX, SSSuperChild);
+                                            }
+                                            sc.addEffects(effeX);         
+                                        }     
+                                    }
+                                }
                                 if (SSuperChild.getNodeName().equals("startTransitions")) {
                                     if (SSuperChild.getAttributes().getLength()!= 0) {
                                         String sClazz = SSuperChild.getAttributes().getNamedItem("clazz").getTextContent();
@@ -379,7 +676,6 @@ public class Studio {
                                     SubFont.add(SSuperChild.getTextContent());
                                 }
                             }
-                         
                         }
                     }
                 }              
@@ -389,6 +685,9 @@ public class Studio {
                     extstreamBis.add(stream);
                     readObject(stream, source);
                     stream.setComm(comm);
+                    for (Effect fx : fXL) {
+                        stream.addEffect(fx);
+                            }
                     if (streamTime != null){
                         stream.setStreamTime(streamTime);
                     } else {
@@ -487,6 +786,7 @@ public class Studio {
                     }
                     stream.setName(sName);
                     SCL.clear();
+                    fXL.clear();
                     SubChNames.clear();
                     subSTrans.clear();
                     subETrans.clear();
@@ -495,7 +795,10 @@ public class Studio {
                     extstream.add(stream);
                     extstreamBis.add(stream);
                     ImgMovMus.add("Desktop");
-                    readObject(stream, source);                    
+                    readObject(stream, source);  
+                    for (Effect fx : fXL) {
+                        stream.addEffect(fx);
+                    }
                     int op=0;
                     for (SourceChannel scs : SCL) {
                         scs.setName(SubChNames.get(op));
@@ -506,6 +809,18 @@ public class Studio {
                                     Transition t = Transition.getInstance(stream, "FadeIn");
                                     stream.addStartTransition(t);
                                     scs.startTransitions.add(stream.startTransitions.get(0));
+                                } if ("webcamstudio.channels.transitions.Translate".equals(subSTrans.get(op))){
+                                    Transition t = Transition.getInstance(stream, "Translate");
+                                    stream.addStartTransition(t);
+                                    scs.startTransitions.add(stream.startTransitions.get(0));
+                                } if ("webcamstudio.channels.transitions.Resize".equals(subSTrans.get(op))){
+                                    Transition t = Transition.getInstance(stream, "Resize");
+                                    stream.addStartTransition(t);
+                                    scs.startTransitions.add(stream.startTransitions.get(0));
+                                } if ("webcamstudio.channels.transitions.RevealLeft".equals(subSTrans.get(op))){
+                                    Transition t = Transition.getInstance(stream, "RevealLeft");
+                                    stream.addStartTransition(t);
+                                    scs.startTransitions.add(stream.startTransitions.get(0));
                                 }
                             }
                         }
@@ -513,6 +828,10 @@ public class Studio {
                             if (subETrans.get(op) != null) {
                                 if ("webcamstudio.channels.transitions.FadeOut".equals(subETrans.get(op))){
                                     Transition t = Transition.getInstance(stream, "FadeOut");
+                                    stream.addEndTransition(t);
+                                    scs.endTransitions.add(stream.endTransitions.get(0));
+                                } if ("webcamstudio.channels.transitions.ShrinkOut".equals(subETrans.get(op))){
+                                    Transition t = Transition.getInstance(stream, "ShrinkOut");
                                     stream.addEndTransition(t);
                                     scs.endTransitions.add(stream.endTransitions.get(0));
                                 }
@@ -529,6 +848,9 @@ public class Studio {
                     text = new SourceText(ObjText);
                     LText.add(text);
                     readObject(text, source);
+                    for (Effect fx : fXL) {
+                        text.addEffect(fx);
+                    }
                     if (strShapez != null) {
                         if (strShapez.equals("none")){
                                 text.setBackground(NONE);
@@ -549,7 +871,19 @@ public class Studio {
                         if (!subSTrans.isEmpty()){
                             if (subSTrans.get(op) != null) {
                                 if ("webcamstudio.channels.transitions.FadeIn".equals(subSTrans.get(op))){
-                                    Transition t = Transition.getInstance(stream, "FadeIn");
+                                    Transition t = Transition.getInstance(text, "FadeIn");
+                                    text.addStartTransition(t);
+                                    scs.startTransitions.add(text.startTransitions.get(0));
+                                } if ("webcamstudio.channels.transitions.Translate".equals(subSTrans.get(op))){
+                                    Transition t = Transition.getInstance(text, "Translate");
+                                    text.addStartTransition(t);
+                                    scs.startTransitions.add(text.startTransitions.get(0));
+                                } if ("webcamstudio.channels.transitions.Resize".equals(subSTrans.get(op))){
+                                    Transition t = Transition.getInstance(text, "Resize");
+                                    text.addStartTransition(t);
+                                    scs.startTransitions.add(text.startTransitions.get(0));
+                                } if ("webcamstudio.channels.transitions.RevealLeft".equals(subSTrans.get(op))){
+                                    Transition t = Transition.getInstance(text, "RevealLeft");
                                     text.addStartTransition(t);
                                     scs.startTransitions.add(text.startTransitions.get(0));
                                 }
@@ -558,7 +892,11 @@ public class Studio {
                         if (!subETrans.isEmpty()){
                             if (subETrans.get(op) != null) {
                                 if ("webcamstudio.channels.transitions.FadeOut".equals(subETrans.get(op))){
-                                    Transition t = Transition.getInstance(stream, "FadeOut");
+                                    Transition t = Transition.getInstance(text, "FadeOut");
+                                    text.addEndTransition(t);
+                                    scs.endTransitions.add(text.endTransitions.get(0));
+                                } if ("webcamstudio.channels.transitions.ShrinkOut".equals(subETrans.get(op))){
+                                    Transition t = Transition.getInstance(text, "ShrinkOut");
                                     text.addEndTransition(t);
                                     scs.endTransitions.add(text.endTransitions.get(0));
                                 }
@@ -577,6 +915,9 @@ public class Studio {
                     extstreamBis.add(stream);
                     ImgMovMus.add("QRcode");
                     readObject(stream, source);
+                    for (Effect fx : fXL) {
+                        stream.addEffect(fx);
+                    }
                     int op=0;
                     for (SourceChannel scs : SCL) {
                         scs.setName(SubChNames.get(op));
@@ -587,6 +928,18 @@ public class Studio {
                                     Transition t = Transition.getInstance(stream, "FadeIn");
                                     stream.addStartTransition(t);
                                     scs.startTransitions.add(stream.startTransitions.get(0));
+                                } if ("webcamstudio.channels.transitions.Translate".equals(subSTrans.get(op))){
+                                    Transition t = Transition.getInstance(stream, "Translate");
+                                    stream.addStartTransition(t);
+                                    scs.startTransitions.add(stream.startTransitions.get(0));
+                                } if ("webcamstudio.channels.transitions.Resize".equals(subSTrans.get(op))){
+                                    Transition t = Transition.getInstance(stream, "Resize");
+                                    stream.addStartTransition(t);
+                                    scs.startTransitions.add(stream.startTransitions.get(0));
+                                } if ("webcamstudio.channels.transitions.RevealLeft".equals(subSTrans.get(op))){
+                                    Transition t = Transition.getInstance(stream, "RevealLeft");
+                                    stream.addStartTransition(t);
+                                    scs.startTransitions.add(stream.startTransitions.get(0));
                                 }
                             }
                         }
@@ -594,6 +947,10 @@ public class Studio {
                             if (subETrans.get(op) != null) {
                                 if ("webcamstudio.channels.transitions.FadeOut".equals(subETrans.get(op))){
                                     Transition t = Transition.getInstance(stream, "FadeOut");
+                                    stream.addEndTransition(t);
+                                    scs.endTransitions.add(stream.endTransitions.get(0));
+                                } if ("webcamstudio.channels.transitions.ShrinkOut".equals(subETrans.get(op))){
+                                    Transition t = Transition.getInstance(stream, "ShrinkOut");
                                     stream.addEndTransition(t);
                                     scs.endTransitions.add(stream.endTransitions.get(0));
                                 }
@@ -613,6 +970,9 @@ public class Studio {
                     extstreamBis.add(stream);
                     ImgMovMus.add("DVB-T");
                     readObject(stream, source);
+                    for (Effect fx : fXL) {
+                        stream.addEffect(fx);
+                    }
                     int op=0;
                     for (SourceChannel scs : SCL) {
                         scs.setName(SubChNames.get(op));
@@ -623,6 +983,18 @@ public class Studio {
                                     Transition t = Transition.getInstance(stream, "FadeIn");
                                     stream.addStartTransition(t);
                                     scs.startTransitions.add(stream.startTransitions.get(0));
+                                } if ("webcamstudio.channels.transitions.Translate".equals(subSTrans.get(op))){
+                                    Transition t = Transition.getInstance(stream, "Translate");
+                                    stream.addStartTransition(t);
+                                    scs.startTransitions.add(stream.startTransitions.get(0));
+                                } if ("webcamstudio.channels.transitions.Resize".equals(subSTrans.get(op))){
+                                    Transition t = Transition.getInstance(stream, "Resize");
+                                    stream.addStartTransition(t);
+                                    scs.startTransitions.add(stream.startTransitions.get(0));
+                                } if ("webcamstudio.channels.transitions.RevealLeft".equals(subSTrans.get(op))){
+                                    Transition t = Transition.getInstance(stream, "RevealLeft");
+                                    stream.addStartTransition(t);
+                                    scs.startTransitions.add(stream.startTransitions.get(0));
                                 }
                             }
                         }
@@ -630,6 +1002,10 @@ public class Studio {
                             if (subETrans.get(op) != null) {
                                 if ("webcamstudio.channels.transitions.FadeOut".equals(subETrans.get(op))){
                                     Transition t = Transition.getInstance(stream, "FadeOut");
+                                    stream.addEndTransition(t);
+                                    scs.endTransitions.add(stream.endTransitions.get(0));
+                                } if ("webcamstudio.channels.transitions.ShrinkOut".equals(subETrans.get(op))){
+                                    Transition t = Transition.getInstance(stream, "ShrinkOut");
                                     stream.addEndTransition(t);
                                     scs.endTransitions.add(stream.endTransitions.get(0));
                                 }
@@ -651,6 +1027,9 @@ public class Studio {
                     readObject(stream, source);
                     stream.setComm(comm);
                     stream.setLoaded(true);
+                    for (Effect fx : fXL) {
+                        stream.addEffect(fx);
+                    }
                     int op=0;
                     for (SourceChannel scs : SCL) {
                         scs.setName(SubChNames.get(op));
@@ -661,6 +1040,18 @@ public class Studio {
                                     Transition t = Transition.getInstance(stream, "FadeIn");
                                     stream.addStartTransition(t);
                                     scs.startTransitions.add(stream.startTransitions.get(0));
+                                } if ("webcamstudio.channels.transitions.Translate".equals(subSTrans.get(op))){
+                                    Transition t = Transition.getInstance(stream, "Translate");
+                                    stream.addStartTransition(t);
+                                    scs.startTransitions.add(stream.startTransitions.get(0));
+                                } if ("webcamstudio.channels.transitions.Resize".equals(subSTrans.get(op))){
+                                    Transition t = Transition.getInstance(stream, "Resize");
+                                    stream.addStartTransition(t);
+                                    scs.startTransitions.add(stream.startTransitions.get(0));
+                                } if ("webcamstudio.channels.transitions.RevealLeft".equals(subSTrans.get(op))){
+                                    Transition t = Transition.getInstance(stream, "RevealLeft");
+                                    stream.addStartTransition(t);
+                                    scs.startTransitions.add(stream.startTransitions.get(0));
                                 }
                             }
                         }
@@ -668,6 +1059,10 @@ public class Studio {
                             if (subETrans.get(op) != null) {
                                 if ("webcamstudio.channels.transitions.FadeOut".equals(subETrans.get(op))){
                                     Transition t = Transition.getInstance(stream, "FadeOut");
+                                    stream.addEndTransition(t);
+                                    scs.endTransitions.add(stream.endTransitions.get(0));
+                                } if ("webcamstudio.channels.transitions.ShrinkOut".equals(subETrans.get(op))){
+                                    Transition t = Transition.getInstance(stream, "ShrinkOut");
                                     stream.addEndTransition(t);
                                     scs.endTransitions.add(stream.endTransitions.get(0));
                                 }
@@ -696,6 +1091,18 @@ public class Studio {
                                     Transition t = Transition.getInstance(stream, "FadeIn");
                                     stream.addStartTransition(t);
                                     scs.startTransitions.add(stream.startTransitions.get(0));
+                                } if ("webcamstudio.channels.transitions.Translate".equals(subSTrans.get(op))){
+                                    Transition t = Transition.getInstance(stream, "Translate");
+                                    stream.addStartTransition(t);
+                                    scs.startTransitions.add(stream.startTransitions.get(0));
+                                } if ("webcamstudio.channels.transitions.Resize".equals(subSTrans.get(op))){
+                                    Transition t = Transition.getInstance(stream, "Resize");
+                                    stream.addStartTransition(t);
+                                    scs.startTransitions.add(stream.startTransitions.get(0));
+                                } if ("webcamstudio.channels.transitions.RevealLeft".equals(subSTrans.get(op))){
+                                    Transition t = Transition.getInstance(stream, "RevealLeft");
+                                    stream.addStartTransition(t);
+                                    scs.startTransitions.add(stream.startTransitions.get(0));
                                 }
                             }
                         }
@@ -703,6 +1110,10 @@ public class Studio {
                             if (subETrans.get(op) != null) {
                                 if ("webcamstudio.channels.transitions.FadeOut".equals(subETrans.get(op))){
                                     Transition t = Transition.getInstance(stream, "FadeOut");
+                                    stream.addEndTransition(t);
+                                    scs.endTransitions.add(stream.endTransitions.get(0));
+                                } if ("webcamstudio.channels.transitions.ShrinkOut".equals(subETrans.get(op))){
+                                    Transition t = Transition.getInstance(stream, "ShrinkOut");
                                     stream.addEndTransition(t);
                                     scs.endTransitions.add(stream.endTransitions.get(0));
                                 }
@@ -725,7 +1136,10 @@ public class Studio {
                                 extstream.add(stream);
                                 extstreamBis.add(stream);
                                 ImgMovMus.add("ImageGif");
-                                readObject(stream, source);                    
+                                readObject(stream, source);  
+                                for (Effect fx : fXL) {
+                                    stream.addEffect(fx);
+                                }
                                 int op=0;
                                 for (SourceChannel scs : SCL) {
                                     scs.setName(SubChNames.get(op));
@@ -736,18 +1150,34 @@ public class Studio {
                                                 Transition t = Transition.getInstance(stream, "FadeIn");
                                                 stream.addStartTransition(t);
                                                 scs.startTransitions.add(stream.startTransitions.get(0));
-                                }
-                            }
-                        }                                
-                        if (!subETrans.isEmpty()){
-                            if (subETrans.get(op) != null) {
-                                if ("webcamstudio.channels.transitions.FadeOut".equals(subETrans.get(op))){
-                                    Transition t = Transition.getInstance(stream, "FadeOut");
-                                    stream.addEndTransition(t);
-                                    scs.endTransitions.add(stream.endTransitions.get(0));
-                                }
-                            }
-                        }
+                                                }
+                                            } if ("webcamstudio.channels.transitions.Translate".equals(subSTrans.get(op))){
+                                                Transition t = Transition.getInstance(stream, "Translate");
+                                                stream.addStartTransition(t);
+                                                scs.startTransitions.add(stream.startTransitions.get(0));
+                                            } if ("webcamstudio.channels.transitions.Resize".equals(subSTrans.get(op))){
+                                                Transition t = Transition.getInstance(stream, "Resize");
+                                                stream.addStartTransition(t);
+                                                scs.startTransitions.add(stream.startTransitions.get(0));
+                                            } if ("webcamstudio.channels.transitions.RevealLeft".equals(subSTrans.get(op))){
+                                                Transition t = Transition.getInstance(stream, "RevealLeft");
+                                                stream.addStartTransition(t);
+                                                scs.startTransitions.add(stream.startTransitions.get(0));
+                                            }
+                                    }                                
+                                    if (!subETrans.isEmpty()){
+                                        if (subETrans.get(op) != null) {
+                                            if ("webcamstudio.channels.transitions.FadeOut".equals(subETrans.get(op))){
+                                                Transition t = Transition.getInstance(stream, "FadeOut");
+                                                stream.addEndTransition(t);
+                                                scs.endTransitions.add(stream.endTransitions.get(0));
+                                            } if ("webcamstudio.channels.transitions.ShrinkOut".equals(subETrans.get(op))){
+                                                Transition t = Transition.getInstance(stream, "ShrinkOut");
+                                                stream.addEndTransition(t);
+                                                scs.endTransitions.add(stream.endTransitions.get(0));
+                                            }
+                                        }
+                                    }
                         stream.addChannel(scs);                    
                         op+=1;                    
                     }
@@ -829,6 +1259,61 @@ public class Studio {
                         Node node = source.getChildNodes().item(i);
                         if (node.getNodeName().equals(name)) {
                             field.set(stream, node.getTextContent());
+                        }
+                    }
+                }
+
+            }
+        }
+        // Read List
+        
+    }
+    private static void readObjectFx (Effect fx, Node source) throws IllegalArgumentException, IllegalAccessException {
+//        XPath path = XPathFactory.newInstance().newXPath();
+
+        Field[] fields = fx.getClass().getDeclaredFields();
+        Field[] superFields = fx.getClass().getSuperclass().getDeclaredFields();
+        // Read integer and floats
+        for (Field field : superFields) {
+            field.setAccessible(true);
+            String name = field.getName();
+            String value;
+            if (source.getAttributes().getNamedItem(name) != null) {
+                value = source.getAttributes().getNamedItem(name).getTextContent();
+                if (field.get(fx) instanceof Integer) {
+                    field.setInt(fx, new Integer(value));
+                } else if (field.get(fx) instanceof Float) {
+                    field.setFloat(fx, new Float(value));
+                } else if (field.get(fx) instanceof Boolean) {
+                    field.setBoolean(fx, Boolean.valueOf(value));
+                } else if (field.get(fx) instanceof String) {
+                    for (int i = 0; i < source.getChildNodes().getLength(); i++) {
+                        Node node = source.getChildNodes().item(i);
+                        if (node.getNodeName().equals(name)) {
+                            field.set(fx, node.getTextContent());
+                        }
+                    }
+                }
+            }
+        }
+        
+        for (Field field : fields) {
+            field.setAccessible(true);
+            String name = field.getName();
+            String value;
+            if (source.getAttributes().getNamedItem(name) != null) {
+                value = source.getAttributes().getNamedItem(name).getTextContent();
+                if (field.get(fx) instanceof Integer) {
+                    field.setInt(fx, new Integer(value));
+                } else if (field.get(fx) instanceof Float) {
+                    field.setFloat(fx, new Float(value));
+                } else if (field.get(fx) instanceof Boolean) {
+                    field.setBoolean(fx, Boolean.valueOf(value));
+                } else if (field.get(fx) instanceof String) {
+                    for (int i = 0; i < source.getChildNodes().getLength(); i++) {
+                        Node node = source.getChildNodes().item(i);
+                        if (node.getNodeName().equals(name)) {
+                            field.set(fx, node.getTextContent());
                         }
                     }
                 }

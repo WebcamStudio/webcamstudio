@@ -20,6 +20,7 @@ public class SourceMovie extends Stream {
 
     ProcessRenderer capture = null;
     BufferedImage lastPreview = null;
+    boolean isPlaying = false;
 
     public SourceMovie(File movie) {
         super();
@@ -30,6 +31,7 @@ public class SourceMovie extends Stream {
 
     @Override
     public void read() {
+        isPlaying = true;
         rate = MasterMixer.getInstance().getRate();
         lastPreview = new BufferedImage(captureWidth,captureHeight,BufferedImage.TYPE_INT_ARGB);
         MasterFrameBuilder.register(this);
@@ -39,6 +41,7 @@ public class SourceMovie extends Stream {
 
     @Override
     public void stop() {
+        isPlaying = false;
         MasterFrameBuilder.unregister(this);
         if (capture != null) {
             capture.stop();
@@ -52,11 +55,16 @@ public class SourceMovie extends Stream {
     }
     @Override
     public boolean isPlaying() {
-        if (capture != null) {
+        return isPlaying;
+/*        if (capture != null) {
             return !capture.isStopped();
         } else {
             return false;
-        }
+        } */
+    }
+    @Override
+    public void setIsPlaying(boolean setIsPlaying) {
+        isPlaying = setIsPlaying;
     }
     @Override
     public boolean hasFakeVideo(){
@@ -83,8 +91,10 @@ public class SourceMovie extends Stream {
         if (capture != null) {
             f = capture.getFrame();
             for (Effect fx : this.getEffects()) {
-                if (fx.needApply()){   
-                    fx.applyEffect(f.getImage());
+                if (f != null) {
+                    if (fx.needApply()){   
+                        fx.applyEffect(f.getImage());
+                    }
                 }
             }
             if (f != null) {

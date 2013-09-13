@@ -18,6 +18,7 @@ public class SourceSoundMonitor extends Stream {
 
     ProcessRenderer capture = null;
     BufferedImage lastPreview = null;
+    boolean isPlaying = false;
 
     public SourceSoundMonitor() {
         super();
@@ -28,6 +29,7 @@ public class SourceSoundMonitor extends Stream {
 
     @Override
     public void read() {
+        isPlaying = true;
         MasterFrameBuilder.register(this);
         lastPreview = new BufferedImage(captureWidth,captureHeight,BufferedImage.TYPE_INT_ARGB);
         capture = new ProcessRenderer(this, ProcessRenderer.ACTION.CAPTURE, "monitor");
@@ -36,6 +38,7 @@ public class SourceSoundMonitor extends Stream {
 
     @Override
     public void stop() {
+        isPlaying = false;
         MasterFrameBuilder.unregister(this);
         if (capture != null) {
             capture.stop();
@@ -50,14 +53,17 @@ public class SourceSoundMonitor extends Stream {
 
     @Override
     public boolean isPlaying() {
-        if (capture != null) {
+        return isPlaying;
+/*        if (capture != null) {
             return !capture.isStopped();
         } else {
             return false;
-        }
-
+        } */
     }
-
+    @Override
+    public void setIsPlaying(boolean setIsPlaying) {
+        isPlaying = setIsPlaying;
+    }
     @Override
     public BufferedImage getPreview() {
         return lastPreview;

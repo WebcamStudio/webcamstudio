@@ -51,6 +51,10 @@ public class ChromaKeyControl extends javax.swing.JPanel {
         lblColor = new javax.swing.JLabel();
         btnSelectColor = new javax.swing.JButton();
 
+        setMaximumSize(new java.awt.Dimension(326, 282));
+        setMinimumSize(new java.awt.Dimension(326, 282));
+        setName(""); // NOI18N
+
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("webcamstudio/Languages"); // NOI18N
         label.setText(bundle.getString("TOLERANCE")); // NOI18N
         label.setName("label"); // NOI18N

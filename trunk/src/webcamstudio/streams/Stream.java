@@ -254,6 +254,8 @@ public abstract class Stream implements Callable<Frame>{
     public void setIsStillPicture(boolean setIsStillPicture) {
         isStillPicture = setIsStillPicture;
     }
+    public void setIsPlaying(boolean setIsPlaying) {
+    }
     public boolean isIPCam() {
         return isIPCam;
     }

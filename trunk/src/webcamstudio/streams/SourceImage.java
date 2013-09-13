@@ -71,7 +71,9 @@ public class SourceImage extends Stream{
     public boolean isPlaying() {
         return playing;
     }
-
+    public void setIsPlaying(boolean setIsPlaying) {
+        playing = setIsPlaying;
+    }
     @Override
     public BufferedImage getPreview() {
         return image;

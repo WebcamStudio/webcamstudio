@@ -56,6 +56,73 @@ public class MasterChannels {
             s.addChannel(SourceChannel.getChannel(name, s));
         }
     }
+    
+    public void insertChannel(String name){
+        for (Stream s : streams){
+            int co = 0;
+            for (SourceChannel ssc : s.getChannels()){
+                if (ssc.getName().equals(name)){
+                    co++;
+                }                  
+            }
+            if (co == 0){
+            } else { 
+                ArrayList<String> allChan = new ArrayList<String>();
+                for (String scn : MasterChannels.getInstance().getChannels()){
+                    allChan.add(scn); 
+                } 
+                for (SourceChannel scc3 : s.getChannels()){
+                    String removech = scc3.getName();
+                    allChan.remove(removech);
+                }
+                for (String ssc2 : allChan) {
+                        s.setIsPlaying(false);
+                        s.addChannel(SourceChannel.getChannel(ssc2, s));
+                } 
+            } 
+        }
+    }
+    public void insertStudio(String name){
+        for (Stream s : streams){
+            int co = 0;
+            for (SourceChannel ssc : s.getChannels()){
+                if (ssc.getName().equals(name)){
+                    co++;
+                }                  
+            }
+            if (co == 0){
+                boolean backState = false;
+                if (s.isPlaying()){
+                    s.setIsPlaying(false);
+                    backState = true;
+                }
+                s.addChannel(SourceChannel.getChannel(name, s));
+                if (backState){
+                    s.setIsPlaying(true);
+                }
+            } else {
+                ArrayList<String> allChan = new ArrayList<String>();
+                for (String scn : MasterChannels.getInstance().getChannels()){
+                    allChan.add(scn); 
+                } 
+                for (SourceChannel scc3 : s.getChannels()){
+                    String removech = scc3.getName();
+                    allChan.remove(removech);
+                }
+                for (String ssc2 : allChan) {
+/*                        boolean backState = false;
+                        if (s.isPlaying()){
+                            s.setIsPlaying(false);
+                            backState = true;
+                        } */
+                        s.addChannel(SourceChannel.getChannel(ssc2, s));
+/*                        if (backState){
+                            s.setIsPlaying(true);
+                        } */
+                }
+            }
+        }
+    }
     public void removeChannel(String name){
         channelNames.remove(name);
         for (Stream s : streams){

@@ -57,8 +57,9 @@ public class SourceChannel  {
     public void setFont(String nf) {
         font = nf;
     }
-
-
+    public synchronized void addEffects(Effect fX) {
+        effects.add(fX);
+    }
     public static SourceChannel getChannel(String channelName, Stream stream) {
         SourceChannel s = new SourceChannel();
         s.x = stream.x;

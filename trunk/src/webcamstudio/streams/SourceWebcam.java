@@ -78,7 +78,10 @@ public class SourceWebcam extends Stream {
     public boolean isPlaying() {
         return isPlaying;
     }
-
+    @Override
+    public void setIsPlaying(boolean setIsPlaying) {
+        isPlaying = setIsPlaying;
+    }
     @Override
     public BufferedImage getPreview() {
         return lastPreview;
@@ -95,9 +98,11 @@ public class SourceWebcam extends Stream {
         if (capture != null) {
             f = capture.getFrame();
             for (Effect fx : this.getEffects()) {
-                if (fx.needApply()){
-                    fx.applyEffect(f.getImage());
+                if (f != null) {
+                    if (fx.needApply()){                    
+                        fx.applyEffect(f.getImage());                    
                     }
+                }
             }
             if (f != null) {
                 setAudioLevel(f);

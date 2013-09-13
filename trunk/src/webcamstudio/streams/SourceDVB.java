@@ -33,6 +33,7 @@ public class SourceDVB extends Stream {
 
     @Override
     public void read() {
+        isPlaying = true;
         rate = MasterMixer.getInstance().getRate();
         lastPreview = new BufferedImage(captureWidth,captureHeight,BufferedImage.TYPE_INT_ARGB);
         MasterFrameBuilder.register(this);
@@ -42,6 +43,7 @@ public class SourceDVB extends Stream {
 
     @Override
     public void stop() {
+        isPlaying = false;
         MasterFrameBuilder.unregister(this);
         if (capture != null) {
             capture.stop();
@@ -54,13 +56,17 @@ public class SourceDVB extends Stream {
     }
     @Override
     public boolean isPlaying() {
-        if (capture != null) {
+        return isPlaying;
+/*        if (capture != null) {
             return !capture.isStopped();
         } else {
             return false;
+    } */
     }
+    @Override
+    public void setIsPlaying(boolean setIsPlaying) {
+        isPlaying = setIsPlaying;
     }
-
     @Override
     public BufferedImage getPreview() {
         return lastPreview;
@@ -93,11 +99,14 @@ public class SourceDVB extends Stream {
         Frame f = null;
         if (capture != null) {
             f = capture.getFrame();
-            for (Effect fx : this.getEffects()) {
-                if (fx.needApply()){
-                    fx.applyEffect(f.getImage());
+                for (Effect fx : this.getEffects()) {
+                    if (f != null) {
+                        if (fx.needApply()){
+                            fx.applyEffect(f.getImage());
+                        }
+                    }
                 }
-            }
+            
             if (f != null) {
                 setAudioLevel(f);
                 lastPreview.getGraphics().drawImage(f.getImage(), 0, 0, null);
