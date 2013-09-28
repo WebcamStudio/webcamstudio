@@ -25,12 +25,13 @@ public class Frame {
     private String uuid = null;
     private long frameNb = 0;
     private int aFreq = webcamstudio.WebcamStudio.audioFreq;
-   
+    
    public Frame(String id,BufferedImage img, byte[] audio){
         image=img;
         audioData=audio;
         uuid=id;
     }
+   
     public void setFrameNumber(long n){
         frameNb=n;
     }
@@ -49,8 +50,8 @@ public class Frame {
         byte[] audioSrc = frame.getAudioData();
         if (imageSrc!=null){
             Graphics2D g = image.createGraphics();
-            g.setBackground(new Color(0,0,0,0));
-            g.clearRect(0, 0, w, h);
+//            g.setBackground(new Color(0,0,0,0));
+//            g.clearRect(0, 0, w, h);
             g.drawImage(imageSrc, 0, 0, null);
             g.dispose();
         }

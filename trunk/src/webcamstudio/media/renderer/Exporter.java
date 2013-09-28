@@ -12,6 +12,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import webcamstudio.mixers.*;
 import webcamstudio.streams.Stream;
+import webcamstudio.util.Tools;
 
 /**
  *
@@ -50,7 +51,7 @@ public class Exporter implements MasterMixer.SinkListener {
         } catch (IOException ex) {
             Logger.getLogger(Exporter.class.getName()).log(Level.SEVERE, null, ex);
         }
-        System.out.println("Port used is Video:" + vport+"/Audio:" + aport);
+//        System.out.println("Port used is Video:" + vport+"/Audio:" + aport);
         Thread vExCapture = new Thread(new Runnable() {
 
             @Override
@@ -62,7 +63,8 @@ public class Exporter implements MasterMixer.SinkListener {
                     imageBuffer.clear();
                     while (!cancel) {
                         byte[] videoData = imageBuffer.pop().getBytes();
-                        if (videoData == null || videoOutput == null) {                            
+                        if (videoData == null || videoOutput == null) {
+                            Tools.sleep(30);
                         } else {
                             videoOutput.write(videoData);                            
                             videoOutput.flush();
@@ -78,7 +80,7 @@ public class Exporter implements MasterMixer.SinkListener {
                     stream.updateStatus();
                     Logger.getLogger(Exporter.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                System.out.println("Video output stopped");
+//                System.out.println("Video output stopped");
             }
         });
         vExCapture.setPriority(Thread.MIN_PRIORITY);
@@ -97,6 +99,7 @@ public class Exporter implements MasterMixer.SinkListener {
                      while (!cancel) {
                         byte[] audioData = audioBuffer.pop();
                         if (audioData == null || audioOutput==null) {
+                            Tools.sleep(30);
                         } else {
                             audioOutput.write(audioData);
                             audioOutput.flush();
@@ -106,12 +109,14 @@ public class Exporter implements MasterMixer.SinkListener {
 
                 } catch (IOException ex) {
                     cancel = true;
-                    audioBuffer.abort();
+                    if (audioBuffer != null){
+                        audioBuffer.abort();
+                    }
                     stream.stop();
                     stream.updateStatus();
                     Logger.getLogger(Exporter.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                System.out.println("Audio output stopped");
+//                System.out.println("Audio output stopped");
             }
         });
         aExCapture.setPriority(Thread.MIN_PRIORITY);

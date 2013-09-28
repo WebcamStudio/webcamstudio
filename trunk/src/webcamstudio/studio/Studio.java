@@ -431,8 +431,8 @@ public class Studio {
                                     readObjectFx(effeX, SuperChild);
                                     fXL.add(effeX);
                                 } else
-                                if (sClazz.endsWith("Light")) {
-                                    effeX = new Light();
+                                if (sClazz.endsWith("Sharpen")) {
+                                    effeX = new Sharpen();
                                     readObjectFx(effeX, SuperChild);
                                     fXL.add(effeX);
                                 } else
@@ -496,8 +496,8 @@ public class Studio {
                                     readObjectFx(effeX, SuperChild);
                                     fXL.add(effeX);
                                 } else
-                                if (sClazz.endsWith("Sphere")) {
-                                    effeX = new Sphere();
+                                if (sClazz.endsWith("Emboss")) {
+                                    effeX = new Emboss();
                                     readObjectFx(effeX, SuperChild);
                                     fXL.add(effeX);
                                 } else
@@ -581,8 +581,8 @@ public class Studio {
                                                 effeX = new HSB();
                                                 readObjectFx(effeX, SSSuperChild);
                                             } else
-                                            if (sClazz.endsWith("Light")) {
-                                                effeX = new Light();
+                                            if (sClazz.endsWith("Sharpen")) {
+                                                effeX = new Sharpen();
                                                 readObjectFx(effeX, SSSuperChild);
                                             } else
                                             if (sClazz.endsWith("MegaMind")) {
@@ -633,8 +633,8 @@ public class Studio {
                                                 effeX = new Rotation();
                                                 readObjectFx(effeX, SSSuperChild);
                                             } else
-                                            if (sClazz.endsWith("Sphere")) {
-                                                effeX = new Sphere();
+                                            if (sClazz.endsWith("Emboss")) {
+                                                effeX = new Emboss();
                                                 readObjectFx(effeX, SSSuperChild);
                                             } else
                                             if (sClazz.endsWith("SwapRedBlue")) {
@@ -710,12 +710,12 @@ public class Studio {
                          Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
                          }
                          String batchDurationComm = "sh "+System.getProperty("user.home")+"/.webcamstudio/"+"DurationCalc.sh";
-                         System.out.println(batchDurationComm);
+//                         System.out.println(batchDurationComm);
                          try {
                          Process duration = rt.exec(batchDurationComm);
                          Tools.sleep(10);
                          duration.waitFor(); //Author spoonybard896
-                         InputStream lsOut = lsOut = duration.getErrorStream();
+                         InputStream lsOut = duration.getErrorStream();
                          InputStreamReader isr = new InputStreamReader(lsOut);
                          BufferedReader in = new BufferedReader(isr);
                          String line = "";
@@ -732,7 +732,7 @@ public class Studio {
                          int seconds = Integer.parseInt(temp[2]);
                          int totalTime = (hours*3600)+(minutes*60)+seconds;
                          String strDuration = Integer.toString(totalTime);
-                         System.out.println("Duration in Sec: "+strDuration);
+//                         System.out.println("Duration in Sec: "+strDuration);
                          stream.setStreamTime(strDuration+"s");
                          //                                    break;
                          }
@@ -1195,7 +1195,7 @@ public class Studio {
             for (Stream dST : extstreamBis) {
                 int multi=0;
                 String streamName = dST.getName();
-                System.out.println("Found Stream Name: "+streamName);
+//                System.out.println("Found Stream Name: "+streamName);
                     for (String vDev : videoDevs){
                         if (vDev.contains(streamName)){
                                     multi += 1;
@@ -1204,8 +1204,8 @@ public class Studio {
                     if (multi>1) {
                         extstream.remove(dST);
                         ImgMovMus.remove("/dev/"+streamName);
-                        System.out.println(dST+" Removed ...");
-                        System.out.println(streamName+" Removed ...");
+//                        System.out.println(dST+" Removed ...");
+//                        System.out.println(streamName+" Removed ...");
                         multi=0;
                 }                 
              }          

@@ -28,11 +28,13 @@ public class MasterChannels {
         return instance;
     }
     public void register(Stream s){
-        System.out.println(s.getClass().getName().toString() + " registered");
+        String streamName =s.getClass().getName().toString();
+        streamName = streamName.replace("webcamstudio.streams.", "");
+        System.out.println(streamName + " registered.");
         streams.add(s);
     }
     public void unregister(Stream s){
-        System.out.println(s.getName() + " unregistered");
+        System.out.println(s.getName() + " unregistered.");
         streams.remove(s);
     }
     public void addChannel(String name){
@@ -110,15 +112,7 @@ public class MasterChannels {
                     allChan.remove(removech);
                 }
                 for (String ssc2 : allChan) {
-/*                        boolean backState = false;
-                        if (s.isPlaying()){
-                            s.setIsPlaying(false);
-                            backState = true;
-                        } */
-                        s.addChannel(SourceChannel.getChannel(ssc2, s));
-/*                        if (backState){
-                            s.setIsPlaying(true);
-                        } */
+                    s.addChannel(SourceChannel.getChannel(ssc2, s));
                 }
             }
         }
@@ -140,9 +134,9 @@ public class MasterChannels {
     public void selectChannel(String name){
         for (Stream stream : streams){
             for (SourceChannel sc : stream.getChannels()){
-                Tools.sleep(5); //To let WSPidsBuster work correctly.
+//                Tools.sleep(5); //To let WSPidsBuster work correctly.
                 if (sc.getName().equals(name)){
-                    Tools.sleep(5); //To let WSPidsBuster work correctly.
+//                    Tools.sleep(5); //To let WSPidsBuster work correctly.
                     sc.apply(stream);
                     break;
                 }

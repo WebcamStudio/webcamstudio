@@ -15,9 +15,9 @@ import java.io.IOException;
  */
 public class WSImage extends BufferedImage {
 
-    int[] data = null;
-    byte[] byteData = null;
-    int counter = 0;
+    private int[] data = null;
+    private byte[] byteData = null;
+    private int counter = 0;
 
     public WSImage(int w, int h, int type) {
         super(w, h, type);

@@ -731,7 +731,7 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
             prgNumber.setEnabled(true);
             txtChName.setEditable(true);
             stream.stop();
-            System.gc();
+//            System.gc();
             
         }
     }//GEN-LAST:event_tglActiveStreamActionPerformed

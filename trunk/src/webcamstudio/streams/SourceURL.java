@@ -124,10 +124,10 @@ public class SourceURL extends Stream {
         Frame f = null;
         if (capture != null) {
             f = capture.getFrame();
-            for (Effect fx : this.getEffects()) {
+            for (Effect fxUR : this.getEffects()) {
                 if (f != null) {
-                    if (fx.needApply()){   
-                        fx.applyEffect(f.getImage());
+                    if (fxUR.needApply()){   
+                        fxUR.applyEffect(f.getImage());
                     }
                 }
             }

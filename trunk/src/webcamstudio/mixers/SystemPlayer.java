@@ -50,7 +50,7 @@ public class SystemPlayer implements Runnable {
         aFreq = webcamstudio.WebcamStudio.audioFreq;
         frames = new FrameBuffer(MasterMixer.getInstance().getWidth(), MasterMixer.getInstance().getHeight(), MasterMixer.getInstance().getRate());
         AudioFormat format = new AudioFormat(aFreq, 16, 2, true, true);
-        System.out.println("SysPlayer AFreq: "+aFreq);
+//        System.out.println("SysPlayer AFreq: "+aFreq);
         source = javax.sound.sampled.AudioSystem.getSourceDataLine(format);
         source.open();
         source.start();
@@ -79,16 +79,16 @@ public class SystemPlayer implements Runnable {
             frames.abort();
         }
         if (source != null) {
-            Tools.sleep(30);
+            Tools.sleep(20);
             source.stop();
             Tools.sleep(30);
             source.close();
-            Tools.sleep(30);
+            Tools.sleep(20);
             source = null;
         }
-        Tools.sleep(30);
+        Tools.sleep(20);
         executor = null;
-        System.gc();
+//        System.gc();
         webcamstudio.components.MasterPanel.tglSound.setSelected(false);
     }
 }

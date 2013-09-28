@@ -13,7 +13,7 @@ import webcamstudio.util.Tools;
  */
 public class AudioBuffer {
 
-    private ArrayList<byte[]> buffer = new ArrayList<byte[]>();
+    private final ArrayList<byte[]> buffer = new ArrayList<byte[]>();
     private int bufferSize = MasterMixer.BUFFER_SIZE;
     private boolean abort = false;
     private int aFreq = webcamstudio.WebcamStudio.audioFreq;

@@ -14,9 +14,9 @@ import javax.swing.JPanel;
  *
  * @author pballeux
  */
-public class TEST extends Effect {
+public class Weave extends Effect {
 
-    private com.jhlabs.image.CrystallizeFilter filter = new com.jhlabs.image.CrystallizeFilter();
+    private com.jhlabs.image.WeaveFilter filter = new com.jhlabs.image.WeaveFilter();
 
     @Override
     public boolean needApply(){

@@ -43,7 +43,7 @@ abstract public class VideoOutput{
         for (int i = 0; i < data.length; i++) {
             rgbs[index++] = (byte) (data[i] >> 16 & 0xFF);
             rgbs[index++] = (byte) (data[i] >> 8 & 0xFF);
-            rgbs[index++] = (byte) (data[i] >> 0 & 0xFF);
+            rgbs[index++] = (byte) (data[i] & 0xFF);
         }
         return rgbs;
     }
@@ -60,7 +60,7 @@ abstract public class VideoOutput{
                 for (int i = 0; i < w; i++) {
                     int color = bi.getRGB(i, j);
 
-                    int alpha = color >> 24 & 0xff;
+//                    int alpha = color >> 24 & 0xff;
                     int R = color >> 16 & 0xff;
                     int G = color >> 8 & 0xff;
                     int B = color & 0xff;
@@ -90,7 +90,7 @@ abstract public class VideoOutput{
     }
 
     protected byte[] img2uyvy(int[] data) {
-        int nbOfPixels = data.length;
+//        int nbOfPixels = data.length;
         byte[] yuvs = new byte[(data.length * 2)];
         int index = data.length - 1;
         int yuvIndex = yuvs.length - 1;

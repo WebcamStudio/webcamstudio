@@ -96,23 +96,23 @@ public class SourceDVB extends Stream {
     }
     @Override
     public void readNext() {
-        Frame f = null;
+        Frame fDVB = null;
         if (capture != null) {
-            f = capture.getFrame();
-                for (Effect fx : this.getEffects()) {
-                    if (f != null) {
-                        if (fx.needApply()){
-                            fx.applyEffect(f.getImage());
+            fDVB = capture.getFrame();
+                for (Effect fxDVB : this.getEffects()) {
+                    if (fDVB != null) {
+                        if (fxDVB.needApply()){
+                            fxDVB.applyEffect(fDVB.getImage());
                         }
                     }
                 }
             
-            if (f != null) {
-                setAudioLevel(f);
-                lastPreview.getGraphics().drawImage(f.getImage(), 0, 0, null);
+            if (fDVB != null) {
+                setAudioLevel(fDVB);
+                lastPreview.getGraphics().drawImage(fDVB.getImage(), 0, 0, null);
             }
         }
-        nextFrame=f;
+        nextFrame=fDVB;
     }
 
 }

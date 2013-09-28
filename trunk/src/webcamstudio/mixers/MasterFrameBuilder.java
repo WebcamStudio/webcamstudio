@@ -5,7 +5,6 @@
 package webcamstudio.mixers;
 
 import java.awt.AlphaComposite;
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.nio.ByteBuffer;
@@ -13,10 +12,11 @@ import java.nio.ShortBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
+//import java.util.List;
 import java.util.TreeMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import webcamstudio.streams.Stream;
@@ -29,24 +29,23 @@ import webcamstudio.util.Tools;
 public class MasterFrameBuilder implements Runnable {
 
     private static ArrayList<Stream> streams = new ArrayList<Stream>();// add private
-    private boolean stopMe = false;
     private static int fps = 0;
-    private long mark = System.currentTimeMillis();
-    private FrameBuffer frameBuffer = null;
-    private TreeMap<Integer, Frame> orderedFrames = new TreeMap<Integer, Frame>();
-
-    public MasterFrameBuilder(int w, int h, int r) {
-        frameBuffer = new FrameBuffer(w, h, r);
-    }
 
     public synchronized static void register(Stream s) {
         if (!streams.contains(s)) {
             streams.add(s);
         }
     }
-
     public synchronized static void unregister(Stream s) {
         streams.remove(s);
+    }
+    private boolean stopMe = false;
+    private long mark = System.currentTimeMillis();
+    private FrameBuffer frameBuffer = null;
+    private TreeMap<Integer, Frame> orderedFrames = new TreeMap<Integer, Frame>();
+
+    public MasterFrameBuilder(int w, int h, int r) {
+        frameBuffer = new FrameBuffer(w, h, r);
     }
 
     public void stop() {
@@ -60,7 +59,7 @@ public class MasterFrameBuilder implements Runnable {
         BufferedImage image = targetFrame.getImage();
         if (image != null) {
             Graphics2D g = image.createGraphics();
-            g.setBackground(new Color(0, 0, 0, 0));
+//            g.setBackground(new Color(0, 0, 0, 0));
             g.clearRect(0, 0, image.getWidth(), image.getHeight());
             g.setRenderingHint(java.awt.RenderingHints.KEY_INTERPOLATION, java.awt.RenderingHints.VALUE_INTERPOLATION_BICUBIC);
             g.setRenderingHint(java.awt.RenderingHints.KEY_ALPHA_INTERPOLATION, java.awt.RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
@@ -110,12 +109,13 @@ public class MasterFrameBuilder implements Runnable {
         }
     }
 
-    
-    @SuppressWarnings("all")
+//    @SuppressWarnings("all")
+    @SuppressWarnings("unchecked")  
     @Override
     public void run() {
         stopMe = false;
         ArrayList<Frame> frames = new ArrayList<Frame>();
+        ArrayList<Future<Frame>> resultsT = new ArrayList<Future<Frame>>();
         mark = System.currentTimeMillis();
         int r = MasterMixer.getInstance().getRate();
         long frameDelay = 1000 / r;
@@ -126,12 +126,15 @@ public class MasterFrameBuilder implements Runnable {
             Frame targetFrame = frameBuffer.getFrameToUpdate();
             frames.clear();
             try {
-                List<Future<Frame>> results = pool.invokeAll(streams);
+                resultsT = ((ArrayList) pool.invokeAll(streams, 1, TimeUnit.SECONDS));
+                ArrayList<Future<Frame>> results = resultsT;
                 for (Future stream : results) {
-                    Frame f = (Frame)stream.get();
-                    if (f != null) {
-                        frames.add(f);
-                    } 
+                    if ((Frame)stream.get() != null) {
+                        Frame f = (Frame)stream.get();
+//                        if (f != null) {
+                            frames.add(f);
+//                        } 
+                    }
                 }
                 mixAudio(frames, targetFrame);            
                 mixImages(frames, targetFrame);

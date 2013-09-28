@@ -288,7 +288,7 @@ public class VideoSourceIRC extends VideoSource {
             String maybeSecret = tokenizer.nextToken();
 
             if (maybeSecret.equals(secret)) {
-                System.out.println("Opping " + personToOp);
+//                System.out.println("Opping " + personToOp);
                 connection.sendCommand(
                         new RawCommand("MODE " + channelName + " +o " + personToOp));
             } else {
@@ -315,7 +315,7 @@ public class VideoSourceIRC extends VideoSource {
                         + showSecret + "' command."));
             }
         } else if (commandStr.equals(showSecret)) {
-            System.out.println("Show secret requested.  Secret is: " + secret);
+//            System.out.println("Show secret requested.  Secret is: " + secret);
             connection.sendCommand(
                     new MessageCommand(msg.getSource(),
                     "Secret has been output on standard out."));
@@ -458,7 +458,7 @@ class MessageMonitor extends GenericAutoService {
     }
 
     public void updateCommand(InCommand command) {
-        System.out.println(command.getSourceString());
+//        System.out.println(command.getSourceString());
         if (command instanceof MessageCommand) {
             MessageCommand msg = (MessageCommand) command;
 

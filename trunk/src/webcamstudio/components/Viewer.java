@@ -24,7 +24,7 @@ public class Viewer extends javax.swing.JPanel {
     private BufferedImage img = new BufferedImage(320,240,BufferedImage.TYPE_INT_ARGB);
     private int audioLeft = 0;
     private int audioRight=0;
-    private boolean play = false;
+//    private boolean play = false;
     /** Creates new form Viewer */
     public Viewer() {
         initComponents();

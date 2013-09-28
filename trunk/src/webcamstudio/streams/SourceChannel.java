@@ -94,66 +94,69 @@ public class SourceChannel  {
 
             @Override
             public void run() {
-                if (!s.getClass().toString().contains("Sink")){ // Don't Update SinkStreams ...
-                ExecutorService pool = java.util.concurrent.Executors.newCachedThreadPool();
-                for (Transition t : s.endTransitions) {
-                    pool.submit(t.run(instance));
-                }
-                pool.shutdown();
-                try {
-                    pool.awaitTermination(10, TimeUnit.SECONDS);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(SourceChannel.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                if (isPlaying) {
-                    if (!s.isPlaying()) {
-                        s.read();
-                        s.updateStatus();
+                if (!s.getClass().toString().contains("Sink")){ // Don't Update SinkStreams
+                    ExecutorService pool = java.util.concurrent.Executors.newCachedThreadPool();
+                    if (s.endTransitions != null) {
+                        for (Transition t : s.endTransitions) {
+                            pool.submit(t.run(instance));
+                        }
+                        pool.shutdown();
+                        try {
+                            pool.awaitTermination(10, TimeUnit.SECONDS);
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(SourceChannel.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                     }
-                    pool = java.util.concurrent.Executors.newCachedThreadPool();
-                    for (Transition t : instance.startTransitions) {
-                        pool.submit(t.run(instance));
-                    }
-                    pool.shutdown();
-                    try {
-                        pool.awaitTermination(10, TimeUnit.SECONDS);
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(SourceChannel.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-
-                } else {
-                    if (s.isPlaying()) {
-                            s.stop();
+                    if (isPlaying) {
+                        if (!s.isPlaying()) {
+                            s.read();
                             s.updateStatus();
+                        }
+                        if (s.startTransitions != null) {
+                            pool = java.util.concurrent.Executors.newCachedThreadPool();
+                            for (Transition t : instance.startTransitions) {
+                                pool.submit(t.run(instance));
+                            }
+                            pool.shutdown();
+                            try {
+                                pool.awaitTermination(10, TimeUnit.SECONDS);
+                            } catch (InterruptedException ex) {
+                                Logger.getLogger(SourceChannel.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        }
+                    } else {
+                        if (s.isPlaying()) {
+                                s.stop();
+                                s.updateStatus();
+                        }
                     }
-                }
 
-                s.x = getX();
-                s.y = getY();
-                s.width = getWidth();
-                s.height = getHeight();
-                s.opacity = getOpacity();
-                s.effects.clear();
-                s.effects.addAll(effects);
-                s.startTransitions.clear();
-                s.startTransitions.addAll(startTransitions);
-                s.endTransitions.clear();
-                s.endTransitions.addAll(endTransitions);
-                s.volume = getVolume();
-                s.zorder = getZorder();
-                s.captureHeight = getCapHeight();
-                s.captureWidth = getCapWidth();
-                if (s instanceof SourceText) {
-                    SourceText st = (SourceText) s;
-                    st.content = getText();
-                    st.fontName = getFont();
-                    st.color = getColor();
-                    st.updateContent(getText());
-                } else if (s instanceof SourceDesktop) {
-                    SourceDesktop sd = (SourceDesktop) s;
-                }               
-                s.updateStatus();
-            }
+                    s.x = getX();
+                    s.y = getY();
+                    s.width = getWidth();
+                    s.height = getHeight();
+                    s.opacity = getOpacity();
+                    s.effects.clear();
+                    s.effects.addAll(effects);
+                    s.startTransitions.clear();
+                    s.startTransitions.addAll(startTransitions);
+                    s.endTransitions.clear();
+                    s.endTransitions.addAll(endTransitions);
+                    s.volume = getVolume();
+                    s.zorder = getZorder();
+                    s.captureHeight = getCapHeight();
+                    s.captureWidth = getCapWidth();
+                    if (s instanceof SourceText) {
+                        SourceText st = (SourceText) s;
+                        st.content = getText();
+                        st.fontName = getFont();
+                        st.color = getColor();
+                            st.updateContent(getText());
+                    } else if (s instanceof SourceDesktop) {
+                        SourceDesktop sd = (SourceDesktop) s;
+                    }               
+                    s.updateStatus();
+                }
             }
         }).start();
 
@@ -166,6 +169,9 @@ public class SourceChannel  {
         return x;
     }
 
+    public void setX(int xp) {
+        x = xp;
+    }
     /**
      * @return the y
      */
@@ -173,6 +179,9 @@ public class SourceChannel  {
         return y;
     }
 
+    public void setY(int yp) {
+        y = yp;
+    }
     /**
      * @return the capWidth
      */

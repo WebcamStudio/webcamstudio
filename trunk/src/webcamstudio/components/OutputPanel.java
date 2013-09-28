@@ -126,17 +126,11 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener {
                     }
                     Object data = evt.getTransferable().getTransferData(dataFlavor);
                     String files = "";
-                    System.out.println(data.getClass().getCanonicalName());
                     if (data instanceof Reader) {
-//                        Reader reader = (Reader) data;
                         char[] text = new char[65536];
-//                        int count = reader.read(text);
                         files = new String(text).trim();
                     } else if (data instanceof InputStream) {
-                        InputStream list = (InputStream) data;
-//                        java.io.InputStreamReader reader = new java.io.InputStreamReader(list);
                         char[] text = new char[65536];
-//                        int count = reader.read(text);
                         files = new String(text).trim();
                     } else if (data instanceof String) {
                         files = data.toString().trim();
@@ -361,13 +355,12 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener {
     private void tglRecordToFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglRecordToFileActionPerformed
         if (tglRecordToFile.isSelected()) {
             boolean overWrite = true;
-//            boolean lastChoose = false;
             File f;
             JFileChooser chooser = new JFileChooser();
             FileNameExtensionFilter aviFilter = new FileNameExtensionFilter("AVI files (*.avi)", "avi");
-            FileNameExtensionFilter ogvFilter = new FileNameExtensionFilter("OGV files (*.ogv)", "ogv");
+            FileNameExtensionFilter mp4Filter = new FileNameExtensionFilter("MP4 files (*.mp4)", "mp4");
             chooser.setFileFilter(aviFilter);
-            chooser.setFileFilter(ogvFilter);
+            chooser.setFileFilter(mp4Filter);
             chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
             chooser.setDialogTitle("Choose Destination File ...");
             int retval = chooser.showSaveDialog(this);
@@ -377,13 +370,13 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener {
                     if(!chooser.getSelectedFile().getAbsolutePath().endsWith(".avi")){
                         f =  new File(chooser.getSelectedFile() + ".avi");
                     }
-                } else if (chooser.getFileFilter().equals(ogvFilter)) {
-                    if(!chooser.getSelectedFile().getAbsolutePath().endsWith(".ogv")){
-                        f =  new File(chooser.getSelectedFile() + ".ogv");
+                } else if (chooser.getFileFilter().equals(mp4Filter)) {
+                    if(!chooser.getSelectedFile().getAbsolutePath().endsWith(".mp4")){
+                        f =  new File(chooser.getSelectedFile() + ".mp4");
                     }
                 }
                 if(f.exists()){
-                    int result = JOptionPane.showConfirmDialog(this,"File exists, overwrite?","WS Warning Message.",JOptionPane.YES_NO_CANCEL_OPTION);
+                    int result = JOptionPane.showConfirmDialog(this,"File exists, overwrite?","Warning!",JOptionPane.YES_NO_CANCEL_OPTION);
                     switch(result){
                         case JOptionPane.YES_OPTION:
                             overWrite = true;

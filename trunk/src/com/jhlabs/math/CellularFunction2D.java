@@ -16,7 +16,6 @@ limitations under the License.
 
 package com.jhlabs.math;
 
-import java.awt.image.*;
 import java.util.*;
 
 public class CellularFunction2D implements Function2D {

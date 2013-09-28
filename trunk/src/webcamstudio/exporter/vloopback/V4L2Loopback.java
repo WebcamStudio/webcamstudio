@@ -27,7 +27,7 @@ public class V4L2Loopback extends VideoOutput{
         width = w;
         height = h;
         devicePath = path;
-        this.pixFormat = pixFormat;
+        V4L2Loopback.pixFormat = pixFormat;
         devFD = CV4l2.INSTANCE.open_device(devicePath, w, h, pixFormat);
         if (devFD <= 0) {
             System.out.println("Error Opening Device");

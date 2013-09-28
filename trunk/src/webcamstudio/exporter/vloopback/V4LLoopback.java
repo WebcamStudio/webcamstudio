@@ -62,7 +62,7 @@ public class V4LLoopback extends VideoOutput {
     public V4LLoopback(InfoListener l) {
         //We have to detect if we are in 32bits or 64bits
         listener = l;
-        System.out.println("Pointer Size: " + com.sun.jna.Native.POINTER_SIZE);
+//        System.out.println("Pointer Size: " + com.sun.jna.Native.POINTER_SIZE);
         switch (com.sun.jna.Native.POINTER_SIZE) {
             case 4:
                 VIDIOCGWIN = -2145356279;
@@ -79,7 +79,7 @@ public class V4LLoopback extends VideoOutput {
     public void open(String path, int w, int h, int pixFormat) {
         this.w = w;
         this.h = h;
-        this.pixFormat = pixFormat;
+        V4LLoopback.pixFormat = pixFormat;
         switch (pixFormat) {
             case VideoOutput.RGB24:
                 fmt = VIDEO_PALETTE_RGB24;

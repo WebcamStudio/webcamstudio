@@ -39,7 +39,6 @@ public class StreamFullDesktop extends javax.swing.JInternalFrame {
         panel = p;
         s.setPanelType("Panel");
         s.setComm("GS");
-//        this.setVisible(true);
         this.setDesktopIcon(new DesktopIcon(this,s));
         this.setClosable(true);
         this.setToolTipText(stream.getName());
@@ -102,7 +101,7 @@ public class StreamFullDesktop extends javax.swing.JInternalFrame {
         stream.destroy();
         stream = null;
         panel = null;
-        System.gc();
+//        System.gc();
     }//GEN-LAST:event_formInternalFrameClosing
 
     private void formFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_formFocusGained
