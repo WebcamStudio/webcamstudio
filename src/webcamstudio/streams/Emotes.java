@@ -76,7 +76,6 @@ public class Emotes {
 
     public static void main(String[] args) {
         new Emotes().getSmiley(":)");
-
-        System.out.println("OK");
+//        System.out.println("OK");
     }
 }

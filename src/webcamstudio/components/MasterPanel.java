@@ -22,6 +22,7 @@ import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterMixer;
 import webcamstudio.mixers.SystemPlayer;
 import webcamstudio.streams.SourceChannel;
+import webcamstudio.streams.SourceText;
 import webcamstudio.streams.Stream;
 
 /**
@@ -73,7 +74,7 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
         btnApply = new javax.swing.JButton();
         lblHeight1 = new javax.swing.JLabel();
         spinFPS = new javax.swing.JSpinner();
-        btnApplyStreams = new javax.swing.JButton();
+        btnApplyVideoOnly = new javax.swing.JButton();
 
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("webcamstudio/Languages"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("PREVIEW"))); // NOI18N
@@ -96,7 +97,7 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
         panMixer.setName("panMixer"); // NOI18N
 
         tglSound.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/audio-card.png"))); // NOI18N
-        tglSound.setToolTipText("Audio Output Switch");
+        tglSound.setToolTipText("Audio Monitor Switch");
         tglSound.setName("tglSound"); // NOI18N
         tglSound.setPreferredSize(new java.awt.Dimension(32, 30));
         tglSound.addActionListener(new java.awt.event.ActionListener() {
@@ -129,12 +130,12 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
 
         spinFPS.setName("spinFPS"); // NOI18N
 
-        btnApplyStreams.setText("Apply to streams");
-        btnApplyStreams.setToolTipText("Apply Mixer Settings to all loaded streams.");
-        btnApplyStreams.setName("btnApplyStreams"); // NOI18N
-        btnApplyStreams.addActionListener(new java.awt.event.ActionListener() {
+        btnApplyVideoOnly.setText("Apply to Streams");
+        btnApplyVideoOnly.setToolTipText("Apply Mixer Settings Proportionally to all Streams.");
+        btnApplyVideoOnly.setName("btnApplyVideoOnly"); // NOI18N
+        btnApplyVideoOnly.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnApplyStreamsActionPerformed(evt);
+                btnApplyVideoOnlyActionPerformed(evt);
             }
         });
 
@@ -159,7 +160,7 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
                         .addComponent(btnApply, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(tglSound, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(btnApplyStreams, javax.swing.GroupLayout.DEFAULT_SIZE, 201, Short.MAX_VALUE))
+                    .addComponent(btnApplyVideoOnly, javax.swing.GroupLayout.DEFAULT_SIZE, 201, Short.MAX_VALUE))
                 .addContainerGap())
         );
         panMixerLayout.setVerticalGroup(
@@ -182,8 +183,8 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
                     .addComponent(btnApply, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(tglSound, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnApplyStreams, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(62, 62, 62))
+                .addComponent(btnApplyVideoOnly, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(65, 65, 65))
         );
 
         tabMixers.addTab(bundle.getString("MIXER"), panMixer); // NOI18N
@@ -245,28 +246,65 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
         }
     }//GEN-LAST:event_btnApplyActionPerformed
 
-    private void btnApplyStreamsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnApplyStreamsActionPerformed
+    private void btnApplyVideoOnlyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnApplyVideoOnlyActionPerformed
         ArrayList<Stream> allStreams = MasterChannels.getInstance().getStreams();
         int wi = mixer.getWidth();
         int he = mixer.getHeight();
+        int oldCW = mixer.getWidth();
+        int oldCH = mixer.getHeight();
         for (int l=0; l< allStreams.size(); l++) {
-            allStreams.get(l).setCaptureWidth(wi);
-            allStreams.get(l).setCaptureHeight(he);
-            allStreams.get(l).setWidth(wi);
-            allStreams.get(l).setHeight(he);
-            allStreams.get(l).updateStatus();
-            for (SourceChannel ssc : allStreams.get(l).getChannels()){
-                ssc.setWidth(wi);
-                ssc.setHeight(he);
-                ssc.setCapWidth(wi);
-                ssc.setCapHeight(he);
-            }    
+            if (allStreams.get(l) instanceof SourceText) {       
+            } else {
+            oldCW = allStreams.get(l).getCaptureWidth();
+            oldCH = allStreams.get(l).getCaptureHeight();
+            }
+            int oldW = allStreams.get(l).getWidth();
+            int oldH = allStreams.get(l).getHeight();
+            int oldX = allStreams.get(l).getX();
+            int oldY = allStreams.get(l).getY();
+            int newW = (oldW * wi) / oldCW;
+            int newH = (oldH * he) / oldCH;
+            int newX = (oldX * wi) / oldCW;
+            int newY = (oldY * he) / oldCH;
+            if (allStreams.get(l) instanceof SourceText) {
+                allStreams.get(l).setWidth(newW);
+                allStreams.get(l).setHeight(newH);
+                allStreams.get(l).setX(newX);
+                allStreams.get(l).setY(newY);
+                allStreams.get(l).setCaptureWidth(newW);
+                allStreams.get(l).setCaptureHeight(newH);
+                allStreams.get(l).updateStatus();
+                for (SourceChannel ssc : allStreams.get(l).getChannels()){
+                    ssc.setWidth(newW);
+                    ssc.setHeight(newH);
+                    ssc.setX(newX);
+                    ssc.setY(newY);
+                    ssc.setCapWidth(newW);
+                    ssc.setCapHeight(newH);
+                }
+            } else {
+                allStreams.get(l).setWidth(newW);
+                allStreams.get(l).setHeight(newH);
+                allStreams.get(l).setX(newX);
+                allStreams.get(l).setY(newY);
+                allStreams.get(l).setCaptureWidth(wi);
+                allStreams.get(l).setCaptureHeight(he);
+                allStreams.get(l).updateStatus();
+                for (SourceChannel ssc : allStreams.get(l).getChannels()){
+                    ssc.setWidth(newW);
+                    ssc.setHeight(newH);
+                    ssc.setX(newX);
+                    ssc.setY(newY);
+                    ssc.setCapWidth(wi);
+                    ssc.setCapHeight(he);
+                }
+            }   
         }
-    }//GEN-LAST:event_btnApplyStreamsActionPerformed
+    }//GEN-LAST:event_btnApplyVideoOnlyActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnApply;
-    private javax.swing.JButton btnApplyStreams;
+    private javax.swing.JButton btnApplyVideoOnly;
     private javax.swing.JLabel lblHeight;
     private javax.swing.JLabel lblHeight1;
     private javax.swing.JLabel lblWidth;

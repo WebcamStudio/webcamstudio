@@ -46,7 +46,7 @@ public class SourceMovie extends Stream {
         if (capture != null) {
             capture.stop();
             capture = null;
-            System.gc();
+//            System.gc();
         }
     }
     @Override
@@ -78,7 +78,7 @@ public class SourceMovie extends Stream {
     public BufferedImage getPreview() {
         return lastPreview;
     }
-
+    
     @Override
     public Frame getFrame() {
         
@@ -90,13 +90,21 @@ public class SourceMovie extends Stream {
         Frame f = null;
         if (capture != null) {
             f = capture.getFrame();
-            for (Effect fx : this.getEffects()) {
+            for (int fx = 0; fx < this.getEffects().size(); fx++) {
                 if (f != null) {
-                    if (fx.needApply()){   
-                        fx.applyEffect(f.getImage());
+                    Effect fxM = this.getEffects().get(fx);
+                    if (fxM.needApply()){   
+                        fxM.applyEffect(f.getImage());
                     }
                 }
             }
+/*            for (Effect fxM : this.getEffects()) {
+                if (f != null) {
+                    if (fxM.needApply()){   
+                        fxM.applyEffect(f.getImage());
+                    }
+                }
+            } */
             if (f != null) {
                 setAudioLevel(f);
                 lastPreview.getGraphics().drawImage(f.getImage(), 0, 0, null);

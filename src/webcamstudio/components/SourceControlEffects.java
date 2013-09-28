@@ -63,8 +63,8 @@ public class SourceControlEffects extends javax.swing.JPanel {
         btnMoveUp = new javax.swing.JButton();
         btnMoveDown = new javax.swing.JButton();
 
-        setMinimumSize(new java.awt.Dimension(390, 50));
-        setPreferredSize(new java.awt.Dimension(395, 169));
+        setMinimumSize(new java.awt.Dimension(300, 50));
+        setPreferredSize(new java.awt.Dimension(395, 200));
 
         lstEffects.setModel(new javax.swing.AbstractListModel() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
@@ -122,14 +122,14 @@ public class SourceControlEffects extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(panSettings, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 328, Short.MAX_VALUE)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 333, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(btnAddEffect)
                             .addComponent(btnDeleteEffect)
                             .addComponent(btnMoveUp)
                             .addComponent(btnMoveDown, javax.swing.GroupLayout.Alignment.TRAILING)))
-                    .addComponent(cboEffects, 0, 366, Short.MAX_VALUE))
+                    .addComponent(cboEffects, 0, 371, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -149,7 +149,7 @@ public class SourceControlEffects extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnMoveDown)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(panSettings, javax.swing.GroupLayout.DEFAULT_SIZE, 140, Short.MAX_VALUE)
+                .addComponent(panSettings, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
 

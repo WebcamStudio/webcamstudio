@@ -2226,8 +2226,7 @@ public class svm {
 	public static void svm_get_labels(svm_model model, int[] label)
 	{
 		if (model.label != null)
-			for(int i=0;i<model.nr_class;i++)
-				label[i] = model.label[i];
+			System.arraycopy(model.label, 0, label, 0, model.nr_class);
 	}
 
 	public static double svm_get_svr_probability(svm_model model)

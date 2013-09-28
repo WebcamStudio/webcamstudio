@@ -13,7 +13,6 @@ package webcamstudio.components;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import javax.swing.Box;
-//import java.awt.event.ActionListener;
 import webcamstudio.streams.SourceDVB;
 import webcamstudio.streams.SourceImageGif;
 import webcamstudio.streams.SourceImageU;
@@ -267,7 +266,7 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
         stream.destroy();
         stream = null;
         panel = null;
-        System.gc();
+//        System.gc();
     }//GEN-LAST:event_formInternalFrameClosing
 
     private void formFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_formFocusGained

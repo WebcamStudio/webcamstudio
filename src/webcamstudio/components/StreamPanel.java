@@ -672,7 +672,7 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener, 
             jSlSpinSeek.setEnabled(stream.needSeekCTRL());
             btnFullCam.setEnabled(true);
             stream.stop();
-            System.gc();
+//            System.gc();
         }
     }//GEN-LAST:event_tglActiveStreamActionPerformed
 

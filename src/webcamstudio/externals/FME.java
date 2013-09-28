@@ -71,8 +71,8 @@ public class FME {
         height = (String)path.evaluate(root + "/capture/video/size/height", doc,XPathConstants.STRING);
         vcodec = (String)path.evaluate(root + "/encode/video/format", doc,XPathConstants.STRING);
         vbitrate = (String)path.evaluate(root + "/encode/video/datarate", doc,XPathConstants.STRING);
-        if (vbitrate.indexOf(";")!=-1){
-            vbitrate = vbitrate.substring(0, vbitrate.indexOf(";"));
+        if (vbitrate.indexOf(';')!=-1){
+            vbitrate = vbitrate.substring(0, vbitrate.indexOf(';'));
         }
         acodec = (String)path.evaluate(root + "/encode/audio/format", doc,XPathConstants.STRING);
         abitrate = (String)path.evaluate(root + "/encode/audio/datarate", doc,XPathConstants.STRING);

@@ -22,7 +22,6 @@ import webcamstudio.streams.SinkFile;
 import webcamstudio.streams.Stream;
 import webcamstudio.util.Tools;
 import webcamstudio.util.Tools.OS;
-//import webcamstudio.WebcamStudio.*;
 
 /**
  *
@@ -129,7 +128,7 @@ public class ProcessRenderer {
             }
             res = ProcessRenderer.class.getResource(path);
         }
-        System.out.println("Resource Used: " + res.toString());
+//        System.out.println("Resource Used: " + res.toString());
         return res;
     }
 
@@ -320,10 +319,10 @@ public class ProcessRenderer {
                     commandVideo = setParameters(commandVideo);
                     String[] parmsVideo = commandVideo.split("ABCDE");
                     try {
-                        for (String p : parmsVideo) {
-                            System.out.print(p + " ");
-                        }
-                        System.out.println();
+//                        for (String p : parmsVideo) {
+//                            System.out.print(p + " ");
+//                        }
+//                        System.out.println();
                         processVideo.execute(parmsVideo);
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -336,10 +335,10 @@ public class ProcessRenderer {
                     commandAudio = setParameters(commandAudio);
                     String[] parmsAudio = commandAudio.split("ABCDE");
                     try {
-                        for (String p : parmsAudio) {
-                            System.out.print(p + " ");
-                        }
-                        System.out.println();
+//                        for (String p : parmsAudio) {
+//                            System.out.print(p + " ");
+//                        }
+//                        System.out.println();
                         processAudio.execute(parmsAudio);
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -467,7 +466,7 @@ public class ProcessRenderer {
                 stopMe = false;
                 String command = plugins.getProperty(plugin).replaceAll("  ", " "); //Making sure there is no double spaces
                 command = setParameters(command);
-                System.out.println("Command: "+command);
+//                System.out.println("Command: "+command);
                 File file=new File(System.getProperty("user.home")+"/.webcamstudio/"+"WSBroadcast.sh");
                 FileOutputStream fos;
                 DataOutputStream dos = null;
@@ -515,7 +514,7 @@ public class ProcessRenderer {
                 stopped = false;
                 String command = plugins.getProperty(plugin).replaceAll("  ", " "); //Making sure there is no double spaces
                 command = setParameters(command);
-                System.out.println(command);
+//                System.out.println(command);
 
                 final String[] parms = command.split(" ");
                 try {
@@ -543,14 +542,14 @@ public class ProcessRenderer {
         if (processVideo != null) {
             if (stream instanceof SinkFile) {
                 System.out.println("Delay for SinkFile ...");
-                Tools.sleep(1500);
+                Tools.sleep(1700);
             }
-            System.out.println(stream.getName()+" Video Killed ...");
+            System.out.println(stream.getName()+" Video Cleared ...");
                 processVideo.destroy();
                 processVideo = null;
         }
         if (processAudio != null) {
-            System.out.println(stream.getName()+" Audio Killed ...");
+            System.out.println(stream.getName()+" Audio Cleared ...");
             processAudio.destroy();
             processAudio = null;
         }

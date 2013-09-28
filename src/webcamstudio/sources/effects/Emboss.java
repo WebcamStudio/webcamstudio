@@ -14,8 +14,8 @@ import javax.swing.JPanel;
  *
  * @author pballeux
  */
-public class Sphere extends Effect{
-    private com.jhlabs.image.SphereFilter filter = new com.jhlabs.image.SphereFilter();
+public class Emboss extends Effect{
+    private com.jhlabs.image.EmbossFilter filter = new com.jhlabs.image.EmbossFilter();
   
     @Override
     public boolean needApply(){

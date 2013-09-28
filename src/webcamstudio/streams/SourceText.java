@@ -32,7 +32,7 @@ public class SourceText extends Stream {
 
     @Override
     public void readNext() {
-        frame.setImage(image);
+            frame.setImage(image);
         applyEffects(frame.getImage());
         nextFrame=frame;
     }
@@ -56,13 +56,13 @@ public class SourceText extends Stream {
     @Override
     public void setX(int x){
         this.x=x;
-        updateContent(content);
-    }
+            updateContent(content);
+        }
     @Override
     public void setY(int y){
         this.y=y;
-        updateContent(content);
-    }
+            updateContent(content);
+        }
     public void setBackgroundOpacity(float o){
         bgOpacity=o;
         updateContent(content);
@@ -93,15 +93,15 @@ public class SourceText extends Stream {
     @Override
     public void setWidth(int w) {
         width = w;
-        updateContent(content);
-    }
-
+            updateContent(content);
+        }
+    
     @Override
     public void setHeight(int h) {
         height = h;
-        updateContent(content);
-    }
-
+            updateContent(content);
+        }
+    
     public void setColor(int c) {
         color = c;
         updateContent(content);
@@ -132,8 +132,8 @@ public class SourceText extends Stream {
     @Override
     public void setZOrder(int layer) {
         zorder = layer;
-        updateContent(content);
-    }
+            updateContent(content);
+        }
 
     public void updateContent(String content) {
         this.content = content;

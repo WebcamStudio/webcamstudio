@@ -320,9 +320,7 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
         ListChannels.remove(name);
         lstChannels.revalidate();
         lstNextChannel.revalidate();
-        if (lstChannels.getModel().getSize() == 0){
-            btnRenameCh.setEnabled(false);
-        }
+        btnRenameCh.setEnabled(false);
     }//GEN-LAST:event_btnRemoveActionPerformed
     @SuppressWarnings("unchecked") 
     public static void AddLoadingChannel(String name) {
@@ -335,6 +333,13 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
     @Override
     public void stopChTime(java.awt.event.ActionEvent evt) {
         StopCHTimerActionPerformed(evt);
+    }
+    
+    @Override
+    public void resetBtnStates(java.awt.event.ActionEvent evt) {
+        btnRenameCh.setEnabled(false);
+        btnSelect.setEnabled(false);
+        txtName.setText("");
     }
 
     class UpdateCHtUITask extends TimerTask {
@@ -414,7 +419,7 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
         if (lstChannels.getSelectedIndex() != -1) {
            String nextChannel = lstNextChannel.getSelectedItem().toString();
            int ChIndex = lstChannels.getSelectedIndex();
-           String t = CHCurrNext.get(ChIndex);
+//           String t = CHCurrNext.get(ChIndex);
            CHCurrNext.set(ChIndex, nextChannel);
            } 
     }//GEN-LAST:event_lstNextChannelActionPerformed
@@ -454,6 +459,7 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
         Tools.sleep(30);
         ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "All Stopped.");
         ResourceMonitor.getInstance().addMessage(label);
+        System.gc();
     }//GEN-LAST:event_btnStopAllStreamActionPerformed
     @SuppressWarnings("unchecked")
     private void btnRenameChActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRenameChActionPerformed

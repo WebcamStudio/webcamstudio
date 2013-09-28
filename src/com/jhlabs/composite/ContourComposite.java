@@ -18,7 +18,6 @@ package com.jhlabs.composite;
 
 import java.awt.*;
 import java.awt.image.*;
-import java.awt.color.*;
 
 /**
  * A special Composite used for drawing "marching ants". It draws the ants at the 127 contour of the alpha channel of the source.
@@ -32,14 +31,17 @@ public final class ContourComposite implements Composite {
 		this.offset = offset;
 	}
 
+        @Override
 	public CompositeContext createContext(ColorModel srcColorModel, ColorModel dstColorModel, RenderingHints hints) {
 		return new ContourCompositeContext( offset, srcColorModel, dstColorModel );
 	}
 
+        @Override
 	public int hashCode() {
 		return 0;
 	}
 
+        @Override
 	public boolean equals(Object o) {
 		if (!(o instanceof ContourComposite))
 			return false;

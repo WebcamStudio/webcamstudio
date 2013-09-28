@@ -63,7 +63,7 @@ public class Capturer {
             }
         }
   
-        System.out.println("Port used is Video:" + vport+"/Audio:" + aport);
+//        System.out.println("Port used is Video:" + vport+"/Audio:" + aport);
   
         Thread vCapture = new Thread(new Runnable() {
 
@@ -72,7 +72,7 @@ public class Capturer {
                 
                 try {
                     Socket connection = videoServer.accept();  
-                    System.out.println(stream.getName() + " video accepted...");
+//                    System.out.println(stream.getName() + " video accepted...");
                     if (stream.hasFakeVideo()) {
                         fakeVideoIn = new DataInputStream(new BufferedInputStream(connection.getInputStream(), 4096));
                     }
@@ -121,7 +121,7 @@ public class Capturer {
             public void run() {
                 try {                    
                     Socket connection = audioServer.accept();
-                    System.out.println(stream.getName() + " audio accepted...");
+//                    System.out.println(stream.getName() + " audio accepted...");
                     if (stream.hasFakeAudio()) {
                         fakeAudioIn = new DataInputStream(new BufferedInputStream(connection.getInputStream(), 4096));
                     }

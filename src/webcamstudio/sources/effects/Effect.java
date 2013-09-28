@@ -33,8 +33,8 @@ public abstract class Effect {
         retValue.put(Cartoon.class.getSimpleName(), new Cartoon());
         retValue.put(Gray.class.getSimpleName(), new Gray());
         retValue.put(Block.class.getSimpleName(), new Block());
-        retValue.put(Sphere.class.getSimpleName(), new Sphere());
-        retValue.put(Light.class.getSimpleName(), new Light());
+        retValue.put(Emboss.class.getSimpleName(), new Emboss());
+        retValue.put(Sharpen.class.getSimpleName(), new Sharpen());
         retValue.put(Rotation.class.getSimpleName(), new Rotation());
         retValue.put(ChromaKey.class.getSimpleName(), new ChromaKey());
         retValue.put(Contrast.class.getSimpleName(), new Contrast());
@@ -51,7 +51,10 @@ public abstract class Effect {
         retValue.put(Blink.class.getSimpleName(), new Blink());
         retValue.put(Gain.class.getSimpleName(), new Gain());
         retValue.put(HSB.class.getSimpleName(), new HSB());
-
+        retValue.put(Weave.class.getSimpleName(), new Weave());
+        retValue.put(Laplace.class.getSimpleName(), new Laplace());
+        retValue.put(Marble.class.getSimpleName(), new Marble());
+        retValue.put(Green.class.getSimpleName(), new Green());
         return retValue;
     }
     public BufferedImage cloneImage(BufferedImage src){

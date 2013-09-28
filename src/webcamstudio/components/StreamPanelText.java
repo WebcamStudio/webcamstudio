@@ -19,7 +19,6 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import webcamstudio.streams.SourceQRCode;
 import webcamstudio.streams.SourceText;
-//import webcamstudio.streams.SourceWebcam;
 import webcamstudio.streams.Stream;
 
 

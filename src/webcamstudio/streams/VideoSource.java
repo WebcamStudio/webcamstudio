@@ -107,7 +107,7 @@ public abstract class VideoSource implements InfoListener {
 
         BufferedImage i = new BufferedImage(icon.getIconWidth(), icon.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
         i.getGraphics().drawImage(icon.getImage(), 0, 0, null);
-        System.out.println("Saving to " + img.getAbsolutePath());
+//        System.out.println("Saving to " + img.getAbsolutePath());
         RenderedImage ri = (RenderedImage) i;
         if (ri != null) {
             javax.imageio.ImageIO.write(ri, "png", img);

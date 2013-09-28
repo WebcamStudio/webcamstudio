@@ -17,11 +17,8 @@ limitations under the License.
 package com.jhlabs.composite;
 
 import java.awt.*;
-import java.awt.geom.*;
 import java.awt.image.*;
 import java.awt.color.*;
-import java.net.*;
-import java.io.*;
 
 public class MiscCompositeContext implements CompositeContext {
 
@@ -49,6 +46,7 @@ public class MiscCompositeContext implements CompositeContext {
 //		dstNeedsConverting = !dstColorModel.equals(srgbCM);
 	}
 
+        @Override
 	public void dispose() {
 	}
 	
@@ -62,6 +60,7 @@ public class MiscCompositeContext implements CompositeContext {
 		return a < 0 ? 0 : a > 255 ? 255 : a;
 	}
 	
+        @Override
 	public void compose(Raster src, Raster dstIn, WritableRaster dstOut) {
 		float a=0, ac=0;
 		float alpha = this.alpha;

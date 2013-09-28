@@ -45,7 +45,7 @@ public class SourceImageGif extends Stream {
             decoder.read(new URL(url).openStream());
         }
         image = new BufferedImage(decoder.getImage().getWidth(), decoder.getImage().getHeight(), BufferedImage.TYPE_4BYTE_ABGR);
-        System.out.println("Image Count: " + decoder.getFrameCount());
+//        System.out.println("Image Count: " + decoder.getFrameCount());
         new Thread(new Runnable() {
 
             @Override
@@ -125,10 +125,10 @@ public class SourceImageGif extends Stream {
         image = decoder.getFrame(index);
         frame = new Frame(uuid, image, null);
 //       applyEffects(frame.getImage());
-        for (Effect fx : this.getEffects()) {
+        for (Effect fxG : this.getEffects()) {
             if (frame != null) {
-                if (fx.needApply()){   
-                    fx.applyEffect(frame.getImage());
+                if (fxG.needApply()){   
+                    fxG.applyEffect(frame.getImage());
                 }
             }
         }
