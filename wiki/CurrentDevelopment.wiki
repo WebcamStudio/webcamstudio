@@ -28,3 +28,13 @@ OR
  * ~~Working on stability of code. -> *Karl Ellis* -> 30 June 2013 ~~
  * ~~Working on JFileChooser to work better (Warning message when overwrite, Cancel, file types, etc.) -> *Karl Ellis* -> 30 June 2013~~
  * ~~Working on better quality output Back-End commands (UDP, FME, Red5) to choose Standard or HQ mode. User will be also able to switch between Back-Ends in stream Panels. Try to add a Stereo Audio Monitor Input Stream to capture system audio. -> *Karl Ellis* -> 30 August 2013~~  
+ * ~~Streaming Audio and video to an IceCast2 Server using FME feature.~~
+ * ~~In Movie and music a label for play time in seconds.~~
+ * ~~Master Output Audio Freq switch button between 22050Hz and 44100Hz.~~
+
+ * ~~"Import Studio Channels" and "Import Studio" from a saved studio file to a running studio session. The first add the channels separated from the existing studio channels. In this way if you play the loaded channel, the existing studio streams play status is not affected and viceversa. The second add the loaded studio in the existing one and join the channels. In this way if you play a loaded studio channel, the existing studio streams will stop and viceversa.~~
+
+ * ~~Streaming FMEs to Vaughn Tv and Justin Tv.~~
+
+ * ~~ChannelPanel button "Apply to streams" will Apply Mixer Resolution "proportionally" to all loaded streams.~~
+ * ~~Switched to GStreamer plugins for Gnonlin "gstreamer0.10-gnonlin" for GS Movie backend. This implement seek function also in GS. Have to install that plugin to use GS with Movie Streams. -> *Karl Ellis* -> 09 Oct 2013 ~~
