@@ -22,6 +22,20 @@ public class Block extends Effect{
     public void applyEffect(BufferedImage img) {
         filter.setBlockSize(blockSize+1);
         Graphics2D buffer = img.createGraphics();
+        buffer.setRenderingHint(java.awt.RenderingHints.KEY_INTERPOLATION, 
+                           java.awt.RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        buffer.setRenderingHint(java.awt.RenderingHints.KEY_RENDERING,
+                           java.awt.RenderingHints.VALUE_RENDER_SPEED);
+        buffer.setRenderingHint(java.awt.RenderingHints.KEY_ANTIALIASING,
+                           java.awt.RenderingHints.VALUE_ANTIALIAS_OFF);
+        buffer.setRenderingHint(java.awt.RenderingHints.KEY_TEXT_ANTIALIASING,
+                           java.awt.RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
+        buffer.setRenderingHint(java.awt.RenderingHints.KEY_FRACTIONALMETRICS,
+                           java.awt.RenderingHints.VALUE_FRACTIONALMETRICS_OFF);
+        buffer.setRenderingHint(java.awt.RenderingHints.KEY_COLOR_RENDERING,
+                           java.awt.RenderingHints.VALUE_COLOR_RENDER_SPEED);
+        buffer.setRenderingHint(java.awt.RenderingHints.KEY_DITHERING,
+                           java.awt.RenderingHints.VALUE_DITHER_DISABLE);
         BufferedImage temp = filter.filter(img, null);
         buffer.setBackground(new java.awt.Color(0,0,0,0));
         buffer.clearRect(0,0,img.getWidth(),img.getHeight());

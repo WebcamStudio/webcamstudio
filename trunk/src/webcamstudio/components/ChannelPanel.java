@@ -19,6 +19,7 @@ import webcamstudio.WebcamStudio;
 import webcamstudio.channels.MasterChannels;
 import webcamstudio.mixers.SystemPlayer;
 import webcamstudio.streams.Stream;
+import webcamstudio.studio.Studio;
 import webcamstudio.util.Tools;
 
 
@@ -28,23 +29,23 @@ import webcamstudio.util.Tools;
  *
  * @author patrick (modified by karl)
  */
-public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Listener {
+public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Listener, Studio.Listener {
 
     MasterChannels master = MasterChannels.getInstance();
-    public static DefaultListModel model = new DefaultListModel();
-    public static DefaultComboBoxModel aModel = new DefaultComboBoxModel();
-    public static ArrayList<String> CHCurrNext = new ArrayList<String>();
-    public static ArrayList<Integer> CHTimers = new ArrayList<Integer>();
-    public static ArrayList<String> ListChannels = new ArrayList<String>();
+    private DefaultListModel model = new DefaultListModel();
+    private DefaultComboBoxModel aModel = new DefaultComboBoxModel();
+    private ArrayList<String> CHCurrNext = new ArrayList<String>();
+    private ArrayList<Integer> CHTimers = new ArrayList<Integer>();
+    private ArrayList<String> ListChannels = new ArrayList<String>();
     ArrayList<Stream> streamS = MasterChannels.getInstance().getStreams();   
     String selectChannel=null;   
     int CHon =0;
     String CHNxName = null;
     int CHNextTime =0;
     int CHTimer = 0;
-    public static Timer CHt=new Timer();
+    private Timer CHt=new Timer();
     String CHptS= null;
-    public static Boolean StopCHpt=false;
+    private Boolean StopCHpt=false;
     boolean inTimer=false;
     
     /**
@@ -57,6 +58,7 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
         lstChannels.setModel(model);
         lstNextChannel.setModel(aModel);
         WebcamStudio.setListener(instanceChPnl);
+        Studio.setListener(this);
     }
 
     /**
@@ -171,6 +173,7 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
         jLabel3.setName("jLabel3"); // NOI18N
 
         StopCHTimer.setText(bundle.getString("STOP_CHANNEL_TIMER")); // NOI18N
+        StopCHTimer.setEnabled(false);
         StopCHTimer.setName("StopCHTimer"); // NOI18N
         StopCHTimer.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
         StopCHTimer.addActionListener(new java.awt.event.ActionListener() {
@@ -283,10 +286,11 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
             int SelectCHIndex = lstChannels.getSelectedIndex();
             lstNextChannel.setSelectedItem(CHCurrNext.get(SelectCHIndex));
             ChDuration.setValue(CHTimers.get(SelectCHIndex)/1000);
-            btnRemove.setEnabled(true);
+            btnRemove.setEnabled(!inTimer);
             btnSelect.setEnabled(!inTimer);
             btnRenameCh.setEnabled(!inTimer);
             btnAdd.setEnabled(!inTimer);
+            StopCHTimer.setEnabled(inTimer);
             btnUpdate.setEnabled(true);
             } else {
                 btnRemove.setEnabled(false);
@@ -321,9 +325,30 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
         lstChannels.revalidate();
         lstNextChannel.revalidate();
         btnRenameCh.setEnabled(false);
+        btnRemove.setEnabled(false);
+        StopCHTimer.setEnabled(inTimer);
     }//GEN-LAST:event_btnRemoveActionPerformed
+
+    @Override
+    public ArrayList<String> getCHCurrNext () {
+        return CHCurrNext;
+    }
+    @Override
+    public ArrayList<Integer> getCHTimers () {
+        return CHTimers;
+    }   
+    
+    @Override
+    public void removeChannels(String removeSc, int a) {
+        model.removeElement(removeSc);
+        aModel.removeElement(removeSc);
+        CHCurrNext.remove(removeSc);
+        CHTimers.remove(a);
+        ListChannels.remove(removeSc);
+    }   
     @SuppressWarnings("unchecked") 
-    public static void AddLoadingChannel(String name) {
+    @Override
+    public void AddLoadingChannel(String name) {
         if (name.length() > 0) {
             model.addElement(name);
             aModel.addElement(name);
@@ -338,8 +363,13 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
     @Override
     public void resetBtnStates(java.awt.event.ActionEvent evt) {
         btnRenameCh.setEnabled(false);
+        btnRemove.setEnabled(false);
         btnSelect.setEnabled(false);
         txtName.setText("");
+        CHCurrNext.clear();
+        CHTimers.clear();
+        StopCHTimer.setEnabled(false);
+        ChDuration.setValue(0);
     }
 
     class UpdateCHtUITask extends TimerTask {
@@ -397,9 +427,11 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
         if (CHTimers.get(lstChannels.getSelectedIndex()) != 0) {
             inTimer=true;
             btnRenameCh.setEnabled(false);
+            btnRemove.setEnabled(false);
             btnAdd.setEnabled(false);
             lstChannels.setEnabled(false);
             ChDuration.setEnabled(false);
+            StopCHTimer.setEnabled(inTimer);
             btnStopAllStream.setEnabled(false);
             btnSelect.setEnabled(false);
             CHt=new Timer();
@@ -419,7 +451,6 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
         if (lstChannels.getSelectedIndex() != -1) {
            String nextChannel = lstNextChannel.getSelectedItem().toString();
            int ChIndex = lstChannels.getSelectedIndex();
-//           String t = CHCurrNext.get(ChIndex);
            CHCurrNext.set(ChIndex, nextChannel);
            } 
     }//GEN-LAST:event_lstNextChannelActionPerformed
@@ -441,10 +472,12 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
         btnStopAllStream.setEnabled(true);
         btnSelect.setEnabled(true);
         btnRenameCh.setEnabled(true);
+        btnRemove.setEnabled(true);
         btnAdd.setEnabled(true);
         inTimer=false;
         CHProgressTime.setValue(0);
         CHProgressTime.setString("0");
+        StopCHTimer.setEnabled(inTimer);
         ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Channel Timer Stopped.");
         ResourceMonitor.getInstance().addMessage(label);
     }//GEN-LAST:event_StopCHTimerActionPerformed

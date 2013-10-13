@@ -238,6 +238,18 @@ public class ShadowFilter extends AbstractBufferedImageOp {
 		float yOffset = -distance*(float)Math.sin(angle);
 
 		Graphics2D g = dst.createGraphics();
+                g.setRenderingHint(RenderingHints.KEY_RENDERING,
+                                   RenderingHints.VALUE_RENDER_SPEED);
+                g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                                   RenderingHints.VALUE_ANTIALIAS_OFF);
+                g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                                   RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
+                g.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,
+                                   RenderingHints.VALUE_FRACTIONALMETRICS_OFF);
+                g.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING,
+                                   RenderingHints.VALUE_COLOR_RENDER_SPEED);
+                g.setRenderingHint(RenderingHints.KEY_DITHERING,
+                                   RenderingHints.VALUE_DITHER_DISABLE);
 		g.setComposite( AlphaComposite.getInstance( AlphaComposite.SRC_OVER, opacity ) );
 		if ( addMargins ) {
 			float radius2 = radius/2;

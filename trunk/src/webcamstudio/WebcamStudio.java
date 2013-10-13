@@ -74,6 +74,8 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
     public interface Listener {
         public void stopChTime(java.awt.event.ActionEvent evt);
         public void resetBtnStates(java.awt.event.ActionEvent evt);
+        public void AddLoadingChannel(String name);
+        public void removeChannels(String removeSc, int a);
     }
     static Listener listener = null;
     public static void setListener(Listener l) {
@@ -1036,19 +1038,20 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
                 for (int a=0; a< sourceCh.size(); a++) {
                     String removeSc = sourceCh.get(a);
                     MasterChannels.getInstance().removeChannel(removeSc);
-                    webcamstudio.components.ChannelPanel.model.removeElement(removeSc);
-                    webcamstudio.components.ChannelPanel.aModel.removeElement(removeSc);
-                    webcamstudio.components.ChannelPanel.CHCurrNext.remove(removeSc);
-                    webcamstudio.components.ChannelPanel.CHTimers.remove(a);
-                    webcamstudio.components.ChannelPanel.ListChannels.remove(removeSc);
+                    listener.removeChannels(removeSc, a);
+//                    webcamstudio.components.ChannelPanel.model.removeElement(removeSc);
+//                    webcamstudio.components.ChannelPanel.aModel.removeElement(removeSc);
+//                    webcamstudio.components.ChannelPanel.CHCurrNext.remove(removeSc);
+//                    webcamstudio.components.ChannelPanel.CHTimers.remove(a);
+//                    webcamstudio.components.ChannelPanel.ListChannels.remove(removeSc);
                 }
             } while (streamz.size()>0 || sourceCh.size()>0);
                 SystemPlayer.getInstance(null).stop();
                 MasterChannels.getInstance().stopAllStream();
                 listener.stopChTime(evt);
                 listener.resetBtnStates(evt);
-                ChannelPanel.CHCurrNext.clear();
-                ChannelPanel.CHTimers.clear();
+//                ChannelPanel.CHCurrNext.clear();
+//                ChannelPanel.CHTimers.clear();
                 tabControls.removeAll();
                 tabControls.repaint();
                 Tools.sleep(300);
@@ -1113,7 +1116,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
                 Studio.LText = null;
                 Tools.sleep(300);
                 for (String chsc : MasterChannels.getInstance().getChannels()) { // Studio.channels
-                    ChannelPanel.AddLoadingChannel(chsc);               
+                    listener.AddLoadingChannel(chsc);               
                 }
                 Studio.chanLoad.clear();
             }
@@ -1190,17 +1193,17 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
                     for (int a=0; a< sourceCh.size(); a++) {
                         String removeSc = sourceCh.get(a);
                         MasterChannels.getInstance().removeChannel(removeSc);
-                        webcamstudio.components.ChannelPanel.model.removeElement(removeSc);
-                        webcamstudio.components.ChannelPanel.aModel.removeElement(removeSc);
-                        webcamstudio.components.ChannelPanel.CHCurrNext.remove(removeSc);
-                        webcamstudio.components.ChannelPanel.CHTimers.remove(a);
-                        webcamstudio.components.ChannelPanel.ListChannels.remove(removeSc);
-                    }
+                        listener.removeChannels(removeSc, a);
+                        /*webcamstudio.components.ChannelPanel.model.removeElement(removeSc);
+                         * webcamstudio.components.ChannelPanel.aModel.removeElement(removeSc);
+                         * webcamstudio.components.ChannelPanel.CHCurrNext.remove(removeSc);
+                         * webcamstudio.components.ChannelPanel.CHTimers.remove(a);
+                         * webcamstudio.components.ChannelPanel.ListChannels.remove(removeSc);*/                    }
                 } while (streamz.size()>0 || sourceCh.size()>0);
                 listener.stopChTime(evt);
                 listener.resetBtnStates(evt);
-                ChannelPanel.CHCurrNext.clear();
-                ChannelPanel.CHTimers.clear();
+//                ChannelPanel.CHCurrNext.clear();
+//                ChannelPanel.CHTimers.clear();
                 tabControls.removeAll();
                 tabControls.repaint();
                 Tools.sleep(300);
@@ -1349,7 +1352,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
                 chNameL.clear();
                 chNameL.addAll(hs);
                 for (String chsct : chNameL) {
-                        ChannelPanel.AddLoadingChannel(chsct);
+                        listener.AddLoadingChannel(chsct);
                 }
                 Studio.chanLoad.clear();             
         }
@@ -1434,7 +1437,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
                 chNameL.clear();
                 chNameL.addAll(hs);
                 for (String chsct : chNameL) {
-                        ChannelPanel.AddLoadingChannel(chsct);
+                        listener.AddLoadingChannel(chsct);
                         master.insertChannel(chsct); // If Uncommented the attacched Studio will stop playing if other channels than his are selected. 
                 }
                 Studio.chanLoad.clear();  

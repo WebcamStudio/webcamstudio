@@ -39,7 +39,7 @@ import webcamstudio.WebcamStudio;
 import webcamstudio.channels.MasterChannels;
 import webcamstudio.mixers.MasterMixer;
 import webcamstudio.streams.*;
-import webcamstudio.components.*;
+//import webcamstudio.components.*;
 import webcamstudio.channels.transitions.Transition;
 import webcamstudio.externals.ProcessRenderer;
 import webcamstudio.sources.effects.*;
@@ -56,8 +56,8 @@ import webcamstudio.util.Tools;
 public class Studio {
 
     private ArrayList<String> channels = MasterChannels.getInstance().getChannels();
-    private ArrayList<Integer> Durations = ChannelPanel.CHTimers;
-    private ArrayList<String> nextChannel = ChannelPanel.CHCurrNext;
+    private ArrayList<Integer> Durations = listener.getCHTimers();
+    private ArrayList<String> nextChannel = listener.getCHCurrNext();
     ArrayList<Stream> streams = MasterChannels.getInstance().getStreams();
     Stream streamC = null;
     private static final String ELEMENT_SOURCES = "Sources";
@@ -74,7 +74,14 @@ public class Studio {
     public static ArrayList<String> ImgMovMus = new ArrayList<String>();
     public static ArrayList<String> aGifKeys = new ArrayList<String>();
     static boolean FirstChannel=false;
-    
+    public interface Listener {
+        public ArrayList<String> getCHCurrNext ();
+        public ArrayList<Integer> getCHTimers ();
+    }
+    static Listener listener = null;
+    public static void setListener(Studio.Listener l) {
+        listener = l;
+    }
     protected Studio() {
     }
     // Studio removed, put void
@@ -118,8 +125,8 @@ public class Studio {
     public static void save(File file) throws IOException, XMLStreamException, TransformerConfigurationException, TransformerException, IllegalArgumentException, IllegalAccessException {
         ArrayList<String> channels = MasterChannels.getInstance().getChannels();
         ArrayList<Stream> streams = MasterChannels.getInstance().getStreams();
-        ArrayList<Integer> Durations = ChannelPanel.CHTimers;
-        ArrayList<String> nextChannel = ChannelPanel.CHCurrNext;
+        ArrayList<Integer> Durations = listener.getCHTimers();
+        ArrayList<String> nextChannel = listener.getCHCurrNext();
         StringWriter writer = new StringWriter();
         System.out.println("Saving Studio ...");
 
@@ -515,6 +522,26 @@ public class Studio {
                                     effeX = new ZoomZoom();
                                     readObjectFx(effeX, SuperChild);
                                     fXL.add(effeX);
+                                } else
+                                if (sClazz.endsWith("Green")) {
+                                    effeX = new Green();
+                                    readObjectFx(effeX, SuperChild);
+                                    fXL.add(effeX);
+                                } else
+                                if (sClazz.endsWith("Laplace")) {
+                                    effeX = new Laplace();
+                                    readObjectFx(effeX, SuperChild);
+                                    fXL.add(effeX);
+                                } else 
+                                if (sClazz.endsWith("Marble")) {
+                                    effeX = new Marble();
+                                    readObjectFx(effeX, SuperChild);
+                                    fXL.add(effeX);
+                                } else 
+                                if (sClazz.endsWith("Weave")) {
+                                    effeX = new Weave();
+                                    readObjectFx(effeX, SuperChild);
+                                    fXL.add(effeX);
                                 }
                             }
                     }
@@ -648,6 +675,26 @@ public class Studio {
                                             if (sClazz.endsWith("ZoomZoom")) {
                                                 effeX = new ZoomZoom();
                                                 readObjectFx(effeX, SSSuperChild);
+                                            } else
+                                            if (sClazz.endsWith("Green")) {
+                                                effeX = new Green();
+                                                readObjectFx(effeX, SSSuperChild);
+                                                fXL.add(effeX);
+                                            } else
+                                            if (sClazz.endsWith("Laplace")) {
+                                                effeX = new Laplace();
+                                                readObjectFx(effeX, SSSuperChild);
+                                                fXL.add(effeX);
+                                            } else 
+                                            if (sClazz.endsWith("Marble")) {
+                                                effeX = new Marble();
+                                                readObjectFx(effeX, SSSuperChild);
+                                                fXL.add(effeX);
+                                            } else 
+                                            if (sClazz.endsWith("Weave")) {
+                                                effeX = new Weave();
+                                                readObjectFx(effeX, SSSuperChild);
+                                                fXL.add(effeX);
                                             }
                                             sc.addEffects(effeX);         
                                         }     

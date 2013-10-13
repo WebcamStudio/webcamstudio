@@ -133,6 +133,19 @@ public class CropFilter extends AbstractBufferedImageOp {
 		}
 
 		Graphics2D g = dst.createGraphics();
+                g.setRenderingHint(RenderingHints.KEY_RENDERING,
+                                   RenderingHints.VALUE_RENDER_SPEED);
+                g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                                   RenderingHints.VALUE_ANTIALIAS_OFF);
+                g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                                   RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
+                g.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,
+                                   RenderingHints.VALUE_FRACTIONALMETRICS_OFF);
+                g.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING,
+                                   RenderingHints.VALUE_COLOR_RENDER_SPEED);
+                g.setRenderingHint(RenderingHints.KEY_DITHERING,
+                                   RenderingHints.VALUE_DITHER_DISABLE);
+                g.setRenderingHint(java.awt.RenderingHints.KEY_INTERPOLATION, java.awt.RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 		g.drawRenderedImage( src, AffineTransform.getTranslateInstance(-x, -y) );
 		g.dispose();
 

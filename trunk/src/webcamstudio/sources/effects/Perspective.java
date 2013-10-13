@@ -6,6 +6,7 @@ package webcamstudio.sources.effects;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.util.prefs.Preferences;
 import javax.swing.JPanel;
@@ -31,6 +32,18 @@ public class Perspective extends Effect {
     public void applyEffect(BufferedImage img) {
         filter.setCorners(x1, y1, x2, y2, x3, y3, x4, y4);
         Graphics2D buffer = img.createGraphics();
+        buffer.setRenderingHint(RenderingHints.KEY_RENDERING,
+                           RenderingHints.VALUE_RENDER_SPEED);
+        buffer.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                           RenderingHints.VALUE_ANTIALIAS_OFF);
+        buffer.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                           RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
+        buffer.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,
+                           RenderingHints.VALUE_FRACTIONALMETRICS_OFF);
+        buffer.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING,
+                           RenderingHints.VALUE_COLOR_RENDER_SPEED);
+        buffer.setRenderingHint(RenderingHints.KEY_DITHERING,
+                           RenderingHints.VALUE_DITHER_DISABLE);
         BufferedImage temp = filter.filter(img, null);
         buffer.setBackground(new Color(0, 0, 0, 0));
         buffer.clearRect(0, 0, img.getWidth(), img.getHeight());

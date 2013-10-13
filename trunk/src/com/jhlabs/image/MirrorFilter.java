@@ -111,6 +111,18 @@ public class MirrorFilter extends AbstractBufferedImageOp {
 		int d = (int)(gap * height);
 
 		Graphics2D g = dst.createGraphics();
+                g.setRenderingHint(RenderingHints.KEY_RENDERING,
+                                   RenderingHints.VALUE_RENDER_SPEED);
+                g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                                   RenderingHints.VALUE_ANTIALIAS_OFF);
+                g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                                   RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
+                g.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,
+                                   RenderingHints.VALUE_FRACTIONALMETRICS_OFF);
+                g.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING,
+                                   RenderingHints.VALUE_COLOR_RENDER_SPEED);
+                g.setRenderingHint(RenderingHints.KEY_DITHERING,
+                                   RenderingHints.VALUE_DITHER_DISABLE);
 		clip = g.getClip();
 		g.clipRect( 0, 0, width, h );
 		g.drawRenderedImage( src, null );

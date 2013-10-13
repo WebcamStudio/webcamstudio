@@ -255,15 +255,40 @@ public class FeedbackFilter extends AbstractBufferedImageOp {
 
         if ( iterations == 0 ) {
             Graphics2D g = dst.createGraphics();
+            g.setRenderingHint(RenderingHints.KEY_RENDERING,
+                               RenderingHints.VALUE_RENDER_SPEED);
+            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                               RenderingHints.VALUE_ANTIALIAS_OFF);
+            g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                               RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
+            g.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,
+                               RenderingHints.VALUE_FRACTIONALMETRICS_OFF);
+            g.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING,
+                               RenderingHints.VALUE_COLOR_RENDER_SPEED);
+            g.setRenderingHint(RenderingHints.KEY_DITHERING,
+                               RenderingHints.VALUE_DITHER_DISABLE);
+            g.setRenderingHint(java.awt.RenderingHints.KEY_INTERPOLATION, java.awt.RenderingHints.VALUE_INTERPOLATION_BILINEAR);
             g.drawRenderedImage( src, null );
             g.dispose();
             return dst;
         }
         
 		Graphics2D g = dst.createGraphics();
+                g.setRenderingHint(RenderingHints.KEY_RENDERING,
+                                   RenderingHints.VALUE_RENDER_SPEED);
+                g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                                   RenderingHints.VALUE_ANTIALIAS_OFF);
+                g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                                   RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
+                g.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,
+                                   RenderingHints.VALUE_FRACTIONALMETRICS_OFF);
+                g.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING,
+                                   RenderingHints.VALUE_COLOR_RENDER_SPEED);
+                g.setRenderingHint(RenderingHints.KEY_DITHERING,
+                                   RenderingHints.VALUE_DITHER_DISABLE);
 		g.drawImage( src, null, null );
         for ( int i = 0; i < iterations; i++ ) {
-			g.setRenderingHint( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON );
+			//g.setRenderingHint( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON );
 			g.setRenderingHint( RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR );
 			g.setComposite( AlphaComposite.getInstance( AlphaComposite.SRC_OVER, ImageMath.lerp( (float)i/(iterations-1), startAlpha, endAlpha ) ) );
 

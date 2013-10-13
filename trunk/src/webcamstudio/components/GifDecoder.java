@@ -176,6 +176,20 @@ public class GifDecoder {
 				if (lastDispose == 2) {
 					// fill last image rect area with background color
 					Graphics2D g = image.createGraphics();
+                                        g.setRenderingHint(java.awt.RenderingHints.KEY_INTERPOLATION, java.awt.RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+                                        g.setRenderingHint(java.awt.RenderingHints.KEY_RENDERING,
+                                                           java.awt.RenderingHints.VALUE_RENDER_SPEED);
+                                        g.setRenderingHint(java.awt.RenderingHints.KEY_ANTIALIASING,
+                                                           java.awt.RenderingHints.VALUE_ANTIALIAS_OFF);
+                                        g.setRenderingHint(java.awt.RenderingHints.KEY_TEXT_ANTIALIASING,
+                                                           java.awt.RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
+                                        g.setRenderingHint(java.awt.RenderingHints.KEY_FRACTIONALMETRICS,
+                                                           java.awt.RenderingHints.VALUE_FRACTIONALMETRICS_OFF);
+                                        g.setRenderingHint(java.awt.RenderingHints.KEY_COLOR_RENDERING,
+                                                           java.awt.RenderingHints.VALUE_COLOR_RENDER_SPEED);
+                                        g.setRenderingHint(java.awt.RenderingHints.KEY_DITHERING,
+                                                           java.awt.RenderingHints.VALUE_DITHER_DISABLE);
+
 					Color c = null;
 					if (transparency) {
 						c = new Color(0, 0, 0, 0); 	// assume background is transparent

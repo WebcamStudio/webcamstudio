@@ -58,6 +58,7 @@ public class Cartoon extends Effect {
             data[i] = ((r << 16) | (g << 8) | (b << 0) | (a << 24));
         }
         Graphics2D buffer = img.createGraphics();
+        
         BufferedImage temp = counterFilter.filter(img, null);
         buffer.setBackground(new java.awt.Color(0, 0, 0, 0));
         buffer.clearRect(0, 0, img.getWidth(), img.getHeight());

@@ -6,6 +6,7 @@
 package webcamstudio.sources.effects;
 
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.util.prefs.Preferences;
 import javax.swing.JPanel;
@@ -24,6 +25,18 @@ public class Mosaic extends Effect {
         int w = img.getWidth();
         int h = img.getHeight();
         Graphics2D buffer = img.createGraphics();
+        buffer.setRenderingHint(RenderingHints.KEY_RENDERING,
+                           RenderingHints.VALUE_RENDER_SPEED);
+        buffer.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                           RenderingHints.VALUE_ANTIALIAS_OFF);
+        buffer.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                           RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
+        buffer.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,
+                           RenderingHints.VALUE_FRACTIONALMETRICS_OFF);
+        buffer.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING,
+                           RenderingHints.VALUE_COLOR_RENDER_SPEED);
+        buffer.setRenderingHint(RenderingHints.KEY_DITHERING,
+                           RenderingHints.VALUE_DITHER_DISABLE);
         
         int smallWidth = w / nbSquaresWidthHeight;
         int smallHeight = h / nbSquaresWidthHeight;
