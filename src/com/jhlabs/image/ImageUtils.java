@@ -60,6 +60,19 @@ public abstract class ImageUtils {
 			return (BufferedImage)image;
 		BufferedImage p = new BufferedImage( image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g = p.createGraphics();
+                g.setRenderingHint(RenderingHints.KEY_RENDERING,
+                                   RenderingHints.VALUE_RENDER_SPEED);
+                g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                                   RenderingHints.VALUE_ANTIALIAS_OFF);
+                g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                                   RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
+                g.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,
+                                   RenderingHints.VALUE_FRACTIONALMETRICS_OFF);
+                g.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING,
+                                   RenderingHints.VALUE_COLOR_RENDER_SPEED);
+                g.setRenderingHint(RenderingHints.KEY_DITHERING,
+                                   RenderingHints.VALUE_DITHER_DISABLE);
+                g.setRenderingHint(java.awt.RenderingHints.KEY_INTERPOLATION, java.awt.RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 		g.drawImage( image, 0, 0, null );
 		g.dispose();
 		return p;
@@ -77,6 +90,18 @@ public abstract class ImageUtils {
 	public static BufferedImage getSubimage( BufferedImage image, int x, int y, int w, int h ) {
 		BufferedImage newImage = new BufferedImage( w, h, BufferedImage.TYPE_INT_ARGB );
 		Graphics2D g = newImage.createGraphics();
+                g.setRenderingHint(RenderingHints.KEY_RENDERING,
+                                   RenderingHints.VALUE_RENDER_SPEED);
+                g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                                   RenderingHints.VALUE_ANTIALIAS_OFF);
+                g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                                   RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
+                g.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,
+                                   RenderingHints.VALUE_FRACTIONALMETRICS_OFF);
+                g.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING,
+                                   RenderingHints.VALUE_COLOR_RENDER_SPEED);
+                g.setRenderingHint(RenderingHints.KEY_DITHERING,
+                                   RenderingHints.VALUE_DITHER_DISABLE);
 		g.drawRenderedImage( image, AffineTransform.getTranslateInstance(-x, -y) );
 		g.dispose();
 		return newImage;
@@ -90,6 +115,18 @@ public abstract class ImageUtils {
 	public static BufferedImage cloneImage( BufferedImage image ) {
 		BufferedImage newImage = new BufferedImage( image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB );
 		Graphics2D g = newImage.createGraphics();
+                g.setRenderingHint(RenderingHints.KEY_RENDERING,
+                                   RenderingHints.VALUE_RENDER_SPEED);
+                g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                                   RenderingHints.VALUE_ANTIALIAS_OFF);
+                g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                                   RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
+                g.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,
+                                   RenderingHints.VALUE_FRACTIONALMETRICS_OFF);
+                g.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING,
+                                   RenderingHints.VALUE_COLOR_RENDER_SPEED);
+                g.setRenderingHint(RenderingHints.KEY_DITHERING,
+                                   RenderingHints.VALUE_DITHER_DISABLE);
 		g.drawRenderedImage( image, null );
 		g.dispose();
 		return newImage;

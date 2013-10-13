@@ -60,7 +60,7 @@ public class VideoDevice {
             } else {
                 type = Type.Unknown;
             }
-            name = new String(v4l2_caps.card).trim(); //+  " ("+device.getName()+")";
+            name = new String(v4l2_caps.card).trim() + " ("+device.getName().replace("video", "")+")";
         } else if (CLibrary.INSTANCE.ioctl(deviceFD, VIDIOCGCAP, vid_caps) == 0) {
             version = Version.V4L;
             if ((vid_caps.type & 1) == 1) {

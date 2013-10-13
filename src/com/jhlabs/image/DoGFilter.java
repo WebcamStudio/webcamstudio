@@ -96,6 +96,19 @@ public class DoGFilter extends AbstractBufferedImageOp {
         BufferedImage image1 = new BoxBlurFilter( radius1, radius1, 3 ).filter( src, null );
         BufferedImage image2 = new BoxBlurFilter( radius2, radius2, 3 ).filter( src, null );
         Graphics2D g2d = image2.createGraphics();
+        g2d.setRenderingHint(RenderingHints.KEY_RENDERING,
+                           RenderingHints.VALUE_RENDER_SPEED);
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                           RenderingHints.VALUE_ANTIALIAS_OFF);
+        g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                           RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
+        g2d.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,
+                           RenderingHints.VALUE_FRACTIONALMETRICS_OFF);
+        g2d.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING,
+                           RenderingHints.VALUE_COLOR_RENDER_SPEED);
+        g2d.setRenderingHint(RenderingHints.KEY_DITHERING,
+                           RenderingHints.VALUE_DITHER_DISABLE);
+        g2d.setRenderingHint(java.awt.RenderingHints.KEY_INTERPOLATION, java.awt.RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         g2d.setComposite( new SubtractComposite( 1.0f ) );
         g2d.drawImage( image1, 0, 0, null );
         g2d.dispose();

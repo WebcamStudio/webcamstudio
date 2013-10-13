@@ -44,13 +44,26 @@ public class DesktopIcon extends JDesktopIcon {
                 while (!frameDesktop.isClosed()) {
                     try {
                         if (frameDesktop.isIcon()) {
-                            BufferedImage img = stream.getPreview();
+                            BufferedImage img = stream.getPreview();                            
                             if (stream.isPlaying()) {
                                 if (img != null){
                                     int ImgHeight = img.getHeight();
                                     int ImgWidth = img.getWidth();
                                     BufferedImage newImg = new BufferedImage(ImgWidth,ImgHeight, BufferedImage.TYPE_INT_RGB);
                                     Graphics2D gr = newImg.createGraphics();
+                                    gr.setRenderingHint(java.awt.RenderingHints.KEY_INTERPOLATION, java.awt.RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+                                    gr.setRenderingHint(java.awt.RenderingHints.KEY_RENDERING,
+                                                       java.awt.RenderingHints.VALUE_RENDER_SPEED);
+                                    gr.setRenderingHint(java.awt.RenderingHints.KEY_ANTIALIASING,
+                                                       java.awt.RenderingHints.VALUE_ANTIALIAS_OFF);
+                                    gr.setRenderingHint(java.awt.RenderingHints.KEY_TEXT_ANTIALIASING,
+                                                       java.awt.RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
+                                    gr.setRenderingHint(java.awt.RenderingHints.KEY_FRACTIONALMETRICS,
+                                                       java.awt.RenderingHints.VALUE_FRACTIONALMETRICS_OFF);
+                                    gr.setRenderingHint(java.awt.RenderingHints.KEY_COLOR_RENDERING,
+                                                       java.awt.RenderingHints.VALUE_COLOR_RENDER_SPEED);
+                                    gr.setRenderingHint(java.awt.RenderingHints.KEY_DITHERING,
+                                                       java.awt.RenderingHints.VALUE_DITHER_DISABLE);
                                     gr.setColor(Color.green);
                                     gr.fillRect(0,0,newImg.getWidth(),newImg.getHeight());
                                     gr.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC_OVER, 70 / 100F));
@@ -62,7 +75,7 @@ public class DesktopIcon extends JDesktopIcon {
                                     BufferedImage stopImg = stream.getPreview();
                                     img=stopImg;
                                 }
-                            }
+                            } 
                             viewer.setImage(img);
                             viewer.setAudioLevel(stream.getAudioLevelLeft(), stream.getAudioLevelRight());
                             viewer.repaint();
@@ -77,7 +90,7 @@ public class DesktopIcon extends JDesktopIcon {
                             if (stream instanceof SourceURL){
                                 SourceURL sU = (SourceURL)stream;
                                 setToolTipText(sU.getWebURL());
-                            }
+                            } 
                         }
                         Thread.sleep(200);
                     } catch (InterruptedException ex) {

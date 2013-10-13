@@ -5,7 +5,14 @@
 package webcamstudio.mixers;
 
 import java.awt.AlphaComposite;
+import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GraphicsConfiguration;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+import java.awt.Image;
+import java.awt.Transparency;
 import java.awt.image.BufferedImage;
 import java.nio.ByteBuffer;
 import java.nio.ShortBuffer;
@@ -30,7 +37,12 @@ public class MasterFrameBuilder implements Runnable {
 
     private static ArrayList<Stream> streams = new ArrayList<Stream>();// add private
     private static int fps = 0;
-
+    private Image imageF;
+    private int imageX, imageY, imageW, imageH;
+    private GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+    private GraphicsDevice gs = ge.getDefaultScreenDevice();
+    private GraphicsConfiguration gc = gs.getDefaultConfiguration();
+    private BufferedImage imageC;
     public synchronized static void register(Stream s) {
         if (!streams.contains(s)) {
             streams.add(s);
@@ -51,24 +63,60 @@ public class MasterFrameBuilder implements Runnable {
     public void stop() {
         stopMe = true;
     }
-
+    /*BufferedImage createCompatibleImage(BufferedImage image)
+     * {
+     * GraphicsConfiguration gc = GraphicsEnvironment.
+     * getLocalGraphicsEnvironment().
+     * getDefaultScreenDevice().
+     * getDefaultConfiguration();
+     * 
+     * BufferedImage newImage = gc.createCompatibleImage(
+     * image.getWidth(),
+     * image.getHeight(),
+     * Transparency.TRANSLUCENT);
+     * 
+     * Graphics2D g = newImage.createGraphics();
+     * g.drawImage(image, 0, 0, null);
+     * g.dispose();
+     * 
+     * return newImage;
+     * }
+     * private BufferedImage CreateCompatibleImage(BufferedImage img){
+     * //        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+     * //        GraphicsDevice gs = ge.getDefaultScreenDevice();
+     * //        GraphicsConfiguration gc = gs.getDefaultConfiguration();
+     * imageC = gc.createCompatibleImage(img.getWidth(), img.getHeight(), Transparency.TRANSLUCENT);
+     * Graphics2D g;
+     * g = imageC.createGraphics();
+     * g.drawImage(img, 0, 0, null);
+     * g.dispose();
+     * return imageC;
+     * }*/
     private void mixImages(Collection<Frame> frames, Frame targetFrame) {
         for (Frame f : frames) {       
             orderedFrames.put(f.getZOrder(), f);         
-            }        
+            }
+        
         BufferedImage image = targetFrame.getImage();
         if (image != null) {
             Graphics2D g = image.createGraphics();
 //            g.setBackground(new Color(0, 0, 0, 0));
             g.clearRect(0, 0, image.getWidth(), image.getHeight());
-            g.setRenderingHint(java.awt.RenderingHints.KEY_INTERPOLATION, java.awt.RenderingHints.VALUE_INTERPOLATION_BICUBIC);
-            g.setRenderingHint(java.awt.RenderingHints.KEY_ALPHA_INTERPOLATION, java.awt.RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
-            g.setRenderingHint(java.awt.RenderingHints.KEY_RENDERING, java.awt.RenderingHints.VALUE_RENDER_QUALITY);
-            g.setRenderingHint(java.awt.RenderingHints.KEY_DITHERING, java.awt.RenderingHints.VALUE_DITHER_ENABLE);
-            g.setRenderingHint(java.awt.RenderingHints.KEY_COLOR_RENDERING, java.awt.RenderingHints.VALUE_COLOR_RENDER_QUALITY);
-            for (Frame f : orderedFrames.values()) {                    
+            g.setRenderingHint(java.awt.RenderingHints.KEY_INTERPOLATION, java.awt.RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+            g.setRenderingHint(java.awt.RenderingHints.KEY_ALPHA_INTERPOLATION, java.awt.RenderingHints.VALUE_ALPHA_INTERPOLATION_SPEED);
+            g.setRenderingHint(java.awt.RenderingHints.KEY_RENDERING, java.awt.RenderingHints.VALUE_RENDER_SPEED);
+//            g.setRenderingHint(java.awt.RenderingHints.KEY_RENDERING, java.awt.RenderingHints.VALUE_ANTIALIAS_OFF);
+            g.setRenderingHint(java.awt.RenderingHints.KEY_FRACTIONALMETRICS,java.awt.RenderingHints.VALUE_FRACTIONALMETRICS_OFF);
+            g.setRenderingHint(java.awt.RenderingHints.KEY_DITHERING, java.awt.RenderingHints.VALUE_DITHER_DISABLE);
+            g.setRenderingHint(java.awt.RenderingHints.KEY_COLOR_RENDERING, java.awt.RenderingHints.VALUE_COLOR_RENDER_SPEED);
+            for (Frame f : orderedFrames.values()) {
+                imageF = f.getImage();
+                imageX = f.getX();
+                imageY = f.getY();
+                imageW = f.getWidth();
+                imageH = f.getHeight();
                 g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, ((float) f.getOpacity()) / 100F));
-                g.drawImage(f.getImage(), f.getX(), f.getY(), f.getWidth(), f.getHeight(), null);
+                g.drawImage(imageF, imageX, imageY, imageW, imageH, null);
             }
             g.dispose();
 

@@ -60,6 +60,18 @@ public abstract class Effect {
     public BufferedImage cloneImage(BufferedImage src){
         BufferedImage tempimage = java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().createCompatibleImage(src.getWidth(), src.getHeight(), java.awt.image.BufferedImage.TRANSLUCENT);
         Graphics2D tempbuffer = tempimage.createGraphics();
+        tempbuffer.setRenderingHint(java.awt.RenderingHints.KEY_RENDERING,
+                           java.awt.RenderingHints.VALUE_RENDER_SPEED);
+        tempbuffer.setRenderingHint(java.awt.RenderingHints.KEY_ANTIALIASING,
+                           java.awt.RenderingHints.VALUE_ANTIALIAS_OFF);
+        tempbuffer.setRenderingHint(java.awt.RenderingHints.KEY_TEXT_ANTIALIASING,
+                           java.awt.RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
+        tempbuffer.setRenderingHint(java.awt.RenderingHints.KEY_FRACTIONALMETRICS,
+                           java.awt.RenderingHints.VALUE_FRACTIONALMETRICS_OFF);
+        tempbuffer.setRenderingHint(java.awt.RenderingHints.KEY_COLOR_RENDERING,
+                           java.awt.RenderingHints.VALUE_COLOR_RENDER_SPEED);
+        tempbuffer.setRenderingHint(java.awt.RenderingHints.KEY_DITHERING,
+                           java.awt.RenderingHints.VALUE_DITHER_DISABLE);
         tempbuffer.drawImage(src, 0, 0, null);
         tempbuffer.dispose();
         return tempimage;
