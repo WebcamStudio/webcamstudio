@@ -30,6 +30,55 @@
     <Property name="axis" type="int" value="3"/>
   </Layout>
   <SubComponents>
+    <Component class="javax.swing.JToggleButton" name="tglSkyCam">
+      <Properties>
+        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+          <Image iconType="3" name="/webcamstudio/resources/tango/camera-video.png"/>
+        </Property>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="webcamstudio/Languages.properties" key="SKYCAM" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+        </Property>
+        <Property name="toolTipText" type="java.lang.String" value="Activate Skype Cam Compatibility"/>
+        <Property name="name" type="java.lang.String" value="tglSkyCam" noResource="true"/>
+        <Property name="rolloverEnabled" type="boolean" value="false"/>
+        <Property name="selectedIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+          <Connection code="new javax.swing.ImageIcon(getClass().getResource(&quot;/webcamstudio/resources/tango/camera-video-on.png&quot;))" type="code"/>
+        </Property>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="tglSkyCamActionPerformed"/>
+      </Events>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_DeclarationPost" type="java.lang.String" value="// final OutputPanel instanceSink = this;"/>
+      </AuxValues>
+    </Component>
+    <Component class="javax.swing.JCheckBox" name="jcbV4l2loopback">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="V4l2loopback"/>
+        <Property name="toolTipText" type="java.lang.String" value="If selected SkyCam will use v4l2loopback module"/>
+        <Property name="name" type="java.lang.String" value="jcbV4l2loopback" noResource="true"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jcbV4l2loopbackActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JToggleButton" name="btnSkyFlip">
+      <Properties>
+        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+          <Image iconType="3" name="/webcamstudio/resources/tango/view-refresh.png"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="FlipSkyCam"/>
+        <Property name="toolTipText" type="java.lang.String" value="Flips SkyCam Horizontally"/>
+        <Property name="enabled" type="boolean" value="false"/>
+        <Property name="name" type="java.lang.String" value="btnSkyFlip" noResource="true" postCode="btnSkyFlip.setRolloverEnabled(false);&#xa;btnSkyFlip.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource(&quot;/webcamstudio/resources/tango/view-refresh-on.png&quot;))); // NOI18N"/>
+        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[113, 21]"/>
+        </Property>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSkyFlipActionPerformed"/>
+      </Events>
+    </Component>
     <Component class="javax.swing.JToggleButton" name="tglRecordToFile">
       <Properties>
         <Property name="icon" type="javax.swing.Icon" noResource="true" editor="org.netbeans.modules.form.editors2.IconEditor">

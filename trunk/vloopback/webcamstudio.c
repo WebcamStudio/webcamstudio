@@ -12,11 +12,12 @@
  * (at your option) any later version.
  *
  * webcamstudio.c -- modified for WebcamStudio integration
- * from v0.7.0 of v4l2loopback (https://github.com/umlaeute/v4l2loopback)
- * commit 1060bd46b9f78a4cd44a4829fdb7d497b58f2b1c
+ * from v0.7.1 of v4l2loopback (https://github.com/umlaeute/v4l2loopback)
+ * commit 18fca0a552d7469e1a7592030c545917d3854739
  * by:
  * Patrick Balleux (patrick.balleux@gmail.com)
  * PhobosK (phobosk@kbfx.net)
+ * Karl Ellis (soylent.tv@gmail.com)
  */
 #include <linux/version.h>
 #include <linux/vmalloc.h>
@@ -24,6 +25,18 @@
 #include <linux/time.h>
 #include <linux/module.h>
 #include <linux/videodev2.h>
+
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 29)
+# include <media/v4l2-device.h>
+#else
+/* dummy v4l2_device struct/functions */
+# define V4L2_DEVICE_NAME_SIZE (20 + 16)
+struct v4l2_device {
+  char name[V4L2_DEVICE_NAME_SIZE];
+};
+static inline int  v4l2_device_register  (void *dev, void *v4l2_dev) { return 0; }
+static inline void v4l2_device_unregister(struct v4l2_device *v4l2_dev) { return; }
+#endif
 #include <media/v4l2-ioctl.h>
 #include <media/v4l2-common.h>
 
@@ -46,7 +59,7 @@ void *v4l2l_vzalloc(unsigned long size)
 #include <linux/sched.h>
 #include <linux/slab.h>
 
-#define WEBCAMSTUDIO_VERSION_CODE KERNEL_VERSION(1,0,7)
+#define WEBCAMSTUDIO_VERSION_CODE KERNEL_VERSION(1,0,8)
 
 
 MODULE_DESCRIPTION("WebcamStudio virtual video device");
@@ -67,7 +80,7 @@ MODULE_LICENSE("GPL");
 #define dprintk(fmt, args...)                                           \
 	do { if (debug > 0) {                                                 \
 		printk(KERN_INFO "webcamstudio[" STRINGIFY2(__LINE__) "]: " fmt, ##args); \
-	} } while(0)
+	} } while (0)
 
 #define MARK()                                                          \
 	do { if (debug > 1) {                                                  \
@@ -84,7 +97,7 @@ MODULE_LICENSE("GPL");
 #define MAX_TIMEOUT (100 * 1000 * 1000) /* in msecs */
 
 /* module parameters */
-static int debug = 0;
+static int debug;
 module_param(debug, int, S_IRUGO | S_IWUSR);
 MODULE_PARM_DESC(debug, "debugging level (higher values == more verbose)");
 
@@ -163,6 +176,7 @@ struct v4l2l_buffer {
 };
 
 struct webcamstudio_device {
+        struct v4l2_device v4l2_dev;
 	struct video_device *vdev;
 	/* pixel and stream format */
 	struct v4l2_pix_format pix_format;
@@ -1952,11 +1966,8 @@ static void init_buffers(struct webcamstudio_device *dev)
 		b->length            = buffer_size;
 		b->field             = V4L2_FIELD_NONE;
 		b->flags             = 0;
-		b->reserved          = 0;
-#if LINUX_VERSION_CODE < KERNEL_VERSION(3,6,0)
+#if LINUX_VERSION_CODE < KERNEL_VERSION(3, 6, 1)
 		b->input             = 0;
-#else
-		b->reserved2         = 0;
 #endif
 		b->m.offset          = i * buffer_size;
 		b->memory            = V4L2_MEMORY_MMAP;
@@ -2070,19 +2081,30 @@ static void timeout_timer_clb(unsigned long nr)
 /* init loopback main structure */
 static int webcamstudio_init(struct webcamstudio_device *dev, int nr)
 {
+	int ret;
+	snprintf(dev->v4l2_dev.name, sizeof(dev->v4l2_dev.name),
+                        "webcamstudio-%03d", nr);
+        ret = v4l2_device_register(NULL, &dev->v4l2_dev);
+        if (ret)
+                return ret;
+
 	MARK();
 	dev->vdev = video_device_alloc();
-	if (dev->vdev == NULL)
+	if (dev->vdev == NULL) {
+		v4l2_device_unregister(&dev->v4l2_dev);
 		return -ENOMEM;
+	}
 
 	video_set_drvdata(dev->vdev, kzalloc(sizeof(struct webcamstudio_private), GFP_KERNEL));
 	if (video_get_drvdata(dev->vdev) == NULL) {
+		v4l2_device_unregister(&dev->v4l2_dev);
 		kfree(dev->vdev);
 		return -ENOMEM;
 	}
 	((struct webcamstudio_private *)video_get_drvdata(dev->vdev))->devicenr = nr;
 
 	init_vdev(dev->vdev, nr);
+	dev->vdev->v4l2_dev = &dev->v4l2_dev;
 	init_capture_param(&dev->capture_param);
 	set_timeperframe(dev, &dev->capture_param.timeperframe);
 	dev->keep_format = 0;
@@ -2211,6 +2233,7 @@ static void free_devices(void)
 			webcamstudio_remove_sysfs(devs[i]->vdev);
 			kfree(video_get_drvdata(devs[i]->vdev));
 			video_unregister_device(devs[i]->vdev);
+			v4l2_device_unregister(&devs[i]->v4l2_dev);
 			kfree(devs[i]);
 			devs[i] = NULL;
 		}
@@ -2283,7 +2306,6 @@ int __init init_module(void)
 		webcamstudio_create_sysfs(devs[i]->vdev);
 	}
 
-
 	dprintk("module installed\n");
 
 	printk(KERN_INFO "webcamstudio driver version %d.%d.%d loaded\n",
@@ -2301,4 +2323,5 @@ void __exit cleanup_module(void)
 	free_devices();
 	dprintk("module removed\n");
 }
+
 

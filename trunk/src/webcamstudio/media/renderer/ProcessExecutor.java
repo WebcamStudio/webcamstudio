@@ -80,7 +80,7 @@ public class ProcessExecutor {
     public void destroy() {
         processRunning=false;
         try {
-            Tools.sleep(40);
+            Tools.sleep(50);
             killUnixProcess(process);
         } catch (Exception ex) {
             Logger.getLogger(ProcessExecutor.class.getName()).log(Level.SEVERE, null, ex);

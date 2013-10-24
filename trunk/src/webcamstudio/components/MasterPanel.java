@@ -24,6 +24,7 @@ import webcamstudio.mixers.SystemPlayer;
 import webcamstudio.streams.SourceChannel;
 import webcamstudio.streams.SourceText;
 import webcamstudio.streams.Stream;
+import webcamstudio.util.Tools;
 
 /**
  *
@@ -36,6 +37,7 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
     private MasterMixer mixer = MasterMixer.getInstance();
     MasterChannels master = MasterChannels.getInstance();
     final static public Dimension PANEL_SIZE = new Dimension(150, 400);
+    ArrayList<Stream> streamM = MasterChannels.getInstance().getStreams();   
     
 
     /** Creates new form MasterPanel */
@@ -227,6 +229,13 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
         }
     }
     private void btnApplyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnApplyActionPerformed
+        SystemPlayer.getInstance(null).stop();
+        Tools.sleep(30);
+        MasterChannels.getInstance().stopAllStream();
+        for (Stream s : streamM){
+            s.updateStatus();
+        }
+        Tools.sleep(30);
         int w = (Integer) spinWidth.getValue();
         int h = (Integer) spinHeight.getValue();
         if (tglSound.isSelected()) {
@@ -248,6 +257,12 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
 
     private void btnApplyVideoOnlyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnApplyVideoOnlyActionPerformed
         ArrayList<Stream> allStreams = MasterChannels.getInstance().getStreams();
+        SystemPlayer.getInstance(null).stop();
+        Tools.sleep(30);
+        MasterChannels.getInstance().stopAllStream();
+        for (Stream s : allStreams){
+            s.updateStatus();
+        }
         int wi = mixer.getWidth();
         int he = mixer.getHeight();
         int oldCW = mixer.getWidth();
