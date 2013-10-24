@@ -8,6 +8,7 @@ import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import webcamstudio.mixers.*;
@@ -35,7 +36,7 @@ public class Exporter implements MasterMixer.SinkListener {
     private Socket vConnection = null;
     private Socket aConnection = null;
 
-    public Exporter(Stream s) {
+    public Exporter(Stream s) throws SocketException {
         this.stream = s;
         imageBuffer = new ImageBuffer(MasterMixer.getInstance().getWidth(),MasterMixer.getInstance().getHeight());
         audioBuffer = new AudioBuffer(MasterMixer.getInstance().getRate());

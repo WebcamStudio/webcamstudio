@@ -21,13 +21,13 @@ abstract public class VideoOutput{
     final public static int RGB24 = 1;
     final public static int UYVY = 2;
     protected static int pixFormat = 2;
-    protected boolean flipImage = false;
+    protected static boolean flipImage = false;
     protected FlipVertical flipper = new FlipVertical();
     protected InfoListener listener = null;
     protected byte[] rgbs = null;
 
    
-    public void setFlipImage(boolean flip) {
+    public static void setFlipImage(boolean flip) {
         flipImage = flip;
     }
 

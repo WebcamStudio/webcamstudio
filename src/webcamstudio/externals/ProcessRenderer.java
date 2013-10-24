@@ -10,6 +10,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.SocketException;
 import java.net.URL;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -458,8 +459,11 @@ public class ProcessRenderer {
 
             @Override
             public void run() {
-
-                exporter = new Exporter(stream);
+                try {
+                    exporter = new Exporter(stream);
+                } catch (SocketException ex) {
+                    Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 videoPort = exporter.getVideoPort();
                 audioPort = exporter.getAudioPort();
                 stopped = false;
@@ -507,8 +511,11 @@ public class ProcessRenderer {
 
             @Override
             public void run() {
-
-                exporter = new Exporter(stream);
+                try {
+                    exporter = new Exporter(stream);
+                } catch (SocketException ex) {
+                    Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 videoPort = exporter.getVideoPort();
                 audioPort = exporter.getAudioPort();
                 stopped = false;

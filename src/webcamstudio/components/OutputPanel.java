@@ -11,13 +11,19 @@
 package webcamstudio.components;
 
 import java.awt.Component;
+import webcamstudio.media.renderer.ProcessExecutor;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetDropEvent;
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.net.URL;
@@ -32,9 +38,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JToggleButton;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import webcamstudio.WebcamStudio;
 import webcamstudio.channels.MasterChannels;
 import webcamstudio.exporter.vloopback.VideoDevice;
 import webcamstudio.externals.FME;
+import webcamstudio.externals.ProcessRenderer;
 import webcamstudio.mixers.MasterMixer;
 import webcamstudio.streams.SinkBroadcast;
 import webcamstudio.streams.SinkUDP;
@@ -48,58 +56,31 @@ import webcamstudio.util.Tools.OS;
  *
  * @author patrick (modified by karl)
  */
-public class OutputPanel extends javax.swing.JPanel implements Stream.Listener {
+public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, WebcamStudio.Listener {
 
     TreeMap<String, SinkFile> files = new TreeMap<String, SinkFile>();
     TreeMap<String, SinkBroadcast> broadcasts = new TreeMap<String, SinkBroadcast>();
     TreeMap<String, SinkLinuxDevice> devices = new TreeMap<String, SinkLinuxDevice>();
     TreeMap<String, SinkUDP> udpOut = new TreeMap<String, SinkUDP>();
     TreeMap<String, FME> fmes = new TreeMap<String, FME>();
+    ProcessExecutor processSkyVideo;
+    boolean skyCamMode = false;
+    boolean iSkyCamFree = true;
+    boolean iSkyCam = true;
+    boolean flip = false;
+    String skyRunComm = null;
+    int camCount = 0;
+    String virtualDevice = "webcamstudio";
     TreeMap<String, ResourceMonitorLabel> labels = new TreeMap<String, ResourceMonitorLabel>();
 
     /** Creates new form OutputPanel */
     public OutputPanel() {
         initComponents();
-        final OutputPanel instanceSink = this;
+        final OutputPanel instanceSinkOP = this;
+        WebcamStudio.setListenerOP(instanceSinkOP);
         if (Tools.getOS() == OS.LINUX) {
-            for (VideoDevice d : VideoDevice.getInputDevices()) {
-                JToggleButton button = new JToggleButton();
-                button.setText(d.getName());
-                button.setActionCommand(d.getFile().getAbsolutePath());
-                button.setIcon(tglRecordToFile.getIcon());
-                button.setSelectedIcon(tglRecordToFile.getSelectedIcon());
-                button.setRolloverEnabled(false);
-                button.addActionListener(new java.awt.event.ActionListener() {                    
-                    @Override
-                    public void actionPerformed(java.awt.event.ActionEvent evt) {
-                        String device = evt.getActionCommand();
-                        JToggleButton button = ((JToggleButton) evt.getSource());
-                        if (button.isSelected()) {
-                            SinkLinuxDevice stream = new SinkLinuxDevice(new File(device), button.getText());
-                            stream.setRate(MasterMixer.getInstance().getRate());
-                            stream.setWidth(MasterMixer.getInstance().getWidth());
-                            stream.setHeight(MasterMixer.getInstance().getHeight());
-                            stream.setListener(instanceSink);
-                            stream.read();
-                            devices.put(button.getText(), stream);
-                            ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Rendering to " + button.getText());
-                            labels.put(button.getText(), label);
-                            ResourceMonitor.getInstance().addMessage(label);
-
-                        } else {
-                            SinkLinuxDevice stream = devices.get(button.getText());
-                            if (stream != null) {
-                                stream.stop();
-                                devices.remove(button.getText());
-                                ResourceMonitorLabel label = labels.remove(button.getText());
-                                ResourceMonitor.getInstance().removeMessage(label);
-                            }
-                        }
-                    }
-                });
-                this.add(button);
-                this.revalidate();
-            }
+            paintWSCamButtons ();
+        } else { 
         }
         
         this.setDropTarget(new DropTarget() {
@@ -317,6 +298,9 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        tglSkyCam = new javax.swing.JToggleButton();
+        jcbV4l2loopback = new javax.swing.JCheckBox();
+        btnSkyFlip = new javax.swing.JToggleButton();
         tglRecordToFile = new javax.swing.JToggleButton();
         tglUDP = new javax.swing.JToggleButton();
 
@@ -324,6 +308,44 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener {
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("OUTPUT"))); // NOI18N
         setToolTipText(bundle.getString("DROP_OUTPUT")); // NOI18N
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.PAGE_AXIS));
+
+        tglSkyCam.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/camera-video.png"))); // NOI18N
+        tglSkyCam.setText(bundle.getString("SKYCAM")); // NOI18N
+        tglSkyCam.setToolTipText("Activate Skype Cam Compatibility");
+        tglSkyCam.setName("tglSkyCam"); // NOI18N
+        tglSkyCam.setRolloverEnabled(false);
+        tglSkyCam.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/camera-video-on.png")));
+        tglSkyCam.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tglSkyCamActionPerformed(evt);
+            }
+        });
+        add(tglSkyCam);
+
+        jcbV4l2loopback.setText("V4l2loopback");
+        jcbV4l2loopback.setToolTipText("If selected SkyCam will use v4l2loopback module");
+        jcbV4l2loopback.setName("jcbV4l2loopback"); // NOI18N
+        jcbV4l2loopback.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jcbV4l2loopbackActionPerformed(evt);
+            }
+        });
+        add(jcbV4l2loopback);
+
+        btnSkyFlip.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/view-refresh.png"))); // NOI18N
+        btnSkyFlip.setText("FlipSkyCam");
+        btnSkyFlip.setToolTipText("Flips SkyCam Horizontally");
+        btnSkyFlip.setEnabled(false);
+        btnSkyFlip.setName("btnSkyFlip"); // NOI18N
+        btnSkyFlip.setRolloverEnabled(false);
+        btnSkyFlip.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/view-refresh-on.png"))); // NOI18N
+        btnSkyFlip.setPreferredSize(new java.awt.Dimension(113, 21));
+        btnSkyFlip.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSkyFlipActionPerformed(evt);
+            }
+        });
+        add(btnSkyFlip);
 
         tglRecordToFile.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-record.png"))); // NOI18N
         tglRecordToFile.setText(bundle.getString("RECORD")); // NOI18N
@@ -465,10 +487,333 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener {
         }
         
     }//GEN-LAST:event_tglUDPActionPerformed
+    private void repaintOuputButtons() {
+        instanceSink.removeAll();
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("webcamstudio/Languages");
+        tglSkyCam.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/camera-video.png"))); // NOI18N
+        tglSkyCam.setText(bundle.getString("SKYCAM")); // NOI18N
+        tglSkyCam.setToolTipText("Activate Skype Cam Compatibility");
+        tglSkyCam.setName("tglSkyCam"); // NOI18N
+        tglSkyCam.setRolloverEnabled(false);
+        tglSkyCam.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/camera-video-on.png"))); // NOI18N
+        add(tglSkyCam);
+        
+        jcbV4l2loopback.setText("V4l2loopback");
+        jcbV4l2loopback.setName("jcbV4l2loopback"); // NOI18N
+        add(jcbV4l2loopback);
+        
+        btnSkyFlip.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/view-refresh.png"))); // NOI18N
+        btnSkyFlip.setText("FlipSkyCam");
+        btnSkyFlip.setToolTipText("Flips SkyCam Horizontally");
+        btnSkyFlip.setName("btnSkyFlip"); // NOI18N
+        btnSkyFlip.setEnabled(true);
+        btnSkyFlip.setRolloverEnabled(false);
+        btnSkyFlip.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/view-refresh-on.png"))); // NOI18N
+        btnSkyFlip.setPreferredSize(new java.awt.Dimension(113, 21));
+        add(btnSkyFlip);
+
+        tglRecordToFile.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-record.png"))); // NOI18N
+        tglRecordToFile.setText(bundle.getString("RECORD")); // NOI18N
+        tglRecordToFile.setToolTipText("Save to FIle.");
+        tglRecordToFile.setName("tglRecordToFile"); // NOI18N
+        tglRecordToFile.setRolloverEnabled(false);
+        tglRecordToFile.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-stop.png"))); // NOI18N
+        add(tglRecordToFile);
+
+        tglUDP.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-record.png"))); // NOI18N
+        tglUDP.setText(bundle.getString("UDP_MPEG_OUT")); // NOI18N
+        tglUDP.setToolTipText("Stream to udp://@127.0.0.1:7000");
+        tglUDP.setName("tglUDP"); // NOI18N
+        tglUDP.setRolloverEnabled(false);
+        tglUDP.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-stop.png"))); // NOI18N
+        add(tglUDP);
+    }
+    private void paintWSCamButtons () {
+        for (VideoDevice d : VideoDevice.getInputDevices()) {
+            if (!d.getFile().getName().endsWith("video21")) {
+                JToggleButton button = new JToggleButton();
+                button.setText(d.getName());
+                button.setActionCommand(d.getFile().getAbsolutePath());
+                button.setIcon(tglRecordToFile.getIcon());
+                button.setSelectedIcon(tglRecordToFile.getSelectedIcon());
+                button.setRolloverEnabled(false);
+                button.addActionListener(new java.awt.event.ActionListener() {                    
+                    @Override
+                    public void actionPerformed(java.awt.event.ActionEvent evt) {
+                        String device = evt.getActionCommand();
+                        JToggleButton button = ((JToggleButton) evt.getSource());
+                        
+                        if (button.isSelected()) {
+                            camCount ++;
+                            SinkLinuxDevice stream = new SinkLinuxDevice(new File(device), button.getText());
+                            stream.setRate(MasterMixer.getInstance().getRate());
+                            stream.setWidth(MasterMixer.getInstance().getWidth());
+                            stream.setHeight(MasterMixer.getInstance().getHeight());
+                            stream.setListener(instanceSink);
+                            stream.read();
+                            devices.put(button.getText(), stream);
+                            ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Rendering to " + button.getText() + " (SkyCam Disengaged)");
+                            labels.put(button.getText(), label);
+                            ResourceMonitor.getInstance().addMessage(label);
+                            tglSkyCam.setEnabled(false);
+                            System.out.println("CamCount = "+camCount);
+                        } else {
+                            SinkLinuxDevice stream = devices.get(button.getText());
+                            if (stream != null) {
+                                camCount --;
+                                stream.stop();
+                                devices.remove(button.getText());
+                                System.out.println("WS Camera Stopped ...");
+                                ResourceMonitorLabel label = labels.remove(button.getText());
+                                ResourceMonitor.getInstance().removeMessage(label);
+                                System.out.println("CamCount = "+camCount);
+                                if (camCount == 0) {
+                                    tglSkyCam.setEnabled(true);
+                                }
+                            } 
+                            if (camCount == 0) {
+                                tglSkyCam.setEnabled(true);
+                            }
+                        }
+                    }
+                });
+//                Tools.sleep(20);
+                this.add(button);
+                Tools.sleep(30);
+                this.revalidate();
+            }
+        }
+    } 
+    private void repaintSkyCamButtons (){
+        for (VideoDevice d : VideoDevice.getInputDevices()) {
+            if (!d.getFile().getName().endsWith("video21")) {
+                JToggleButton button = new JToggleButton();
+                button.setText(d.getName());
+                button.setActionCommand(d.getFile().getAbsolutePath());
+                button.setIcon(tglRecordToFile.getIcon());
+                button.setSelectedIcon(tglRecordToFile.getSelectedIcon());
+                button.setRolloverEnabled(false);
+                button.addActionListener(new java.awt.event.ActionListener() {                    
+                    @Override
+                    public void actionPerformed(java.awt.event.ActionEvent evt) {
+                        String device = evt.getActionCommand();
+                        JToggleButton button = ((JToggleButton) evt.getSource());
+                        if (button.isSelected()) {
+                            if (iSkyCamFree) {
+                            SinkLinuxDevice stream = new SinkLinuxDevice(new File(device), button.getText());
+                            stream.setRate(MasterMixer.getInstance().getRate());
+                            stream.setWidth(MasterMixer.getInstance().getWidth());
+                            stream.setHeight(MasterMixer.getInstance().getHeight());
+                            stream.setListener(instanceSink);
+                            stream.read();
+                            devices.put(button.getText(), stream);
+                            ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Rendering to " + button.getText() + " (SkyCam Engaged)");
+                            labels.put(button.getText(), label);
+                            ResourceMonitor.getInstance().addMessage(label);
+                            processSkyVideo = new ProcessExecutor(stream.getName());
+                            File fileD=new File(System.getProperty("user.home")+"/.webcamstudio/"+"SkyCamC.sh");
+                            if (flip){
+                                skyRunComm = "gst-launch-0.10 v4l2src device="+device+" ! videoflip method=horizontal-flip ! v4l2sink device=/dev/video21"; // videoflip method=horizontal-flip ! 
+                            } else {
+                                skyRunComm = "gst-launch-0.10 v4l2src device="+device+" ! v4l2sink device=/dev/video21";
+                            }
+                            FileOutputStream fosD;
+                            DataOutputStream dosD = null;
+                            try {
+                            fosD = new FileOutputStream(fileD);
+                            dosD= new DataOutputStream(fosD);
+                            } catch (FileNotFoundException ex) {
+                            Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                            try {
+                            dosD.writeBytes("#!/bin/bash\n");
+                            dosD.writeBytes(skyRunComm +"\n");
+                            dosD.writeBytes("wait"+"\n");
+                            } catch (IOException ex) {
+                            Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                            String batchSkyCommC = "sh "+System.getProperty("user.home")+"/.webcamstudio/"+"SkyCamC.sh";
+                            try {
+                                Tools.sleep(20);
+                                processSkyVideo.executeString(batchSkyCommC);
+                                Tools.sleep(20);
+                            } catch (IOException ex) {
+                                Logger.getLogger(OutputPanel.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (InterruptedException ex) {
+                                Logger.getLogger(OutputPanel.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                            tglSkyCam.setEnabled(false);
+                            btnSkyFlip.setEnabled(false);
+                            iSkyCamFree = false;
+                            iSkyCam = true;
+                            System.out.println("Skype Camera on /dev/video21 ...");
+                        } else {
+                                if (processSkyVideo != null) {
+                                    iSkyCam = false;
+                                }
+                                SinkLinuxDevice stream = new SinkLinuxDevice(new File(device), button.getText());
+                                stream.setRate(MasterMixer.getInstance().getRate());
+                                stream.setWidth(MasterMixer.getInstance().getWidth());
+                                stream.setHeight(MasterMixer.getInstance().getHeight());
+                                stream.setListener(instanceSink);
+                                stream.read();
+                                devices.put(button.getText(), stream);
+                                ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Rendering to " + button.getText());
+                                labels.put(button.getText(), label);
+                                ResourceMonitor.getInstance().addMessage(label);
+                            }
+                        } else {
+                            SinkLinuxDevice stream = devices.get(button.getText());
+                            if (stream != null) {
+                                stream.stop();
+                                devices.remove(button.getText());                                    
+                                if (iSkyCam) {
+                                    if (processSkyVideo != null){
+                                        processSkyVideo.destroy();
+                                        processSkyVideo = null;
+                                        System.out.println("WS Skype Camera Stopped iSkyCam ...");
+                                        tglSkyCam.setEnabled(true);
+                                        btnSkyFlip.setEnabled(true);
+                                        iSkyCamFree = true;    
+                                    }
+                                }
+                                if (!iSkyCamFree) {
+                                    iSkyCam = true;
+                                }
+                                devices.put(button.getText(), stream);
+                                ResourceMonitorLabel label = null;
+                                if (iSkyCamFree) {
+                                    label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "WS Skype Camera Stopped");
+                                } else {
+                                    label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "WS Camera Stopped");
+                                }
+                                labels.put(button.getText(), label);
+                                ResourceMonitor.getInstance().addMessage(label);
+                            }
+                        }
+                    }
+                });
+//                Tools.sleep(20);
+                this.add(button);
+                Tools.sleep(30);
+                this.revalidate();
+            }
+        }
+    }
+    private void tglSkyCamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglSkyCamActionPerformed
+        Runtime rt = Runtime.getRuntime();
+        String unregisterWSDevice = "modprobe -r "+virtualDevice;
+        String registerWSDevice = "modprobe "+virtualDevice;
+        String register2WSDevices = "modprobe "+virtualDevice+" devices=2 video_nr=21";
+        if (tglSkyCam.isSelected()) {
+            jcbV4l2loopback.setEnabled(false);
+            camCount = 0;
+            skyCamMode = true;
+            File fileD=new File(System.getProperty("user.home")+"/.webcamstudio/"+"SkyCam.sh");
+            FileOutputStream fosD;
+            DataOutputStream dosD = null;
+            try {
+            fosD = new FileOutputStream(fileD);
+            dosD= new DataOutputStream(fosD);
+            } catch (FileNotFoundException ex) {
+            Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            try {
+            dosD.writeBytes("#!/bin/bash\n");
+            dosD.writeBytes(unregisterWSDevice+"\n");
+            dosD.writeBytes("wait"+"\n");
+            dosD.writeBytes(register2WSDevices+"\n");
+            dosD.writeBytes("wait"+"\n");
+            } catch (IOException ex) {
+            Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            String batchSkyComm = "gksudo sh "+System.getProperty("user.home")+"/.webcamstudio/"+"SkyCam.sh";
+            try {
+                Process urDevice = rt.exec(batchSkyComm); 
+                Tools.sleep(50);
+                urDevice.waitFor();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            
+            repaintOuputButtons();
+
+            repaintSkyCamButtons ();
+
+//            System.out.println("SkyCam Engaged ...");
+            ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "SkyCam Engaged");
+            ResourceMonitor.getInstance().addMessage(label);
+            instanceSink.loadPrefs(webcamstudio.WebcamStudio.prefs);
+            Tools.sleep(10);
+            instanceSink.repaint(); 
+        } else {
+            skyCamMode = false;
+            jcbV4l2loopback.setEnabled(true);
+            File fileD=new File(System.getProperty("user.home")+"/.webcamstudio/"+"SkyCamR.sh");
+            FileOutputStream fosD;
+            DataOutputStream dosD = null;
+            try {
+            fosD = new FileOutputStream(fileD);
+            dosD= new DataOutputStream(fosD);
+            } catch (FileNotFoundException ex) {
+            Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            try {
+            dosD.writeBytes("#!/bin/bash\n");
+            dosD.writeBytes(unregisterWSDevice +"\n");
+            dosD.writeBytes("wait"+"\n");
+            dosD.writeBytes(registerWSDevice +"\n");
+            dosD.writeBytes("wait"+"\n");
+            } catch (IOException ex) {
+            Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            String batchSkyCommR = "gksudo sh "+System.getProperty("user.home")+"/.webcamstudio/"+"SkyCamR.sh";
+            try {
+                Process rDevice = rt.exec(batchSkyCommR); 
+                Tools.sleep(50);
+                rDevice.waitFor();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            
+            repaintOuputButtons();
+
+            paintWSCamButtons ();
+
+//            System.out.println("SkyCam Disengaged ...");
+            btnSkyFlip.setSelected(false);
+            btnSkyFlip.setEnabled(false);
+            ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "SkyCam Disengaged");
+            ResourceMonitor.getInstance().addMessage(label);
+            instanceSink.loadPrefs(webcamstudio.WebcamStudio.prefs);
+            instanceSink.repaint();
+        }
+        
+    }//GEN-LAST:event_tglSkyCamActionPerformed
+
+    private void btnSkyFlipActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSkyFlipActionPerformed
+        if (btnSkyFlip.isSelected()) {
+            flip = true;
+        } else {
+            flip = false;
+        }
+    }//GEN-LAST:event_btnSkyFlipActionPerformed
+
+    private void jcbV4l2loopbackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcbV4l2loopbackActionPerformed
+        if (jcbV4l2loopback.isSelected()) {
+            virtualDevice = "v4l2loopback";
+        } else {
+            virtualDevice = "webcamstudio";
+        }
+    }//GEN-LAST:event_jcbV4l2loopbackActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JToggleButton btnSkyFlip;
+    private javax.swing.JCheckBox jcbV4l2loopback;
     private javax.swing.JToggleButton tglRecordToFile;
     final OutputPanel instanceSink = this;
+    private javax.swing.JToggleButton tglSkyCam;
+    // final OutputPanel instanceSink = this;
     private javax.swing.JToggleButton tglUDP;
     // End of variables declaration//GEN-END:variables
 
@@ -505,6 +850,33 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener {
 
     @Override
     public void updatePreview(BufferedImage image) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        
+    }
+
+    @Override
+    public void stopChTime(ActionEvent evt) {
+        
+    }
+
+    @Override
+    public void resetBtnStates(ActionEvent evt) {
+        tglSkyCam.setEnabled(true);
+        camCount = 0;
+        iSkyCamFree = true;
+        if (processSkyVideo != null){
+            processSkyVideo.destroy();
+            System.out.println("WS Skype Camera Stopped ...");   
+        }
+                         
+    }
+
+    @Override
+    public void AddLoadingChannel(String name) {
+     
+    }
+
+    @Override
+    public void removeChannels(String removeSc, int a) {
+        
     }
 }
