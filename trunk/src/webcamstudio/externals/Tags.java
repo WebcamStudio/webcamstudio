@@ -41,7 +41,8 @@ public enum Tags {
         WEBURL("@WEBURL"),
         MOUNT("@MOUNT"),
         PASSWORD("@PASSWORD"),
-        PORT("@PORT");
+        PORT("@PORT"),
+        AUDIOSRC ("@AUDIOSRC");
         
     private String name = "";
     private Tags(String name) {

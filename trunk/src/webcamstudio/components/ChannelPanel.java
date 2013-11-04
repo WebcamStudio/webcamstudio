@@ -47,6 +47,13 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
     String CHptS= null;
     private Boolean StopCHpt=false;
     boolean inTimer=false;
+    public interface Listener {
+        public void resetBtnStates(java.awt.event.ActionEvent evt);    
+    }
+    static Listener listenerCP = null;
+    public static void setListenerCP(Listener l) {
+        listenerCP = l;
+    }
     
     /**
      * Creates new form ChannelPanel
@@ -357,7 +364,7 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
     }   
     @Override
     public void stopChTime(java.awt.event.ActionEvent evt) {
-        StopCHTimerActionPerformed(evt);
+        RemoteStopCHTimerActionPerformed(evt);
     }
     
     @Override
@@ -411,12 +418,29 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
             String name = lstChannels.getSelectedValue().toString();
             System.out.println("Apply Select: "+name);
             master.selectChannel(CHNxName);
-	    CHt=new Timer();
-            CHt.schedule(new TSelectActionPerformed(),CHNextTime);
-            CHNextTime = CHTimers.get(lstChannels.getSelectedIndex());
-            StopCHpt=false;
-            CHProgressTime.setValue(0);
-            CHt.schedule(new UpdateCHtUITask(),0);
+            if (CHNextTime != 0) {
+                CHt=new Timer();
+                CHt.schedule(new TSelectActionPerformed(),CHNextTime);
+                CHNextTime = CHTimers.get(lstChannels.getSelectedIndex());
+                StopCHpt=false;
+                CHProgressTime.setValue(0);
+                CHt.schedule(new UpdateCHtUITask(),0);
+            } else {
+                CHt.cancel();
+                CHt.purge();
+                StopCHpt=true;
+                lstChannels.setEnabled(true);
+                ChDuration.setEnabled(true);
+                btnStopAllStream.setEnabled(true);
+                btnSelect.setEnabled(true);
+                btnRenameCh.setEnabled(true);
+                btnRemove.setEnabled(true);
+                btnAdd.setEnabled(true);
+                inTimer=false;
+                CHProgressTime.setValue(0);
+                CHProgressTime.setString("0");
+                StopCHTimer.setEnabled(inTimer);                
+            }
 	}        
     }    
     
@@ -462,7 +486,22 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
             CHTimers.set(ChIndex, CHTimer);
         }
     }//GEN-LAST:event_ChDurationStateChanged
-
+    private void RemoteStopCHTimerActionPerformed(java.awt.event.ActionEvent evt) {                                            
+        CHt.cancel();
+        CHt.purge();
+        StopCHpt=true;
+        lstChannels.setEnabled(true);
+        ChDuration.setEnabled(true);
+        btnStopAllStream.setEnabled(true);
+        btnSelect.setEnabled(true);
+        btnRenameCh.setEnabled(true);
+        btnRemove.setEnabled(true);
+        btnAdd.setEnabled(true);
+        inTimer=false;
+        CHProgressTime.setValue(0);
+        CHProgressTime.setString("0");
+        StopCHTimer.setEnabled(inTimer);
+    }                                           
     private void StopCHTimerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_StopCHTimerActionPerformed
         CHt.cancel();
         CHt.purge();
@@ -490,6 +529,7 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
             s.updateStatus();
         }
         Tools.sleep(30);
+        listenerCP.resetBtnStates(evt);
         ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "All Stopped.");
         ResourceMonitor.getInstance().addMessage(label);
         System.gc();

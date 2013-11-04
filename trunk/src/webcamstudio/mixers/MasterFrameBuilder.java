@@ -1,18 +1,18 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+* To change this template, choose Tools | Templates
+* and open the template in the editor.
  */
 package webcamstudio.mixers;
 
 import java.awt.AlphaComposite;
-import java.awt.Color;
-import java.awt.Graphics;
+//import java.awt.Color;
+//import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
-import java.awt.Transparency;
+//import java.awt.Transparency;
 import java.awt.image.BufferedImage;
 import java.nio.ByteBuffer;
 import java.nio.ShortBuffer;
@@ -69,16 +69,16 @@ public class MasterFrameBuilder implements Runnable {
      * getLocalGraphicsEnvironment().
      * getDefaultScreenDevice().
      * getDefaultConfiguration();
-     * 
+     *
      * BufferedImage newImage = gc.createCompatibleImage(
      * image.getWidth(),
      * image.getHeight(),
      * Transparency.TRANSLUCENT);
-     * 
+     *
      * Graphics2D g = newImage.createGraphics();
      * g.drawImage(image, 0, 0, null);
      * g.dispose();
-     * 
+     *
      * return newImage;
      * }
      * private BufferedImage CreateCompatibleImage(BufferedImage img){
@@ -93,10 +93,10 @@ public class MasterFrameBuilder implements Runnable {
      * return imageC;
      * }*/
     private void mixImages(Collection<Frame> frames, Frame targetFrame) {
-        for (Frame f : frames) {       
-            orderedFrames.put(f.getZOrder(), f);         
-            }
-        
+        for (Frame f : frames) {
+            orderedFrames.put(f.getZOrder(), f);
+        }
+
         BufferedImage image = targetFrame.getImage();
         if (image != null) {
             Graphics2D g = image.createGraphics();
@@ -140,25 +140,25 @@ public class MasterFrameBuilder implements Runnable {
                     float mix = (float) buffer.get() * f.getVolume();
                     outputBuffer.mark();
                     if (outputBuffer.position()< outputBuffer.limit()){ //25fps IOException                     
-                      mix += outputBuffer.get();             
-                    }                    
-                outputBuffer.reset();
+                        mix += outputBuffer.get();
+                    }
+                    outputBuffer.reset();
                     if (mix > Short.MAX_VALUE) {
                         mix = Short.MAX_VALUE;
                     } else if (mix < Short.MIN_VALUE) {
                         mix = Short.MIN_VALUE;
                     }
                     if (outputBuffer.position()< outputBuffer.limit()){ //25fps IOException                          
-                    outputBuffer.put((short) mix);      
+                        outputBuffer.put((short) mix);
                     }
-                }                
-                f.setAudio(null);              
+                }
+                f.setAudio(null);
             }
         }
     }
 
 //    @SuppressWarnings("all")
-    @SuppressWarnings("unchecked")  
+    @SuppressWarnings("unchecked")
     @Override
     public void run() {
         stopMe = false;
@@ -180,18 +180,18 @@ public class MasterFrameBuilder implements Runnable {
                     if ((Frame)stream.get() != null) {
                         Frame f = (Frame)stream.get();
 //                        if (f != null) {
-                            frames.add(f);
+                        frames.add(f);
 //                        } 
                     }
                 }
-                mixAudio(frames, targetFrame);            
+                mixAudio(frames, targetFrame);
                 mixImages(frames, targetFrame);
                 targetFrame = null;
                 frameBuffer.doneUpdate();
                 MasterMixer.getInstance().setCurrentFrame(frameBuffer.pop());
                 fps++;
                 float delta = System.currentTimeMillis() - mark;
-                    if (delta >= 1000) {
+                if (delta >= 1000) {
                     mark = System.currentTimeMillis();
                     MasterMixer.getInstance().setFPS((((float) fps) / (delta / 1000F)));
                     fps = 0;
@@ -199,7 +199,7 @@ public class MasterFrameBuilder implements Runnable {
                 long sleepTime = timeCode - System.currentTimeMillis();
                 if (sleepTime > 0) {
                     Tools.sleep(sleepTime + 10);
-                }           
+                }
             } catch (Exception ex) {
                 Logger.getLogger(MasterFrameBuilder.class.getName()).log(Level.SEVERE, null, ex);
             }

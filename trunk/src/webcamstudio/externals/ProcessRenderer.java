@@ -267,6 +267,9 @@ public class ProcessRenderer {
                 case CHANNELS:
                     command = command.replaceAll(Tags.CHANNELS.toString(), "" + channels);
                     break;
+                case AUDIOSRC:
+                    command = command.replaceAll(Tags.AUDIOSRC.toString(), "" + stream.initAudioSource());
+                    break;
             }
         }
         return command;

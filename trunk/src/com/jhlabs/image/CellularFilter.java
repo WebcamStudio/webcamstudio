@@ -499,6 +499,7 @@ public class CellularFilter extends WholeImageFilter implements Function2D, Clon
 		}
 	}
 
+        @Override
 	protected int[] filterPixels( int width, int height, int[] inPixels, Rectangle transformedSpace ) {
 //		float[] minmax = Noise.findRange(this, null);
 //		min = minmax[0];
@@ -515,6 +516,7 @@ public class CellularFilter extends WholeImageFilter implements Function2D, Clon
 		return outPixels;
 	}
 
+        @Override
 	public Object clone() {
 		CellularFilter f = (CellularFilter)super.clone();
 		f.coefficients = (float[])coefficients.clone();
