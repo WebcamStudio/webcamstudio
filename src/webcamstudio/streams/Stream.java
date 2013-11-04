@@ -5,11 +5,21 @@
 package webcamstudio.streams;
 
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import webcamstudio.channels.MasterChannels;
 import webcamstudio.channels.transitions.Transition;
+import webcamstudio.externals.ProcessRenderer;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterMixer;
 import webcamstudio.sources.effects.Effect;
@@ -575,6 +585,48 @@ public abstract class Stream implements Callable<Frame>{
     }
     public int getADelay () {
         return ADelay;
+    }
+    public String initAudioSource() {
+        Runtime rt = Runtime.getRuntime();
+        String commandAudioSrc = "pactl list";
+        String resu = null;
+        File fileD=new File(System.getProperty("user.home")+"/.webcamstudio/"+"SetAudioSrc.sh");
+        FileOutputStream fosD;
+        DataOutputStream dosD = null;
+        try {
+        fosD = new FileOutputStream(fileD);
+        dosD= new DataOutputStream(fosD);
+        } catch (FileNotFoundException ex) {
+        Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+         try {
+         dosD.writeBytes("#!/bin/bash\n");
+         dosD.writeBytes(commandAudioSrc+"\n");
+         } catch (IOException ex) {
+         Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
+         }
+         String batchAudioSrcComm = "sh "+System.getProperty("user.home")+"/.webcamstudio/"+"SetAudioSrc.sh";
+         try {
+             Process audioSrc = rt.exec(batchAudioSrcComm);
+             audioSrc.waitFor();
+             InputStream lsOut = audioSrc.getInputStream();
+             InputStreamReader isr = new InputStreamReader(lsOut);
+             BufferedReader in = new BufferedReader(isr);
+             String line = "";
+             while ((line = in.readLine()) != null) {
+                 if(line.contains("alsa_output.pci")) {
+                     line = line.trim();
+                     line = line.replace(" ", "");
+                     String[] temp = line.split(":");
+                     String audioScrDev = (String) temp[1];
+                     resu = audioScrDev.substring(0, 28);
+                     temp = null;
+                 }
+             } 
+         } catch (Exception e) {
+            e.printStackTrace();
+         }
+         return resu;
     }
 
     public static Stream getInstance(File file) {

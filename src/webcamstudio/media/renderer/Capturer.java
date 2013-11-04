@@ -79,7 +79,7 @@ public class Capturer {
                     do {
 
                         if (fakeAudioIn != null) {
-                           Tools.sleep(20);
+//                           Tools.sleep(20);
                             if (fakeAudioIn.available() != 0) {
                                 noVideoPres=false;
                                 Tools.sleep(stream.getVDelay());
@@ -127,7 +127,7 @@ public class Capturer {
                     }
                     do {
                         if (fakeVideoIn != null)  {
-                            Tools.sleep(20);
+//                            Tools.sleep(20);
                             if (fakeVideoIn.available() != 0) {
                                 noAudioPres = false; 
                                 Tools.sleep(stream.getADelay());

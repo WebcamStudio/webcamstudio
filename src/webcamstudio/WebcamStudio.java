@@ -73,7 +73,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
 
     public static Preferences prefs = null;
     public static Properties animations = new Properties();
-    OutputPanel recorder = new OutputPanel();
+    OutputPanel recorder = new OutputPanel(this);
     Frame about = new Frame();
     Frame vDevInfo = new Frame();
     Stream stream = null;
@@ -177,7 +177,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
                                          Process duration = rt.exec(batchDurationComm);
                                          Tools.sleep(10);
                                          duration.waitFor(); //Author spoonybard896
-                                         InputStream lsOut = lsOut = duration.getErrorStream();
+                                         InputStream lsOut = duration.getErrorStream();
                                          InputStreamReader isr = new InputStreamReader(lsOut);
                                          BufferedReader in = new BufferedReader(isr);
                                          String lineR = "";
@@ -238,13 +238,12 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         initAnimations();
         initWebcam();
         initAudioSW();
-        loadCustomSources();
+        loadCustomSources();       
     }
 
     private StreamDesktop getNewStreamDesktop(Stream s) {
         return new StreamDesktop(s, this);
     }
-
 
     private void loadCustomSources() {
         File userSettings = new File(System.getProperty("user.home") + "/.webcamstudio");
@@ -254,8 +253,9 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
                 File[] custom = sources.listFiles();
                 for (File f : custom) {
                     if (f.getName().toLowerCase().endsWith(".wss")) {
-                        SourceCustom stream = new SourceCustom(f);
-                        StreamDesktop frame = new StreamDesktop(stream, this);
+                        SourceCustom streamCST;
+                        streamCST = new SourceCustom(f);
+                        StreamDesktop frame = new StreamDesktop(streamCST, this);
                         desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
                         frame.setClosable(false);
                         try {
@@ -267,9 +267,8 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
                 }
             }
         }
-
-
     }
+    
     @SuppressWarnings("unchecked")  
     private void initAnimations() {
         try {
@@ -282,24 +281,25 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         } catch (IOException ex) {
             Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
         }
-
     }
+    
     @SuppressWarnings("unchecked")
     private void initWebcam() {
-            DefaultComboBoxModel model = new DefaultComboBoxModel();
-            if (Tools.getOS() == OS.LINUX) {
-                for (VideoDevice d : VideoDevice.getOutputDevices()) {
-                    model.addElement(d.getName());
-                }
+        DefaultComboBoxModel model = new DefaultComboBoxModel();
+        if (Tools.getOS() == OS.LINUX) {
+            for (VideoDevice d : VideoDevice.getOutputDevices()) {
+                model.addElement(d.getName());
             }
-            cboWebcam.setModel(model);            
+        }
+        cboWebcam.setModel(model);            
     }
+    
     @SuppressWarnings("unchecked")
     private void initAudioSW() {
-            DefaultComboBoxModel model = new DefaultComboBoxModel();
-            model.addElement("22050Hz");
-            model.addElement("44100Hz");
-            cboAudioHz.setModel(model);            
+        DefaultComboBoxModel model = new DefaultComboBoxModel();
+        model.addElement("22050Hz");
+        model.addElement("44100Hz");
+        cboAudioHz.setModel(model);            
     }
 
     private void loadPrefs() {
@@ -765,8 +765,9 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
     }//GEN-LAST:event_formWindowClosing
 
     private void btnAddDesktopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddDesktopActionPerformed
-        SourceDesktop stream = new SourceDesktop();
-        StreamDesktop frame = new StreamDesktop(stream, this);
+        SourceDesktop streamDesk;
+        streamDesk = new SourceDesktop();
+        StreamDesktop frame = new StreamDesktop(streamDesk, this);
         desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
         try {
             frame.setSelected(true);
@@ -776,8 +777,9 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
     }//GEN-LAST:event_btnAddDesktopActionPerformed
  
     private void btnAddTextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddTextActionPerformed
-        SourceText stream = new SourceText("");
-        StreamDesktop frame = new StreamDesktop(stream, this);
+        SourceText streamTXT;
+        streamTXT = new SourceText("");
+        StreamDesktop frame = new StreamDesktop(streamTXT, this);
         desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
         try {
             frame.setSelected(true);
@@ -787,8 +789,9 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
     }//GEN-LAST:event_btnAddTextActionPerformed
 
     private void btnAddQRCodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddQRCodeActionPerformed
-        SourceQRCode stream = new SourceQRCode("WebcamStudio");
-        StreamDesktop frame = new StreamDesktop(stream, this);
+        SourceQRCode streamQR;
+        streamQR = new SourceQRCode("WebcamStudio");
+        StreamDesktop frame = new StreamDesktop(streamQR, this);
         desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
         try {
             frame.setSelected(true);
@@ -809,8 +812,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         if (retVal == JFileChooser.APPROVE_OPTION) {
             File file = chooser.getSelectedFile();
             if (file != null) {
-                String FileURL;
-                FileURL = file.getAbsolutePath();
+//                String FileURL = file.getAbsolutePath();
                 lastFolder = file.getParentFile();
                 String FileName = file.getName();
                 System.out.println("Name: " + FileName);
@@ -842,7 +844,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
                          Process duration = rt.exec(batchDurationComm);
                          Tools.sleep(10);
                          duration.waitFor(); //Author spoonybard896
-                         InputStream lsOut = lsOut = duration.getErrorStream();
+                         InputStream lsOut = duration.getErrorStream();
                          InputStreamReader isr = new InputStreamReader(lsOut);
                          BufferedReader in = new BufferedReader(isr);
                          String line = "";
@@ -865,10 +867,10 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
                          s.setStreamTime(strDuration+"s");
                          }
                          } //Author spoonybard896
-                         } catch (Exception e) {
+                         } catch (IOException | InterruptedException | NumberFormatException e) {
                          e.printStackTrace();
                          }
-                        ArrayList<String> allChan = new ArrayList<String>();
+                        ArrayList<String> allChan = new ArrayList<>();
                         for (String scn : MasterChannels.getInstance().getChannels()){
                             allChan.add(scn); 
                         } 
@@ -899,8 +901,9 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         String key = cboAnimations.getSelectedItem().toString();
         String res = animations.getProperty(key);
         URL url = getClass().getResource("/webcamstudio/resources/animations/" + res);
-        Stream stream = new SourceImageGif(key, url);
-        StreamDesktop frame = new StreamDesktop(stream, this);
+        Stream streamAnm;
+        streamAnm = new SourceImageGif(key, url);
+        StreamDesktop frame = new StreamDesktop(streamAnm, this);
         desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
         try {
             frame.setSelected(true);
@@ -935,6 +938,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
     }//GEN-LAST:event_btnMinimizeAllActionPerformed
 
     private void btnSaveStudioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveStudioActionPerformed
+        final java.awt.event.ActionEvent sEvt = evt;
         try {
             File file;
             boolean overWrite = true;
@@ -943,7 +947,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
             if (streamzI.size()>0 || sourceChI.size()>0) {
                 Object[] options = {"OK"};
                 JOptionPane.showOptionDialog(this,
-                       "All Playing Streams will be Stopped !!!","Warning!",
+                       "All Playing Streams will be Stopped !!!","Attention",
                        JOptionPane.PLAIN_MESSAGE,
                        JOptionPane.INFORMATION_MESSAGE,
                        null,
@@ -958,44 +962,49 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
             chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
             int retval = chooser.showSaveDialog(this);
             file = chooser.getSelectedFile();
-            if (file!=null){
-                if(file.exists()){
-                    int result = JOptionPane.showConfirmDialog(this,"File exists, overwrite?","Warning!",JOptionPane.YES_NO_CANCEL_OPTION);
-                    switch(result){
-                        case JOptionPane.YES_OPTION:
-                            overWrite = true;
-                            break;
-                        case JOptionPane.NO_OPTION:
-                            overWrite = false;
-                            break;
-                        case JOptionPane.CANCEL_OPTION:
-                            overWrite = false;
-                            break;
-                        case JOptionPane.CLOSED_OPTION:
-                            overWrite = false;
-                            break;
-                    }
-                }
-            }
-            if (retval == JFileChooser.APPROVE_OPTION && overWrite) {
+            if (retval == JFileChooser.APPROVE_OPTION) {
                 if (file!=null){
-                    lastFolder = file.getParentFile();
-                    SystemPlayer.getInstance(null).stop();
-                    Tools.sleep(50);
-                    MasterChannels.getInstance().stopAllStream();
-                    listener.stopChTime(evt);
-                    for (Stream s : MasterChannels.getInstance().getStreams()){
-                        s.updateStatus();
+                    if(file.exists()){
+                        int result = JOptionPane.showConfirmDialog(this,"File exists, overwrite?","Attention",JOptionPane.YES_NO_CANCEL_OPTION);
+                        switch(result){
+                            case JOptionPane.YES_OPTION:
+                                overWrite = true;
+                                break;
+                            case JOptionPane.NO_OPTION:
+                                overWrite = false;
+                                break;
+                            case JOptionPane.CANCEL_OPTION:
+                                overWrite = false;
+                                break;
+                            case JOptionPane.CLOSED_OPTION:
+                                overWrite = false;
+                                break;
+                        }
                     }
-                    if (!file.getName().endsWith(".studio")){
-                        file = new File(file.getParent(),file.getName()+".studio");
-                    }
-                    final File fileF = file;
-                    final WaitingDialog waitingD = new WaitingDialog(this);            
-                    SwingWorker<?,?> worker = new SwingWorker<Void,Integer>(){  
-                        protected Void doInBackground() throws InterruptedException{
+                }    
+            }
+            if ((retval == JFileChooser.APPROVE_OPTION) && overWrite) {
+                final WaitingDialog waitingD = new WaitingDialog(this);
+                final File fileF = file;
+                waitingD.setModal(true);
+                SwingWorker<?,?> worker = new SwingWorker<Void,Integer>(){  
+                    @Override
+                    protected Void doInBackground() throws InterruptedException{
+                        if (fileF!=null){
+                            File fileS = fileF;
+                            lastFolder = fileS.getParentFile();
+                            SystemPlayer.getInstance(null).stop();
+                            Tools.sleep(50);
+                            MasterChannels.getInstance().stopAllStream();
+                            listener.stopChTime(sEvt);
+                            for (Stream s : MasterChannels.getInstance().getStreams()){
+                                s.updateStatus();
+                            }
+                            if (!fileS.getName().endsWith(".studio")){
+                                fileS = new File(fileS.getParent(),fileS.getName()+".studio");
+                            }
                             try {
-                                Studio.save(fileF);
+                                Studio.save(fileS);
                             } catch (IOException ex) {
                                 Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
                             } catch (XMLStreamException ex) {
@@ -1009,42 +1018,40 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
                             } catch (IllegalAccessException ex) {
                                 Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
                             }
+                            ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Studio is saved!");
+                            ResourceMonitor.getInstance().addMessage(label);    
+                        }
                         return null;  
-                        }  
-                        protected void done(){  
-                            waitingD.dispose();
-                            WebcamStudio.this.setEnabled(true);
-                        }  
-                    };  
-                    worker.execute();
-                    WebcamStudio.this.setEnabled(false);
-                    waitingD.setVisible(true); 
-                    if (file!=null){
-                        ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Studio is saved!");
-                        ResourceMonitor.getInstance().addMessage(label);
-                    } else {
-                        ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "No File Selected!");
-                        ResourceMonitor.getInstance().addMessage(label);    
-                    } 
-                }   
+                    }
+                    @Override
+                    protected void done(){  
+                        waitingD.dispose();
+//                        WebcamStudio.this.setEnabled(true);                            
+                    }  
+                };  
+                worker.execute();
+//                    WebcamStudio.this.setEnabled(false);
+                waitingD.setVisible(true);
+                waitingD.toFront();
             } else {
                 ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Saving Cancelled!");
                 ResourceMonitor.getInstance().addMessage(label);
             }
-            } catch (Exception ex) {
+        } catch (Exception ex) {
                 Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
                 ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Error: " + ex.getMessage());
                 ResourceMonitor.getInstance().addMessage(label);
-            } 
+        } 
+    
     }//GEN-LAST:event_btnSaveStudioActionPerformed
     
-    private static class WaitingDialog extends JDialog {
+    public static class WaitingDialog extends JDialog {
         private JLabel workingLabel = new JLabel();
         public WaitingDialog(JFrame owner) {
             workingLabel.setBorder(BorderFactory.createLineBorder(Color.black));
             workingLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/view-fullscreen.png"))); // NOI18N        
             workingLabel.setText(" Working... ");
-            setUndecorated(true);
+            setUndecorated(true);           
             add(workingLabel);
             pack();
             // move window to center of owner
@@ -1055,7 +1062,8 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
             setLocation(x, y);
             repaint();
         }
-    }  
+    } 
+    
     private void btnLoadStudioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoadStudioActionPerformed
         final java.awt.event.ActionEvent fEvt = evt;
         ArrayList<Stream> streamzI = MasterChannels.getInstance().getStreams();
@@ -1063,7 +1071,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         if (streamzI.size()>0 || sourceChI.size()>0) {
             Object[] options = {"OK"};
                 JOptionPane.showOptionDialog(this,
-                       "Current Studio will be deleted !!!","Warning!",
+                       "Current Studio will be closed !!!","Attention",
                        JOptionPane.PLAIN_MESSAGE,
                        JOptionPane.INFORMATION_MESSAGE,
                        null,
@@ -1115,9 +1123,9 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
                         desktop.removeAll();
                         desktop.repaint();
                         try {
-                            Studio.LText = new ArrayList<SourceText>();
-                            Studio.extstream = new ArrayList<Stream>();
-                            Studio.ImgMovMus = new ArrayList<String>();
+                            Studio.LText = new ArrayList<>();
+                            Studio.extstream = new ArrayList<>();
+                            Studio.ImgMovMus = new ArrayList<>();
                             Studio.load(file);
                             Studio.main();
                             spinWidth.setValue(MasterMixer.getInstance().getWidth());
@@ -1130,13 +1138,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
                             MasterMixer.getInstance().setHeight(mH);
                             MasterMixer.getInstance().setRate((Integer) spinFPS.getValue());
                             MasterMixer.getInstance().start();
-                        } catch (ParserConfigurationException ex) {
-                            Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
-                        } catch (SAXException ex) {
-                            Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
-                        } catch (IOException ex) {
-                            Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
-                        } catch (XPathExpressionException ex) {
+                        } catch (ParserConfigurationException | SAXException | IOException | XPathExpressionException ex) {
                             Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
                         }
 
@@ -1146,6 +1148,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
                             if (s != null) {
                                 StreamDesktop frame = new StreamDesktop(s, WebcamStudio.this);
                                 desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+//                                Tools.sleep(10);
                                 try {
                                     frame.setSelected(true);
                                 } catch (PropertyVetoException ex) {
@@ -1177,26 +1180,29 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
                             listener.AddLoadingChannel(chsc);               
                         }
                         Studio.chanLoad.clear();
-                    }  
-                    if (file!=null){
                         ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Studio is loaded!");
                         ResourceMonitor.getInstance().addMessage(label);
-                    } else {
-                        ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "No File Selected!");
-                        ResourceMonitor.getInstance().addMessage(label);    
-                    }
+                    }  
+//                    if (file!=null){
+//                        ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Studio is loaded!");
+//                        ResourceMonitor.getInstance().addMessage(label);
+//                    } 
+//                    else {
+//                        ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "No File Selected!");
+//                        ResourceMonitor.getInstance().addMessage(label);    
+//                    }
                 return null;  
                 }  
                 @Override
                 protected void done(){  
                     waitingD.dispose();
-                    WebcamStudio.this.setEnabled(true);
+//                    WebcamStudio.this.setEnabled(true);
                 }  
             };  
-        worker.execute();  
-        WebcamStudio.this.setEnabled(false);
-        waitingD.setVisible(true);
-        waitingD.toFront();
+        worker.execute();
+//        WebcamStudio.this.setEnabled(false);
+        waitingD.setVisible(true);       
+        waitingD.toFront();       
         } else {
             ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Loading Cancelled!");
             ResourceMonitor.getInstance().addMessage(label); 
@@ -1231,7 +1237,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         ArrayList<Stream> streamzI = MasterChannels.getInstance().getStreams();
         ArrayList<String> sourceChI = MasterChannels.getInstance().getChannels();
         if (streamzI.size()>0 || sourceChI.size()>0) {
-            int result = JOptionPane.showConfirmDialog(this,"Current Studio will be deleted !!!","Warning!",JOptionPane.YES_NO_CANCEL_OPTION);
+            int result = JOptionPane.showConfirmDialog(this,"Current Studio will be deleted !!!","Attention",JOptionPane.YES_NO_CANCEL_OPTION);
             switch(result){
                 case JOptionPane.YES_OPTION:
                     doNew = true;
@@ -1285,8 +1291,9 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
     }//GEN-LAST:event_btnNewStudioActionPerformed
 
     private void btnAddDVBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddDVBActionPerformed
-        SourceDVB stream = new SourceDVB();
-        StreamDesktop frame = new StreamDesktop(stream, this);
+        SourceDVB streamDVB;
+        streamDVB = new SourceDVB();
+        StreamDesktop frame = new StreamDesktop(streamDVB, this);
         desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
         try {
             frame.setSelected(true);
@@ -1296,8 +1303,9 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
     }//GEN-LAST:event_btnAddDVBActionPerformed
 
     private void btnAddURLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddURLActionPerformed
-        SourceURL stream = new SourceURL();
-        StreamDesktop frame = new StreamDesktop(stream, this);
+        SourceURL streamURL;
+        streamURL = new SourceURL();
+        StreamDesktop frame = new StreamDesktop(streamURL, this);
         desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
         try {
             frame.setSelected(true);
@@ -1360,18 +1368,12 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         if (file != null) {
                 lastFolder = file.getParentFile();
                 try {
-                    Studio.LText = new ArrayList<SourceText>();
-                    Studio.extstream = new ArrayList<Stream>();
-                    Studio.ImgMovMus = new ArrayList<String>();
+                    Studio.LText = new ArrayList<>();
+                    Studio.extstream = new ArrayList<>();
+                    Studio.ImgMovMus = new ArrayList<>();
                     Studio.load(file);
                     Studio.main();
-                } catch (ParserConfigurationException ex) {
-                    Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (SAXException ex) {
-                    Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (IOException ex) {
-                    Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (XPathExpressionException ex) {
+                } catch (ParserConfigurationException | SAXException | IOException | XPathExpressionException ex) {
                     Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
                 }
         
@@ -1408,12 +1410,12 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
                 Studio.LText.clear();
                 Studio.LText = null;
                 Tools.sleep(300);
-               ArrayList<String> chNameL = new ArrayList<String>();
+               ArrayList<String> chNameL = new ArrayList<>();
                 for (SourceChannel chsct : Studio.chanLoad) {
                         chNameL.add(chsct.getName());
                 }
                 System.out.println("Channels List: "+chNameL);
-                LinkedHashSet<String> hs = new LinkedHashSet<String>(chNameL);
+                LinkedHashSet<String> hs = new LinkedHashSet<>(chNameL);
                 chNameL.clear();
                 chNameL.addAll(hs);
                 for (String chsct : chNameL) {
@@ -1444,18 +1446,12 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         if (file != null) {
                lastFolder = file.getParentFile();
                 try {
-                    Studio.LText = new ArrayList<SourceText>();
-                    Studio.extstream = new ArrayList<Stream>();
-                    Studio.ImgMovMus = new ArrayList<String>();
+                    Studio.LText = new ArrayList<>();
+                    Studio.extstream = new ArrayList<>();
+                    Studio.ImgMovMus = new ArrayList<>();
                     Studio.load(file);
                     Studio.main();
-                } catch (ParserConfigurationException ex) {
-                    Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (SAXException ex) {
-                    Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (IOException ex) {
-                    Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (XPathExpressionException ex) {
+                } catch (ParserConfigurationException | SAXException | IOException | XPathExpressionException ex) {
                     Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
                 }
         
@@ -1612,7 +1608,8 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         tabControls.repaint();
         ArrayList<Component> comps = SourceControls.getControls(source);        
         for (Component c : comps) {
-            tabControls.add(c.getName(), c);
+            String cName = c.getName();
+            tabControls.add(cName, c);
         }
     } 
 }

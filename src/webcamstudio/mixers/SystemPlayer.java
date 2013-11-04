@@ -79,11 +79,11 @@ public class SystemPlayer implements Runnable {
             frames.abort();
         }
         if (source != null) {
-            Tools.sleep(20);
+            Tools.sleep(30);
             source.stop();
             Tools.sleep(30);
             source.close();
-            Tools.sleep(20);
+            Tools.sleep(30);
             source = null;
         }
         Tools.sleep(20);

@@ -17,7 +17,6 @@ limitations under the License.
 package com.jhlabs.image;
 
 import java.awt.*;
-import java.awt.image.*;
 
 /**
  * A class to emboss an image.
@@ -65,6 +64,7 @@ public class EmbossFilter extends WholeImageFilter {
 		return emboss;
 	}
 	
+        @Override
 	protected int[] filterPixels( int width, int height, int[] inPixels, Rectangle transformedSpace ) {
 		int index = 0;
 		int[] outPixels = new int[width * height];
@@ -130,6 +130,7 @@ public class EmbossFilter extends WholeImageFilter {
 		return outPixels;
 	}
 
+        @Override
 	public String toString() {
 		return "Stylize/Emboss...";
 	}
