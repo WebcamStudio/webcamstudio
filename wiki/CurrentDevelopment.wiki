@@ -38,3 +38,4 @@ OR
 
  * ~~ChannelPanel button "Apply to streams" will Apply Mixer Resolution "proportionally" to all loaded streams.~~
  * ~~Switched to GStreamer plugins for Gnonlin "gstreamer0.10-gnonlin" for GS Movie backend. This implement seek function also in GS. Have to install that plugin to use GS with Movie Streams. -> *Karl Ellis* -> 09 Oct 2013 ~~
+ * ~~Put a "Working" waiting label when WebcamStudio is busy. (Somes Operations only) ; SkyCam compatibility mode (Beta); Linux 3.11 webcamstudio-module fix -> *Karl Ellis* -> 04 Nov 2013 ~~
