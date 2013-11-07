@@ -1117,6 +1117,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
                         MasterChannels.getInstance().stopAllStream();
                         listener.stopChTime(fEvt);
                         listener.resetBtnStates(fEvt);
+                        listenerOP.resetBtnStates(fEvt);
                         tabControls.removeAll();
                         tabControls.repaint();
                         Tools.sleep(300);

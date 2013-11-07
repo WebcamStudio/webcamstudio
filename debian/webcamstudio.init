@@ -30,7 +30,7 @@
 # Required-Start: $syslog
 # Required-Stop:
 # Default-Start:  2 3 4 5
-# Default-Stop:
+# Default-Stop:  0 1 6
 # Short-Description: WebcamStudio kernel modules loader
 ### END INIT INFO
 
