@@ -34,24 +34,28 @@ public class SinkBroadcast extends Stream {
         rate = MasterMixer.getInstance().getRate();
         captureWidth = MasterMixer.getInstance().getWidth();
         captureHeight = MasterMixer.getInstance().getHeight();
-        if (name.toLowerCase().equals("red5")){
-            if (standard.equals("STD")) {
-                capture = new ProcessRenderer(this,fme,"broadcastR5");
-            } else {
-                capture = new ProcessRenderer(this,fme,"broadcastR5HQ");
-            }  
-        } else if (name.toLowerCase().equals("icecast")){
-            if (standard.equals("STD")) {
-                capture = new ProcessRenderer(this,fme,"iceCast");
-            } else {
-                capture = new ProcessRenderer(this,fme,"iceCastHQ");
-            }
-            } else {
-            if (standard.equals("STD")) {
-                capture = new ProcessRenderer(this,fme,"broadcast");
-            } else {
-                capture = new ProcessRenderer(this,fme,"broadcastHQ");
-            }
+        switch (name.toLowerCase()) {
+            case "red5":
+                if (standard.equals("STD")) {
+                    capture = new ProcessRenderer(this,fme,"broadcastR5");
+                } else {
+                    capture = new ProcessRenderer(this,fme,"broadcastR5HQ");
+                }
+                break;
+            case "icecast":
+                if (standard.equals("STD")) {
+                    capture = new ProcessRenderer(this,fme,"iceCast");
+                } else {
+                    capture = new ProcessRenderer(this,fme,"iceCastHQ");
+                }
+                break;
+            default:
+                if (standard.equals("STD")) {
+                    capture = new ProcessRenderer(this,fme,"broadcast");
+                } else {
+                    capture = new ProcessRenderer(this,fme,"broadcastHQ");
+                }
+                break;
         }
         capture.writeCom();
     }

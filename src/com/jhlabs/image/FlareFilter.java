@@ -17,8 +17,6 @@ limitations under the License.
 package com.jhlabs.image;
 
 import java.awt.geom.*;
-import java.awt.image.*;
-import java.util.*;
 import com.jhlabs.math.*;
 
 /**
@@ -117,6 +115,7 @@ public class FlareFilter extends PointFilter {
 		return radius;
 	}
 
+        @Override
 	public void setDimensions(int width, int height) {
 		this.width = width;
 		this.height = height;
@@ -125,6 +124,7 @@ public class FlareFilter extends PointFilter {
 		super.setDimensions(width, height);
 	}
 	
+        @Override
 	public int filterRGB(int x, int y, int rgb) {
 		float dx = x-icentreX;
 		float dy = y-icentreY;
@@ -159,6 +159,7 @@ public class FlareFilter extends PointFilter {
 		return ImageMath.mixColors(a, rgb, color);
 	}
 
+        @Override
 	public String toString() {
 		return "Stylize/Flare...";
 	}

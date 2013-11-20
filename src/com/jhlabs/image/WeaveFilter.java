@@ -16,9 +16,6 @@ limitations under the License.
 
 package com.jhlabs.image;
 
-import java.awt.*;
-import java.awt.image.*;
-
 public class WeaveFilter extends PointFilter {
 
 	private float xWidth = 16;
@@ -107,6 +104,7 @@ public class WeaveFilter extends PointFilter {
 		return shadeCrossings;
 	}
 
+        @Override
 	public int filterRGB(int x, int y, int rgb) {
 		x += xWidth+xGap/2;
 		y += yWidth+yGap/2;
@@ -176,6 +174,7 @@ public class WeaveFilter extends PointFilter {
 		return v;
 	}
 
+        @Override
 	public String toString() {
 		return "Texture/Weave...";
 	}

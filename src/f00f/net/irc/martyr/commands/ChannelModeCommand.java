@@ -81,7 +81,7 @@ public class ChannelModeCommand extends ModeCommand
 	{
 		if( modeTypes == null )
 		{
-			modeTypes = new HashMap<Character,Mode>();
+			modeTypes = new HashMap<>();
 			
 			registerMode( modeTypes, new BanMode() );
 			registerMode( modeTypes, new KeyMode() );

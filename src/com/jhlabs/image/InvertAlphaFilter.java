@@ -16,9 +16,6 @@ limitations under the License.
 
 package com.jhlabs.image;
 
-import java.awt.*;
-import java.awt.image.*;
-
 /**
  * A Filter to invert the alpha channel of an image. This is really only useful for inverting selections, where we only use the alpha channel.
  */
@@ -28,10 +25,12 @@ public class InvertAlphaFilter extends PointFilter {
 		canFilterIndexColorModel = true;
 	}
 
+        @Override
 	public int filterRGB(int x, int y, int rgb) {
 		return rgb ^ 0xff000000;
 	}
 
+        @Override
 	public String toString() {
 		return "Alpha/Invert";
 	}

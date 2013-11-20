@@ -123,6 +123,7 @@ public class CropFilter extends AbstractBufferedImageOp {
 		return height;
 	}
 
+        @Override
     public BufferedImage filter( BufferedImage src, BufferedImage dst ) {
         int w = src.getWidth();
         int h = src.getHeight();
@@ -152,6 +153,7 @@ public class CropFilter extends AbstractBufferedImageOp {
         return dst;
     }
 
+        @Override
 	public String toString() {
 		return "Distort/Crop";
 	}

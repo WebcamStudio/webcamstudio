@@ -45,7 +45,7 @@ public class WhoisChannelsReply extends AbstractWhoisReply
 	public Set<String> getChannelSet()
 	{
 		StringTokenizer tokens = new StringTokenizer( channels );
-		Set<String> set = new HashSet<String>();
+		Set<String> set = new HashSet<>();
 		while( tokens.hasMoreTokens() )
 		{
 			set.add( tokens.nextToken() );

@@ -13,9 +13,9 @@ import java.util.ArrayList;
  */
 public class MasterMixer {
 
-    protected int frameRate = 15;
-    protected int width = 720;
-    protected int height = 480;
+    protected int frameRate = 25;
+    protected int width = 320;
+    protected int height = 240;
     protected ArrayList<SinkListener> listeners = null;
     private MasterFrameBuilder builder = null;
     private int audioLevelLeft = 0;
@@ -23,10 +23,10 @@ public class MasterMixer {
     private float avgFPS = 0;
     private static MasterMixer instance = null;
     
-    public static int BUFFER_SIZE = 40;
+    public static int BUFFER_SIZE = 50;
     
     private MasterMixer(){
-        listeners = new ArrayList<SinkListener>();
+        listeners = new ArrayList<>();
     }
     
     public static MasterMixer getInstance(){

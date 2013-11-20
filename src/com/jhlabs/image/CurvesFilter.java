@@ -16,9 +16,6 @@ limitations under the License.
 
 package com.jhlabs.image;
 
-import java.awt.*;
-import java.awt.image.*;
-
 public class CurvesFilter extends TransferFilter {
 
 	private Curve[] curves = new Curve[1];
@@ -134,6 +131,7 @@ public class CurvesFilter extends TransferFilter {
         curves[2] = new Curve();
     }
     
+        @Override
 	protected void initialize() {
 		initialized = true;
 		if ( curves.length == 1 )
@@ -161,6 +159,7 @@ public class CurvesFilter extends TransferFilter {
 		return curves;
 	}
 
+        @Override
 	public String toString() {
 		return "Colors/Curves...";
 	}

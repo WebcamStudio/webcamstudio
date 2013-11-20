@@ -19,8 +19,6 @@ package com.jhlabs.image;
 import java.awt.*;
 import java.awt.geom.*;
 import java.awt.image.*;
-import java.util.*;
-import com.jhlabs.image.*;
 
 /**
  * A class containing some static utility methods for dealing with BufferedImages.

@@ -18,7 +18,7 @@ public class CommandRegister
     private Hashtable<String,InCommand> commands;
     public CommandRegister()
     {
-        commands = new Hashtable<String,InCommand>();
+        commands = new Hashtable<>();
 
         // Note that currently, we only have to register commands that
         // can be received from the server.

@@ -65,8 +65,8 @@ public class Channel
 	public Channel( String chanName )
 	{
 		this.name = chanName;
-		members = new Vector<Member>();
-		modes = new LinkedList<Mode>();
+		members = new Vector<>();
+		modes = new LinkedList<>();
 	}
 	
 	public String getName()

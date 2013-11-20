@@ -257,12 +257,6 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
 
     private void btnApplyToStreamsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnApplyToStreamsActionPerformed
         ArrayList<Stream> allStreams = MasterChannels.getInstance().getStreams();
-//        SystemPlayer.getInstance(null).stop();
-//        Tools.sleep(30);
-//        MasterChannels.getInstance().stopAllStream();
-//        for (Stream s : allStreams){
-//            s.updateStatus();
-//        }
         int wi = mixer.getWidth();
         int he = mixer.getHeight();
         int oldCW = mixer.getWidth();

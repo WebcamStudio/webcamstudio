@@ -16,10 +16,8 @@ limitations under the License.
 
 package com.jhlabs.image;
 
-import java.awt.*;
 import java.awt.geom.*;
 import java.awt.image.*;
-import com.jhlabs.math.*;
 
 /**
  * A filter which produces a water ripple distortion.
@@ -173,6 +171,7 @@ public class WaterFilter extends TransformFilter {
 		return a <= v && v <= b;
 	}
 	
+        @Override
     public BufferedImage filter( BufferedImage src, BufferedImage dst ) {
 		icentreX = src.getWidth() * centreX;
 		icentreY = src.getHeight() * centreY;
@@ -182,6 +181,7 @@ public class WaterFilter extends TransformFilter {
 		return super.filter( src, dst );
 	}
 	
+        @Override
 	protected void transformInverse(int x, int y, float[] out) {
 		float dx = x-icentreX;
 		float dy = y-icentreY;
@@ -200,6 +200,7 @@ public class WaterFilter extends TransformFilter {
 		}
 	}
 
+        @Override
 	public String toString() {
 		return "Distort/Water Ripples...";
 	}

@@ -30,7 +30,6 @@ public class SinkLinuxDevice extends Stream implements MasterMixer.SinkListener 
     public void read() {
         stop = false;
         rate = MasterMixer.getInstance().getRate();
-//        VideoOutput.setFlipImage(true);
         device.open(file.getAbsolutePath(), width, height, VideoOutput.RGB24);
         MasterMixer.getInstance().register(this);
     }

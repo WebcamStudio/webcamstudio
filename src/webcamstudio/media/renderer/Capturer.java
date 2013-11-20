@@ -77,9 +77,8 @@ public class Capturer {
                         fakeVideoIn = new DataInputStream(new BufferedInputStream(connection.getInputStream(), 4096));
                     }
                     do {
-
+                        Tools.sleep(20);
                         if (fakeAudioIn != null) {
-//                           Tools.sleep(20);
                             if (fakeAudioIn.available() != 0) {
                                 noVideoPres=false;
                                 Tools.sleep(stream.getVDelay());
@@ -126,8 +125,8 @@ public class Capturer {
                         fakeAudioIn = new DataInputStream(new BufferedInputStream(connection.getInputStream(), 4096));
                     }
                     do {
-                        if (fakeVideoIn != null)  {
-//                            Tools.sleep(20);
+                        Tools.sleep(20);
+                        if (fakeVideoIn != null)  {                            
                             if (fakeVideoIn.available() != 0) {
                                 noAudioPres = false; 
                                 Tools.sleep(stream.getADelay());
@@ -203,7 +202,6 @@ public class Capturer {
     }
 
     public Frame getFrame() {
-        long mark = System.currentTimeMillis();
         BufferedImage nextImage = null;
         byte[] nextAudio = null;
         try {

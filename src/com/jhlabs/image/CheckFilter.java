@@ -16,9 +16,6 @@ limitations under the License.
 
 package com.jhlabs.image;
 
-import java.awt.*;
-import java.awt.image.*;
-
 /**
  * A Filter to draw grids and check patterns.
  */
@@ -153,6 +150,7 @@ public class CheckFilter extends PointFilter {
 		return angle;
 	}
 
+        @Override
 	public int filterRGB(int x, int y, int rgb) {
 		float nx = (m00*x + m01*y) / xScale;
 		float ny = (m10*x + m11*y) / yScale;
@@ -166,6 +164,7 @@ public class CheckFilter extends PointFilter {
 		return ImageMath.mixColors(f, foreground, background);
 	}
 
+        @Override
 	public String toString() {
 		return "Texture/Checkerboard...";
 	}

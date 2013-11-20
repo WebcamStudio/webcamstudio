@@ -18,8 +18,8 @@ package com.jhlabs.image;
 
 import java.util.*;
 import java.io.*;
-import java.awt.*;
-import java.awt.image.*;
+//import java.awt.*;
+//import java.awt.image.*;
 
 /**
  * An image Quantizer based on the Octree algorithm. This is a very basic implementation
@@ -80,7 +80,7 @@ public class OctTreeQuantizer implements Quantizer {
 		setup(256);
 		colorList = new Vector[MAX_LEVEL+1];
 		for (int i = 0; i < MAX_LEVEL+1; i++)
-			colorList[i] = new Vector<OctTreeNode>();
+			colorList[i] = new Vector<>();
 		root = new OctTreeNode();
 	}
 
@@ -89,6 +89,7 @@ public class OctTreeQuantizer implements Quantizer {
 	 * @param numColors the number of colors we're quantizing to.
          * 
 	 */
+        @Override
 	public void setup(int numColors) {
 		maximumColors = numColors;
 		reduceColors = Math.max(512, numColors * 2);
@@ -100,6 +101,7 @@ public class OctTreeQuantizer implements Quantizer {
 	 * @param offset the offset into the array
 	 * @param count the count of pixels
 	 */
+        @Override
 	public void addPixels(int[] pixels, int offset, int count) {
 		for (int i = 0; i < count; i++) {
 			insertColor(pixels[i+offset]);
@@ -113,6 +115,7 @@ public class OctTreeQuantizer implements Quantizer {
      * @param rgb the color
      * @return the index
      */
+        @Override
 	public int getIndexForColor(int rgb) {
 		int red = (rgb >> 16) & 0xff;
 		int green = (rgb >> 8) & 0xff;
@@ -240,6 +243,7 @@ public class OctTreeQuantizer implements Quantizer {
      * Build the color table.
      * @return the color table
      */
+        @Override
 	public int[] buildColorTable() {
 		int[] table = new int[colors];
 		buildColorTable(root, table, 0);

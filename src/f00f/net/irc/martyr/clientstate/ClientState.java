@@ -45,7 +45,7 @@ public class ClientState
     private int port = -1;
 
     // Hashtable is threadsafe so we don't have to be.
-    protected Hashtable<String,Channel> channels = new Hashtable<String,Channel>();
+    protected Hashtable<String,Channel> channels = new Hashtable<>();
 
     public void setNick( FullNick nick )
     {

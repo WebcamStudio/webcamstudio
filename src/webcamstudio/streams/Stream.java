@@ -48,8 +48,8 @@ public abstract class Stream implements Callable<Frame>{
     protected String url = null;
     protected int audioLevelLeft = 0;
     protected int audioLevelRight = 0;
-    protected ArrayList<Effect> effects = new ArrayList<Effect>();
-    protected ArrayList<SourceChannel> channels = new ArrayList<SourceChannel>();
+    protected ArrayList<Effect> effects = new ArrayList<>();
+    protected ArrayList<SourceChannel> channels = new ArrayList<>();
     protected SourceChannel channel = new SourceChannel();
     protected int desktopN = 0;
     protected int desktopX = 0;
@@ -73,8 +73,8 @@ public abstract class Stream implements Callable<Frame>{
     protected String webURL = null;
     protected String chNameDVB = null;
     protected Frame nextFrame = null;
-    public ArrayList<Transition> startTransitions = new ArrayList<Transition>();
-    public ArrayList<Transition> endTransitions = new ArrayList<Transition>();
+    public ArrayList<Transition> startTransitions = new ArrayList<>();
+    public ArrayList<Transition> endTransitions = new ArrayList<>();
     Listener listener = null;
     protected String panelType = "Panel";
     protected String streamTime = "N/A";
@@ -331,6 +331,13 @@ public abstract class Stream implements Callable<Frame>{
     public void removeChannel(SourceChannel sc) {
         channels.remove(sc);
     }
+    public void addChannelAt(SourceChannel sc, int y) {
+        channels.set(y, sc);
+    }
+
+    public void removeChannelAt(int y) {
+        channels.set(y,null);
+    }
 
     public void selectChannel(String name) {
         for (SourceChannel sc : channels) {
@@ -370,7 +377,7 @@ public abstract class Stream implements Callable<Frame>{
     }
 
     public synchronized void applyEffects(BufferedImage img) {
-        ArrayList<Effect> temp = new ArrayList<Effect>();
+        ArrayList<Effect> temp = new ArrayList<>();
         temp.addAll(effects);
         for (Effect e : temp) {
             e.applyEffect(img);
@@ -623,7 +630,7 @@ public abstract class Stream implements Callable<Frame>{
                      temp = null;
                  }
              } 
-         } catch (Exception e) {
+         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
          }
          return resu;

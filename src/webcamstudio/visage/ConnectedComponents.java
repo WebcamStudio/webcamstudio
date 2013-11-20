@@ -224,7 +224,7 @@ public class ConnectedComponents
       int index, clusterArea;
       for (int i = 1; clusters[i] != Integer.MAX_VALUE; i++)
         indecies[clusters[i]] = i;
-      Vector<Integer> finalClusters = new Vector<Integer>();
+      Vector<Integer> finalClusters = new Vector<>();
 
       for (int y = 0; y < height; y++)
       {

@@ -34,9 +34,9 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
     MasterChannels master = MasterChannels.getInstance();
     private DefaultListModel model = new DefaultListModel();
     private DefaultComboBoxModel aModel = new DefaultComboBoxModel();
-    private ArrayList<String> CHCurrNext = new ArrayList<String>();
-    private ArrayList<Integer> CHTimers = new ArrayList<Integer>();
-    private ArrayList<String> ListChannels = new ArrayList<String>();
+    private ArrayList<String> CHCurrNext = new ArrayList<>();
+    private ArrayList<Integer> CHTimers = new ArrayList<>();
+    private ArrayList<String> ListChannels = new ArrayList<>();
     ArrayList<Stream> streamS = MasterChannels.getInstance().getStreams();   
     String selectChannel=null;   
     int CHon =0;
@@ -242,9 +242,9 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(ChDuration)
-                            .addComponent(lstNextChannel, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addComponent(lstNextChannel, 0, 103, Short.MAX_VALUE)))
                     .addComponent(CHProgressTime, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addComponent(btnStopAllStream, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -355,11 +355,12 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
     }   
     @SuppressWarnings("unchecked") 
     @Override
-    public void AddLoadingChannel(String name) {
+    public void addLoadingChannel(String name) {
         if (name.length() > 0) {
             model.addElement(name);
             aModel.addElement(name);
             ListChannels.add(name);
+            lstChannels.revalidate();
        }
     }   
     @Override
@@ -503,20 +504,7 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
         StopCHTimer.setEnabled(inTimer);
     }                                           
     private void StopCHTimerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_StopCHTimerActionPerformed
-        CHt.cancel();
-        CHt.purge();
-        StopCHpt=true;
-        lstChannels.setEnabled(true);
-        ChDuration.setEnabled(true);
-        btnStopAllStream.setEnabled(true);
-        btnSelect.setEnabled(true);
-        btnRenameCh.setEnabled(true);
-        btnRemove.setEnabled(true);
-        btnAdd.setEnabled(true);
-        inTimer=false;
-        CHProgressTime.setValue(0);
-        CHProgressTime.setString("0");
-        StopCHTimer.setEnabled(inTimer);
+        RemoteStopCHTimerActionPerformed(evt);
         ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Channel Timer Stopped.");
         ResourceMonitor.getInstance().addMessage(label);
     }//GEN-LAST:event_StopCHTimerActionPerformed

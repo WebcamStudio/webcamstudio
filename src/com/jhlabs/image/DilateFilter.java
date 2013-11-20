@@ -17,7 +17,6 @@ limitations under the License.
 package com.jhlabs.image;
 
 import java.awt.*;
-import java.awt.image.*;
 
 /**
  * Given a binary image, this filter performs binary dilation, setting all added pixels to the given 'new' color.
@@ -47,6 +46,7 @@ public class DilateFilter extends BinaryFilter {
 		return threshold;
 	}
 	
+        @Override
 	protected int[] filterPixels( int width, int height, int[] inPixels, Rectangle transformedSpace ) {
 		int[] outPixels = new int[width * height];
 
@@ -94,6 +94,7 @@ public class DilateFilter extends BinaryFilter {
 		return outPixels;
 	}
 
+        @Override
 	public String toString() {
 		return "Binary/Dilate...";
 	}

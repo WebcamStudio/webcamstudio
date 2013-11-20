@@ -125,24 +125,21 @@ public class svm_predict {
 			exit_with_help();
 		try
 		{
-			BufferedReader input = new BufferedReader(new FileReader(argv[i]));
-			DataOutputStream output = new DataOutputStream(new FileOutputStream(argv[i+2]));
-			svm_model model = svm.svm_load_model(argv[i+1]);
-			if(predict_probability == 1)
-				if(svm.svm_check_probability_model(model)==0)
-				{
-					System.err.print("Model does not support probabiliy estimates\n");
-					System.exit(1);
-				}
-			predict(input,output,model,predict_probability);
-			input.close();
+                DataOutputStream output;
+                try (BufferedReader input = new BufferedReader(new FileReader(argv[i]))) {
+                    output = new DataOutputStream(new FileOutputStream(argv[i+2]));
+                    svm_model model = svm.svm_load_model(argv[i+1]);
+                    if(predict_probability == 1)
+                            if(svm.svm_check_probability_model(model)==0)
+                            {
+                                    System.err.print("Model does not support probabiliy estimates\n");
+                                    System.exit(1);
+                            }
+                    predict(input,output,model,predict_probability);
+                }
 			output.close();
 		}
-		catch(FileNotFoundException e)
-		{
-			exit_with_help();
-		}
-		catch(ArrayIndexOutOfBoundsException e)
+		catch(FileNotFoundException | ArrayIndexOutOfBoundsException e)
 		{
 			exit_with_help();
 		}

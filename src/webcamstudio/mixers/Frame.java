@@ -50,7 +50,8 @@ public class Frame {
         byte[] audioSrc = frame.getAudioData();
         if (imageSrc!=null){
             Graphics2D g = image.createGraphics();
-            g.setRenderingHint(java.awt.RenderingHints.KEY_INTERPOLATION, java.awt.RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+            g.setRenderingHint(java.awt.RenderingHints.KEY_INTERPOLATION, 
+                               java.awt.RenderingHints.VALUE_INTERPOLATION_BILINEAR);
             g.setRenderingHint(java.awt.RenderingHints.KEY_RENDERING,
                                java.awt.RenderingHints.VALUE_RENDER_SPEED);
             g.setRenderingHint(java.awt.RenderingHints.KEY_ANTIALIASING,
@@ -63,7 +64,6 @@ public class Frame {
                                java.awt.RenderingHints.VALUE_COLOR_RENDER_SPEED);
             g.setRenderingHint(java.awt.RenderingHints.KEY_DITHERING,
                                java.awt.RenderingHints.VALUE_DITHER_DISABLE);
-
 //            g.setBackground(new Color(0,0,0,0));
 //            g.clearRect(0, 0, w, h);
             g.drawImage(imageSrc, 0, 0, null);

@@ -37,7 +37,7 @@ public class FME {
     public FME(File xml) {
         try{
             parse(xml);
-        }catch (Exception e ){
+        }catch (ParserConfigurationException | SAXException | IOException | XPathExpressionException e ){
             e.printStackTrace();
         }
     }

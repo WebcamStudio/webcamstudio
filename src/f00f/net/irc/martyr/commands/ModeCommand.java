@@ -146,7 +146,7 @@ public class ModeCommand implements InCommand, OutCommand
 	 */
 	public List<Mode> parseModes( Map<Character,Mode> modes, StringTokenizer tokens )
 	{
-		LinkedList<Mode> results = new LinkedList<Mode>();
+		LinkedList<Mode> results = new LinkedList<>();
 	
 		while( true )                                         
 		{
@@ -172,7 +172,7 @@ public class ModeCommand implements InCommand, OutCommand
 	private void parseOneModeSet( Map<Character,Mode> modes, StringTokenizer tokens, List<Mode> results )
 	{
   		// A list of modes that we have.
-		LinkedList<Mode> localModes = new LinkedList<Mode>();
+		LinkedList<Mode> localModes = new LinkedList<>();
 		
 		Mode.Sign sign = Mode.Sign.NOSIGN;
 		String chars = tokens.nextToken();

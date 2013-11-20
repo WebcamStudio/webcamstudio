@@ -16,7 +16,6 @@ limitations under the License.
 
 package com.jhlabs.image;
 
-import java.awt.*;
 import java.awt.image.*;
 
 public class OffsetFilter extends TransformFilter {
@@ -60,6 +59,7 @@ public class OffsetFilter extends TransformFilter {
 		return wrap;
 	}
 	
+        @Override
 	protected void transformInverse(int x, int y, float[] out) {
 		if ( wrap ) {
 			out[0] = (x+width-xOffset) % width;
@@ -70,6 +70,7 @@ public class OffsetFilter extends TransformFilter {
 		}
 	}
 
+        @Override
     public BufferedImage filter( BufferedImage src, BufferedImage dst ) {
 		this.width = src.getWidth();
 		this.height = src.getHeight();
@@ -84,6 +85,7 @@ public class OffsetFilter extends TransformFilter {
 		return super.filter( src, dst );
 	}
 
+        @Override
 	public String toString() {
 		return "Distort/Offset...";
 	}

@@ -88,7 +88,6 @@ public class SystemPlayer implements Runnable {
         }
         Tools.sleep(20);
         executor = null;
-//        System.gc();
         webcamstudio.components.MasterPanel.tglSound.setSelected(false);
     }
 }

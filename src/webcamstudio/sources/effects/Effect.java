@@ -22,7 +22,7 @@ public abstract class Effect {
     public abstract void loadFromStudioConfig(java.util.prefs.Preferences prefs);
     public abstract javax.swing.JPanel getControl();
     public static java.util.TreeMap<String, Effect> getEffects() {
-        java.util.TreeMap<String, Effect> retValue = new java.util.TreeMap<String, Effect>();
+        java.util.TreeMap<String, Effect> retValue = new java.util.TreeMap<>();
         retValue.put(FlipHorizontal.class.getSimpleName(), new FlipHorizontal());
         retValue.put(FlipVertical.class.getSimpleName(), new FlipVertical());
         retValue.put(Mirror1.class.getSimpleName(), new Mirror1());

@@ -17,7 +17,6 @@ limitations under the License.
 package com.jhlabs.image;
 
 import java.awt.*;
-import java.awt.image.*;
 
 /**
  * A filter which replcaes each pixel by the mimimum of itself and its eight neightbours.
@@ -27,6 +26,7 @@ public class MinimumFilter extends WholeImageFilter {
 	public MinimumFilter() {
 	}
 	
+        @Override
 	protected int[] filterPixels( int width, int height, int[] inPixels, Rectangle transformedSpace ) {
 		int index = 0;
 		int[] outPixels = new int[width * height];
@@ -53,6 +53,7 @@ public class MinimumFilter extends WholeImageFilter {
 		return outPixels;
 	}
 
+        @Override
 	public String toString() {
 		return "Blur/Minimum";
 	}

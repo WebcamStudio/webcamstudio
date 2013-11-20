@@ -31,18 +31,25 @@ public abstract class Transition implements Runnable{
     }
     public static Transition getInstance(Stream source,String name){
         Transition t = null;
-        if (name.equals("FadeIn")){
-            t = new FadeIn(source);
-        } else if (name.equals("FadeOut")){
-            t = new FadeOut(source);
-        } else if (name.equals("Translate")){
-            t = new Translate(source);
-        } else if (name.equals("Resize")){
-            t= new Resize(source);
-        } else if (name.equals("RevealLeft")){
-            t = new RevealLeft(source);
-        } else if (name.equals("ShrinkOut")){
-            t = new ShrinkOut(source);
+        switch (name) {
+            case "FadeIn":
+                t = new FadeIn(source);
+                break;
+            case "FadeOut":
+                t = new FadeOut(source);
+                break;
+            case "Translate":
+                t = new Translate(source);
+                break;
+            case "Resize":
+                t= new Resize(source);
+                break;
+            case "RevealLeft":
+                t = new RevealLeft(source);
+                break;
+            case "ShrinkOut":
+                t = new ShrinkOut(source);
+                break;
         }
         return t;
     }

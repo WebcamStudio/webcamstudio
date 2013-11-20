@@ -44,6 +44,7 @@ public class ScaleFilter extends AbstractBufferedImageOp {
 		this.height = height;
 	}
 
+        @Override
     public BufferedImage filter( BufferedImage src, BufferedImage dst ) {
         int w = src.getWidth();
         int h = src.getHeight();
@@ -73,6 +74,7 @@ public class ScaleFilter extends AbstractBufferedImageOp {
         return dst;
     }
 
+        @Override
 	public String toString() {
 		return "Distort/Scale";
 	}

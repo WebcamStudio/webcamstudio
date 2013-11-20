@@ -46,7 +46,6 @@ public class SourceMovie extends Stream {
         if (capture != null) {
             capture.stop();
             capture = null;
-//            System.gc();
         }
     }
     @Override
@@ -56,11 +55,6 @@ public class SourceMovie extends Stream {
     @Override
     public boolean isPlaying() {
         return isPlaying;
-/*        if (capture != null) {
-            return !capture.isStopped();
-        } else {
-            return false;
-        } */
     }
     @Override
     public void setIsPlaying(boolean setIsPlaying) {
@@ -98,13 +92,6 @@ public class SourceMovie extends Stream {
                     }
                 }
             }
-/*            for (Effect fxM : this.getEffects()) {
-                if (f != null) {
-                    if (fxM.needApply()){   
-                        fxM.applyEffect(f.getImage());
-                    }
-                }
-            } */
             if (f != null) {
                 setAudioLevel(f);
                 lastPreview.getGraphics().drawImage(f.getImage(), 0, 0, null);

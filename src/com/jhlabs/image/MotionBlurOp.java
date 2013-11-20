@@ -190,6 +190,7 @@ public class MotionBlurOp extends AbstractBufferedImageOp {
         return log2n;
     }
 
+    @Override
     public BufferedImage filter( BufferedImage src, BufferedImage dst ) {
         if ( dst == null )
             dst = createCompatibleDestImage( src, null );
@@ -269,6 +270,7 @@ public class MotionBlurOp extends AbstractBufferedImageOp {
         return dst;
     }
     
+    @Override
 	public String toString() {
 		return "Blur/Faster Motion Blur...";
 	}

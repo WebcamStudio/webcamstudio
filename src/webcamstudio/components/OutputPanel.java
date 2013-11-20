@@ -14,6 +14,7 @@ import java.awt.Color;
 import java.awt.Component;
 import webcamstudio.media.renderer.ProcessExecutor;
 import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetDropEvent;
@@ -27,6 +28,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 import java.util.TreeMap;
@@ -77,7 +79,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
     String skyRunComm = null;
     int camCount = 0;
     String virtualDevice = "webcamstudio";
-    TreeMap<String, ResourceMonitorLabel> labels = new TreeMap<String, ResourceMonitorLabel>();
+    TreeMap<String, ResourceMonitorLabel> labels = new TreeMap<>();
     JFrame wDFrame;
     /** Creates new form OutputPanel */
     public OutputPanel(JFrame aFrame) {
@@ -146,7 +148,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
                         ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis() + 5000, "Unsupported file: " + fileName);
                         ResourceMonitor.getInstance().addMessage(label);
                     }
-                } catch (Exception ex) {
+                } catch (UnsupportedFlavorException | IOException | URISyntaxException ex) {
                     ex.printStackTrace();
                 }
             }
@@ -591,10 +593,8 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
                         }
                     }
                 });
-//                Tools.sleep(60);
                 this.add(wsCamButton);
                 this.revalidate();
-//                Tools.sleep(20);
             }
         }
     } 
@@ -653,9 +653,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
                                 Tools.sleep(20);
                                 processSkyVideo.executeString(batchSkyCommC);
                                 Tools.sleep(20);
-                            } catch (IOException ex) {
-                                Logger.getLogger(OutputPanel.class.getName()).log(Level.SEVERE, null, ex);
-                            } catch (InterruptedException ex) {
+                            } catch (                        IOException | InterruptedException ex) {
                                 Logger.getLogger(OutputPanel.class.getName()).log(Level.SEVERE, null, ex);
                             }
                             tglSkyCam.setEnabled(false);
@@ -709,10 +707,8 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
                         }
                     }
                 });
-//                Tools.sleep(60);
                 this.add(skyCamButton);
                 this.revalidate();
-//                Tools.sleep(20);
             }
         }
     }
@@ -781,11 +777,8 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
             repaintSkyCamButtons ();
             Tools.sleep(30);
             repaintFMEButtons();
-//            System.out.println("SkyCam Engaged ...");
             ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "SkyCam Engaged");
             ResourceMonitor.getInstance().addMessage(label);
-//            instanceSink.loadPrefs(webcamstudio.WebcamStudio.prefs);
-//            Tools.sleep(10);
             instanceSink.repaint(); 
         } else {
             skyCamMode = false;
@@ -813,7 +806,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
                 Process rDevice = rt.exec(batchSkyCommR); 
                 Tools.sleep(50);
                 rDevice.waitFor();
-            } catch (Exception e) {
+            } catch (IOException | InterruptedException e) {
                 e.printStackTrace();
             }
             
@@ -822,27 +815,23 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
             paintWSCamButtons ();
             Tools.sleep(30);
             repaintFMEButtons();
-//            System.out.println("SkyCam Disengaged ...");
             btnSkyFlip.setSelected(false);
             btnSkyFlip.setEnabled(false);
             ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "SkyCam Disengaged");
             ResourceMonitor.getInstance().addMessage(label);
-//            instanceSink.loadPrefs(webcamstudio.WebcamStudio.prefs);
-//            Tools.sleep(10);
             instanceSink.repaint();
         }
         return null; 
     }
                 @Override
-                protected void done(){  
+                protected void done(){
+                    Tools.sleep(10);
                     waitingD.dispose();
                 }  
     };
         worker.execute();
-        Tools.sleep(10);
-        waitingD.setVisible(true);
-        Tools.sleep(10);
         waitingD.toFront();
+        waitingD.setVisible(true);
     }//GEN-LAST:event_tglSkyCamActionPerformed
 
     private void btnSkyFlipActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSkyFlipActionPerformed
@@ -925,7 +914,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
     }
 
     @Override
-    public void AddLoadingChannel(String name) {
+    public void addLoadingChannel(String name) {
      
     }
 

@@ -16,7 +16,6 @@ limitations under the License.
 
 package com.jhlabs.image;
 
-import java.awt.*;
 import java.awt.image.*;
 
 /**
@@ -60,6 +59,7 @@ public class PolarFilter extends TransformFilter {
 		setEdgeAction(CLAMP);
 	}
 
+    @Override
     public BufferedImage filter( BufferedImage src, BufferedImage dst ) {
 		this.width = src.getWidth();
 		this.height = src.getHeight();
@@ -91,6 +91,7 @@ public class PolarFilter extends TransformFilter {
 		return x*x;
 	}
 
+    @Override
 	protected void transformInverse(int x, int y, float[] out) {
 		float theta, t;
 		float m, xmax, ymax;
@@ -204,6 +205,7 @@ public class PolarFilter extends TransformFilter {
 		}
 	}
 
+    @Override
 	public String toString() {
 		return "Distort/Polar Coordinates...";
 	}

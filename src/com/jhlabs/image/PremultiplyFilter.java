@@ -16,9 +16,6 @@ limitations under the License.
 
 package com.jhlabs.image;
 
-import java.awt.*;
-import java.awt.image.*;
-
 /**
  * A filter which premultiplies an image's alpha. 
  * Note: this does not change the image type of the BufferedImage
@@ -28,6 +25,7 @@ public class PremultiplyFilter extends PointFilter {
 	public PremultiplyFilter() {
 	}
 
+        @Override
 	public int filterRGB(int x, int y, int rgb) {
 		int a = (rgb >> 24) & 0xff;
 		int r = (rgb >> 16) & 0xff;
@@ -40,6 +38,7 @@ public class PremultiplyFilter extends PointFilter {
 		return (a << 24) | (r << 16) | (g << 8) | b;
 	}
 
+        @Override
 	public String toString() {
 		return "Alpha/Premultiply";
 	}

@@ -22,7 +22,7 @@ SLOT="0"
 KEYWORDS="~x86 ~amd64"
 IUSE=""
 
-DEPEND=">=virtual/jdk-1.6
+DEPEND=">=virtual/jdk-1.7
 	dev-libs/glib:2
 	virtual/ffmpeg
 	media-libs/gstreamer:0.10

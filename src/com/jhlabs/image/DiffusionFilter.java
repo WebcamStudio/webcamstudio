@@ -17,7 +17,6 @@ limitations under the License.
 package com.jhlabs.image;
 
 import java.awt.*;
-import java.awt.image.*;
 
 /**
  * A filter which uses Floyd-Steinberg error diffusion dithering to halftone an image.
@@ -118,6 +117,7 @@ public class DiffusionFilter extends WholeImageFilter {
 		return levels;
 	}
 
+        @Override
 	protected int[] filterPixels( int width, int height, int[] inPixels, Rectangle transformedSpace ) {
 		int[] outPixels = new int[width * height];
 
@@ -194,6 +194,7 @@ public class DiffusionFilter extends WholeImageFilter {
 		return outPixels;
 	}
 
+        @Override
 	public String toString() {
 		return "Colors/Diffusion Dither...";
 	}

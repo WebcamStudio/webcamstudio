@@ -16,10 +16,6 @@ limitations under the License.
 
 package com.jhlabs.image;
 
-import java.awt.*;
-import java.awt.image.*;
-import java.io.*;
-
 public class FadeFilter extends PointFilter {
 
 	private int width, height;
@@ -90,12 +86,14 @@ public class FadeFilter extends PointFilter {
 		return invert;
 	}
 
+        @Override
 	public void setDimensions(int width, int height) {
 		this.width = width;
 		this.height = height;
 		super.setDimensions(width, height);
 	}
 	
+        @Override
 	public int filterRGB(int x, int y, int rgb) {
 		float nx = m00*x + m01*y;
 		float ny = m10*x + m11*y;
@@ -136,6 +134,7 @@ public class FadeFilter extends PointFilter {
 	}
 */
 
+        @Override
 	public String toString() {
 		return "Fade...";
 	}

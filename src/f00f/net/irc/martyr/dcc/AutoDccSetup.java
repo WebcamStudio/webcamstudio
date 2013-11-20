@@ -65,20 +65,16 @@ public abstract class AutoDccSetup extends GenericCommandAutoService
             {
                 handleCtcp( (CtcpMessage)updated );
             }
-            catch( IOException ioe )
+            catch( IOException | DccException ioe )
             {
                 ioe.printStackTrace();
-            }
-            catch( DccException dcce )
-            {
-                dcce.printStackTrace();
             }
         }
     }
 
     private List tokenizeParams(String msg)
     {
-        List<String> l = new ArrayList<String>(5);
+        List<String> l = new ArrayList<>(5);
         StringBuffer word = new StringBuffer();
         boolean inQuote = false;
         for( int i = 0; i < msg.length(); ++i )

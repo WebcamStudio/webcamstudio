@@ -16,9 +16,6 @@ limitations under the License.
 
 package com.jhlabs.image;
 
-import java.awt.*;
-import java.awt.image.*;
-
 /**
  * A filter for changing the gamma of an image.
  */
@@ -83,6 +80,7 @@ public class GammaFilter extends TransferFilter {
 		return rGamma;
 	}
 	
+        @Override
     protected void initialize() {
 		rTable = makeTable(rGamma);
 
@@ -110,6 +108,7 @@ public class GammaFilter extends TransferFilter {
 		return table;
 	}
 
+        @Override
 	public String toString() {
 		return "Colors/Gamma...";
 	}

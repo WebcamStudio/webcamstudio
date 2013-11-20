@@ -16,9 +16,6 @@ limitations under the License.
 
 package com.jhlabs.image;
 
-import java.awt.*;
-import java.awt.image.*;
-
 /**
  * A filter which simply multiplies pixel values by a given scale factor.
  */
@@ -33,6 +30,7 @@ public class RescaleFilter extends TransferFilter {
 		this.scale = scale;
     }
     
+        @Override
     protected float transferFunction( float v ) {
 		return v * scale;
 	}
@@ -58,6 +56,7 @@ public class RescaleFilter extends TransferFilter {
 		return scale;
 	}
 
+        @Override
 	public String toString() {
 		return "Colors/Rescale...";
 	}

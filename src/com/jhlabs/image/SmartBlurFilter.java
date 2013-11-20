@@ -16,9 +16,7 @@ limitations under the License.
 
 package com.jhlabs.image;
 
-import java.awt.*;
 import java.awt.image.*;
-import java.awt.geom.*;
 
 /**
  * A filter which performs a "smart blur". i.e. a blur which blurs smotth parts of the image while preserving edges.
@@ -29,6 +27,7 @@ public class SmartBlurFilter extends AbstractBufferedImageOp {
 	private int vRadius = 5;
 	private int threshold = 10;
 	
+        @Override
     public BufferedImage filter( BufferedImage src, BufferedImage dst ) {
         int width = src.getWidth();
         int height = src.getHeight();
@@ -195,6 +194,7 @@ public class SmartBlurFilter extends AbstractBufferedImageOp {
 		return threshold;
 	}
 	
+        @Override
 	public String toString() {
 		return "Blur/Smart Blur...";
 	}

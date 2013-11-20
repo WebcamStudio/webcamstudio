@@ -16,9 +16,6 @@ limitations under the License.
 
 package com.jhlabs.image;
 
-import java.awt.*;
-import java.awt.image.*;
-
 /**
  * A filter which performs ordered dithering on an image.
  */
@@ -251,6 +248,7 @@ public class DitherFilter extends PointFilter {
 		}
 	}
 
+        @Override
 	public int filterRGB(int x, int y, int rgb) {
 		if (!initialized) {
 			initialized = true;
@@ -274,6 +272,7 @@ public class DitherFilter extends PointFilter {
 		return a | (r << 16) | (g << 8) | b;
 	}
 
+        @Override
 	public String toString() {
 		return "Colors/Dither...";
 	}

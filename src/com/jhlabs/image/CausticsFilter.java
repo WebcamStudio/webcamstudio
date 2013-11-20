@@ -17,7 +17,6 @@ limitations under the License.
 package com.jhlabs.image;
 
 import java.awt.*;
-import java.awt.image.*;
 import java.util.*;
 import com.jhlabs.math.*;
 
@@ -195,6 +194,7 @@ public class CausticsFilter extends WholeImageFilter {
 		return bgColor;
 	}
 
+        @Override
 	protected int[] filterPixels( int width, int height, int[] inPixels, Rectangle transformedSpace ) {
 		Random random = new Random(0);
 
@@ -357,6 +357,7 @@ public class CausticsFilter extends WholeImageFilter {
 		return f;
 	}
 	
+        @Override
 	public String toString() {
 		return "Texture/Caustics...";
 	}

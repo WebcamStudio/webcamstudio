@@ -58,9 +58,11 @@ class ContourCompositeContext implements CompositeContext {
 		this.offset = offset;
 	}
 
+        @Override
 	public void dispose() {
 	}
 	
+        @Override
 	public void compose(Raster src, Raster dstIn, WritableRaster dstOut) {
 		int x = src.getMinX();
 		int y = src.getMinY();

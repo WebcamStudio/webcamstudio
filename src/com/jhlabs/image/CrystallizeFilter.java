@@ -16,10 +16,6 @@ limitations under the License.
 
 package com.jhlabs.image;
 
-import java.awt.*;
-import java.util.*;
-import com.jhlabs.math.*;
-
 /**
  * A filter which applies a crystallizing effect to an image, by producing Voronoi cells filled with colours from the image.
  */
@@ -58,6 +54,7 @@ public class CrystallizeFilter extends CellularFilter {
 		return edgeColor;
 	}
 
+        @Override
 	public int getPixel(int x, int y, int[] inPixels, int width, int height) {
 		float nx = m00*x + m01*y;
 		float ny = m10*x + m11*y;
@@ -85,6 +82,7 @@ public class CrystallizeFilter extends CellularFilter {
 		return v;
 	}
 
+        @Override
 	public String toString() {
 		return "Stylize/Crystallize...";
 	}

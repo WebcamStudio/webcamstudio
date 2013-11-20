@@ -33,12 +33,12 @@ public class SourceChannel  {
     private int color = 0;
     private String name = "";
     boolean isPlaying = false;
-    ArrayList<Effect> effects = new ArrayList<Effect>();
+    ArrayList<Effect> effects = new ArrayList<>();
     private boolean followMouse = false;
     private int captureX = 0;
     private int captureY = 0;
-    public ArrayList<Transition> startTransitions = new ArrayList<Transition>();
-    public ArrayList<Transition> endTransitions = new ArrayList<Transition>();
+    public ArrayList<Transition> startTransitions = new ArrayList<>();
+    public ArrayList<Transition> endTransitions = new ArrayList<>();
     private MasterMixer mixer = MasterMixer.getInstance();
 
     public SourceChannel() {

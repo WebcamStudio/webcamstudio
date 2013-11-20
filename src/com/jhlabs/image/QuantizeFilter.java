@@ -16,9 +16,7 @@ limitations under the License.
 
 package com.jhlabs.image;
 
-import java.util.*;
 import java.awt.*;
-import java.awt.image.*;
 
 /**
  * A filter which quantizes an image to a set number of colors - useful for producing
@@ -165,6 +163,7 @@ public class QuantizeFilter extends WholeImageFilter {
 		}
 	}
 
+        @Override
 	protected int[] filterPixels( int width, int height, int[] inPixels, Rectangle transformedSpace ) {
 		int[] outPixels = new int[width*height];
 		
@@ -173,6 +172,7 @@ public class QuantizeFilter extends WholeImageFilter {
 		return outPixels;
 	}
 
+        @Override
 	public String toString() {
 		return "Colors/Quantize...";
 	}

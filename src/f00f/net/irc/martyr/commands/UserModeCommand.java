@@ -46,7 +46,7 @@ public class UserModeCommand extends ModeCommand
 	{
 		if( modeTypes == null )
 		{
-			modeTypes = new HashMap<Character,Mode>();
+			modeTypes = new HashMap<>();
 			
 			// Add new mode types here
 			registerMode( modeTypes, new InvisibleMode() );

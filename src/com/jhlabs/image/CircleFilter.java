@@ -174,6 +174,7 @@ public class CircleFilter extends TransformFilter {
 		return new Point2D.Float( centreX, centreY );
 	}
 	
+        @Override
     public BufferedImage filter( BufferedImage src, BufferedImage dst ) {
 		iWidth = src.getWidth();
 		iHeight = src.getHeight();
@@ -183,6 +184,7 @@ public class CircleFilter extends TransformFilter {
 		return super.filter( src, dst );
 	}
 	
+        @Override
 	protected void transformInverse(int x, int y, float[] out) {
 		float dx = x-icentreX;
 		float dy = y-icentreY;
@@ -195,6 +197,7 @@ public class CircleFilter extends TransformFilter {
 		out[1] = iHeight * (1-(r-radius)/(height+0.00001f));
 	}
 
+        @Override
 	public String toString() {
 		return "Distort/Circle...";
 	}

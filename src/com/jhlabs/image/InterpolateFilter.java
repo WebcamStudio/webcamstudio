@@ -16,9 +16,7 @@ limitations under the License.
 
 package com.jhlabs.image;
 
-import java.awt.*;
 import java.awt.image.*;
-import java.util.*;
 
 /**
  * A filter which interpolates betwen two images. You can set the interpolation factor outside the range 0 to 1
@@ -68,6 +66,7 @@ public class InterpolateFilter extends AbstractBufferedImageOp {
 		return interpolation;
 	}
 	
+        @Override
     public BufferedImage filter( BufferedImage src, BufferedImage dst ) {
         int width = src.getWidth();
         int height = src.getHeight();
@@ -110,6 +109,7 @@ public class InterpolateFilter extends AbstractBufferedImageOp {
         return dst;
     }
 
+        @Override
 	public String toString() {
 		return "Effects/Interpolate...";
 	}
