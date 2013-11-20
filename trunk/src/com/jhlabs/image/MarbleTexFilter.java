@@ -16,8 +16,6 @@ limitations under the License.
 
 package com.jhlabs.image;
 
-import java.awt.image.*;
-import java.util.*;
 import com.jhlabs.math.*;
 
 public class MarbleTexFilter extends PointFilter {
@@ -90,6 +88,7 @@ public class MarbleTexFilter extends PointFilter {
 		return colormap;
 	}
 	
+        @Override
 	public int filterRGB(int x, int y, int rgb) {
 		float nx = m00*x + m01*y;
 		float ny = m10*x + m11*y;
@@ -142,6 +141,7 @@ public class MarbleTexFilter extends PointFilter {
 		}
 	}
 
+        @Override
 	public String toString() {
 		return "Texture/Marble Texture...";
 	}

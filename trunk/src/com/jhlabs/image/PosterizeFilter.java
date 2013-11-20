@@ -16,9 +16,6 @@ limitations under the License.
 
 package com.jhlabs.image;
 
-import java.awt.*;
-import java.awt.image.*;
-
 /**
  * A filter to posterize an image.
  */
@@ -61,6 +58,7 @@ public class PosterizeFilter extends PointFilter {
 				levels[i] = 255 * (numLevels*i / 256) / (numLevels-1);
 	}
 	
+        @Override
 	public int filterRGB(int x, int y, int rgb) {
 		if (!initialized) {
 			initialized = true;
@@ -76,6 +74,7 @@ public class PosterizeFilter extends PointFilter {
 		return a | (r << 16) | (g << 8) | b;
 	}
 
+        @Override
 	public String toString() {
 		return "Colors/Posterize...";
 	}

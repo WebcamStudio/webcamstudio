@@ -17,7 +17,6 @@ limitations under the License.
 package com.jhlabs.image;
 
 import java.awt.*;
-import java.awt.image.*;
 import java.util.*;
 import com.jhlabs.math.*;
 
@@ -411,6 +410,7 @@ public class CellularFilter extends WholeImageFilter implements Function2D, Clon
 		return results[2].distance;
 	}
 	
+        @Override
 	public float evaluate(float x, float y) {
 		for (int j = 0; j < results.length; j++)
 			results[j].distance = Float.POSITIVE_INFINITY;
@@ -527,6 +527,7 @@ public class CellularFilter extends WholeImageFilter implements Function2D, Clon
 		return f;
 	}
 	
+        @Override
 	public String toString() {
 		return "Texture/Cellular...";
 	}

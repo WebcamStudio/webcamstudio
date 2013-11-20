@@ -199,7 +199,7 @@ public class IRCConnection {
         stateObservers = new StateObserver();
         commandObservers = new CommandObserver();
         this.clientState = clientState;
-        stateQueue = new LinkedList<State>();
+        stateQueue = new LinkedList<>();
 
         commandRegister = new CommandRegister();
         commandSender = new DefaultCommandSender();
@@ -208,7 +208,7 @@ public class IRCConnection {
 
         new ClientStateMonitor( this );
 
-        localEventQueue = new LinkedList<String>();
+        localEventQueue = new LinkedList<>();
 
         eventThread = new EventThread();
         eventThread.setDaemon( true );

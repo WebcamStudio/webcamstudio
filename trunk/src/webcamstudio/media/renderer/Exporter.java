@@ -52,7 +52,7 @@ public class Exporter implements MasterMixer.SinkListener {
         } catch (IOException ex) {
             Logger.getLogger(Exporter.class.getName()).log(Level.SEVERE, null, ex);
         }
-//        System.out.println("Port used is Video:" + vport+"/Audio:" + aport);
+        System.out.println("Port used is Video:" + vport+"/Audio:" + aport);
         Thread vExCapture = new Thread(new Runnable() {
 
             @Override
@@ -81,7 +81,7 @@ public class Exporter implements MasterMixer.SinkListener {
                     stream.updateStatus();
                     Logger.getLogger(Exporter.class.getName()).log(Level.SEVERE, null, ex);
                 }
-//                System.out.println("Video output stopped");
+                System.out.println("Video output stopped");
             }
         });
         vExCapture.setPriority(Thread.MIN_PRIORITY);
@@ -117,7 +117,7 @@ public class Exporter implements MasterMixer.SinkListener {
                     stream.updateStatus();
                     Logger.getLogger(Exporter.class.getName()).log(Level.SEVERE, null, ex);
                 }
-//                System.out.println("Audio output stopped");
+                System.out.println("Audio output stopped");
             }
         });
         aExCapture.setPriority(Thread.MIN_PRIORITY);

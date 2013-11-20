@@ -39,7 +39,7 @@ import webcamstudio.sources.effects.Effect;
 
 public abstract class VideoSource implements InfoListener {
 
-    public static java.util.TreeMap<String, VideoSource> loadedSources = new TreeMap<String, VideoSource>();
+    public static java.util.TreeMap<String, VideoSource> loadedSources = new TreeMap<>();
     protected Timer timer = null;
 
     public abstract void startSource();
@@ -236,10 +236,13 @@ public abstract class VideoSource implements InfoListener {
         followMouseCursor = prefs.getBoolean("followmousecursor", followMouseCursor);
         visibleOnlyWhenSelected = prefs.getBoolean("visibleOnlyWhenSelected", visibleOnlyWhenSelected);
         String temp = prefs.get("colorformat", "yuv");
-        if (temp.equals("yuv")) {
-            colorFormat = ColorFormat.YUV;
-        } else if (temp.equals("rgb")) {
-            colorFormat = ColorFormat.RGB;
+        switch (temp) {
+            case "yuv":
+                colorFormat = ColorFormat.YUV;
+                break;
+            case "rgb":
+                colorFormat = ColorFormat.RGB;
+                break;
         }
         updateTimeLaspe = prefs.getLong("updatetimelapse", updateTimeLaspe);
         shapeName = prefs.get("shapename", shapeName);
@@ -953,7 +956,7 @@ public abstract class VideoSource implements InfoListener {
     protected boolean showMouseCursor = false;
     protected boolean lightMode = false;
     protected String customText = "";
-    protected java.util.Vector<Effect> effects = new java.util.Vector<Effect>();
+    protected java.util.Vector<Effect> effects = new java.util.Vector<>();
     protected boolean doRescale = true;
     protected boolean doReverseShapeMask = false;
     protected Image faceDetection = null;

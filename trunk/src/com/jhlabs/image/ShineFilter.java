@@ -17,7 +17,6 @@ limitations under the License.
 package com.jhlabs.image;
 
 import java.awt.*;
-import java.awt.geom.*;
 import java.awt.image.*;
 import com.jhlabs.composite.*;
 
@@ -107,6 +106,7 @@ public class ShineFilter extends AbstractBufferedImageOp {
 		return softness;
 	}
 
+        @Override
     public BufferedImage filter( BufferedImage src, BufferedImage dst ) {
         int width = src.getWidth();
         int height = src.getHeight();
@@ -155,6 +155,7 @@ public class ShineFilter extends AbstractBufferedImageOp {
         return dst;
 	}
 
+        @Override
 	public String toString() {
 		return "Stylize/Shine...";
 	}

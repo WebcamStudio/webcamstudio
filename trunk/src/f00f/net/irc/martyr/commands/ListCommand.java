@@ -14,7 +14,7 @@ public class ListCommand implements OutCommand
 {
 
     /* List of channels we will request topic and member count info of. */
-    List<String> channels = new ArrayList<String>();
+    List<String> channels = new ArrayList<>();
 
     /**
      * No parameter passed to the LIST command represents a request for all channels.

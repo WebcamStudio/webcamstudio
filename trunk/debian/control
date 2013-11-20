@@ -31,7 +31,7 @@ Vcs-Browser: https://code.google.com/p/webcamstudio/source/browse
 
 Package: webcamstudio
 Architecture: amd64 i386
-Depends: openjdk-7-jre | openjdk-6-jre | sun-java5-jre | sun-java6-jre,
+Depends: openjdk-7-jre,
   java-wrappers,
   libappframework-java,
   libcommons-cli-java,

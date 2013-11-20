@@ -82,6 +82,7 @@ public class TileImageFilter extends AbstractBufferedImageOp {
 		return height;
 	}
 
+        @Override
     public BufferedImage filter( BufferedImage src, BufferedImage dst ) {
         int tileWidth = src.getWidth();
         int tileHeight = src.getHeight();
@@ -114,6 +115,7 @@ public class TileImageFilter extends AbstractBufferedImageOp {
         return dst;
     }
 
+        @Override
 	public String toString() {
 		return "Tile";
 	}

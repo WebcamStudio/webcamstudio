@@ -275,7 +275,7 @@ public class FaceDetector {
     //////////////////////////////////////////
     private Vector loadEyesTemplates(int counter) {
         svm_node[] template;
-        Vector<svm_node[]> templates = new Vector<svm_node[]>();
+        Vector<svm_node[]> templates = new Vector<>();
 
         //Extract the templates and write them in the 'LibSVM' file format
         for (int i = 0; i <= counter; i++) {

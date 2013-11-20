@@ -35,6 +35,7 @@ public class CompoundFilter extends AbstractBufferedImageOp {
 		this.filter2 = filter2;
 	}
 	
+        @Override
 	public BufferedImage filter( BufferedImage src, BufferedImage dst ) {
 		BufferedImage image = filter1.filter( src, dst );
 		image = filter2.filter( image, dst );

@@ -33,18 +33,14 @@ public class VideoSourceWidget extends VideoSource {
     private URL data = null;
     private String author = "";
     private String description = "";
-    private TreeMap<String, String> treeValues = new TreeMap<String, String>();
+    private TreeMap<String, String> treeValues = new TreeMap<>();
 
     public VideoSourceWidget(URL url) {
         location = url.toString();
         frameRate = 1;
         try {
             loadXML(location, false);
-        } catch (ParserConfigurationException ex) {
-            Logger.getLogger(VideoSourceWidget.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SAXException ex) {
-            Logger.getLogger(VideoSourceWidget.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
+        } catch (ParserConfigurationException | SAXException | IOException ex) {
             Logger.getLogger(VideoSourceWidget.class.getName()).log(Level.SEVERE, null, ex);
         }
 
@@ -274,11 +270,7 @@ public class VideoSourceWidget extends VideoSource {
             public void run() {
                 try {
                     loadXML(location, true);
-                } catch (ParserConfigurationException ex) {
-                    Logger.getLogger(VideoSourceWidget.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (SAXException ex) {
-                    Logger.getLogger(VideoSourceWidget.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (IOException ex) {
+                } catch (        ParserConfigurationException | SAXException | IOException ex) {
                     Logger.getLogger(VideoSourceWidget.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 long lastTimeStamp = System.currentTimeMillis();

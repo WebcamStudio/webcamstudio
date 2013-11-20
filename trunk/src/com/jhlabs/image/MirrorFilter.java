@@ -17,7 +17,6 @@ limitations under the License.
 package com.jhlabs.image;
 
 import java.awt.*;
-import java.awt.geom.*;
 import java.awt.image.*;
 
 public class MirrorFilter extends AbstractBufferedImageOp {
@@ -100,6 +99,7 @@ public class MirrorFilter extends AbstractBufferedImageOp {
 		return centreY;
 	}
 	
+    @Override
     public BufferedImage filter( BufferedImage src, BufferedImage dst ) {
         if ( dst == null )
             dst = createCompatibleDestImage( src, null );
@@ -140,6 +140,7 @@ public class MirrorFilter extends AbstractBufferedImageOp {
         return dst;
     }
     
+    @Override
 	public String toString() {
 		return "Effects/Mirror...";
 	}

@@ -17,7 +17,6 @@ limitations under the License.
 package com.jhlabs.image;
 
 import java.awt.*;
-import java.awt.image.*;
 
 /**
  * A filter which removes noise from an image using a "pepper and salt" algorithm.
@@ -39,6 +38,7 @@ public class DespeckleFilter extends WholeImageFilter {
 		return c;
 	}
 	
+        @Override
 	protected int[] filterPixels( int width, int height, int[] inPixels, Rectangle transformedSpace ) {
 		int index = 0;
 		short[][] r = new short[3][width];
@@ -114,6 +114,7 @@ public class DespeckleFilter extends WholeImageFilter {
 		return outPixels;
 	}
 
+        @Override
 	public String toString() {
 		return "Blur/Despeckle...";
 	}

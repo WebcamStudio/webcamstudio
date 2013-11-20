@@ -71,14 +71,17 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
             this.setTitle(s.getName());
             this.setVisible(true);
             if (stream.getLoaded()){
-                if ("AV".equals(stream.getComm())){
-                    jCBAVConv.setSelected(true);
-                    stream.setComm("AV");
-                    jCBGStreamer.setSelected(false);
-                } else if ("GS".equals(stream.getComm())){
-                    jCBGStreamer.setSelected(true);
-                    stream.setComm("GS");
-                    jCBAVConv.setSelected(false);
+                switch (stream.getComm()) {
+                    case "AV":
+                        jCBAVConv.setSelected(true);
+                        stream.setComm("AV");
+                        jCBGStreamer.setSelected(false);
+                        break;
+                    case "GS":
+                        jCBGStreamer.setSelected(true);
+                        stream.setComm("GS");
+                        jCBAVConv.setSelected(false);
+                        break;
                 }
             } else {
                     jCBAVConv.setSelected(true);
@@ -96,24 +99,28 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
             this.setTitle(s.getName());
             this.setVisible(true);
             if (stream.getLoaded()){
-                if ("AV".equals(stream.getComm())){
-                    jCBAVConv.setSelected(true);
-                    stream.setComm("AV");
-                    jCBGStreamer.setSelected(false);
-                } else if ("GS".equals(stream.getComm())){
-                    jCBGStreamer.setSelected(true);
-                    stream.setComm("GS");
-                    jCBAVConv.setSelected(false);
-                } else {
-                    if (stream instanceof SourceWebcam || stream instanceof SourceMicrophone ||stream instanceof SourceImageU) {
-                    jCBGStreamer.setSelected(true);
-                    stream.setComm("GS");
-                    jCBAVConv.setSelected(false);
-                    } else {
-                    jCBAVConv.setSelected(true);
-                    stream.setComm("AV");
-                    jCBGStreamer.setSelected(false);
-                    }
+                switch (stream.getComm()) {
+                    case "AV":
+                        jCBAVConv.setSelected(true);
+                        stream.setComm("AV");
+                        jCBGStreamer.setSelected(false);
+                        break;
+                    case "GS":
+                        jCBGStreamer.setSelected(true);
+                        stream.setComm("GS");
+                        jCBAVConv.setSelected(false);
+                        break;
+                    default:
+                        if (stream instanceof SourceWebcam || stream instanceof SourceMicrophone ||stream instanceof SourceImageU) {
+                        jCBGStreamer.setSelected(true);
+                        stream.setComm("GS");
+                        jCBAVConv.setSelected(false);
+                        } else {
+                        jCBAVConv.setSelected(true);
+                        stream.setComm("AV");
+                        jCBGStreamer.setSelected(false);
+                        }
+                        break;
                 }
             } else {
                 if (stream instanceof SourceWebcam || stream instanceof SourceMicrophone ||stream instanceof SourceImageU) {

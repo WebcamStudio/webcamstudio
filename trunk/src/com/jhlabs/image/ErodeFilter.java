@@ -17,7 +17,6 @@ limitations under the License.
 package com.jhlabs.image;
 
 import java.awt.*;
-import java.awt.image.*;
 
 /**
  * Given a binary image, this filter performs binary erosion, setting all removed pixels to the given 'new' color.
@@ -48,6 +47,7 @@ public class ErodeFilter extends BinaryFilter {
 		return threshold;
 	}
 	
+        @Override
 	protected int[] filterPixels( int width, int height, int[] inPixels, Rectangle transformedSpace ) {
 		int[] outPixels = new int[width * height];
 
@@ -96,6 +96,7 @@ public class ErodeFilter extends BinaryFilter {
 		return outPixels;
 	}
 
+        @Override
 	public String toString() {
 		return "Binary/Erode...";
 	}

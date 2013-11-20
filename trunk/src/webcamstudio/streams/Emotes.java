@@ -14,7 +14,7 @@ import javax.swing.ImageIcon;
  */
 public class Emotes {
 
-    private static java.util.TreeMap<String, ImageIcon> emotes = new java.util.TreeMap<String, ImageIcon>();
+    private static java.util.TreeMap<String, ImageIcon> emotes = new java.util.TreeMap<>();
 
     public Emotes() {
         initialise();

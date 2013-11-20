@@ -20,7 +20,6 @@ import java.awt.*;
 import java.awt.image.*;
 import java.lang.reflect.*;
 import java.beans.*;
-import java.util.*;
 
 /**
  * A filter which uses another filter to perform a transition.
@@ -141,11 +140,12 @@ public class TransitionFilter extends AbstractBufferedImageOp {
         try {
             method.invoke( filter, new Object[] { new Float( transition ) } );
         }
-        catch ( Exception e ) {
+        catch ( IllegalAccessException | IllegalArgumentException | InvocationTargetException e ) {
             throw new IllegalArgumentException("Error setting value for property: "+property);
         }
 	}
 	
+        @Override
     public BufferedImage filter( BufferedImage src, BufferedImage dst ) {
         if ( dst == null )
             dst = createCompatibleDestImage( src, null );
@@ -183,6 +183,7 @@ public class TransitionFilter extends AbstractBufferedImageOp {
         return dst;
     }
 
+        @Override
 	public String toString() {
 		return "Transitions/Transition...";
 	}

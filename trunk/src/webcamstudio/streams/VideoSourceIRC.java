@@ -425,7 +425,7 @@ public class VideoSourceIRC extends VideoSource {
     public String toString() {
         return "IRC: " + name;
     }
-    protected java.util.Vector<String> lines = new java.util.Vector<String>();
+    protected java.util.Vector<String> lines = new java.util.Vector<>();
     private IRCConnection connection = null;
     private AutoReconnect autoReconnect = null;
     private ClientState state = null;
@@ -436,7 +436,7 @@ public class VideoSourceIRC extends VideoSource {
     private boolean quit = false;
     private MessageMonitor messageMonitor = null;
     private int charWidth = 12;
-    private java.util.Vector<VideoSourceIRCListener> ircListeners = new java.util.Vector<VideoSourceIRCListener>();
+    private java.util.Vector<VideoSourceIRCListener> ircListeners = new java.util.Vector<>();
     private java.awt.Graphics2D buffer = null;
     private Emotes emotes = new Emotes();
 

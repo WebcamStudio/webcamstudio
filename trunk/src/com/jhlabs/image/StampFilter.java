@@ -139,6 +139,7 @@ public class StampFilter extends PointFilter {
 		return black;
 	}
 
+        @Override
     public BufferedImage filter( BufferedImage src, BufferedImage dst ) {
         dst = new GaussianFilter( (int)radius ).filter( src, null );
         lowerThreshold3 = 255*3*(threshold - softness*0.5f);
@@ -146,6 +147,7 @@ public class StampFilter extends PointFilter {
 		return super.filter(dst, dst);
 	}
 
+        @Override
 	public int filterRGB(int x, int y, int rgb) {
 		int a = rgb & 0xff000000;
 		int r = (rgb >> 16) & 0xff;
@@ -156,6 +158,7 @@ public class StampFilter extends PointFilter {
         return ImageMath.mixColors(f, black, white);
 	}
 
+        @Override
 	public String toString() {
 		return "Stylize/Stamp...";
 	}

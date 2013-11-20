@@ -16,9 +16,7 @@ limitations under the License.
 
 package com.jhlabs.image;
 
-import java.awt.*;
 import java.awt.image.*;
-import java.awt.geom.*;
 
 /**
  * A filter which performs a box blur on an image. The horizontal and vertical blurs can be specified separately
@@ -67,6 +65,7 @@ public class BoxBlurFilter extends AbstractBufferedImageOp {
 		return premultiplyAlpha;
 	}
 
+        @Override
 	public BufferedImage filter( BufferedImage src, BufferedImage dst ) {
         int width = src.getWidth();
         int height = src.getHeight();
@@ -266,6 +265,7 @@ public class BoxBlurFilter extends AbstractBufferedImageOp {
 		return iterations;
 	}
 	
+        @Override
 	public String toString() {
 		return "Blur/Box Blur...";
 	}

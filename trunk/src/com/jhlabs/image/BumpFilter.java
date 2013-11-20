@@ -16,8 +16,6 @@ limitations under the License.
 
 package com.jhlabs.image;
 
-import java.awt.image.*;
-
 /**
  * A simple embossing filter. 
  */
@@ -33,6 +31,7 @@ public class BumpFilter extends ConvolveFilter {
 		super(embossMatrix);
 	}
 
+        @Override
 	public String toString() {
 		return "Blur/Emboss Edges";
 	}

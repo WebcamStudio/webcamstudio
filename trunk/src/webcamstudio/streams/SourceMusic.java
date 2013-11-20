@@ -56,11 +56,6 @@ public class SourceMusic extends Stream {
     @Override
     public boolean isPlaying() {
         return isPlaying;
-/*        if (capture != null) {
-            return !capture.isStopped();
-        } else {
-            return false;
-        } */
     }
     @Override
     public void setIsPlaying(boolean setIsPlaying) {

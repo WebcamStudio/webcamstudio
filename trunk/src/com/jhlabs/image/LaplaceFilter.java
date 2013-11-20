@@ -16,9 +16,7 @@ limitations under the License.
 
 package com.jhlabs.image;
 
-import java.awt.*;
 import java.awt.image.*;
-import com.jhlabs.composite.*;
 
 /**
  * Edge detection via the Laplacian operator.
@@ -36,6 +34,7 @@ public class LaplaceFilter extends AbstractBufferedImageOp {
         }
     }
 
+    @Override
     public BufferedImage filter( BufferedImage src, BufferedImage dst ) {
         int width = src.getWidth();
         int height = src.getHeight();
@@ -108,6 +107,7 @@ public class LaplaceFilter extends AbstractBufferedImageOp {
         return dst;
     }
 
+    @Override
 	public String toString() {
 		return "Edges/Laplace...";
 	}

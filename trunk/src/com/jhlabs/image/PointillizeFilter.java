@@ -16,10 +16,6 @@ limitations under the License.
 
 package com.jhlabs.image;
 
-import java.awt.*;
-import java.util.*;
-import com.jhlabs.math.*;
-
 public class PointillizeFilter extends CellularFilter {
 
 	private float edgeThickness = 0.4f;
@@ -64,6 +60,7 @@ public class PointillizeFilter extends CellularFilter {
 		return fuzziness;
 	}
 
+        @Override
 	public int getPixel(int x, int y, int[] inPixels, int width, int height) {
 		float nx = m00*x + m01*y;
 		float ny = m10*x + m11*y;
@@ -91,6 +88,7 @@ public class PointillizeFilter extends CellularFilter {
 		return v;
 	}
 
+        @Override
 	public String toString() {
 		return "Stylize/Pointillize...";
 	}

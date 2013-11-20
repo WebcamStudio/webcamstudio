@@ -5,22 +5,19 @@
 package webcamstudio.mixers;
 
 import java.awt.AlphaComposite;
-//import java.awt.Color;
-//import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
-//import java.awt.Transparency;
 import java.awt.image.BufferedImage;
 import java.nio.ByteBuffer;
 import java.nio.ShortBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-//import java.util.List;
 import java.util.TreeMap;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -35,14 +32,14 @@ import webcamstudio.util.Tools;
  */
 public class MasterFrameBuilder implements Runnable {
 
-    private static ArrayList<Stream> streams = new ArrayList<Stream>();// add private
+    private static ArrayList<Stream> streams = new ArrayList<>();// add private
     private static int fps = 0;
     private Image imageF;
     private int imageX, imageY, imageW, imageH;
-    private GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-    private GraphicsDevice gs = ge.getDefaultScreenDevice();
-    private GraphicsConfiguration gc = gs.getDefaultConfiguration();
-    private BufferedImage imageC;
+//    private GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+//    private GraphicsDevice gs = ge.getDefaultScreenDevice();
+//    private GraphicsConfiguration gc = gs.getDefaultConfiguration();
+//    private BufferedImage imageC;
     public synchronized static void register(Stream s) {
         if (!streams.contains(s)) {
             streams.add(s);
@@ -54,7 +51,7 @@ public class MasterFrameBuilder implements Runnable {
     private boolean stopMe = false;
     private long mark = System.currentTimeMillis();
     private FrameBuffer frameBuffer = null;
-    private TreeMap<Integer, Frame> orderedFrames = new TreeMap<Integer, Frame>();
+    private TreeMap<Integer, Frame> orderedFrames = new TreeMap<>();
 
     public MasterFrameBuilder(int w, int h, int r) {
         frameBuffer = new FrameBuffer(w, h, r);
@@ -105,7 +102,6 @@ public class MasterFrameBuilder implements Runnable {
             g.setRenderingHint(java.awt.RenderingHints.KEY_INTERPOLATION, java.awt.RenderingHints.VALUE_INTERPOLATION_BILINEAR);
             g.setRenderingHint(java.awt.RenderingHints.KEY_ALPHA_INTERPOLATION, java.awt.RenderingHints.VALUE_ALPHA_INTERPOLATION_SPEED);
             g.setRenderingHint(java.awt.RenderingHints.KEY_RENDERING, java.awt.RenderingHints.VALUE_RENDER_SPEED);
-//            g.setRenderingHint(java.awt.RenderingHints.KEY_RENDERING, java.awt.RenderingHints.VALUE_ANTIALIAS_OFF);
             g.setRenderingHint(java.awt.RenderingHints.KEY_FRACTIONALMETRICS,java.awt.RenderingHints.VALUE_FRACTIONALMETRICS_OFF);
             g.setRenderingHint(java.awt.RenderingHints.KEY_DITHERING, java.awt.RenderingHints.VALUE_DITHER_DISABLE);
             g.setRenderingHint(java.awt.RenderingHints.KEY_COLOR_RENDERING, java.awt.RenderingHints.VALUE_COLOR_RENDER_SPEED);
@@ -130,8 +126,7 @@ public class MasterFrameBuilder implements Runnable {
         for (int i = 0; i < audioData.length; i++) {
             audioData[i] = 0;
         }
-        for (Iterator<Frame> it = frames.iterator(); it.hasNext();) {
-            Frame f = it.next();
+        for (Frame f : frames) {
             byte[] data = f.getAudioData();
             if (data != null) {
                 ShortBuffer buffer = ByteBuffer.wrap(data).asShortBuffer();
@@ -157,13 +152,12 @@ public class MasterFrameBuilder implements Runnable {
         }
     }
 
-//    @SuppressWarnings("all")
     @SuppressWarnings("unchecked")
     @Override
     public void run() {
         stopMe = false;
-        ArrayList<Frame> frames = new ArrayList<Frame>();
-        ArrayList<Future<Frame>> resultsT = new ArrayList<Future<Frame>>();
+        ArrayList<Frame> frames = new ArrayList<>();
+        ArrayList<Future<Frame>> resultsT = new ArrayList<>();
         mark = System.currentTimeMillis();
         int r = MasterMixer.getInstance().getRate();
         long frameDelay = 1000 / r;
@@ -200,7 +194,7 @@ public class MasterFrameBuilder implements Runnable {
                 if (sleepTime > 0) {
                     Tools.sleep(sleepTime + 10);
                 }
-            } catch (Exception ex) {
+            } catch (InterruptedException | ExecutionException ex) {
                 Logger.getLogger(MasterFrameBuilder.class.getName()).log(Level.SEVERE, null, ex);
             }
 

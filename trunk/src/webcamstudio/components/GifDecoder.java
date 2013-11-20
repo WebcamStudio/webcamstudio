@@ -176,7 +176,8 @@ public class GifDecoder {
 				if (lastDispose == 2) {
 					// fill last image rect area with background color
 					Graphics2D g = image.createGraphics();
-                                        g.setRenderingHint(java.awt.RenderingHints.KEY_INTERPOLATION, java.awt.RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+                                        g.setRenderingHint(java.awt.RenderingHints.KEY_INTERPOLATION, 
+                                                           java.awt.RenderingHints.VALUE_INTERPOLATION_BILINEAR);
                                         g.setRenderingHint(java.awt.RenderingHints.KEY_RENDERING,
                                                            java.awt.RenderingHints.VALUE_RENDER_SPEED);
                                         g.setRenderingHint(java.awt.RenderingHints.KEY_ANTIALIASING,
@@ -500,7 +501,7 @@ public class GifDecoder {
 	protected void init() {
 		status = STATUS_OK;
 		frameCount = 0;
-		frames = new ArrayList<GifFrame>();
+		frames = new ArrayList<>();
 		gct = null;
 		lct = null;
 	}

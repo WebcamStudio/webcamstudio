@@ -16,7 +16,6 @@ limitations under the License.
 
 package com.jhlabs.image;
 
-import java.awt.*;
 import java.awt.image.*;
 import com.jhlabs.math.*;
 
@@ -125,17 +124,20 @@ public class MarbleFilter extends TransformFilter {
 		return PixelUtils.clamp((int)(127 * (1+Noise.noise2(x / xScale, y / xScale))));
 	}
 	
+        @Override
 	protected void transformInverse(int x, int y, float[] out) {
 		int displacement = displacementMap(x, y);
 		out[0] = x + sinTable[displacement];
 		out[1] = y + cosTable[displacement];
 	}
 
+        @Override
     public BufferedImage filter( BufferedImage src, BufferedImage dst ) {
 		initialize();
 		return super.filter( src, dst );
 	}
 
+        @Override
 	public String toString() {
 		return "Distort/Marble...";
 	}

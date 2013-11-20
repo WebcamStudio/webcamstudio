@@ -43,19 +43,20 @@ public class Viewer extends javax.swing.JPanel {
     @Override
     public void paintComponent(Graphics g) {
         Graphics2D graph = (Graphics2D) g;
-        graph.setRenderingHint(java.awt.RenderingHints.KEY_INTERPOLATION, java.awt.RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        graph.setRenderingHint(java.awt.RenderingHints.KEY_INTERPOLATION, 
+                               java.awt.RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         graph.setRenderingHint(java.awt.RenderingHints.KEY_RENDERING,
-                           java.awt.RenderingHints.VALUE_RENDER_SPEED);
+                               java.awt.RenderingHints.VALUE_RENDER_SPEED);
         graph.setRenderingHint(java.awt.RenderingHints.KEY_ANTIALIASING,
-                           java.awt.RenderingHints.VALUE_ANTIALIAS_OFF);
+                               java.awt.RenderingHints.VALUE_ANTIALIAS_OFF);
         graph.setRenderingHint(java.awt.RenderingHints.KEY_TEXT_ANTIALIASING,
-                           java.awt.RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
+                               java.awt.RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
         graph.setRenderingHint(java.awt.RenderingHints.KEY_FRACTIONALMETRICS,
-                           java.awt.RenderingHints.VALUE_FRACTIONALMETRICS_OFF);
+                               java.awt.RenderingHints.VALUE_FRACTIONALMETRICS_OFF);
         graph.setRenderingHint(java.awt.RenderingHints.KEY_COLOR_RENDERING,
-                           java.awt.RenderingHints.VALUE_COLOR_RENDER_SPEED);
+                               java.awt.RenderingHints.VALUE_COLOR_RENDER_SPEED);
         graph.setRenderingHint(java.awt.RenderingHints.KEY_DITHERING,
-                           java.awt.RenderingHints.VALUE_DITHER_DISABLE);
+                               java.awt.RenderingHints.VALUE_DITHER_DISABLE);
 
         int w = this.getWidth();
         int h = this.getHeight();

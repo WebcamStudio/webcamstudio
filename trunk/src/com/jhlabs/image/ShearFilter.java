@@ -17,7 +17,6 @@ limitations under the License.
 package com.jhlabs.image;
 
 import java.awt.*;
-import java.awt.image.*;
 
 public class ShearFilter extends TransformFilter {
 
@@ -63,6 +62,7 @@ public class ShearFilter extends TransformFilter {
 		shy = (float)Math.sin(yangle);
 	}
 	
+        @Override
 	protected void transformSpace(Rectangle r) {
 		float tangent = (float)Math.tan(xangle);
 		xoffset = -r.height * tangent;
@@ -126,11 +126,13 @@ catch (Exception e) {
 	}
 */
 	
+        @Override
 	protected void transformInverse(int x, int y, float[] out) {
 		out[0] = x + xoffset + (y * shx);
 		out[1] = y + yoffset + (x * shy);
 	}
 
+        @Override
 	public String toString() {
 		return "Distort/Shear...";
 	}

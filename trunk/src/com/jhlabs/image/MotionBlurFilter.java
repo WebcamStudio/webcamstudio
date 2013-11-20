@@ -156,6 +156,7 @@ public class MotionBlurFilter extends AbstractBufferedImageOp {
 		return premultiplyAlpha;
 	}
 
+        @Override
     public BufferedImage filter( BufferedImage src, BufferedImage dst ) {
         int width = src.getWidth();
         int height = src.getHeight();
@@ -245,6 +246,7 @@ public class MotionBlurFilter extends AbstractBufferedImageOp {
         return dst;
     }
 
+        @Override
 	public String toString() {
 		return "Blur/Motion Blur...";
 	}

@@ -672,7 +672,6 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener, 
             jSlSpinSeek.setEnabled(stream.needSeekCTRL());
             btnFullCam.setEnabled(true);
             stream.stop();
-//            System.gc();
         }
     }//GEN-LAST:event_tglActiveStreamActionPerformed
 
@@ -824,9 +823,7 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener, 
                         Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 window.setVisible(true);
-                }
-                
-                
+                }         
             }
         }
     }//GEN-LAST:event_btnFullCamActionPerformed

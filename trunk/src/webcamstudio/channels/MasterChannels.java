@@ -14,9 +14,9 @@ import webcamstudio.util.Tools;
  * @author patrick (modified by karl)
  */
 public class MasterChannels {
-    ArrayList<String> channelNames = new ArrayList<String>();
-    ArrayList<Stream> streams = new ArrayList<Stream>();
-    ArrayList<ArrayList<String>> CHOfSource = new ArrayList<ArrayList<String>>();
+    ArrayList<String> channelNames = new ArrayList<>();
+    ArrayList<Stream> streams = new ArrayList<>();
+    ArrayList<ArrayList<String>> CHOfSource = new ArrayList<>();
     static MasterChannels instance = null;
     
     private MasterChannels(){
@@ -46,16 +46,27 @@ public class MasterChannels {
     public void updateChannel(String name){
         for (Stream s : streams){
             SourceChannel sc = null;
-            for (SourceChannel ssc : s.getChannels()){
-                if (ssc.getName().equals(name)){
-                    sc=ssc;
+//            int y = 0;
+            int x = 0;
+            for (int i=0; i < s.getChannels().size(); i++){
+                if (s.getChannels().get(i).getName().equals(name)){
+                    sc=s.getChannels().get(i);
+                    x = i;
                     break;
                 }
             }
+//            for (SourceChannel ssc : s.getChannels()){
+//                if (ssc.getName().equals(name)){
+//                    sc=ssc;
+//                    break;
+//                }
+//                
+//            }
             if (sc!=null){
-                s.removeChannel(sc);
+                s.removeChannelAt(x);
             }
-            s.addChannel(SourceChannel.getChannel(name, s));
+            s.addChannelAt(SourceChannel.getChannel(name, s),x);
+            x=0;
         }
     }
     
@@ -69,7 +80,7 @@ public class MasterChannels {
             }
             if (co == 0){
             } else { 
-                ArrayList<String> allChan = new ArrayList<String>();
+                ArrayList<String> allChan = new ArrayList<>();
                 for (String scn : MasterChannels.getInstance().getChannels()){
                     allChan.add(scn); 
                 } 
@@ -103,7 +114,7 @@ public class MasterChannels {
                     s.setIsPlaying(true);
                 }
             } else {
-                ArrayList<String> allChan = new ArrayList<String>();
+                ArrayList<String> allChan = new ArrayList<>();
                 for (String scn : MasterChannels.getInstance().getChannels()){
                     allChan.add(scn); 
                 } 
@@ -134,9 +145,7 @@ public class MasterChannels {
     public void selectChannel(String name){
         for (Stream stream : streams){
             for (SourceChannel sc : stream.getChannels()){
-//                Tools.sleep(5); //To let WSPidsBuster work correctly.
                 if (sc.getName().equals(name)){
-//                    Tools.sleep(5); //To let WSPidsBuster work correctly.
                     sc.apply(stream);
                     break;
                 }

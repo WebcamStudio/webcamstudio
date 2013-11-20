@@ -4,14 +4,8 @@
  */
 package webcamstudio.studio;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.reflect.Field;
@@ -39,9 +33,7 @@ import webcamstudio.WebcamStudio;
 import webcamstudio.channels.MasterChannels;
 import webcamstudio.mixers.MasterMixer;
 import webcamstudio.streams.*;
-//import webcamstudio.components.*;
 import webcamstudio.channels.transitions.Transition;
-import webcamstudio.externals.ProcessRenderer;
 import webcamstudio.sources.effects.*;
 import static webcamstudio.streams.SourceText.Shape.NONE;
 import static webcamstudio.streams.SourceText.Shape.OVAL;
@@ -67,12 +59,12 @@ public class Studio {
     private static final String ELEMENT_CHANNEL = "Channel";
     private static final String ELEMENT_ROOT = "WebcamStudio";
     private static final String ELEMENT_MIXER = "Mixer";   
-    public static ArrayList<Stream> extstream = new ArrayList<Stream>();
-    public static ArrayList<SourceChannel> chanLoad = new ArrayList<SourceChannel>();
+    public static ArrayList<Stream> extstream = new ArrayList<>();
+    public static ArrayList<SourceChannel> chanLoad = new ArrayList<>();
     public static File filename;
-    public static ArrayList<SourceText> LText = new ArrayList<SourceText>();
-    public static ArrayList<String> ImgMovMus = new ArrayList<String>();
-    public static ArrayList<String> aGifKeys = new ArrayList<String>();
+    public static ArrayList<SourceText> LText = new ArrayList<>();
+    public static ArrayList<String> ImgMovMus = new ArrayList<>();
+    public static ArrayList<String> aGifKeys = new ArrayList<>();
     static boolean FirstChannel=false;
     public interface Listener {
         public ArrayList<String> getCHCurrNext ();
@@ -176,7 +168,6 @@ public class Studio {
         Transformer transformer = factory.newTransformer();
         transformer.setOutputProperty(OutputKeys.INDENT, "yes");
         transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
-//        StringWriter formattedStringWriter = new StringWriter();
         transformer.transform(new StreamSource(new StringReader(writer.getBuffer().toString())), new StreamResult(file));
 
     }
@@ -256,32 +247,36 @@ public class Studio {
                 String name = f.getName();
                 Object value = f.get(o);
                 if (value instanceof List) { 
-                    if ("channels".equals(name)) {
-                        xml.writeStartElement(ELEMENT_CHANNELS);
-                        for (Object subO : ((List) value)) {
-                        if (clazz != null){
-                        xml.writeStartElement(name);
-                        writeObject(subO, xml);
-                        xml.writeEndElement(); 
-                        }
-                        }
-                    } else if ("effects".equals(name)) {
-                        xml.writeStartElement(ELEMENT_EFFECTS);
-                        for (Object subO : ((List) value)) {
-                        if (clazz != null){
-                        xml.writeStartElement(name);
-                        writeObject(subO, xml);
-                        xml.writeEndElement(); 
-                        }
-                        }
-                    } else {
-                        xml.writeStartElement(name);
-                        for (Object subO : ((List) value)) {
+                    switch (name) {
+                        case "channels":
+                            xml.writeStartElement(ELEMENT_CHANNELS);
+                            for (Object subO : ((List) value)) {
                             if (clazz != null){
+                            xml.writeStartElement(name);
                             writeObject(subO, xml);
+                            xml.writeEndElement(); 
                             }
-                        
-                        }
+                            }
+                            break;
+                        case "effects":
+                            xml.writeStartElement(ELEMENT_EFFECTS);
+                            for (Object subO : ((List) value)) {
+                            if (clazz != null){
+                            xml.writeStartElement(name);
+                            writeObject(subO, xml);
+                            xml.writeEndElement(); 
+                            }
+                            }
+                            break;
+                        default:
+                            xml.writeStartElement(name);
+                            for (Object subO : ((List) value)) {
+                                if (clazz != null){
+                                writeObject(subO, xml);
+                                }
+                            
+                            }
+                            break;
                     }
                     xml.writeEndElement();
                 }
@@ -311,13 +306,148 @@ public class Studio {
             }
         }
     }
-   
+    private static Effect loadEffects (String sClazz, Node SuperChild){
+        Effect effeX = null;
+        try {
+            if (sClazz.endsWith("ChromaKey")) {
+                effeX = new ChromaKey();
+                readObjectFx(effeX, SuperChild);
+                
+            } else if (sClazz.endsWith("Blink")) {
+                effeX = new Blink();
+                readObjectFx(effeX, SuperChild);
+                
+            } else if (sClazz.endsWith("Block")) {
+                effeX = new Block();
+                readObjectFx(effeX, SuperChild);
+                
+            } else if (sClazz.endsWith("Cartoon")) {
+                effeX = new Cartoon();
+                readObjectFx(effeX, SuperChild);
+                
+            } else if (sClazz.endsWith("Contrast")) {
+                effeX = new Contrast();
+                readObjectFx(effeX, SuperChild);
+                
+            } else if (sClazz.endsWith("Edge")) {
+                effeX = new Edge();
+                readObjectFx(effeX, SuperChild);
+                
+            } else if (sClazz.endsWith("FlipHorizontal")) {
+                effeX = new FlipHorizontal();
+                readObjectFx(effeX, SuperChild);
+                
+            } else if (sClazz.endsWith("FlipVertical")) {
+                effeX = new FlipVertical();
+                readObjectFx(effeX, SuperChild);
+                
+            } else if (sClazz.endsWith("Gain")) {
+                effeX = new Gain();
+                readObjectFx(effeX, SuperChild);
+                
+            } else if (sClazz.endsWith("Gray")) {
+                effeX = new Gray();
+                readObjectFx(effeX, SuperChild);
+                
+            } else if (sClazz.endsWith("HSB")) {
+                effeX = new HSB();
+                readObjectFx(effeX, SuperChild);
+                
+            } else if (sClazz.endsWith("Sharpen")) {
+                effeX = new Sharpen();
+                readObjectFx(effeX, SuperChild);
+                
+            } else if (sClazz.endsWith("MegaMind")) {
+                effeX = new MegaMind();
+                readObjectFx(effeX, SuperChild);
+                
+            } else if (sClazz.endsWith("Mirror1")) {
+                effeX = new Mirror1();
+                readObjectFx(effeX, SuperChild);
+                
+            } else if (sClazz.endsWith("Mirror2")) {
+                effeX = new Mirror2();
+                readObjectFx(effeX, SuperChild);
+                
+            } else if (sClazz.endsWith("Mirror3")) {
+                effeX = new Mirror3();
+                readObjectFx(effeX, SuperChild);
+                
+            } else if (sClazz.endsWith("Mirror4")) {
+                effeX = new Mirror4();
+                readObjectFx(effeX, SuperChild);
+                
+            } else if (sClazz.endsWith("Mosaic")) {
+                effeX = new Mosaic();
+                readObjectFx(effeX, SuperChild);
+                
+            } else if (sClazz.endsWith("NoBackground")) {
+                effeX = new NoBackground();
+                readObjectFx(effeX, SuperChild);
+                
+            } else if (sClazz.endsWith("Opacity")) {
+                effeX = new Opacity();
+                readObjectFx(effeX, SuperChild);
+                
+            } else if (sClazz.endsWith("Perspective")) {
+                effeX = new Perspective();
+                readObjectFx(effeX, SuperChild);
+                
+            } else if (sClazz.endsWith("RGB")) {
+                effeX = new RGB();
+                readObjectFx(effeX, SuperChild);
+                
+            } else if (sClazz.endsWith("Radar")) {
+                effeX = new Radar();
+                readObjectFx(effeX, SuperChild);
+                
+            } else if (sClazz.endsWith("Rotation")) {
+                effeX = new Rotation();
+                readObjectFx(effeX, SuperChild);
+                
+            } else if (sClazz.endsWith("Emboss")) {
+                effeX = new Emboss();
+                readObjectFx(effeX, SuperChild);
+                
+            } else if (sClazz.endsWith("SwapRedBlue")) {
+                effeX = new SwapRedBlue();
+                readObjectFx(effeX, SuperChild);
+                
+            } else if (sClazz.endsWith("Twirl")) {
+                effeX = new Twirl();
+                readObjectFx(effeX, SuperChild);
+                
+            } else if (sClazz.endsWith("ZoomZoom")) {
+                effeX = new ZoomZoom();
+                readObjectFx(effeX, SuperChild);
+                
+            } else if (sClazz.endsWith("Green")) {
+                effeX = new Green();
+                readObjectFx(effeX, SuperChild);
+                
+            } else if (sClazz.endsWith("Laplace")) {
+                effeX = new Laplace();
+                readObjectFx(effeX, SuperChild);
+               
+            } else if (sClazz.endsWith("Marble")) {
+                effeX = new Marble();
+                readObjectFx(effeX, SuperChild);
+                
+            } else if (sClazz.endsWith("Weave")) {
+                effeX = new Weave();
+                readObjectFx(effeX, SuperChild);
+                
+            }
+        } catch (IllegalArgumentException | IllegalAccessException illegalArgumentException) {
+        }
+        return effeX;
+    }
     private static void readStreams(Document xml) throws IllegalArgumentException, IllegalAccessException, XPathExpressionException {
         XPath path = XPathFactory.newInstance().newXPath();
         NodeList sources = (NodeList) path.evaluate("/" + ELEMENT_ROOT + "/" + ELEMENT_SOURCES + "/" + ELEMENT_SOURCE, xml.getDocumentElement(), XPathConstants.NODESET);
         String videoDev;      
-        ArrayList<String> videoDevs = new ArrayList<String>();
-        ArrayList<Stream> extstreamBis = new ArrayList<Stream>();
+        ArrayList<String> videoDevs = new ArrayList<>();
+        ArrayList<Stream> extstreamBis = new ArrayList<>();
         if (sources != null) {
             for (int i = 0; i < sources.getLength(); i++) {
                 Node source = sources.item(i);            
@@ -329,19 +459,19 @@ public class Studio {
                 String streamTime = null;
                 String strShapez = null;
                 String chNameDvb = null;
-                ArrayList<String> SubChNames = new ArrayList<String>();
-                ArrayList<String> SubText = new ArrayList<String>();
-                ArrayList<String> SubFont = new ArrayList<String>();
-                ArrayList<String> subSTrans = new ArrayList<String>();
-                ArrayList<String> subETrans = new ArrayList<String>();
-                ArrayList<String> sNames = new ArrayList<String>();
+                ArrayList<String> SubChNames = new ArrayList<>();
+                ArrayList<String> SubText = new ArrayList<>();
+                ArrayList<String> SubFont = new ArrayList<>();
+                ArrayList<String> subSTrans = new ArrayList<>();
+                ArrayList<String> subETrans = new ArrayList<>();
+                ArrayList<String> sNames = new ArrayList<>();
                 String sName = null;
 //                String subContent = null;
                 Stream stream = null;
                 SourceChannel sc = null;
                 Effect effeX = null;
-                ArrayList<SourceChannel> SCL = new ArrayList<SourceChannel>();
-                ArrayList<Effect> fXL = new ArrayList<Effect>();
+                ArrayList<SourceChannel> SCL = new ArrayList<>();
+                ArrayList<Effect> fXL = new ArrayList<>();
                 SourceText text;
                 for (int j = 0; j < source.getChildNodes().getLength(); j++) {
                     Node child = source.getChildNodes().item(j);
@@ -382,169 +512,11 @@ public class Studio {
 //                            System.out.println("SuperChildnodename: "+SuperChild.getNodeName());
                             if (SuperChild.getNodeName().equals("effects")) {     
                                 String sClazz = SuperChild.getAttributes().getNamedItem("clazz").getTextContent();
-//                                System.out.println("effect clazz: "+ sClazz);        
-                                if (sClazz.endsWith("ChromaKey")) {
-                                    effeX = new ChromaKey();
-                                    readObjectFx(effeX, SuperChild);
-                                    fXL.add(effeX);
-                                } else
-                                if (sClazz.endsWith("Blink")) {
-                                    effeX = new Blink();
-                                    readObjectFx(effeX, SuperChild);
-                                    fXL.add(effeX);
-                                } else
-                                if (sClazz.endsWith("Block")) {
-                                    effeX = new Block();
-                                    readObjectFx(effeX, SuperChild);
-                                    fXL.add(effeX);
-                                } else
-                                if (sClazz.endsWith("Cartoon")) {
-                                    effeX = new Cartoon();
-                                    readObjectFx(effeX, SuperChild);
-                                    fXL.add(effeX);
-                                } else
-                                if (sClazz.endsWith("Contrast")) {
-                                    effeX = new Contrast();
-                                    readObjectFx(effeX, SuperChild);
-                                    fXL.add(effeX);
-                                } else
-                                if (sClazz.endsWith("Edge")) {
-                                    effeX = new Edge();
-                                    readObjectFx(effeX, SuperChild);
-                                    fXL.add(effeX);
-                                } else
-                                if (sClazz.endsWith("FlipHorizontal")) {
-                                    effeX = new FlipHorizontal();
-                                    readObjectFx(effeX, SuperChild);
-                                    fXL.add(effeX);
-                                } else
-                                if (sClazz.endsWith("FlipVertical")) {
-                                    effeX = new FlipVertical();
-                                    readObjectFx(effeX, SuperChild);
-                                    fXL.add(effeX);
-                                } else
-                                if (sClazz.endsWith("Gain")) {
-                                    effeX = new Gain();
-                                    readObjectFx(effeX, SuperChild);
-                                    fXL.add(effeX);
-                                } else
-                                if (sClazz.endsWith("Gray")) {
-                                    effeX = new Gray();
-                                    readObjectFx(effeX, SuperChild);
-                                    fXL.add(effeX);
-                                } else
-                                if (sClazz.endsWith("HSB")) {
-                                    effeX = new HSB();
-                                    readObjectFx(effeX, SuperChild);
-                                    fXL.add(effeX);
-                                } else
-                                if (sClazz.endsWith("Sharpen")) {
-                                    effeX = new Sharpen();
-                                    readObjectFx(effeX, SuperChild);
-                                    fXL.add(effeX);
-                                } else
-                                if (sClazz.endsWith("MegaMind")) {
-                                    effeX = new MegaMind();
-                                    readObjectFx(effeX, SuperChild);
-                                    fXL.add(effeX);
-                                } else
-                                if (sClazz.endsWith("Mirror1")) {
-                                    effeX = new Mirror1();
-                                    readObjectFx(effeX, SuperChild);
-                                    fXL.add(effeX);
-                                } else
-                                if (sClazz.endsWith("Mirror2")) {
-                                    effeX = new Mirror2();
-                                    readObjectFx(effeX, SuperChild);
-                                    fXL.add(effeX);
-                                } else
-                                if (sClazz.endsWith("Mirror3")) {
-                                    effeX = new Mirror3();
-                                    readObjectFx(effeX, SuperChild);
-                                    fXL.add(effeX);
-                                } else
-                                if (sClazz.endsWith("Mirror4")) {
-                                    effeX = new Mirror4();
-                                    readObjectFx(effeX, SuperChild);
-                                    fXL.add(effeX);
-                                } else
-                                if (sClazz.endsWith("Mosaic")) {
-                                    effeX = new Mosaic();
-                                    readObjectFx(effeX, SuperChild);
-                                    fXL.add(effeX);
-                                } else
-                                if (sClazz.endsWith("NoBackground")) {
-                                    effeX = new NoBackground();
-                                    readObjectFx(effeX, SuperChild);
-                                    fXL.add(effeX);
-                                } else
-                                if (sClazz.endsWith("Opacity")) {
-                                    effeX = new Opacity();
-                                    readObjectFx(effeX, SuperChild);
-                                    fXL.add(effeX);
-                                } else
-                                if (sClazz.endsWith("Perspective")) {
-                                    effeX = new Perspective();
-                                    readObjectFx(effeX, SuperChild);
-                                    fXL.add(effeX);
-                                } else
-                                if (sClazz.endsWith("RGB")) {
-                                    effeX = new RGB();
-                                    readObjectFx(effeX, SuperChild);
-                                    fXL.add(effeX);
-                                } else
-                                if (sClazz.endsWith("Radar")) {
-                                    effeX = new Radar();
-                                    readObjectFx(effeX, SuperChild);
-                                    fXL.add(effeX);
-                                } else
-                                if (sClazz.endsWith("Rotation")) {
-                                    effeX = new Rotation();
-                                    readObjectFx(effeX, SuperChild);
-                                    fXL.add(effeX);
-                                } else
-                                if (sClazz.endsWith("Emboss")) {
-                                    effeX = new Emboss();
-                                    readObjectFx(effeX, SuperChild);
-                                    fXL.add(effeX);
-                                } else
-                                if (sClazz.endsWith("SwapRedBlue")) {
-                                    effeX = new SwapRedBlue();
-                                    readObjectFx(effeX, SuperChild);
-                                    fXL.add(effeX);
-                                } else
-                                if (sClazz.endsWith("Twirl")) {
-                                    effeX = new Twirl();
-                                    readObjectFx(effeX, SuperChild);
-                                    fXL.add(effeX);
-                                } else
-                                if (sClazz.endsWith("ZoomZoom")) {
-                                    effeX = new ZoomZoom();
-                                    readObjectFx(effeX, SuperChild);
-                                    fXL.add(effeX);
-                                } else
-                                if (sClazz.endsWith("Green")) {
-                                    effeX = new Green();
-                                    readObjectFx(effeX, SuperChild);
-                                    fXL.add(effeX);
-                                } else
-                                if (sClazz.endsWith("Laplace")) {
-                                    effeX = new Laplace();
-                                    readObjectFx(effeX, SuperChild);
-                                    fXL.add(effeX);
-                                } else 
-                                if (sClazz.endsWith("Marble")) {
-                                    effeX = new Marble();
-                                    readObjectFx(effeX, SuperChild);
-                                    fXL.add(effeX);
-                                } else 
-                                if (sClazz.endsWith("Weave")) {
-                                    effeX = new Weave();
-                                    readObjectFx(effeX, SuperChild);
-                                    fXL.add(effeX);
-                                }
+                                effeX = loadEffects (sClazz, SuperChild);
+                                fXL.add(effeX);
+//                                System.out.println("effect clazz: "+ sClazz);
                             }
-                    }
+                        }
                     }
                     if (child.getNodeName().equals("Channels")) { // Read SourceChannels
                         for (int nc = 0; nc < child.getChildNodes().getLength(); nc++) {
@@ -563,140 +535,9 @@ public class Studio {
                                         Node SSSuperChild = SSuperChild.getChildNodes().item(ncs);            
                                         if (SSSuperChild.getNodeName().equals("effects")) {     
                                             String sClazz = SSSuperChild.getAttributes().getNamedItem("clazz").getTextContent();
-//                                            System.out.println("channel effect clazz: "+ sClazz);     
-                                            if (sClazz.endsWith("ChromaKey")) {
-                                                effeX = new ChromaKey();
-                                                readObjectFx(effeX, SSSuperChild);
-                                            } else
-                                            if (sClazz.endsWith("Blink")) {
-                                                effeX = new Blink();
-                                                readObjectFx(effeX, SSSuperChild);
-                                            } else
-                                            if (sClazz.endsWith("Block")) {
-                                                effeX = new Block();
-                                                readObjectFx(effeX, SSSuperChild);
-                                            } else
-                                            if (sClazz.endsWith("Cartoon")) {
-                                                effeX = new Cartoon();
-                                                readObjectFx(effeX, SSSuperChild);
-                                            } else
-                                            if (sClazz.endsWith("Contrast")) {
-                                                effeX = new Contrast();
-                                                readObjectFx(effeX, SSSuperChild);
-                                            } else
-                                            if (sClazz.endsWith("Edge")) {
-                                                effeX = new Edge();
-                                                readObjectFx(effeX, SSSuperChild);
-                                            } else
-                                            if (sClazz.endsWith("FlipHorizontal")) {
-                                                effeX = new FlipHorizontal();
-                                                readObjectFx(effeX, SSSuperChild);
-                                            } else
-                                            if (sClazz.endsWith("FlipVertical")) {
-                                                effeX = new FlipVertical();
-                                                readObjectFx(effeX, SSSuperChild);
-                                            } else
-                                            if (sClazz.endsWith("Gain")) {
-                                                effeX = new Gain();
-                                                readObjectFx(effeX, SSSuperChild);
-                                            } else
-                                            if (sClazz.endsWith("Gray")) {
-                                                effeX = new Gray();
-                                                readObjectFx(effeX, SSSuperChild);
-                                            } else
-                                            if (sClazz.endsWith("HSB")) {
-                                                effeX = new HSB();
-                                                readObjectFx(effeX, SSSuperChild);
-                                            } else
-                                            if (sClazz.endsWith("Sharpen")) {
-                                                effeX = new Sharpen();
-                                                readObjectFx(effeX, SSSuperChild);
-                                            } else
-                                            if (sClazz.endsWith("MegaMind")) {
-                                                effeX = new MegaMind();
-                                                readObjectFx(effeX, SSSuperChild);
-                                            } else
-                                            if (sClazz.endsWith("Mirror1")) {
-                                                effeX = new Mirror1();
-                                                readObjectFx(effeX, SSSuperChild);
-                                            } else
-                                            if (sClazz.endsWith("Mirror2")) {
-                                                effeX = new Mirror2();
-                                                readObjectFx(effeX, SSSuperChild);
-                                            } else
-                                            if (sClazz.endsWith("Mirror3")) {
-                                                effeX = new Mirror3();
-                                                readObjectFx(effeX, SSSuperChild);
-                                            } else
-                                            if (sClazz.endsWith("Mirror4")) {
-                                                effeX = new Mirror4();
-                                                readObjectFx(effeX, SSSuperChild);
-                                            } else
-                                            if (sClazz.endsWith("Mosaic")) {
-                                                effeX = new Mosaic();
-                                                readObjectFx(effeX, SSSuperChild);
-                                            } else
-                                            if (sClazz.endsWith("NoBackground")) {
-                                                effeX = new NoBackground();
-                                                readObjectFx(effeX, SSSuperChild);
-                                            } else
-                                            if (sClazz.endsWith("Opacity")) {
-                                                effeX = new Opacity();
-                                                readObjectFx(effeX, SSSuperChild);
-                                            } else
-                                            if (sClazz.endsWith("Perspective")) {
-                                                effeX = new Perspective();
-                                                readObjectFx(effeX, SSSuperChild);
-                                            } else
-                                            if (sClazz.endsWith("RGB")) {
-                                                effeX = new RGB();
-                                                readObjectFx(effeX, SSSuperChild);
-                                            } else
-                                            if (sClazz.endsWith("Radar")) {
-                                                effeX = new Radar();
-                                                readObjectFx(effeX, SSSuperChild);
-                                            } else
-                                            if (sClazz.endsWith("Rotation")) {
-                                                effeX = new Rotation();
-                                                readObjectFx(effeX, SSSuperChild);
-                                            } else
-                                            if (sClazz.endsWith("Emboss")) {
-                                                effeX = new Emboss();
-                                                readObjectFx(effeX, SSSuperChild);
-                                            } else
-                                            if (sClazz.endsWith("SwapRedBlue")) {
-                                                effeX = new SwapRedBlue();
-                                                readObjectFx(effeX, SSSuperChild);
-                                            } else
-                                            if (sClazz.endsWith("Twirl")) {
-                                                effeX = new Twirl();
-                                                readObjectFx(effeX, SSSuperChild);
-                                            } else
-                                            if (sClazz.endsWith("ZoomZoom")) {
-                                                effeX = new ZoomZoom();
-                                                readObjectFx(effeX, SSSuperChild);
-                                            } else
-                                            if (sClazz.endsWith("Green")) {
-                                                effeX = new Green();
-                                                readObjectFx(effeX, SSSuperChild);
-                                                fXL.add(effeX);
-                                            } else
-                                            if (sClazz.endsWith("Laplace")) {
-                                                effeX = new Laplace();
-                                                readObjectFx(effeX, SSSuperChild);
-                                                fXL.add(effeX);
-                                            } else 
-                                            if (sClazz.endsWith("Marble")) {
-                                                effeX = new Marble();
-                                                readObjectFx(effeX, SSSuperChild);
-                                                fXL.add(effeX);
-                                            } else 
-                                            if (sClazz.endsWith("Weave")) {
-                                                effeX = new Weave();
-                                                readObjectFx(effeX, SSSuperChild);
-                                                fXL.add(effeX);
-                                            }
-                                            sc.addEffects(effeX);         
+                                            effeX = loadEffects (sClazz, SSSuperChild);
+                                            sc.addEffects(effeX);
+//                                            System.out.println("channel effect clazz: "+ sClazz);                               
                                         }     
                                     }
                                 }
@@ -727,7 +568,8 @@ public class Studio {
                     }
                 }              
                 if (file != null) {
-                    stream = Stream.getInstance(new File(file));
+                    File fileL = new File(file);
+                    stream = Stream.getInstance(fileL);
                     extstream.add(stream); 
                     extstreamBis.add(stream);
                     readObject(stream, source);
@@ -739,61 +581,13 @@ public class Studio {
                         stream.setStreamTime(streamTime);
                     } else {
                         if (stream instanceof SourceMovie || stream instanceof SourceMusic) {
-                        Runtime rt = Runtime.getRuntime();
-                        String commandDuration = "avconv -i " + "\"" + file + "\"";
-                        File fileD=new File(System.getProperty("user.home")+"/.webcamstudio/"+"DurationCalc.sh");
-                        FileOutputStream fosD;
-                        DataOutputStream dosD = null;
-                        try {
-                        fosD = new FileOutputStream(fileD);
-                        dosD= new DataOutputStream(fosD);
-                        } catch (FileNotFoundException ex) {
-                        Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                         try {
-                         dosD.writeBytes("#!/bin/bash\n");
-                         dosD.writeBytes(commandDuration+"\n");
-                         } catch (IOException ex) {
-                         Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
-                         }
-                         String batchDurationComm = "sh "+System.getProperty("user.home")+"/.webcamstudio/"+"DurationCalc.sh";
-//                         System.out.println(batchDurationComm);
-                         try {
-                         Process duration = rt.exec(batchDurationComm);
-                         Tools.sleep(10);
-                         duration.waitFor(); //Author spoonybard896
-                         InputStream lsOut = duration.getErrorStream();
-                         InputStreamReader isr = new InputStreamReader(lsOut);
-                         BufferedReader in = new BufferedReader(isr);
-                         String line = "";
-                         while ((line = in.readLine()) != null) {
-                         if(line.contains("Duration:"))
-                         {
-                         line = line.replaceFirst("Duration: ", "");
-                         line = line.trim();
-                         String resu = line.substring(0, 8);
-                         String[] temp;
-                         temp = resu.split(":");
-                         int hours = Integer.parseInt(temp[0]);
-                         int minutes = Integer.parseInt(temp[1]);
-                         int seconds = Integer.parseInt(temp[2]);
-                         int totalTime = (hours*3600)+(minutes*60)+seconds;
-                         String strDuration = Integer.toString(totalTime);
-//                         System.out.println("Duration in Sec: "+strDuration);
-                         stream.setStreamTime(strDuration+"s");
-                         //                                    break;
-                         }
-                         } //Author spoonybard896
-                         } catch (Exception e) {
-                         e.printStackTrace();
-                         }
+                            webcamstudio.WebcamStudio.durationCalc(stream, fileL);
                         }
                     }
                     stream.setLoaded(true);
                     int op=0;
                     for (SourceChannel scs : SCL) {
                         scs.setName(SubChNames.get(op));
-//                        String sNamet=SubChNames.get(op);
                         if (!subSTrans.isEmpty()){
                             if (subSTrans.get(op) != null) {
                                 if ("webcamstudio.channels.transitions.FadeIn".equals(subSTrans.get(op))){
@@ -899,14 +693,19 @@ public class Studio {
                         text.addEffect(fx);
                     }
                     if (strShapez != null) {
-                        if (strShapez.equals("none")){
+                        switch (strShapez) {
+                            case "none":
                                 text.setBackground(NONE);
-                        } else if (strShapez.equals("rectangle")) {
+                                break;
+                            case "rectangle":
                                 text.setBackground(RECTANGLE);
-                        } else if (strShapez.equals("oval")) {
+                                break;
+                            case "oval":
                                 text.setBackground(OVAL);
-                        } else if (strShapez.equals("roundrect")) {
+                                break;
+                            case "roundrect":
                                 text.setBackground(ROUNDRECT);
+                                break;
                         }
                     }
                     int op=0;
@@ -1260,8 +1059,6 @@ public class Studio {
     }
 
     private static void readObject(Stream stream, Node source) throws IllegalArgumentException, IllegalAccessException {
-//        XPath path = XPathFactory.newInstance().newXPath();
-
         Field[] fields = stream.getClass().getDeclaredFields();
         Field[] superFields = stream.getClass().getSuperclass().getDeclaredFields();
         // Read integer and floats
@@ -1316,8 +1113,6 @@ public class Studio {
         
     }
     private static void readObjectFx (Effect fx, Node source) throws IllegalArgumentException, IllegalAccessException {
-//        XPath path = XPathFactory.newInstance().newXPath();
-
         Field[] fields = fx.getClass().getDeclaredFields();
         Field[] superFields = fx.getClass().getSuperclass().getDeclaredFields();
         // Read integer and floats
@@ -1371,8 +1166,6 @@ public class Studio {
         
     }
     private static void readObjectSC(SourceChannel sc, Node source) throws IllegalArgumentException, IllegalAccessException {
-//        XPath path = XPathFactory.newInstance().newXPath();
-
         Field[] fields = sc.getClass().getDeclaredFields();
         Field[] superFields = sc.getClass().getSuperclass().getDeclaredFields();
         // Read integer and floats
@@ -1400,7 +1193,6 @@ public class Studio {
 
             }
         }
-
 
         for (Field field : fields) {
             field.setAccessible(true);
@@ -1433,15 +1225,7 @@ public class Studio {
             try {
                 Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(Studio.filename);
                 readStreams(doc);
-            } catch (IllegalArgumentException ex) {
-                Logger.getLogger(Studio.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IllegalAccessException ex) {
-                Logger.getLogger(Studio.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (XPathExpressionException ex) {
-                Logger.getLogger(Studio.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (SAXException ex) {
-                Logger.getLogger(Studio.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IOException ex) {
+            } catch (    IllegalArgumentException | IllegalAccessException | XPathExpressionException | SAXException | IOException ex) {
                 Logger.getLogger(Studio.class.getName()).log(Level.SEVERE, null, ex);
             }
         } catch (ParserConfigurationException ex) {

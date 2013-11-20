@@ -17,7 +17,6 @@ limitations under the License.
 package com.jhlabs.image;
 
 import java.awt.*;
-import java.awt.image.*;
 
 /**
  * A filter which performs reduces noise by looking at each pixel's 8 neighbours, and if it's a minimum or maximum,
@@ -50,6 +49,7 @@ public class ReduceNoiseFilter extends WholeImageFilter {
 		return v[4];
 	}
 
+        @Override
 	protected int[] filterPixels( int width, int height, int[] inPixels, Rectangle transformedSpace ) {
 		int index = 0;
 		int[] r = new int[9];
@@ -98,6 +98,7 @@ public class ReduceNoiseFilter extends WholeImageFilter {
 		return outPixels;
 	}
 
+        @Override
 	public String toString() {
 		return "Blur/Smooth";
 	}

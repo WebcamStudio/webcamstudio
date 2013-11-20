@@ -16,9 +16,6 @@ limitations under the License.
 
 package com.jhlabs.image;
 
-import java.awt.*;
-import java.awt.image.*;
-
 /**
  * A filter to change the saturation of an image. This works by calculating a grayscale version of the image
  * and then extrapolating away from it.
@@ -59,6 +56,7 @@ public class SaturationFilter extends PointFilter {
 		return amount;
 	}
 	
+        @Override
 	public int filterRGB(int x, int y, int rgb) {
 		if ( amount != 1 ) {
             int a = rgb & 0xff000000;
@@ -74,6 +72,7 @@ public class SaturationFilter extends PointFilter {
         return rgb;
 	}
 
+        @Override
 	public String toString() {
 		return "Colors/Saturation...";
 	}

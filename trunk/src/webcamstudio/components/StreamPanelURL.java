@@ -712,7 +712,6 @@ public class StreamPanelURL extends javax.swing.JPanel implements Stream.Listene
             tglAudio.setEnabled(true);
             tglIPCam.setEnabled(true);
             stream.stop();
-//            System.gc();
             
         }
     }//GEN-LAST:event_tglActiveStreamActionPerformed

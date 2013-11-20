@@ -18,7 +18,6 @@ package com.jhlabs.image;
 
 import java.awt.*;
 import java.awt.image.*;
-import java.util.*;
 
 /**
  * A filter which draws a coloured gradient. This is largely superceded by GradientPaint in Java1.2, but does provide a few
@@ -144,6 +143,7 @@ public class GradientFilter extends AbstractBufferedImageOp {
 		return paintMode;
 	}
 
+        @Override
     public BufferedImage filter( BufferedImage src, BufferedImage dst ) {
         int width = src.getWidth();
         int height = src.getHeight();
@@ -343,6 +343,7 @@ public class GradientFilter extends AbstractBufferedImageOp {
 		return (float)Math.sqrt(a*a+b*b);
 	}
 	
+        @Override
 	public String toString() {
 		return "Other/Gradient Fill...";
 	}

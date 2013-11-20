@@ -16,9 +16,7 @@ limitations under the License.
 
 package com.jhlabs.image;
 
-import java.awt.*;
 import java.awt.image.*;
-import com.jhlabs.math.*;
 
 /**
  * This filter diffuses an image by moving its pixels in random directions.
@@ -52,6 +50,7 @@ public class DiffuseFilter extends TransformFilter {
 		return scale;
 	}
 
+        @Override
 	protected void transformInverse(int x, int y, float[] out) {
 		int angle = (int)(Math.random() * 255);
 		float distance = (float)Math.random();
@@ -59,6 +58,7 @@ public class DiffuseFilter extends TransformFilter {
 		out[1] = y + distance * cosTable[angle];
 	}
 
+        @Override
     public BufferedImage filter( BufferedImage src, BufferedImage dst ) {
 		sinTable = new float[256];
 		cosTable = new float[256];
@@ -70,6 +70,7 @@ public class DiffuseFilter extends TransformFilter {
 		return super.filter( src, dst );
 	}
 
+        @Override
 	public String toString() {
 		return "Distort/Diffuse...";
 	}

@@ -16,8 +16,6 @@ limitations under the License.
 
 package com.jhlabs.image;
 
-import java.awt.*;
-import java.awt.image.*;
 import com.jhlabs.math.*;
 
 public class MapFilter extends TransformFilter {
@@ -44,6 +42,7 @@ public class MapFilter extends TransformFilter {
 		return yMapFunction;
 	}
 	
+        @Override
 	protected void transformInverse(int x, int y, float[] out) {
 		float xMap, yMap;
 		xMap = xMapFunction.evaluate(x, y);
@@ -52,6 +51,7 @@ public class MapFilter extends TransformFilter {
 		out[1] = yMap * transformedSpace.height;
 	}
 
+        @Override
 	public String toString() {
 		return "Distort/Map Coordinates...";
 	}

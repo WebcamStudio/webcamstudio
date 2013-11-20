@@ -46,6 +46,7 @@ public class BicubicScaleFilter extends AbstractBufferedImageOp {
 		this.height = height;
 	}
 
+        @Override
     public BufferedImage filter( BufferedImage src, BufferedImage dst ) {
         int w = src.getWidth();
         int h = src.getHeight();
@@ -75,6 +76,7 @@ public class BicubicScaleFilter extends AbstractBufferedImageOp {
         return dst;
     }
 
+        @Override
 	public String toString() {
 		return "Distort/Bicubic Scale";
 	}

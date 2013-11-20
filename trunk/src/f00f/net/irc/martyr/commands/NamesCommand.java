@@ -14,7 +14,7 @@ public class NamesCommand implements OutCommand
 {
 
     /* List of channels we will request membership of. */
-    List<String> channels = new ArrayList<String>();
+    List<String> channels = new ArrayList<>();
 
     /**
      * No parameter passed to the NAMES command represents a request for all channels.

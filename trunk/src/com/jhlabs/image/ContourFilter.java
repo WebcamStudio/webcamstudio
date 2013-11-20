@@ -17,7 +17,6 @@ limitations under the License.
 package com.jhlabs.image;
 
 import java.awt.*;
-import java.awt.image.*;
 
 /**
  * A filter which draws contours on an image at given brightness levels.
@@ -76,6 +75,7 @@ public class ContourFilter extends WholeImageFilter {
 		return contourColor;
 	}
 	
+        @Override
 	protected int[] filterPixels( int width, int height, int[] inPixels, Rectangle transformedSpace ) {
 		int index = 0;
 		short[][] r = new short[3][width];
@@ -140,6 +140,7 @@ public class ContourFilter extends WholeImageFilter {
 		return outPixels;
 	}
 
+        @Override
 	public String toString() {
 		return "Stylize/Contour...";
 	}

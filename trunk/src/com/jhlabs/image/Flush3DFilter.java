@@ -17,7 +17,6 @@ limitations under the License.
 package com.jhlabs.image;
 
 import java.awt.*;
-import java.awt.image.*;
 
 /**
  * This filter tries to apply the Swing "flush 3D" effect to the black lines in an image.
@@ -27,6 +26,7 @@ public class Flush3DFilter extends WholeImageFilter {
 	public Flush3DFilter() {
 	}
 
+        @Override
 	protected int[] filterPixels( int width, int height, int[] inPixels, Rectangle transformedSpace ) {
 		int index = 0;
 		int[] outPixels = new int[width * height];
@@ -53,6 +53,7 @@ public class Flush3DFilter extends WholeImageFilter {
 		return outPixels;
 	}
 
+        @Override
 	public String toString() {
 		return "Stylize/Flush 3D...";
 	}

@@ -38,7 +38,7 @@ public class IRCStringUtils
     {
         CharacterIterator ci = new StringCharacterIterator(msg);
         String htmlStr = "";
-        ArrayList<String> formatList = new ArrayList<String>();
+        ArrayList<String> formatList = new ArrayList<>();
         for (char c = ci.first(); c != CharacterIterator.DONE; c = ci.next()) {
             if (c == '\u0002') {
                 if (formatList.contains("</b>")) {

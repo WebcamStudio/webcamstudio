@@ -20,7 +20,6 @@ public class SourceImage extends Stream{
 
     BufferedImage image = null;
     boolean playing = false;
-//    boolean stop = false;
     Frame frame = null;
     public SourceImage(File img){
         super();
@@ -36,7 +35,6 @@ public class SourceImage extends Stream{
     
     @Override
     public void read() {
-    //    stop=false;
         playing = true;   
         try{
             loadImage(file);
@@ -54,7 +52,6 @@ public class SourceImage extends Stream{
 
     @Override
     public void stop() {
-    //    stop=true;
         playing = false;
         frame = null;
         MasterFrameBuilder.unregister(this);

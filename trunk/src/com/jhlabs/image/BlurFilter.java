@@ -16,8 +16,6 @@ limitations under the License.
 
 package com.jhlabs.image;
 
-import java.awt.image.*;
-
 /**
  * A simple blur filter. You should probably use BoxBlurFilter instead.
  */
@@ -36,6 +34,7 @@ public class BlurFilter extends ConvolveFilter {
 		super( blurMatrix );
 	}
 
+    @Override
 	public String toString() {
 		return "Blur/Simple Blur";
 	}

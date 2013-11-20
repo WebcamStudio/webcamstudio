@@ -30,7 +30,7 @@ public class InputHandler extends Thread
         super("InputHandler");
         this.reader = reader;
         this.connection = connection;
-        messages = new LinkedList<String>();
+        messages = new LinkedList<>();
         this.eventMonitor = eventMonitor;
 
 

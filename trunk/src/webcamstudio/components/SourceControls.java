@@ -15,10 +15,14 @@ import webcamstudio.streams.*;
 public class SourceControls {
 
     public static ArrayList<Component> getControls(Stream source) {
-        ArrayList<Component> comps = new ArrayList<Component>();
+        ArrayList<Component> comps = new ArrayList<>();
         Component c = null;
+        Component d = null;
         c = new SourceControlTransitions(source);
         comps.add(c);
+        d = new SourceControlChannels(source);
+        d.setName("CH Options");
+        comps.add(d);
         if (source instanceof SourceDesktop) {
             c = new SourceControlDesktop((SourceDesktop) source);
             comps.add(c);

@@ -17,7 +17,6 @@ limitations under the License.
 package com.jhlabs.image;
 
 import java.awt.*;
-import java.awt.image.*;
 
 // original code Copyright (C) Jerry Huxtable 1998
 //
@@ -106,6 +105,7 @@ public class ShapeFilter extends WholeImageFilter {
 		return merge;
 	}
 
+        @Override
 	protected int[] filterPixels( int width, int height, int[] inPixels, Rectangle transformedSpace ) {
 		int[] map = new int[width * height];
 		makeMap(inPixels, map, width, height);
@@ -393,6 +393,7 @@ public class ShapeFilter extends WholeImageFilter {
 		return map[offset] = min;
 	}
 	
+        @Override
 	public String toString() {
 		return "Stylize/Shapeburst...";
 	}

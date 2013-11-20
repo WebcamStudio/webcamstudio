@@ -25,10 +25,12 @@ public class SCNoise implements Function1D, Function2D, Function3D {
 
 	private static Random randomGenerator = new Random();
 	
+        @Override
 	public float evaluate(float x) {
 		return evaluate(x, .1f);
 	}
 	
+        @Override
 	public float evaluate(float x, float y) {
 		int i, j, k, h, n;
 		int ix, iy;
@@ -62,6 +64,7 @@ public class SCNoise implements Function1D, Function2D, Function3D {
 		return sum / NIMPULSES;
 	}
 	
+        @Override
 	public float evaluate(float x, float y, float z) {
 		int i, j, k, h, n;
 		int ix, iy, iz;

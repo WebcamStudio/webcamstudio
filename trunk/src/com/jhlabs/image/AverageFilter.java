@@ -16,8 +16,6 @@ limitations under the License.
 
 package com.jhlabs.image;
 
-import java.awt.image.*;
-
 /**
  * A filter which averages the 3x3 neighbourhood of each pixel, providing a simple blur.
  */
@@ -32,6 +30,7 @@ public class AverageFilter extends ConvolveFilter {
 		super( theMatrix );
 	}
 
+        @Override
 	public String toString() {
 		return "Blur/Average Blur";
 	}

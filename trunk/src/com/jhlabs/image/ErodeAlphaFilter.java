@@ -60,6 +60,7 @@ public class ErodeAlphaFilter extends PointFilter {
 		return softness;
 	}
 
+        @Override
     public BufferedImage filter( BufferedImage src, BufferedImage dst ) {
         dst = new GaussianFilter( (int)radius ).filter( src, null );
         lowerThreshold = 255*(threshold - softness*0.5f);
@@ -67,6 +68,7 @@ public class ErodeAlphaFilter extends PointFilter {
 		return super.filter(dst, dst);
 	}
 
+        @Override
 	public int filterRGB(int x, int y, int rgb) {
 		int a = (rgb >> 24) & 0xff;
 		int r = (rgb >> 16) & 0xff;
@@ -83,6 +85,7 @@ public class ErodeAlphaFilter extends PointFilter {
         return (a << 24) | 0xffffff;
 	}
 
+        @Override
 	public String toString() {
 		return "Alpha/Erode...";
 	}

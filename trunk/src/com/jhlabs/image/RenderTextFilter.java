@@ -143,6 +143,7 @@ public class RenderTextFilter extends AbstractBufferedImageOp {
         return transform;
     }
 	
+        @Override
 	public BufferedImage filter( BufferedImage src, BufferedImage dst ) {
         if ( dst == null )
             dst = createCompatibleDestImage( src, null );

@@ -19,7 +19,7 @@ public class IsonCommand extends AbstractCommand
     public static final String IDENTIFIER_SECONDARY = "303";
 
     /* List of nicks that we will check for online status */
-    List<String> nicks = new ArrayList<String>();
+    List<String> nicks = new ArrayList<>();
 
     /* Destination nick */
     String dest = null;

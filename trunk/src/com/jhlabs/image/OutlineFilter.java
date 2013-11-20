@@ -17,7 +17,6 @@ limitations under the License.
 package com.jhlabs.image;
 
 import java.awt.*;
-import java.awt.image.*;
 
 /**
  * Given a binary image, this filter converts it to its outline, replacing all interior pixels with the 'new' color.
@@ -28,6 +27,7 @@ public class OutlineFilter extends BinaryFilter {
 		newColor = 0xffffffff;
 	}
 
+        @Override
 	protected int[] filterPixels( int width, int height, int[] inPixels, Rectangle transformedSpace ) {
 		int index = 0;
 		int[] outPixels = new int[width * height];
@@ -65,6 +65,7 @@ public class OutlineFilter extends BinaryFilter {
 		return outPixels;
 	}
 
+        @Override
 	public String toString() {
 		return "Binary/Outline...";
 	}

@@ -19,7 +19,7 @@ import f00f.net.irc.martyr.clientstate.ClientState;
 public abstract class AbstractInCommand implements InCommand
 {
 
-    protected Map<String,String> attributes = new HashMap<String,String>();
+    protected Map<String,String> attributes = new HashMap<>();
 
     protected AbstractInCommand()
     {

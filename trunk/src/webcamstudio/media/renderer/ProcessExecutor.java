@@ -131,7 +131,7 @@ public static void killUnixProcess(Process process) throws Exception //Modified 
     while ((line = buf.readLine()) != null) {
        childPids += line + "\n";
     } //Author spoonybard896
-    } catch (Exception e) {
+    } catch (IOException | InterruptedException e) {
         e.printStackTrace();
     }
     Runtime.getRuntime().exec("kill -9 " + pid).waitFor();

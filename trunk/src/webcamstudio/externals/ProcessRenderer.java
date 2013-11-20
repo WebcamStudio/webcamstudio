@@ -180,13 +180,17 @@ public class ProcessRenderer {
                     break;
                 case URL:
                     if (fme != null) {
-                        if (fme.getName().toLowerCase().equals("red5")){
-                            command = command.replaceAll(Tags.URL.toString(), "" + fme.getUrl() + "/" + fme.getStream());
-                        } else if (fme.getName().toLowerCase().equals("icecast")){
-                            command = command.replaceAll(Tags.URL.toString(), "" + fme.getUrl());
-                        } else {
-                            command = command.replaceAll(Tags.URL.toString(), "\""+fme.getUrl()+"/"+fme.getStream()+" live=1 flashver=FME/2.520(compatible;20FMSc201.0)"+"\"");
-                        }
+                switch (fme.getName().toLowerCase()) {
+                    case "red5":
+                        command = command.replaceAll(Tags.URL.toString(), "" + fme.getUrl() + "/" + fme.getStream());
+                        break;
+                    case "icecast":
+                        command = command.replaceAll(Tags.URL.toString(), "" + fme.getUrl());
+                        break;
+                    default:
+                        command = command.replaceAll(Tags.URL.toString(), "\""+fme.getUrl()+"/"+fme.getStream()+" live=1 flashver=FME/2.520(compatible;20FMSc201.0)"+"\"");
+                        break;
+                }
                     } else if (stream.getURL() != null) {
                         command = command.replaceAll(Tags.URL.toString(), "" + stream.getURL());
                     }
@@ -328,7 +332,7 @@ public class ProcessRenderer {
 //                        }
 //                        System.out.println();
                         processVideo.execute(parmsVideo);
-                    } catch (Exception e) {
+                    } catch (IOException | InterruptedException e) {
                         e.printStackTrace();
                     }
                 } else {
@@ -344,7 +348,7 @@ public class ProcessRenderer {
 //                        }
 //                        System.out.println();
                         processAudio.execute(parmsAudio);
-                    } catch (Exception e) {
+                    } catch (IOException | InterruptedException e) {
                         e.printStackTrace();
                     }
                 } else {
@@ -448,7 +452,7 @@ public class ProcessRenderer {
                     if (stream.hasAudio()) {
                         processAudio.executeString(batchAudioCommand);
                     }
-                } catch (Exception e) {
+                } catch (IOException | InterruptedException e) {
                     e.printStackTrace();
                 }
             }
@@ -500,7 +504,7 @@ public class ProcessRenderer {
                     processVideo.executeString(batchCommand);
                     processAudio = null;
                     //We don't need processAudio on export.  Only 1 process is required...
-                } catch (Exception e) {
+                } catch (IOException | InterruptedException e) {
                     e.printStackTrace();
                 }
             }
@@ -531,7 +535,7 @@ public class ProcessRenderer {
                     processVideo.execute(parms);
                     processAudio = null;
                     //We don't need processAudio on export.  Only 1 process is required...
-                } catch (Exception e) {
+                } catch (IOException | InterruptedException e) {
                     e.printStackTrace();
                 }
             }

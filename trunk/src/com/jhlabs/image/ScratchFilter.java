@@ -89,6 +89,7 @@ public class ScratchFilter extends AbstractBufferedImageOp {
 		return seed;
 	}
 
+    @Override
     public BufferedImage filter( BufferedImage src, BufferedImage dst ) {
         if ( dst == null )
             dst = createCompatibleDestImage( src, null );
@@ -96,7 +97,7 @@ public class ScratchFilter extends AbstractBufferedImageOp {
         int width = src.getWidth();
         int height = src.getHeight();
         int numScratches = (int)(density * width * height / 100);
-ArrayList<Line2D> lines = new ArrayList<Line2D>();
+ArrayList<Line2D> lines = new ArrayList<>();
 {
         float l = length * width;
         Random random = new Random( seed );
@@ -163,6 +164,7 @@ if ( false ) {
         return dst;
     }
     
+    @Override
 	public String toString() {
 		return "Render/Scratches...";
 	}

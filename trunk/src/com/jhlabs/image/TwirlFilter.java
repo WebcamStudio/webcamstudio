@@ -16,7 +16,6 @@ limitations under the License.
 
 package com.jhlabs.image;
 
-import java.awt.*;
 import java.awt.geom.*;
 import java.awt.image.*;
 
@@ -135,6 +134,7 @@ public class TwirlFilter extends TransformFilter {
 		return radius;
 	}
 
+        @Override
     public BufferedImage filter( BufferedImage src, BufferedImage dst ) {
 		icentreX = src.getWidth() * centreX;
 		icentreY = src.getHeight() * centreY;
@@ -144,6 +144,7 @@ public class TwirlFilter extends TransformFilter {
 		return super.filter( src, dst );
 	}
 	
+        @Override
 	protected void transformInverse(int x, int y, float[] out) {
 		float dx = x-icentreX;
 		float dy = y-icentreY;
@@ -159,6 +160,7 @@ public class TwirlFilter extends TransformFilter {
 		}
 	}
 
+        @Override
 	public String toString() {
 		return "Distort/Twirl...";
 	}

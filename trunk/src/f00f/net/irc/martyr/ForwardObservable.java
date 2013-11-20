@@ -11,7 +11,7 @@ import java.util.List;
 public class ForwardObservable extends Observable
 {
 	private boolean changed = true;
-	private List<Observer> obs = new LinkedList<Observer>();
+	private List<Observer> obs = new LinkedList<>();
 	private final Object localMonitor = new Object();
 
 

@@ -17,7 +17,6 @@ limitations under the License.
 package com.jhlabs.image;
 
 import java.awt.*;
-import java.awt.image.*;
 
 /**
  * A filter which allows levels adjustment on an image.
@@ -65,6 +64,7 @@ public class LevelsFilter extends WholeImageFilter {
         return highOutputLevel;
     }
     
+        @Override
 	protected int[] filterPixels( int width, int height, int[] inPixels, Rectangle transformedSpace ) {
 		Histogram histogram = new Histogram(inPixels, width, height, 0, width);
 
@@ -108,6 +108,7 @@ public class LevelsFilter extends WholeImageFilter {
 		return rgb;
 	}
 
+        @Override
 	public String toString() {
 		return "Colors/Levels...";
 	}

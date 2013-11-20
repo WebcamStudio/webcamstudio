@@ -101,7 +101,7 @@ public class VideoDevice {
     public static VideoDevice[] getInputDevices() {
         VideoDevice[] d = new VideoDevice[0];
         VideoDevice[] dAll = new VideoDevice[0];
-        ArrayList<VideoDevice> devices = new ArrayList<VideoDevice>();
+        ArrayList<VideoDevice> devices = new ArrayList<>();
         dAll = getDevices();
         for (int i = 0; i < dAll.length; i++) {
             if (dAll[i].getType() == Type.Input || dAll[i].getType() == Type.InputOutput) {
@@ -120,7 +120,7 @@ public class VideoDevice {
     public static VideoDevice[] getOutputDevices() {
         VideoDevice[] d = new VideoDevice[0];
         VideoDevice[] dAll = new VideoDevice[0];
-        ArrayList<VideoDevice> devices = new ArrayList<VideoDevice>();
+        ArrayList<VideoDevice> devices = new ArrayList<>();
         dAll = getDevices();
         for (int i = 0; i < dAll.length; i++) {
             if (dAll[i].getType() == Type.Output) {
@@ -139,7 +139,7 @@ public class VideoDevice {
     public static VideoDevice[] getDevices() {
         VideoDevice[] d = new VideoDevice[0];
         java.io.File[] fs = new java.io.File("/dev/").listFiles();
-        ArrayList<VideoDevice> devices = new ArrayList<VideoDevice>();
+        ArrayList<VideoDevice> devices = new ArrayList<>();
         if (fs != null) {
             for (int i = 0; i < fs.length; i++) {
                 if (fs[i].getName().startsWith("video") && !fs[i].isDirectory()) {

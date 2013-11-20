@@ -130,6 +130,7 @@ public class ShatterFilter extends AbstractBufferedImageOp {
 		Shape shape;
 	}
 	
+    @Override
     public BufferedImage filter( BufferedImage src, BufferedImage dst ) {
         if ( dst == null )
             dst = createCompatibleDestImage( src, null );
@@ -239,6 +240,7 @@ y = tile.y + transition * tile.vy;
         return dst;
     }
     
+    @Override
 	public String toString() {
 		return "Transition/Shatter...";
 	}
