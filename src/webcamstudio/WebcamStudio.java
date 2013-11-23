@@ -801,8 +801,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
                     } 
                     for (String sc : allChan){
                         s.addChannel(SourceChannel.getChannel(sc, s));
-                    } 
-//                    }
+                    }
                     StreamDesktop frame = new StreamDesktop(s, this);
                     desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
                        
@@ -1591,7 +1590,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
     private javax.swing.JToolBar mainToolbar;
     private javax.swing.JPanel panControls;
     private javax.swing.JPanel panSources;
-    private javax.swing.JTabbedPane tabControls;
+    public static javax.swing.JTabbedPane tabControls;
     private javax.swing.JToolBar toolbar;
     // End of variables declaration//GEN-END:variables
       

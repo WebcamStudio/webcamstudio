@@ -55,6 +55,7 @@ Depends: openjdk-7-jre,
   gstreamer0.10-gnonlin,
   gksu,
   pavucontrol,
+  pulseaudio-utils,
   zenity,
   ${shlibs:Depends},
   ${misc:Depends}

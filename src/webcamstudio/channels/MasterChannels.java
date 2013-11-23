@@ -45,8 +45,8 @@ public class MasterChannels {
     }
     public void updateChannel(String name){
         for (Stream s : streams){
+            String streamName =s.getClass().getName().toString();
             SourceChannel sc = null;
-//            int y = 0;
             int x = 0;
             for (int i=0; i < s.getChannels().size(); i++){
                 if (s.getChannels().get(i).getName().equals(name)){
@@ -62,11 +62,14 @@ public class MasterChannels {
 //                }
 //                
 //            }
-            if (sc!=null){
-                s.removeChannelAt(x);
+            if (streamName.contains("Sink")){
+            } else {
+                if (sc!=null){
+                    s.removeChannelAt(x);
+                }
+                s.addChannelAt(SourceChannel.getChannel(name, s),x);
+                x=0;
             }
-            s.addChannelAt(SourceChannel.getChannel(name, s),x);
-            x=0;
         }
     }
     
