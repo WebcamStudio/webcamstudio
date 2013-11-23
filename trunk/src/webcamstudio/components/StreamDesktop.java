@@ -273,6 +273,8 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
         stream.destroy();
         stream = null;
         panel = null;
+        webcamstudio.WebcamStudio.tabControls.removeAll();
+        webcamstudio.WebcamStudio.tabControls.repaint();        
 //        System.gc();
     }//GEN-LAST:event_formInternalFrameClosing
 

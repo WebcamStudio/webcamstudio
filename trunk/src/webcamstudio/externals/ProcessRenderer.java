@@ -4,11 +4,14 @@
  */
 package webcamstudio.externals;
 
+import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.SocketException;
 import java.net.URL;
@@ -74,6 +77,52 @@ public class ProcessRenderer {
         processVideo = new ProcessExecutor(s.getName());        
         processAudio = new ProcessExecutor(s.getName());
 
+    }
+    private String initAudioSource() {
+        Runtime rt = Runtime.getRuntime();
+        String commandAudioSrc = "pactl list";
+        String resu = null;
+        File fileD=new File(System.getProperty("user.home")+"/.webcamstudio/"+"SetAudioSrc.sh");
+        FileOutputStream fosD;
+        DataOutputStream dosD = null;
+        try {
+        fosD = new FileOutputStream(fileD);
+        dosD= new DataOutputStream(fosD);
+        } catch (FileNotFoundException ex) {
+        Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+         try {
+         dosD.writeBytes("#!/bin/bash\n");
+         dosD.writeBytes(commandAudioSrc+"\n");
+         } catch (IOException ex) {
+         Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
+         }
+         String batchAudioSrcComm = "sh "+System.getProperty("user.home")+"/.webcamstudio/"+"SetAudioSrc.sh";
+         try {
+             Process audioSrc = rt.exec(batchAudioSrcComm);
+             audioSrc.waitFor();
+             InputStream lsOut = audioSrc.getInputStream();
+             InputStreamReader isr = new InputStreamReader(lsOut);
+             BufferedReader in = new BufferedReader(isr);
+             String line = "";
+             while ((line = in.readLine()) != null) {
+                 if(line.contains("alsa_output.pci")) {
+                     if (line.contains("hdmi")) {
+                     } else {
+                         line = line.trim();
+                         line = line.replace(" ", "");
+                         String[] temp = line.split(":");
+                         String audioScrDev = (String) temp[1];
+                         resu = audioScrDev.substring(0, 28);
+//                         System.out.println("Resu: " + resu);
+                         temp = null;
+                     }
+                 }
+             } 
+         } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+         }
+         return resu;
     }
 
     private String translateTag(String value) {
@@ -272,7 +321,7 @@ public class ProcessRenderer {
                     command = command.replaceAll(Tags.CHANNELS.toString(), "" + channels);
                     break;
                 case AUDIOSRC:
-                    command = command.replaceAll(Tags.AUDIOSRC.toString(), "" + stream.initAudioSource());
+                    command = command.replaceAll(Tags.AUDIOSRC.toString(), "" + initAudioSource());
                     break;
             }
         }
@@ -327,10 +376,10 @@ public class ProcessRenderer {
                     commandVideo = setParameters(commandVideo);
                     String[] parmsVideo = commandVideo.split("ABCDE");
                     try {
-//                        for (String p : parmsVideo) {
-//                            System.out.print(p + " ");
-//                        }
-//                        System.out.println();
+                        for (String p : parmsVideo) {
+                            System.out.print(p + " ");
+                        }
+                        System.out.println();
                         processVideo.execute(parmsVideo);
                     } catch (IOException | InterruptedException e) {
                         e.printStackTrace();
@@ -343,10 +392,10 @@ public class ProcessRenderer {
                     commandAudio = setParameters(commandAudio);
                     String[] parmsAudio = commandAudio.split("ABCDE");
                     try {
-//                        for (String p : parmsAudio) {
-//                            System.out.print(p + " ");
-//                        }
-//                        System.out.println();
+                        for (String p : parmsAudio) {
+                            System.out.print(p + " ");
+                        }
+                        System.out.println();
                         processAudio.execute(parmsAudio);
                     } catch (IOException | InterruptedException e) {
                         e.printStackTrace();
@@ -420,6 +469,8 @@ public class ProcessRenderer {
                 if (commandAudio != null) {
                     commandAudio = setParameters(commandAudio);
                 }
+                System.out.println("CommandVideo: "+commandVideo);
+                System.out.println("CommandAudio: "+commandAudio);
                 File fileV=new File(System.getProperty("user.home")+"/.webcamstudio/"+"WSFromUrlVideo"+stream.getID()+".sh");
                 File fileA=new File(System.getProperty("user.home")+"/.webcamstudio/"+"WSFromUrlAudio"+stream.getID()+".sh");
                 FileOutputStream fosV;
@@ -477,7 +528,7 @@ public class ProcessRenderer {
                 stopMe = false;
                 String command = plugins.getProperty(plugin).replaceAll("  ", " "); //Making sure there is no double spaces
                 command = setParameters(command);
-//                System.out.println("Command: "+command);
+                System.out.println("Command: "+command);
                 File file=new File(System.getProperty("user.home")+"/.webcamstudio/"+"WSBroadcast.sh");
                 FileOutputStream fos;
                 DataOutputStream dos = null;
@@ -528,7 +579,7 @@ public class ProcessRenderer {
                 stopped = false;
                 String command = plugins.getProperty(plugin).replaceAll("  ", " "); //Making sure there is no double spaces
                 command = setParameters(command);
-//                System.out.println(command);
+                System.out.println(command);
 
                 final String[] parms = command.split(" ");
                 try {
