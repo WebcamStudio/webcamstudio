@@ -20,7 +20,8 @@ public class GainControl extends javax.swing.JPanel {
 
     Gain effect = null;
 
-    /** Creates new form MosaicControl */
+    /** Creates new form MosaicControl
+     * @param effect */
     public GainControl(Gain effect) {
         initComponents();
         this.effect = effect;

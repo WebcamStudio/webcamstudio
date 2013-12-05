@@ -34,7 +34,7 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
 
     protected Viewer viewer = new Viewer();
     private SystemPlayer player = null;
-    private MasterMixer mixer = MasterMixer.getInstance();
+    private final MasterMixer mixer = MasterMixer.getInstance();
     MasterChannels master = MasterChannels.getInstance();
     final static public Dimension PANEL_SIZE = new Dimension(150, 400);
     ArrayList<Stream> streamM = MasterChannels.getInstance().getStreams();   

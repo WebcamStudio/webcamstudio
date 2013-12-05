@@ -10,8 +10,6 @@
  */
 package webcamstudio.components;
 
-import javax.swing.DefaultListModel;
-import webcamstudio.channels.transitions.Transition;
 import webcamstudio.streams.SourceChannel;
 import webcamstudio.streams.Stream;
 
@@ -21,7 +19,8 @@ import webcamstudio.streams.Stream;
  */
 public class SourceControlChannels extends javax.swing.JPanel {
     Stream source = null;
-    /** Creates new form SourceControlTransitions */
+    /** Creates new form SourceControlTransitions
+     * @param source */
     @SuppressWarnings("unchecked") 
     public SourceControlChannels(Stream source) {
         initComponents();
@@ -38,7 +37,7 @@ public class SourceControlChannels extends javax.swing.JPanel {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
+        btnApplyAllCh = new javax.swing.JButton();
 
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("webcamstudio/Languages"); // NOI18N
         setName(bundle.getString("CHANNELS_CTRL")); // NOI18N
@@ -47,13 +46,13 @@ public class SourceControlChannels extends javax.swing.JPanel {
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel1.setName("jPanel1"); // NOI18N
 
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/chan-app.png"))); // NOI18N
-        jButton1.setText("Apply in All Channels");
-        jButton1.setToolTipText("Apply Current Stream State/Settings in All Channels.");
-        jButton1.setName("jButton1"); // NOI18N
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnApplyAllCh.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/chan-app.png"))); // NOI18N
+        btnApplyAllCh.setText("Apply in All Channels");
+        btnApplyAllCh.setToolTipText("Apply Current Stream State/Settings in All Channels.");
+        btnApplyAllCh.setName("btnApplyAllCh"); // NOI18N
+        btnApplyAllCh.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnApplyAllChActionPerformed(evt);
             }
         });
 
@@ -63,21 +62,21 @@ public class SourceControlChannels extends javax.swing.JPanel {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 372, Short.MAX_VALUE)
+                .addComponent(btnApplyAllCh, javax.swing.GroupLayout.DEFAULT_SIZE, 372, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton1)
+                .addComponent(btnApplyAllCh)
                 .addContainerGap(252, Short.MAX_VALUE))
         );
 
         add(jPanel1, "card2");
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void btnApplyAllChActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnApplyAllChActionPerformed
         SourceChannel sch = null;
         for (int i=0; i < source.getChannels().size(); i++){
             String scName = source.getChannels().get(i).getName();
@@ -87,10 +86,10 @@ public class SourceControlChannels extends javax.swing.JPanel {
         }
         ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Stream Settings Applied to all Channels.");
         ResourceMonitor.getInstance().addMessage(label);
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_btnApplyAllChActionPerformed
     @SuppressWarnings("deprecation")     
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton btnApplyAllCh;
     private javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables
 }

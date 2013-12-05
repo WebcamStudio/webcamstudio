@@ -17,7 +17,7 @@ import webcamstudio.sources.effects.controls.GainControl;
  * @author pballeux (modified by karl)
  */
 public class Gain extends Effect{
-    private com.jhlabs.image.GainFilter filter = new com.jhlabs.image.GainFilter();
+    private final com.jhlabs.image.GainFilter filter = new com.jhlabs.image.GainFilter();
     private final float  ratio = 100f;
     private float gain = 50f/ratio;
     private float bias = 50f/ratio;
@@ -63,7 +63,7 @@ public class Gain extends Effect{
     }
 
     /**
-     * @param brightness the brightness to set
+     * @param gain
      */
     public void setGain(int gain) {
         this.gain = ((float)gain)/ratio;
@@ -77,7 +77,7 @@ public class Gain extends Effect{
     }
 
     /**
-     * @param contrast the contrast to set
+     * @param bias
      */
     public void setBias(int bias) {
         this.bias = ((float)bias)/ratio;

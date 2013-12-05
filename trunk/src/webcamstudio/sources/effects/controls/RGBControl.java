@@ -20,7 +20,8 @@ import webcamstudio.sources.effects.RGB;
 public class RGBControl extends javax.swing.JPanel {
 
     RGB effect = null;
-    /** Creates new form MosaicControl */
+    /** Creates new form MosaicControl
+     * @param effect */
     public RGBControl(RGB effect) {
         initComponents();
         this.effect=effect;

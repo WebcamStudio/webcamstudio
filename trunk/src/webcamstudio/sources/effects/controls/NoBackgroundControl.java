@@ -24,7 +24,8 @@ import webcamstudio.sources.effects.NoBackground;
 public class NoBackgroundControl extends javax.swing.JPanel {
 
     NoBackground effect = null;
-    /** Creates new form MosaicControl */
+    /** Creates new form MosaicControl
+     * @param effect */
     public NoBackgroundControl(NoBackground effect) {
         initComponents();
         this.effect=effect;

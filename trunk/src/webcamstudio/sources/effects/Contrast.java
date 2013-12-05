@@ -17,7 +17,7 @@ import webcamstudio.sources.effects.controls.ContrastControl;
  * @author pballeux
  */
 public class Contrast extends Effect{
-    private com.jhlabs.image.ContrastFilter filter = new com.jhlabs.image.ContrastFilter();
+    private final com.jhlabs.image.ContrastFilter filter = new com.jhlabs.image.ContrastFilter();
     private final float  ratio = 100f;
     private float brightness = 100f/ratio;
     private float contrast = 100f/ratio;

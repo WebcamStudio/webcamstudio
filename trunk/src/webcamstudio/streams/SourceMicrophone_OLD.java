@@ -8,6 +8,7 @@ import java.awt.image.BufferedImage;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
+import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.TargetDataLine;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterFrameBuilder;
@@ -50,7 +51,7 @@ public class SourceMicrophone_OLD extends Stream {
                     line = (TargetDataLine) AudioSystem.getLine(info);
                     line.open(format);
                     line.start();
-                } catch (Exception e) {
+                } catch (LineUnavailableException e) {
                     isPlaying = false;
                     stop();
                 }

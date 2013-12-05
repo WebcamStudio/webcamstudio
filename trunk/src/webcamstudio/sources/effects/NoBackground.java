@@ -15,7 +15,7 @@ import webcamstudio.sources.effects.controls.NoBackgroundControl;
  */
 public class NoBackground extends Effect {
 
-    private com.jhlabs.image.KeyFilter filter = new com.jhlabs.image.KeyFilter();
+    private final com.jhlabs.image.KeyFilter filter = new com.jhlabs.image.KeyFilter();
     private BufferedImage background = null;
     private BufferedImage lastImage = null;
     private int rThreshold = 0;

@@ -18,7 +18,7 @@ import webcamstudio.sources.effects.controls.PerspectiveControl;
  */
 public class Perspective extends Effect {
 
-    private com.jhlabs.image.PerspectiveFilter filter = new com.jhlabs.image.PerspectiveFilter();
+    private final com.jhlabs.image.PerspectiveFilter filter = new com.jhlabs.image.PerspectiveFilter();
     private float x1 = 0;
     private float y1 = 0;
     private float x2 = 320;

@@ -20,7 +20,7 @@ import webcamstudio.sources.effects.Effect;
  */
 public abstract class Stream implements Callable<Frame>{
 
-    private MasterMixer mixer = MasterMixer.getInstance();
+    private final MasterMixer mixer = MasterMixer.getInstance();
     protected String uuid = java.util.UUID.randomUUID().toString();
     protected int captureWidth = mixer.getWidth();
     protected int captureHeight = mixer.getHeight();

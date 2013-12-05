@@ -19,7 +19,8 @@ import webcamstudio.sources.effects.Cartoon;
  */
 public class CartoonControl extends javax.swing.JPanel {
     Cartoon effect = null;
-    /** Creates new form CartoonControl */
+    /** Creates new form CartoonControl
+     * @param effect */
     public CartoonControl(Cartoon effect) {
         initComponents();
         this.effect = effect;

@@ -10,6 +10,7 @@ import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterFrameBuilder;
 import webcamstudio.mixers.MasterMixer;
 import webcamstudio.sources.effects.Effect;
+import webcamstudio.util.Tools;
 
 /**
  *
@@ -38,6 +39,7 @@ public class SourceDVB extends Stream {
         lastPreview = new BufferedImage(captureWidth,captureHeight,BufferedImage.TYPE_INT_ARGB);
         MasterFrameBuilder.register(this);
         capture = new ProcessRenderer(this, ProcessRenderer.ACTION.CAPTURE, "DVB");
+        Tools.sleep(10);
         capture.read();
     }
 

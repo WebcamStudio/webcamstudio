@@ -32,11 +32,11 @@ import webcamstudio.util.Tools;
 public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Listener, Studio.Listener {
 
     MasterChannels master = MasterChannels.getInstance();
-    private DefaultListModel model = new DefaultListModel();
-    private DefaultComboBoxModel aModel = new DefaultComboBoxModel();
-    private ArrayList<String> CHCurrNext = new ArrayList<>();
-    private ArrayList<Integer> CHTimers = new ArrayList<>();
-    private ArrayList<String> ListChannels = new ArrayList<>();
+    private final DefaultListModel model = new DefaultListModel();
+    private final DefaultComboBoxModel aModel = new DefaultComboBoxModel();
+    private final ArrayList<String> CHCurrNext = new ArrayList<>();
+    private final ArrayList<Integer> CHTimers = new ArrayList<>();
+    private final ArrayList<String> ListChannels = new ArrayList<>();
     ArrayList<Stream> streamS = MasterChannels.getInstance().getStreams();   
     String selectChannel=null;   
     int CHon =0;

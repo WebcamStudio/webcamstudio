@@ -17,7 +17,7 @@ import javax.swing.JPanel;
  */
 public class Laplace extends Effect {
 
-    private com.jhlabs.image.LaplaceFilter filter = new com.jhlabs.image.LaplaceFilter();
+    private final com.jhlabs.image.LaplaceFilter filter = new com.jhlabs.image.LaplaceFilter();
 
     @Override
     public boolean needApply(){

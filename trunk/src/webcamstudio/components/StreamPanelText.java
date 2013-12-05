@@ -32,7 +32,8 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
     Viewer viewer = new Viewer();
     
 
-    /** Creates new form StreamPanel */
+    /** Creates new form StreamPanel
+     * @param stream */
     @SuppressWarnings("unchecked") 
     public StreamPanelText(SourceText stream) {
 

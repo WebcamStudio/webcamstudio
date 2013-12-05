@@ -16,7 +16,7 @@ import webcamstudio.sources.effects.controls.BlockControl;
  * @author pballeux
  */
 public class Block extends Effect{
-    private com.jhlabs.image.BlockFilter filter = new com.jhlabs.image.BlockFilter();
+    private final com.jhlabs.image.BlockFilter filter = new com.jhlabs.image.BlockFilter();
     private int blockSize = 3;
     @Override
     public void applyEffect(BufferedImage img) {

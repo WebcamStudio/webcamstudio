@@ -26,7 +26,9 @@ public class StreamFullDesktop extends javax.swing.JInternalFrame {
     public interface Listener{
         public void selectedSource(Stream source);
     }
-    /** Creates new form StreamFullDesktop */
+    /** Creates new form StreamFullDesktop
+     * @param s
+     * @param l */
     public StreamFullDesktop(Stream s,Listener l) {
         listener = l;
         stream = s;

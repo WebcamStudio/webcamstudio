@@ -16,7 +16,7 @@ import javax.swing.JPanel;
  * @author pballeux
  */
 public class Gray extends Effect{
-    private com.jhlabs.image.GrayscaleFilter filter = new com.jhlabs.image.GrayscaleFilter();
+    private final com.jhlabs.image.GrayscaleFilter filter = new com.jhlabs.image.GrayscaleFilter();
     @Override
     public void applyEffect(BufferedImage img) {
         Graphics2D buffer = img.createGraphics();

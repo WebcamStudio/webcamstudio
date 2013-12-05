@@ -22,6 +22,7 @@ package webcamstudio.exporter.vloopback;
 import com.sun.jna.Library;
 import com.sun.jna.Native;
 import com.sun.jna.Platform;
+import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -103,9 +104,9 @@ public class VideoDevice {
         VideoDevice[] dAll = new VideoDevice[0];
         ArrayList<VideoDevice> devices = new ArrayList<>();
         dAll = getDevices();
-        for (int i = 0; i < dAll.length; i++) {
-            if (dAll[i].getType() == Type.Input || dAll[i].getType() == Type.InputOutput) {
-                devices.add(dAll[i]);
+        for (VideoDevice dAll1 : dAll) {
+            if (dAll1.getType() == Type.Input || dAll1.getType() == Type.InputOutput) {
+                devices.add(dAll1);
             }
         }
         d = new VideoDevice[devices.size()];
@@ -122,9 +123,9 @@ public class VideoDevice {
         VideoDevice[] dAll = new VideoDevice[0];
         ArrayList<VideoDevice> devices = new ArrayList<>();
         dAll = getDevices();
-        for (int i = 0; i < dAll.length; i++) {
-            if (dAll[i].getType() == Type.Output) {
-                devices.add(dAll[i]);
+        for (VideoDevice dAll1 : dAll) {
+            if (dAll1.getType() == Type.Output) {
+                devices.add(dAll1);
             }
         }
         d = new VideoDevice[devices.size()];
@@ -141,9 +142,9 @@ public class VideoDevice {
         java.io.File[] fs = new java.io.File("/dev/").listFiles();
         ArrayList<VideoDevice> devices = new ArrayList<>();
         if (fs != null) {
-            for (int i = 0; i < fs.length; i++) {
-                if (fs[i].getName().startsWith("video") && !fs[i].isDirectory()) {
-                    devices.add(new VideoDevice(fs[i].getAbsolutePath()));
+            for (File f : fs) {
+                if (f.getName().startsWith("video") && !f.isDirectory()) {
+                    devices.add(new VideoDevice(f.getAbsolutePath()));
                 }
             }
         }

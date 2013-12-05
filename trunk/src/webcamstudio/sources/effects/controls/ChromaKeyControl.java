@@ -22,7 +22,8 @@ public class ChromaKeyControl extends javax.swing.JPanel {
 
     ChromaKey effect = null;
 
-    /** Creates new form MosaicControl */
+    /** Creates new form MosaicControl
+     * @param effect */
     public ChromaKeyControl(ChromaKey effect) {
         initComponents();
         this.effect = effect;

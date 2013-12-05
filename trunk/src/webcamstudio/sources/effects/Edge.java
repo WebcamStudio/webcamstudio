@@ -17,7 +17,7 @@ import javax.swing.JPanel;
  */
 public class Edge extends Effect {
 
-    private com.jhlabs.image.EdgeFilter filter = new com.jhlabs.image.EdgeFilter();
+    private final com.jhlabs.image.EdgeFilter filter = new com.jhlabs.image.EdgeFilter();
 
     @Override
     public void applyEffect(BufferedImage img) {

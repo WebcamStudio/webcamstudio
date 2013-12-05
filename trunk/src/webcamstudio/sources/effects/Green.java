@@ -16,8 +16,8 @@ import javax.swing.JPanel;
  * @author pballeux
  */
 public class Green extends Effect {
-    private Color color = new Color(-16711936);
-    private ColorTintFilter filter = new ColorTintFilter(color, 0.3f);
+    private final Color color = new Color(-16711936);
+    private final ColorTintFilter filter = new ColorTintFilter(color, 0.3f);
 
     @Override
     public void applyEffect(BufferedImage img) {

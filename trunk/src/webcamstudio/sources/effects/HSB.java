@@ -17,7 +17,7 @@ import webcamstudio.sources.effects.controls.HSBControl;
  * @author pballeux (modified by karl)
  */
 public class HSB extends Effect{
-    private com.jhlabs.image.HSBAdjustFilter filter = new com.jhlabs.image.HSBAdjustFilter();
+    private final com.jhlabs.image.HSBAdjustFilter filter = new com.jhlabs.image.HSBAdjustFilter();
     private final float  ratio = 100f;
     private float hFactor = 0f/ratio;//gain
     private float sFactor = 0f/ratio;//bias
@@ -64,7 +64,7 @@ public class HSB extends Effect{
     }
 
     /**
-     * @param brightness the brightness to set
+     * @param hFactor
      */
     public void setHFactor(int hFactor) {
         this.hFactor = ((float)hFactor)/ratio;
@@ -78,7 +78,7 @@ public class HSB extends Effect{
     }
 
     /**
-     * @param contrast the contrast to set
+     * @param sFactor
      */
     public void setSFactor(int sFactor) {
         this.sFactor = ((float)sFactor)/ratio;
@@ -89,7 +89,7 @@ public class HSB extends Effect{
     }
 
     /**
-     * @param contrast the contrast to set
+     * @param bFactor
      */
     public void setBFactor(int bFactor) {
         this.bFactor = ((float)bFactor)/ratio;

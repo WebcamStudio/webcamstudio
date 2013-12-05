@@ -16,7 +16,7 @@ import javax.swing.JPanel;
  * @author pballeux
  */
 public class Emboss extends Effect{
-    private com.jhlabs.image.EmbossFilter filter = new com.jhlabs.image.EmbossFilter();
+    private final com.jhlabs.image.EmbossFilter filter = new com.jhlabs.image.EmbossFilter();
   
     @Override
     public boolean needApply(){

@@ -20,7 +20,8 @@ import webcamstudio.sources.effects.Opacity;
 public class OpacityControl extends javax.swing.JPanel {
 
     Opacity effect = null;
-    /** Creates new form MosaicControl */
+    /** Creates new form MosaicControl
+     * @param effect */
     public OpacityControl(Opacity effect) {
         initComponents();
         this.effect=effect;

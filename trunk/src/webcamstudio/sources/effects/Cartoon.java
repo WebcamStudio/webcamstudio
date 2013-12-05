@@ -16,7 +16,7 @@ import webcamstudio.sources.effects.controls.CartoonControl;
  */
 public class Cartoon extends Effect {
 
-    private com.jhlabs.image.ContourFilter counterFilter = new com.jhlabs.image.ContourFilter();
+    private final com.jhlabs.image.ContourFilter counterFilter = new com.jhlabs.image.ContourFilter();
     int contourSize = 1;
     int colorSplit = 1;
     int scale = 5;
@@ -55,7 +55,7 @@ public class Cartoon extends Effect {
             if (b < 0) {
                 b = 0;
             }
-            data[i] = ((r << 16) | (g << 8) | (b << 0) | (a << 24));
+            data[i] = ((r << 16) | (g << 8) | (b) | (a << 24));
         }
         Graphics2D buffer = img.createGraphics();
         

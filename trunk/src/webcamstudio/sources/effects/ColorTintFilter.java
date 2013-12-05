@@ -133,6 +133,9 @@ public class ColorTintFilter extends AbstractFilter {
 
     /**
      * {@inheritDoc}
+     * @param src
+     * @param dst
+     * @return 
      */
     @Override
     public BufferedImage filter(BufferedImage src, BufferedImage dst) {
