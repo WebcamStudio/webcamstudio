@@ -20,7 +20,8 @@ import webcamstudio.sources.effects.Perspective;
 public class PerspectiveControl extends javax.swing.JPanel {
 
     Perspective effect = null;
-    /** Creates new form MosaicControl */
+    /** Creates new form MosaicControl
+     * @param effect */
     public PerspectiveControl(Perspective effect) {
         initComponents();
         this.effect=effect;

@@ -17,8 +17,8 @@ import javax.swing.JPanel;
  */
 public class MegaMind extends Effect {
 
-    private com.jhlabs.image.CircleFilter filter = new com.jhlabs.image.CircleFilter();
-    private RGB rgb = new RGB();
+    private final com.jhlabs.image.CircleFilter filter = new com.jhlabs.image.CircleFilter();
+    private final RGB rgb = new RGB();
     @Override
     public void applyEffect(BufferedImage img) {
         filter.setHeight(img.getHeight());

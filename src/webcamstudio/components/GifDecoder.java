@@ -255,6 +255,7 @@ public class GifDecoder {
 	/**
 	 * Gets the image contents of frame n.
 	 *
+     * @param n
 	 * @return BufferedImage representation of frame, or null if n is invalid.
 	 */
 	public BufferedImage getFrame(int n) {
@@ -277,7 +278,7 @@ public class GifDecoder {
 	/**
 	 * Reads GIF image from stream
 	 *
-	 * @param BufferedInputStream containing GIF file.
+     * @param is
 	 * @return read status code (0 = no errors)
 	 */
 	public int read(BufferedInputStream is) {
@@ -304,7 +305,7 @@ public class GifDecoder {
 	/**
 	 * Reads GIF image from stream
 	 *
-	 * @param InputStream containing GIF file.
+     * @param is
 	 * @return read status code (0 = no errors)
 	 */
 	public int read(InputStream is) {
@@ -490,6 +491,7 @@ public class GifDecoder {
 
 	/**
 	 * Returns true if an error was encountered during reading/decoding
+     * @return 
 	 */
 	protected boolean err() {
 		return status != STATUS_OK;
@@ -508,6 +510,7 @@ public class GifDecoder {
 
 	/**
 	 * Reads a single byte from the input stream.
+     * @return 
 	 */
 	protected int read() {
 		int curByte = 0;
@@ -759,6 +762,7 @@ public class GifDecoder {
 
 	/**
 	 * Reads next 16-bit value, LSB first
+     * @return 
 	 */
 	protected int readShort() {
 		// read 16-bit value, LSB first
@@ -773,9 +777,9 @@ public class GifDecoder {
 		lastRect = new Rectangle(ix, iy, iw, ih);
 		lastImage = image;
 		lastBgColor = bgColor;
-		int dispose = 0;
-		boolean transparency = false;
-		int delay = 0;
+		dispose = 0;
+		transparency = false;
+		delay = 0;
 		lct = null;
 	}
 

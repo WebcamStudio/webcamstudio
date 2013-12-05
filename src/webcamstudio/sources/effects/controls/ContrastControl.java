@@ -20,7 +20,8 @@ public class ContrastControl extends javax.swing.JPanel {
 
     Contrast effect = null;
 
-    /** Creates new form MosaicControl */
+    /** Creates new form MosaicControl
+     * @param effect */
     public ContrastControl(Contrast effect) {
         initComponents();
         this.effect = effect;

@@ -20,7 +20,8 @@ import webcamstudio.streams.Stream;
  */
 public class SourceControlTransitions extends javax.swing.JPanel {
     Stream source = null;
-    /** Creates new form SourceControlTransitions */
+    /** Creates new form SourceControlTransitions
+     * @param source */
     @SuppressWarnings("unchecked") 
     public SourceControlTransitions(Stream source) {
         initComponents();

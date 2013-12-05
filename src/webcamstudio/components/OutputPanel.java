@@ -82,7 +82,8 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
     String virtualDevice = "webcamstudio";
     TreeMap<String, ResourceMonitorLabel> labels = new TreeMap<>();
     JFrame wDFrame;
-    /** Creates new form OutputPanel */
+    /** Creates new form OutputPanel
+     * @param aFrame */
     public OutputPanel(JFrame aFrame) {
         initComponents();
         wDFrame = aFrame;
@@ -225,40 +226,40 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 JToggleButton button = ((JToggleButton) evt.getSource());
                 FME fme = fmes.get(button.getText());
-                if (button.isSelected()) {
-                    fmeCount ++;
+                if (button.isSelected()) {                    
                     if (fme != null){
-                    SinkBroadcast broadcast = new SinkBroadcast(fme);
-                    UIManager.put("OptionPane.noButtonText", "HQ");
-                    UIManager.put("OptionPane.yesButtonText", "Standard");
-                    int resultHQ = JOptionPane.showConfirmDialog(instanceSinkFME,"HQ or Standard mode?","Choose",JOptionPane.YES_NO_OPTION);
-                    switch(resultHQ){
-                        case JOptionPane.YES_OPTION:
-                            broadcast.setStandard("STD");
-                            break;
-                        case JOptionPane.NO_OPTION:
-                            broadcast.setStandard("HQ");
-                            break;
-                        case JOptionPane.CLOSED_OPTION:
-                            broadcast.setStandard("STD");
-                            break;
-                    }
-                    UIManager.put("OptionPane.noButtonText", "No");
-                    UIManager.put("OptionPane.yesButtonText", "Yes");     
-                    broadcast.setRate(MasterMixer.getInstance().getRate());
-                    broadcast.setWidth(MasterMixer.getInstance().getWidth());
-                    broadcast.setHeight(MasterMixer.getInstance().getHeight());
-                    broadcast.setListener(instanceSinkFME);
-                    broadcast.read();
-                    broadcasts.put(button.getText(), broadcast);
-                    ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Broadcasting to " + fme.getName());
-                    labels.put(fme.getName(), label);
-                    tglSkyCam.setEnabled(false);
-                    ResourceMonitor.getInstance().addMessage(label);
+                        fmeCount ++;
+                        SinkBroadcast broadcast = new SinkBroadcast(fme);
+                        UIManager.put("OptionPane.noButtonText", "HQ");
+                        UIManager.put("OptionPane.yesButtonText", "Standard");
+                        int resultHQ = JOptionPane.showConfirmDialog(instanceSinkFME,"HQ or Standard mode?","Choose",JOptionPane.YES_NO_OPTION);
+                        switch(resultHQ){
+                            case JOptionPane.YES_OPTION:
+                                broadcast.setStandard("STD");
+                                break;
+                            case JOptionPane.NO_OPTION:
+                                broadcast.setStandard("HQ");
+                                break;
+                            case JOptionPane.CLOSED_OPTION:
+                                broadcast.setStandard("STD");
+                                break;
+                        }
+                        UIManager.put("OptionPane.noButtonText", "No");
+                        UIManager.put("OptionPane.yesButtonText", "Yes");     
+                        broadcast.setRate(MasterMixer.getInstance().getRate());
+                        broadcast.setWidth(MasterMixer.getInstance().getWidth());
+                        broadcast.setHeight(MasterMixer.getInstance().getHeight());
+                        broadcast.setListener(instanceSinkFME);
+                        broadcast.read();
+                        broadcasts.put(button.getText(), broadcast);
+                        ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Broadcasting to " + fme.getName());
+                        labels.put(fme.getName(), label);
+                        tglSkyCam.setEnabled(false);
+                        ResourceMonitor.getInstance().addMessage(label);
                     } else {
                         fmeCount --;
                         button.setSelected(false);
-                        if (fmeCount == 0) {
+                        if (fmeCount == 0 && camCount == 0) {
                             tglSkyCam.setEnabled(true);
                         }                        
                     }
@@ -735,7 +736,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
         }
     }
     private static class WaitingDialogOP extends JDialog {
-        private JLabel workingLabelOP = new JLabel();
+        private final JLabel workingLabelOP = new JLabel();
         public WaitingDialogOP(JFrame owner) {
             workingLabelOP.setBorder(BorderFactory.createLineBorder(Color.black));
             workingLabelOP.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/view-fullscreen.png"))); // NOI18N        

@@ -17,7 +17,7 @@ import javax.swing.JPanel;
  */
 public class Weave extends Effect {
 
-    private com.jhlabs.image.WeaveFilter filter = new com.jhlabs.image.WeaveFilter();
+    private final com.jhlabs.image.WeaveFilter filter = new com.jhlabs.image.WeaveFilter();
 
     @Override
     public boolean needApply(){

@@ -20,7 +20,8 @@ import webcamstudio.sources.effects.Rotation;
 public class RotationControl extends javax.swing.JPanel {
 
     Rotation effect = null;
-    /** Creates new form MosaicControl */
+    /** Creates new form MosaicControl
+     * @param effect */
     public RotationControl(Rotation effect) {
         initComponents();
         this.effect=effect;

@@ -20,7 +20,8 @@ import webcamstudio.sources.effects.HSB;
 public class HSBControl extends javax.swing.JPanel {
 
     HSB effect = null;
-    /** Creates new form MosaicControl */
+    /** Creates new form MosaicControl
+     * @param effect */
     public HSBControl(HSB effect) {
         initComponents();
         this.effect=effect;

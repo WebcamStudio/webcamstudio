@@ -20,7 +20,8 @@ import webcamstudio.sources.effects.Block;
 public class BlockControl extends javax.swing.JPanel {
 
     Block effect = null;
-    /** Creates new form MosaicControl */
+    /** Creates new form MosaicControl
+     * @param effect */
     public BlockControl(Block effect) {
         initComponents();
         this.effect=effect;

@@ -19,7 +19,9 @@ import webcamstudio.exporter.vloopback.VideoDevice;
  */
 public class VideoDeviceInfo extends javax.swing.JDialog {
 
-    /** Creates new form VideoDeviceInfo */
+    /** Creates new form VideoDeviceInfo
+     * @param parent
+     * @param modal */
     public VideoDeviceInfo(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();

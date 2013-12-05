@@ -6,16 +6,12 @@ package webcamstudio.mixers;
 
 import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
-import java.awt.GraphicsConfiguration;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.nio.ByteBuffer;
 import java.nio.ShortBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.TreeMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -32,14 +28,10 @@ import webcamstudio.util.Tools;
  */
 public class MasterFrameBuilder implements Runnable {
 
-    private static ArrayList<Stream> streams = new ArrayList<>();// add private
+    private static final ArrayList<Stream> streams = new ArrayList<>();// add private
     private static int fps = 0;
     private Image imageF;
     private int imageX, imageY, imageW, imageH;
-//    private GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-//    private GraphicsDevice gs = ge.getDefaultScreenDevice();
-//    private GraphicsConfiguration gc = gs.getDefaultConfiguration();
-//    private BufferedImage imageC;
     public synchronized static void register(Stream s) {
         if (!streams.contains(s)) {
             streams.add(s);
@@ -51,7 +43,7 @@ public class MasterFrameBuilder implements Runnable {
     private boolean stopMe = false;
     private long mark = System.currentTimeMillis();
     private FrameBuffer frameBuffer = null;
-    private TreeMap<Integer, Frame> orderedFrames = new TreeMap<>();
+    private final TreeMap<Integer, Frame> orderedFrames = new TreeMap<>();
 
     public MasterFrameBuilder(int w, int h, int r) {
         frameBuffer = new FrameBuffer(w, h, r);
@@ -60,35 +52,7 @@ public class MasterFrameBuilder implements Runnable {
     public void stop() {
         stopMe = true;
     }
-    /*BufferedImage createCompatibleImage(BufferedImage image)
-     * {
-     * GraphicsConfiguration gc = GraphicsEnvironment.
-     * getLocalGraphicsEnvironment().
-     * getDefaultScreenDevice().
-     * getDefaultConfiguration();
-     *
-     * BufferedImage newImage = gc.createCompatibleImage(
-     * image.getWidth(),
-     * image.getHeight(),
-     * Transparency.TRANSLUCENT);
-     *
-     * Graphics2D g = newImage.createGraphics();
-     * g.drawImage(image, 0, 0, null);
-     * g.dispose();
-     *
-     * return newImage;
-     * }
-     * private BufferedImage CreateCompatibleImage(BufferedImage img){
-     * //        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-     * //        GraphicsDevice gs = ge.getDefaultScreenDevice();
-     * //        GraphicsConfiguration gc = gs.getDefaultConfiguration();
-     * imageC = gc.createCompatibleImage(img.getWidth(), img.getHeight(), Transparency.TRANSLUCENT);
-     * Graphics2D g;
-     * g = imageC.createGraphics();
-     * g.drawImage(img, 0, 0, null);
-     * g.dispose();
-     * return imageC;
-     * }*/
+
     private void mixImages(Collection<Frame> frames, Frame targetFrame) {
         for (Frame f : frames) {
             orderedFrames.put(f.getZOrder(), f);

@@ -17,6 +17,8 @@ public class FullScreenWindow extends javax.swing.JFrame implements Stream.Liste
     StreamFullDesktop.Listener listener = null;  
     /**
      * Creates new form FullScreenWindow
+     * @param oWebcam
+     * @param l
      */
     public FullScreenWindow(Stream oWebcam, StreamFullDesktop.Listener l) {
         initComponents();
@@ -62,7 +64,7 @@ public class FullScreenWindow extends javax.swing.JFrame implements Stream.Liste
     }//GEN-LAST:event_formWindowClosed
 
     /**
-     * @param args the command line arguments
+     * @param stream
      */
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables

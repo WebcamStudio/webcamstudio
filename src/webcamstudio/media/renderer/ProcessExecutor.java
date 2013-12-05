@@ -134,8 +134,8 @@ public static void killUnixProcess(Process process) throws Exception //Modified 
     } catch (IOException | InterruptedException e) {
         e.printStackTrace();
     }
-    Runtime.getRuntime().exec("kill -9 " + pid).waitFor();
-    Runtime.getRuntime().exec("kill -9 " + childPids).waitFor();
+    Runtime.getRuntime().exec("kill " + pid).waitFor(); // andrew.silver0 mod from -9
+    Runtime.getRuntime().exec("kill " + childPids).waitFor(); //andrew.silver0 mod from -9
     childPids = null;
 }
 }

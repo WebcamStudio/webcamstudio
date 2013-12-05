@@ -20,7 +20,8 @@ import webcamstudio.streams.SourceDesktop;
 public class SourceControlDesktop extends javax.swing.JPanel {
 
     SourceDesktop source = null;
-    /** Creates new form SourceControlDesktop */
+    /** Creates new form SourceControlDesktop
+     * @param source */
     public SourceControlDesktop(SourceDesktop source) {
         initComponents();
         this.source=source;

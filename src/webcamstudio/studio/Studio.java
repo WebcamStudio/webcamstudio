@@ -47,9 +47,9 @@ import webcamstudio.util.Tools;
  */
 public class Studio {
 
-    private ArrayList<String> channels = MasterChannels.getInstance().getChannels();
-    private ArrayList<Integer> Durations = listener.getCHTimers();
-    private ArrayList<String> nextChannel = listener.getCHCurrNext();
+    private final ArrayList<String> channels = MasterChannels.getInstance().getChannels();
+    private final ArrayList<Integer> Durations = listener.getCHTimers();
+    private final ArrayList<String> nextChannel = listener.getCHCurrNext();
     ArrayList<Stream> streams = MasterChannels.getInstance().getStreams();
     Stream streamC = null;
     private static final String ELEMENT_SOURCES = "Sources";
@@ -125,7 +125,7 @@ public class Studio {
         XMLStreamWriter xml = javax.xml.stream.XMLOutputFactory.newFactory().createXMLStreamWriter(writer);
         xml.writeStartDocument();
         xml.writeStartElement(ELEMENT_ROOT);
-        //Channels
+        // Save Channels
         xml.writeStartElement(ELEMENT_CHANNELS);
 
         for (String c : channels) {
@@ -148,18 +148,18 @@ public class Studio {
                 System.out.println("Saving Stream: "+s.getName());
                 xml.writeStartElement(ELEMENT_SOURCE);
                 writeObject(s, xml);
-                xml.writeEndElement(); // source
+                xml.writeEndElement(); // Save Source
             }
         }
-        xml.writeEndElement();  //Sources
+        xml.writeEndElement();  //Save Sources
 
         xml.writeStartElement(ELEMENT_MIXER);
         xml.writeAttribute("width", MasterMixer.getInstance().getWidth() + "");
         xml.writeAttribute("height", MasterMixer.getInstance().getHeight() + "");
         xml.writeAttribute("rate", MasterMixer.getInstance().getRate() + "");
-        xml.writeEndElement(); //Mixer
+        xml.writeEndElement(); //Save Mixer
 
-        xml.writeEndElement(); //WebcamStudio
+        xml.writeEndElement(); //Save WebcamStudio
         xml.writeEndDocument();
         xml.flush();
         xml.close();

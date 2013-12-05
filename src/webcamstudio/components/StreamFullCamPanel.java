@@ -29,7 +29,8 @@ public class StreamFullCamPanel extends javax.swing.JPanel implements Stream.Lis
     Viewer viewer = new Viewer();
     
 
-    /** Creates new form StreamPanel */
+    /** Creates new form StreamPanel
+     * @param stream */
     public StreamFullCamPanel(Stream stream) {
 
         initComponents();

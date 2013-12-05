@@ -17,7 +17,7 @@ import javax.swing.JPanel;
  */
 public class Marble extends Effect {
 
-    private com.jhlabs.image.MarbleFilter filter = new com.jhlabs.image.MarbleFilter();
+    private final com.jhlabs.image.MarbleFilter filter = new com.jhlabs.image.MarbleFilter();
 
     @Override
     public boolean needApply(){

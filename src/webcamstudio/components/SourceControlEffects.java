@@ -19,6 +19,7 @@ public class SourceControlEffects extends javax.swing.JPanel {
     private Stream stream;
     /**
      * Creates new form SourceControlEffects
+     * @param s
      */
     @SuppressWarnings("unchecked") 
     public SourceControlEffects(Stream s) {

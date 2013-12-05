@@ -26,7 +26,9 @@ package webcamstudio.components;
  */
 public class ColorChooser extends javax.swing.JDialog {
     
-    /** Creates new form ColorChooser */
+    /** Creates new form ColorChooser
+     * @param parent
+     * @param modal */
     public ColorChooser(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();

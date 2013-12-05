@@ -18,7 +18,7 @@ import webcamstudio.sources.effects.controls.RotationControl;
  * @author pballeux
  */
 public class Rotation extends Effect{
-    private com.jhlabs.image.RotateFilter filter = new com.jhlabs.image.RotateFilter();
+    private final com.jhlabs.image.RotateFilter filter = new com.jhlabs.image.RotateFilter();
     private float rotation = 0;
     @Override
     public void applyEffect(BufferedImage img) {

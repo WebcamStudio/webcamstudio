@@ -611,7 +611,7 @@ static int vidioc_querycap(struct file *file, void *priv, struct v4l2_capability
 	int devnr = ((struct webcamstudio_private *)video_get_drvdata(dev->vdev))->devicenr;
 
 	strlcpy(cap->driver, "WebcamStudio", sizeof(cap->driver));
-	snprintf(cap->card, sizeof(cap->card), "WCStudio video device (0x%04X)", devnr);
+	snprintf(cap->card, sizeof(cap->card), "WSVideoDevice (0x%04X)", devnr);
 	snprintf(cap->bus_info, sizeof(cap->bus_info), "webcamstudio:%d", devnr);
 
 	cap->version = WEBCAMSTUDIO_VERSION_CODE;

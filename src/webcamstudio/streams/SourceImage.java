@@ -45,7 +45,7 @@ public class SourceImage extends Stream{
             frame.setOutputFormat(x, y, width, height, opacity, volume);
             frame.setZOrder(zorder);
             MasterFrameBuilder.register(this);
-        } catch(Exception e){
+        } catch(IOException e){
             e.printStackTrace();
         }
     }

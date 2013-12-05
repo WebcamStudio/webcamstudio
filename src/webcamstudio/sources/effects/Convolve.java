@@ -16,7 +16,7 @@ import javax.swing.JPanel;
  * @author pballeux
  */
 public class Convolve extends Effect {
-    private Color color = new Color(-16711936);
+    private final Color color = new Color(-16711936);
 //    private ColorTintFilter filter = new ColorTintFilter(color, 0.3f);
 
     @Override

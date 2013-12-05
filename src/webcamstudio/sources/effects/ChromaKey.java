@@ -62,7 +62,7 @@ public class ChromaKey extends Effect {
     }
 
     /**
-     * @param hTolerance the hTolerance to set
+     * @param rTolerance
      */
     public void setrTolerance(int rTolerance) {
         this.rTolerance = rTolerance;
@@ -76,7 +76,7 @@ public class ChromaKey extends Effect {
     }
 
     /**
-     * @param sTolerance the sTolerance to set
+     * @param gTolerance
      */
     public void setgTolerance(int gTolerance) {
         this.gTolerance = gTolerance;

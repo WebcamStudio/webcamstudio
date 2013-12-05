@@ -40,7 +40,9 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
     public interface Listener{
         public void selectedSource(Stream source);
     }
-    /** Creates new form StreamDesktop */
+    /** Creates new form StreamDesktop
+     * @param s
+     * @param l */
     public StreamDesktop(Stream s,Listener l) {
         listener = l;
         stream = s;
@@ -297,36 +299,37 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_formInternalFrameActivated
 
     private void jCBMoreOptionsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCBMoreOptionsActionPerformed
-        if (stream.getPanelType().equals("Panel")) {
-            if (jCBMoreOptions.isSelected()){
-                this.setSize(new Dimension(this.getWidth(),440));
-                this.revalidate();
-                this.repaint();   
-            } else {
-                this.setSize(new Dimension(this.getWidth(),334));
-                this.revalidate();
-                this.repaint();
-            }
-        } else if (stream.getPanelType().equals("PanelDVB")) {
-            if (jCBMoreOptions.isSelected()){
-                this.setSize(new Dimension(this.getWidth(),550));
-                this.revalidate();
-                this.repaint();   
-            } else {
-                this.setSize(new Dimension(this.getWidth(),444));
-                this.revalidate();
-                this.repaint();
-            }
-        } else if (stream.getPanelType().equals("PanelURL")) {
-            if (jCBMoreOptions.isSelected()){
-                this.setSize(new Dimension(this.getWidth(),480));
-                this.revalidate();
-                this.repaint();   
-            } else {
-                this.setSize(new Dimension(this.getWidth(),374));
-                this.revalidate();
-                this.repaint();
-            }
+        switch (stream.getPanelType()) {
+            case "Panel":
+                if (jCBMoreOptions.isSelected()){
+                    this.setSize(new Dimension(this.getWidth(),440));
+                    this.revalidate();
+                    this.repaint();
+                } else {
+                    this.setSize(new Dimension(this.getWidth(),334));
+                    this.revalidate();
+                    this.repaint();
+                }   break;
+            case "PanelDVB":
+                if (jCBMoreOptions.isSelected()){
+                    this.setSize(new Dimension(this.getWidth(),550));
+                    this.revalidate();
+                    this.repaint();
+                } else {
+                    this.setSize(new Dimension(this.getWidth(),444));
+                    this.revalidate();
+                    this.repaint();
+                }   break;
+            case "PanelURL":
+                if (jCBMoreOptions.isSelected()){
+                    this.setSize(new Dimension(this.getWidth(),480));
+                    this.revalidate();
+                    this.repaint();
+                } else {
+                    this.setSize(new Dimension(this.getWidth(),374));
+                    this.revalidate();
+                    this.repaint();
+                }   break;
         }
     }//GEN-LAST:event_jCBMoreOptionsActionPerformed
 

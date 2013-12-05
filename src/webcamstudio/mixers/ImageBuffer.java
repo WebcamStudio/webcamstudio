@@ -14,7 +14,7 @@ import webcamstudio.util.Tools;
  * @author patrick
  */
 public class ImageBuffer {
-    private ArrayList<WSImage> buffer = new ArrayList<WSImage>();
+    private final ArrayList<WSImage> buffer = new ArrayList<>();
     private int bufferSize = MasterMixer.BUFFER_SIZE;
     private boolean abort = false;
     private int currentIndex = 0;

@@ -23,7 +23,8 @@ public class SourceControlsText extends javax.swing.JPanel {
 
     SourceText stream;
 
-    /** Creates new form SourceControlsText */
+    /** Creates new form SourceControlsText
+     * @param stream */
     public SourceControlsText(SourceText stream) {
         this.stream = stream;
         initComponents();

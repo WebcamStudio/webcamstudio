@@ -12,7 +12,7 @@ import webcamstudio.util.Tools;
  * @author patrick
  */
 public class FrameBuffer {
-    private ArrayList<Frame> buffer = new ArrayList<Frame>();
+    private final ArrayList<Frame> buffer = new ArrayList<>();
     private static final int BUFFER_SIZE = MasterMixer.BUFFER_SIZE;
     private boolean abort = false;
     private int currentIndex = 0;

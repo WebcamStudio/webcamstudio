@@ -20,7 +20,8 @@ import webcamstudio.sources.effects.Mosaic;
 public class MosaicControl extends javax.swing.JPanel {
 
     Mosaic effect = null;
-    /** Creates new form MosaicControl */
+    /** Creates new form MosaicControl
+     * @param effect */
     public MosaicControl(Mosaic effect) {
         initComponents();
         this.effect=effect;

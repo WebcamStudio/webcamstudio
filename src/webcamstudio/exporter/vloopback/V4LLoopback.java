@@ -53,7 +53,7 @@ public class V4LLoopback extends VideoOutput {
     final static int O_RDWR = 2;
     final static int VIDIOCGCAP = -2143521279;
     final static int VIDIOCGPICT = -2146535930;
-    private static int VIDIOCSPICT = 1074689543;
+    private static final int VIDIOCSPICT = 1074689543;
     private static int VIDIOCGWIN = -2145356279; 
     private static int VIDIOCSWIN = 1075869194;
     private int fmt = VIDEO_PALETTE_YUV420P;

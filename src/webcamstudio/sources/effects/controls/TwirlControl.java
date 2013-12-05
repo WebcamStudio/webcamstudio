@@ -20,7 +20,8 @@ import webcamstudio.sources.effects.Twirl;
 public class TwirlControl extends javax.swing.JPanel {
 
     Twirl effect = null;
-    /** Creates new form MosaicControl */
+    /** Creates new form MosaicControl
+     * @param effect */
     public TwirlControl(Twirl effect) {
         initComponents();
         this.effect=effect;

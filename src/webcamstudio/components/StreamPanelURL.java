@@ -30,7 +30,8 @@ public class StreamPanelURL extends javax.swing.JPanel implements Stream.Listene
     Viewer viewer = new Viewer();
     
 
-    /** Creates new form StreamPanel */
+    /** Creates new form StreamPanel
+     * @param stream */
     public StreamPanelURL(Stream stream) {
 
         initComponents();

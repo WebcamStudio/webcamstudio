@@ -16,7 +16,7 @@ import javax.swing.JPanel;
  * @author pballeux
  */
 public class Sharpen extends Effect{
-    private com.jhlabs.image.SharpenFilter filter = new com.jhlabs.image.SharpenFilter();
+    private final com.jhlabs.image.SharpenFilter filter = new com.jhlabs.image.SharpenFilter();
     @Override
     public void applyEffect(BufferedImage img) {
         Graphics2D buffer = img.createGraphics();
