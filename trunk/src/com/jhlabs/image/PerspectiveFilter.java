@@ -16,7 +16,7 @@ limitations under the License.
 
 package com.jhlabs.image;
 
-import java.awt.*;
+import java.awt.Rectangle;
 
 /**
  * A filter which performs a perspective distortion on an image.

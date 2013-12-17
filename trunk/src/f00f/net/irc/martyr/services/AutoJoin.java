@@ -37,7 +37,7 @@ public class AutoJoin extends GenericAutoService
     private String channel = null;
     private String key = null;
     private TimerTaskCommand joinTimerTask = null;
-    private long joinTimerTaskDelay = 10*1000;
+    private final long joinTimerTaskDelay = 10*1000;
 
     public AutoJoin( IRCConnection connection, String channel )
     {

@@ -16,7 +16,7 @@ limitations under the License.
 
 package com.jhlabs.image;
 
-import java.awt.*;
+import java.awt.Rectangle;
 
 /**
  * A filter which performs one round of the game of Life on an image.

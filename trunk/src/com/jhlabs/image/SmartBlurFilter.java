@@ -16,7 +16,8 @@ limitations under the License.
 
 package com.jhlabs.image;
 
-import java.awt.image.*;
+import java.awt.image.BufferedImage;
+import java.awt.image.Kernel;
 
 /**
  * A filter which performs a "smart blur". i.e. a blur which blurs smotth parts of the image while preserving edges.

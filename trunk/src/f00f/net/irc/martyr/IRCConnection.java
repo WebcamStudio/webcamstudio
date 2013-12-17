@@ -18,6 +18,10 @@
 
 package f00f.net.irc.martyr;
 
+import f00f.net.irc.martyr.clientstate.ClientState;
+import f00f.net.irc.martyr.commands.UnknownCommand;
+import f00f.net.irc.martyr.errors.UnknownError;
+import f00f.net.irc.martyr.replies.UnknownReply;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -28,11 +32,6 @@ import java.net.Socket;
 import java.util.LinkedList;
 import java.util.Observer;
 import java.util.StringTokenizer;
-
-import f00f.net.irc.martyr.clientstate.ClientState;
-import f00f.net.irc.martyr.commands.UnknownCommand;
-import f00f.net.irc.martyr.errors.UnknownError;
-import f00f.net.irc.martyr.replies.UnknownReply;
 
 
 // TODO:

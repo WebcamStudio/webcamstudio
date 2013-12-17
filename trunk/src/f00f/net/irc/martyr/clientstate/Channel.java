@@ -1,18 +1,17 @@
 package f00f.net.irc.martyr.clientstate;
 
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Vector;
-
 import f00f.net.irc.martyr.Command;
 import f00f.net.irc.martyr.InCommand;
 import f00f.net.irc.martyr.Mode;
 import f00f.net.irc.martyr.modes.channel.OperMode;
 import f00f.net.irc.martyr.modes.channel.VoiceMode;
 import f00f.net.irc.martyr.util.FullNick;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Vector;
 
 
 /**
@@ -60,7 +59,7 @@ public class Channel
 	 * Hopefully we can replace this with a more useful data structure.
 	 * This is a vector of Member objects.
 	 */
-	private Vector<Member> members;
+	private final Vector<Member> members;
 	
 	public Channel( String chanName )
 	{

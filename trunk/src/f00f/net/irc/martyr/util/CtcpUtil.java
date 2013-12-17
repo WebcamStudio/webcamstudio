@@ -42,7 +42,7 @@ public class CtcpUtil
 		
 		public boolean hasNext()
 		{
-			return !str.equals("");
+			return !str.isEmpty();
 		}
 		
 		public String next()

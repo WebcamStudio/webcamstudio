@@ -1,13 +1,12 @@
 package f00f.net.irc.martyr.dcc;
 
+import f00f.net.irc.martyr.IRCConnection;
+import f00f.net.irc.martyr.OutCommand;
+import f00f.net.irc.martyr.commands.CtcpMessage;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-
-import f00f.net.irc.martyr.IRCConnection;
-import f00f.net.irc.martyr.OutCommand;
-import f00f.net.irc.martyr.commands.CtcpMessage;
 
 
 /**
@@ -88,8 +87,8 @@ public class ChatRequestCommand implements OutCommand
 
 	private static class HandlerStarter extends Thread
 	{
-		private ServerSocket ss;
-		private DccChatHandler handler;
+		private final ServerSocket ss;
+		private final DccChatHandler handler;
 
 		public HandlerStarter( ServerSocket ss, DccChatHandler handler )
 		{

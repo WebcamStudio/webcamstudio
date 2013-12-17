@@ -16,7 +16,7 @@ limitations under the License.
 
 package com.jhlabs.vecmath;
 
-import java.awt.*;
+import java.awt.Color;
 
 /**
  * Vector math package, converted to look similar to javax.vecmath.

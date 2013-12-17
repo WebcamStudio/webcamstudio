@@ -16,18 +16,21 @@ limitations under the License.
 
 package com.jhlabs.composite;
 
-import java.awt.*;
-import java.awt.image.*;
-import java.awt.color.*;
+import java.awt.Color;
+import java.awt.CompositeContext;
+import java.awt.color.ColorSpace;
+import java.awt.image.ColorModel;
+import java.awt.image.Raster;
+import java.awt.image.WritableRaster;
 
 public class MiscCompositeContext implements CompositeContext {
 
-	private int rule;
-	private float alpha;
-	private ColorModel srcColorModel;
-	private ColorModel dstColorModel;
-	private ColorSpace srcColorSpace;
-	private ColorSpace dstColorSpace;
+	private final int rule;
+	private final float alpha;
+	private final ColorModel srcColorModel;
+	private final ColorModel dstColorModel;
+	private final ColorSpace srcColorSpace;
+	private final ColorSpace dstColorSpace;
 	private boolean srcNeedsConverting;
 	private boolean dstNeedsConverting;
 

@@ -1,16 +1,15 @@
 package f00f.net.irc.martyr.dcc;
 
+import f00f.net.irc.martyr.GenericCommandAutoService;
+import f00f.net.irc.martyr.IRCConnection;
+import f00f.net.irc.martyr.InCommand;
+import f00f.net.irc.martyr.commands.CtcpMessage;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import f00f.net.irc.martyr.GenericCommandAutoService;
-import f00f.net.irc.martyr.IRCConnection;
-import f00f.net.irc.martyr.InCommand;
-import f00f.net.irc.martyr.commands.CtcpMessage;
 
 
 /**

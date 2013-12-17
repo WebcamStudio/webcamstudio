@@ -8,9 +8,9 @@ package webcamstudio.visage;
 
 public class SSRFilter
 {
-  private int width,height,sectorWidth,sectorHeight;
-  private int ii[][];
-  private double area;
+  private final int width,height,sectorWidth,sectorHeight;
+  private final int ii[][];
+  private final double area;
 
   public SSRFilter(int width,int height,int ii[][])
   {

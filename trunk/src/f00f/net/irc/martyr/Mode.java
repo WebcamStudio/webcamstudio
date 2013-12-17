@@ -83,7 +83,7 @@ public interface Mode
 		public static final Sign NEGATIVE = new Sign( "negative" );
 		public static final Sign NOSIGN = new Sign( "nosign" );
 	
-		private String name;
+		private final String name;
 		private Sign( String name )
 		{
 			this.name = name;

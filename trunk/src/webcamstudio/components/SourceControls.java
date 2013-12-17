@@ -6,7 +6,18 @@ package webcamstudio.components;
 
 import java.awt.Component;
 import java.util.ArrayList;
-import webcamstudio.streams.*;
+import webcamstudio.streams.SourceDVB;
+import webcamstudio.streams.SourceDesktop;
+import webcamstudio.streams.SourceImage;
+import webcamstudio.streams.SourceImageGif;
+import webcamstudio.streams.SourceImageU;
+import webcamstudio.streams.SourceMovie;
+import webcamstudio.streams.SourceMusic;
+import webcamstudio.streams.SourceQRCode;
+import webcamstudio.streams.SourceText;
+import webcamstudio.streams.SourceURL;
+import webcamstudio.streams.SourceWebcam;
+import webcamstudio.streams.Stream;
 
 /**
  *
@@ -49,6 +60,7 @@ public class SourceControls {
             c = new SourceControlEffects(source);
             c.setName("Effects");
             comps.add(c);
+        } else if (source instanceof SourceQRCode) {
         } else if (source instanceof SourceText) {
             c = new SourceControlsText((SourceText) source);
             comps.add(c);
@@ -64,7 +76,6 @@ public class SourceControls {
 //            c = new SourceControlEffects(source);
 //            c.setName("Effects");
 //            comps.add(c);
-        } else if (source instanceof SourceQRCode) {
         }
 
         return comps;

@@ -16,10 +16,14 @@ limitations under the License.
 
 package com.jhlabs.image;
 
-import java.awt.*;
-import java.awt.image.*;
-import java.util.*;
-import com.jhlabs.math.*;
+import com.jhlabs.math.FBM;
+import com.jhlabs.math.Function2D;
+import com.jhlabs.math.Noise;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.Toolkit;
+import java.awt.image.BufferedImage;
+import java.util.Random;
 
 public class SkyFilter extends PointFilter {
 
@@ -47,7 +51,7 @@ public class SkyFilter extends PointFilter {
 	private float glowFalloff = 0.5f;
 	private float haziness = 0.96f;
 	private float t = 0.0f;
-	private float sunRadius = 10f;
+	private final float sunRadius = 10f;
 	private int sunColor = 0xffffffff;
 	private float sunR, sunG, sunB;
 	private float sunAzimuth = 0.5f;

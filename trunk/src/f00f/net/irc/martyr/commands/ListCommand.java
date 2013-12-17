@@ -1,9 +1,8 @@
 package f00f.net.irc.martyr.commands;
 
 import f00f.net.irc.martyr.OutCommand;
-
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Defines the LIST command, which is used to get the topic and member count of certain channels, or all of them.

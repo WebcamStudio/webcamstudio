@@ -16,8 +16,12 @@ limitations under the License.
 
 package com.jhlabs.composite;
 
-import java.awt.*;
-import java.awt.image.*;
+import java.awt.Composite;
+import java.awt.CompositeContext;
+import java.awt.RenderingHints;
+import java.awt.image.ColorModel;
+import java.awt.image.Raster;
+import java.awt.image.WritableRaster;
 
 /**
  * A special Composite used for drawing "marching ants". It draws the ants at the 127 contour of the alpha channel of the source.
@@ -25,7 +29,7 @@ import java.awt.image.*;
  */
 public final class ContourComposite implements Composite {
 
-	private int offset;
+	private final int offset;
 
 	public ContourComposite( int offset ) {
 		this.offset = offset;
@@ -52,7 +56,7 @@ public final class ContourComposite implements Composite {
 
 class ContourCompositeContext implements CompositeContext {
 
-	private int offset;
+	private final int offset;
 
 	public ContourCompositeContext( int offset, ColorModel srcColorModel, ColorModel dstColorModel ) {
 		this.offset = offset;

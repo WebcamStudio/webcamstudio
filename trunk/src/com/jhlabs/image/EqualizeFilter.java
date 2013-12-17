@@ -16,7 +16,7 @@ limitations under the License.
 
 package com.jhlabs.image;
 
-import java.awt.*;
+import java.awt.Rectangle;
 
 /**
  * A filter to perform auto-equalization on an image.

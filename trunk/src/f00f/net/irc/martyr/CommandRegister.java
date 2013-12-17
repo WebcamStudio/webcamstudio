@@ -1,10 +1,82 @@
 package f00f.net.irc.martyr;
 
+import f00f.net.irc.martyr.commands.InviteCommand;
+import f00f.net.irc.martyr.commands.IsonCommand;
+import f00f.net.irc.martyr.commands.JoinCommand;
+import f00f.net.irc.martyr.commands.KickCommand;
+import f00f.net.irc.martyr.commands.MessageCommand;
+import f00f.net.irc.martyr.commands.ModeCommand;
+import f00f.net.irc.martyr.commands.NickCommand;
+import f00f.net.irc.martyr.commands.NoticeCommand;
+import f00f.net.irc.martyr.commands.PartCommand;
+import f00f.net.irc.martyr.commands.PingCommand;
+import f00f.net.irc.martyr.commands.QuitCommand;
+import f00f.net.irc.martyr.commands.TopicCommand;
+import f00f.net.irc.martyr.commands.WelcomeCommand;
+import f00f.net.irc.martyr.errors.AlreadyRegisteredError;
+import f00f.net.irc.martyr.errors.CannotSendToChanError;
+import f00f.net.irc.martyr.errors.CantKillServerError;
+import f00f.net.irc.martyr.errors.ChanOPrivsNeededError;
+import f00f.net.irc.martyr.errors.ChannelBannedError;
+import f00f.net.irc.martyr.errors.ChannelInviteOnlyError;
+import f00f.net.irc.martyr.errors.ChannelLimitError;
+import f00f.net.irc.martyr.errors.ChannelWrongKeyError;
+import f00f.net.irc.martyr.errors.ErroneusNicknameError;
+import f00f.net.irc.martyr.errors.FileErrorError;
+import f00f.net.irc.martyr.errors.KeySetError;
+import f00f.net.irc.martyr.errors.LoadTooHighError;
+import f00f.net.irc.martyr.errors.NeedMoreParamsError;
+import f00f.net.irc.martyr.errors.NickCollisionError;
+import f00f.net.irc.martyr.errors.NickInUseError;
+import f00f.net.irc.martyr.errors.NoAdminInfoError;
+import f00f.net.irc.martyr.errors.NoLoginError;
+import f00f.net.irc.martyr.errors.NoMotdError;
+import f00f.net.irc.martyr.errors.NoNicknameGivenError;
+import f00f.net.irc.martyr.errors.NoOperHostError;
+import f00f.net.irc.martyr.errors.NoOriginError;
+import f00f.net.irc.martyr.errors.NoPermForHostError;
+import f00f.net.irc.martyr.errors.NoPrivilegesError;
+import f00f.net.irc.martyr.errors.NoRecipientError;
+import f00f.net.irc.martyr.errors.NoSuchChannelError;
+import f00f.net.irc.martyr.errors.NoSuchNickError;
+import f00f.net.irc.martyr.errors.NoSuchServerError;
+import f00f.net.irc.martyr.errors.NoTextToSendError;
+import f00f.net.irc.martyr.errors.NotOnChannelError;
+import f00f.net.irc.martyr.errors.NotRegisteredError;
+import f00f.net.irc.martyr.errors.PasswdMismatchError;
+import f00f.net.irc.martyr.errors.SummonDisabledError;
+import f00f.net.irc.martyr.errors.TooManyChannelsError;
+import f00f.net.irc.martyr.errors.TooManyTargetsError;
+import f00f.net.irc.martyr.errors.UModeUnknownFlagError;
+import f00f.net.irc.martyr.errors.UnknownCommandError;
+import f00f.net.irc.martyr.errors.UnknownModeError;
+import f00f.net.irc.martyr.errors.UserNotInChannelError;
+import f00f.net.irc.martyr.errors.UserOnChannelError;
+import f00f.net.irc.martyr.errors.UsersDisabledError;
+import f00f.net.irc.martyr.errors.UsersDontMatchError;
+import f00f.net.irc.martyr.errors.WasNoSuchNickError;
+import f00f.net.irc.martyr.errors.WildTopLevelError;
+import f00f.net.irc.martyr.errors.YoureBannedCreepError;
+import f00f.net.irc.martyr.replies.AwayReply;
+import f00f.net.irc.martyr.replies.ChannelCreationReply;
+import f00f.net.irc.martyr.replies.LUserClientReply;
+import f00f.net.irc.martyr.replies.LUserMeReply;
+import f00f.net.irc.martyr.replies.LUserOpReply;
+import f00f.net.irc.martyr.replies.ListEndReply;
+import f00f.net.irc.martyr.replies.ListReply;
+import f00f.net.irc.martyr.replies.ListStartReply;
+import f00f.net.irc.martyr.replies.ModeReply;
+import f00f.net.irc.martyr.replies.NamesEndReply;
+import f00f.net.irc.martyr.replies.NamesReply;
+import f00f.net.irc.martyr.replies.NowAwayReply;
+import f00f.net.irc.martyr.replies.TopicInfoReply;
+import f00f.net.irc.martyr.replies.UnAwayReply;
+import f00f.net.irc.martyr.replies.WhoisChannelsReply;
+import f00f.net.irc.martyr.replies.WhoisEndReply;
+import f00f.net.irc.martyr.replies.WhoisIdleReply;
+import f00f.net.irc.martyr.replies.WhoisServerReply;
+import f00f.net.irc.martyr.replies.WhoisUserReply;
 import java.util.Hashtable;
-
-import f00f.net.irc.martyr.commands.*;
-import f00f.net.irc.martyr.errors.*;
-import f00f.net.irc.martyr.replies.*;
 
 /**
  * CommandRegister is basically a big hashtable that maps IRC
@@ -15,7 +87,7 @@ import f00f.net.irc.martyr.replies.*;
 public class CommandRegister
 {
 
-    private Hashtable<String,InCommand> commands;
+    private final Hashtable<String,InCommand> commands;
     public CommandRegister()
     {
         commands = new Hashtable<>();

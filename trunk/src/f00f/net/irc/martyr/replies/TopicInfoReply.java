@@ -1,11 +1,10 @@
 package f00f.net.irc.martyr.replies;
 
-import java.util.Date;
-import java.util.StringTokenizer;
-
 import f00f.net.irc.martyr.InCommand;
 import f00f.net.irc.martyr.clientstate.Channel;
 import f00f.net.irc.martyr.clientstate.ClientState;
+import java.util.Date;
+import java.util.StringTokenizer;
 
 /**
  * Contains info about the topic, who set it and when.

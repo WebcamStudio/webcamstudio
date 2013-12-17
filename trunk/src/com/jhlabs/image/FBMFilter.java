@@ -16,9 +16,15 @@ limitations under the License.
 
 package com.jhlabs.image;
 
-import java.awt.image.*;
-import java.util.*;
-import com.jhlabs.math.*;
+import com.jhlabs.math.CellularFunction2D;
+import com.jhlabs.math.FBM;
+import com.jhlabs.math.Function2D;
+import com.jhlabs.math.Noise;
+import com.jhlabs.math.RidgedFBM;
+import com.jhlabs.math.SCNoise;
+import com.jhlabs.math.VLNoise;
+import java.awt.image.BufferedImage;
+import java.util.Random;
 
 /**
  * A filter which produces textures from fractal Brownian motion.

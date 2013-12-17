@@ -18,7 +18,11 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
-import javax.xml.transform.*;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.xpath.XPath;
@@ -31,14 +35,56 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 import webcamstudio.WebcamStudio;
 import webcamstudio.channels.MasterChannels;
-import webcamstudio.mixers.MasterMixer;
-import webcamstudio.streams.*;
 import webcamstudio.channels.transitions.Transition;
-import webcamstudio.sources.effects.*;
+import webcamstudio.mixers.MasterMixer;
+import webcamstudio.sources.effects.Blink;
+import webcamstudio.sources.effects.Block;
+import webcamstudio.sources.effects.Cartoon;
+import webcamstudio.sources.effects.ChromaKey;
+import webcamstudio.sources.effects.Contrast;
+import webcamstudio.sources.effects.Edge;
+import webcamstudio.sources.effects.Effect;
+import webcamstudio.sources.effects.Emboss;
+import webcamstudio.sources.effects.FlipHorizontal;
+import webcamstudio.sources.effects.FlipVertical;
+import webcamstudio.sources.effects.Gain;
+import webcamstudio.sources.effects.Gray;
+import webcamstudio.sources.effects.Green;
+import webcamstudio.sources.effects.HSB;
+import webcamstudio.sources.effects.Laplace;
+import webcamstudio.sources.effects.Marble;
+import webcamstudio.sources.effects.MegaMind;
+import webcamstudio.sources.effects.Mirror1;
+import webcamstudio.sources.effects.Mirror2;
+import webcamstudio.sources.effects.Mirror3;
+import webcamstudio.sources.effects.Mirror4;
+import webcamstudio.sources.effects.Mosaic;
+import webcamstudio.sources.effects.NoBackground;
+import webcamstudio.sources.effects.Opacity;
+import webcamstudio.sources.effects.Perspective;
+import webcamstudio.sources.effects.RGB;
+import webcamstudio.sources.effects.Radar;
+import webcamstudio.sources.effects.Rotation;
+import webcamstudio.sources.effects.Sharpen;
+import webcamstudio.sources.effects.SwapRedBlue;
+import webcamstudio.sources.effects.Twirl;
+import webcamstudio.sources.effects.Weave;
+import webcamstudio.sources.effects.ZoomZoom;
+import webcamstudio.streams.SourceChannel;
+import webcamstudio.streams.SourceDVB;
+import webcamstudio.streams.SourceDesktop;
+import webcamstudio.streams.SourceImageGif;
+import webcamstudio.streams.SourceMicrophone;
+import webcamstudio.streams.SourceMovie;
+import webcamstudio.streams.SourceMusic;
+import webcamstudio.streams.SourceQRCode;
+import webcamstudio.streams.SourceText;
 import static webcamstudio.streams.SourceText.Shape.NONE;
 import static webcamstudio.streams.SourceText.Shape.OVAL;
 import static webcamstudio.streams.SourceText.Shape.RECTANGLE;
 import static webcamstudio.streams.SourceText.Shape.ROUNDRECT;
+import webcamstudio.streams.SourceURL;
+import webcamstudio.streams.Stream;
 import webcamstudio.util.Tools;
 
 /**
@@ -77,7 +123,7 @@ public class Studio {
     protected Studio() {
     }
     // Studio removed, put void
-    public static void load(File file) throws ParserConfigurationException, SAXException, IOException, XPathExpressionException {
+    public static void load(File file, String loadType) throws ParserConfigurationException, SAXException, IOException, XPathExpressionException {
         Studio studio = new Studio();
         System.out.println("Loading Studio ...");
         filename = file; 
@@ -87,30 +133,31 @@ public class Studio {
         //Loading channels
         NodeList nodeChannels = (NodeList) path.evaluate("/WebcamStudio/Channels/Channel", doc.getDocumentElement(), XPathConstants.NODESET);
         for (int i = 0; i < nodeChannels.getLength(); i++) {
-           Node channel = nodeChannels.item(i);
-           String name = channel.getAttributes().getNamedItem("name").getTextContent();
-           String nxname = channel.getAttributes().getNamedItem("NextChannel").getTextContent();
-           String Sduration = channel.getAttributes().getNamedItem("duration").getTextContent();
-           int duration = Integer.parseInt(Sduration);
-           studio.channels.add(name);
-           studio.nextChannel.add(nxname);
-           studio.Durations.add(duration);
-           System.out.println("Channel: " + name + " - Duration: " + duration);  
+            Node channel = nodeChannels.item(i);
+            String name = channel.getAttributes().getNamedItem("name").getTextContent();
+            String nxname = channel.getAttributes().getNamedItem("NextChannel").getTextContent();
+            String Sduration = channel.getAttributes().getNamedItem("duration").getTextContent();
+            int duration = Integer.parseInt(Sduration);
+            studio.channels.add(name);
+            studio.nextChannel.add(nxname);
+            studio.Durations.add(duration);
+            System.out.println("Channel: " + name + " - Duration: " + duration);  
         }
         
-
         // Loading mixer settings
-        Node nodeMixer = (Node) path.evaluate("/WebcamStudio/Mixer", doc.getDocumentElement(), XPathConstants.NODE);
-        String width = nodeMixer.getAttributes().getNamedItem("width").getTextContent();
-        int widthInt = Integer.parseInt(width);
-        MasterMixer.getInstance().setWidth(widthInt);
-        String height = nodeMixer.getAttributes().getNamedItem("height").getTextContent();
-        int heightInt = Integer.parseInt(height);
-        MasterMixer.getInstance().setHeight(heightInt);
-        String rate = nodeMixer.getAttributes().getNamedItem("rate").getTextContent();
-        int rateInt = Integer.parseInt(rate);
-        MasterMixer.getInstance().setRate(rateInt);
-        System.out.println("Setting Mixer to: " + width + "X" + height + "@" + rate + "fps");
+        if (loadType.equals("load")) {
+            Node nodeMixer = (Node) path.evaluate("/WebcamStudio/Mixer", doc.getDocumentElement(), XPathConstants.NODE);
+            String width = nodeMixer.getAttributes().getNamedItem("width").getTextContent();
+            int widthInt = Integer.parseInt(width);
+            MasterMixer.getInstance().setWidth(widthInt);
+            String height = nodeMixer.getAttributes().getNamedItem("height").getTextContent();
+            int heightInt = Integer.parseInt(height);
+            MasterMixer.getInstance().setHeight(heightInt);
+            String rate = nodeMixer.getAttributes().getNamedItem("rate").getTextContent();
+            int rateInt = Integer.parseInt(rate);
+            MasterMixer.getInstance().setRate(rateInt);
+            System.out.println("Setting Mixer to: " + width + "X" + height + "@" + rate + "fps");
+        }
 //      return studio;
     }
 
@@ -590,19 +637,23 @@ public class Studio {
                         scs.setName(SubChNames.get(op));
                         if (!subSTrans.isEmpty()){
                             if (subSTrans.get(op) != null) {
-                                if ("webcamstudio.channels.transitions.FadeIn".equals(subSTrans.get(op))){
+                                if (subSTrans.get(op).endsWith("FadeIn")){
                                     Transition t = Transition.getInstance(stream, "FadeIn");
                                     stream.addStartTransition(t);
                                     scs.startTransitions.add(stream.startTransitions.get(0));
-                                } if ("webcamstudio.channels.transitions.Translate".equals(subSTrans.get(op))){
-                                    Transition t = Transition.getInstance(stream, "Translate");
+                                } if (subSTrans.get(op).endsWith("AudioFadeIn")){
+                                    Transition t = Transition.getInstance(stream, "AudioFadeIn");
                                     stream.addStartTransition(t);
                                     scs.startTransitions.add(stream.startTransitions.get(0));
-                                } if ("webcamstudio.channels.transitions.Resize".equals(subSTrans.get(op))){
+                                } if (subSTrans.get(op).endsWith("TranslateIn")){
+                                    Transition t = Transition.getInstance(stream, "TranslateIn");
+                                    stream.addStartTransition(t);
+                                    scs.startTransitions.add(stream.startTransitions.get(0));
+                                } if (subSTrans.get(op).endsWith("Resize")){
                                     Transition t = Transition.getInstance(stream, "Resize");
                                     stream.addStartTransition(t);
                                     scs.startTransitions.add(stream.startTransitions.get(0));
-                                } if ("webcamstudio.channels.transitions.RevealLeft".equals(subSTrans.get(op))){
+                                } if (subSTrans.get(op).endsWith("RevealLeft")){
                                     Transition t = Transition.getInstance(stream, "RevealLeft");
                                     stream.addStartTransition(t);
                                     scs.startTransitions.add(stream.startTransitions.get(0));
@@ -611,11 +662,19 @@ public class Studio {
                         }
                         if (!subETrans.isEmpty()){
                             if (subETrans.get(op) != null) {
-                                if ("webcamstudio.channels.transitions.FadeOut".equals(subETrans.get(op))){
+                                if (subETrans.get(op).endsWith("FadeOut")){
                                     Transition t = Transition.getInstance(stream, "FadeOut");
                                     stream.addEndTransition(t);
                                     scs.endTransitions.add(stream.endTransitions.get(0));
-                                } if ("webcamstudio.channels.transitions.ShrinkOut".equals(subETrans.get(op))){
+                                } if (subETrans.get(op).endsWith("TranslateOut")){
+                                    Transition t = Transition.getInstance(stream, "TranslateOut");
+                                    stream.addEndTransition(t);
+                                    scs.endTransitions.add(stream.endTransitions.get(0));
+                                } if (subETrans.get(op).endsWith("AudioFadeOut")){
+                                    Transition t = Transition.getInstance(stream, "AudioFadeOut");
+                                    stream.addEndTransition(t);
+                                    scs.endTransitions.add(stream.endTransitions.get(0));
+                                } if (subETrans.get(op).endsWith("ShrinkOut")){
                                     Transition t = Transition.getInstance(stream, "ShrinkOut");
                                     stream.addEndTransition(t);
                                     scs.endTransitions.add(stream.endTransitions.get(0));
@@ -646,19 +705,23 @@ public class Studio {
 //                        String sNamet=SubChNames.get(op);
                         if (!subSTrans.isEmpty()){
                             if (subSTrans.get(op) != null) {
-                                if ("webcamstudio.channels.transitions.FadeIn".equals(subSTrans.get(op))){
+                                if (subSTrans.get(op).endsWith("FadeIn")){
                                     Transition t = Transition.getInstance(stream, "FadeIn");
                                     stream.addStartTransition(t);
                                     scs.startTransitions.add(stream.startTransitions.get(0));
-                                } if ("webcamstudio.channels.transitions.Translate".equals(subSTrans.get(op))){
-                                    Transition t = Transition.getInstance(stream, "Translate");
+                                } if (subSTrans.get(op).endsWith("AudioFadeIn")){
+                                    Transition t = Transition.getInstance(stream, "AudioFadeIn");
                                     stream.addStartTransition(t);
                                     scs.startTransitions.add(stream.startTransitions.get(0));
-                                } if ("webcamstudio.channels.transitions.Resize".equals(subSTrans.get(op))){
+                                } if (subSTrans.get(op).endsWith("TranslateIn")){
+                                    Transition t = Transition.getInstance(stream, "TranslateIn");
+                                    stream.addStartTransition(t);
+                                    scs.startTransitions.add(stream.startTransitions.get(0));
+                                } if (subSTrans.get(op).endsWith("Resize")){
                                     Transition t = Transition.getInstance(stream, "Resize");
                                     stream.addStartTransition(t);
                                     scs.startTransitions.add(stream.startTransitions.get(0));
-                                } if ("webcamstudio.channels.transitions.RevealLeft".equals(subSTrans.get(op))){
+                                } if (subSTrans.get(op).endsWith("RevealLeft")){
                                     Transition t = Transition.getInstance(stream, "RevealLeft");
                                     stream.addStartTransition(t);
                                     scs.startTransitions.add(stream.startTransitions.get(0));
@@ -667,17 +730,59 @@ public class Studio {
                         }
                         if (!subETrans.isEmpty()){
                             if (subETrans.get(op) != null) {
-                                if ("webcamstudio.channels.transitions.FadeOut".equals(subETrans.get(op))){
+                                if (subETrans.get(op).endsWith("FadeOut")){
                                     Transition t = Transition.getInstance(stream, "FadeOut");
                                     stream.addEndTransition(t);
                                     scs.endTransitions.add(stream.endTransitions.get(0));
-                                } if ("webcamstudio.channels.transitions.ShrinkOut".equals(subETrans.get(op))){
+                                } if (subETrans.get(op).endsWith("TranslateOut")){
+                                    Transition t = Transition.getInstance(stream, "TranslateOut");
+                                    stream.addEndTransition(t);
+                                    scs.endTransitions.add(stream.endTransitions.get(0));
+                                } if (subETrans.get(op).endsWith("AudioFadeOut")){
+                                    Transition t = Transition.getInstance(stream, "AudioFadeOut");
+                                    stream.addEndTransition(t);
+                                    scs.endTransitions.add(stream.endTransitions.get(0));
+                                } if (subETrans.get(op).endsWith("ShrinkOut")){
                                     Transition t = Transition.getInstance(stream, "ShrinkOut");
                                     stream.addEndTransition(t);
                                     scs.endTransitions.add(stream.endTransitions.get(0));
                                 }
                             }
                         }
+//                        if (!subSTrans.isEmpty()){
+//                            if (subSTrans.get(op) != null) {
+//                                if ("webcamstudio.channels.transitions.FadeIn".equals(subSTrans.get(op))){
+//                                    Transition t = Transition.getInstance(stream, "FadeIn");
+//                                    stream.addStartTransition(t);
+//                                    scs.startTransitions.add(stream.startTransitions.get(0));
+//                                } if ("webcamstudio.channels.transitions.Translate".equals(subSTrans.get(op))){
+//                                    Transition t = Transition.getInstance(stream, "Translate");
+//                                    stream.addStartTransition(t);
+//                                    scs.startTransitions.add(stream.startTransitions.get(0));
+//                                } if ("webcamstudio.channels.transitions.Resize".equals(subSTrans.get(op))){
+//                                    Transition t = Transition.getInstance(stream, "Resize");
+//                                    stream.addStartTransition(t);
+//                                    scs.startTransitions.add(stream.startTransitions.get(0));
+//                                } if ("webcamstudio.channels.transitions.RevealLeft".equals(subSTrans.get(op))){
+//                                    Transition t = Transition.getInstance(stream, "RevealLeft");
+//                                    stream.addStartTransition(t);
+//                                    scs.startTransitions.add(stream.startTransitions.get(0));
+//                                }
+//                            }
+//                        }
+//                        if (!subETrans.isEmpty()){
+//                            if (subETrans.get(op) != null) {
+//                                if ("webcamstudio.channels.transitions.FadeOut".equals(subETrans.get(op))){
+//                                    Transition t = Transition.getInstance(stream, "FadeOut");
+//                                    stream.addEndTransition(t);
+//                                    scs.endTransitions.add(stream.endTransitions.get(0));
+//                                } if ("webcamstudio.channels.transitions.ShrinkOut".equals(subETrans.get(op))){
+//                                    Transition t = Transition.getInstance(stream, "ShrinkOut");
+//                                    stream.addEndTransition(t);
+//                                    scs.endTransitions.add(stream.endTransitions.get(0));
+//                                }
+//                            }
+//                        }
                         stream.addChannel(scs);                    
                         op+=1;
                     }
@@ -716,19 +821,23 @@ public class Studio {
 //                        String sNamet=SubChNames.get(op);
                         if (!subSTrans.isEmpty()){
                             if (subSTrans.get(op) != null) {
-                                if ("webcamstudio.channels.transitions.FadeIn".equals(subSTrans.get(op))){
+                                if (subSTrans.get(op).endsWith("FadeIn")){
                                     Transition t = Transition.getInstance(text, "FadeIn");
                                     text.addStartTransition(t);
                                     scs.startTransitions.add(text.startTransitions.get(0));
-                                } if ("webcamstudio.channels.transitions.Translate".equals(subSTrans.get(op))){
-                                    Transition t = Transition.getInstance(text, "Translate");
+                                } if (subSTrans.get(op).endsWith("AudioFadeIn")){
+                                    Transition t = Transition.getInstance(text, "AudioFadeIn");
                                     text.addStartTransition(t);
                                     scs.startTransitions.add(text.startTransitions.get(0));
-                                } if ("webcamstudio.channels.transitions.Resize".equals(subSTrans.get(op))){
+                                } if (subSTrans.get(op).endsWith("TranslateIn")){
+                                    Transition t = Transition.getInstance(text, "TranslateIn");
+                                    text.addStartTransition(t);
+                                    scs.startTransitions.add(text.startTransitions.get(0));
+                                } if (subSTrans.get(op).endsWith("Resize")){
                                     Transition t = Transition.getInstance(text, "Resize");
                                     text.addStartTransition(t);
                                     scs.startTransitions.add(text.startTransitions.get(0));
-                                } if ("webcamstudio.channels.transitions.RevealLeft".equals(subSTrans.get(op))){
+                                } if (subSTrans.get(op).endsWith("RevealLeft")){
                                     Transition t = Transition.getInstance(text, "RevealLeft");
                                     text.addStartTransition(t);
                                     scs.startTransitions.add(text.startTransitions.get(0));
@@ -737,17 +846,59 @@ public class Studio {
                         }
                         if (!subETrans.isEmpty()){
                             if (subETrans.get(op) != null) {
-                                if ("webcamstudio.channels.transitions.FadeOut".equals(subETrans.get(op))){
+                                if (subETrans.get(op).endsWith("FadeOut")){
                                     Transition t = Transition.getInstance(text, "FadeOut");
                                     text.addEndTransition(t);
                                     scs.endTransitions.add(text.endTransitions.get(0));
-                                } if ("webcamstudio.channels.transitions.ShrinkOut".equals(subETrans.get(op))){
+                                } if (subETrans.get(op).endsWith("TranslateOut")){
+                                    Transition t = Transition.getInstance(text, "TranslateOut");
+                                    text.addEndTransition(t);
+                                    scs.endTransitions.add(text.endTransitions.get(0));
+                                } if (subETrans.get(op).endsWith("AudioFadeOut")){
+                                    Transition t = Transition.getInstance(text, "AudioFadeOut");
+                                    text.addEndTransition(t);
+                                    scs.endTransitions.add(text.endTransitions.get(0));
+                                } if (subETrans.get(op).endsWith("ShrinkOut")){
                                     Transition t = Transition.getInstance(text, "ShrinkOut");
                                     text.addEndTransition(t);
                                     scs.endTransitions.add(text.endTransitions.get(0));
                                 }
                             }
                         }
+//                        if (!subSTrans.isEmpty()){
+//                            if (subSTrans.get(op) != null) {
+//                                if ("webcamstudio.channels.transitions.FadeIn".equals(subSTrans.get(op))){
+//                                    Transition t = Transition.getInstance(text, "FadeIn");
+//                                    text.addStartTransition(t);
+//                                    scs.startTransitions.add(text.startTransitions.get(0));
+//                                } if ("webcamstudio.channels.transitions.Translate".equals(subSTrans.get(op))){
+//                                    Transition t = Transition.getInstance(text, "Translate");
+//                                    text.addStartTransition(t);
+//                                    scs.startTransitions.add(text.startTransitions.get(0));
+//                                } if ("webcamstudio.channels.transitions.Resize".equals(subSTrans.get(op))){
+//                                    Transition t = Transition.getInstance(text, "Resize");
+//                                    text.addStartTransition(t);
+//                                    scs.startTransitions.add(text.startTransitions.get(0));
+//                                } if ("webcamstudio.channels.transitions.RevealLeft".equals(subSTrans.get(op))){
+//                                    Transition t = Transition.getInstance(text, "RevealLeft");
+//                                    text.addStartTransition(t);
+//                                    scs.startTransitions.add(text.startTransitions.get(0));
+//                                }
+//                            }
+//                        }
+//                        if (!subETrans.isEmpty()){
+//                            if (subETrans.get(op) != null) {
+//                                if ("webcamstudio.channels.transitions.FadeOut".equals(subETrans.get(op))){
+//                                    Transition t = Transition.getInstance(text, "FadeOut");
+//                                    text.addEndTransition(t);
+//                                    scs.endTransitions.add(text.endTransitions.get(0));
+//                                } if ("webcamstudio.channels.transitions.ShrinkOut".equals(subETrans.get(op))){
+//                                    Transition t = Transition.getInstance(text, "ShrinkOut");
+//                                    text.addEndTransition(t);
+//                                    scs.endTransitions.add(text.endTransitions.get(0));
+//                                }
+//                            }
+//                        }
                         text.addChannel(scs);                    
                         op+=1;
                     }
@@ -770,19 +921,23 @@ public class Studio {
 //                        String sNamet=SubChNames.get(op);
                         if (!subSTrans.isEmpty()){
                             if (subSTrans.get(op) != null) {
-                                if ("webcamstudio.channels.transitions.FadeIn".equals(subSTrans.get(op))){
+                                if (subSTrans.get(op).endsWith("FadeIn")){
                                     Transition t = Transition.getInstance(stream, "FadeIn");
                                     stream.addStartTransition(t);
                                     scs.startTransitions.add(stream.startTransitions.get(0));
-                                } if ("webcamstudio.channels.transitions.Translate".equals(subSTrans.get(op))){
-                                    Transition t = Transition.getInstance(stream, "Translate");
+                                } if (subSTrans.get(op).endsWith("AudioFadeIn")){
+                                    Transition t = Transition.getInstance(stream, "AudioFadeIn");
                                     stream.addStartTransition(t);
                                     scs.startTransitions.add(stream.startTransitions.get(0));
-                                } if ("webcamstudio.channels.transitions.Resize".equals(subSTrans.get(op))){
+                                } if (subSTrans.get(op).endsWith("TranslateIn")){
+                                    Transition t = Transition.getInstance(stream, "TranslateIn");
+                                    stream.addStartTransition(t);
+                                    scs.startTransitions.add(stream.startTransitions.get(0));
+                                } if (subSTrans.get(op).endsWith("Resize")){
                                     Transition t = Transition.getInstance(stream, "Resize");
                                     stream.addStartTransition(t);
                                     scs.startTransitions.add(stream.startTransitions.get(0));
-                                } if ("webcamstudio.channels.transitions.RevealLeft".equals(subSTrans.get(op))){
+                                } if (subSTrans.get(op).endsWith("RevealLeft")){
                                     Transition t = Transition.getInstance(stream, "RevealLeft");
                                     stream.addStartTransition(t);
                                     scs.startTransitions.add(stream.startTransitions.get(0));
@@ -791,17 +946,59 @@ public class Studio {
                         }
                         if (!subETrans.isEmpty()){
                             if (subETrans.get(op) != null) {
-                                if ("webcamstudio.channels.transitions.FadeOut".equals(subETrans.get(op))){
+                                if (subETrans.get(op).endsWith("FadeOut")){
                                     Transition t = Transition.getInstance(stream, "FadeOut");
                                     stream.addEndTransition(t);
                                     scs.endTransitions.add(stream.endTransitions.get(0));
-                                } if ("webcamstudio.channels.transitions.ShrinkOut".equals(subETrans.get(op))){
+                                } if (subETrans.get(op).endsWith("TranslateOut")){
+                                    Transition t = Transition.getInstance(stream, "TranslateOut");
+                                    stream.addEndTransition(t);
+                                    scs.endTransitions.add(stream.endTransitions.get(0));
+                                } if (subETrans.get(op).endsWith("AudioFadeOut")){
+                                    Transition t = Transition.getInstance(stream, "AudioFadeOut");
+                                    stream.addEndTransition(t);
+                                    scs.endTransitions.add(stream.endTransitions.get(0));
+                                } if (subETrans.get(op).endsWith("ShrinkOut")){
                                     Transition t = Transition.getInstance(stream, "ShrinkOut");
                                     stream.addEndTransition(t);
                                     scs.endTransitions.add(stream.endTransitions.get(0));
                                 }
                             }
                         }
+//                        if (!subSTrans.isEmpty()){
+//                            if (subSTrans.get(op) != null) {
+//                                if ("webcamstudio.channels.transitions.FadeIn".equals(subSTrans.get(op))){
+//                                    Transition t = Transition.getInstance(stream, "FadeIn");
+//                                    stream.addStartTransition(t);
+//                                    scs.startTransitions.add(stream.startTransitions.get(0));
+//                                } if ("webcamstudio.channels.transitions.Translate".equals(subSTrans.get(op))){
+//                                    Transition t = Transition.getInstance(stream, "Translate");
+//                                    stream.addStartTransition(t);
+//                                    scs.startTransitions.add(stream.startTransitions.get(0));
+//                                } if ("webcamstudio.channels.transitions.Resize".equals(subSTrans.get(op))){
+//                                    Transition t = Transition.getInstance(stream, "Resize");
+//                                    stream.addStartTransition(t);
+//                                    scs.startTransitions.add(stream.startTransitions.get(0));
+//                                } if ("webcamstudio.channels.transitions.RevealLeft".equals(subSTrans.get(op))){
+//                                    Transition t = Transition.getInstance(stream, "RevealLeft");
+//                                    stream.addStartTransition(t);
+//                                    scs.startTransitions.add(stream.startTransitions.get(0));
+//                                }
+//                            }
+//                        }
+//                        if (!subETrans.isEmpty()){
+//                            if (subETrans.get(op) != null) {
+//                                if ("webcamstudio.channels.transitions.FadeOut".equals(subETrans.get(op))){
+//                                    Transition t = Transition.getInstance(stream, "FadeOut");
+//                                    stream.addEndTransition(t);
+//                                    scs.endTransitions.add(stream.endTransitions.get(0));
+//                                } if ("webcamstudio.channels.transitions.ShrinkOut".equals(subETrans.get(op))){
+//                                    Transition t = Transition.getInstance(stream, "ShrinkOut");
+//                                    stream.addEndTransition(t);
+//                                    scs.endTransitions.add(stream.endTransitions.get(0));
+//                                }
+//                            }
+//                        }
                         stream.addChannel(scs);                    
                         op+=1;
                     }
@@ -825,19 +1022,23 @@ public class Studio {
 //                        String sNamet=SubChNames.get(op);
                         if (!subSTrans.isEmpty()){
                             if (subSTrans.get(op) != null) {
-                                if ("webcamstudio.channels.transitions.FadeIn".equals(subSTrans.get(op))){
+                                if (subSTrans.get(op).endsWith("FadeIn")){
                                     Transition t = Transition.getInstance(stream, "FadeIn");
                                     stream.addStartTransition(t);
                                     scs.startTransitions.add(stream.startTransitions.get(0));
-                                } if ("webcamstudio.channels.transitions.Translate".equals(subSTrans.get(op))){
-                                    Transition t = Transition.getInstance(stream, "Translate");
+                                } if (subSTrans.get(op).endsWith("AudioFadeIn")){
+                                    Transition t = Transition.getInstance(stream, "AudioFadeIn");
                                     stream.addStartTransition(t);
                                     scs.startTransitions.add(stream.startTransitions.get(0));
-                                } if ("webcamstudio.channels.transitions.Resize".equals(subSTrans.get(op))){
+                                } if (subSTrans.get(op).endsWith("TranslateIn")){
+                                    Transition t = Transition.getInstance(stream, "TranslateIn");
+                                    stream.addStartTransition(t);
+                                    scs.startTransitions.add(stream.startTransitions.get(0));
+                                } if (subSTrans.get(op).endsWith("Resize")){
                                     Transition t = Transition.getInstance(stream, "Resize");
                                     stream.addStartTransition(t);
                                     scs.startTransitions.add(stream.startTransitions.get(0));
-                                } if ("webcamstudio.channels.transitions.RevealLeft".equals(subSTrans.get(op))){
+                                } if (subSTrans.get(op).endsWith("RevealLeft")){
                                     Transition t = Transition.getInstance(stream, "RevealLeft");
                                     stream.addStartTransition(t);
                                     scs.startTransitions.add(stream.startTransitions.get(0));
@@ -846,17 +1047,59 @@ public class Studio {
                         }
                         if (!subETrans.isEmpty()){
                             if (subETrans.get(op) != null) {
-                                if ("webcamstudio.channels.transitions.FadeOut".equals(subETrans.get(op))){
+                                if (subETrans.get(op).endsWith("FadeOut")){
                                     Transition t = Transition.getInstance(stream, "FadeOut");
                                     stream.addEndTransition(t);
                                     scs.endTransitions.add(stream.endTransitions.get(0));
-                                } if ("webcamstudio.channels.transitions.ShrinkOut".equals(subETrans.get(op))){
+                                } if (subETrans.get(op).endsWith("TranslateOut")){
+                                    Transition t = Transition.getInstance(stream, "TranslateOut");
+                                    stream.addEndTransition(t);
+                                    scs.endTransitions.add(stream.endTransitions.get(0));
+                                } if (subETrans.get(op).endsWith("AudioFadeOut")){
+                                    Transition t = Transition.getInstance(stream, "AudioFadeOut");
+                                    stream.addEndTransition(t);
+                                    scs.endTransitions.add(stream.endTransitions.get(0));
+                                } if (subETrans.get(op).endsWith("ShrinkOut")){
                                     Transition t = Transition.getInstance(stream, "ShrinkOut");
                                     stream.addEndTransition(t);
                                     scs.endTransitions.add(stream.endTransitions.get(0));
                                 }
                             }
                         }
+//                        if (!subSTrans.isEmpty()){
+//                            if (subSTrans.get(op) != null) {
+//                                if ("webcamstudio.channels.transitions.FadeIn".equals(subSTrans.get(op))){
+//                                    Transition t = Transition.getInstance(stream, "FadeIn");
+//                                    stream.addStartTransition(t);
+//                                    scs.startTransitions.add(stream.startTransitions.get(0));
+//                                } if ("webcamstudio.channels.transitions.Translate".equals(subSTrans.get(op))){
+//                                    Transition t = Transition.getInstance(stream, "Translate");
+//                                    stream.addStartTransition(t);
+//                                    scs.startTransitions.add(stream.startTransitions.get(0));
+//                                } if ("webcamstudio.channels.transitions.Resize".equals(subSTrans.get(op))){
+//                                    Transition t = Transition.getInstance(stream, "Resize");
+//                                    stream.addStartTransition(t);
+//                                    scs.startTransitions.add(stream.startTransitions.get(0));
+//                                } if ("webcamstudio.channels.transitions.RevealLeft".equals(subSTrans.get(op))){
+//                                    Transition t = Transition.getInstance(stream, "RevealLeft");
+//                                    stream.addStartTransition(t);
+//                                    scs.startTransitions.add(stream.startTransitions.get(0));
+//                                }
+//                            }
+//                        }
+//                        if (!subETrans.isEmpty()){
+//                            if (subETrans.get(op) != null) {
+//                                if ("webcamstudio.channels.transitions.FadeOut".equals(subETrans.get(op))){
+//                                    Transition t = Transition.getInstance(stream, "FadeOut");
+//                                    stream.addEndTransition(t);
+//                                    scs.endTransitions.add(stream.endTransitions.get(0));
+//                                } if ("webcamstudio.channels.transitions.ShrinkOut".equals(subETrans.get(op))){
+//                                    Transition t = Transition.getInstance(stream, "ShrinkOut");
+//                                    stream.addEndTransition(t);
+//                                    scs.endTransitions.add(stream.endTransitions.get(0));
+//                                }
+//                            }
+//                        }
                         stream.addChannel(scs);                    
                         op+=1;
                     }
@@ -882,19 +1125,23 @@ public class Studio {
 //                        String sNamet=SubChNames.get(op);
                         if (!subSTrans.isEmpty()){
                             if (subSTrans.get(op) != null) {
-                                if ("webcamstudio.channels.transitions.FadeIn".equals(subSTrans.get(op))){
+                                if (subSTrans.get(op).endsWith("FadeIn")){
                                     Transition t = Transition.getInstance(stream, "FadeIn");
                                     stream.addStartTransition(t);
                                     scs.startTransitions.add(stream.startTransitions.get(0));
-                                } if ("webcamstudio.channels.transitions.Translate".equals(subSTrans.get(op))){
-                                    Transition t = Transition.getInstance(stream, "Translate");
+                                } if (subSTrans.get(op).endsWith("AudioFadeIn")){
+                                    Transition t = Transition.getInstance(stream, "AudioFadeIn");
                                     stream.addStartTransition(t);
                                     scs.startTransitions.add(stream.startTransitions.get(0));
-                                } if ("webcamstudio.channels.transitions.Resize".equals(subSTrans.get(op))){
+                                } if (subSTrans.get(op).endsWith("TranslateIn")){
+                                    Transition t = Transition.getInstance(stream, "TranslateIn");
+                                    stream.addStartTransition(t);
+                                    scs.startTransitions.add(stream.startTransitions.get(0));
+                                } if (subSTrans.get(op).endsWith("Resize")){
                                     Transition t = Transition.getInstance(stream, "Resize");
                                     stream.addStartTransition(t);
                                     scs.startTransitions.add(stream.startTransitions.get(0));
-                                } if ("webcamstudio.channels.transitions.RevealLeft".equals(subSTrans.get(op))){
+                                } if (subSTrans.get(op).endsWith("RevealLeft")){
                                     Transition t = Transition.getInstance(stream, "RevealLeft");
                                     stream.addStartTransition(t);
                                     scs.startTransitions.add(stream.startTransitions.get(0));
@@ -903,17 +1150,59 @@ public class Studio {
                         }
                         if (!subETrans.isEmpty()){
                             if (subETrans.get(op) != null) {
-                                if ("webcamstudio.channels.transitions.FadeOut".equals(subETrans.get(op))){
+                                if (subETrans.get(op).endsWith("FadeOut")){
                                     Transition t = Transition.getInstance(stream, "FadeOut");
                                     stream.addEndTransition(t);
                                     scs.endTransitions.add(stream.endTransitions.get(0));
-                                } if ("webcamstudio.channels.transitions.ShrinkOut".equals(subETrans.get(op))){
+                                } if (subETrans.get(op).endsWith("TranslateOut")){
+                                    Transition t = Transition.getInstance(stream, "TranslateOut");
+                                    stream.addEndTransition(t);
+                                    scs.endTransitions.add(stream.endTransitions.get(0));
+                                } if (subETrans.get(op).endsWith("AudioFadeOut")){
+                                    Transition t = Transition.getInstance(stream, "AudioFadeOut");
+                                    stream.addEndTransition(t);
+                                    scs.endTransitions.add(stream.endTransitions.get(0));
+                                } if (subETrans.get(op).endsWith("ShrinkOut")){
                                     Transition t = Transition.getInstance(stream, "ShrinkOut");
                                     stream.addEndTransition(t);
                                     scs.endTransitions.add(stream.endTransitions.get(0));
                                 }
                             }
                         }
+//                        if (!subSTrans.isEmpty()){
+//                            if (subSTrans.get(op) != null) {
+//                                if ("webcamstudio.channels.transitions.FadeIn".equals(subSTrans.get(op))){
+//                                    Transition t = Transition.getInstance(stream, "FadeIn");
+//                                    stream.addStartTransition(t);
+//                                    scs.startTransitions.add(stream.startTransitions.get(0));
+//                                } if ("webcamstudio.channels.transitions.Translate".equals(subSTrans.get(op))){
+//                                    Transition t = Transition.getInstance(stream, "Translate");
+//                                    stream.addStartTransition(t);
+//                                    scs.startTransitions.add(stream.startTransitions.get(0));
+//                                } if ("webcamstudio.channels.transitions.Resize".equals(subSTrans.get(op))){
+//                                    Transition t = Transition.getInstance(stream, "Resize");
+//                                    stream.addStartTransition(t);
+//                                    scs.startTransitions.add(stream.startTransitions.get(0));
+//                                } if ("webcamstudio.channels.transitions.RevealLeft".equals(subSTrans.get(op))){
+//                                    Transition t = Transition.getInstance(stream, "RevealLeft");
+//                                    stream.addStartTransition(t);
+//                                    scs.startTransitions.add(stream.startTransitions.get(0));
+//                                }
+//                            }
+//                        }
+//                        if (!subETrans.isEmpty()){
+//                            if (subETrans.get(op) != null) {
+//                                if ("webcamstudio.channels.transitions.FadeOut".equals(subETrans.get(op))){
+//                                    Transition t = Transition.getInstance(stream, "FadeOut");
+//                                    stream.addEndTransition(t);
+//                                    scs.endTransitions.add(stream.endTransitions.get(0));
+//                                } if ("webcamstudio.channels.transitions.ShrinkOut".equals(subETrans.get(op))){
+//                                    Transition t = Transition.getInstance(stream, "ShrinkOut");
+//                                    stream.addEndTransition(t);
+//                                    scs.endTransitions.add(stream.endTransitions.get(0));
+//                                }
+//                            }
+//                        }
                         stream.addChannel(scs);                    
                         op+=1;
                     }
@@ -933,19 +1222,23 @@ public class Studio {
 //                        String sNamet=SubChNames.get(op);
                         if (!subSTrans.isEmpty()){
                             if (subSTrans.get(op) != null) {
-                                if ("webcamstudio.channels.transitions.FadeIn".equals(subSTrans.get(op))){
+                                if (subSTrans.get(op).endsWith("FadeIn")){
                                     Transition t = Transition.getInstance(stream, "FadeIn");
                                     stream.addStartTransition(t);
                                     scs.startTransitions.add(stream.startTransitions.get(0));
-                                } if ("webcamstudio.channels.transitions.Translate".equals(subSTrans.get(op))){
-                                    Transition t = Transition.getInstance(stream, "Translate");
+                                } if (subSTrans.get(op).endsWith("AudioFadeIn")){
+                                    Transition t = Transition.getInstance(stream, "AudioFadeIn");
                                     stream.addStartTransition(t);
                                     scs.startTransitions.add(stream.startTransitions.get(0));
-                                } if ("webcamstudio.channels.transitions.Resize".equals(subSTrans.get(op))){
+                                } if (subSTrans.get(op).endsWith("TranslateIn")){
+                                    Transition t = Transition.getInstance(stream, "TranslateIn");
+                                    stream.addStartTransition(t);
+                                    scs.startTransitions.add(stream.startTransitions.get(0));
+                                } if (subSTrans.get(op).endsWith("Resize")){
                                     Transition t = Transition.getInstance(stream, "Resize");
                                     stream.addStartTransition(t);
                                     scs.startTransitions.add(stream.startTransitions.get(0));
-                                } if ("webcamstudio.channels.transitions.RevealLeft".equals(subSTrans.get(op))){
+                                } if (subSTrans.get(op).endsWith("RevealLeft")){
                                     Transition t = Transition.getInstance(stream, "RevealLeft");
                                     stream.addStartTransition(t);
                                     scs.startTransitions.add(stream.startTransitions.get(0));
@@ -954,17 +1247,59 @@ public class Studio {
                         }
                         if (!subETrans.isEmpty()){
                             if (subETrans.get(op) != null) {
-                                if ("webcamstudio.channels.transitions.FadeOut".equals(subETrans.get(op))){
+                                if (subETrans.get(op).endsWith("FadeOut")){
                                     Transition t = Transition.getInstance(stream, "FadeOut");
                                     stream.addEndTransition(t);
                                     scs.endTransitions.add(stream.endTransitions.get(0));
-                                } if ("webcamstudio.channels.transitions.ShrinkOut".equals(subETrans.get(op))){
+                                } if (subETrans.get(op).endsWith("TranslateOut")){
+                                    Transition t = Transition.getInstance(stream, "TranslateOut");
+                                    stream.addEndTransition(t);
+                                    scs.endTransitions.add(stream.endTransitions.get(0));
+                                } if (subETrans.get(op).endsWith("AudioFadeOut")){
+                                    Transition t = Transition.getInstance(stream, "AudioFadeOut");
+                                    stream.addEndTransition(t);
+                                    scs.endTransitions.add(stream.endTransitions.get(0));
+                                } if (subETrans.get(op).endsWith("ShrinkOut")){
                                     Transition t = Transition.getInstance(stream, "ShrinkOut");
                                     stream.addEndTransition(t);
                                     scs.endTransitions.add(stream.endTransitions.get(0));
                                 }
                             }
                         }
+//                        if (!subSTrans.isEmpty()){
+//                            if (subSTrans.get(op) != null) {
+//                                if ("webcamstudio.channels.transitions.FadeIn".equals(subSTrans.get(op))){
+//                                    Transition t = Transition.getInstance(stream, "FadeIn");
+//                                    stream.addStartTransition(t);
+//                                    scs.startTransitions.add(stream.startTransitions.get(0));
+//                                } if ("webcamstudio.channels.transitions.Translate".equals(subSTrans.get(op))){
+//                                    Transition t = Transition.getInstance(stream, "Translate");
+//                                    stream.addStartTransition(t);
+//                                    scs.startTransitions.add(stream.startTransitions.get(0));
+//                                } if ("webcamstudio.channels.transitions.Resize".equals(subSTrans.get(op))){
+//                                    Transition t = Transition.getInstance(stream, "Resize");
+//                                    stream.addStartTransition(t);
+//                                    scs.startTransitions.add(stream.startTransitions.get(0));
+//                                } if ("webcamstudio.channels.transitions.RevealLeft".equals(subSTrans.get(op))){
+//                                    Transition t = Transition.getInstance(stream, "RevealLeft");
+//                                    stream.addStartTransition(t);
+//                                    scs.startTransitions.add(stream.startTransitions.get(0));
+//                                }
+//                            }
+//                        }
+//                        if (!subETrans.isEmpty()){
+//                            if (subETrans.get(op) != null) {
+//                                if ("webcamstudio.channels.transitions.FadeOut".equals(subETrans.get(op))){
+//                                    Transition t = Transition.getInstance(stream, "FadeOut");
+//                                    stream.addEndTransition(t);
+//                                    scs.endTransitions.add(stream.endTransitions.get(0));
+//                                } if ("webcamstudio.channels.transitions.ShrinkOut".equals(subETrans.get(op))){
+//                                    Transition t = Transition.getInstance(stream, "ShrinkOut");
+//                                    stream.addEndTransition(t);
+//                                    scs.endTransitions.add(stream.endTransitions.get(0));
+//                                }
+//                            }
+//                        }
                         stream.addChannel(scs);                    
                         op+=1;
                     }
@@ -992,45 +1327,91 @@ public class Studio {
 //                                    String sNamet=SubChNames.get(op);
                                     if (!subSTrans.isEmpty()){
                                         if (subSTrans.get(op) != null) {
-                                            if ("webcamstudio.channels.transitions.FadeIn".equals(subSTrans.get(op))){
+                                            if (subSTrans.get(op).endsWith("FadeIn")){
                                                 Transition t = Transition.getInstance(stream, "FadeIn");
                                                 stream.addStartTransition(t);
                                                 scs.startTransitions.add(stream.startTransitions.get(0));
-                                                }
-                                            } if ("webcamstudio.channels.transitions.Translate".equals(subSTrans.get(op))){
-                                                Transition t = Transition.getInstance(stream, "Translate");
+                                            } if (subSTrans.get(op).endsWith("AudioFadeIn")){
+                                                Transition t = Transition.getInstance(stream, "AudioFadeIn");
                                                 stream.addStartTransition(t);
                                                 scs.startTransitions.add(stream.startTransitions.get(0));
-                                            } if ("webcamstudio.channels.transitions.Resize".equals(subSTrans.get(op))){
+                                            } if (subSTrans.get(op).endsWith("TranslateIn")){
+                                                Transition t = Transition.getInstance(stream, "TranslateIn");
+                                                stream.addStartTransition(t);
+                                                scs.startTransitions.add(stream.startTransitions.get(0));
+                                            } if (subSTrans.get(op).endsWith("Resize")){
                                                 Transition t = Transition.getInstance(stream, "Resize");
                                                 stream.addStartTransition(t);
                                                 scs.startTransitions.add(stream.startTransitions.get(0));
-                                            } if ("webcamstudio.channels.transitions.RevealLeft".equals(subSTrans.get(op))){
+                                            } if (subSTrans.get(op).endsWith("RevealLeft")){
                                                 Transition t = Transition.getInstance(stream, "RevealLeft");
                                                 stream.addStartTransition(t);
                                                 scs.startTransitions.add(stream.startTransitions.get(0));
                                             }
-                                    }                                
+                                        }
+                                    }
                                     if (!subETrans.isEmpty()){
                                         if (subETrans.get(op) != null) {
-                                            if ("webcamstudio.channels.transitions.FadeOut".equals(subETrans.get(op))){
+                                            if (subETrans.get(op).endsWith("FadeOut")){
                                                 Transition t = Transition.getInstance(stream, "FadeOut");
                                                 stream.addEndTransition(t);
                                                 scs.endTransitions.add(stream.endTransitions.get(0));
-                                            } if ("webcamstudio.channels.transitions.ShrinkOut".equals(subETrans.get(op))){
+                                            } if (subETrans.get(op).endsWith("TranslateOut")){
+                                                Transition t = Transition.getInstance(stream, "TranslateOut");
+                                                stream.addEndTransition(t);
+                                                scs.endTransitions.add(stream.endTransitions.get(0));
+                                            } if (subETrans.get(op).endsWith("AudioFadeOut")){
+                                                Transition t = Transition.getInstance(stream, "AudioFadeOut");
+                                                stream.addEndTransition(t);
+                                                scs.endTransitions.add(stream.endTransitions.get(0));
+                                            } if (subETrans.get(op).endsWith("ShrinkOut")){
                                                 Transition t = Transition.getInstance(stream, "ShrinkOut");
                                                 stream.addEndTransition(t);
                                                 scs.endTransitions.add(stream.endTransitions.get(0));
                                             }
                                         }
                                     }
-                        stream.addChannel(scs);                    
-                        op+=1;                    
-                    }
-                    SCL.clear();
-                    SubChNames.clear();
-                    subSTrans.clear();
-                    subETrans.clear();
+//                                    if (!subSTrans.isEmpty()){
+//                                        if (subSTrans.get(op) != null) {
+//                                            if ("webcamstudio.channels.transitions.FadeIn".equals(subSTrans.get(op))){
+//                                                Transition t = Transition.getInstance(stream, "FadeIn");
+//                                                stream.addStartTransition(t);
+//                                                scs.startTransitions.add(stream.startTransitions.get(0));
+//                                                }
+//                                            } if ("webcamstudio.channels.transitions.Translate".equals(subSTrans.get(op))){
+//                                                Transition t = Transition.getInstance(stream, "Translate");
+//                                                stream.addStartTransition(t);
+//                                                scs.startTransitions.add(stream.startTransitions.get(0));
+//                                            } if ("webcamstudio.channels.transitions.Resize".equals(subSTrans.get(op))){
+//                                                Transition t = Transition.getInstance(stream, "Resize");
+//                                                stream.addStartTransition(t);
+//                                                scs.startTransitions.add(stream.startTransitions.get(0));
+//                                            } if ("webcamstudio.channels.transitions.RevealLeft".equals(subSTrans.get(op))){
+//                                                Transition t = Transition.getInstance(stream, "RevealLeft");
+//                                                stream.addStartTransition(t);
+//                                                scs.startTransitions.add(stream.startTransitions.get(0));
+//                                            }
+//                                    }                                
+//                                    if (!subETrans.isEmpty()){
+//                                        if (subETrans.get(op) != null) {
+//                                            if ("webcamstudio.channels.transitions.FadeOut".equals(subETrans.get(op))){
+//                                                Transition t = Transition.getInstance(stream, "FadeOut");
+//                                                stream.addEndTransition(t);
+//                                                scs.endTransitions.add(stream.endTransitions.get(0));
+//                                            } if ("webcamstudio.channels.transitions.ShrinkOut".equals(subETrans.get(op))){
+//                                                Transition t = Transition.getInstance(stream, "ShrinkOut");
+//                                                stream.addEndTransition(t);
+//                                                scs.endTransitions.add(stream.endTransitions.get(0));
+//                                            }
+//                                        }
+//                                    }
+                                    stream.addChannel(scs);                    
+                                    op+=1;                    
+                                }
+                                SCL.clear();
+                                SubChNames.clear();
+                                subSTrans.clear();
+                                subETrans.clear();
                             }
                         }                   
                     }

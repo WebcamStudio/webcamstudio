@@ -283,13 +283,7 @@ public class VideoSourceWidget extends VideoSource {
                         }
                     } catch (InterruptedException ex) {
                         Logger.getLogger(VideoSourceWidget.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (ParserConfigurationException ex) {
-                        Logger.getLogger(VideoSourceWidget.class.getName()).log(Level.SEVERE, null, ex);
-                        stopMe = true;
-                    } catch (SAXException ex) {
-                        Logger.getLogger(VideoSourceWidget.class.getName()).log(Level.SEVERE, null, ex);
-                        stopMe = true;
-                    } catch (IOException ex) {
+                    } catch (ParserConfigurationException | SAXException | IOException ex) {
                         Logger.getLogger(VideoSourceWidget.class.getName()).log(Level.SEVERE, null, ex);
                         stopMe = true;
                     }

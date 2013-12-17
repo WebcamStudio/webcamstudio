@@ -20,9 +20,9 @@ public class DccSendHandler extends Thread
 {
     
 
-    private Socket socket_;
-	private String filename_;
-	private int filesize_;
+    private final Socket socket_;
+	private final String filename_;
+	private final int filesize_;
 
 	private final static int DEFAULT_BUF_SIZE = 5000;
 	private static int count = 0;

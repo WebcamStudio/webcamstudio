@@ -16,12 +16,12 @@ limitations under the License.
 
 package com.jhlabs.image;
 
-import java.awt.*;
+import java.awt.Color;
 
 public class HSBAdjustFilter extends PointFilter {
 	
 	public float hFactor, sFactor, bFactor;
-	private float[] hsb = new float[3];
+	private final float[] hsb = new float[3];
 	
 	public HSBAdjustFilter() {
 		this(0, 0, 0);

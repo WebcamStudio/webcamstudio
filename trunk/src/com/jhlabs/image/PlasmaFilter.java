@@ -16,15 +16,16 @@ limitations under the License.
 
 package com.jhlabs.image;
 
-import java.util.*;
-import java.awt.*;
+import java.awt.Rectangle;
+import java.util.Date;
+import java.util.Random;
 
 public class PlasmaFilter extends WholeImageFilter {
 	
 	public float turbulence = 1.0f;
 	private float scaling = 0.0f;
 	private Colormap colormap = new LinearColormap();
-	private Random randomGenerator;
+	private final Random randomGenerator;
 	private long seed = 567;
 	private boolean useColormap = false;
 	private boolean useImageColors = false;

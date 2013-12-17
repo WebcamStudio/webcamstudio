@@ -78,6 +78,7 @@ public class ProcessRenderer {
         processAudio = new ProcessExecutor(s.getName());
 
     }
+    @SuppressWarnings("empty-statement")
     private String initAudioSource() {
         Runtime rt = Runtime.getRuntime();
         String commandAudioSrc = "pactl list";
@@ -120,7 +121,7 @@ public class ProcessRenderer {
                  }
              } 
          } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
+            Logger.getLogger(Capturer.class.getName()).log(Level.SEVERE, null, e);
          }
          return resu;
     }
@@ -382,7 +383,7 @@ public class ProcessRenderer {
                         System.out.println();
                         processVideo.execute(parmsVideo);
                     } catch (IOException | InterruptedException e) {
-                        e.printStackTrace();
+                        Logger.getLogger(Capturer.class.getName()).log(Level.SEVERE, null, e);
                     }
                 } else {
                     processVideo = null;
@@ -398,7 +399,7 @@ public class ProcessRenderer {
                         System.out.println();
                         processAudio.execute(parmsAudio);
                     } catch (IOException | InterruptedException e) {
-                        e.printStackTrace();
+                        Logger.getLogger(Capturer.class.getName()).log(Level.SEVERE, null, e);
                     }
                 } else {
                     processAudio = null;
@@ -493,7 +494,7 @@ public class ProcessRenderer {
                 } catch (IOException ex) {
                     Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                Runtime rt = Runtime.getRuntime();
+//                Runtime rt = Runtime.getRuntime();
                 String batchVideoCommand = "sh "+System.getProperty("user.home")+"/.webcamstudio/"+"WSFromUrlVideo"+stream.getID()+".sh";
                 String batchAudioCommand = "sh "+System.getProperty("user.home")+"/.webcamstudio/"+"WSFromUrlAudio"+stream.getID()+".sh";
                 try {
@@ -504,7 +505,7 @@ public class ProcessRenderer {
                         processAudio.executeString(batchAudioCommand);
                     }
                 } catch (IOException | InterruptedException e) {
-                    e.printStackTrace();
+                    Logger.getLogger(Capturer.class.getName()).log(Level.SEVERE, null, e);
                 }
             }
         }).start();    
@@ -544,19 +545,19 @@ public class ProcessRenderer {
                 } catch (IOException ex) {
                     Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                Runtime rt = Runtime.getRuntime();
-                try {
-                    Process p = rt.exec("chmod a+x "+System.getProperty("user.home")+"/.webcamstudio/"+"WSBroadcast.sh");
-                } catch (IOException ex) {
-                    Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
-                }
+//                Runtime rt = Runtime.getRuntime();
+//                try {
+//                    Process p = rt.exec("chmod a+x "+System.getProperty("user.home")+"/.webcamstudio/"+"WSBroadcast.sh");
+//                } catch (IOException ex) {
+//                    Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
+//                }
                 String batchCommand = "sh "+System.getProperty("user.home")+"/.webcamstudio/"+"WSBroadcast.sh";
                 try {
                     processVideo.executeString(batchCommand);
                     processAudio = null;
                     //We don't need processAudio on export.  Only 1 process is required...
                 } catch (IOException | InterruptedException e) {
-                    e.printStackTrace();
+                    Logger.getLogger(Capturer.class.getName()).log(Level.SEVERE, null, e);
                 }
             }
         }).start();
@@ -587,7 +588,7 @@ public class ProcessRenderer {
                     processAudio = null;
                     //We don't need processAudio on export.  Only 1 process is required...
                 } catch (IOException | InterruptedException e) {
-                    e.printStackTrace();
+                    Logger.getLogger(Capturer.class.getName()).log(Level.SEVERE, null, e);
                 }
             }
         }).start();

@@ -16,8 +16,8 @@ limitations under the License.
 
 package com.jhlabs.image;
 
-import java.awt.*;
-import java.awt.image.*;
+import java.awt.Point;
+import java.awt.image.BufferedImage;
 
 /**
  * A class which warps an image using a field Warp algorithm.

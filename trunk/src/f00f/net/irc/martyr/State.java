@@ -15,7 +15,7 @@ public class State
     public static final State REGISTERED = new State("registered");
     public static final State UNKNOWN = new State("unknown/any");
 
-    private String stateName;
+    private final String stateName;
 
     private State( String str )
     {

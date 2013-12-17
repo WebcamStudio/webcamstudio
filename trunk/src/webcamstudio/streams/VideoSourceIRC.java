@@ -4,27 +4,25 @@
  */
 package webcamstudio.streams;
 
-import f00f.net.irc.martyr.*;
-import f00f.net.irc.martyr.clientstate.ClientState;
-import f00f.net.irc.martyr.services.AutoRegister;
-import f00f.net.irc.martyr.services.AutoReconnect;
-import f00f.net.irc.martyr.services.AutoJoin;
 import f00f.net.irc.martyr.GenericAutoService;
+import f00f.net.irc.martyr.IRCConnection;
 import f00f.net.irc.martyr.InCommand;
 import f00f.net.irc.martyr.State;
+import f00f.net.irc.martyr.clientstate.Channel;
+import f00f.net.irc.martyr.clientstate.ClientState;
 import f00f.net.irc.martyr.commands.ActionCtcp;
 import f00f.net.irc.martyr.commands.KickCommand;
 import f00f.net.irc.martyr.commands.MessageCommand;
-import f00f.net.irc.martyr.commands.QuitCommand;
-import f00f.net.irc.martyr.commands.RawCommand;
-
-
-import java.util.StringTokenizer;
-import f00f.net.irc.martyr.clientstate.Channel;
 import f00f.net.irc.martyr.commands.PingCommand;
 import f00f.net.irc.martyr.commands.PongCommand;
+import f00f.net.irc.martyr.commands.QuitCommand;
+import f00f.net.irc.martyr.commands.RawCommand;
+import f00f.net.irc.martyr.services.AutoJoin;
+import f00f.net.irc.martyr.services.AutoReconnect;
+import f00f.net.irc.martyr.services.AutoRegister;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.util.StringTokenizer;
 import javax.swing.ImageIcon;
 
 
@@ -436,9 +434,9 @@ public class VideoSourceIRC extends VideoSource {
     private boolean quit = false;
     private MessageMonitor messageMonitor = null;
     private int charWidth = 12;
-    private java.util.Vector<VideoSourceIRCListener> ircListeners = new java.util.Vector<>();
+    private final java.util.Vector<VideoSourceIRCListener> ircListeners = new java.util.Vector<>();
     private java.awt.Graphics2D buffer = null;
-    private Emotes emotes = new Emotes();
+    private final Emotes emotes = new Emotes();
 
 }
 

@@ -12,10 +12,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JInternalFrame;
 import javax.swing.JInternalFrame.JDesktopIcon;
-import webcamstudio.streams.SourceText;
 import webcamstudio.streams.SourceDVB;
-import webcamstudio.streams.Stream;
+import webcamstudio.streams.SourceText;
 import webcamstudio.streams.SourceURL;
+import webcamstudio.streams.Stream;
 
 /**
  *

@@ -16,8 +16,8 @@ limitations under the License.
 
 package com.jhlabs.image;
 
-import java.awt.*;
-import java.awt.image.*;
+import java.awt.Point;
+import java.awt.image.BufferedImage;
 
 /**
  * A filter which draws a coloured gradient. This is largely superceded by GradientPaint in Java1.2, but does provide a few

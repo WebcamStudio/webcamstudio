@@ -16,8 +16,8 @@ limitations under the License.
 
 package com.jhlabs.image;
 
-import java.awt.*;
-import com.jhlabs.math.*;
+import com.jhlabs.math.Noise;
+import java.awt.Rectangle;
 
 /**
  * A filter which distorts an image by rippling it in the X or Y directions.

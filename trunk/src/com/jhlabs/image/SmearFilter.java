@@ -16,8 +16,9 @@ limitations under the License.
 
 package com.jhlabs.image;
 
-import java.util.*;
-import java.awt.*;
+import java.awt.Rectangle;
+import java.util.Date;
+import java.util.Random;
 
 public class SmearFilter extends WholeImageFilter {
 	
@@ -26,12 +27,12 @@ public class SmearFilter extends WholeImageFilter {
 	public final static int CIRCLES = 2;
 	public final static int SQUARES = 3;
 
-	private Colormap colormap = new LinearColormap();
+	private final Colormap colormap = new LinearColormap();
 	private float angle = 0;
 	private float density = 0.5f;
 	private float scatter = 0.0f;
 	private int distance = 8;
-	private Random randomGenerator;
+	private final Random randomGenerator;
 	private long seed = 567;
 	private int shape = LINES;
 	private float mix = 0.5f;

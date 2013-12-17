@@ -2,8 +2,11 @@ package webcamstudio.visage;
 
 /*Autor: Adel Restom adel_restom@yahoo.com*/
 
-import java.awt.image.*;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.awt.image.PixelGrabber;
 
 /*
   This class contains utility functions for image processing.

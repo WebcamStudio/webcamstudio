@@ -11,7 +11,7 @@ import f00f.net.irc.martyr.State;
 public class PingCommand extends AbstractCommand
 {
 
-    private String pingSource;
+    private final String pingSource;
 
     /** Factory */
     public PingCommand()

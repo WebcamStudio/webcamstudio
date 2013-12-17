@@ -16,10 +16,14 @@ limitations under the License.
 
 package com.jhlabs.image;
 
-import java.awt.*;
-import java.awt.geom.*;
-import java.awt.image.*;
-import java.util.*;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.geom.Line2D;
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.Random;
 
 public class ScratchFilter extends AbstractBufferedImageOp {
     private float density = 0.1f;

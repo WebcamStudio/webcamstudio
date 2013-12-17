@@ -1,7 +1,11 @@
 package svm;
 
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.StringTokenizer;
 
 //
 // Kernel Cache
@@ -19,7 +23,7 @@ class Cache {
 		int len;		// data[0,len) is cached in this entry
 	}
 	private final head_t[] head;
-	private head_t lru_head;
+	private final head_t lru_head;
 
 	Cache(int l_, int size_)
 	{
@@ -130,7 +134,7 @@ abstract class QMatrix {
 };
 
 abstract class Kernel extends QMatrix {
-	private svm_node[][] x;
+	private final svm_node[][] x;
 	private final double[] x_square;
 
 	// svm_parameter
@@ -1227,7 +1231,7 @@ class SVR_Q extends Kernel
 	private final byte[] sign;
 	private final int[] index;
 	private int next_buffer;
-	private float[][] buffer;
+	private final float[][] buffer;
 	private final float[] QD;
 
 	SVR_Q(svm_problem prob, svm_parameter param)

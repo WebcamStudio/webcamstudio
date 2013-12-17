@@ -16,11 +16,17 @@ limitations under the License.
 
 package com.jhlabs.image;
 
-import java.awt.image.*;
-import com.jhlabs.math.*;
-import com.jhlabs.vecmath.*;
-import java.awt.*;
-import java.util.*;
+import com.jhlabs.math.Function2D;
+import com.jhlabs.math.ImageFunction2D;
+import com.jhlabs.vecmath.Color4f;
+import com.jhlabs.vecmath.Vector3f;
+import java.awt.Color;
+import java.awt.Image;
+import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
+import java.awt.image.Kernel;
+import java.util.ArrayList;
+import java.util.Vector;
 
 /**
  * A filter which produces lighting and embossing effects.
@@ -62,7 +68,7 @@ public class LightFilter extends WholeImageFilter {
 	private int bumpShape;
 	private float viewDistance = 10000.0f;
 	Material material;
-	private Vector<Light> lights;
+	private ArrayList<Light> lights;
 	private int colorSource = COLORS_FROM_IMAGE;
 	private int bumpSource = BUMPS_FROM_IMAGE;
 	private Function2D bumpFunction;
@@ -80,7 +86,7 @@ public class LightFilter extends WholeImageFilter {
 	private Vector3f tmpv, tmpv2;
 
 	public LightFilter() {
-		lights = new Vector<>();
+		lights = new ArrayList<>();
 		addLight(new DistantLight());
 		bumpHeight = 1.0f;
 		bumpSoftness = 5.0f;
@@ -185,14 +191,14 @@ public class LightFilter extends WholeImageFilter {
 	}
 
 	public void addLight(Light light) {
-		lights.addElement(light);
+		lights.add(light);
 	}
 	
 	public void removeLight(Light light) {
-		lights.removeElement(light);
+		lights.remove(light);
 	}
 	
-	public Vector getLights() {
+	public ArrayList getLights() {
 		return lights;
 	}
 	
@@ -280,7 +286,7 @@ if ( bumpShape != 0 ) {
 		Vector3f v2 = new Vector3f();
 		Vector3f n = new Vector3f();
 		Light[] lightsArray = new Light[lights.size()];
-		lights.copyInto(lightsArray);
+		lights.toArray(lightsArray);
 		for (int i = 0; i < lightsArray.length; i++)
 			lightsArray[i].prepare(width, height);
 

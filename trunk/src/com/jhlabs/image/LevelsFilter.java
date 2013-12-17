@@ -16,7 +16,7 @@ limitations under the License.
 
 package com.jhlabs.image;
 
-import java.awt.*;
+import java.awt.Rectangle;
 
 /**
  * A filter which allows levels adjustment on an image.

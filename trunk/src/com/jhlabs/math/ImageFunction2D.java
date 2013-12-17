@@ -16,9 +16,12 @@ limitations under the License.
 
 package com.jhlabs.math;
 
-import java.awt.*;
-import java.awt.image.*;
-import com.jhlabs.image.*;
+import com.jhlabs.image.ImageMath;
+import com.jhlabs.image.PixelUtils;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.awt.image.ImageObserver;
+import java.awt.image.PixelGrabber;
 
 public class ImageFunction2D implements Function2D {
 

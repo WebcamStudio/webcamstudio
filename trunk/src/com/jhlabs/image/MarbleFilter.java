@@ -16,8 +16,8 @@ limitations under the License.
 
 package com.jhlabs.image;
 
-import java.awt.image.*;
-import com.jhlabs.math.*;
+import com.jhlabs.math.Noise;
+import java.awt.image.BufferedImage;
 
 /**
  * This filter applies a marbling effect to an image, displacing pixels by random amounts.

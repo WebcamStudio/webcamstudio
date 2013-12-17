@@ -16,8 +16,13 @@ limitations under the License.
 
 package com.jhlabs.image;
 
-import java.awt.*;
-import java.awt.image.*;
+import java.awt.AlphaComposite;
+import java.awt.Color;
+import java.awt.GradientPaint;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.Shape;
+import java.awt.image.BufferedImage;
 
 public class MirrorFilter extends AbstractBufferedImageOp {
     private float opacity = 1.0f;

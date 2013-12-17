@@ -1,19 +1,18 @@
 package f00f.net.irc.martyr.services;
 
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-
+import f00f.net.irc.martyr.GenericAutoService;
 import f00f.net.irc.martyr.IRCConnection;
 import f00f.net.irc.martyr.InCommand;
-import f00f.net.irc.martyr.GenericAutoService;
 import f00f.net.irc.martyr.State;
 import f00f.net.irc.martyr.TimerTaskCommand;
 import f00f.net.irc.martyr.clientstate.ClientState;
 import f00f.net.irc.martyr.commands.NickCommand;
-import f00f.net.irc.martyr.commands.UserCommand;
 import f00f.net.irc.martyr.commands.PassCommand;
+import f00f.net.irc.martyr.commands.UserCommand;
 import f00f.net.irc.martyr.errors.NickInUseError;
 import f00f.net.irc.martyr.util.FullNick;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 
 /**
@@ -58,17 +57,17 @@ public class AutoRegister extends GenericAutoService
     // many problems *before* registration, that I think it may need to be
     // pulled out.  Maybe time to bring a "Manager" service into the
     // fold?
-    private long nickTimerTaskDelay = 10*1000;
+    private final long nickTimerTaskDelay = 10*1000;
     private TimerTaskCommand nickTimerTask;
 
     // Kept so it can be passed to getNickIterator()
-    private String originalNick;
+    private final String originalNick;
     // Used to set the client state once we register properly.
     private String lastTryNick = null;
     // Passed to the server on login
-    private String user;
-    private String name;
-    private String pass;
+    private final String user;
+    private final String name;
+    private final String pass;
     // Our list of nicks.
     private Iterator nickIterator = null;
     // attempt is only used for the debug output.

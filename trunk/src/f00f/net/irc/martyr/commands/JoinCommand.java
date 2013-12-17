@@ -15,9 +15,9 @@ public class JoinCommand extends AbstractCommand
 
     
 
-    private String channel;
-    private String secret;
-    private FullNick user;
+    private final String channel;
+    private final String secret;
+    private final FullNick user;
 
     /** For use as a factory */
     public JoinCommand()

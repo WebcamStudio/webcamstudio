@@ -1,11 +1,5 @@
 package f00f.net.irc.martyr.commands;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.StringTokenizer;
-
 import f00f.net.irc.martyr.CommandRegister;
 import f00f.net.irc.martyr.InCommand;
 import f00f.net.irc.martyr.Mode;
@@ -13,6 +7,11 @@ import f00f.net.irc.martyr.OutCommand;
 import f00f.net.irc.martyr.State;
 import f00f.net.irc.martyr.clientstate.Channel;
 import f00f.net.irc.martyr.clientstate.ClientState;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
 
 
 /**

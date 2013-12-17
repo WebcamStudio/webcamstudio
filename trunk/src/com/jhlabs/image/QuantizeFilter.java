@@ -16,7 +16,7 @@ limitations under the License.
 
 package com.jhlabs.image;
 
-import java.awt.*;
+import java.awt.Rectangle;
 
 /**
  * A filter which quantizes an image to a set number of colors - useful for producing
@@ -37,7 +37,7 @@ public class QuantizeFilter extends WholeImageFilter {
 	 	 0, 0, 7,
 	 	 3, 5, 1,
 	};
-	private int sum = 3+5+7+1;
+	private final int sum = 3+5+7+1;
 
 	private boolean dither;
 	private int numColors = 256;

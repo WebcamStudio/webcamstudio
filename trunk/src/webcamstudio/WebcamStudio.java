@@ -1091,7 +1091,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
                             Studio.LText = new ArrayList<>();
                             Studio.extstream = new ArrayList<>();
                             Studio.ImgMovMus = new ArrayList<>();                          
-                            Studio.load(file);
+                            Studio.load(file, "load");
                             Studio.main();
                             spinWidth.setValue(MasterMixer.getInstance().getWidth());
                             spinHeight.setValue(MasterMixer.getInstance().getHeight());
@@ -1349,7 +1349,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
                     Studio.LText = new ArrayList<>();
                     Studio.extstream = new ArrayList<>();
                     Studio.ImgMovMus = new ArrayList<>();
-                    Studio.load(file);
+                    Studio.load(file, "add");
                     Studio.main();
                 } catch (ParserConfigurationException | SAXException | IOException | XPathExpressionException ex) {
                     Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);

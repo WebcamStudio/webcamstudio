@@ -16,7 +16,7 @@ limitations under the License.
 
 package com.jhlabs.image;
 
-import com.jhlabs.math.*;
+import com.jhlabs.math.Noise;
 
 /**
  * A filter which produces a simulated wood texture. This is a bit of a hack, but might be usefult to some people.

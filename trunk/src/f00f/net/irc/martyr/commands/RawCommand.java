@@ -1,14 +1,13 @@
 package f00f.net.irc.martyr.commands;
 
-import java.util.StringTokenizer;
-
 import f00f.net.irc.martyr.OutCommand;
+import java.util.StringTokenizer;
 
 public class RawCommand implements OutCommand
 {
 
-    private String sourceString;
-    private String ident;
+    private final String sourceString;
+    private final String ident;
 
     /**
      * Tries to use the first "word" in the command as the identifier.

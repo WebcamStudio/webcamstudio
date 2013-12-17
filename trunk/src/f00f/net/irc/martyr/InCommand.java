@@ -1,8 +1,7 @@
 package f00f.net.irc.martyr;
 
-import java.util.Iterator;
-
 import f00f.net.irc.martyr.clientstate.ClientState;
+import java.util.Iterator;
 
 /**
  * Defines commands that come from the server.  Errors and replies are

@@ -1,13 +1,12 @@
 package f00f.net.irc.martyr.commands;
 
-import java.util.HashMap;
-import java.util.StringTokenizer;
-
 import f00f.net.irc.martyr.InCommand;
 import f00f.net.irc.martyr.Mode;
 import f00f.net.irc.martyr.clientstate.ClientState;
 import f00f.net.irc.martyr.modes.user.InvisibleMode;
 import f00f.net.irc.martyr.util.FullNick;
+import java.util.HashMap;
+import java.util.StringTokenizer;
 
 
 /**
@@ -17,8 +16,8 @@ public class UserModeCommand extends ModeCommand
 {
 
 
-    private FullNick user;
-	private FullNick sender;
+    private final FullNick user;
+	private final FullNick sender;
 	//private List modes;
 
 	private static HashMap<Character,Mode> modeTypes;
