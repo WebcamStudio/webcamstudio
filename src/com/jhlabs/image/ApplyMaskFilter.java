@@ -16,7 +16,9 @@ limitations under the License.
 
 package com.jhlabs.image;
 
-import java.awt.image.*;
+import java.awt.image.BufferedImage;
+import java.awt.image.Raster;
+import java.awt.image.WritableRaster;
 
 /**
  * A filter which uses the alpha channel of a "mask" image to interpolate between a source and destination image.

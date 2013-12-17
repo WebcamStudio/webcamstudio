@@ -1,11 +1,5 @@
 package f00f.net.irc.martyr.commands;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.StringTokenizer;
-
 import f00f.net.irc.martyr.InCommand;
 import f00f.net.irc.martyr.Mode;
 import f00f.net.irc.martyr.clientstate.Channel;
@@ -25,6 +19,11 @@ import f00f.net.irc.martyr.modes.channel.SecretMode;
 import f00f.net.irc.martyr.modes.channel.TopicLockMode;
 import f00f.net.irc.martyr.modes.channel.VoiceMode;
 import f00f.net.irc.martyr.util.FullNick;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.StringTokenizer;
 
 /**
  * Defines the ChannelMode command.  Can be used to send a Channel
@@ -37,10 +36,10 @@ public class ChannelModeCommand extends ModeCommand
 {
 
     private String prefix;
-    private String channelName;
+    private final String channelName;
 	private FullNick sender;
 	
-	private List modes;
+	private final List modes;
 
 	private static HashMap<Character,Mode> modeTypes;
 

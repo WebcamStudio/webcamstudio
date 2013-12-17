@@ -9,10 +9,10 @@ import f00f.net.irc.martyr.OutCommand;
 public class UserCommand implements OutCommand
 {
 
-    private String name;
-    private String user;
-    private String someA; // Might be a mode on some networks
-    private String someB; // might be ignored
+    private final String name;
+    private final String user;
+    private final String someA; // Might be a mode on some networks
+    private final String someB; // might be ignored
 
     public static final String IDENTIFIER = "USER";
 

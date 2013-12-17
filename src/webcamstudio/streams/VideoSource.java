@@ -19,8 +19,6 @@
  */
 package webcamstudio.streams;
 
-import java.net.MalformedURLException;
-import java.util.prefs.BackingStoreException;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
@@ -29,12 +27,14 @@ import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.Timer;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.prefs.BackingStoreException;
 import javax.swing.ImageIcon;
-import webcamstudio.*;
+import webcamstudio.InfoListener;
 import webcamstudio.sources.effects.Effect;
 
 public abstract class VideoSource implements InfoListener {

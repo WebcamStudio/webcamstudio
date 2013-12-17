@@ -1,8 +1,7 @@
 package f00f.net.irc.martyr.commands;
 
-import java.util.StringTokenizer;
-
 import f00f.net.irc.martyr.util.FullNick;
+import java.util.StringTokenizer;
 
 /**
  * This facilitates the sending and receiving of CTCP messages.  Upon

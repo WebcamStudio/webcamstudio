@@ -11,9 +11,9 @@
 package webcamstudio.components;
 
 import java.util.ArrayList;
-import javax.swing.DefaultComboBoxModel;
 import java.util.Timer;
 import java.util.TimerTask;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import webcamstudio.WebcamStudio;
 import webcamstudio.channels.MasterChannels;

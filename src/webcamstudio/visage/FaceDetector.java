@@ -1,13 +1,17 @@
 package webcamstudio.visage;
 
 /*Autor: Adel Restom adel_restom@yahoo.com*/
-import java.io.IOException;
-import java.util.*;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import svm.*;
+import svm.svm;
+import svm.svm_model;
+import svm.svm_node;
 
 /*
 This class detects the eyes and nose locations in a given frame

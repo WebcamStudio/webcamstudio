@@ -22,7 +22,7 @@ public class ParameterIterator implements Iterator
 {
     
 
-    private String paramStr;
+    private final String paramStr;
 	private int position;
 	private String last = null;
 	

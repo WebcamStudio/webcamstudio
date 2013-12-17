@@ -16,7 +16,7 @@ limitations under the License.
 
 package com.jhlabs.image;
 
-import java.awt.*;
+import java.awt.Rectangle;
 
 /**
  * Given a binary image, this filter converts it to its outline, replacing all interior pixels with the 'new' color.

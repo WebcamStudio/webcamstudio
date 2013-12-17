@@ -2,8 +2,8 @@ package webcamstudio.visage;
 
 /*Autor: Adel Restom adel_restom@yahoo.com*/
 
-import java.util.*;
-import java.awt.*;
+import java.awt.Point;
+import java.util.Vector;
 
 /*
   This class makes all connected components' operations from finding labels,unifying them, to
@@ -13,9 +13,9 @@ import java.awt.*;
 public class ConnectedComponents
 {
 
-  private int labels[],cluster;
+  private  int labels[],cluster;
   private int label;
-  private int clustersMembers[][];
+  private final int clustersMembers[][];
   public int counters[],indecies[],clusters[];
 
   public ConnectedComponents(int labels[],int clustersMembers[][])

@@ -16,8 +16,8 @@ limitations under the License.
 
 package com.jhlabs.image;
 
-import java.awt.image.*;
-import com.jhlabs.math.*;
+import com.jhlabs.math.FFT;
+import java.awt.image.BufferedImage;
 
 /**
  * A filter which use FFTs to simulate lens blur on an image.
@@ -27,7 +27,7 @@ public class LensBlurFilter extends AbstractBufferedImageOp {
     private float radius = 10;
 	private float bloom = 2;
 	private float bloomThreshold = 192;
-    private float angle = 0;
+    private final float angle = 0;
 	private int sides = 5;
 
 	/**

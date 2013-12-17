@@ -16,8 +16,9 @@ limitations under the License.
 
 package com.jhlabs.image;
 
-import java.awt.*;
-import java.awt.image.*;
+import java.awt.Color;
+import java.awt.image.BufferedImage;
+import java.awt.image.WritableRaster;
 
 /**
  * An experimental filter which can be used for keying against a clean shot. Given a source image, a clean image and a destination image, 

@@ -16,7 +16,7 @@ limitations under the License.
 
 package com.jhlabs.image;
 
-import java.awt.*;
+import java.awt.Rectangle;
 
 /**
  * Given a binary image, this filter performs binary erosion, setting all removed pixels to the given 'new' color.

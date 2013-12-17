@@ -10,8 +10,8 @@ import f00f.net.irc.martyr.commands.UnknownCommand;
  */
 public class UnknownReply extends UnknownCommand
 {
-	private String replyStr;
-	private int replyCode;
+	private final String replyStr;
+	private final int replyCode;
 
 	public UnknownReply( String ident )
 	{

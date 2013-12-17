@@ -16,7 +16,7 @@ limitations under the License.
 
 package com.jhlabs.image;
 
-import java.awt.image.*;
+import java.awt.image.BufferedImage;
 
 /**
  * A filter which distorts and image by performing coordinate conversions between rectangular and polar coordinates.

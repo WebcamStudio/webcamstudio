@@ -9,7 +9,7 @@ import java.util.TimerTask;
  * */
 public class CronManager
 {
-	private Timer timer;
+	private final Timer timer;
 
 	public CronManager()
 	{

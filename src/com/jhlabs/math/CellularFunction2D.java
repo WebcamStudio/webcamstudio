@@ -16,15 +16,15 @@ limitations under the License.
 
 package com.jhlabs.math;
 
-import java.util.*;
+import java.util.Random;
 
 public class CellularFunction2D implements Function2D {
 
 	public float distancePower = 2;
 	public boolean cells = false;
 	public boolean angular = false;
-	private float[] coefficients = { 1, 0, 0, 0 };
-	private Random random = new Random();
+	private final float[] coefficients = { 1, 0, 0, 0 };
+	private final Random random = new Random();
 	private Point[] results = null;
 	
 	public CellularFunction2D() {

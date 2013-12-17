@@ -13,7 +13,7 @@ public class ClientStateMonitor implements Observer
 
 
 
-    private IRCConnection connection;
+    private final IRCConnection connection;
 
     private boolean enabled = false;
 

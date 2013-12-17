@@ -16,14 +16,14 @@ limitations under the License.
 
 package com.jhlabs.math;
 
-import java.util.*;
+import java.util.Random;
 
 /**
  * Perlin Noise functions
  */
 public class Noise implements Function1D, Function2D, Function3D {
 
-	private static Random randomGenerator = new Random();
+	private static final Random randomGenerator = new Random();
 	
         @Override
 	public float evaluate(float x) {

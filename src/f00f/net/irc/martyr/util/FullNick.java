@@ -13,7 +13,7 @@ public class FullNick
     private String user;
     private String remotehost;
 
-    private String original;
+    private final String original;
 
     public FullNick( String original )
     {

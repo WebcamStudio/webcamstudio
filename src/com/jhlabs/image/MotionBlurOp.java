@@ -16,9 +16,11 @@ limitations under the License.
 
 package com.jhlabs.image;
 
-import java.awt.*;
-import java.awt.geom.*;
-import java.awt.image.*;
+import java.awt.AlphaComposite;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.geom.Point2D;
+import java.awt.image.BufferedImage;
 
 /**
  * A filter which produces motion blur the faster, but lower-quality way.

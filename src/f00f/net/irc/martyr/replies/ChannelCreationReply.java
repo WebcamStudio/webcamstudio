@@ -1,11 +1,10 @@
 package f00f.net.irc.martyr.replies;
 
-import java.util.Date;
-import java.util.StringTokenizer;
-
 import f00f.net.irc.martyr.InCommand;
 import f00f.net.irc.martyr.clientstate.Channel;
 import f00f.net.irc.martyr.clientstate.ClientState;
+import java.util.Date;
+import java.util.StringTokenizer;
 
 /**
  * ChannelCreationReply sets the creation time of the channel.  It is sent

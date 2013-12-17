@@ -16,8 +16,10 @@ limitations under the License.
 
 package com.jhlabs.image;
 
-import java.awt.*;
-import java.awt.image.*;
+import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.awt.image.WritableRaster;
 
 /**
  * A page curl effect.
@@ -73,7 +75,7 @@ public class CurlFilter extends TransformFilter {
 	static class Sampler {
 		private int edgeAction;
 		private int width, height;
-		private int[] inPixels;
+		private final int[] inPixels;
 		
 		public Sampler( BufferedImage image ) {
 			int width = image.getWidth();

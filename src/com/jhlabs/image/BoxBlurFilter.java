@@ -16,7 +16,7 @@ limitations under the License.
 
 package com.jhlabs.image;
 
-import java.awt.image.*;
+import java.awt.image.BufferedImage;
 
 /**
  * A filter which performs a box blur on an image. The horizontal and vertical blurs can be specified separately

@@ -16,8 +16,8 @@ limitations under the License.
 
 package com.jhlabs.image;
 
-import java.awt.image.*;
-import java.util.*;
+import java.awt.image.BufferedImage;
+import java.util.Random;
 
 /**
  * A filter which "dissolves" an image by thresholding the alpha channel with random numbers.

@@ -1,11 +1,10 @@
 package f00f.net.irc.martyr.commands;
 
-import f00f.net.irc.martyr.InCommand;
 import f00f.net.irc.martyr.CommandRegister;
-
-import java.util.List;
+import f00f.net.irc.martyr.InCommand;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Defines the ISON command, which is used to determine if a user or a list of users is online.

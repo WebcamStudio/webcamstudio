@@ -18,7 +18,7 @@ package com.jhlabs.math;
 
 public class FractalSumFunction extends CompoundFunction2D {
 	
-	private float octaves = 1.0f;
+	private final float octaves = 1.0f;
 	
 	public FractalSumFunction(Function2D basis) {
 		super(basis);

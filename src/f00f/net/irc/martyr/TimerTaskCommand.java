@@ -13,8 +13,8 @@ import java.util.TimerTask;
 public class TimerTaskCommand extends TimerTask
 {
 
-	private IRCConnection _conn;
-	private OutCommand _cmd;
+	private final IRCConnection _conn;
+	private final OutCommand _cmd;
 	public TimerTaskCommand(IRCConnection conn, OutCommand cmd)
 	{
 		_conn = conn;

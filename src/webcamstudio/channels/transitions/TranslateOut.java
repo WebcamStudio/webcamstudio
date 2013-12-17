@@ -11,26 +11,30 @@ import webcamstudio.util.Tools;
  *
  * @author patrick
  */
-public class Translate extends Transition{
-    public Translate(Stream source){
+public class TranslateOut extends Transition{
+    public TranslateOut(Stream source){
         super(source);
     }
     @Override
     protected void execute() {
-        int oldX = -source.getWidth();
-        int oldY = -source.getHeight();
-        int newX = 0;
-        int newY = 0;
+        int oldX = -source.getX();
+        int oldY = -source.getY();
+        int newX = source.getCaptureWidth();
+        int newY = source.getCaptureHeight();
         int deltaX = newX - oldX;
         int deltaY = newY - oldY;
         int rate = source.getRate();
         int totalFrames = rate * 1;
+        int o = rate;
         for (int i = 0; i<totalFrames;i++){
             source.setX(oldX + (i*deltaX/totalFrames));
             source.setY(oldY+(i*deltaY/totalFrames));
-            source.setOpacity(i*100/totalFrames);
+            source.setOpacity(o*100/totalFrames);
+            o--;
             Tools.sleep(1000/rate);
         }
+        source.setX(oldX);
+        source.setY(oldY);
         
     }
     

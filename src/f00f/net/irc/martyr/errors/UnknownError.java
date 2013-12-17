@@ -13,8 +13,8 @@ import f00f.net.irc.martyr.commands.UnknownCommand;
 public class UnknownError extends UnknownCommand
 {
 
-	private String errorStr;
-	private int errorCode;
+	private final String errorStr;
+	private final int errorCode;
 
 	public UnknownError( String ident )
 	{

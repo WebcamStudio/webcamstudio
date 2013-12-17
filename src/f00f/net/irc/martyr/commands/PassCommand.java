@@ -8,7 +8,7 @@ import f00f.net.irc.martyr.OutCommand;
  */
 public class PassCommand implements OutCommand
 {
-    private String pass;
+    private final String pass;
 
     public static final String IDENTIFIER = "PASS";
 

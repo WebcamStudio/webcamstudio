@@ -1,10 +1,9 @@
 package f00f.net.irc.martyr.replies;
 
-import java.util.StringTokenizer;
-
 import f00f.net.irc.martyr.InCommand;
 import f00f.net.irc.martyr.clientstate.ClientState;
 import f00f.net.irc.martyr.commands.ChannelModeCommand;
+import java.util.StringTokenizer;
 
 /**
  * ModeReply is really a factory that passes the ModeReply off to a

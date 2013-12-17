@@ -6,10 +6,9 @@
  */
 package f00f.net.irc.martyr.clientstate;
 
+import f00f.net.irc.martyr.util.FullNick;
 import java.util.Enumeration;
 import java.util.Hashtable;
-
-import f00f.net.irc.martyr.util.FullNick;
 
 
 /**

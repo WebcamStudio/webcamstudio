@@ -10,7 +10,7 @@ public class WhoisCommand implements OutCommand
 {
 	private static final String WHOIS = "WHOIS";
 
-	private String target;
+	private final String target;
 
 	/**
 	 * @param target the nick or mask that you wish to know about.

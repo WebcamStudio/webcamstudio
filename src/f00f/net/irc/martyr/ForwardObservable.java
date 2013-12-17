@@ -1,9 +1,9 @@
 package f00f.net.irc.martyr;
 
-import java.util.Observer;
-import java.util.Observable;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
 /**
  * Does notifications in the order they are added.
@@ -11,7 +11,7 @@ import java.util.List;
 public class ForwardObservable extends Observable
 {
 	private boolean changed = true;
-	private List<Observer> obs = new LinkedList<>();
+	private final List<Observer> obs = new LinkedList<>();
 	private final Object localMonitor = new Object();
 
 

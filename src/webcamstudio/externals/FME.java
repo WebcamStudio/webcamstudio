@@ -6,6 +6,8 @@ package webcamstudio.externals;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPath;
@@ -14,6 +16,7 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
+import webcamstudio.media.renderer.Capturer;
 
 /**
  *
@@ -38,7 +41,7 @@ public class FME {
         try{
             parse(xml);
         }catch (ParserConfigurationException | SAXException | IOException | XPathExpressionException e ){
-            e.printStackTrace();
+            Logger.getLogger(Capturer.class.getName()).log(Level.SEVERE, null, e);
         }
     }
     

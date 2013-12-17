@@ -18,7 +18,7 @@ import f00f.net.irc.martyr.util.FullNick;
  */
 public class NickInUseError extends GenericError
 {
-    private FullNick _nick;
+    private final FullNick _nick;
     String errorMessage;
 
     public NickInUseError()

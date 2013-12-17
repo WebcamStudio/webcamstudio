@@ -1,9 +1,9 @@
 package f00f.net.irc.martyr;
 
 
-import java.util.LinkedList;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.LinkedList;
 
 /**
  * A simple class to help manage input from the stream.
@@ -12,14 +12,14 @@ public class InputHandler extends Thread
 {
     
 
-    private BufferedReader reader;
-    private IRCConnection connection;
+    private final BufferedReader reader;
+    private final IRCConnection connection;
     private final LinkedList<String> messages;
 
     private final Object eventMonitor;
 
     private static int serialGen = 0;
-    private int serialNumber = serialGen++;
+    private final int serialNumber = serialGen++;
     private boolean doShutdown = false;
 
     public InputHandler( BufferedReader reader,

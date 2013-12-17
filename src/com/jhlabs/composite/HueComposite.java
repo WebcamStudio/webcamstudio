@@ -16,8 +16,10 @@ limitations under the License.
 
 package com.jhlabs.composite;
 
-import java.awt.*;
-import java.awt.image.*;
+import java.awt.Color;
+import java.awt.CompositeContext;
+import java.awt.RenderingHints;
+import java.awt.image.ColorModel;
 
 public final class HueComposite extends RGBComposite {
 
@@ -31,8 +33,8 @@ public final class HueComposite extends RGBComposite {
 	}
 
     static class Context extends RGBCompositeContext {
-		private float[] sHSB = new float[3];
-        private float[] dHSB = new float[3];
+		private final float[] sHSB = new float[3];
+        private final float[] dHSB = new float[3];
 
         public Context( float alpha, ColorModel srcColorModel, ColorModel dstColorModel ) {
             super( alpha, srcColorModel, dstColorModel );

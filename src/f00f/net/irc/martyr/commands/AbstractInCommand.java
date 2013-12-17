@@ -1,15 +1,14 @@
 package f00f.net.irc.martyr.commands;
 
+import f00f.net.irc.martyr.CommandRegister;
+import f00f.net.irc.martyr.InCommand;
+import f00f.net.irc.martyr.State;
+import f00f.net.irc.martyr.clientstate.ClientState;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.StringTokenizer;
-
-import f00f.net.irc.martyr.CommandRegister;
-import f00f.net.irc.martyr.InCommand;
-import f00f.net.irc.martyr.State;
-import f00f.net.irc.martyr.clientstate.ClientState;
 
 /**
  * Defines a generic command.  Most commands will simply have to

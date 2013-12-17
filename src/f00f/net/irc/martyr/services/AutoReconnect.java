@@ -1,13 +1,12 @@
 package f00f.net.irc.martyr.services;
 
-import java.io.IOException;
-
+import f00f.net.irc.martyr.GenericAutoService;
 import f00f.net.irc.martyr.IRCConnection;
 import f00f.net.irc.martyr.InCommand;
-import f00f.net.irc.martyr.GenericAutoService;
 import f00f.net.irc.martyr.State;
 import f00f.net.irc.martyr.clientstate.ClientState;
 import f00f.net.irc.martyr.commands.QuitCommand;
+import java.io.IOException;
 
 
 /**

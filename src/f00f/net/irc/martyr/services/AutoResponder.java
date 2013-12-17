@@ -1,13 +1,12 @@
 package f00f.net.irc.martyr.services;
 
-import java.util.Observable;
-import java.util.Observer;
-
 import f00f.net.irc.martyr.IRCConnection;
 import f00f.net.irc.martyr.commands.ChannelModeCommand;
 import f00f.net.irc.martyr.commands.JoinCommand;
 import f00f.net.irc.martyr.commands.PingCommand;
 import f00f.net.irc.martyr.commands.PongCommand;
+import java.util.Observable;
+import java.util.Observer;
 
 /**
  * AutoResponder is where commands that should be auto-responded (such
@@ -16,7 +15,7 @@ import f00f.net.irc.martyr.commands.PongCommand;
 public class AutoResponder implements Observer
 {
 
-    private IRCConnection connection;
+    private final IRCConnection connection;
     private boolean enabled = false;
 
     public AutoResponder( IRCConnection connection )

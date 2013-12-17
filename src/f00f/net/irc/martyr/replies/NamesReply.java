@@ -1,11 +1,10 @@
 package f00f.net.irc.martyr.replies;
 
-import java.util.List;
-import java.util.Arrays;
-
 import f00f.net.irc.martyr.InCommand;
 import f00f.net.irc.martyr.clientstate.Channel;
 import f00f.net.irc.martyr.clientstate.ClientState;
+import java.util.Arrays;
+import java.util.List;
 
 
 public class NamesReply extends GenericReply

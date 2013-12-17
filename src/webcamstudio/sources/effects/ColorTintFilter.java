@@ -38,8 +38,8 @@ package webcamstudio.sources.effects;
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import java.awt.image.BufferedImage;
 import java.awt.Color;
+import java.awt.image.BufferedImage;
 import java.awt.image.DirectColorModel;
 
 /**
