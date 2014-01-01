@@ -28,7 +28,7 @@ import webcamstudio.util.Tools;
  */
 public class MasterFrameBuilder implements Runnable {
 
-    private static final ArrayList<Stream> streams = new ArrayList<>();// add private
+    private static ArrayList<Stream> streams = new ArrayList<>();// add private
     private static int fps = 0;
     private Image imageF;
     private int imageX, imageY, imageW, imageH;
@@ -43,7 +43,7 @@ public class MasterFrameBuilder implements Runnable {
     private boolean stopMe = false;
     private long mark = System.currentTimeMillis();
     private FrameBuffer frameBuffer = null;
-    private final TreeMap<Integer, Frame> orderedFrames = new TreeMap<>();
+    private TreeMap<Integer, Frame> orderedFrames = new TreeMap<>();
 
     public MasterFrameBuilder(int w, int h, int r) {
         frameBuffer = new FrameBuffer(w, h, r);

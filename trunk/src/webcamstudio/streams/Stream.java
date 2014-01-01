@@ -53,14 +53,25 @@ public abstract class Stream implements Callable<Frame>{
     protected boolean hasAudio=true;
     protected boolean isIPCam=false;
     protected boolean isStillPicture=false;
+    protected boolean isRTSP=false;
+    protected boolean isRTMP = false;
     protected boolean loaded=false;
     protected int ADelay = 0;
     protected int VDelay = 0;
     protected int frequencyDVB = 0;
     protected int bandwidthDVB = 0;
     protected int chDVB = 0;
+    protected int color = 0;
     protected String comm = "AV";
     protected String webURL = null;
+    protected String content = "";
+    protected String fontName = "";
+    protected String ptzBrand = "foscam";
+    protected boolean protectedCam = false;
+    protected boolean isOAudio = false;
+    protected boolean isOVideo = false;
+    protected String ipcUser = null;
+    protected String ipcPWD = null;
     protected String chNameDVB = null;
     protected Frame nextFrame = null;
     public ArrayList<Transition> startTransitions = new ArrayList<>();
@@ -122,6 +133,42 @@ public abstract class Stream implements Callable<Frame>{
     }
     public void setWebURL(String webURL) {
         this.webURL = webURL;
+    }
+    public void setOnlyVideo(boolean setOVideo) {
+        isOVideo = setOVideo;
+    }
+    public boolean isOnlyVideo() {
+        return isOVideo;
+    }
+    public void setOnlyAudio(boolean setOAudio) {
+        isOAudio = setOAudio;
+    }
+    public boolean isOnlyAudio() {
+        return isOAudio;
+    }
+    public boolean getProtected() {
+        return protectedCam;
+    }
+    public void setProtected(boolean prCam) {
+        this.protectedCam = prCam;
+    }
+    public String getPtzBrand() {
+        return ptzBrand;
+    }
+    public void setPtzBrand(String ptzB) {
+        this.ptzBrand = ptzB;
+    }
+    public String getIPUser() {
+        return ipcUser;
+    }
+    public void setIPUser(String ipUser) {
+        this.ipcUser = ipUser;
+    }
+    public String getIPPwd() {
+        return ipcPWD;
+    }
+    public void setIPPwd(String ipPWD) {
+        this.ipcPWD = ipPWD;
     }
     public boolean getLoaded() {
         return loaded;
@@ -230,9 +277,30 @@ public abstract class Stream implements Callable<Frame>{
         stop();
         MasterChannels.getInstance().unregister(this);
     }
-     
-
+    public void updateContent(String content) {
+    }
     
+    public String getContent() {
+        return content;
+    }
+    
+    public void setFont(String f) {
+//        fontName = f;
+//        updateContent(content);
+    }
+
+    public String getFont() {
+        return fontName;
+    }
+    
+    public void setColor(int c) {
+//        color = c;
+//        updateContent(content);
+    }
+    
+    public int getColor() {
+        return color;
+    }
     public abstract void read();
 
     public abstract void stop();
@@ -250,6 +318,18 @@ public abstract class Stream implements Callable<Frame>{
     }
     public boolean isStillPicture() {
         return isStillPicture;
+    }
+    public void setRTSP(boolean setRTSP) {
+        isRTSP = setRTSP;
+    }
+    public boolean isRTSP() {
+        return isRTSP;
+    }
+    public void setRTMP(boolean setRTMP) {
+        isRTMP = setRTMP;
+    }
+    public boolean isRTMP() {
+        return isRTMP;
     }
     public void setIsStillPicture(boolean setIsStillPicture) {
         isStillPicture = setIsStillPicture;

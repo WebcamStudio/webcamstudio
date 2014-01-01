@@ -18,7 +18,6 @@ import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import webcamstudio.streams.SourceQRCode;
-import webcamstudio.streams.SourceText;
 import webcamstudio.streams.Stream;
 
 
@@ -28,14 +27,14 @@ import webcamstudio.streams.Stream;
  */
 public class StreamPanelText extends javax.swing.JPanel implements Stream.Listener{
 
-    SourceText stream = null;
+    Stream stream = null;
     Viewer viewer = new Viewer();
     
 
     /** Creates new form StreamPanel
      * @param stream */
     @SuppressWarnings("unchecked") 
-    public StreamPanelText(SourceText stream) {
+    public StreamPanelText(Stream stream) {
 
         initComponents();
         
@@ -409,9 +408,7 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
         if (color!=null){
             txtHexColor.setText(Integer.toHexString(color.getRGB()));
             stream.setColor(color.getRGB());
-        }
-        
-        
+        }    
     }//GEN-LAST:event_btnSelectColorActionPerformed
 
     private void tglActiveStreamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglActiveStreamActionPerformed

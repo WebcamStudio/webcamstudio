@@ -11,6 +11,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterFrameBuilder;
+import webcamstudio.sources.effects.Effect;
 
 /**
  *
@@ -90,10 +91,20 @@ public class SourceImage extends Stream{
     @Override
     public void readNext() {
         frame.setImage(image);
-        applyEffects(frame.getImage());
-        frame.setOutputFormat(x, y, width, height, opacity, volume);
-        frame.setZOrder(zorder);
-        nextFrame=frame;
+        if (frame != null) {
+            for (Effect fxI : this.getEffects()) {
+                if (fxI.needApply()){   
+                    fxI.applyEffect(frame.getImage());
+                }
+            }
+            frame.setOutputFormat(x, y, width, height, opacity, volume);
+            frame.setZOrder(zorder);
+            nextFrame=frame;
+        }
+//        applyEffects(frame.getImage());
+//        frame.setOutputFormat(x, y, width, height, opacity, volume);
+//        frame.setZOrder(zorder);
+//        nextFrame=frame;
     }
 
 }

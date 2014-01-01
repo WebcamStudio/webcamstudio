@@ -13,7 +13,7 @@ import java.awt.image.BufferedImage;
  * @author patrick
  */
 public class Frame {
-    private final BufferedImage image;
+    private BufferedImage image;
     private int x = 0;
     private int y = 0;
     private int w = 320;
@@ -24,7 +24,7 @@ public class Frame {
     private int zOrder = 0;
     private String uuid = null;
     private long frameNb = 0;
-    private final int aFreq = webcamstudio.WebcamStudio.audioFreq;
+    private int aFreq = webcamstudio.WebcamStudio.audioFreq;
     
    public Frame(String id,BufferedImage img, byte[] audio){
         image=img;

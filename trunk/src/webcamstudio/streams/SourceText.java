@@ -12,6 +12,7 @@ import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterFrameBuilder;
+import webcamstudio.sources.effects.Effect;
 
 /**
  *
@@ -20,11 +21,11 @@ import webcamstudio.mixers.MasterFrameBuilder;
 public class SourceText extends Stream {
 
     BufferedImage image = null;
-    String content = "";
+//    String content = "";
     boolean playing = false;
     boolean stop = false;
-    String fontName = Font.MONOSPACED;
-    int color = 0xFFFFFF;
+//    String fontName = Font.MONOSPACED;
+//    int color = 0xFFFFFF; 
     int bgColor = 0x000000;
     Frame frame = null;
     float bgOpacity = 1f;
@@ -33,9 +34,34 @@ public class SourceText extends Stream {
 
     @Override
     public void readNext() {
-            frame.setImage(image);
-        applyEffects(frame.getImage());
-        nextFrame=frame;
+        frame.setImage(image);
+        if (frame != null) {
+            for (int fx = 0; fx < this.getEffects().size(); fx++) {
+                Effect fxT = this.getEffects().get(fx);
+                if (fxT.needApply()){
+                    BufferedImage txImage = frame.getImage(); 
+                    fxT.applyEffect(txImage);
+                }
+            }
+            frame.setOutputFormat(x, y, width, height, opacity, volume);
+            frame.setZOrder(zorder);
+            nextFrame=frame;
+        }
+//        if (frame != null) {
+//            for (Effect fxT : this.getEffects()) {
+//                if (fxT.needApply()){   
+//                    fxT.applyEffect(frame.getImage());
+//                }
+//            }
+//            frame.setOutputFormat(x, y, width, height, opacity, volume);
+//            frame.setZOrder(zorder);
+//            nextFrame=frame;
+//        }
+//        BufferedImage txImage = frame.getImage(); 
+//        applyEffects(txImage);
+//        frame.setOutputFormat(x, y, width, height, opacity, volume);
+//        frame.setZOrder(zorder);
+//        nextFrame=frame;
     }
 
     public enum Shape {
@@ -52,17 +78,19 @@ public class SourceText extends Stream {
         this.content = content;
         name = "Text";
         updateContent(content);
+        color = 0xFFFFFF;
+        fontName = Font.MONOSPACED;      
     }
 
     @Override
     public void setX(int x){
         this.x=x;
-            updateContent(content);
+//        updateContent(content);
         }
     @Override
     public void setY(int y){
         this.y=y;
-            updateContent(content);
+//        updateContent(content);
         }
     public void setBackgroundOpacity(float o){
         bgOpacity=o;
@@ -94,20 +122,22 @@ public class SourceText extends Stream {
     @Override
     public void setWidth(int w) {
         width = w;
-            updateContent(content);
-        }
+//        updateContent(content);
+    }
     
     @Override
     public void setHeight(int h) {
         height = h;
-            updateContent(content);
-        }
+//        updateContent(content);
+    }
     
+    @Override
     public void setColor(int c) {
         color = c;
         updateContent(content);
     }
 
+    @Override
     public int getColor() {
         return color;
     }
@@ -121,11 +151,13 @@ public class SourceText extends Stream {
         return bgColor;
     }
 
+    @Override
     public void setFont(String f) {
         fontName = f;
         updateContent(content);
     }
 
+    @Override
     public String getFont() {
         return fontName;
     }
@@ -133,9 +165,10 @@ public class SourceText extends Stream {
     @Override
     public void setZOrder(int layer) {
         zorder = layer;
-            updateContent(content);
-        }
+//        updateContent(content);
+    }
 
+    @Override
     public void updateContent(String content) {
         this.content = content;
         captureWidth = width;
@@ -209,6 +242,7 @@ public class SourceText extends Stream {
         }
     }
 
+    @Override
     public String getContent() {
         return content;
     }

@@ -16,7 +16,7 @@ public class AudioBuffer {
     private final ArrayList<byte[]> buffer = new ArrayList<>();
     private int bufferSize = MasterMixer.BUFFER_SIZE;
     private boolean abort = false;
-    private final int aFreq = webcamstudio.WebcamStudio.audioFreq;
+    private int aFreq = webcamstudio.WebcamStudio.audioFreq;
     int currentIndex = 0;
     long framePushed = 0;
     long framePopped = 0;

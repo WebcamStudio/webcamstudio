@@ -72,7 +72,7 @@ public class SourceMicrophone extends Stream {
     }
     @Override
     public boolean hasFakeVideo(){
-        return false;
+        return true;
     }
     @Override
     public boolean hasFakeAudio(){
@@ -85,7 +85,7 @@ public class SourceMicrophone extends Stream {
 
     @Override
     public boolean hasVideo() {
-        return false;
+        return true;
     }
     @Override
     public void readNext() {
@@ -94,6 +94,7 @@ public class SourceMicrophone extends Stream {
             f = capture.getFrame();
             if (f != null) {
                 setAudioLevel(f);
+                lastPreview.getGraphics().drawImage(f.getImage(), 0, 0, null);
             }
         }
         nextFrame=f;
