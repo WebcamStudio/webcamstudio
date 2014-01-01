@@ -238,7 +238,7 @@ public class ProcessRenderer {
                         command = command.replaceAll(Tags.URL.toString(), "" + fme.getUrl());
                         break;
                     default:
-                        command = command.replaceAll(Tags.URL.toString(), "\""+fme.getUrl()+"/"+fme.getStream()+" live=1 flashver=FME/2.520(compatible;20FMSc201.0)"+"\"");
+                        command = command.replaceAll(Tags.URL.toString(), "\""+fme.getUrl()+"/"+fme.getStream()+" live=1 flashver=FME/2.520(compatible;20FMSc201.0)"+"\""); // +" live=1 flashver=FME/2.520(compatible;20FMSc201.0)"
                         break;
                 }
                     } else if (stream.getURL() != null) {
@@ -305,7 +305,12 @@ public class ProcessRenderer {
                     command = command.replaceAll(Tags.VPORT.toString(), "" + videoPort);
                     break;
                 case WEBURL:
-                    command = command.replaceAll(Tags.WEBURL.toString(), "\""+stream.getWebURL()+"\"");
+                    if (stream.getProtected()) {
+                        String soloURL = stream.getWebURL().replace("http://", "");
+                        command = command.replaceAll(Tags.WEBURL.toString(), "\""+"http://"+stream.getIPUser()+":"+stream.getIPPwd()+"@"+soloURL+"\"");
+                    } else {
+                        command = command.replaceAll(Tags.WEBURL.toString(), "\""+stream.getWebURL()+"\"");
+                    }
                 case BW:
                     command = command.replaceAll(Tags.BW.toString(), "" + stream.getDVBBandwidth());
                 case DVBFREQ:
@@ -343,12 +348,14 @@ public class ProcessRenderer {
         new Thread(new Runnable() {
 
             @Override
-            public void run() {
+            public void run() {  
                 stream.setVideo(plugins.containsKey("video"));
                 stream.setFakeVideo(plugins.containsKey("fakeVideo"));
                 stream.setFakeAudio(plugins.containsKey("fakeAudio"));
-                stream.setAudio(plugins.containsKey("audio"));
+                stream.setAudio(stream.hasAudio());
                 capture = new Capturer(stream);
+                String cmdVideo = "";
+                String cmdAudio = "";
                 if (stream.hasVideo()) {
                     videoPort = capture.getVideoPort();
                 }
@@ -358,14 +365,15 @@ public class ProcessRenderer {
                 String commandVideo = null;
                 String commandAudio = null;
                 //System.out.println(plugins.keySet().toString());
-                if (plugins.containsKey("video")) {
-                    if ("AV".equals(stream.getComm())){
-                        commandVideo = plugins.getProperty("AVvideo").replaceAll("  ", " "); //Making sure there is no double spaces
-                    } else {
-                        commandVideo = plugins.getProperty("GSvideo").replaceAll("  ", " "); //Making sure there is no double spaces
+//                if (plugins.containsKey("video")) {
+                if (stream.hasVideo()) {
+                    if ("AV".equals(stream.getComm())){                        
+                            commandVideo = plugins.getProperty("AVvideo").replaceAll("  ", " "); //Making sure there is no double spaces 
+                    } else {                        
+                            commandVideo = plugins.getProperty("GSvideo").replaceAll("  ", " "); //Making sure there is no double spaces
                     }
                 }
-                if (plugins.containsKey("audio")) {
+                if (stream.hasAudio()) {
                     if ("AV".equals(stream.getComm())){
                         commandAudio = plugins.getProperty("AVaudio").replaceAll("  ", " "); //Making sure there is no double spaces
                     } else {
@@ -378,8 +386,9 @@ public class ProcessRenderer {
                     String[] parmsVideo = commandVideo.split("ABCDE");
                     try {
                         for (String p : parmsVideo) {
-                            System.out.print(p + " ");
+                            cmdVideo = (cmdVideo + p + " ");                            
                         }
+                        System.out.print("CommandVideo: "+cmdVideo);
                         System.out.println();
                         processVideo.execute(parmsVideo);
                     } catch (IOException | InterruptedException e) {
@@ -394,8 +403,9 @@ public class ProcessRenderer {
                     String[] parmsAudio = commandAudio.split("ABCDE");
                     try {
                         for (String p : parmsAudio) {
-                            System.out.print(p + " ");
+                            cmdAudio = (cmdAudio + p + " ");
                         }
+                        System.out.print("CommandAudio: "+cmdAudio);
                         System.out.println();
                         processAudio.execute(parmsAudio);
                     } catch (IOException | InterruptedException e) {
@@ -424,11 +434,15 @@ public class ProcessRenderer {
                 stream.setFakeVideo(plugins.containsKey("fakeVideo"));
                 stream.setFakeAudio(plugins.containsKey("fakeAudio"));
                 capture = new Capturer(stream);
+                
                 if (stream.hasVideo()) {
                     videoPort = capture.getVideoPort();
-                } else {
+                } else if (stream.isOnlyAudio()) {
                     processVideo = null;
+                } else {
+                    videoPort = capture.getVideoPort();
                 }
+               
                 if (stream.hasAudio()) {
                     audioPort = capture.getAudioPort();
                 } else {
@@ -440,21 +454,47 @@ public class ProcessRenderer {
                     commandVideo = plugins.getProperty("videoIP").replaceAll("  ", " "); //Making sure there is no double spaces
                 } else if (plugins.containsKey("video") && stream.isStillPicture()) {
                     commandVideo = plugins.getProperty("videoPic").replaceAll("  ", " "); //Making sure there is no double spaces
+                } else if (plugins.containsKey("video") && stream.isRTSP()) {
+                    commandVideo = plugins.getProperty("RTSPvideo").replaceAll("  ", " "); //Making sure there is no double spaces
+                } else if (plugins.containsKey("video") && stream.isRTMP()) {
+                    commandVideo = plugins.getProperty("RTMPvideo").replaceAll("  ", " "); //Making sure there is no double spaces
                 } else if (plugins.containsKey("video")) {
-                    if (stream.getWebURL().toLowerCase().contains("udp")) {
+                    if (stream.getWebURL().toLowerCase().startsWith("udp")) {
                         commandVideo = plugins.getProperty("GSvideoUDP").replaceAll("  ", " "); //Making sure there is no double spaces
                     } else {
-                    if ("AV".equals(stream.getComm())){
-                        commandVideo = plugins.getProperty("AVvideo").replaceAll("  ", " "); //Making sure there is no double spaces
+                    if ("AV".equals(stream.getComm())){   
+                        if (!stream.isOnlyAudio()) {
+                            if (stream.hasVideo()) {
+                                commandVideo = plugins.getProperty("AVvideo").replaceAll("  ", " "); //Making sure there is no double spaces
+                            } else {
+                                commandVideo = plugins.getProperty("Sndvideo").replaceAll("  ", " "); //Making sure there is no double spaces
+                                stream.setHasVideo(true);
+                            }
+                        } else {
+                            commandVideo = plugins.getProperty("AVvideo").replaceAll("  ", " "); //Making sure there is no double spaces
+                        }
                     } else {
-                        commandVideo = plugins.getProperty("GSvideo").replaceAll("  ", " "); //Making sure there is no double spaces
+                        if (!stream.isOnlyAudio()) {
+                            if (stream.hasVideo()) {
+                                commandVideo = plugins.getProperty("GSvideo").replaceAll("  ", " "); //Making sure there is no double spaces
+                            } else {
+                                commandVideo = plugins.getProperty("Sndvideo").replaceAll("  ", " "); //Making sure there is no double spaces
+                                stream.setHasVideo(true);
+                            }
+                        } else {
+                            commandVideo = plugins.getProperty("GSvideo").replaceAll("  ", " "); //Making sure there is no double spaces
+                        }
                     }
 //                    commandVideo = plugins.getProperty("video").replaceAll("  ", " "); //Making sure there is no double spaces
                 }
                 }
                 if (plugins.containsKey("audio")) {
-                    if (stream.getWebURL().toLowerCase().contains("udp")) {
+                    if (stream.getWebURL().toLowerCase().startsWith("udp")) {
                         commandAudio = plugins.getProperty("GSaudioUDP").replaceAll("  ", " "); //Making sure there is no double spaces
+                    } else if (stream.isRTSP()) {
+                        commandAudio = plugins.getProperty("RTSPaudio").replaceAll("  ", " "); //Making sure there is no double spaces
+                    } else if (stream.isRTMP()) {
+                        commandAudio = plugins.getProperty("RTMPaudio").replaceAll("  ", " "); //Making sure there is no double spaces
                     } else {
                     if ("AV".equals(stream.getComm())){
                         commandAudio = plugins.getProperty("AVaudio").replaceAll("  ", " "); //Making sure there is no double spaces
@@ -545,16 +585,15 @@ public class ProcessRenderer {
                 } catch (IOException ex) {
                     Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
                 }
-//                Runtime rt = Runtime.getRuntime();
-//                try {
-//                    Process p = rt.exec("chmod a+x "+System.getProperty("user.home")+"/.webcamstudio/"+"WSBroadcast.sh");
-//                } catch (IOException ex) {
-//                    Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
-//                }
                 String batchCommand = "sh "+System.getProperty("user.home")+"/.webcamstudio/"+"WSBroadcast.sh";
                 try {
-                    processVideo.executeString(batchCommand);
-                    processAudio = null;
+                    if (stream.hasVideo()) {
+                        processVideo.executeString(batchCommand);
+                        processAudio = null;
+                    } else if (stream.hasAudio()) {
+                        processVideo = null;
+                        processAudio.executeString(batchCommand);
+                    }
                     //We don't need processAudio on export.  Only 1 process is required...
                 } catch (IOException | InterruptedException e) {
                     Logger.getLogger(Capturer.class.getName()).log(Level.SEVERE, null, e);

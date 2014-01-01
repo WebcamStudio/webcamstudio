@@ -81,7 +81,11 @@ public class SourceChannel  {
             s.text = st.content;
             s.font = st.fontName;
             s.color = st.color;
-
+        } else if (stream instanceof SourceQRCode) {
+            SourceQRCode sQ = (SourceQRCode)stream;
+            s.text = sQ.content;
+            s.font = sQ.fontName;
+            s.color = sQ.color;
         } else if (stream instanceof SourceDesktop) {
             SourceDesktop sd = (SourceDesktop) stream;
         }
@@ -151,8 +155,14 @@ public class SourceChannel  {
                         st.content = getText();
                         st.fontName = getFont();
                         st.color = getColor();
-                            st.updateContent(getText());
-                    } else if (s instanceof SourceDesktop) {
+                        st.updateContent(getText());
+                    } else if (s instanceof SourceQRCode) {
+                        SourceQRCode sQ = (SourceQRCode)s;
+                        sQ.content = getText();
+                        sQ.fontName = getFont();
+                        sQ.color = getColor();
+                        sQ.updateContent(getText());
+                    }else if (s instanceof SourceDesktop) {
                         SourceDesktop sd = (SourceDesktop) s;
                     }               
                     s.updateStatus();

@@ -33,7 +33,7 @@ public class About extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         setLocationRelativeTo(parent);
-        lblVersion.setText(Version.version + " ("+ new Version().getBuild()+")");
+        lblVersion.setText(Version.version + " build "+ new Version().getBuild());
     }
     
     /** This method is called from within the constructor to

@@ -28,7 +28,6 @@ public class SinkUDP extends Stream {
         rate = MasterMixer.getInstance().getRate();
         captureWidth = MasterMixer.getInstance().getWidth();
         captureHeight = MasterMixer.getInstance().getHeight();
-        rate = MasterMixer.getInstance().getRate();
         if (standard.equals("STD")) {
             capture = new ProcessRenderer(this, ProcessRenderer.ACTION.OUTPUT, "udp");
         } else {

@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import webcamstudio.streams.SourceDVB;
 import webcamstudio.streams.SourceDesktop;
 import webcamstudio.streams.SourceImage;
-import webcamstudio.streams.SourceImageGif;
 import webcamstudio.streams.SourceImageU;
 import webcamstudio.streams.SourceMovie;
 import webcamstudio.streams.SourceMusic;
@@ -44,6 +43,10 @@ public class SourceControls {
             c = new SourceControlEffects(source);
             c.setName("Effects");
             comps.add(c);
+        } else if (source instanceof SourceMusic) {
+            c = new SourceControlEffects(source);
+            c.setName("Effects");
+            comps.add(c);
         } else if (source instanceof SourceImageU) {
             c = new SourceControlEffects(source);
             c.setName("Effects");
@@ -56,6 +59,10 @@ public class SourceControls {
             c = new SourceControlEffects(source);
             c.setName("Effects");
             comps.add(c);
+//        } else if (source instanceof SourceIPCam) {
+//            c = new SourceControlEffects(source);
+//            c.setName("Effects");
+//            comps.add(c);
         } else if (source instanceof SourceWebcam) {
             c = new SourceControlEffects(source);
             c.setName("Effects");
@@ -72,11 +79,12 @@ public class SourceControls {
             c = new SourceControlEffects(source);
             c.setName("Effects");
             comps.add(c);
-        } else if (source instanceof SourceImageGif) {
+        } 
+//        else if (source instanceof SourceImageGif) {
 //            c = new SourceControlEffects(source);
 //            c.setName("Effects");
 //            comps.add(c);
-        }
+//        }
 
         return comps;
     }

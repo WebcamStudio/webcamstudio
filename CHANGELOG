@@ -1,3 +1,27 @@
+webcamstudio-0.65    01 Jan 2014
+
+  * Fixes: Studios Load/Save problems
+  * Fixes: Transitions and some Effects works now
+  * Fixes: Skype/Flash Compatibility
+  * Fixes: Cyan/Green visualization issue
+  * Fixes: Small Fixes
+  * Adds: Stream-Panles - Sliders to set Stream attributes
+  * Adds: Selectable "Add Webcam".
+  * Adds: Stream to Red5 - Icecast - Ustream - JustinTv - VaughnTv -  trought FME
+  * Adds: QuickStartGuide "Alpha" documentation.
+  * Adds: Choose between Gstreamer or AvConv Backends, where possible
+  * Adds: Added SourceSoundMonitor - SourceIPCam - SourceDVB - SourceURL
+  * Adds: Choose between HQ and Standard mode for UDP and FME Outputs
+  * Adds: SourceMovie and SourceMusic label to display play time in seconds
+  * Adds: Import Studio/Channels
+  * Adds: GS Audio Out to Speakers. Fullscreen Window Preview.
+  * Changes: webcamstudio kernel module updated to the v0.8.0 of v4l2loopback
+  * Changes: New Updated UI
+  * Changes: Refactoring to Java 1.7 - WS now works with Java>=1.7
+  * Removes: Import Channel button. Effects for SourceGif and SourceIPCam
+  * New upstream version
+
+
 webcamstudio-0.64    05 Apr 2013
 
   * Fixes: Load/Save problems

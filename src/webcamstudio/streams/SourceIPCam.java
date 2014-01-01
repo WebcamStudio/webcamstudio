@@ -10,32 +10,32 @@ import webcamstudio.externals.ProcessRenderer;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterFrameBuilder;
 import webcamstudio.mixers.MasterMixer;
+import webcamstudio.sources.effects.Effect;
 
 /**
  *
- * @author patrick
+ * @author patrick (modified by karl)
  */
-public class SourceMusic extends Stream {
+public class SourceIPCam extends Stream {
 
     ProcessRenderer capture = null;
     BufferedImage lastPreview = null;
     boolean isPlaying = false;
-
-    public SourceMusic(File music) {
+    
+    public SourceIPCam() {
         super();
+        name = "IPCam";
         rate = MasterMixer.getInstance().getRate();
-        file = music;
-        name = music.getName();
-
     }
 
     @Override
     public void read() {
         isPlaying = true;
-        MasterFrameBuilder.register(this);
+        rate = MasterMixer.getInstance().getRate();
         lastPreview = new BufferedImage(captureWidth,captureHeight,BufferedImage.TYPE_INT_ARGB);
-        capture = new ProcessRenderer(this, ProcessRenderer.ACTION.CAPTURE, "music");
-        capture.read();
+        MasterFrameBuilder.register(this);
+        capture = new ProcessRenderer(this, ProcessRenderer.ACTION.CAPTURE, "url");
+        capture.readCom();           
     }
 
     @Override
@@ -45,14 +45,17 @@ public class SourceMusic extends Stream {
         if (capture != null) {
             capture.stop();
             capture = null;
+            File directory = new File(System.getProperty("user.home")+"/.webcamstudio");
+            for(File f: directory.listFiles())
+                if(f.getName().startsWith("WSFrom"))
+                f.delete();
         }
-
+        isStillPicture = false;
     }
     @Override
     public boolean needSeek() {
-            return needSeekCTRL=true;
+        return needSeekCTRL=false;
     }
-
     @Override
     public boolean isPlaying() {
         return isPlaying;
@@ -68,8 +71,40 @@ public class SourceMusic extends Stream {
 
     @Override
     public Frame getFrame() {
-       
+        
         return nextFrame;
+    }
+    @Override
+    public boolean isIPCam() {
+        return isIPCam;
+    }
+    @Override
+    public void setIsIPCam(boolean setIsIPCam) {
+        isIPCam = setIsIPCam;
+    }
+    @Override
+    public boolean isStillPicture() {
+        return isStillPicture;
+    }
+    @Override
+    public void setIsStillPicture(boolean setIsStillPicture) {
+        isStillPicture = setIsStillPicture;
+    }
+    @Override
+    public boolean hasAudio() {
+        return hasAudio;
+    }
+    @Override
+    public void setHasAudio(boolean setHasAudio) {
+        hasAudio = setHasAudio;
+    }
+    @Override
+    public boolean hasVideo() {
+        return hasVideo;
+    }
+    @Override
+    public void setHasVideo(boolean setHasVideo) {
+        hasVideo = setHasVideo;
     }
     @Override
     public boolean hasFakeVideo(){
@@ -80,19 +115,17 @@ public class SourceMusic extends Stream {
         return true;
     }
     @Override
-    public boolean hasAudio() {
-        return true;
-    }
-
-    @Override
-    public boolean hasVideo() {
-        return true;
-    }
-    @Override
     public void readNext() {
-         Frame f = null;
+        Frame f = null;
         if (capture != null) {
             f = capture.getFrame();
+            for (Effect fxUR : this.getEffects()) {
+                if (f != null) {
+                    if (fxUR.needApply()){   
+                        fxUR.applyEffect(f.getImage());
+                    }
+                }
+            }
             if (f != null) {
                 setAudioLevel(f);
                 lastPreview.getGraphics().drawImage(f.getImage(), 0, 0, null);
@@ -100,4 +133,5 @@ public class SourceMusic extends Stream {
         }
         nextFrame=f;
     }
+
 }

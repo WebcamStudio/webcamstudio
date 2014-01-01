@@ -43,17 +43,21 @@ public class Exporter implements MasterMixer.SinkListener {
         this.stream = s;
         imageBuffer = new ImageBuffer(MasterMixer.getInstance().getWidth(),MasterMixer.getInstance().getHeight());
         audioBuffer = new AudioBuffer(MasterMixer.getInstance().getRate());
-        try {
-            videoServer = new ServerSocket(0);
-            vport = videoServer.getLocalPort();
-        } catch (IOException ex) {
-            Logger.getLogger(Exporter.class.getName()).log(Level.SEVERE, null, ex);
+        if (stream.hasVideo()) {
+            try {
+                videoServer = new ServerSocket(0);
+                vport = videoServer.getLocalPort();
+            } catch (IOException ex) {
+                Logger.getLogger(Exporter.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
-        try {
-            audioServer = new ServerSocket(0);
-            aport = audioServer.getLocalPort();
-        } catch (IOException ex) {
-            Logger.getLogger(Exporter.class.getName()).log(Level.SEVERE, null, ex);
+        if (stream.hasAudio()) {
+            try {
+                audioServer = new ServerSocket(0);
+                aport = audioServer.getLocalPort();
+            } catch (IOException ex) {
+                Logger.getLogger(Exporter.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         System.out.println("Port used is Video:" + vport+"/Audio:" + aport);
         if (stream.hasVideo()) {
@@ -91,7 +95,7 @@ public class Exporter implements MasterMixer.SinkListener {
             vExCapture.setPriority(Thread.MIN_PRIORITY);
             vExCapture.start();
         }
-        if (stream.hasVideo()) {
+        if (stream.hasAudio()) { //stream.hasVideo()
             Thread aExCapture = new Thread(new Runnable() {
 
                 @Override
@@ -135,13 +139,17 @@ public class Exporter implements MasterMixer.SinkListener {
         cancel = true;
         System.out.println("Output aborted...");
         MasterMixer.getInstance().unregister(this);
-        imageBuffer.abort();
-        imageBuffer = null;
-        audioBuffer.abort();
-        audioBuffer = null;
+        if (stream.hasVideo()) {
+            imageBuffer.abort();
+            imageBuffer = null;
+        }
+        if (stream.hasAudio()) {
+            audioBuffer.abort();
+            audioBuffer = null;
+        }
         System.out.println("V: " +vCounter);
         System.out.println("A: " +aCounter);
-        if (videoServer != null) {
+        if (videoServer != null && stream.hasVideo()) {
             try {
                 videoServer.close();
                 videoOutput.close();
@@ -151,7 +159,7 @@ public class Exporter implements MasterMixer.SinkListener {
                 Logger.getLogger(Exporter.class.getName()).log(Level.SEVERE, null, ex);
             }   
         }
-        if (audioServer != null) {
+        if (audioServer != null && stream.hasAudio()) {
             try {
                 audioServer.close();
                 if (audioOutput!=null){
@@ -175,7 +183,11 @@ public class Exporter implements MasterMixer.SinkListener {
 
     @Override
     public void newFrame(Frame frame) {
-        imageBuffer.push(frame.getImage());
-        audioBuffer.push(frame.getAudioData());
+        if (stream.hasVideo()){
+            imageBuffer.push(frame.getImage());
+        }
+        if (stream.hasAudio()){
+            audioBuffer.push(frame.getAudioData());
+        }
     }
 }

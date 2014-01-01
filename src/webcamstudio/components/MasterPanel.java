@@ -11,7 +11,10 @@
 package webcamstudio.components;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.beans.PropertyVetoException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,6 +22,9 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.swing.SpinnerNumberModel;
 import webcamstudio.channels.MasterChannels;
 import webcamstudio.mixers.Frame;
+import webcamstudio.FullScreen;
+import webcamstudio.FullScreenWindow;
+import webcamstudio.WebcamStudio;
 import webcamstudio.mixers.MasterMixer;
 import webcamstudio.mixers.SystemPlayer;
 import webcamstudio.streams.SourceChannel;
@@ -30,7 +36,7 @@ import webcamstudio.util.Tools;
  *
  * @author patrick (modified by karl)
  */
-public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkListener {
+public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkListener, FullScreen.Listener {
 
     protected Viewer viewer = new Viewer();
     private SystemPlayer player = null;
@@ -38,7 +44,7 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
     MasterChannels master = MasterChannels.getInstance();
     final static public Dimension PANEL_SIZE = new Dimension(150, 400);
     ArrayList<Stream> streamM = MasterChannels.getInstance().getStreams();   
-    
+    Stream stream = null;
 
     /** Creates new form MasterPanel */
     public MasterPanel() {
@@ -53,6 +59,8 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
         mixer.register(this);
         spinFPS.setValue(MasterMixer.getInstance().getRate());
         panChannels.add(new ChannelPanel(), BorderLayout.CENTER);
+        final MasterPanel instanceSinkMP = this;
+        FullScreen.setListenerFS(instanceSinkMP);
     }
 
     /** This method is called from within the constructor to
@@ -77,6 +85,7 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
         lblHeight1 = new javax.swing.JLabel();
         spinFPS = new javax.swing.JSpinner();
         btnApplyToStreams = new javax.swing.JButton();
+        btnFullScreen = new javax.swing.JButton();
 
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("webcamstudio/Languages"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("PREVIEW"))); // NOI18N
@@ -99,7 +108,7 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
         panMixer.setName("panMixer"); // NOI18N
 
         tglSound.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/audio-card.png"))); // NOI18N
-        tglSound.setToolTipText("Audio Monitor Switch");
+        tglSound.setToolTipText("WebcamStudio Master Audio Output");
         tglSound.setName("tglSound"); // NOI18N
         tglSound.setPreferredSize(new java.awt.Dimension(32, 30));
         tglSound.addActionListener(new java.awt.event.ActionListener() {
@@ -141,6 +150,17 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
             }
         });
 
+        btnFullScreen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/view-fullscreen.png"))); // NOI18N
+        btnFullScreen.setToolTipText("WebcamStudio FullScreen Preview");
+        btnFullScreen.setMinimumSize(new java.awt.Dimension(0, 0));
+        btnFullScreen.setName("btnFullScreen"); // NOI18N
+        btnFullScreen.setPreferredSize(new java.awt.Dimension(20, 20));
+        btnFullScreen.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnFullScreenActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout panMixerLayout = new javax.swing.GroupLayout(panMixer);
         panMixer.setLayout(panMixerLayout);
         panMixerLayout.setHorizontalGroup(
@@ -159,10 +179,12 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
                             .addComponent(spinHeight)
                             .addComponent(spinWidth)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panMixerLayout.createSequentialGroup()
-                        .addComponent(btnApply, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnApply, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnFullScreen, javax.swing.GroupLayout.DEFAULT_SIZE, 21, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(tglSound, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(btnApplyToStreams, javax.swing.GroupLayout.DEFAULT_SIZE, 201, Short.MAX_VALUE))
+                        .addComponent(tglSound, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnApplyToStreams, javax.swing.GroupLayout.DEFAULT_SIZE, 203, Short.MAX_VALUE))
                 .addContainerGap())
         );
         panMixerLayout.setVerticalGroup(
@@ -181,9 +203,10 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
                     .addComponent(spinFPS, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblHeight1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(panMixerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(btnApply, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(tglSound, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(panMixerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(btnApply, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(tglSound, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnFullScreen, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnApplyToStreams, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(65, 65, 65))
@@ -311,9 +334,31 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
         }
     }//GEN-LAST:event_btnApplyToStreamsActionPerformed
 
+    private void btnFullScreenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFullScreenActionPerformed
+        FullScreen window = new FullScreen();
+        StreamFullScreen frame = new StreamFullScreen(viewer);
+        window.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        try {
+            frame.setSelected(true);
+            frame.setMaximum(true);
+        } catch (PropertyVetoException ex) {
+            Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        window.setVisible(true);
+    }//GEN-LAST:event_btnFullScreenActionPerformed
+    @Override
+    public void resetViewer(ActionEvent evt){
+        viewer.setOpaque(true);
+        panelPreview.add(viewer, BorderLayout.CENTER);
+        player = SystemPlayer.getInstance(viewer);
+        this.repaint();
+        this.revalidate();
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnApply;
     private javax.swing.JButton btnApplyToStreams;
+    private javax.swing.JButton btnFullScreen;
     private javax.swing.JLabel lblHeight;
     private javax.swing.JLabel lblHeight1;
     private javax.swing.JLabel lblWidth;

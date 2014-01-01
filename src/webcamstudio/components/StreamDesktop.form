@@ -19,6 +19,7 @@
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Ubuntu" size="12" style="0"/>
             </Property>
+            <Property name="horizontalTextPosition" type="int" value="10"/>
             <Property name="name" type="java.lang.String" value="jMControls" noResource="true"/>
           </Properties>
           <SubComponents>
@@ -56,6 +57,32 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jCBShowSlidersActionPerformed"/>
               </Events>
             </MenuItem>
+            <Menu class="javax.swing.JMenu" name="jMIPCBrand">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="IPCam PTZ"/>
+                <Property name="name" type="java.lang.String" value="jMIPCBrand" noResource="true"/>
+              </Properties>
+              <SubComponents>
+                <MenuItem class="javax.swing.JCheckBoxMenuItem" name="jCBoxFosCamPtz">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="FosCam"/>
+                    <Property name="name" type="java.lang.String" value="jCBoxFosCamPtz" noResource="true"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jCBoxFosCamPtzActionPerformed"/>
+                  </Events>
+                </MenuItem>
+                <MenuItem class="javax.swing.JCheckBoxMenuItem" name="jCBoxAxisPtz">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Axis"/>
+                    <Property name="name" type="java.lang.String" value="jCBoxAxisPtz" noResource="true"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jCBoxAxisPtzActionPerformed"/>
+                  </Events>
+                </MenuItem>
+              </SubComponents>
+            </Menu>
           </SubComponents>
         </Menu>
         <Menu class="javax.swing.JMenu" name="JMBackEnd">

@@ -66,35 +66,6 @@ public class MasterChannels {
         }
     }
     
-//    public void insertChannel(String name){
-//        for (Stream s : streams){
-//            int co = 0;
-//            for (SourceChannel ssc : s.getChannels()){
-//                if (ssc.getName().equals(name)){
-//                    co++;
-//                }                  
-//            }
-//            if (co == 0){
-//                s.setIsPlaying(false);
-//                s.addChannel(SourceChannel.getChannel(name, s));
-//                s.setIsPlaying(true);
-//            } else { 
-//                ArrayList<String> allChan = new ArrayList<>();
-//                for (String scn : MasterChannels.getInstance().getChannels()){
-//                    allChan.add(scn); 
-//                } 
-//                for (SourceChannel scc3 : s.getChannels()){
-//                    String removech = scc3.getName();
-//                    allChan.remove(removech);
-//                }
-//                for (String ssc2 : allChan) {
-//                        s.setIsPlaying(false);
-//                        s.addChannel(SourceChannel.getChannel(ssc2, s));
-//                } 
-//            } 
-//        }
-//    }
-    
     public void insertStudio(String name){
         for (Stream s : streams){
             int co = 0;

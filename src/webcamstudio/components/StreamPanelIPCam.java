@@ -13,10 +13,14 @@ package webcamstudio.components;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.SpinnerNumberModel;
 import webcamstudio.streams.Stream;
+import webcamstudio.util.Tools;
 
 
 
@@ -24,7 +28,7 @@ import webcamstudio.streams.Stream;
  *
  * @author patrick (modified by karl)
  */
-public class StreamPanelURL extends javax.swing.JPanel implements Stream.Listener{
+public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Listener{
 
     Stream stream = null;
     Viewer viewer = new Viewer();
@@ -32,11 +36,11 @@ public class StreamPanelURL extends javax.swing.JPanel implements Stream.Listene
 
     /** Creates new form StreamPanel
      * @param stream */
-    public StreamPanelURL(Stream stream) {
+    public StreamPanelIPCam(Stream stream) {
 
         initComponents();
         
-        stream.setIsIPCam(false);
+        stream.setIsIPCam(true);
         viewer.setOpaque(true);
         viewer.setVisible(true);
         viewer.setBackground(Color.red);
@@ -73,12 +77,16 @@ public class StreamPanelURL extends javax.swing.JPanel implements Stream.Listene
         spinVDelay.setEnabled(stream.hasVideo());
         jSlSpinVD.setEnabled(stream.hasVideo());
         spinADelay.setEnabled(stream.hasAudio());
-        tglAudio.setSelected(!stream.hasAudio());
-        tglVideo.setSelected(!stream.hasVideo());
+        tglAudio.setSelected(true);
         spinSeek.setValue(stream.getSeek());
         jSlSpinSeek.setValue(stream.getSeek());
         spinSeek.setEnabled(stream.needSeekCTRL());
         txtWebURL.setText(stream.getWebURL());
+        ckbProtected.setSelected(stream.getProtected());
+        txtUser.setEnabled(stream.getProtected());
+        txtPwd.setEnabled(stream.getProtected());
+        txtUser.setText(stream.getIPUser());
+        txtPwd.setText(stream.getIPPwd());
         stream.setListener(this);
         if (!stream.hasVideo()){
             spinX.setEnabled(false);
@@ -159,7 +167,6 @@ public class StreamPanelURL extends javax.swing.JPanel implements Stream.Listene
             jSlSpinSeek.setEnabled(false);
             txtWebURL.setEditable(false);
             tglAudio.setEnabled(false);
-            tglVideo.setEnabled(false);
         } else {
             this.setBorder(BorderFactory.createEmptyBorder());
             spinH1.setEnabled(true);
@@ -173,14 +180,7 @@ public class StreamPanelURL extends javax.swing.JPanel implements Stream.Listene
             spinSeek.setEnabled(true);
             jSlSpinSeek.setEnabled(true);
             txtWebURL.setEditable(true);
-            if (tglAudio.isSelected()) {
-                tglAudio.setEnabled(true);
-            } else if (tglVideo.isSelected()) {
-                tglVideo.setEnabled(true);
-            } else {
-                tglAudio.setEnabled(true);
-                tglVideo.setEnabled(true);
-            }
+            tglAudio.setEnabled(true);
         }
         tglActiveStream.revalidate();
     }
@@ -195,7 +195,6 @@ public class StreamPanelURL extends javax.swing.JPanel implements Stream.Listene
 
         panPreview = new javax.swing.JPanel();
         tglAudio = new javax.swing.JToggleButton();
-        tglVideo = new javax.swing.JToggleButton();
         spinX = new javax.swing.JSpinner();
         spinY = new javax.swing.JSpinner();
         spinW = new javax.swing.JSpinner();
@@ -222,8 +221,6 @@ public class StreamPanelURL extends javax.swing.JPanel implements Stream.Listene
         labelURL = new javax.swing.JLabel();
         txtWebURL = new javax.swing.JTextField();
         jSeparator4 = new javax.swing.JSeparator();
-        jSeparator7 = new javax.swing.JSeparator();
-        jLabel3 = new javax.swing.JLabel();
         jSlSpinX = new javax.swing.JSlider();
         jSlSpinY = new javax.swing.JSlider();
         jSlSpinCW = new javax.swing.JSlider();
@@ -241,6 +238,20 @@ public class StreamPanelURL extends javax.swing.JPanel implements Stream.Listene
         jSeparator2 = new javax.swing.JSeparator();
         labelVD = new javax.swing.JLabel();
         labelAD = new javax.swing.JLabel();
+        btnUp = new javax.swing.JToggleButton();
+        btnDown = new javax.swing.JToggleButton();
+        btnLeft = new javax.swing.JToggleButton();
+        btnRight = new javax.swing.JToggleButton();
+        btnPreset = new javax.swing.JButton();
+        btnZoomIn = new javax.swing.JToggleButton();
+        btnZoomOut = new javax.swing.JToggleButton();
+        txtUser = new javax.swing.JTextField();
+        txtPwd = new javax.swing.JPasswordField();
+        labelUser = new javax.swing.JLabel();
+        labelPwd = new javax.swing.JLabel();
+        ckbProtected = new javax.swing.JCheckBox();
+        labelProtected = new javax.swing.JLabel();
+        labelPTZPanel = new javax.swing.JLabel();
 
         setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
         setMaximumSize(new java.awt.Dimension(286, 356));
@@ -258,33 +269,13 @@ public class StreamPanelURL extends javax.swing.JPanel implements Stream.Listene
 
         tglAudio.setFont(new java.awt.Font("Ubuntu", 0, 12)); // NOI18N
         tglAudio.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/audio-volume-muted.png"))); // NOI18N
-        tglAudio.setToolTipText("No Audio Switch (Force Only Video Source)");
+        tglAudio.setToolTipText("No Audio Switch (Only Video Source)");
         tglAudio.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         tglAudio.setMaximumSize(new java.awt.Dimension(40, 32));
         tglAudio.setMinimumSize(new java.awt.Dimension(26, 30));
         tglAudio.setName("tglAudio"); // NOI18N
         tglAudio.setPreferredSize(new java.awt.Dimension(20, 20));
-        tglAudio.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                tglAudioActionPerformed(evt);
-            }
-        });
         panPreview.add(tglAudio, java.awt.BorderLayout.PAGE_START);
-
-        tglVideo.setFont(new java.awt.Font("Ubuntu", 0, 12)); // NOI18N
-        tglVideo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/edit-delete.png"))); // NOI18N
-        tglVideo.setToolTipText("No Video Switch (Force Only Audio Source)");
-        tglVideo.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        tglVideo.setMaximumSize(new java.awt.Dimension(40, 32));
-        tglVideo.setMinimumSize(new java.awt.Dimension(26, 30));
-        tglVideo.setName("tglVideo"); // NOI18N
-        tglVideo.setPreferredSize(new java.awt.Dimension(20, 20));
-        tglVideo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                tglVideoActionPerformed(evt);
-            }
-        });
-        panPreview.add(tglVideo, java.awt.BorderLayout.PAGE_END);
 
         add(panPreview, new org.netbeans.lib.awtextra.AbsoluteConstraints(7, 7, 110, 120));
 
@@ -467,10 +458,10 @@ public class StreamPanelURL extends javax.swing.JPanel implements Stream.Listene
         add(labelSeek, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 420, 50, 9));
 
         labelURL.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
-        labelURL.setText(bundle.getString("ENTER_URL")); // NOI18N
+        labelURL.setText(bundle.getString("ENTER_CAM_URL")); // NOI18N
         labelURL.setToolTipText("");
         labelURL.setName("labelURL"); // NOI18N
-        add(labelURL, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 142, 60, -1));
+        add(labelURL, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 140, 80, -1));
 
         txtWebURL.setFont(new java.awt.Font("Ubuntu Condensed", 0, 12)); // NOI18N
         txtWebURL.setToolTipText("Enter Url ...");
@@ -485,14 +476,6 @@ public class StreamPanelURL extends javax.swing.JPanel implements Stream.Listene
         jSeparator4.setOrientation(javax.swing.SwingConstants.VERTICAL);
         jSeparator4.setName("jSeparator4"); // NOI18N
         add(jSeparator4, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 7, 10, 126));
-
-        jSeparator7.setName("jSeparator7"); // NOI18N
-        jSeparator7.setPreferredSize(new java.awt.Dimension(48, 10));
-        add(jSeparator7, new org.netbeans.lib.awtextra.AbsoluteConstraints(126, 135, 150, 10));
-
-        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/splash100.png"))); // NOI18N
-        jLabel3.setName("jLabel3"); // NOI18N
-        add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(143, 14, 120, 110));
 
         jSlSpinX.setMajorTickSpacing(10);
         jSlSpinX.setMaximum(1920);
@@ -665,58 +648,168 @@ public class StreamPanelURL extends javax.swing.JPanel implements Stream.Listene
         labelAD.setText(bundle.getString("AUDIO_DELAY")); // NOI18N
         labelAD.setName("labelAD"); // NOI18N
         add(labelAD, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 400, 60, 9));
+
+        btnUp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/go-up.png"))); // NOI18N
+        btnUp.setName("btnUp"); // NOI18N
+        btnUp.setRolloverEnabled(false);
+        btnUp.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-stop.png"))); // NOI18N
+        btnUp.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUpActionPerformed(evt);
+            }
+        });
+        add(btnUp, new org.netbeans.lib.awtextra.AbsoluteConstraints(183, 12, 40, -1));
+
+        btnDown.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/go-down.png"))); // NOI18N
+        btnDown.setName("btnDown"); // NOI18N
+        btnDown.setRolloverEnabled(false);
+        btnDown.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-stop.png"))); // NOI18N
+        btnDown.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDownActionPerformed(evt);
+            }
+        });
+        add(btnDown, new org.netbeans.lib.awtextra.AbsoluteConstraints(183, 72, 40, -1));
+
+        btnLeft.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/go-previous.png"))); // NOI18N
+        btnLeft.setName("btnLeft"); // NOI18N
+        btnLeft.setRolloverEnabled(false);
+        btnLeft.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-stop.png"))); // NOI18N
+        btnLeft.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLeftActionPerformed(evt);
+            }
+        });
+        add(btnLeft, new org.netbeans.lib.awtextra.AbsoluteConstraints(145, 42, 40, -1));
+
+        btnRight.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/go-next.png"))); // NOI18N
+        btnRight.setName("btnRight"); // NOI18N
+        btnRight.setRolloverEnabled(false);
+        btnRight.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-stop.png"))); // NOI18N
+        btnRight.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRightActionPerformed(evt);
+            }
+        });
+        add(btnRight, new org.netbeans.lib.awtextra.AbsoluteConstraints(221, 42, 40, -1));
+
+        btnPreset.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-record.png"))); // NOI18N
+        btnPreset.setToolTipText("Go To Preset 1");
+        btnPreset.setName("btnPreset"); // NOI18N
+        btnPreset.setRolloverEnabled(false);
+        btnPreset.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-stop.png"))); // NOI18N
+        btnPreset.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPresetActionPerformed(evt);
+            }
+        });
+        add(btnPreset, new org.netbeans.lib.awtextra.AbsoluteConstraints(183, 42, 40, -1));
+
+        btnZoomIn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/list-add.png"))); // NOI18N
+        btnZoomIn.setToolTipText("Zoom In");
+        btnZoomIn.setName("btnZoomIn"); // NOI18N
+        btnZoomIn.setRolloverEnabled(false);
+        btnZoomIn.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-stop.png"))); // NOI18N
+        btnZoomIn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnZoomInActionPerformed(evt);
+            }
+        });
+        add(btnZoomIn, new org.netbeans.lib.awtextra.AbsoluteConstraints(146, 18, 40, 20));
+
+        btnZoomOut.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/list-remove.png"))); // NOI18N
+        btnZoomOut.setToolTipText("Zoom Out");
+        btnZoomOut.setName("btnZoomOut"); // NOI18N
+        btnZoomOut.setRolloverEnabled(false);
+        btnZoomOut.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-stop.png"))); // NOI18N
+        btnZoomOut.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnZoomOutActionPerformed(evt);
+            }
+        });
+        add(btnZoomOut, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 18, 40, 20));
+
+        txtUser.setFont(new java.awt.Font("Ubuntu Condensed", 0, 10)); // NOI18N
+        txtUser.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtUser.setName("txtUser"); // NOI18N
+        add(txtUser, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 103, 70, 24));
+
+        txtPwd.setFont(new java.awt.Font("Ubuntu Condensed", 0, 10)); // NOI18N
+        txtPwd.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtPwd.setName("txtPwd"); // NOI18N
+        add(txtPwd, new org.netbeans.lib.awtextra.AbsoluteConstraints(205, 103, 70, 24));
+
+        labelUser.setFont(new java.awt.Font("Ubuntu Condensed", 0, 10)); // NOI18N
+        labelUser.setForeground(java.awt.Color.white);
+        labelUser.setText(bundle.getString("USER")); // NOI18N
+        labelUser.setName("labelUser"); // NOI18N
+        add(labelUser, new org.netbeans.lib.awtextra.AbsoluteConstraints(158, 123, 30, -1));
+
+        labelPwd.setFont(new java.awt.Font("Ubuntu Condensed", 0, 10)); // NOI18N
+        labelPwd.setForeground(java.awt.Color.white);
+        labelPwd.setText(bundle.getString("PWD")); // NOI18N
+        labelPwd.setName("labelPwd"); // NOI18N
+        add(labelPwd, new org.netbeans.lib.awtextra.AbsoluteConstraints(222, 123, 50, -1));
+
+        ckbProtected.setFont(new java.awt.Font("Ubuntu Condensed", 0, 10)); // NOI18N
+        ckbProtected.setName("ckbProtected"); // NOI18N
+        ckbProtected.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ckbProtectedActionPerformed(evt);
+            }
+        });
+        add(ckbProtected, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 78, -1, -1));
+
+        labelProtected.setFont(new java.awt.Font("Ubuntu Condensed", 0, 10)); // NOI18N
+        labelProtected.setForeground(java.awt.Color.white);
+        labelProtected.setText("Protected");
+        labelProtected.setName("labelProtected"); // NOI18N
+        add(labelProtected, new org.netbeans.lib.awtextra.AbsoluteConstraints(147, 83, -1, -1));
+
+        labelPTZPanel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/IPCam.png"))); // NOI18N
+        labelPTZPanel.setToolTipText("PTZ Panel");
+        labelPTZPanel.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        labelPTZPanel.setName("labelPTZPanel"); // NOI18N
+        labelPTZPanel.setOpaque(true);
+        add(labelPTZPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(126, 7, 153, 130));
     }// </editor-fold>//GEN-END:initComponents
     private void tglActiveStreamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglActiveStreamActionPerformed
         if (tglActiveStream.isSelected()) {
             this.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.green));
             if (txtWebURL.getText() != null) {
-                stream.setWebURL((String) txtWebURL.getText());
-                setToolTipText(txtWebURL.getText());
+            stream.setWebURL((String) txtWebURL.getText());
+            setToolTipText(txtWebURL.getText());
             }
-            String webURL = stream.getWebURL();
+            if (stream.getProtected()) {
+                if (txtUser.getText() != null) {
+                stream.setIPUser((String) txtUser.getText());
+                }
+                if (txtPwd.getPassword() != null) {
+                    char[] pass = txtPwd.getPassword();
+                    String pwd = new String(pass);
+                    stream.setIPPwd(pwd);
+                }
+            }
             if (tglAudio.isSelected()) {
                 stream.setHasAudio(false);
-                stream.setHasVideo(true);
-                stream.setOnlyVideo(true);
-                stream.setOnlyAudio(false);
-            } else if (tglVideo.isSelected()) {
-                stream.setHasAudio(true);
-                stream.setHasVideo(false);
-                stream.setOnlyAudio(true);
-                stream.setOnlyVideo(false);
-            } else if (webURL.endsWith("mp3")){
-                stream.setHasVideo(false);
-                stream.setHasAudio(true);
-            } else if (webURL.endsWith("jpg") || webURL.endsWith("png")){
-                stream.setIsStillPicture(true);
-                stream.setHasAudio(false);
-                stream.setHasVideo(true);
             } else {
                 stream.setHasVideo(true);
                 stream.setHasAudio(true);
-                stream.setOnlyAudio(false);
-                stream.setOnlyVideo(false);
             }
-            
-            if (webURL.startsWith("rtsp")) {
-                stream.setRTSP(true);
-            } else if (webURL.startsWith("rtmp")) {
-                stream.setRTMP(true);
-            }
-            spinX.setEnabled(!tglVideo.isSelected());
-            jSlSpinX.setEnabled(!tglVideo.isSelected());
-            spinY.setEnabled(!tglVideo.isSelected());
-            jSlSpinY.setEnabled(!tglVideo.isSelected());
+            spinX.setEnabled(stream.hasVideo());
+            jSlSpinX.setEnabled(stream.hasVideo());
+            spinY.setEnabled(stream.hasVideo());
+            jSlSpinY.setEnabled(stream.hasVideo());
             spinW1.setEnabled(false);
             jSlSpinCW.setEnabled(false);
             spinH1.setEnabled(false);
             jSlSpinCH.setEnabled(false);
-            spinW.setEnabled(!tglVideo.isSelected());
-            jSlSpinW.setEnabled(!tglVideo.isSelected());
-            spinH.setEnabled(!tglVideo.isSelected());
-            jSlSpinH.setEnabled(!tglVideo.isSelected());
-            spinOpacity.setEnabled(!tglVideo.isSelected());
-            jSlSpinO.setEnabled(!tglVideo.isSelected());
+            spinW.setEnabled(stream.hasVideo());
+            jSlSpinW.setEnabled(stream.hasVideo());
+            spinH.setEnabled(stream.hasVideo());
+            jSlSpinH.setEnabled(stream.hasVideo());
+            spinOpacity.setEnabled(stream.hasVideo());
+            jSlSpinO.setEnabled(stream.hasVideo());
             spinVDelay.setEnabled(false);
             jSlSpinVD.setEnabled(false);
             spinADelay.setEnabled(false);
@@ -725,43 +818,25 @@ public class StreamPanelURL extends javax.swing.JPanel implements Stream.Listene
             jSlSpinSeek.setEnabled(false);
             txtWebURL.setEditable(false);
             tglAudio.setEnabled(false);
-            tglVideo.setEnabled(false);
             stream.read();
         } else {
             this.setBorder(BorderFactory.createEmptyBorder());
-            spinX.setEnabled(!tglVideo.isSelected());
-            jSlSpinX.setEnabled(!tglVideo.isSelected());
-            spinY.setEnabled(!tglVideo.isSelected());
-            jSlSpinY.setEnabled(!tglVideo.isSelected());
-            spinW1.setEnabled(!tglVideo.isSelected());
-            jSlSpinCW.setEnabled(!tglVideo.isSelected());
-            spinH1.setEnabled(!tglVideo.isSelected());
-            jSlSpinCH.setEnabled(!tglVideo.isSelected());
-            spinW.setEnabled(!tglVideo.isSelected());
-            jSlSpinW.setEnabled(!tglVideo.isSelected());
-            spinH.setEnabled(!tglVideo.isSelected());
-            jSlSpinH.setEnabled(!tglVideo.isSelected());
-            spinVDelay.setEnabled(!tglVideo.isSelected());
-            jSlSpinVD.setEnabled(!tglVideo.isSelected());
+            spinW1.setEnabled(stream.hasVideo());
+            jSlSpinCW.setEnabled(stream.hasVideo());
+            spinH1.setEnabled(stream.hasVideo());
+            jSlSpinCH.setEnabled(stream.hasVideo());
+            spinW.setEnabled(stream.hasVideo());
+            jSlSpinW.setEnabled(stream.hasVideo());
+            spinH.setEnabled(stream.hasVideo());
+            jSlSpinH.setEnabled(stream.hasVideo());
+            spinVDelay.setEnabled(stream.hasVideo());
+            jSlSpinVD.setEnabled(stream.hasVideo());
             spinADelay.setEnabled(stream.hasAudio());
             jSlSpinAD.setEnabled(stream.hasAudio());
             spinSeek.setEnabled(stream.needSeekCTRL());
             jSlSpinSeek.setEnabled(stream.needSeekCTRL());
-            spinOpacity.setEnabled(!tglVideo.isSelected());
-            jSlSpinO.setEnabled(!tglVideo.isSelected());
             txtWebURL.setEditable(true);
-            stream.setRTSP(false);
-            stream.setRTMP(false);
-            stream.setOnlyAudio(false);
-            stream.setOnlyVideo(false);
-            if (tglAudio.isSelected()) {
-                tglAudio.setEnabled(true);
-            } else if (tglVideo.isSelected()) {
-                tglVideo.setEnabled(true);
-            } else {
-                tglAudio.setEnabled(true);
-                tglVideo.setEnabled(true);
-            }
+            tglAudio.setEnabled(true);
             stream.stop();
             
         }
@@ -900,29 +975,494 @@ public class StreamPanelURL extends javax.swing.JPanel implements Stream.Listene
         spinZOrder.setValue(jSlSpinZOrder.getValue());
     }//GEN-LAST:event_jSlSpinZOrderStateChanged
 
-    private void tglAudioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglAudioActionPerformed
-        if (tglAudio.isSelected()) {
-            tglVideo.setEnabled(false);
-        } else {
-            tglVideo.setEnabled(true);
-        }
-    }//GEN-LAST:event_tglAudioActionPerformed
+    private void btnRightActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRightActionPerformed
+        Process camPTZon = null;
+        Process camPTZoff = null;
+        String soloURL = null;
+        String[] temp = null;
+        
+        if (stream.getWebURL() != null){
+            soloURL = stream.getWebURL().replace("http://", "");
+            temp = soloURL.split("/");
+        
+            if (btnRight.isSelected()){
 
-    private void tglVideoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglVideoActionPerformed
-        if (tglVideo.isSelected()) {
-            tglAudio.setEnabled(false);
-        } else {
-            tglAudio.setEnabled(true);
+                if (camPTZoff != null){
+                    camPTZoff.destroy();
+                }
+                if (stream.getPtzBrand().equals("foscam")) {
+                    // Foscam compatible commands            
+                    String camCmdRight = "wget -qO- http://"+temp[0]+"/decoder_control.cgi?command=4&user="+stream.getIPUser()+"&pwd="+stream.getIPPwd();
+                    System.out.println("cmdRight: "+camCmdRight);
+                    Runtime rt = Runtime.getRuntime();
+                    try {
+                        camPTZon = rt.exec(camCmdRight);
+                        Tools.sleep(500);
+                    } catch (IOException ex) {
+                        Logger.getLogger(StreamPanelIPCam.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                } else if (stream.getPtzBrand().equals("axis")) {
+                    // Axis compatible commands
+                    String camCmdRight = "wget -qO- http://"+temp[0]+"/axis-cgi/com/ptz.cgi?continuouspantiltmove=1,0&user="+stream.getIPUser()+"&pwd="+stream.getIPPwd();
+                    System.out.println("cmdRight: "+camCmdRight);
+                    Runtime rt = Runtime.getRuntime();
+                    try {
+                        camPTZon = rt.exec(camCmdRight);
+                        Tools.sleep(500);
+                    } catch (IOException ex) {
+                        Logger.getLogger(StreamPanelIPCam.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            } else {
+
+                if (camPTZon != null){
+                    camPTZon.destroy();
+                }
+                if (stream.getPtzBrand().equals("foscam")) {
+                    // Foscam compatible commands
+                    String camCmdStopRight = "wget -qO- http://"+temp[0]+"/decoder_control.cgi?command=5&user="+stream.getIPUser()+"&pwd="+stream.getIPPwd();
+                    System.out.println("cmdStopRight: "+camCmdStopRight);
+                    Runtime rt = Runtime.getRuntime();
+                    try {
+                        camPTZoff = rt.exec(camCmdStopRight);
+                    } catch (IOException ex) {
+                        Logger.getLogger(StreamPanelIPCam.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    Tools.sleep(500);
+                    camPTZoff.destroy();
+                } else if (stream.getPtzBrand().equals("axis")) {
+                    // Axis compatible commands                    
+                    String camCmdRight = "wget -qO- http://"+temp[0]+"/axis-cgi/com/ptz.cgi?continuouspantiltmove=0,0&user="+stream.getIPUser()+"&pwd="+stream.getIPPwd();
+                    System.out.println("cmdRight: "+camCmdRight);
+                    Runtime rt = Runtime.getRuntime();
+                    try {
+                        camPTZon = rt.exec(camCmdRight);
+                        Tools.sleep(500);
+                    } catch (IOException ex) {
+                        Logger.getLogger(StreamPanelIPCam.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
         }
-    }//GEN-LAST:event_tglVideoActionPerformed
+    }//GEN-LAST:event_btnRightActionPerformed
+
+    private void ckbProtectedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ckbProtectedActionPerformed
+        if (ckbProtected.isSelected()){
+            txtUser.setEnabled(true);
+            txtPwd.setEnabled(true);
+            if (txtUser.getText() != null) {
+                stream.setIPUser((String) txtUser.getText());
+            }
+            if (txtPwd.getPassword() != null) {
+                char[] pass = txtPwd.getPassword();
+                String pwd = new String(pass);
+                stream.setIPPwd(pwd);
+            }
+            stream.setProtected(true);
+        } else {
+            txtUser.setEnabled(false);
+            txtPwd.setEnabled(false);
+            stream.setIPPwd(null);
+            stream.setIPUser(null);
+            stream.setProtected(false);
+        }
+    }//GEN-LAST:event_ckbProtectedActionPerformed
+
+    private void btnUpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpActionPerformed
+        Process camPTZon = null;
+        Process camPTZoff = null;
+        String soloURL = null;
+        String[] temp = null;
+        
+        if (stream.getWebURL() != null){
+            soloURL = stream.getWebURL().replace("http://", "");
+            temp = soloURL.split("/");
+            if (btnUp.isSelected()){
+
+                if (camPTZoff != null){
+                    camPTZoff.destroy();
+                }
+                if (stream.getPtzBrand().equals("foscam")) {
+                    // Foscam compatible commands
+                    String camCmdUp = "wget -qO- http://"+temp[0]+"/decoder_control.cgi?command=0&user="+stream.getIPUser()+"&pwd="+stream.getIPPwd();
+                    System.out.println("cmdUP: "+camCmdUp);
+                    Runtime rt = Runtime.getRuntime();
+                    try {
+                        camPTZon = rt.exec(camCmdUp);
+                        Tools.sleep(500);
+
+                    } catch (IOException ex) {
+                        Logger.getLogger(StreamPanelIPCam.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                } else if (stream.getPtzBrand().equals("axis")) {
+                    // Axis compatible commands
+                    String camCmdRight = "wget -qO- http://"+temp[0]+"/axis-cgi/com/ptz.cgi?continuouspantiltmove=0,1&user="+stream.getIPUser()+"&pwd="+stream.getIPPwd();
+                    System.out.println("cmdRight: "+camCmdRight);
+                    Runtime rt = Runtime.getRuntime();
+                    try {
+                        camPTZon = rt.exec(camCmdRight);
+                        Tools.sleep(500);
+                    } catch (IOException ex) {
+                        Logger.getLogger(StreamPanelIPCam.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            } else {
+                if (camPTZon != null){
+                    camPTZon.destroy();
+                }
+                if (stream.getPtzBrand().equals("foscam")) {
+                    // Foscam compatible commands
+                    String camCmdStopUp = "wget -qO- http://"+temp[0]+"/decoder_control.cgi?command=1&user="+stream.getIPUser()+"&pwd="+stream.getIPPwd();
+                    System.out.println("cmdStopUP: "+camCmdStopUp);
+                    Runtime rt = Runtime.getRuntime();
+                    try {
+                        camPTZoff = rt.exec(camCmdStopUp);
+                    } catch (IOException ex) {
+                        Logger.getLogger(StreamPanelIPCam.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    Tools.sleep(500);
+                    camPTZoff.destroy();
+                } else if (stream.getPtzBrand().equals("axis")) {
+                    // Axis compatible commands
+                    String camCmdRight = "wget -qO- http://"+temp[0]+"/axis-cgi/com/ptz.cgi?continuouspantiltmove=0,0&user="+stream.getIPUser()+"&pwd="+stream.getIPPwd();
+                    System.out.println("cmdRight: "+camCmdRight);
+                    Runtime rt = Runtime.getRuntime();
+                    try {
+                        camPTZon = rt.exec(camCmdRight);
+                        Tools.sleep(500);
+                    } catch (IOException ex) {
+                        Logger.getLogger(StreamPanelIPCam.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+        }
+    }//GEN-LAST:event_btnUpActionPerformed
+
+    private void btnDownActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDownActionPerformed
+        Process camPTZon = null;
+        Process camPTZoff = null;
+        String soloURL = null;
+        String[] temp = null;
+        
+        if (stream.getWebURL() != null){
+            soloURL = stream.getWebURL().replace("http://", "");
+            temp = soloURL.split("/");
+            if (btnDown.isSelected()){
+
+                if (camPTZoff != null){
+                    camPTZoff.destroy();
+                }
+                if (stream.getPtzBrand().equals("foscam")) {
+                    // Foscam compatible commands
+                    String camCmdDown = "wget -qO- http://"+temp[0]+"/decoder_control.cgi?command=2&user="+stream.getIPUser()+"&pwd="+stream.getIPPwd();
+                    System.out.println("cmdDown: "+camCmdDown);
+                    Runtime rt = Runtime.getRuntime();
+                    try {
+                        camPTZon = rt.exec(camCmdDown);
+                        Tools.sleep(500);
+                    } catch (IOException ex) {
+                        Logger.getLogger(StreamPanelIPCam.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                } else if (stream.getPtzBrand().equals("axis")) {
+                    // Axis compatible commands
+                    String camCmdRight = "wget -qO- http://"+temp[0]+"/axis-cgi/com/ptz.cgi?continuouspantiltmove=0,-1&user="+stream.getIPUser()+"&pwd="+stream.getIPPwd();
+                    System.out.println("cmdRight: "+camCmdRight);
+                    Runtime rt = Runtime.getRuntime();
+                    try {
+                        camPTZon = rt.exec(camCmdRight);
+                        Tools.sleep(500);
+                    } catch (IOException ex) {
+                        Logger.getLogger(StreamPanelIPCam.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            } else {
+                if (camPTZon != null){
+                    camPTZon.destroy();
+                }
+                if (stream.getPtzBrand().equals("foscam")) {
+                    // Foscam compatible commands
+                    String camCmdStopDown = "wget -qO- http://"+temp[0]+"/decoder_control.cgi?command=3&user="+stream.getIPUser()+"&pwd="+stream.getIPPwd();
+                    System.out.println("cmdStopDown: "+camCmdStopDown);
+                    Runtime rt = Runtime.getRuntime();
+                    try {
+                        camPTZoff = rt.exec(camCmdStopDown);
+                    } catch (IOException ex) {
+                        Logger.getLogger(StreamPanelIPCam.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    Tools.sleep(500);
+                    camPTZoff.destroy();
+                } else if (stream.getPtzBrand().equals("axis")) {
+                    // Axis compatible commands
+                    String camCmdRight = "wget -qO- http://"+temp[0]+"/axis-cgi/com/ptz.cgi?continuouspantiltmove=0,0&user="+stream.getIPUser()+"&pwd="+stream.getIPPwd();
+                    System.out.println("cmdRight: "+camCmdRight);
+                    Runtime rt = Runtime.getRuntime();
+                    try {
+                        camPTZon = rt.exec(camCmdRight);
+                        Tools.sleep(500);
+                    } catch (IOException ex) {
+                        Logger.getLogger(StreamPanelIPCam.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+        }
+    }//GEN-LAST:event_btnDownActionPerformed
+
+    private void btnLeftActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLeftActionPerformed
+        Process camPTZon = null;
+        Process camPTZoff = null;
+        String soloURL = null;
+        String[] temp = null;
+        
+        if (stream.getWebURL() != null){
+            soloURL = stream.getWebURL().replace("http://", "");
+            temp = soloURL.split("/");
+            if (btnLeft.isSelected()){
+
+                if (camPTZoff != null){
+                    camPTZoff.destroy();
+                }
+                if (stream.getPtzBrand().equals("foscam")) {
+                    // Foscam compatible commands
+                    String camCmdLeft = "wget -qO- http://"+temp[0]+"/decoder_control.cgi?command=6&user="+stream.getIPUser()+"&pwd="+stream.getIPPwd();
+                    System.out.println("cmdLeft: "+camCmdLeft);
+                    Runtime rt = Runtime.getRuntime();
+                    try {
+                        camPTZon = rt.exec(camCmdLeft);
+                        Tools.sleep(500);
+                    } catch (IOException ex) {
+                        Logger.getLogger(StreamPanelIPCam.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                } else if (stream.getPtzBrand().equals("axis")) {
+                    // Axis compatible commands
+                    String camCmdRight = "wget -qO- http://"+temp[0]+"/axis-cgi/com/ptz.cgi?continuouspantiltmove=-1,0&user="+stream.getIPUser()+"&pwd="+stream.getIPPwd();
+                    System.out.println("cmdRight: "+camCmdRight);
+                    Runtime rt = Runtime.getRuntime();
+                    try {
+                        camPTZon = rt.exec(camCmdRight);
+                        Tools.sleep(500);
+                    } catch (IOException ex) {
+                        Logger.getLogger(StreamPanelIPCam.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            } else {
+                if (camPTZon != null){
+                    camPTZon.destroy();
+                }
+                if (stream.getPtzBrand().equals("foscam")) {
+                    String camCmdStopLeft = "wget -qO- http://"+temp[0]+"/decoder_control.cgi?command=7&user="+stream.getIPUser()+"&pwd="+stream.getIPPwd();
+                    System.out.println("cmdStopLeft: "+camCmdStopLeft);
+                    Runtime rt = Runtime.getRuntime();
+                    try {
+                        camPTZoff = rt.exec(camCmdStopLeft);
+                    } catch (IOException ex) {
+                        Logger.getLogger(StreamPanelIPCam.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    Tools.sleep(500);
+                    camPTZoff.destroy();
+                } else if (stream.getPtzBrand().equals("axis")) {
+                    // Axis compatible commands
+                    String camCmdRight = "wget -qO- http://"+temp[0]+"/axis-cgi/com/ptz.cgi?continuouspantiltmove=0,0&user="+stream.getIPUser()+"&pwd="+stream.getIPPwd();
+                    System.out.println("cmdRight: "+camCmdRight);
+                    Runtime rt = Runtime.getRuntime();
+                    try {
+                        camPTZon = rt.exec(camCmdRight);
+                        Tools.sleep(500);
+                    } catch (IOException ex) {
+                        Logger.getLogger(StreamPanelIPCam.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+        }
+    }//GEN-LAST:event_btnLeftActionPerformed
+
+    private void btnZoomInActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnZoomInActionPerformed
+        Process camPTZon = null;
+        Process camPTZoff = null;
+        String soloURL = null;
+        String[] temp = null;
+        
+        if (stream.getWebURL() != null){
+            soloURL = stream.getWebURL().replace("http://", "");
+            temp = soloURL.split("/");
+            if (btnZoomIn.isSelected()){
+
+                if (camPTZoff != null){
+                    camPTZoff.destroy();
+                }
+                if (stream.getPtzBrand().equals("foscam")) {
+                    // Foscam compatible commands
+                    String camCmdZoomIn = "wget -qO- http://"+temp[0]+"/decoder_control.cgi?command=16&user="+stream.getIPUser()+"&pwd="+stream.getIPPwd();
+                    System.out.println("cmdZoomIn: "+camCmdZoomIn);
+                    Runtime rt = Runtime.getRuntime();
+                    try {
+                        camPTZon = rt.exec(camCmdZoomIn);
+                        Tools.sleep(500);
+                    } catch (IOException ex) {
+                        Logger.getLogger(StreamPanelIPCam.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                } else if (stream.getPtzBrand().equals("axis")) {
+                    // Axis compatible commands
+                    String camCmdRight = "wget -qO- http://"+temp[0]+"/axis-cgi/com/ptz.cgi?continuouszoommove=1&user="+stream.getIPUser()+"&pwd="+stream.getIPPwd();
+                    System.out.println("cmdRight: "+camCmdRight);
+                    Runtime rt = Runtime.getRuntime();
+                    try {
+                        camPTZon = rt.exec(camCmdRight);
+                        Tools.sleep(500);
+                    } catch (IOException ex) {
+                        Logger.getLogger(StreamPanelIPCam.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            } else {
+                if (camPTZon != null){
+                    camPTZon.destroy();
+                }
+                if (stream.getPtzBrand().equals("foscam")) {
+                // Foscam compatible commands
+                    String camCmdStopZoomIn = "wget -qO- http://"+temp[0]+"/decoder_control.cgi?command=17&user="+stream.getIPUser()+"&pwd="+stream.getIPPwd();
+                    System.out.println("cmdStopZoomIn: "+camCmdStopZoomIn);
+                    Runtime rt = Runtime.getRuntime();
+                    try {
+                        camPTZoff = rt.exec(camCmdStopZoomIn);
+                    } catch (IOException ex) {
+                        Logger.getLogger(StreamPanelIPCam.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    Tools.sleep(500);
+                    camPTZoff.destroy();
+                } else if (stream.getPtzBrand().equals("axis")) {
+                    // Axis compatible commands
+                    String camCmdRight = "wget -qO- http://"+temp[0]+"/axis-cgi/com/ptz.cgi?continuouszoommove=0&user="+stream.getIPUser()+"&pwd="+stream.getIPPwd();
+                    System.out.println("cmdRight: "+camCmdRight);
+                    Runtime rt = Runtime.getRuntime();
+                    try {
+                        camPTZon = rt.exec(camCmdRight);
+                        Tools.sleep(500);
+                    } catch (IOException ex) {
+                        Logger.getLogger(StreamPanelIPCam.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+        }
+    }//GEN-LAST:event_btnZoomInActionPerformed
+
+    private void btnZoomOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnZoomOutActionPerformed
+        Process camPTZon = null;
+        Process camPTZoff = null;
+        String soloURL = null;
+        String[] temp = null;
+        
+        if (stream.getWebURL() != null){
+            soloURL = stream.getWebURL().replace("http://", "");
+            temp = soloURL.split("/");
+            if (btnZoomOut.isSelected()){
+
+                if (camPTZoff != null){
+                    camPTZoff.destroy();
+                }
+                if (stream.getPtzBrand().equals("foscam")) {
+                    // Foscam compatible commands
+                    String camCmdZoomOut = "wget -qO- http://"+temp[0]+"/decoder_control.cgi?command=18&user="+stream.getIPUser()+"&pwd="+stream.getIPPwd();
+                    System.out.println("cmdZoomOut: "+camCmdZoomOut);
+                    Runtime rt = Runtime.getRuntime();
+                    try {
+                        camPTZon = rt.exec(camCmdZoomOut);
+                        Tools.sleep(500);
+                    } catch (IOException ex) {
+                        Logger.getLogger(StreamPanelIPCam.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                } else if (stream.getPtzBrand().equals("axis")) {
+                    // Axis compatible commands
+                    String camCmdRight = "wget -qO- http://"+temp[0]+"/axis-cgi/com/ptz.cgi?continuouszoommove=-1&user="+stream.getIPUser()+"&pwd="+stream.getIPPwd();
+                    System.out.println("cmdRight: "+camCmdRight);
+                    Runtime rt = Runtime.getRuntime();
+                    try {
+                        camPTZon = rt.exec(camCmdRight);
+                        Tools.sleep(500);
+                    } catch (IOException ex) {
+                        Logger.getLogger(StreamPanelIPCam.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            } else {
+                if (camPTZon != null){
+                    camPTZon.destroy();
+                }
+                if (stream.getPtzBrand().equals("foscam")) {
+                    // Foscam compatible commands
+                    String camCmdStopZoomOut = "wget -qO- http://"+temp[0]+"/decoder_control.cgi?command=19&user="+stream.getIPUser()+"&pwd="+stream.getIPPwd();
+                    System.out.println("cmdStopZoomOut: "+camCmdStopZoomOut);
+                    Runtime rt = Runtime.getRuntime();
+                    try {
+                        camPTZoff = rt.exec(camCmdStopZoomOut);
+                    } catch (IOException ex) {
+                        Logger.getLogger(StreamPanelIPCam.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    Tools.sleep(500);
+                    camPTZoff.destroy();
+                } else if (stream.getPtzBrand().equals("axis")) {
+                    // Axis compatible commands
+                    String camCmdRight = "wget -qO- http://"+temp[0]+"/axis-cgi/com/ptz.cgi?continuouszoommove=0&user="+stream.getIPUser()+"&pwd="+stream.getIPPwd();
+                    System.out.println("cmdRight: "+camCmdRight);
+                    Runtime rt = Runtime.getRuntime();
+                    try {
+                        camPTZon = rt.exec(camCmdRight);
+                        Tools.sleep(500);
+                    } catch (IOException ex) {
+                        Logger.getLogger(StreamPanelIPCam.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+        }
+    }//GEN-LAST:event_btnZoomOutActionPerformed
+
+    private void btnPresetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPresetActionPerformed
+        Process camPTZon = null;
+        String soloURL = null;
+        String[] temp = null;
+        
+        if (stream.getWebURL() != null){
+            soloURL = stream.getWebURL().replace("http://", "");
+            temp = soloURL.split("/");
+                if (stream.getPtzBrand().equals("foscam")) {
+                    // Foscam compatible commands
+                    String camCmdZoomOut = "wget -qO- http://"+temp[0]+"/decoder_control.cgi?command=31&user="+stream.getIPUser()+"&pwd="+stream.getIPPwd();
+                    System.out.println("cmdZoomOut: "+camCmdZoomOut);
+                    Runtime rt = Runtime.getRuntime();
+                    try {
+                        camPTZon = rt.exec(camCmdZoomOut);
+                        Tools.sleep(500);
+                    } catch (IOException ex) {
+                        Logger.getLogger(StreamPanelIPCam.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    camPTZon.destroy();
+                } else if (stream.getPtzBrand().equals("axis")) {
+                    // Axis compatible commands
+                    String camCmdRight = "wget -qO- http://"+temp[0]+"/axis-cgi/com/ptz.cgi?gotoserverpresetno=1&user="+stream.getIPUser()+"&pwd="+stream.getIPPwd();
+                    System.out.println("cmdRight: "+camCmdRight);
+                    Runtime rt = Runtime.getRuntime();
+                    try {
+                        camPTZon = rt.exec(camCmdRight);
+                        Tools.sleep(500);
+                    } catch (IOException ex) {
+                        Logger.getLogger(StreamPanelIPCam.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    camPTZon.destroy();
+                }
+            
+        }
+    }//GEN-LAST:event_btnPresetActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel3;
+    private javax.swing.JToggleButton btnDown;
+    private javax.swing.JToggleButton btnLeft;
+    private javax.swing.JButton btnPreset;
+    private javax.swing.JToggleButton btnRight;
+    private javax.swing.JToggleButton btnUp;
+    private javax.swing.JToggleButton btnZoomIn;
+    private javax.swing.JToggleButton btnZoomOut;
+    private javax.swing.JCheckBox ckbProtected;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
     private javax.swing.JSeparator jSeparator4;
     private javax.swing.JSeparator jSeparator5;
-    private javax.swing.JSeparator jSeparator7;
     private javax.swing.JSlider jSlSpinAD;
     private javax.swing.JSlider jSlSpinCH;
     private javax.swing.JSlider jSlSpinCW;
@@ -940,8 +1480,12 @@ public class StreamPanelURL extends javax.swing.JPanel implements Stream.Listene
     private javax.swing.JLabel labelCW;
     private javax.swing.JLabel labelH;
     private javax.swing.JLabel labelO;
+    private javax.swing.JLabel labelPTZPanel;
+    private javax.swing.JLabel labelProtected;
+    private javax.swing.JLabel labelPwd;
     private javax.swing.JLabel labelSeek;
     private javax.swing.JLabel labelURL;
+    private javax.swing.JLabel labelUser;
     private javax.swing.JLabel labelV;
     private javax.swing.JLabel labelVD;
     private javax.swing.JLabel labelW;
@@ -963,7 +1507,8 @@ public class StreamPanelURL extends javax.swing.JPanel implements Stream.Listene
     private javax.swing.JSpinner spinZOrder;
     private javax.swing.JToggleButton tglActiveStream;
     private javax.swing.JToggleButton tglAudio;
-    private javax.swing.JToggleButton tglVideo;
+    private javax.swing.JPasswordField txtPwd;
+    private javax.swing.JTextField txtUser;
     private javax.swing.JTextField txtWebURL;
     // End of variables declaration//GEN-END:variables
 

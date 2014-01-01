@@ -73,7 +73,7 @@ public class ProcessExecutor {
     }
     public void executeString(String params) throws IOException, InterruptedException {
         Runtime rt = Runtime.getRuntime();
-        process = rt.exec(params);
+        process = rt.exec(params);        
         processRunning = true;
 //      readOutput(process);
     }

@@ -25,8 +25,7 @@ public class Capturer {
 
     private int vport = 0;
     private int aport = 0;
-//    private final int fVport =0;
-//    private boolean stopMe = false;
+    private boolean stopMe = false;
     private Stream stream;
     private ServerSocket videoServer = null;
     private ServerSocket audioServer = null;
@@ -54,7 +53,7 @@ public class Capturer {
                 Logger.getLogger(Capturer.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        if (stream.hasVideo()) {
+        if (!stream.isOnlyAudio()) { // stream.hasVideo() ||
             try {
                 videoServer = new ServerSocket(0);
                 vport = videoServer.getLocalPort();
@@ -64,7 +63,7 @@ public class Capturer {
         }
   
 //        System.out.println("Port used is Video:" + vport+"/Audio:" + aport);
-        if (stream.hasVideo()) {
+        if (!stream.isOnlyAudio()) { // stream.hasVideo() || 
             Thread vCapture = new Thread(new Runnable() {
 
                 @Override
@@ -149,7 +148,7 @@ public class Capturer {
     }
     
     public void abort() {
-//        stopMe = true;
+        stopMe = true;
         try {
         if (videoServer != null) {
             videoServer.close();
@@ -171,9 +170,6 @@ public class Capturer {
     public int getVideoPort() {
         return vport;
     }
-//    public int getFakeVideoPort(){
-//        return fVport;
-//    }
 
     public int getAudioPort() {
         return aport;
@@ -213,6 +209,7 @@ public class Capturer {
             frame.setOutputFormat(stream.getX(), stream.getY(), stream.getWidth(), stream.getHeight(), stream.getOpacity(), stream.getVolume());
             frame.setZOrder(stream.getZOrder());
         } catch (IOException ioe) {
+            Logger.getLogger(Capturer.class.getName()).log(Level.SEVERE, null, ioe);
             stream.stop();
         }
         return frame;

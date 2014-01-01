@@ -52,6 +52,7 @@ import webcamstudio.exporter.vloopback.VideoDevice;
 import webcamstudio.externals.FME;
 import webcamstudio.externals.ProcessRenderer;
 import webcamstudio.mixers.MasterMixer;
+import webcamstudio.streams.SinkAudio;
 import webcamstudio.streams.SinkBroadcast;
 import webcamstudio.streams.SinkUDP;
 import webcamstudio.streams.SinkFile;
@@ -70,6 +71,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
     TreeMap<String, SinkBroadcast> broadcasts = new TreeMap<>();
     TreeMap<String, SinkLinuxDevice> devices = new TreeMap<>();
     TreeMap<String, SinkUDP> udpOut = new TreeMap<>();
+    TreeMap<String, SinkAudio> audioOut = new TreeMap<>();
     TreeMap<String, FME> fmes = new TreeMap<>();
     ProcessExecutor processSkyVideo;
     boolean skyCamMode = false;
@@ -327,6 +329,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
         tglSkyCam = new javax.swing.JToggleButton();
         jcbV4l2loopback = new javax.swing.JCheckBox();
         btnSkyFlip = new javax.swing.JToggleButton();
+        tglAudioOut = new javax.swing.JToggleButton();
         tglRecordToFile = new javax.swing.JToggleButton();
         tglUDP = new javax.swing.JToggleButton();
 
@@ -372,6 +375,19 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
             }
         });
         add(btnSkyFlip);
+
+        tglAudioOut.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/audio-card.png"))); // NOI18N
+        tglAudioOut.setText("Audio Output");
+        tglAudioOut.setToolTipText("WebcamStudio Master Audio Output");
+        tglAudioOut.setName("tglAudioOut"); // NOI18N
+        tglAudioOut.setPreferredSize(new java.awt.Dimension(32, 32));
+        tglAudioOut.setRolloverEnabled(false);
+        tglAudioOut.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tglAudioOutActionPerformed(evt);
+            }
+        });
+        add(tglAudioOut);
 
         tglRecordToFile.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-record.png"))); // NOI18N
         tglRecordToFile.setText(bundle.getString("RECORD")); // NOI18N
@@ -521,6 +537,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
     private void repaintOuputButtons() {
         instanceSink.removeAll();
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("webcamstudio/Languages");
+       
         tglSkyCam.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/camera-video.png"))); // NOI18N
         tglSkyCam.setText(bundle.getString("SKYCAM")); // NOI18N
         tglSkyCam.setToolTipText("Activate Skype Cam Compatibility");
@@ -543,6 +560,14 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
         btnSkyFlip.setPreferredSize(new java.awt.Dimension(113, 21));
         add(btnSkyFlip);
 
+        tglAudioOut.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/audio-card.png"))); // NOI18N
+        tglAudioOut.setText("Audio Output");
+        tglAudioOut.setToolTipText("Audio to Speakers");
+        tglAudioOut.setName("tglAudioOut"); // NOI18N
+        tglSkyCam.setRolloverEnabled(false);
+        tglAudioOut.setPreferredSize(new java.awt.Dimension(32, 32));
+        add(tglAudioOut);
+        
         tglRecordToFile.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-record.png"))); // NOI18N
         tglRecordToFile.setText(bundle.getString("RECORD")); // NOI18N
         tglRecordToFile.setToolTipText("Save to FIle.");
@@ -875,9 +900,44 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
         }
     }//GEN-LAST:event_jcbV4l2loopbackActionPerformed
 
+    private void tglAudioOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglAudioOutActionPerformed
+        if (tglAudioOut.isSelected()) {
+            SinkAudio audioStream = new SinkAudio();
+            audioStream.setWidth(MasterMixer.getInstance().getWidth());
+            audioStream.setHeight(MasterMixer.getInstance().getHeight());
+            audioStream.setRate(MasterMixer.getInstance().getRate());
+            audioStream.setListener(instanceSink);
+            audioStream.read();
+            audioOut.put("AudioOut", audioStream);
+            ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "WS Audio to Speakers");
+            labels.put("AudioOut", label);
+            ResourceMonitor.getInstance().addMessage(label);
+        } else {
+            SinkAudio audioStream = audioOut.get("AudioOut");
+            if (audioStream != null) {
+                audioStream.stop();
+                audioStream = null;
+                audioOut.remove("AudioOut");
+                ResourceMonitorLabel label = labels.get("AudioOut");
+                ResourceMonitor.getInstance().removeMessage(label);
+            }
+        }
+//            ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "WS Audio-Out Active");
+//            ResourceMonitor.getInstance().addMessage(label);
+//        } else {
+//            if (audioStream != null) {
+//                audioStream.stop();
+//                audioStream = null;
+//            }
+//            ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "WS Audio-Out Stopped");
+//            ResourceMonitor.getInstance().addMessage(label);
+//        }
+    }//GEN-LAST:event_tglAudioOutActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JToggleButton btnSkyFlip;
     private javax.swing.JCheckBox jcbV4l2loopback;
+    private javax.swing.JToggleButton tglAudioOut;
     private javax.swing.JToggleButton tglRecordToFile;
     final OutputPanel instanceSink = this;
     private javax.swing.JToggleButton tglSkyCam;
@@ -892,6 +952,8 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
             tglRecordToFile.setSelected(stream.isPlaying());
         } else if (stream instanceof SinkUDP) {
             tglUDP.setSelected(stream.isPlaying());
+        } else if (stream instanceof SinkAudio) {
+            tglAudioOut.setSelected(stream.isPlaying());
         } else if (stream instanceof SinkBroadcast) {
             String name = stream.getName();
             for (Component c : this.getComponents()) {

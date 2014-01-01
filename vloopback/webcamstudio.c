@@ -12,8 +12,8 @@
  * (at your option) any later version.
  *
  * webcamstudio.c -- modified for WebcamStudio integration
- * from v0.7.1 of v4l2loopback (https://github.com/umlaeute/v4l2loopback)
- * commit 18fca0a552d7469e1a7592030c545917d3854739
+ * from v0.8.0 of v4l2loopback (https://github.com/umlaeute/v4l2loopback)
+ * commit 3f01483ecfd6bd1f3da768e8e8e35df8ece7509f
  * by:
  * Patrick Balleux (patrick.balleux@gmail.com)
  * PhobosK (phobosk@kbfx.net)
@@ -59,7 +59,7 @@ void *v4l2l_vzalloc(unsigned long size)
 #include <linux/sched.h>
 #include <linux/slab.h>
 
-#define WEBCAMSTUDIO_VERSION_CODE KERNEL_VERSION(1,0,8)
+#define WEBCAMSTUDIO_VERSION_CODE KERNEL_VERSION(1,0,9)
 
 
 MODULE_DESCRIPTION("WebcamStudio virtual video device");
@@ -69,7 +69,8 @@ MODULE_AUTHOR("Vasily Levin <vasaka@gmail.com>, " \
 				"Anton Novikov <random.plant@gmail.com> " \
 				"Modified by: " \
 				"Patrick Balleux <patrick.balleux@gmail.com>, " \
-				"PhobosK <phobosk@kbfx.net>" );
+				"PhobosK <phobosk@kbfx.net>, "
+                                "Karl Ellis <soylent.tv@gmail.com>");
 MODULE_LICENSE("GPL");
 
 
@@ -129,6 +130,10 @@ MODULE_PARM_DESC(devices, "how many devices should be created");
 static int video_nr[MAX_DEVICES] = { [0 ... (MAX_DEVICES - 1)] = -1 };
 module_param_array(video_nr, int, NULL, 0444);
 MODULE_PARM_DESC(video_nr, "video device numbers (-1=auto, 0=/dev/video0, etc.)");
+
+static char *card_label[MAX_DEVICES];
+module_param_array(card_label, charp, NULL, 0000);
+MODULE_PARM_DESC(card_label, "card labels for every device");
 
 static bool exclusive_caps[MAX_DEVICES] = { [0 ... (MAX_DEVICES - 1)] = 1 };
 module_param_array(exclusive_caps, bool, NULL, 0444);
@@ -611,7 +616,13 @@ static int vidioc_querycap(struct file *file, void *priv, struct v4l2_capability
 	int devnr = ((struct webcamstudio_private *)video_get_drvdata(dev->vdev))->devicenr;
 
 	strlcpy(cap->driver, "WebcamStudio", sizeof(cap->driver));
+
+	if (card_label[devnr] != NULL) {
+		snprintf(cap->card, sizeof(cap->card), card_label[devnr]);
+	} else {
 	snprintf(cap->card, sizeof(cap->card), "WSVideoDevice (0x%04X)", devnr);
+	}
+
 	snprintf(cap->bus_info, sizeof(cap->bus_info), "webcamstudio:%d", devnr);
 
 	cap->version = WEBCAMSTUDIO_VERSION_CODE;
@@ -863,23 +874,6 @@ static int vidioc_g_fmt_out(struct file *file, void *priv, struct v4l2_format *f
 	 * or whether we have to always provide a valid format
 	 */
 
-	if (0 == dev->ready_for_capture) {
-		/* we are not fixated yet, so return a default format */
-		const struct v4l2l_format *defaultfmt = &formats[0];
-
-		dev->pix_format.width = 0; /* WEBCAMSTUDIO_SIZE_DEFAULT_WIDTH; */
-		dev->pix_format.height = 0; /* WEBCAMSTUDIO_SIZE_DEFAULT_HEIGHT; */
-		dev->pix_format.pixelformat = defaultfmt->fourcc;
-		dev->pix_format.colorspace = V4L2_COLORSPACE_SRGB; /* do we need to set this ? */
-		dev->pix_format.field = V4L2_FIELD_NONE;
-
-		pix_format_set_size(&fmt->fmt.pix, defaultfmt,
-				dev->pix_format.width, dev->pix_format.height);
-
-		dev->buffer_size = PAGE_ALIGN(dev->pix_format.sizeimage);
-		dprintk("buffer_size = %ld (=%d)\n", dev->buffer_size, dev->pix_format.sizeimage);
-		allocate_buffers(dev);
-	}
 	fmt->fmt.pix = dev->pix_format;
 	return 0;
 }
@@ -1562,6 +1556,7 @@ static int vidioc_dqbuf(struct file *file, void *private_data, struct v4l2_buffe
 		dprintkrw("output DQBUF index: %d\n", b->buffer.index);
 		unset_flags(b);
 		*buf = b->buffer;
+		buf->type = V4L2_BUF_TYPE_VIDEO_OUTPUT;
 		return 0;
 	default:
 		return -EINVAL;
@@ -2139,6 +2134,17 @@ static int webcamstudio_init(struct webcamstudio_device *dev, int nr)
 
 	/* FIXME set buffers to 0 */
 
+	/* Set initial format */
+	dev->pix_format.width = 0; /* WEBCAMSTUDIO_SIZE_DEFAULT_WIDTH; */
+	dev->pix_format.height = 0; /* WEBCAMSTUDIO_SIZE_DEFAULT_HEIGHT; */
+	dev->pix_format.pixelformat = formats[0].fourcc;
+	dev->pix_format.colorspace = V4L2_COLORSPACE_SRGB; /* do we need to set this ? */
+	dev->pix_format.field = V4L2_FIELD_NONE;
+
+	dev->buffer_size = PAGE_ALIGN(dev->pix_format.sizeimage);
+	dprintk("buffer_size = %ld (=%d)\n", dev->buffer_size, dev->pix_format.sizeimage);
+	allocate_buffers(dev);
+
 	init_waitqueue_head(&dev->read_event);
 
 	MARK();
@@ -2323,5 +2329,4 @@ void __exit cleanup_module(void)
 	free_devices();
 	dprintk("module removed\n");
 }
-
 

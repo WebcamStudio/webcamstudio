@@ -59,10 +59,12 @@ public class SystemPlayer implements Runnable {
         AudioFormat format = new AudioFormat(aFreq, 16, 2, true, true);
 //        System.out.println("SysPlayer AFreq: "+aFreq);
         source = javax.sound.sampled.AudioSystem.getSourceDataLine(format);
+        Tools.sleep(20);
         source.open(format, 2048);
         source.start();
         executor = java.util.concurrent.Executors.newCachedThreadPool();
         executor.submit(this);
+        Tools.sleep(20);
         executor.shutdown();
     }
 

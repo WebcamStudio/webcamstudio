@@ -470,6 +470,8 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
         String name = lstChannels.getSelectedValue().toString();
         master.updateChannel(name);
+        ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Channel "+name+" Updated");
+        ResourceMonitor.getInstance().addMessage(label);
     }//GEN-LAST:event_btnUpdateActionPerformed
 
     private void lstNextChannelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lstNextChannelActionPerformed

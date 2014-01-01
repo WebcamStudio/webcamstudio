@@ -14,9 +14,11 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import javax.swing.Box;
 import webcamstudio.streams.SourceDVB;
+import webcamstudio.streams.SourceIPCam;
 import webcamstudio.streams.SourceImageGif;
 import webcamstudio.streams.SourceImageU;
 import webcamstudio.streams.SourceMicrophone;
+import webcamstudio.streams.SourceQRCode;
 import webcamstudio.streams.SourceURL;
 import webcamstudio.streams.SourceText;
 import webcamstudio.streams.SourceWebcam;
@@ -31,6 +33,7 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
     StreamPanel panel = null;
     StreamPanelDVB panelDVB = null;
     StreamPanelURL panelURL = null;
+    StreamPanelIPCam panelIPCam = null;
     Stream stream = null;
     Listener listener = null;
 
@@ -53,8 +56,17 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
             this.add(p, BorderLayout.CENTER);
             this.setTitle(s.getName());
             this.setVisible(true);
-            jMControls.setEnabled(false);
-            JMBackEnd.setEnabled(false);
+            jMControls.setVisible(false);
+            JMBackEnd.setVisible(false);
+            s.setPanelType("PanelText");
+        } else if (s instanceof SourceQRCode) {
+            StreamPanelText p = new StreamPanelText(s);
+            this.setLayout(new BorderLayout());
+            this.add(p, BorderLayout.CENTER);
+            this.setTitle(s.getName());
+            this.setVisible(true);
+            jMControls.setVisible(false);
+            JMBackEnd.setVisible(false);
             s.setPanelType("PanelText");
         } else if (s instanceof SourceDVB) {
             StreamPanelDVB p = new StreamPanelDVB(s);
@@ -62,7 +74,8 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
             this.add(p, BorderLayout.CENTER);
             this.setTitle(s.getName());
             this.setVisible(true);
-            JMBackEnd.setEnabled(false);
+            JMBackEnd.setVisible(false);
+            jMIPCBrand.setVisible(false);
             stream.setComm("GS");
             panelDVB = p;
             s.setPanelType("PanelDVB");
@@ -93,6 +106,50 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
             JMBackEnd.setEnabled(true);
             panelURL = p;
             s.setPanelType("PanelURL");
+            jCBShowSliders.setEnabled(false);
+            jMIPCBrand.setVisible(false);
+        } else if (s instanceof SourceIPCam) {
+            StreamPanelIPCam p = new StreamPanelIPCam(s);
+            this.setLayout(new BorderLayout());
+            this.add(p, BorderLayout.CENTER);
+            this.setTitle(s.getName());
+            this.setVisible(true);
+            if (stream.getLoaded()){
+                switch (stream.getComm()) {
+                    case "AV":
+                        jCBAVConv.setSelected(true);
+                        stream.setComm("AV");
+                        jCBGStreamer.setSelected(false);
+                        break;
+                    case "GS":
+                        jCBGStreamer.setSelected(true);
+                        stream.setComm("GS");
+                        jCBAVConv.setSelected(false);
+                        break;
+                }
+                switch (stream.getPtzBrand()) {
+                    case "foscam":
+                        jCBoxFosCamPtz.setSelected(true);
+                        stream.setPtzBrand("foscam");
+                        jCBoxAxisPtz.setSelected(false);
+                        break;
+                    case "axis":
+                        jCBoxAxisPtz.setSelected(true);
+                        stream.setPtzBrand("axis");
+                        jCBoxFosCamPtz.setSelected(false);
+                        break;
+                }     
+            } else {
+                    jCBAVConv.setSelected(false);
+                    stream.setComm("GS");
+                    jCBGStreamer.setSelected(true);
+                    jCBoxFosCamPtz.setSelected(true);
+                    stream.setPtzBrand("foscam");
+                    jCBoxAxisPtz.setSelected(false);
+            }
+            JMBackEnd.setEnabled(true);
+            panelIPCam = p;
+            s.setPanelType("PanelIPCam");
             jCBShowSliders.setEnabled(false);
         } else {
             StreamPanel p = new StreamPanel(s);
@@ -136,11 +193,12 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
                 }
             }
             if (stream instanceof SourceImageGif){
-                JMBackEnd.setEnabled(false);
+                JMBackEnd.setVisible(false);
             }
             panel = p;
             s.setPanelType("Panel");
             jCBMoreOptions.setEnabled(true);
+            jMIPCBrand.setVisible(false);
         }
         this.setVisible(true);
         this.setDesktopIcon(new DesktopIcon(this,s));
@@ -161,6 +219,9 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
         jMControls = new javax.swing.JMenu();
         jCBMoreOptions = new javax.swing.JCheckBoxMenuItem();
         jCBShowSliders = new javax.swing.JCheckBoxMenuItem();
+        jMIPCBrand = new javax.swing.JMenu();
+        jCBoxFosCamPtz = new javax.swing.JCheckBoxMenuItem();
+        jCBoxAxisPtz = new javax.swing.JCheckBoxMenuItem();
         JMBackEnd = new javax.swing.JMenu();
         jCBGStreamer = new javax.swing.JCheckBoxMenuItem();
         jCBAVConv = new javax.swing.JCheckBoxMenuItem();
@@ -170,23 +231,23 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
         setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/user-desktop.png"))); // NOI18N
         setVisible(true);
         addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
-            public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
+            public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
+                formInternalFrameActivated(evt);
+            }
+            public void internalFrameClosed(javax.swing.event.InternalFrameEvent evt) {
             }
             public void internalFrameClosing(javax.swing.event.InternalFrameEvent evt) {
                 formInternalFrameClosing(evt);
             }
-            public void internalFrameClosed(javax.swing.event.InternalFrameEvent evt) {
-            }
-            public void internalFrameIconified(javax.swing.event.InternalFrameEvent evt) {
-                formInternalFrameIconified(evt);
+            public void internalFrameDeactivated(javax.swing.event.InternalFrameEvent evt) {
             }
             public void internalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {
                 formInternalFrameDeiconified(evt);
             }
-            public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
-                formInternalFrameActivated(evt);
+            public void internalFrameIconified(javax.swing.event.InternalFrameEvent evt) {
+                formInternalFrameIconified(evt);
             }
-            public void internalFrameDeactivated(javax.swing.event.InternalFrameEvent evt) {
+            public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
             }
         });
         addFocusListener(new java.awt.event.FocusAdapter() {
@@ -201,6 +262,7 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
         jMControls.setForeground(new java.awt.Color(74, 7, 1));
         jMControls.setText("Controls");
         jMControls.setFont(new java.awt.Font("Ubuntu", 0, 12)); // NOI18N
+        jMControls.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
         jMControls.setName("jMControls"); // NOI18N
 
         jCBMoreOptions.setText("Show more Options");
@@ -224,6 +286,29 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
         });
         jMControls.add(jCBShowSliders);
         jCBShowSliders.getAccessibleContext().setAccessibleParent(jMControls);
+
+        jMIPCBrand.setText("IPCam PTZ");
+        jMIPCBrand.setName("jMIPCBrand"); // NOI18N
+
+        jCBoxFosCamPtz.setText("FosCam");
+        jCBoxFosCamPtz.setName("jCBoxFosCamPtz"); // NOI18N
+        jCBoxFosCamPtz.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCBoxFosCamPtzActionPerformed(evt);
+            }
+        });
+        jMIPCBrand.add(jCBoxFosCamPtz);
+
+        jCBoxAxisPtz.setText("Axis");
+        jCBoxAxisPtz.setName("jCBoxAxisPtz"); // NOI18N
+        jCBoxAxisPtz.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCBoxAxisPtzActionPerformed(evt);
+            }
+        });
+        jMIPCBrand.add(jCBoxAxisPtz);
+
+        jMControls.add(jMIPCBrand);
 
         jMBOptions.add(jMControls);
 
@@ -330,20 +415,18 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
                     this.revalidate();
                     this.repaint();
                 }   break;
+            case "PanelIPCam":
+                if (jCBMoreOptions.isSelected()){
+                    this.setSize(new Dimension(this.getWidth(),480));
+                    this.revalidate();
+                    this.repaint();
+                } else {
+                    this.setSize(new Dimension(this.getWidth(),374));
+                    this.revalidate();
+                    this.repaint();
+                }   break;
         }
     }//GEN-LAST:event_jCBMoreOptionsActionPerformed
-
-    private void jCBShowSlidersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCBShowSlidersActionPerformed
-        if (jCBShowSliders.isSelected()){
-            this.setSize(new Dimension(298,this.getHeight()));
-            this.revalidate();
-            this.repaint();
-        } else {
-            this.setSize(new Dimension(136,this.getHeight()));
-            this.revalidate();
-            this.repaint();
-        }
-    }//GEN-LAST:event_jCBShowSlidersActionPerformed
 
     private void jCBGStreamerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCBGStreamerActionPerformed
         if (jCBGStreamer.isSelected()){
@@ -367,13 +450,50 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_jCBAVConvActionPerformed
 
+    private void jCBShowSlidersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCBShowSlidersActionPerformed
+        if (jCBShowSliders.isSelected()){
+            this.setSize(new Dimension(298,this.getHeight()));
+            this.revalidate();
+            this.repaint();
+        } else {
+            this.setSize(new Dimension(136,this.getHeight()));
+            this.revalidate();
+            this.repaint();
+        }
+    }//GEN-LAST:event_jCBShowSlidersActionPerformed
+
+    private void jCBoxFosCamPtzActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCBoxFosCamPtzActionPerformed
+        if (jCBoxFosCamPtz.isSelected()){
+            stream.setPtzBrand("foscam");
+            jCBoxAxisPtz.setSelected(false);
+        } else {
+            jCBoxAxisPtz.setSelected(true);
+            jCBoxFosCamPtz.setSelected(false);
+            stream.setPtzBrand("axis");
+        }
+    }//GEN-LAST:event_jCBoxFosCamPtzActionPerformed
+
+    private void jCBoxAxisPtzActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCBoxAxisPtzActionPerformed
+        if (jCBoxAxisPtz.isSelected()){
+            stream.setPtzBrand("axis");
+            jCBoxFosCamPtz.setSelected(false);
+        } else {
+            jCBoxFosCamPtz.setSelected(true);
+            jCBoxAxisPtz.setSelected(false);
+            stream.setPtzBrand("foscam");
+        }
+    }//GEN-LAST:event_jCBoxAxisPtzActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu JMBackEnd;
     private javax.swing.JCheckBoxMenuItem jCBAVConv;
     private javax.swing.JCheckBoxMenuItem jCBGStreamer;
     private javax.swing.JCheckBoxMenuItem jCBMoreOptions;
     private javax.swing.JCheckBoxMenuItem jCBShowSliders;
+    private javax.swing.JCheckBoxMenuItem jCBoxAxisPtz;
+    private javax.swing.JCheckBoxMenuItem jCBoxFosCamPtz;
     private javax.swing.JMenuBar jMBOptions;
     private javax.swing.JMenu jMControls;
+    private javax.swing.JMenu jMIPCBrand;
     // End of variables declaration//GEN-END:variables
 }

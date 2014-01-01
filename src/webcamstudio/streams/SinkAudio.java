@@ -5,7 +5,6 @@
 package webcamstudio.streams;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
 import webcamstudio.externals.ProcessRenderer;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterMixer;
@@ -14,14 +13,12 @@ import webcamstudio.mixers.MasterMixer;
  *
  * @author patrick
  */
-public class SinkFile extends Stream {
+public class SinkAudio extends Stream {
 
     private ProcessRenderer capture = null;
 
-    public SinkFile(File f) {
-        file = f;
-        name = f.getName();
-
+    public SinkAudio() {
+        name = "Audio";
     }
 
     @Override
@@ -29,9 +26,9 @@ public class SinkFile extends Stream {
         rate = MasterMixer.getInstance().getRate();
         captureWidth = MasterMixer.getInstance().getWidth();
         captureHeight = MasterMixer.getInstance().getHeight();
-//        rate = MasterMixer.getInstance().getRate();
-        capture = new ProcessRenderer(this, ProcessRenderer.ACTION.OUTPUT, "file");
-        capture.write();
+        //        rate = MasterMixer.getInstance().getRate();
+        capture = new ProcessRenderer(this, ProcessRenderer.ACTION.OUTPUT, "spkAudioOut"); //"spkAudioOut"
+        capture.writeCom();
     }
 
     @Override
@@ -58,7 +55,7 @@ public class SinkFile extends Stream {
     public BufferedImage getPreview() {
         return null;
     }
-
+    
     @Override
     public Frame getFrame() {
         return null;
@@ -71,7 +68,7 @@ public class SinkFile extends Stream {
 
     @Override
     public boolean hasVideo() {
-        return true;
+        return false;
     }
 
     @Override

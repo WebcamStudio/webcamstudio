@@ -17,34 +17,26 @@ import webcamstudio.streams.Stream;
  *
  * @author patrick (modified by karl)
  */
-public class StreamFullDesktop extends javax.swing.JInternalFrame {
+public class StreamFullScreen extends javax.swing.JInternalFrame {
     StreamFullCamPanel panel = null;
     StreamPanelDVB panelDVB = null;
     StreamPanelURL panelURL = null;
-    Stream stream = null;
-    Listener listener = null;  
+    
     public interface Listener{
         public void selectedSource(Stream source);
     }
     /** Creates new form StreamFullDesktop
      * @param s
      * @param l */
-    public StreamFullDesktop(Stream s,Listener l) {
-        listener = l;
-        stream = s;
+    public StreamFullScreen(Viewer viewer) {
         initComponents();
-        StreamFullCamPanel p = new StreamFullCamPanel(s);
+        StreamFullPanel p = new StreamFullPanel(viewer);
         this.setLayout(new BorderLayout());
         this.add(p, BorderLayout.CENTER);
-        this.setTitle(s.getName());
-        this.setVisible(true); 
-        panel = p;
-        s.setPanelType("Panel");
-        s.setComm("GS");
-        this.setDesktopIcon(new DesktopIcon(this,s));
+        this.setTitle("WS FullScreen Preview");
+        this.setVisible(true);
         this.setClosable(false);
         this.setResizable(false);
-        this.setToolTipText(stream.getName());
         pack();
         
     }
@@ -101,8 +93,8 @@ public class StreamFullDesktop extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_formInternalFrameDeiconified
 
     private void formInternalFrameClosing(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameClosing
-        stream.destroy();
-        stream = null;
+//        stream.destroy();
+//        stream = null;
         panel = null;
 //        System.gc();
     }//GEN-LAST:event_formInternalFrameClosing
@@ -112,17 +104,17 @@ public class StreamFullDesktop extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_formFocusGained
 
     private void formInternalFrameActivated(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameActivated
-        
-        if (listener!=null){
-            new Thread(new Runnable(){
-                
-                @Override
-                public void run() {
-                    listener.selectedSource(stream);
-                }
-            }).start();
-            
-        }
+//        
+//        if (listener!=null){
+//            new Thread(new Runnable(){
+//                
+//                @Override
+//                public void run() {
+//                    listener.selectedSource(stream);
+//                }
+//            }).start();
+//            
+//        }
     }//GEN-LAST:event_formInternalFrameActivated
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
