@@ -35,12 +35,12 @@ public class PerspectiveControl extends javax.swing.JPanel {
         txtY4.setText((int)effect.getY4()+""); */
         jSpinX1.setValue((int)effect.getX1());
         jSpinY1.setValue((int)effect.getY1());
-        jSpinX2.setValue((int)effect.getX2());
-        jSpinY2.setValue((int)effect.getY2());
+//        jSpinX2.setValue((int)effect.getX2());
+//        jSpinY2.setValue((int)effect.getY2());
         jSpinX3.setValue((int)effect.getX3());
         jSpinY3.setValue((int)effect.getY3());
-        jSpinX4.setValue((int)effect.getX4());
-        jSpinY4.setValue((int)effect.getY4());
+//        jSpinX4.setValue((int)effect.getX4());
+//        jSpinY4.setValue((int)effect.getY4());
     }
 
     /** This method is called from within the constructor to
@@ -53,64 +53,40 @@ public class PerspectiveControl extends javax.swing.JPanel {
     private void initComponents() {
 
         label = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
         jSpinX1 = new javax.swing.JSpinner();
         jSpinY1 = new javax.swing.JSpinner();
-        jSpinX2 = new javax.swing.JSpinner();
-        jSpinY2 = new javax.swing.JSpinner();
         jSpinX3 = new javax.swing.JSpinner();
         jSpinY3 = new javax.swing.JSpinner();
-        jSpinX4 = new javax.swing.JSpinner();
-        jSpinY4 = new javax.swing.JSpinner();
+        jSY1Top = new javax.swing.JSlider();
+        jSlY3Bottom = new javax.swing.JSlider();
+        jSlX1Left = new javax.swing.JSlider();
+        jSlX3Right = new javax.swing.JSlider();
 
         setPreferredSize(new java.awt.Dimension(414, 154));
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         label.setFont(new java.awt.Font("Ubuntu", 0, 14)); // NOI18N
-        label.setText("X Top L ");
+        label.setText("X Left ");
         label.setName("label"); // NOI18N
-        add(label, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 30, -1, -1));
-
-        jLabel1.setFont(new java.awt.Font("Ubuntu", 0, 14)); // NOI18N
-        jLabel1.setText("X Top R");
-        jLabel1.setName("jLabel1"); // NOI18N
-        add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 60, -1, -1));
+        add(label, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, -1));
 
         jLabel2.setFont(new java.awt.Font("Ubuntu", 0, 14)); // NOI18N
-        jLabel2.setText("X Bottom R");
+        jLabel2.setText("X Right");
         jLabel2.setName("jLabel2"); // NOI18N
-        add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 90, -1, -1));
-
-        jLabel3.setFont(new java.awt.Font("Ubuntu", 0, 14)); // NOI18N
-        jLabel3.setText("X Bottom L");
-        jLabel3.setName("jLabel3"); // NOI18N
-        add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 120, -1, -1));
+        add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 60, -1, -1));
 
         jLabel4.setFont(new java.awt.Font("Ubuntu", 0, 14)); // NOI18N
-        jLabel4.setText("Y Top L");
+        jLabel4.setText("Y Top");
         jLabel4.setName("jLabel4"); // NOI18N
-        add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 30, -1, -1));
-
-        jLabel5.setFont(new java.awt.Font("Ubuntu", 0, 14)); // NOI18N
-        jLabel5.setText("Y Top R");
-        jLabel5.setName("jLabel5"); // NOI18N
-        add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 60, -1, -1));
+        add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 10, -1, -1));
 
         jLabel6.setFont(new java.awt.Font("Ubuntu", 0, 14)); // NOI18N
-        jLabel6.setText("Y Bottom R");
+        jLabel6.setText("Y Bottom");
         jLabel6.setName("jLabel6"); // NOI18N
-        add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 90, -1, -1));
-
-        jLabel7.setFont(new java.awt.Font("Ubuntu", 0, 14)); // NOI18N
-        jLabel7.setText("Y Bottom L");
-        jLabel7.setName("jLabel7"); // NOI18N
-        add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 120, -1, -1));
+        add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 60, -1, -1));
 
         jSpinX1.setName("jSpinX1"); // NOI18N
         jSpinX1.addChangeListener(new javax.swing.event.ChangeListener() {
@@ -118,7 +94,7 @@ public class PerspectiveControl extends javax.swing.JPanel {
                 jSpinX1StateChanged(evt);
             }
         });
-        add(jSpinX1, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 20, 64, -1));
+        add(jSpinX1, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 10, 64, 20));
 
         jSpinY1.setName("jSpinY1"); // NOI18N
         jSpinY1.addChangeListener(new javax.swing.event.ChangeListener() {
@@ -126,23 +102,7 @@ public class PerspectiveControl extends javax.swing.JPanel {
                 jSpinY1StateChanged(evt);
             }
         });
-        add(jSpinY1, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 20, 63, -1));
-
-        jSpinX2.setName("jSpinX2"); // NOI18N
-        jSpinX2.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                jSpinX2StateChanged(evt);
-            }
-        });
-        add(jSpinX2, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 50, 63, -1));
-
-        jSpinY2.setName("jSpinY2"); // NOI18N
-        jSpinY2.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                jSpinY2StateChanged(evt);
-            }
-        });
-        add(jSpinY2, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 50, 63, -1));
+        add(jSpinY1, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 10, 63, 20));
 
         jSpinX3.setName("jSpinX3"); // NOI18N
         jSpinX3.addChangeListener(new javax.swing.event.ChangeListener() {
@@ -150,7 +110,7 @@ public class PerspectiveControl extends javax.swing.JPanel {
                 jSpinX3StateChanged(evt);
             }
         });
-        add(jSpinX3, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 80, 63, -1));
+        add(jSpinX3, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 60, 63, 20));
 
         jSpinY3.setName("jSpinY3"); // NOI18N
         jSpinY3.addChangeListener(new javax.swing.event.ChangeListener() {
@@ -158,23 +118,57 @@ public class PerspectiveControl extends javax.swing.JPanel {
                 jSpinY3StateChanged(evt);
             }
         });
-        add(jSpinY3, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 80, 63, -1));
+        add(jSpinY3, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 60, 63, 20));
 
-        jSpinX4.setName("jSpinX4"); // NOI18N
-        jSpinX4.addChangeListener(new javax.swing.event.ChangeListener() {
+        jSY1Top.setMajorTickSpacing(100);
+        jSY1Top.setMaximum(1920);
+        jSY1Top.setMinimum(-1920);
+        jSY1Top.setMinorTickSpacing(50);
+        jSY1Top.setValue(0);
+        jSY1Top.setName("jSY1Top"); // NOI18N
+        jSY1Top.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                jSpinX4StateChanged(evt);
+                jSY1TopStateChanged(evt);
             }
         });
-        add(jSpinX4, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 110, 63, -1));
+        add(jSY1Top, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 30, 150, -1));
 
-        jSpinY4.setName("jSpinY4"); // NOI18N
-        jSpinY4.addChangeListener(new javax.swing.event.ChangeListener() {
+        jSlY3Bottom.setMajorTickSpacing(100);
+        jSlY3Bottom.setMaximum(1920);
+        jSlY3Bottom.setMinimum(-1920);
+        jSlY3Bottom.setMinorTickSpacing(50);
+        jSlY3Bottom.setName("jSlY3Bottom"); // NOI18N
+        jSlY3Bottom.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                jSpinY4StateChanged(evt);
+                jSlY3BottomStateChanged(evt);
             }
         });
-        add(jSpinY4, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 110, 63, -1));
+        add(jSlY3Bottom, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 80, 150, -1));
+
+        jSlX1Left.setMajorTickSpacing(100);
+        jSlX1Left.setMaximum(1920);
+        jSlX1Left.setMinimum(-1920);
+        jSlX1Left.setMinorTickSpacing(50);
+        jSlX1Left.setValue(0);
+        jSlX1Left.setName("jSlX1Left"); // NOI18N
+        jSlX1Left.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSlX1LeftStateChanged(evt);
+            }
+        });
+        add(jSlX1Left, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 30, 150, -1));
+
+        jSlX3Right.setMajorTickSpacing(100);
+        jSlX3Right.setMaximum(1920);
+        jSlX3Right.setMinimum(-1920);
+        jSlX3Right.setMinorTickSpacing(50);
+        jSlX3Right.setName("jSlX3Right"); // NOI18N
+        jSlX3Right.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSlX3RightStateChanged(evt);
+            }
+        });
+        add(jSlX3Right, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 80, 150, -1));
     }// </editor-fold>//GEN-END:initComponents
 
     private void jSpinX1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinX1StateChanged
@@ -185,14 +179,6 @@ public class PerspectiveControl extends javax.swing.JPanel {
         effect.setY1((Integer) jSpinY1.getValue());
     }//GEN-LAST:event_jSpinY1StateChanged
 
-    private void jSpinX2StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinX2StateChanged
-        effect.setX2((Integer) jSpinX2.getValue());
-    }//GEN-LAST:event_jSpinX2StateChanged
-
-    private void jSpinY2StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinY2StateChanged
-        effect.setY2((Integer) jSpinY2.getValue());
-    }//GEN-LAST:event_jSpinY2StateChanged
-
     private void jSpinX3StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinX3StateChanged
         effect.setX3((Integer) jSpinX3.getValue());
     }//GEN-LAST:event_jSpinX3StateChanged
@@ -201,31 +187,39 @@ public class PerspectiveControl extends javax.swing.JPanel {
         effect.setY3((Integer) jSpinY3.getValue());
     }//GEN-LAST:event_jSpinY3StateChanged
 
-    private void jSpinX4StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinX4StateChanged
-        effect.setX4((Integer) jSpinX4.getValue());
-    }//GEN-LAST:event_jSpinX4StateChanged
+    private void jSlX1LeftStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlX1LeftStateChanged
+        effect.setX1((Integer)jSlX1Left.getValue());
+        jSpinX1.setValue(jSlX1Left.getValue());
+    }//GEN-LAST:event_jSlX1LeftStateChanged
 
-    private void jSpinY4StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinY4StateChanged
-        effect.setY4((Integer) jSpinY4.getValue());
-    }//GEN-LAST:event_jSpinY4StateChanged
+    private void jSY1TopStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSY1TopStateChanged
+        effect.setY1((Integer)jSY1Top.getValue());
+        jSpinY1.setValue(jSY1Top.getValue());
+    }//GEN-LAST:event_jSY1TopStateChanged
+
+    private void jSlX3RightStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlX3RightStateChanged
+        effect.setX3((Integer)jSlX3Right.getValue());
+        jSpinX3.setValue(jSlX3Right.getValue());
+    }//GEN-LAST:event_jSlX3RightStateChanged
+
+    private void jSlY3BottomStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlY3BottomStateChanged
+        effect.setY3((Integer)jSlY3Bottom.getValue());
+        jSpinY3.setValue(jSlY3Bottom.getValue());
+    }//GEN-LAST:event_jSlY3BottomStateChanged
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
+    private javax.swing.JSlider jSY1Top;
+    private javax.swing.JSlider jSlX1Left;
+    private javax.swing.JSlider jSlX3Right;
+    private javax.swing.JSlider jSlY3Bottom;
     private javax.swing.JSpinner jSpinX1;
-    private javax.swing.JSpinner jSpinX2;
     private javax.swing.JSpinner jSpinX3;
-    private javax.swing.JSpinner jSpinX4;
     private javax.swing.JSpinner jSpinY1;
-    private javax.swing.JSpinner jSpinY2;
     private javax.swing.JSpinner jSpinY3;
-    private javax.swing.JSpinner jSpinY4;
     private javax.swing.JLabel label;
     // End of variables declaration//GEN-END:variables
 

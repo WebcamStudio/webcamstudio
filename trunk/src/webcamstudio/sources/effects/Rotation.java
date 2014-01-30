@@ -5,26 +5,65 @@
 
 package webcamstudio.sources.effects;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
 import java.util.prefs.Preferences;
 import javax.swing.JPanel;
+import org.opencv.core.Core;
+import org.opencv.core.CvType;
+import org.opencv.core.Mat;
+import org.opencv.core.Point;
+import org.opencv.core.Size;
+import org.opencv.imgproc.Imgproc;
 import webcamstudio.sources.effects.controls.RotationControl;
 
 /**
  *
- * @author pballeux
+ * @author karl
  */
 public class Rotation extends Effect{
-    private final com.jhlabs.image.RotateFilter filter = new com.jhlabs.image.RotateFilter();
-    private float rotation = 0;
+    private int angle = 0;
+
     @Override
     public void applyEffect(BufferedImage img) {
-        filter.setAngle(rotation);
-        filter.setEdgeAction(com.jhlabs.image.RotateFilter.ZERO);
-        filter.setInterpolation(com.jhlabs.image.RotateFilter.BILINEAR);
+        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+        
+        int w = img.getWidth();
+        int h = img.getHeight();
+        int counter = 0;
+        Mat dst = new Mat();
+        
+        int[] intData = ((DataBufferInt) img.getRaster().getDataBuffer()).getData();
+        byte[] byteData = new byte[intData.length * 3];
+        for (int i = 0; i < byteData.length; i += 3) {
+            byteData[i] = (byte) ((intData[counter] >> 16) & 0xFF);
+            byteData[i + 1] = (byte) ((intData[counter] >> 8) & 0xFF);
+            byteData[i + 2] = (byte) ((intData[counter]) & 0xFF);
+            counter++;
+        }
+        
+        Mat src = new Mat(h, w, CvType.CV_8UC3);
+        src.put(0, 0, byteData);
+        
+        // Filter ...
+        Point pt = new Point(w/2., h/2.);
+        Mat mapMatrix = Imgproc.getRotationMatrix2D(pt, angle, 1.0);
+        Imgproc.warpAffine(src, dst, mapMatrix, new Size(w, h));
+        
+        byte[] data = new byte[dst.rows()*dst.cols()*(int)(dst.elemSize())];
+        dst.get(0, 0, data);
+        if (dst.channels() == 3) {
+            for (int i = 0; i < data.length; i += 3) {
+            byte temp = data[i];
+            data[i] = data[i + 2];
+            data[i + 2] = temp;
+            }
+        }
+        BufferedImage temp = new BufferedImage(dst.cols(), dst.rows(), BufferedImage.TYPE_3BYTE_BGR);
+        temp.getRaster().setDataElements(0, 0, dst.cols(), dst.rows(), data);
+        
         Graphics2D buffer = img.createGraphics();
         buffer.setRenderingHint(RenderingHints.KEY_RENDERING,
                            RenderingHints.VALUE_RENDER_SPEED);
@@ -38,35 +77,44 @@ public class Rotation extends Effect{
                            RenderingHints.VALUE_COLOR_RENDER_SPEED);
         buffer.setRenderingHint(RenderingHints.KEY_DITHERING,
                            RenderingHints.VALUE_DITHER_DISABLE);
-        BufferedImage temp = filter.filter(img, null);
-        buffer.setBackground(new Color(0,0,0,0));
-        buffer.clearRect(0,0,img.getWidth(),img.getHeight());
-        buffer.drawImage(temp, 0, 0,img.getWidth(),img.getHeight(),0,0,temp.getWidth(),temp.getHeight(),null);
+        buffer.drawImage(temp, 0, 0,null);
         buffer.dispose();
     }
     @Override
     public boolean needApply(){
         return needApply=true;
     }
-   public void setRotation(int value){
-       rotation=(float)Math.toRadians(value);
-   }
-   public int getRotation(){
-       return (int)Math.toDegrees(rotation);
-   }
     @Override
     public JPanel getControl() {
         return new RotationControl(this);
     }
 
+    /**
+     * @return the brightness
+     */
+    public int getAngle() {
+        return angle;
+    }
+
+    /**
+     * @param angles
+     */
+    public void setAngle(int angles) {
+        this.angle = angles;
+    }
+
     @Override
     public void applyStudioConfig(Preferences prefs) {
-        prefs.putFloat("rotation", rotation);
+//        prefs.putFloat("hFactor", hFactor);
+//        prefs.putFloat("sFactor", sFactor);
+//        prefs.putFloat("bFactor", bFactor);
+        
     }
 
     @Override
     public void loadFromStudioConfig(Preferences prefs) {
-        rotation = prefs.getFloat("rotation", rotation);
+//        hFactor=prefs.getFloat("hFactor", hFactor);
+//        sFactor=prefs.getFloat("sFactor", sFactor);
+//        bFactor=prefs.getFloat("bFactor", bFactor);
     }
-
 }

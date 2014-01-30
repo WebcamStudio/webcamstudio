@@ -25,7 +25,8 @@ public class RotationControl extends javax.swing.JPanel {
     public RotationControl(Rotation effect) {
         initComponents();
         this.effect=effect;
-        slider.setValue(effect.getRotation());
+        sliderAngle.setValue(effect.getAngle());
+//        txtRadius.setText((int)effect.getRadius()+"");
     }
 
     /** This method is called from within the constructor to
@@ -37,22 +38,21 @@ public class RotationControl extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        label = new javax.swing.JLabel();
-        slider = new javax.swing.JSlider();
+        jLabel1 = new javax.swing.JLabel();
+        sliderAngle = new javax.swing.JSlider();
 
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("webcamstudio/Languages"); // NOI18N
-        label.setText(bundle.getString("ROTATION")); // NOI18N
-        label.setName("label"); // NOI18N
+        jLabel1.setText(bundle.getString("ANGLE")); // NOI18N
+        jLabel1.setName("jLabel1"); // NOI18N
 
-        slider.setMaximum(359);
-        slider.setMinorTickSpacing(30);
-        slider.setPaintLabels(true);
-        slider.setPaintTicks(true);
-        slider.setValue(0);
-        slider.setName("slider"); // NOI18N
-        slider.addChangeListener(new javax.swing.event.ChangeListener() {
+        sliderAngle.setMaximum(359);
+        sliderAngle.setMinorTickSpacing(30);
+        sliderAngle.setPaintLabels(true);
+        sliderAngle.setPaintTicks(true);
+        sliderAngle.setName("sliderAngle"); // NOI18N
+        sliderAngle.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                sliderStateChanged(evt);
+                sliderAngleStateChanged(evt);
             }
         });
 
@@ -62,30 +62,30 @@ public class RotationControl extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(label)
+                .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(slider, javax.swing.GroupLayout.DEFAULT_SIZE, 304, Short.MAX_VALUE)
+                .addComponent(sliderAngle, javax.swing.GroupLayout.DEFAULT_SIZE, 321, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(slider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(label))
-                .addContainerGap(33, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(sliderAngle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1))
+                .addContainerGap(84, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void sliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sliderStateChanged
-        effect.setRotation(slider.getValue());
-    }//GEN-LAST:event_sliderStateChanged
+    private void sliderAngleStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sliderAngleStateChanged
+        effect.setAngle(sliderAngle.getValue());
+    }//GEN-LAST:event_sliderAngleStateChanged
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel label;
-    private javax.swing.JSlider slider;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JSlider sliderAngle;
     // End of variables declaration//GEN-END:variables
 
 }

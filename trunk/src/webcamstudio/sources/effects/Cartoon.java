@@ -108,4 +108,4 @@ public class Cartoon extends Effect {
         colorSplit = prefs.getInt("colorsplit", colorSplit);
         contourSize = prefs.getInt("contoursize", contourSize);
     }
-}
+    }

@@ -13,6 +13,9 @@ package webcamstudio.components;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GraphicsConfiguration;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.image.BufferedImage;
 
 /**
@@ -20,8 +23,11 @@ import java.awt.image.BufferedImage;
  * @author patrick
  */
 public class Viewer extends javax.swing.JPanel {
-
-    private BufferedImage img = new BufferedImage(320,240,BufferedImage.TYPE_INT_ARGB);
+    GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
+    GraphicsDevice device = env.getDefaultScreenDevice();
+    GraphicsConfiguration config = device.getDefaultConfiguration();
+    private BufferedImage img = config.createCompatibleImage(320, 240, BufferedImage.TYPE_INT_ARGB);
+//    private BufferedImage img = new BufferedImage(320,240,BufferedImage.TYPE_INT_ARGB);
     private int audioLeft = 0;
     private int audioRight=0;
 //    private boolean play = false;

@@ -5,6 +5,7 @@
 package webcamstudio;
 
 import java.awt.image.BufferedImage;
+import javax.swing.ImageIcon;
 import webcamstudio.components.StreamFullDesktop;
 import webcamstudio.streams.Stream;
 
@@ -24,6 +25,8 @@ public class FullScreenWindow extends javax.swing.JFrame implements Stream.Liste
         initComponents();
         stream = oWebcam;
         listener = l;
+        ImageIcon icon = new ImageIcon(this.getClass().getResource("/webcamstudio/resources/icon.png"));
+        this.setIconImage(icon.getImage());
     }
 
     /**

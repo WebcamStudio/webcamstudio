@@ -4,6 +4,7 @@
  */
 package webcamstudio;
 
+import javax.swing.ImageIcon;
 import webcamstudio.components.StreamFullDesktop;
 import webcamstudio.streams.Stream;
 
@@ -26,6 +27,8 @@ public class FullScreen extends javax.swing.JFrame {
      */
     public FullScreen() {
         initComponents();
+        ImageIcon icon = new ImageIcon(this.getClass().getResource("/webcamstudio/resources/icon.png"));
+        this.setIconImage(icon.getImage());
     }
 
     /**

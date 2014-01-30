@@ -11,7 +11,6 @@
 package webcamstudio.components;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyVetoException;
@@ -23,7 +22,6 @@ import javax.swing.SpinnerNumberModel;
 import webcamstudio.channels.MasterChannels;
 import webcamstudio.mixers.Frame;
 import webcamstudio.FullScreen;
-import webcamstudio.FullScreenWindow;
 import webcamstudio.WebcamStudio;
 import webcamstudio.mixers.MasterMixer;
 import webcamstudio.mixers.SystemPlayer;
@@ -109,6 +107,7 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
 
         tglSound.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/audio-card.png"))); // NOI18N
         tglSound.setToolTipText("WebcamStudio Master Audio Output");
+        tglSound.setEnabled(false);
         tglSound.setName("tglSound"); // NOI18N
         tglSound.setPreferredSize(new java.awt.Dimension(32, 30));
         tglSound.addActionListener(new java.awt.event.ActionListener() {
@@ -222,15 +221,15 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
         tglSound.setEnabled(!player.stopMePub);
     }
     private void tglSoundActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglSoundActionPerformed
-        if (tglSound.isSelected()) {
-            try {
-                player.play();
-            } catch (LineUnavailableException ex) {
-                Logger.getLogger(MasterPanel.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        } else {
-            player.stop();
-        }
+//        if (tglSound.isSelected()) {
+//            try {
+//                player.play();
+//            } catch (LineUnavailableException ex) {
+//                Logger.getLogger(MasterPanel.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//        } else {
+//            player.stop();
+//        }
     }//GEN-LAST:event_tglSoundActionPerformed
     public void applyLoadedMixer(){
         int w = (Integer) spinWidth.getValue();
@@ -243,13 +242,13 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
         mixer.setHeight(h);
         mixer.setRate((Integer) spinFPS.getValue());
         MasterMixer.getInstance().start();
-        if (tglSound.isSelected()) {
-            try {
-                player.play();
-            } catch (LineUnavailableException ex) {
-                Logger.getLogger(MasterPanel.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
+//        if (tglSound.isSelected()) {
+//            try {
+//                player.play();
+//            } catch (LineUnavailableException ex) {
+//                Logger.getLogger(MasterPanel.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//        }
     }
     private void btnApplyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnApplyActionPerformed
         SystemPlayer.getInstance(null).stop();
@@ -269,13 +268,15 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
         mixer.setHeight(h);
         mixer.setRate((Integer) spinFPS.getValue());
         MasterMixer.getInstance().start();
-        if (tglSound.isSelected()) {
-            try {
-                player.play();
-            } catch (LineUnavailableException ex) {
-                Logger.getLogger(MasterPanel.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
+//        if (tglSound.isSelected()) {
+//            try {
+//                player.play();
+//            } catch (LineUnavailableException ex) {
+//                Logger.getLogger(MasterPanel.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//        }
+        ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "New Mixer Settings Applied");
+        ResourceMonitor.getInstance().addMessage(label);
     }//GEN-LAST:event_btnApplyActionPerformed
 
     private void btnApplyToStreamsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnApplyToStreamsActionPerformed
@@ -332,6 +333,8 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
                 }
             }   
         }
+        ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Mixer Settings Applied To All Streams");
+        ResourceMonitor.getInstance().addMessage(label);
     }//GEN-LAST:event_btnApplyToStreamsActionPerformed
 
     private void btnFullScreenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFullScreenActionPerformed
@@ -344,6 +347,7 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
         } catch (PropertyVetoException ex) {
             Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
         }
+        window.setAlwaysOnTop(true);
         window.setVisible(true);
     }//GEN-LAST:event_btnFullScreenActionPerformed
     @Override

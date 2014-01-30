@@ -6,6 +6,9 @@ package webcamstudio.mixers;
 
 import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
+import java.awt.GraphicsConfiguration;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.nio.ByteBuffer;
@@ -57,18 +60,22 @@ public class MasterFrameBuilder implements Runnable {
         for (Frame f : frames) {
             orderedFrames.put(f.getZOrder(), f);
         }
-
+//        GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
+//        GraphicsDevice device = env.getDefaultScreenDevice();
+//        GraphicsConfiguration config = device.getDefaultConfiguration();
+//        BufferedImage image = config.createCompatibleImage(targetFrame.getWidth(), targetFrame.getHeight(), BufferedImage.TYPE_INT_ARGB);
         BufferedImage image = targetFrame.getImage();
         if (image != null) {
             Graphics2D g = image.createGraphics();
 //            g.setBackground(new Color(0, 0, 0, 0));
-            g.clearRect(0, 0, image.getWidth(), image.getHeight());
+//            g.setRenderingHint(java.awt.RenderingHints.KEY_ANTIALIASING, java.awt.RenderingHints.VALUE_ANTIALIAS_ON);
             g.setRenderingHint(java.awt.RenderingHints.KEY_INTERPOLATION, java.awt.RenderingHints.VALUE_INTERPOLATION_BILINEAR);
             g.setRenderingHint(java.awt.RenderingHints.KEY_ALPHA_INTERPOLATION, java.awt.RenderingHints.VALUE_ALPHA_INTERPOLATION_SPEED);
             g.setRenderingHint(java.awt.RenderingHints.KEY_RENDERING, java.awt.RenderingHints.VALUE_RENDER_SPEED);
             g.setRenderingHint(java.awt.RenderingHints.KEY_FRACTIONALMETRICS,java.awt.RenderingHints.VALUE_FRACTIONALMETRICS_OFF);
             g.setRenderingHint(java.awt.RenderingHints.KEY_DITHERING, java.awt.RenderingHints.VALUE_DITHER_DISABLE);
             g.setRenderingHint(java.awt.RenderingHints.KEY_COLOR_RENDERING, java.awt.RenderingHints.VALUE_COLOR_RENDER_SPEED);
+            g.clearRect(0, 0, image.getWidth(), image.getHeight());
             for (Frame f : orderedFrames.values()) {
                 imageF = f.getImage();
                 imageX = f.getX();
@@ -132,7 +139,7 @@ public class MasterFrameBuilder implements Runnable {
             Frame targetFrame = frameBuffer.getFrameToUpdate();
             frames.clear();
             try {
-                resultsT = ((ArrayList) pool.invokeAll(streams, 1, TimeUnit.SECONDS));
+                resultsT = ((ArrayList) pool.invokeAll(streams, 2, TimeUnit.SECONDS));
                 ArrayList<Future<Frame>> results = resultsT;
                 for (Future stream : results) {
                     if ((Frame)stream.get() != null) {

@@ -122,13 +122,13 @@ public class SourceText extends Stream {
     @Override
     public void setWidth(int w) {
         width = w;
-//        updateContent(content);
+        updateContent(content);
     }
     
     @Override
     public void setHeight(int h) {
         height = h;
-//        updateContent(content);
+        updateContent(content);
     }
     
     @Override
@@ -174,7 +174,7 @@ public class SourceText extends Stream {
         captureWidth = width;
         captureHeight = height;
         int textHeight = captureHeight;
-        int textWidth = captureWidth;
+        int textWidth; // = captureWidth;
         image = new BufferedImage(captureWidth, captureHeight, BufferedImage.TYPE_INT_ARGB);
         Graphics2D buffer = image.createGraphics();
         buffer.setRenderingHint(RenderingHints.KEY_RENDERING,

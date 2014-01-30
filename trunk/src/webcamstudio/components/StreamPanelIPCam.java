@@ -694,7 +694,7 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
         add(btnRight, new org.netbeans.lib.awtextra.AbsoluteConstraints(221, 42, 40, -1));
 
         btnPreset.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-record.png"))); // NOI18N
-        btnPreset.setToolTipText("Go To Preset 1");
+        btnPreset.setToolTipText("(Foscam-Axis) Preset1 or (WansCam) HRoll");
         btnPreset.setName("btnPreset"); // NOI18N
         btnPreset.setRolloverEnabled(false);
         btnPreset.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-stop.png"))); // NOI18N
@@ -997,7 +997,7 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
                     Runtime rt = Runtime.getRuntime();
                     try {
                         camPTZon = rt.exec(camCmdRight);
-                        Tools.sleep(500);
+                        Tools.sleep(250);
                     } catch (IOException ex) {
                         Logger.getLogger(StreamPanelIPCam.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -1008,7 +1008,18 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
                     Runtime rt = Runtime.getRuntime();
                     try {
                         camPTZon = rt.exec(camCmdRight);
-                        Tools.sleep(500);
+                        Tools.sleep(250);
+                    } catch (IOException ex) {
+                        Logger.getLogger(StreamPanelIPCam.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                } else if (stream.getPtzBrand().equals("wanscam")) {
+                    // Axis compatible commands
+                    String camCmdRight = "wget -qO- http://"+temp[0]+"/moveptz.xml?dir=right&user="+stream.getIPUser()+"&pwd="+stream.getIPPwd();
+                    System.out.println("cmdRight: "+camCmdRight);
+                    Runtime rt = Runtime.getRuntime();
+                    try {
+                        camPTZon = rt.exec(camCmdRight);
+                        Tools.sleep(250);
                     } catch (IOException ex) {
                         Logger.getLogger(StreamPanelIPCam.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -1025,10 +1036,10 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
                     Runtime rt = Runtime.getRuntime();
                     try {
                         camPTZoff = rt.exec(camCmdStopRight);
+                        Tools.sleep(250);
                     } catch (IOException ex) {
                         Logger.getLogger(StreamPanelIPCam.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    Tools.sleep(500);
                     camPTZoff.destroy();
                 } else if (stream.getPtzBrand().equals("axis")) {
                     // Axis compatible commands                    
@@ -1037,10 +1048,21 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
                     Runtime rt = Runtime.getRuntime();
                     try {
                         camPTZon = rt.exec(camCmdRight);
-                        Tools.sleep(500);
+                        Tools.sleep(250);
                     } catch (IOException ex) {
                         Logger.getLogger(StreamPanelIPCam.class.getName()).log(Level.SEVERE, null, ex);
                     }
+                } else if (stream.getPtzBrand().equals("wanscam")) {
+                    String camCmdStopLeft = "wget -qO- http://"+temp[0]+"/moveptz.xml?dir=stop&user="+stream.getIPUser()+"&pwd="+stream.getIPPwd();
+                    System.out.println("cmdStopRight: "+camCmdStopLeft);
+                    Runtime rt = Runtime.getRuntime();
+                    try {
+                        camPTZoff = rt.exec(camCmdStopLeft);
+                    } catch (IOException ex) {
+                        Logger.getLogger(StreamPanelIPCam.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    Tools.sleep(250);
+                    camPTZoff.destroy();
                 }
             }
         }
@@ -1089,7 +1111,7 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
                     Runtime rt = Runtime.getRuntime();
                     try {
                         camPTZon = rt.exec(camCmdUp);
-                        Tools.sleep(500);
+                        Tools.sleep(250);
 
                     } catch (IOException ex) {
                         Logger.getLogger(StreamPanelIPCam.class.getName()).log(Level.SEVERE, null, ex);
@@ -1097,11 +1119,22 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
                 } else if (stream.getPtzBrand().equals("axis")) {
                     // Axis compatible commands
                     String camCmdRight = "wget -qO- http://"+temp[0]+"/axis-cgi/com/ptz.cgi?continuouspantiltmove=0,1&user="+stream.getIPUser()+"&pwd="+stream.getIPPwd();
-                    System.out.println("cmdRight: "+camCmdRight);
+                    System.out.println("cmdUP: "+camCmdRight);
                     Runtime rt = Runtime.getRuntime();
                     try {
                         camPTZon = rt.exec(camCmdRight);
-                        Tools.sleep(500);
+                        Tools.sleep(250);
+                    } catch (IOException ex) {
+                        Logger.getLogger(StreamPanelIPCam.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                } else if (stream.getPtzBrand().equals("wanscam")) {
+                    // Axis compatible commands
+                    String camCmdRight = "wget -qO- http://"+temp[0]+"/moveptz.xml?dir=up&user="+stream.getIPUser()+"&pwd="+stream.getIPPwd();
+                    System.out.println("cmdUP: "+camCmdRight);
+                    Runtime rt = Runtime.getRuntime();
+                    try {
+                        camPTZon = rt.exec(camCmdRight);
+                        Tools.sleep(250);
                     } catch (IOException ex) {
                         Logger.getLogger(StreamPanelIPCam.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -1120,19 +1153,30 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
                     } catch (IOException ex) {
                         Logger.getLogger(StreamPanelIPCam.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    Tools.sleep(500);
+                    Tools.sleep(250);
                     camPTZoff.destroy();
                 } else if (stream.getPtzBrand().equals("axis")) {
                     // Axis compatible commands
                     String camCmdRight = "wget -qO- http://"+temp[0]+"/axis-cgi/com/ptz.cgi?continuouspantiltmove=0,0&user="+stream.getIPUser()+"&pwd="+stream.getIPPwd();
-                    System.out.println("cmdRight: "+camCmdRight);
+                    System.out.println("cmdStopUP: "+camCmdRight);
                     Runtime rt = Runtime.getRuntime();
                     try {
                         camPTZon = rt.exec(camCmdRight);
-                        Tools.sleep(500);
+                        Tools.sleep(250);
                     } catch (IOException ex) {
                         Logger.getLogger(StreamPanelIPCam.class.getName()).log(Level.SEVERE, null, ex);
                     }
+                } else if (stream.getPtzBrand().equals("wanscam")) {
+                    String camCmdStopLeft = "wget -qO- http://"+temp[0]+"/moveptz.xml?dir=stop&user="+stream.getIPUser()+"&pwd="+stream.getIPPwd();
+                    System.out.println("cmdStopUP: "+camCmdStopLeft);
+                    Runtime rt = Runtime.getRuntime();
+                    try {
+                        camPTZoff = rt.exec(camCmdStopLeft);
+                    } catch (IOException ex) {
+                        Logger.getLogger(StreamPanelIPCam.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    Tools.sleep(250);
+                    camPTZoff.destroy();
                 }
             }
         }
@@ -1159,18 +1203,29 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
                     Runtime rt = Runtime.getRuntime();
                     try {
                         camPTZon = rt.exec(camCmdDown);
-                        Tools.sleep(500);
+                        Tools.sleep(250);
                     } catch (IOException ex) {
                         Logger.getLogger(StreamPanelIPCam.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 } else if (stream.getPtzBrand().equals("axis")) {
                     // Axis compatible commands
                     String camCmdRight = "wget -qO- http://"+temp[0]+"/axis-cgi/com/ptz.cgi?continuouspantiltmove=0,-1&user="+stream.getIPUser()+"&pwd="+stream.getIPPwd();
-                    System.out.println("cmdRight: "+camCmdRight);
+                    System.out.println("cmdDown: "+camCmdRight);
                     Runtime rt = Runtime.getRuntime();
                     try {
                         camPTZon = rt.exec(camCmdRight);
-                        Tools.sleep(500);
+                        Tools.sleep(250);
+                    } catch (IOException ex) {
+                        Logger.getLogger(StreamPanelIPCam.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                } else if (stream.getPtzBrand().equals("wanscam")) {
+                    // Axis compatible commands
+                    String camCmdRight = "wget -qO- http://"+temp[0]+"/moveptz.xml?dir=down&user="+stream.getIPUser()+"&pwd="+stream.getIPPwd();
+                    System.out.println("cmdDown: "+camCmdRight);
+                    Runtime rt = Runtime.getRuntime();
+                    try {
+                        camPTZon = rt.exec(camCmdRight);
+                        Tools.sleep(250);
                     } catch (IOException ex) {
                         Logger.getLogger(StreamPanelIPCam.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -1189,19 +1244,30 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
                     } catch (IOException ex) {
                         Logger.getLogger(StreamPanelIPCam.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    Tools.sleep(500);
+                    Tools.sleep(250);
                     camPTZoff.destroy();
                 } else if (stream.getPtzBrand().equals("axis")) {
                     // Axis compatible commands
                     String camCmdRight = "wget -qO- http://"+temp[0]+"/axis-cgi/com/ptz.cgi?continuouspantiltmove=0,0&user="+stream.getIPUser()+"&pwd="+stream.getIPPwd();
-                    System.out.println("cmdRight: "+camCmdRight);
+                    System.out.println("cmdStopDown: "+camCmdRight);
                     Runtime rt = Runtime.getRuntime();
                     try {
                         camPTZon = rt.exec(camCmdRight);
-                        Tools.sleep(500);
+                        Tools.sleep(250);
                     } catch (IOException ex) {
                         Logger.getLogger(StreamPanelIPCam.class.getName()).log(Level.SEVERE, null, ex);
                     }
+                } else if (stream.getPtzBrand().equals("wanscam")) {
+                    String camCmdStopLeft = "wget -qO- http://"+temp[0]+"/moveptz.xml?dir=stop&user="+stream.getIPUser()+"&pwd="+stream.getIPPwd();
+                    System.out.println("cmdStopUP: "+camCmdStopLeft);
+                    Runtime rt = Runtime.getRuntime();
+                    try {
+                        camPTZoff = rt.exec(camCmdStopLeft);
+                    } catch (IOException ex) {
+                        Logger.getLogger(StreamPanelIPCam.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    Tools.sleep(250);
+                    camPTZoff.destroy();
                 }
             }
         }
@@ -1228,18 +1294,29 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
                     Runtime rt = Runtime.getRuntime();
                     try {
                         camPTZon = rt.exec(camCmdLeft);
-                        Tools.sleep(500);
+                        Tools.sleep(250);
                     } catch (IOException ex) {
                         Logger.getLogger(StreamPanelIPCam.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 } else if (stream.getPtzBrand().equals("axis")) {
                     // Axis compatible commands
                     String camCmdRight = "wget -qO- http://"+temp[0]+"/axis-cgi/com/ptz.cgi?continuouspantiltmove=-1,0&user="+stream.getIPUser()+"&pwd="+stream.getIPPwd();
-                    System.out.println("cmdRight: "+camCmdRight);
+                    System.out.println("cmdLeft: "+camCmdRight);
                     Runtime rt = Runtime.getRuntime();
                     try {
                         camPTZon = rt.exec(camCmdRight);
-                        Tools.sleep(500);
+                        Tools.sleep(250);
+                    } catch (IOException ex) {
+                        Logger.getLogger(StreamPanelIPCam.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                } else if (stream.getPtzBrand().equals("wanscam")) {
+                    // Axis compatible commands
+                    String camCmdRight = "wget -qO- http://"+temp[0]+"/moveptz.xml?dir=left&user="+stream.getIPUser()+"&pwd="+stream.getIPPwd();
+                    System.out.println("cmdLeft: "+camCmdRight);
+                    Runtime rt = Runtime.getRuntime();
+                    try {
+                        camPTZon = rt.exec(camCmdRight);
+                        Tools.sleep(250);
                     } catch (IOException ex) {
                         Logger.getLogger(StreamPanelIPCam.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -1257,19 +1334,30 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
                     } catch (IOException ex) {
                         Logger.getLogger(StreamPanelIPCam.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    Tools.sleep(500);
+                    Tools.sleep(250);
                     camPTZoff.destroy();
                 } else if (stream.getPtzBrand().equals("axis")) {
                     // Axis compatible commands
                     String camCmdRight = "wget -qO- http://"+temp[0]+"/axis-cgi/com/ptz.cgi?continuouspantiltmove=0,0&user="+stream.getIPUser()+"&pwd="+stream.getIPPwd();
-                    System.out.println("cmdRight: "+camCmdRight);
+                    System.out.println("cmdStopLeft: "+camCmdRight);
                     Runtime rt = Runtime.getRuntime();
                     try {
                         camPTZon = rt.exec(camCmdRight);
-                        Tools.sleep(500);
+                        Tools.sleep(250);
                     } catch (IOException ex) {
                         Logger.getLogger(StreamPanelIPCam.class.getName()).log(Level.SEVERE, null, ex);
                     }
+                } else if (stream.getPtzBrand().equals("wanscam")) {
+                    String camCmdStopLeft = "wget -qO- http://"+temp[0]+"/moveptz.xml?dir=stop&user="+stream.getIPUser()+"&pwd="+stream.getIPPwd();
+                    System.out.println("cmdStopLeft: "+camCmdStopLeft);
+                    Runtime rt = Runtime.getRuntime();
+                    try {
+                        camPTZoff = rt.exec(camCmdStopLeft);
+                    } catch (IOException ex) {
+                        Logger.getLogger(StreamPanelIPCam.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    Tools.sleep(250);
+                    camPTZoff.destroy();
                 }
             }
         }
@@ -1296,18 +1384,18 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
                     Runtime rt = Runtime.getRuntime();
                     try {
                         camPTZon = rt.exec(camCmdZoomIn);
-                        Tools.sleep(500);
+                        Tools.sleep(250);
                     } catch (IOException ex) {
                         Logger.getLogger(StreamPanelIPCam.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 } else if (stream.getPtzBrand().equals("axis")) {
                     // Axis compatible commands
                     String camCmdRight = "wget -qO- http://"+temp[0]+"/axis-cgi/com/ptz.cgi?continuouszoommove=1&user="+stream.getIPUser()+"&pwd="+stream.getIPPwd();
-                    System.out.println("cmdRight: "+camCmdRight);
+                    System.out.println("cmdZoomIn: "+camCmdRight);
                     Runtime rt = Runtime.getRuntime();
                     try {
                         camPTZon = rt.exec(camCmdRight);
-                        Tools.sleep(500);
+                        Tools.sleep(250);
                     } catch (IOException ex) {
                         Logger.getLogger(StreamPanelIPCam.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -1326,16 +1414,16 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
                     } catch (IOException ex) {
                         Logger.getLogger(StreamPanelIPCam.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    Tools.sleep(500);
+                    Tools.sleep(250);
                     camPTZoff.destroy();
                 } else if (stream.getPtzBrand().equals("axis")) {
                     // Axis compatible commands
                     String camCmdRight = "wget -qO- http://"+temp[0]+"/axis-cgi/com/ptz.cgi?continuouszoommove=0&user="+stream.getIPUser()+"&pwd="+stream.getIPPwd();
-                    System.out.println("cmdRight: "+camCmdRight);
+                    System.out.println("cmdStopZoomIn: "+camCmdRight);
                     Runtime rt = Runtime.getRuntime();
                     try {
                         camPTZon = rt.exec(camCmdRight);
-                        Tools.sleep(500);
+                        Tools.sleep(250);
                     } catch (IOException ex) {
                         Logger.getLogger(StreamPanelIPCam.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -1365,18 +1453,18 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
                     Runtime rt = Runtime.getRuntime();
                     try {
                         camPTZon = rt.exec(camCmdZoomOut);
-                        Tools.sleep(500);
+                        Tools.sleep(250);
                     } catch (IOException ex) {
                         Logger.getLogger(StreamPanelIPCam.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 } else if (stream.getPtzBrand().equals("axis")) {
                     // Axis compatible commands
                     String camCmdRight = "wget -qO- http://"+temp[0]+"/axis-cgi/com/ptz.cgi?continuouszoommove=-1&user="+stream.getIPUser()+"&pwd="+stream.getIPPwd();
-                    System.out.println("cmdRight: "+camCmdRight);
+                    System.out.println("cmdZoomOut: "+camCmdRight);
                     Runtime rt = Runtime.getRuntime();
                     try {
                         camPTZon = rt.exec(camCmdRight);
-                        Tools.sleep(500);
+                        Tools.sleep(250);
                     } catch (IOException ex) {
                         Logger.getLogger(StreamPanelIPCam.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -1395,16 +1483,16 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
                     } catch (IOException ex) {
                         Logger.getLogger(StreamPanelIPCam.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    Tools.sleep(500);
+                    Tools.sleep(250);
                     camPTZoff.destroy();
                 } else if (stream.getPtzBrand().equals("axis")) {
                     // Axis compatible commands
                     String camCmdRight = "wget -qO- http://"+temp[0]+"/axis-cgi/com/ptz.cgi?continuouszoommove=0&user="+stream.getIPUser()+"&pwd="+stream.getIPPwd();
-                    System.out.println("cmdRight: "+camCmdRight);
+                    System.out.println("cmdStopZoomOut: "+camCmdRight);
                     Runtime rt = Runtime.getRuntime();
                     try {
                         camPTZon = rt.exec(camCmdRight);
-                        Tools.sleep(500);
+                        Tools.sleep(250);
                     } catch (IOException ex) {
                         Logger.getLogger(StreamPanelIPCam.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -1424,11 +1512,11 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
                 if (stream.getPtzBrand().equals("foscam")) {
                     // Foscam compatible commands
                     String camCmdZoomOut = "wget -qO- http://"+temp[0]+"/decoder_control.cgi?command=31&user="+stream.getIPUser()+"&pwd="+stream.getIPPwd();
-                    System.out.println("cmdZoomOut: "+camCmdZoomOut);
+                    System.out.println("cmdPreset1: "+camCmdZoomOut);
                     Runtime rt = Runtime.getRuntime();
                     try {
                         camPTZon = rt.exec(camCmdZoomOut);
-                        Tools.sleep(500);
+                        Tools.sleep(250);
                     } catch (IOException ex) {
                         Logger.getLogger(StreamPanelIPCam.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -1436,14 +1524,25 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
                 } else if (stream.getPtzBrand().equals("axis")) {
                     // Axis compatible commands
                     String camCmdRight = "wget -qO- http://"+temp[0]+"/axis-cgi/com/ptz.cgi?gotoserverpresetno=1&user="+stream.getIPUser()+"&pwd="+stream.getIPPwd();
-                    System.out.println("cmdRight: "+camCmdRight);
+                    System.out.println("cmdPreset1: "+camCmdRight);
                     Runtime rt = Runtime.getRuntime();
                     try {
                         camPTZon = rt.exec(camCmdRight);
-                        Tools.sleep(500);
+                        Tools.sleep(250);
                     } catch (IOException ex) {
                         Logger.getLogger(StreamPanelIPCam.class.getName()).log(Level.SEVERE, null, ex);
                     }
+                    camPTZon.destroy();
+                } else if (stream.getPtzBrand().equals("wanscam")) {
+                    String camCmdStopLeft = "wget -qO- http://"+temp[0]+"/moveptz.xml?dir=leftright&user="+stream.getIPUser()+"&pwd="+stream.getIPPwd();
+                    System.out.println("cmdPreset1: "+camCmdStopLeft);
+                    Runtime rt = Runtime.getRuntime();
+                    try {
+                        camPTZon = rt.exec(camCmdStopLeft);
+                    } catch (IOException ex) {
+                        Logger.getLogger(StreamPanelIPCam.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    Tools.sleep(250);
                     camPTZon.destroy();
                 }
             

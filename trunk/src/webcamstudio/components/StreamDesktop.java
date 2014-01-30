@@ -13,6 +13,7 @@ package webcamstudio.components;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import javax.swing.Box;
+import webcamstudio.mixers.MasterMixer;
 import webcamstudio.streams.SourceDVB;
 import webcamstudio.streams.SourceIPCam;
 import webcamstudio.streams.SourceImageGif;
@@ -23,6 +24,7 @@ import webcamstudio.streams.SourceURL;
 import webcamstudio.streams.SourceText;
 import webcamstudio.streams.SourceWebcam;
 import webcamstudio.streams.Stream;
+import webcamstudio.util.Tools;
 
 /**
  *
@@ -36,6 +38,8 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
     StreamPanelIPCam panelIPCam = null;
     Stream stream = null;
     Listener listener = null;
+    private boolean runMe = true;
+    private int speed = 5; // - is faster + is slower
 
 /*    StreamDesktop(Stream webcam, ActionListener aThis) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -106,7 +110,7 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
             JMBackEnd.setEnabled(true);
             panelURL = p;
             s.setPanelType("PanelURL");
-            jCBShowSliders.setEnabled(false);
+            jCBShowSliders.setVisible(false);
             jMIPCBrand.setVisible(false);
         } else if (s instanceof SourceIPCam) {
             StreamPanelIPCam p = new StreamPanelIPCam(s);
@@ -132,11 +136,19 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
                         jCBoxFosCamPtz.setSelected(true);
                         stream.setPtzBrand("foscam");
                         jCBoxAxisPtz.setSelected(false);
+                        jCBoxWansCamPtz.setSelected(false);
                         break;
                     case "axis":
                         jCBoxAxisPtz.setSelected(true);
                         stream.setPtzBrand("axis");
                         jCBoxFosCamPtz.setSelected(false);
+                        jCBoxWansCamPtz.setSelected(false);
+                        break;
+                    case "wanscam":
+                        jCBoxWansCamPtz.setSelected(true);
+                        stream.setPtzBrand("wanscam");
+                        jCBoxFosCamPtz.setSelected(false);
+                        jCBoxAxisPtz.setSelected(false);
                         break;
                 }     
             } else {
@@ -150,7 +162,7 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
             JMBackEnd.setEnabled(true);
             panelIPCam = p;
             s.setPanelType("PanelIPCam");
-            jCBShowSliders.setEnabled(false);
+            jCBShowSliders.setVisible(false);
         } else {
             StreamPanel p = new StreamPanel(s);
             this.setLayout(new BorderLayout());
@@ -222,6 +234,13 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
         jMIPCBrand = new javax.swing.JMenu();
         jCBoxFosCamPtz = new javax.swing.JCheckBoxMenuItem();
         jCBoxAxisPtz = new javax.swing.JCheckBoxMenuItem();
+        jCBoxWansCamPtz = new javax.swing.JCheckBoxMenuItem();
+        jMScroll = new javax.swing.JMenu();
+        jCBRightToLeft = new javax.swing.JCheckBoxMenuItem();
+        jCBLeftToRight = new javax.swing.JCheckBoxMenuItem();
+        jCBBottomToTop = new javax.swing.JCheckBoxMenuItem();
+        jCBTopToBottom = new javax.swing.JCheckBoxMenuItem();
+        jCBBouncingRight = new javax.swing.JCheckBoxMenuItem();
         JMBackEnd = new javax.swing.JMenu();
         jCBGStreamer = new javax.swing.JCheckBoxMenuItem();
         jCBAVConv = new javax.swing.JCheckBoxMenuItem();
@@ -257,10 +276,10 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
         });
 
         jMBOptions.setName("jMBOptions"); // NOI18N
-        jMBOptions.setPreferredSize(new java.awt.Dimension(74, 13));
+        jMBOptions.setPreferredSize(new java.awt.Dimension(74, 17));
 
         jMControls.setForeground(new java.awt.Color(74, 7, 1));
-        jMControls.setText("Controls");
+        jMControls.setText("Ctrl");
         jMControls.setFont(new java.awt.Font("Ubuntu", 0, 12)); // NOI18N
         jMControls.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
         jMControls.setName("jMControls"); // NOI18N
@@ -308,9 +327,72 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
         });
         jMIPCBrand.add(jCBoxAxisPtz);
 
+        jCBoxWansCamPtz.setText("WansCam");
+        jCBoxWansCamPtz.setName("jCBoxWansCamPtz"); // NOI18N
+        jCBoxWansCamPtz.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCBoxWansCamPtzActionPerformed(evt);
+            }
+        });
+        jMIPCBrand.add(jCBoxWansCamPtz);
+
         jMControls.add(jMIPCBrand);
 
         jMBOptions.add(jMControls);
+
+        jMScroll.setForeground(new java.awt.Color(74, 7, 1));
+        jMScroll.setText("Scroll");
+        jMScroll.setFont(new java.awt.Font("Ubuntu", 0, 12)); // NOI18N
+        jMScroll.setName("jMScroll"); // NOI18N
+
+        jCBRightToLeft.setText("RightToLeft");
+        jCBRightToLeft.setName("jCBRightToLeft"); // NOI18N
+        jCBRightToLeft.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCBRightToLeftActionPerformed(evt);
+            }
+        });
+        jMScroll.add(jCBRightToLeft);
+
+        jCBLeftToRight.setText("LeftToRight");
+        jCBLeftToRight.setName("jCBLeftToRight"); // NOI18N
+        jCBLeftToRight.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCBLeftToRightActionPerformed(evt);
+            }
+        });
+        jMScroll.add(jCBLeftToRight);
+
+        jCBBottomToTop.setText("BottomToTop");
+        jCBBottomToTop.setName("jCBBottomToTop"); // NOI18N
+        jCBBottomToTop.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCBBottomToTopActionPerformed(evt);
+            }
+        });
+        jMScroll.add(jCBBottomToTop);
+
+        jCBTopToBottom.setText("TopToBottom");
+        jCBTopToBottom.setName("jCBTopToBottom"); // NOI18N
+        jCBTopToBottom.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCBTopToBottomActionPerformed(evt);
+            }
+        });
+        jMScroll.add(jCBTopToBottom);
+
+        jCBBouncingRight.setText("BouncingRight");
+        jCBBouncingRight.setName("jCBBouncingRight"); // NOI18N
+        jCBBouncingRight.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCBBouncingRightActionPerformed(evt);
+            }
+        });
+        jMScroll.add(jCBBouncingRight);
+
+        //jMBOptions.add(Box.createHorizontalGlue());
+
+        jMBOptions.add(jMScroll);
 
         JMBackEnd.setForeground(new java.awt.Color(74, 7, 1));
         JMBackEnd.setText("BkEnd");
@@ -466,9 +548,11 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
         if (jCBoxFosCamPtz.isSelected()){
             stream.setPtzBrand("foscam");
             jCBoxAxisPtz.setSelected(false);
+            jCBoxWansCamPtz.setSelected(false);
         } else {
             jCBoxAxisPtz.setSelected(true);
             jCBoxFosCamPtz.setSelected(false);
+            jCBoxWansCamPtz.setSelected(false);
             stream.setPtzBrand("axis");
         }
     }//GEN-LAST:event_jCBoxFosCamPtzActionPerformed
@@ -477,23 +561,346 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
         if (jCBoxAxisPtz.isSelected()){
             stream.setPtzBrand("axis");
             jCBoxFosCamPtz.setSelected(false);
+            jCBoxWansCamPtz.setSelected(false);
+        } else {
+            jCBoxFosCamPtz.setSelected(true);
+            jCBoxAxisPtz.setSelected(false);
+            jCBoxWansCamPtz.setSelected(false);
+            stream.setPtzBrand("foscam");
+        }
+    }//GEN-LAST:event_jCBoxAxisPtzActionPerformed
+
+    private void jCBRightToLeftActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCBRightToLeftActionPerformed
+        final int oldBkX = stream.getX();
+        runMe = true;
+        if (jCBRightToLeft.isSelected()) {
+            
+            jCBLeftToRight.setEnabled(false);
+            jCBBottomToTop.setEnabled(false);
+            jCBTopToBottom.setEnabled(false);
+            jCBBouncingRight.setEnabled(false);
+            
+            
+            Thread scrollRtL = new Thread(new Runnable() {
+                int deltaX = 0;
+            @Override
+            public void run() {
+                while (runMe && stream.isPlaying()){
+                    final int oldX = stream.getX();
+                    final int newX = MasterMixer.getInstance().getWidth();
+                    if (oldX <= 0) {
+                        deltaX = newX - oldX;
+                    } else {
+                        deltaX = newX + oldX;
+                    }
+                    final int rate = stream.getRate();
+                    final int totalFrames = rate * speed;
+                    for (int i = 0; i<totalFrames;i++){
+                        if (runMe) {
+                            stream.setX(oldX - (i*deltaX/totalFrames));
+                            Tools.sleep(1000/rate);
+                        } else {
+                            stream.setX(oldBkX);
+                            break;
+                        }
+                    }
+                    stream.setX(newX);
+                    deltaX = newX - oldX;
+                    for (int i = 0; i<totalFrames;i++){
+                        if (runMe) {
+                            stream.setX(newX - (i*deltaX/totalFrames));
+                            Tools.sleep(1000/rate);
+                        } else {
+                            stream.setX(oldBkX);
+                            break;
+                        }
+                    }
+                }
+            }
+        }); 
+        scrollRtL.setPriority(Thread.MIN_PRIORITY);
+        scrollRtL.start();
+        } else {
+            runMe = false;
+            stream.setX(oldBkX);
+            jCBLeftToRight.setEnabled(true);
+            jCBBottomToTop.setEnabled(true);
+            jCBTopToBottom.setEnabled(true);
+            jCBBouncingRight.setEnabled(true);
+        }
+    }//GEN-LAST:event_jCBRightToLeftActionPerformed
+
+    private void jCBLeftToRightActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCBLeftToRightActionPerformed
+        final int oldBkX = stream.getX();      
+        runMe = true;
+        if (jCBLeftToRight.isSelected()) {
+            
+            jCBRightToLeft.setEnabled(false);
+            jCBBottomToTop.setEnabled(false);
+            jCBTopToBottom.setEnabled(false);
+            jCBBouncingRight.setEnabled(false);
+            
+            Thread scrollRtL = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                while (runMe && stream.isPlaying()){
+                    int oldX = stream.getX();
+                    int newX = MasterMixer.getInstance().getWidth(); 
+                    int deltaX = newX - oldX;
+                    final int rate = stream.getRate();
+                    final int totalFrames = rate * speed;
+                    int tF = rate * speed;
+                    for (int i = 0; i<totalFrames;i++){
+                        if (runMe && stream.isPlaying()) {
+                            stream.setX(oldX + (i*deltaX/totalFrames));
+                            tF--;   
+                            Tools.sleep(1000/rate);
+                        } else {
+                            stream.setX(oldBkX);
+                            break;
+                        }
+                    }
+                    oldX = -MasterMixer.getInstance().getWidth();
+                    stream.setX(oldX);
+                    newX = oldBkX;
+                    deltaX = newX - oldX;
+                    for (int i = 0; i<totalFrames;i++){
+                        if (runMe) {
+                            stream.setX(oldX + (i*deltaX/totalFrames));
+                            Tools.sleep(1000/rate);
+                        } else {
+                            stream.setX(oldBkX);
+                            break;
+                        }
+                    }
+                }
+            }
+        }); 
+        scrollRtL.setPriority(Thread.MIN_PRIORITY);
+        scrollRtL.start();
+        } else {
+            runMe = false;
+            stream.setX(oldBkX);            
+            jCBRightToLeft.setEnabled(true);
+            jCBBottomToTop.setEnabled(true);
+            jCBTopToBottom.setEnabled(true);
+            jCBBouncingRight.setEnabled(true);
+        }
+    }//GEN-LAST:event_jCBLeftToRightActionPerformed
+
+    private void jCBBottomToTopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCBBottomToTopActionPerformed
+        final int oldBkY = stream.getY();     
+        runMe = true;
+        if (jCBBottomToTop.isSelected()) {
+            
+            jCBLeftToRight.setEnabled(false);
+            jCBRightToLeft.setEnabled(false);
+            jCBTopToBottom.setEnabled(false);
+            jCBBouncingRight.setEnabled(false);
+
+            Thread scrollRtL = new Thread(new Runnable() {
+                int deltaY = 0;
+            @Override
+            public void run() {
+                while (runMe && stream.isPlaying()){
+                    final int oldY = stream.getY();
+                    final int newY = MasterMixer.getInstance().getHeight();
+                    if (oldY <= 0) {
+                        deltaY = newY - oldY;
+                    } else {
+                        deltaY = newY + oldY;
+                    }
+                    final int rate = stream.getRate();
+                    final int totalFrames = rate * speed;
+                    int tF = rate * speed;
+                    for (int i = 0; i<totalFrames;i++){
+                        if (runMe) {
+                            stream.setY(oldY - (i*deltaY/totalFrames));
+                            tF--;
+                            Tools.sleep(1000/rate);
+                        } else {
+                            stream.setY(oldBkY);
+                            break;
+                        }
+                    }
+                    stream.setY(newY);
+                    deltaY = newY - oldY;
+                    for (int i = 0; i<totalFrames;i++){
+                        if (runMe){
+                            stream.setY(newY - (i*deltaY/totalFrames));
+                            Tools.sleep(1000/rate);
+                        } else {
+                            stream.setY(oldBkY);
+                            break;
+                        }
+                    }
+                }
+            }
+        }); 
+        scrollRtL.setPriority(Thread.MIN_PRIORITY);
+        scrollRtL.start();
+        } else {
+            runMe = false;
+            stream.setY(oldBkY);
+            jCBLeftToRight.setEnabled(true);
+            jCBRightToLeft.setEnabled(true);
+            jCBTopToBottom.setEnabled(true);
+            jCBBouncingRight.setEnabled(true);
+        }
+    }//GEN-LAST:event_jCBBottomToTopActionPerformed
+
+    private void jCBTopToBottomActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCBTopToBottomActionPerformed
+        final int oldBkY = stream.getY();
+        runMe = true;
+        if (jCBTopToBottom.isSelected()) {
+            
+            jCBLeftToRight.setEnabled(false);
+            jCBBottomToTop.setEnabled(false);
+            jCBRightToLeft.setEnabled(false);
+            jCBBouncingRight.setEnabled(false);
+
+            Thread scrollRtL = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                while (runMe && stream.isPlaying()){
+                    int oldY = stream.getY();
+                    int newY = MasterMixer.getInstance().getHeight(); 
+                    int deltaY = newY - oldY;
+                    final int rate = stream.getRate();
+                    final int totalFrames = rate * speed;
+                    int tF = rate * speed;
+                    for (int i = 0; i<totalFrames;i++){
+                        if (runMe){
+                            stream.setY(oldY+(i*deltaY/totalFrames));
+                            tF--;
+                            Tools.sleep(1000/rate);
+                        } else {
+                            stream.setY(oldBkY);
+                            break;
+                        }
+                    }
+                    oldY = -MasterMixer.getInstance().getHeight();
+                    stream.setY(oldY);  
+                    newY = oldBkY;
+                    deltaY = newY - oldY;
+                    for (int i = 0; i<totalFrames;i++){
+                        if (runMe){
+                            stream.setY(oldY+(i*deltaY/totalFrames));
+                            Tools.sleep(1000/rate);
+                        } else {
+                            stream.setY(oldBkY);
+                            break;
+                        }
+                    }
+                }
+            }
+        }); 
+        scrollRtL.setPriority(Thread.MIN_PRIORITY);
+        scrollRtL.start();
+        } else {
+            runMe = false;
+            stream.setY(oldBkY);
+            jCBLeftToRight.setEnabled(true);
+            jCBBottomToTop.setEnabled(true);
+            jCBRightToLeft.setEnabled(true);
+            jCBBouncingRight.setEnabled(true);
+        }
+    }//GEN-LAST:event_jCBTopToBottomActionPerformed
+
+    private void jCBBouncingRightActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCBBouncingRightActionPerformed
+        final int oldBkX = stream.getX();
+        runMe = true;
+        if (jCBBouncingRight.isSelected()) {
+            
+            jCBLeftToRight.setEnabled(false);
+            jCBBottomToTop.setEnabled(false);
+            jCBTopToBottom.setEnabled(false);
+            jCBRightToLeft.setEnabled(false);
+            
+            Thread scrollRtL = new Thread(new Runnable() {
+                int deltaX = 0;
+            @Override
+            public void run() {
+                while (runMe && stream.isPlaying()){
+                    int oldX = stream.getX();
+                    int newX = MasterMixer.getInstance().getWidth();
+                    if (oldX <= 0) {
+                        deltaX = newX - oldX;
+                    } else {
+                        deltaX = newX + oldX;
+                    }
+                    final int rate = stream.getRate();
+                    final int totalFrames = rate * speed;
+                    int tF = rate * speed;
+                    for (int i = 0; i<totalFrames;i++){
+                        if (runMe){
+                            stream.setX(oldX - (i*deltaX/totalFrames));
+                            tF--;   
+                            Tools.sleep(1000/rate);
+                        } else {
+                            stream.setX(oldBkX);
+                            break;
+                        }
+                    }
+                    oldX = -MasterMixer.getInstance().getWidth();
+                    stream.setX(oldX);
+                    newX = oldBkX;
+                    deltaX = newX - oldX;
+                    for (int i = 0; i<totalFrames;i++){
+                        if (runMe){
+                            stream.setX(oldX + (i*deltaX/totalFrames));
+                            Tools.sleep(1000/rate);
+                        } else {
+                            stream.setX(oldBkX);
+                            break;
+                        }
+                    }
+                }
+            }
+        }); 
+        scrollRtL.setPriority(Thread.MIN_PRIORITY);
+        scrollRtL.start();
+        } else {
+            runMe = false;
+            stream.setX(oldBkX);
+            jCBLeftToRight.setEnabled(true);
+            jCBBottomToTop.setEnabled(true);
+            jCBTopToBottom.setEnabled(true);
+            jCBRightToLeft.setEnabled(true);
+        }
+    }//GEN-LAST:event_jCBBouncingRightActionPerformed
+
+    private void jCBoxWansCamPtzActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCBoxWansCamPtzActionPerformed
+        if (jCBoxWansCamPtz.isSelected()){
+            stream.setPtzBrand("wanscam");
+            jCBoxFosCamPtz.setSelected(false);
+            jCBoxAxisPtz.setSelected(false);
         } else {
             jCBoxFosCamPtz.setSelected(true);
             jCBoxAxisPtz.setSelected(false);
             stream.setPtzBrand("foscam");
         }
-    }//GEN-LAST:event_jCBoxAxisPtzActionPerformed
+    }//GEN-LAST:event_jCBoxWansCamPtzActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu JMBackEnd;
     private javax.swing.JCheckBoxMenuItem jCBAVConv;
+    private javax.swing.JCheckBoxMenuItem jCBBottomToTop;
+    private javax.swing.JCheckBoxMenuItem jCBBouncingRight;
     private javax.swing.JCheckBoxMenuItem jCBGStreamer;
+    private javax.swing.JCheckBoxMenuItem jCBLeftToRight;
     private javax.swing.JCheckBoxMenuItem jCBMoreOptions;
+    private javax.swing.JCheckBoxMenuItem jCBRightToLeft;
     private javax.swing.JCheckBoxMenuItem jCBShowSliders;
+    private javax.swing.JCheckBoxMenuItem jCBTopToBottom;
     private javax.swing.JCheckBoxMenuItem jCBoxAxisPtz;
     private javax.swing.JCheckBoxMenuItem jCBoxFosCamPtz;
+    private javax.swing.JCheckBoxMenuItem jCBoxWansCamPtz;
     private javax.swing.JMenuBar jMBOptions;
     private javax.swing.JMenu jMControls;
     private javax.swing.JMenu jMIPCBrand;
+    private javax.swing.JMenu jMScroll;
     // End of variables declaration//GEN-END:variables
 }

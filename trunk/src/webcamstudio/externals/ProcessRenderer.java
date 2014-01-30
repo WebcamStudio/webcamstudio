@@ -305,6 +305,10 @@ public class ProcessRenderer {
                     command = command.replaceAll(Tags.VPORT.toString(), "" + videoPort);
                     break;
                 case WEBURL:
+                    if (stream.getProtected() && stream.getPtzBrand() == "wanscam") {
+                        String soloURL = stream.getWebURL().replace("http://", "");
+                        command = command.replaceAll(Tags.WEBURL.toString(), "\""+"http://"+soloURL+"?user="+stream.getIPUser()+"&pwd="+stream.getIPPwd()+"\"");
+                    }
                     if (stream.getProtected()) {
                         String soloURL = stream.getWebURL().replace("http://", "");
                         command = command.replaceAll(Tags.WEBURL.toString(), "\""+"http://"+stream.getIPUser()+":"+stream.getIPPwd()+"@"+soloURL+"\"");

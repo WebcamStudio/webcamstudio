@@ -18,7 +18,7 @@ public class SinkAudio extends Stream {
     private ProcessRenderer capture = null;
 
     public SinkAudio() {
-        name = "Audio";
+        name = "AudioOut";
     }
 
     @Override

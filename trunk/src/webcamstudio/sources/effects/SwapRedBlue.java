@@ -49,6 +49,4 @@ public class SwapRedBlue extends Effect {
     public void loadFromStudioConfig(Preferences prefs) {
         
     }
-
- 
 }

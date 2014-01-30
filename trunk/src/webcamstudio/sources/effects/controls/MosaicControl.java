@@ -45,7 +45,7 @@ public class MosaicControl extends javax.swing.JPanel {
         lblSplitBox.setName("lblSplitBox"); // NOI18N
 
         slideSplitBox.setMaximum(8);
-        slideSplitBox.setMinimum(2);
+        slideSplitBox.setMinimum(1);
         slideSplitBox.setMinorTickSpacing(1);
         slideSplitBox.setPaintLabels(true);
         slideSplitBox.setPaintTicks(true);

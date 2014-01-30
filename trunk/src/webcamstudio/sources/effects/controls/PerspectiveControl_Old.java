@@ -27,12 +27,12 @@ public class PerspectiveControl_Old extends javax.swing.JPanel {
         this.effect=effect;
         txtX1.setText((int)effect.getX1()+"");
         txtY1.setText((int)effect.getY1()+"");
-        txtX2.setText((int)effect.getX2()+"");
-        txtY2.setText((int)effect.getY2()+"");
+//        txtX2.setText((int)effect.getX2()+"");
+//        txtY2.setText((int)effect.getY2()+"");
         txtX3.setText((int)effect.getX3()+"");
         txtY3.setText((int)effect.getY3()+"");
-        txtX4.setText((int)effect.getX4()+"");
-        txtY4.setText((int)effect.getY4()+"");
+//        txtX4.setText((int)effect.getX4()+"");
+//        txtY4.setText((int)effect.getY4()+"");
     }
 
     /** This method is called from within the constructor to
@@ -274,7 +274,7 @@ public class PerspectiveControl_Old extends javax.swing.JPanel {
     }//GEN-LAST:event_txtX1ActionPerformed
 
     private void txtX2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtX2ActionPerformed
-        effect.setX2(new Integer(txtX2.getText()));
+//        effect.setX2(new Integer(txtX2.getText()));
     }//GEN-LAST:event_txtX2ActionPerformed
 
     private void txtX3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtX3ActionPerformed
@@ -282,7 +282,7 @@ public class PerspectiveControl_Old extends javax.swing.JPanel {
     }//GEN-LAST:event_txtX3ActionPerformed
 
     private void txtX4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtX4ActionPerformed
-        effect.setX4(new Integer(txtX4.getText()));
+//        effect.setX4(new Integer(txtX4.getText()));
     }//GEN-LAST:event_txtX4ActionPerformed
 
     private void txtY1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtY1ActionPerformed
@@ -290,7 +290,7 @@ public class PerspectiveControl_Old extends javax.swing.JPanel {
     }//GEN-LAST:event_txtY1ActionPerformed
 
     private void txtY2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtY2ActionPerformed
-        effect.setY2(new Integer(txtY2.getText()));
+//        effect.setY2(new Integer(txtY2.getText()));
     }//GEN-LAST:event_txtY2ActionPerformed
 
     private void txtY3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtY3ActionPerformed
@@ -298,7 +298,7 @@ public class PerspectiveControl_Old extends javax.swing.JPanel {
     }//GEN-LAST:event_txtY3ActionPerformed
 
     private void txtY4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtY4ActionPerformed
-        effect.setY4(new Integer(txtY4.getText()));
+//        effect.setY4(new Integer(txtY4.getText()));
     }//GEN-LAST:event_txtY4ActionPerformed
 
     private void txtX1FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtX1FocusLost
@@ -310,11 +310,11 @@ public class PerspectiveControl_Old extends javax.swing.JPanel {
     }//GEN-LAST:event_txtY1FocusLost
 
     private void txtX2FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtX2FocusLost
-        effect.setX2(new Integer(txtX2.getText()));
+//        effect.setX2(new Integer(txtX2.getText()));
     }//GEN-LAST:event_txtX2FocusLost
 
     private void txtY2FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtY2FocusLost
-        effect.setY2(new Integer(txtY2.getText()));
+//        effect.setY2(new Integer(txtY2.getText()));
     }//GEN-LAST:event_txtY2FocusLost
 
     private void txtX3FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtX3FocusLost
@@ -326,11 +326,11 @@ public class PerspectiveControl_Old extends javax.swing.JPanel {
     }//GEN-LAST:event_txtY3FocusLost
 
     private void txtX4FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtX4FocusLost
-        effect.setX4(new Integer(txtX4.getText()));
+//        effect.setX4(new Integer(txtX4.getText()));
     }//GEN-LAST:event_txtX4FocusLost
 
     private void txtY4FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtY4FocusLost
-        effect.setY4(new Integer(txtY4.getText()));
+//        effect.setY4(new Integer(txtY4.getText()));
     }//GEN-LAST:event_txtY4FocusLost
 
 

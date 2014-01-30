@@ -105,11 +105,11 @@ public class MasterMixer {
             l.newFrame(f);
         }
     }
-    public void setCurrentFrame(BufferedImage img,byte[] audio){
-        Frame f = new Frame("",img, audio);
-        setAudioLevel(f);
-        updateListeners(f);
-    }
+//    public void setCurrentFrame(BufferedImage img,byte[] audio){
+//        Frame f = new Frame("",img, audio);
+//        setAudioLevel(f);
+//        updateListeners(f);
+//    }
     protected void setAudioLevel(Frame f) {
         byte[] data = f.getAudioData();
         if (data != null) {

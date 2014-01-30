@@ -36,7 +36,7 @@ public class StreamFullDesktop extends javax.swing.JInternalFrame {
         StreamFullCamPanel p = new StreamFullCamPanel(s);
         this.setLayout(new BorderLayout());
         this.add(p, BorderLayout.CENTER);
-        this.setTitle(s.getName());
+        this.setTitle(s.getName()+" FullScreen Preview");
         this.setVisible(true); 
         panel = p;
         s.setPanelType("Panel");

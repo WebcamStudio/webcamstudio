@@ -110,4 +110,4 @@ public class ZoomZoom extends Effect {
     @Override
     public void loadFromStudioConfig(Preferences prefs) {
     }
-}
+    }
