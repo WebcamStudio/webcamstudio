@@ -68,4 +68,4 @@ public class Block extends Effect{
         blockSize = prefs.getInt("blocksize", blockSize);
     }
 
-}
+    }

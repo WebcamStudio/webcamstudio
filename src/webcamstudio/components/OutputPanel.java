@@ -903,13 +903,13 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
     private void tglAudioOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglAudioOutActionPerformed
         if (tglAudioOut.isSelected()) {
             SinkAudio audioStream = new SinkAudio();
-            audioStream.setWidth(MasterMixer.getInstance().getWidth());
-            audioStream.setHeight(MasterMixer.getInstance().getHeight());
-            audioStream.setRate(MasterMixer.getInstance().getRate());
+//            audioStream.setWidth(MasterMixer.getInstance().getWidth());
+//            audioStream.setHeight(MasterMixer.getInstance().getHeight());
+//            audioStream.setRate(MasterMixer.getInstance().getRate());
             audioStream.setListener(instanceSink);
             audioStream.read();
             audioOut.put("AudioOut", audioStream);
-            ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "WS Audio to Speakers");
+            ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "WebcamStudio Audio to Speakers");
             labels.put("AudioOut", label);
             ResourceMonitor.getInstance().addMessage(label);
         } else {

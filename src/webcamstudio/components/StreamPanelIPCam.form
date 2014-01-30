@@ -915,7 +915,7 @@
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
           <Image iconType="3" name="/webcamstudio/resources/tango/media-record.png"/>
         </Property>
-        <Property name="toolTipText" type="java.lang.String" value="Go To Preset 1"/>
+        <Property name="toolTipText" type="java.lang.String" value="(Foscam-Axis) Preset1 or (WansCam) HRoll"/>
         <Property name="name" type="java.lang.String" value="btnPreset" noResource="true"/>
         <Property name="rolloverEnabled" type="boolean" value="false"/>
         <Property name="selectedIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">

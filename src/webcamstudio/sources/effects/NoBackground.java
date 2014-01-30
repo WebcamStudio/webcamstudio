@@ -18,9 +18,9 @@ public class NoBackground extends Effect {
     private final com.jhlabs.image.KeyFilter filter = new com.jhlabs.image.KeyFilter();
     private BufferedImage background = null;
     private BufferedImage lastImage = null;
-    private int rThreshold = 0;
-    private int gThreshold = 0;
-    private int bThreshold = 0;
+    private int rThreshold = 50;
+    private int gThreshold = 50;
+    private int bThreshold = 50;
 
     @Override
     public void applyEffect(BufferedImage img) {
@@ -32,6 +32,7 @@ public class NoBackground extends Effect {
             for (int i = 0; i < data.length; i++) {
                 c = data[i];
                 cb = dataBG[i];
+                a = (c & 0xFF000000) >> 24;
                 r = ((((c & 0x00FF0000) >> 16))) - (((cb & 0x00FF0000) >> 16));
                 g = (((c & 0x0000FF00) >> 8)) - (((cb & 0x0000FF00) >> 8));
                 b = (((c & 0x000000FF))) - ((cb & 0x000000FF));
@@ -104,4 +105,4 @@ public class NoBackground extends Effect {
     public void setBackgroundImage(BufferedImage img) {
         background = img;
     }
-}
+    }

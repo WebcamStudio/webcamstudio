@@ -168,6 +168,7 @@
                   <Image iconType="3" name="/webcamstudio/resources/tango/audio-card.png"/>
                 </Property>
                 <Property name="toolTipText" type="java.lang.String" value="WebcamStudio Master Audio Output"/>
+                <Property name="enabled" type="boolean" value="false"/>
                 <Property name="name" type="java.lang.String" value="tglSound" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[32, 30]"/>

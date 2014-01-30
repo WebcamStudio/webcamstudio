@@ -103,6 +103,7 @@ public class Capturer {
                         } while (noVideoPres);
 
                     } catch (IOException ex) {
+//                        ex.printStackTrace();
                         Logger.getLogger(Capturer.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 } 
@@ -138,6 +139,7 @@ public class Capturer {
                           } 
                         }  while (noAudioPres);
                     } catch (IOException ex) {
+//                        ex.printStackTrace();
                         Logger.getLogger(Capturer.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
@@ -163,6 +165,7 @@ public class Capturer {
             fakeAudioIn = null;
         }
         } catch (IOException ex) {
+//            ex.printStackTrace();
             Logger.getLogger(Capturer.class.getName()).log(Level.SEVERE, null, ex);
     }
     }
@@ -209,8 +212,9 @@ public class Capturer {
             frame.setOutputFormat(stream.getX(), stream.getY(), stream.getWidth(), stream.getHeight(), stream.getOpacity(), stream.getVolume());
             frame.setZOrder(stream.getZOrder());
         } catch (IOException ioe) {
-            Logger.getLogger(Capturer.class.getName()).log(Level.SEVERE, null, ioe);
             stream.stop();
+            stream.updateStatus();
+//            Logger.getLogger(Capturer.class.getName()).log(Level.SEVERE, null, ioe);
         }
         return frame;
     }    

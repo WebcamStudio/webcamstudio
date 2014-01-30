@@ -115,4 +115,4 @@ public class ChromaKey extends Effect {
         bTolerance = prefs.getInt("btolerance", bTolerance);
         color = new Color(prefs.getInt("color", color.getRGB()));
     }
-}
+    }

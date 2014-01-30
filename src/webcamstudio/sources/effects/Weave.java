@@ -21,7 +21,7 @@ public class Weave extends Effect {
 
     @Override
     public boolean needApply(){
-        return needApply=true;
+        return needApply=false;
     }
     @Override
     public void applyEffect(BufferedImage img) {
@@ -61,4 +61,4 @@ public class Weave extends Effect {
     public void loadFromStudioConfig(Preferences prefs) {
         
     }
-}
+    }

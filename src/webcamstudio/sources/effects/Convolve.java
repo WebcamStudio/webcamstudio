@@ -51,4 +51,4 @@ public class Convolve extends Effect {
     public void loadFromStudioConfig(Preferences prefs) {
         
     }
-}
+    }

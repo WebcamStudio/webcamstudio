@@ -96,4 +96,4 @@ public class Gain extends Effect{
 
     }
 
-}
+    }

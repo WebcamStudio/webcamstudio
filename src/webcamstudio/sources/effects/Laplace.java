@@ -61,4 +61,4 @@ public class Laplace extends Effect {
     public void loadFromStudioConfig(Preferences prefs) {
         
     }
-}
+    }

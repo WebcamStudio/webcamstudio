@@ -35,19 +35,23 @@ public class WSImage extends BufferedImage {
     public void setData(int[] srcData) {
         System.arraycopy(srcData, 0, data, 0, srcData.length);
     }
-
+  
+    public void convertByte(byte[] barr) {
+        counter = 0;
+        for (int i = 0; i < data.length; i++) {
+//           data[i] = 0xff000000 | ((byteData[counter++]) << 16) | ((byteData[counter++]& 0xff) << 8) | ((byteData[counter++])& 0xff); // Correct CyanGreen Issue !!!               
+            int int32 = 0xff000000;
+            int int16 = (barr[counter++] << 16);
+            int int8 = ((barr[counter++] & 0xff) << 8);
+            int int0 = ((barr[counter++]) & 0xff);
+            data[i] = int32 + int16 + int8 + int0;
+        }
+    }
+   
     public void readFully(DataInputStream din) throws IOException {
         if (din.available() > 0) {
             din.readFully(byteData);
-            counter = 0;
-            for (int i = 0; i < data.length; i++) {
-//                data[i] = 0xff000000 | ((byteData[counter++]) << 16) | ((byteData[counter++]& 0xff) << 8) | ((byteData[counter++])& 0xff); // Correct CyanGreen Issue !!!               
-                int int32 = 0xff000000;
-                int int16 = (byteData[counter++] << 16);
-                int int8 = ((byteData[counter++] & 0xff) << 8);
-                int int0 = ((byteData[counter++]) & 0xff);
-                data[i] = int32 + int16 + int8 + int0;
-            }
+            convertByte(byteData);
         }
     }
 

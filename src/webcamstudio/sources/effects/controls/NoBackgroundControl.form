@@ -80,9 +80,10 @@
         <Property name="background" type="java.awt.Color" noResource="true" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="0" green="0" id="red" palette="1" red="ff" type="palette"/>
         </Property>
-        <Property name="minorTickSpacing" type="int" value="10"/>
+        <Property name="minorTickSpacing" type="int" value="1"/>
         <Property name="paintLabels" type="boolean" value="true"/>
         <Property name="paintTicks" type="boolean" value="true"/>
+        <Property name="value" type="int" value="50"/>
         <Property name="name" type="java.lang.String" value="sliderR" noResource="true"/>
         <Property name="opaque" type="boolean" value="true"/>
       </Properties>
@@ -95,9 +96,10 @@
         <Property name="background" type="java.awt.Color" noResource="true" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="0" green="ff" id="green" palette="1" red="0" type="palette"/>
         </Property>
-        <Property name="minorTickSpacing" type="int" value="10"/>
+        <Property name="minorTickSpacing" type="int" value="1"/>
         <Property name="paintLabels" type="boolean" value="true"/>
         <Property name="paintTicks" type="boolean" value="true"/>
+        <Property name="value" type="int" value="50"/>
         <Property name="name" type="java.lang.String" value="sliderG" noResource="true"/>
         <Property name="opaque" type="boolean" value="true"/>
       </Properties>
@@ -110,9 +112,10 @@
         <Property name="background" type="java.awt.Color" noResource="true" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="ff" green="0" id="blue" palette="1" red="0" type="palette"/>
         </Property>
-        <Property name="minorTickSpacing" type="int" value="10"/>
+        <Property name="minorTickSpacing" type="int" value="1"/>
         <Property name="paintLabels" type="boolean" value="true"/>
         <Property name="paintTicks" type="boolean" value="true"/>
+        <Property name="value" type="int" value="50"/>
         <Property name="name" type="java.lang.String" value="sliderB" noResource="true"/>
         <Property name="opaque" type="boolean" value="true"/>
       </Properties>

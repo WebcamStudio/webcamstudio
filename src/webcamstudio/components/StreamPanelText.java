@@ -311,8 +311,8 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
         add(jSlSpinY, new org.netbeans.lib.awtextra.AbsoluteConstraints(127, 200, 150, 20));
 
         jSlSpinW.setMaximum(1920);
+        jSlSpinW.setMinimum(1);
         jSlSpinW.setSnapToTicks(true);
-        jSlSpinW.setValue(0);
         jSlSpinW.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jSlSpinW.setName("jSlSpinW"); // NOI18N
         jSlSpinW.setOpaque(true);
@@ -324,8 +324,8 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
         add(jSlSpinW, new org.netbeans.lib.awtextra.AbsoluteConstraints(127, 220, 150, 20));
 
         jSlSpinH.setMaximum(1080);
+        jSlSpinH.setMinimum(1);
         jSlSpinH.setSnapToTicks(true);
-        jSlSpinH.setValue(0);
         jSlSpinH.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jSlSpinH.setName("jSlSpinH"); // NOI18N
         jSlSpinH.setOpaque(true);

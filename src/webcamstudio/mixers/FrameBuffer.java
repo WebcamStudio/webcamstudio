@@ -24,15 +24,15 @@ public class FrameBuffer {
             buffer.add(frame);
         }
     }
-    public void push(Frame f){
-        while (!abort && frameCounter >0) {
-            Tools.sleep(30);
-        }
-        currentIndex++;
-        currentIndex = currentIndex % BUFFER_SIZE;
-        buffer.get(currentIndex).copyFrame(f);
-        frameCounter++;
-    }
+//    public void push(Frame f){
+//        while (!abort && frameCounter >0) {
+//            Tools.sleep(30);
+//        }
+//        currentIndex++;
+//        currentIndex = currentIndex % BUFFER_SIZE;
+//        buffer.get(currentIndex); //.copyFrame(f)
+//        frameCounter++;
+//    }
     public void doneUpdate(){
         currentIndex++;
         currentIndex = currentIndex % BUFFER_SIZE;

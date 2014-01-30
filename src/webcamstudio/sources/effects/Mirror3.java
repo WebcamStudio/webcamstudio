@@ -60,4 +60,4 @@ public class Mirror3 extends Effect{
         return needApply=true;
     }
 
-}
+    }
