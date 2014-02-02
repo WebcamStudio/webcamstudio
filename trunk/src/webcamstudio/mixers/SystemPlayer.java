@@ -4,13 +4,8 @@
  */
 package webcamstudio.mixers;
 
-import java.awt.GraphicsConfiguration;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
 import java.awt.image.BufferedImage;
 import java.util.concurrent.ExecutorService;
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 import webcamstudio.components.Viewer;
 import webcamstudio.util.Tools;
@@ -42,10 +37,6 @@ public class SystemPlayer implements Runnable {
     }
 
     public void addFrame(Frame frame) {
-//        GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
-//        GraphicsDevice device = env.getDefaultScreenDevice();
-//        GraphicsConfiguration config = device.getDefaultConfiguration();
-//        BufferedImage fImage = config.createCompatibleImage(frame.getWidth(), frame.getHeight(), BufferedImage.TYPE_INT_ARGB);
         BufferedImage fImage = frame.getImage();
         viewer.setImage(fImage);
         int lAL = MasterMixer.getInstance().getAudioLevelLeft();

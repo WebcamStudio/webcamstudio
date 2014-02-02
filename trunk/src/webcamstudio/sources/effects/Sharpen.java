@@ -2,66 +2,24 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
+
 package webcamstudio.sources.effects;
 
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferInt;
 import java.util.prefs.Preferences;
 import javax.swing.JPanel;
-import org.opencv.core.Core;
-import org.opencv.core.CvType;
-import org.opencv.core.Mat;
-import org.opencv.core.Size;
-import org.opencv.imgproc.Imgproc;
-
 
 /**
  *
  * @author pballeux
  */
-public class Sharpen extends Effect {
-
+public class Sharpen extends Effect{
+    private final com.jhlabs.image.SharpenFilter filter = new com.jhlabs.image.SharpenFilter();
     @Override
     public void applyEffect(BufferedImage img) {
-        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-        
-        Mat dst = new Mat();
-        
-        int w = img.getWidth();
-        int h = img.getHeight();
-        int counter = 0;
-        int[] intData = ((DataBufferInt) img.getRaster().getDataBuffer()).getData();
-        byte[] byteData = new byte[intData.length * 3];
-        for (int i = 0; i < byteData.length; i += 3) {
-            byteData[i] = (byte) ((intData[counter] >> 16) & 0xFF);
-            byteData[i + 1] = (byte) ((intData[counter] >> 8) & 0xFF);
-            byteData[i + 2] = (byte) ((intData[counter]) & 0xFF);
-            counter++;
-        }
-        Mat src = new Mat(h, w, CvType.CV_8UC3);
-        src.put(0, 0, byteData);
-        
-        // Filter ...
-        Imgproc.GaussianBlur(src, dst, new Size(0, 0), 3);
-        Core.addWeighted(src, 1.5, dst, -0.5, 0, dst);
-        
-        byte[] data = new byte[dst.rows()*dst.cols()*(int)(dst.elemSize())];
-        dst.get(0, 0, data);
-        if (dst.channels() == 3) {
-            for (int i = 0; i < data.length; i += 3) {
-            byte temp = data[i];
-            data[i] = data[i + 2];
-            data[i + 2] = temp;
-            }
-        }
-        BufferedImage temp = new BufferedImage(dst.cols(), dst.rows(), BufferedImage.TYPE_3BYTE_BGR);
-        temp.getRaster().setDataElements(0, 0, dst.cols(), dst.rows(), data);
-
         Graphics2D buffer = img.createGraphics();
-        buffer.setRenderingHint(java.awt.RenderingHints.KEY_INTERPOLATION, 
-                           java.awt.RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         buffer.setRenderingHint(RenderingHints.KEY_RENDERING,
                            RenderingHints.VALUE_RENDER_SPEED);
         buffer.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
@@ -74,13 +32,11 @@ public class Sharpen extends Effect {
                            RenderingHints.VALUE_COLOR_RENDER_SPEED);
         buffer.setRenderingHint(RenderingHints.KEY_DITHERING,
                            RenderingHints.VALUE_DITHER_DISABLE);
-        buffer.drawImage(temp, 0, 0, null);
+        BufferedImage temp = filter.filter(img, null);
+        buffer.setBackground(new java.awt.Color(0,0,0,0));
+        buffer.clearRect(0,0,img.getWidth(),img.getHeight());
+        buffer.drawImage(temp, 0, 0,null);
         buffer.dispose();
-    }
-
-    @Override
-    public boolean needApply(){
-        return needApply=true;
     }
     @Override
     public JPanel getControl() {
@@ -96,4 +52,9 @@ public class Sharpen extends Effect {
     public void loadFromStudioConfig(Preferences prefs) {
         
     }
+    @Override
+    public boolean needApply(){
+        return needApply=true;
+    }
+
 }

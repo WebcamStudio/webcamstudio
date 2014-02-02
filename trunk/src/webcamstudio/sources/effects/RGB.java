@@ -92,4 +92,4 @@ public class RGB extends Effect {
         gThreshold = prefs.getInt("gThreshold", gThreshold);
         bThreshold = prefs.getInt("bThreshold", bThreshold);
     }
-    }
+}

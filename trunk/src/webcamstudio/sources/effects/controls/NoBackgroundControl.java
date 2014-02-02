@@ -62,10 +62,9 @@ public class NoBackgroundControl extends javax.swing.JPanel {
         lblPreview.setName("lblPreview"); // NOI18N
 
         sliderR.setBackground(java.awt.Color.red);
-        sliderR.setMinorTickSpacing(1);
+        sliderR.setMinorTickSpacing(10);
         sliderR.setPaintLabels(true);
         sliderR.setPaintTicks(true);
-        sliderR.setValue(50);
         sliderR.setName("sliderR"); // NOI18N
         sliderR.setOpaque(true);
         sliderR.addChangeListener(new javax.swing.event.ChangeListener() {
@@ -75,10 +74,9 @@ public class NoBackgroundControl extends javax.swing.JPanel {
         });
 
         sliderG.setBackground(java.awt.Color.green);
-        sliderG.setMinorTickSpacing(1);
+        sliderG.setMinorTickSpacing(10);
         sliderG.setPaintLabels(true);
         sliderG.setPaintTicks(true);
-        sliderG.setValue(50);
         sliderG.setName("sliderG"); // NOI18N
         sliderG.setOpaque(true);
         sliderG.addChangeListener(new javax.swing.event.ChangeListener() {
@@ -88,10 +86,9 @@ public class NoBackgroundControl extends javax.swing.JPanel {
         });
 
         sliderB.setBackground(java.awt.Color.blue);
-        sliderB.setMinorTickSpacing(1);
+        sliderB.setMinorTickSpacing(10);
         sliderB.setPaintLabels(true);
         sliderB.setPaintTicks(true);
-        sliderB.setValue(50);
         sliderB.setName("sliderB"); // NOI18N
         sliderB.setOpaque(true);
         sliderB.addChangeListener(new javax.swing.event.ChangeListener() {

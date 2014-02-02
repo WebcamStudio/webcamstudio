@@ -59,4 +59,4 @@ public class Emboss extends Effect{
         
     }
 
-    }
+}

@@ -12,7 +12,6 @@ import webcamstudio.channels.MasterChannels;
 import webcamstudio.channels.transitions.Transition;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterMixer;
-import webcamstudio.sources.effects.Blur;
 import webcamstudio.sources.effects.Effect;
 
 /**
@@ -80,7 +79,7 @@ public abstract class Stream implements Callable<Frame>{
     Listener listener = null;
     protected String panelType = "Panel";
     protected String streamTime = "N/A";
-    
+
     protected Stream() {
         MasterChannels.getInstance().register(this);
     }

@@ -50,7 +50,7 @@
     <Component class="javax.swing.JSlider" name="slideSplitBox">
       <Properties>
         <Property name="maximum" type="int" value="8"/>
-        <Property name="minimum" type="int" value="1"/>
+        <Property name="minimum" type="int" value="2"/>
         <Property name="minorTickSpacing" type="int" value="1"/>
         <Property name="paintLabels" type="boolean" value="true"/>
         <Property name="paintTicks" type="boolean" value="true"/>

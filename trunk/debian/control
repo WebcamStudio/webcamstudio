@@ -9,8 +9,8 @@ Build-Depends: debhelper (>= 7.2.7~),
   bzip2,
   subversion,
   linux-headers-generic,
-  libcv-dev,
   ant,
+  default-jdk,
   openjdk-7-jdk,
   libappframework-java,
   libcommons-cli-java,
@@ -44,7 +44,6 @@ Depends: openjdk-7-jre,
   libnetty-java,
   libslf4j-java,
   libswingworker-java,
-  libcv2.4 | libcv2.3 | libcv4,
   libav-tools | ffmpeg,
   libavformat-extra-53,
   gstreamer-tools,
@@ -64,7 +63,7 @@ Recommends: webcamstudio-dkms | v4l2loopback-dkms,
   ${shlibs:Recommends}
 Description: Creates virtual webcam to broadcast over the internet.
  WebcamStudio is a virtual webcam software that can be used with Skype or a
- flash website like UStream, to create a professional looking broadcast,
+ flash website like UStream, to create a professional looking broadcast, 
  including banners, animations, transit animations and icons, etc.
  .
  This tool is not meant as a video editor but as a live video mixer giving you
@@ -83,7 +82,7 @@ Description: Creates virtual webcam to broadcast over the internet.
    the weather man on the news network
    - Use all kinds of devices as webcamera like a MiniDV, your iPhone, etc.
  .
- This package provides the binaries for WebcamStudio. Either the
+ This package provides the binaries for WebcamStudio. Either the 
  webcamstudio-dkms or the v4l2loopback-dkms package is also required in order
  to use WebcamStudio.
 
@@ -91,7 +90,7 @@ Package: webcamstudio-dkms
 Section: kernel
 Architecture: all
 Depends: dkms (>= 2.1.1.1),
-  python-apport,
+  python-apport, 
   ${misc:Depends}
 Suggests: webcamstudio
 Description: Source for the webcamstudio driver (DKMS)

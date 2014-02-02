@@ -34,13 +34,13 @@ public abstract class Effect {
         retValue.put(Gray.class.getSimpleName(), new Gray());
         retValue.put(Block.class.getSimpleName(), new Block());
         retValue.put(Emboss.class.getSimpleName(), new Emboss());
-        retValue.put(Watercolor.class.getSimpleName(), new Watercolor());
-        retValue.put(FilterTest2.class.getSimpleName(), new FilterTest2());
+        retValue.put(Sharpen.class.getSimpleName(), new Sharpen());
+        retValue.put(Rotation.class.getSimpleName(), new Rotation());
         retValue.put(ChromaKey.class.getSimpleName(), new ChromaKey());
         retValue.put(Contrast.class.getSimpleName(), new Contrast());
         retValue.put(SwapRedBlue.class.getSimpleName(), new SwapRedBlue());
         retValue.put(Perspective.class.getSimpleName(), new Perspective());
-        retValue.put(Rotation.class.getSimpleName(), new Rotation());
+        retValue.put(Twirl.class.getSimpleName(), new Twirl());
         retValue.put(Opacity.class.getSimpleName(), new Opacity());
         retValue.put(NoBackground.class.getSimpleName(), new NoBackground());
         retValue.put(RGB.class.getSimpleName(), new RGB());
@@ -50,14 +50,11 @@ public abstract class Effect {
         retValue.put(Radar.class.getSimpleName(), new Radar());
         retValue.put(Blink.class.getSimpleName(), new Blink());
         retValue.put(Gain.class.getSimpleName(), new Gain());
-        retValue.put(Blur.class.getSimpleName(), new Blur());
+        retValue.put(HSB.class.getSimpleName(), new HSB());
         retValue.put(Weave.class.getSimpleName(), new Weave());
         retValue.put(Laplace.class.getSimpleName(), new Laplace());
-        retValue.put(FaceDetectorAlpha.class.getSimpleName(), new FaceDetectorAlpha());
+        retValue.put(Marble.class.getSimpleName(), new Marble());
         retValue.put(Green.class.getSimpleName(), new Green());
-        retValue.put(Erode.class.getSimpleName(), new Erode());
-        retValue.put(Sharpen.class.getSimpleName(), new Sharpen());
-        
         return retValue;
     }
     public BufferedImage cloneImage(BufferedImage src){
@@ -75,7 +72,6 @@ public abstract class Effect {
                            java.awt.RenderingHints.VALUE_COLOR_RENDER_SPEED);
         tempbuffer.setRenderingHint(java.awt.RenderingHints.KEY_DITHERING,
                            java.awt.RenderingHints.VALUE_DITHER_DISABLE);
-//        tempbuffer.clearRect(0, 0, src.getWidth(), src.getHeight());
         tempbuffer.drawImage(src, 0, 0, null);
         tempbuffer.dispose();
         return tempimage;
