@@ -43,19 +43,21 @@ DEB_JARS := AbsoluteLayout \
 clean::
 	# Clean the libwebcamstudio helper
 	$(MAKE) -C vloopback clean-libwebcamstudio
+	rm -f Opencv-Natives/libopencv_java248.so
 
 build/webcamstudio::
 	$(MAKE) -C vloopback libwebcamstudio
+ifeq ($(DEB_BUILD_ARCH),amd64)
+	cp Opencv-Natives/x64/libopencv_java248.so Opencv-Natives/libopencv_java248.so
+else # i386
+	cp Opencv-Natives/x86/libopencv_java248.so Opencv-Natives/libopencv_java248.so
+endif
 
 install/webcamstudio::
 	# Install the libwebcamstudio helper
 	dh_install -p$(cdbs_curpkg) vloopback/libwebcamstudio.so* usr/lib
 	# Copy the Opencv library
-ifeq ($(DEB_BUILD_ARCH),amd64)
-	dh_install -p$(cdbs_curpkg) --sourcedir=$(CURDIR) Opencv-Natives/x64/libopencv_java248.so usr/lib
-else # i386
-	dh_install -p$(cdbs_curpkg) --sourcedir=$(CURDIR) Opencv-Natives/x86/libopencv_java248.so usr/lib
-endif
+	dh_install -p$(cdbs_curpkg) Opencv-Natives/libopencv_java248.so usr/lib
 
 debian/webcamstudio-dkms.dkms: debian/webcamstudio-dkms.dkms.in
 	sed \
