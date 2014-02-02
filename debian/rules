@@ -22,6 +22,8 @@ include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/class/ant.mk
 include /usr/share/cdbs/1/rules/utils.mk
 
+DEB_BUILD_ARCH ?= $(shell dpkg-architecture -qDEB_BUILD_ARCH)
+
 JAVA_HOME := /usr/lib/jvm/default-java
 DEB_ANT_BUILD_TARGET := jar
 DEB_JARS := AbsoluteLayout \
@@ -49,11 +51,10 @@ install/webcamstudio::
 	# Install the libwebcamstudio helper
 	dh_install -p$(cdbs_curpkg) vloopback/libwebcamstudio.so* usr/lib
 	# Copy the Opencv library
-ifeq ($(shell uname -m), x86_64)
-	dh_install -p$(cdbs_curpkg) Opencv-Natives/x64/libopencv_java248.so lib
-endif
-ifeq ($(shell uname -m), i686)
-	dh_install -p$(cdbs_curpkg) Opencv-Natives/x86/libopencv_java248.so lib
+ifeq ($(DEB_BUILD_ARCH),amd64)
+	dh_install -p$(cdbs_curpkg) --sourcedir=$(CURDIR) Opencv-Natives/x64/libopencv_java248.so usr/lib
+else # i386
+	dh_install -p$(cdbs_curpkg) --sourcedir=$(CURDIR) Opencv-Natives/x86/libopencv_java248.so usr/lib
 endif
 
 debian/webcamstudio-dkms.dkms: debian/webcamstudio-dkms.dkms.in
