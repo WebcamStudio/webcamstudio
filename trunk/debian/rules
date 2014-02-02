@@ -52,9 +52,9 @@ install/webcamstudio::
 	dh_install -p$(cdbs_curpkg) vloopback/libwebcamstudio.so* usr/lib
 	# Copy the Opencv library
 ifeq ($(DEB_BUILD_ARCH),amd64)
-	dh_install --sourcedir=$(CURDIR) -p$(cdbs_curpkg) Opencv-Natives/x64/libopencv_java248.so usr/lib
+	dh_install --sourcedir=$(CURDIR) -p$(cdbs_curpkg) Opencv-Natives/x64/libopencv_java248.* usr/lib
 else # i386
-	dh_install --sourcedir=$(CURDIR) -p$(cdbs_curpkg) Opencv-Natives/x86/libopencv_java248.so usr/lib
+	dh_install --sourcedir=$(CURDIR) -p$(cdbs_curpkg) Opencv-Natives/x86/libopencv_java248.* usr/lib
 endif
 
 debian/webcamstudio-dkms.dkms: debian/webcamstudio-dkms.dkms.in
