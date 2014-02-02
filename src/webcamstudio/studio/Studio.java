@@ -50,10 +50,9 @@ import webcamstudio.sources.effects.FlipVertical;
 import webcamstudio.sources.effects.Gain;
 import webcamstudio.sources.effects.Gray;
 import webcamstudio.sources.effects.Green;
-import webcamstudio.sources.effects.Blur;
-import webcamstudio.sources.effects.Erode;
+import webcamstudio.sources.effects.HSB;
 import webcamstudio.sources.effects.Laplace;
-import webcamstudio.sources.effects.FaceDetectorAlpha;
+import webcamstudio.sources.effects.Marble;
 import webcamstudio.sources.effects.MegaMind;
 import webcamstudio.sources.effects.Mirror1;
 import webcamstudio.sources.effects.Mirror2;
@@ -65,10 +64,10 @@ import webcamstudio.sources.effects.Opacity;
 import webcamstudio.sources.effects.Perspective;
 import webcamstudio.sources.effects.RGB;
 import webcamstudio.sources.effects.Radar;
-import webcamstudio.sources.effects.FilterTest2;
-import webcamstudio.sources.effects.Watercolor;
-import webcamstudio.sources.effects.SwapRedBlue;
 import webcamstudio.sources.effects.Rotation;
+import webcamstudio.sources.effects.Sharpen;
+import webcamstudio.sources.effects.SwapRedBlue;
+import webcamstudio.sources.effects.Twirl;
 import webcamstudio.sources.effects.Weave;
 import webcamstudio.sources.effects.ZoomZoom;
 import webcamstudio.streams.SourceChannel;
@@ -449,12 +448,12 @@ public class Studio {
                 effeX = new Gray();
                 readObjectFx(effeX, SuperChild);
                 
-            } else if (sClazz.endsWith("Blur")) {
-                effeX = new Blur();
+            } else if (sClazz.endsWith("HSB")) {
+                effeX = new HSB();
                 readObjectFx(effeX, SuperChild);
                 
-            } else if (sClazz.endsWith("Watercolor")) {
-                effeX = new Watercolor();
+            } else if (sClazz.endsWith("Sharpen")) {
+                effeX = new Sharpen();
                 readObjectFx(effeX, SuperChild);
                 
             } else if (sClazz.endsWith("MegaMind")) {
@@ -501,8 +500,8 @@ public class Studio {
                 effeX = new Radar();
                 readObjectFx(effeX, SuperChild);
                 
-            } else if (sClazz.endsWith("FilterTest2")) {
-                effeX = new FilterTest2();
+            } else if (sClazz.endsWith("Rotation")) {
+                effeX = new Rotation();
                 readObjectFx(effeX, SuperChild);
                 
             } else if (sClazz.endsWith("Emboss")) {
@@ -513,8 +512,8 @@ public class Studio {
                 effeX = new SwapRedBlue();
                 readObjectFx(effeX, SuperChild);
                 
-            } else if (sClazz.endsWith("Rotation")) {
-                effeX = new Rotation();
+            } else if (sClazz.endsWith("Twirl")) {
+                effeX = new Twirl();
                 readObjectFx(effeX, SuperChild);
                 
             } else if (sClazz.endsWith("ZoomZoom")) {
@@ -529,16 +528,12 @@ public class Studio {
                 effeX = new Laplace();
                 readObjectFx(effeX, SuperChild);
                
-            } else if (sClazz.endsWith("FaceDetectorAlpha")) {
-                effeX = new FaceDetectorAlpha();
+            } else if (sClazz.endsWith("Marble")) {
+                effeX = new Marble();
                 readObjectFx(effeX, SuperChild);
                 
             } else if (sClazz.endsWith("Weave")) {
                 effeX = new Weave();
-                readObjectFx(effeX, SuperChild);
-                
-            } else if (sClazz.endsWith("Erode")) {
-                effeX = new Erode();
                 readObjectFx(effeX, SuperChild);
                 
             }

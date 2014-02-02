@@ -18,13 +18,13 @@ import javax.swing.JPanel;
 public class MegaMind extends Effect {
 
     private final com.jhlabs.image.CircleFilter filter = new com.jhlabs.image.CircleFilter();
-//    private final RGB rgb = new RGB();
+    private final RGB rgb = new RGB();
     @Override
     public void applyEffect(BufferedImage img) {
-        filter.setHeight(img.getHeight()*2);
+        filter.setHeight(img.getHeight());
         filter.setCentreY(1);
-//        rgb.setGThreshold(0);
-//        rgb.setRThreshold(0);
+        rgb.setGThreshold(0);
+        rgb.setRThreshold(0);
         Graphics2D buffer = img.createGraphics();
         buffer.setRenderingHint(RenderingHints.KEY_RENDERING,
                            RenderingHints.VALUE_RENDER_SPEED);
@@ -39,14 +39,10 @@ public class MegaMind extends Effect {
         buffer.setRenderingHint(RenderingHints.KEY_DITHERING,
                            RenderingHints.VALUE_DITHER_DISABLE);
         BufferedImage temp = filter.filter(img, null);
-//        rgb.applyEffect(temp);
-//        buffer.setBackground(new Color(0, 0, 0, 0));
-//        buffer.clearRect(0, 0, img.getWidth(), img.getHeight());
-        int w = img.getWidth();
-        int h = img.getHeight();
-        int tw = temp.getWidth();
-        int th = temp.getHeight();
-        buffer.drawImage(temp, 0, 0, w, h, 0, 0, tw, th, null);
+        rgb.applyEffect(temp);
+        buffer.setBackground(new Color(0, 0, 0, 0));
+        buffer.clearRect(0, 0, img.getWidth(), img.getHeight());
+        buffer.drawImage(temp, 0, 0, img.getWidth(), img.getHeight(), 0, 0, temp.getWidth(), temp.getHeight(), null);
         buffer.dispose();
 
     }
@@ -66,6 +62,9 @@ public class MegaMind extends Effect {
     }
     @Override
     public boolean needApply(){
-        return needApply=false;
+        return needApply=true;
     }
+
+
+  
 }

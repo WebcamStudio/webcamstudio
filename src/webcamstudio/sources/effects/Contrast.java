@@ -98,4 +98,4 @@ public class Contrast extends Effect{
 
     }
 
-    }
+}

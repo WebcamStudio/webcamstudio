@@ -260,9 +260,9 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
         Tools.sleep(30);
         int w = (Integer) spinWidth.getValue();
         int h = (Integer) spinHeight.getValue();
-        if (tglSound.isSelected()) {
-            player.stop();
-        }
+//        if (tglSound.isSelected()) {
+//            player.stop();
+//        }
         mixer.stop();
         mixer.setWidth(w);
         mixer.setHeight(h);

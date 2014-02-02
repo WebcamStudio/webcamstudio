@@ -20,7 +20,6 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetDropEvent;
-import java.awt.image.BufferedImage;
 import java.beans.PropertyVetoException;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -30,7 +29,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.Reader;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -64,9 +62,6 @@ import webcamstudio.exporter.vloopback.VideoDevice;
 import webcamstudio.externals.ProcessRenderer;
 import webcamstudio.mixers.MasterMixer;
 import webcamstudio.mixers.SystemPlayer;
-import webcamstudio.sources.effects.Blur;
-import webcamstudio.sources.effects.Effect;
-import static webcamstudio.sources.effects.controls.FaceDetectorControl.faces;
 import webcamstudio.streams.*;
 import webcamstudio.studio.Studio;
 import webcamstudio.util.Tools;
@@ -80,7 +75,6 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
 
     public static Preferences prefs = null;
     public static Properties animations = new Properties();
-    public static Properties facesW = new Properties();
     OutputPanel recorder = new OutputPanel(this);
     Frame about = new Frame();
     Frame vDevInfo = new Frame();
@@ -88,45 +82,6 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
     public static int audioFreq = 22050;
     ArrayList<Stream> streamS = MasterChannels.getInstance().getStreams();
     private File lastFolder = null;
-    @SuppressWarnings("unchecked") 
-    private void initFaceDetection() throws IOException {
-        File dir = new File(System.getProperty("user.home"), ".webcamstudio/faces");
-        if (!dir.exists()) {
-            dir.mkdir();
-        }
-        facesW.load(getClass().getResourceAsStream("/webcamstudio/resources/faces/Faces.properties"));
-        ArrayList faceNames = new ArrayList();
-        String faceL = null;
-        for (Object o : facesW.keySet()) {
-            faceNames.add(o); 
-        }
-        for (int i=0 ; i < faceNames.size(); i++){ 
-            faceL = faceNames.get(i).toString();
-//            System.out.println(faceL);
-            File destination = new File(System.getProperty("user.home")+"/.webcamstudio/faces/"+faceL+".png");
-            InputStream is = getClass().getResourceAsStream("/webcamstudio/resources/faces/"+faceL+".png");
-            OutputStream os = new FileOutputStream(destination);
-            byte[] buffer = new byte[4096];
-            int length;
-            while ((length = is.read(buffer)) > 0) {
-                os.write(buffer, 0, length);
-            }
-            os.close();
-            is.close();
-        }        
-        faceNames.clear();
-        File destination = new File(System.getProperty("user.home")+"/.webcamstudio/faces/lbpcascade_frontalface.xml");
-        InputStream is = getClass().getResourceAsStream("/webcamstudio/resources/lbpcascade_frontalface.xml");
-        OutputStream os = new FileOutputStream(destination);
-        byte[] buffer = new byte[4096];
-        int length;
-        while ((length = is.read(buffer)) > 0) {
-            os.write(buffer, 0, length);
-        }
-        os.close();
-        is.close();
-    }
-    
     public interface Listener {
         public void stopChTime(java.awt.event.ActionEvent evt);
         public void resetBtnStates(java.awt.event.ActionEvent evt);
@@ -146,16 +101,12 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
      * Creates new form WebcamStudio
      */
     
-    public WebcamStudio() throws IOException {
+    public WebcamStudio() {
         
         initComponents();
         setTitle("WebcamStudio " + Version.version);
         ImageIcon icon = new ImageIcon(this.getClass().getResource("/webcamstudio/resources/icon.png"));
         this.setIconImage(icon.getImage());
-        // This is to Fix the opencv mat that sometimes give me errors.
-        BufferedImage matInit = new BufferedImage(360,240,BufferedImage.TYPE_INT_ARGB);
-        Effect blur = new Blur();
-        blur.applyEffect(matInit);
         
         desktop.setDropTarget(new DropTarget() {
 
@@ -241,12 +192,10 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         prefs = Preferences.userNodeForPackage(this.getClass());
         panControls.add(recorder, BorderLayout.NORTH);
 
-        initOpencv();
         loadPrefs();
         MasterMixer.getInstance().start();
         this.add(new MasterPanel(), BorderLayout.WEST);
         initAnimations();
-        initFaceDetection();
         initWebcam();
         initAudioSW();
         loadCustomSources();       
@@ -390,8 +339,8 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         lblSourceSelected = new javax.swing.JLabel();
         mainToolbar = new javax.swing.JToolBar();
         btnNewStudio = new javax.swing.JButton();
-        btnSaveStudio = new javax.swing.JButton();
         btnJoinStudio = new javax.swing.JButton();
+        btnSaveStudio = new javax.swing.JButton();
         WCSAbout = new javax.swing.JButton();
         jSeparator5 = new javax.swing.JToolBar.Separator();
         cboWebcam = new javax.swing.JComboBox();
@@ -651,19 +600,6 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         });
         mainToolbar.add(btnLoadStudio);
 
-        btnSaveStudio.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/document-save.png"))); // NOI18N
-        btnSaveStudio.setToolTipText(bundle.getString("SAVE")); // NOI18N
-        btnSaveStudio.setFocusable(false);
-        btnSaveStudio.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnSaveStudio.setName("btnSaveStudio"); // NOI18N
-        btnSaveStudio.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnSaveStudio.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSaveStudioActionPerformed(evt);
-            }
-        });
-        mainToolbar.add(btnSaveStudio);
-
         btnJoinStudio.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/chan-add.png"))); // NOI18N
         btnJoinStudio.setToolTipText("Import Studio");
         btnJoinStudio.setFocusable(false);
@@ -676,6 +612,19 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
             }
         });
         mainToolbar.add(btnJoinStudio);
+
+        btnSaveStudio.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/document-save.png"))); // NOI18N
+        btnSaveStudio.setToolTipText(bundle.getString("SAVE")); // NOI18N
+        btnSaveStudio.setFocusable(false);
+        btnSaveStudio.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnSaveStudio.setName("btnSaveStudio"); // NOI18N
+        btnSaveStudio.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnSaveStudio.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSaveStudioActionPerformed(evt);
+            }
+        });
+        mainToolbar.add(btnSaveStudio);
 
         WCSAbout.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/user-info.png"))); // NOI18N
         WCSAbout.setToolTipText("About");
@@ -1092,26 +1041,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
             this.repaint();
         }
     } 
-    private void initOpencv() {
-        Runtime rt = Runtime.getRuntime();
-        String archCmd = "uname -a";
-        try {
-            Process archProc = rt.exec(archCmd);
-            Tools.sleep(10);
-            archProc.waitFor();
-            BufferedReader buf = new BufferedReader(new InputStreamReader(
-            archProc.getInputStream()));
-            String lineR;
-            while ((lineR = buf.readLine()) != null) {
-                if(lineR.contains("x86_64")) {
-                    System.out.println("This is a 64bit System ...");
-                } else {
-                    System.out.println("This is a 32bit System ...");
-                }
-            } 
-        } catch (IOException | InterruptedException | NumberFormatException e) {
-        }
-    }
+    
     public static void durationCalc(Stream stream, File file) {
         Runtime rt = Runtime.getRuntime();
         String commandDuration = "avconv -i " + "\"" + file.getAbsolutePath() + "\"";
@@ -1506,13 +1436,13 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
                             }
                         }
                         
-                        StreamDesktop frame = new StreamDesktop(s, this);
-                        desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
-                        try {
-                            frame.setSelected(true);
-                        } catch (PropertyVetoException ex) {
-                            Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
-                        }
+                    StreamDesktop frame = new StreamDesktop(s, this);
+                    desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+                    try {
+                        frame.setSelected(true);
+                    } catch (PropertyVetoException ex) {
+                        Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                     }
                 }
                 Studio.extstream.clear();
@@ -1628,11 +1558,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
 
             @Override
             public void run() {            
-                try {
-                    new WebcamStudio().setVisible(true);
-                } catch (IOException ex) {
-                    Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                new WebcamStudio().setVisible(true);
             }
         });
     }

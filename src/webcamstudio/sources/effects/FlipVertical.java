@@ -59,4 +59,4 @@ public class FlipVertical extends Effect{
         
     }
 
-    }
+}

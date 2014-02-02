@@ -6,9 +6,6 @@ package webcamstudio.mixers;
 
 import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
-import java.awt.GraphicsConfiguration;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.nio.ByteBuffer;
@@ -60,10 +57,7 @@ public class MasterFrameBuilder implements Runnable {
         for (Frame f : frames) {
             orderedFrames.put(f.getZOrder(), f);
         }
-//        GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
-//        GraphicsDevice device = env.getDefaultScreenDevice();
-//        GraphicsConfiguration config = device.getDefaultConfiguration();
-//        BufferedImage image = config.createCompatibleImage(targetFrame.getWidth(), targetFrame.getHeight(), BufferedImage.TYPE_INT_ARGB);
+
         BufferedImage image = targetFrame.getImage();
         if (image != null) {
             Graphics2D g = image.createGraphics();

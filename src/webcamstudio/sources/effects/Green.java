@@ -60,4 +60,4 @@ public class Green extends Effect {
     public void loadFromStudioConfig(Preferences prefs) {
         
     }
-    }
+}

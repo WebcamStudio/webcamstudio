@@ -68,5 +68,5 @@ public class Opacity extends Effect {
         return needApply=true;
     }
 
-
+ 
 }

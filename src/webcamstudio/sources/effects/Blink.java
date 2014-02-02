@@ -64,4 +64,4 @@ public class Blink extends Effect {
     @Override
     public void loadFromStudioConfig(Preferences prefs) {
     }
-    }
+}

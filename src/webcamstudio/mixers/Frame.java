@@ -6,14 +6,7 @@ package webcamstudio.mixers;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.GraphicsConfiguration;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
-import java.awt.Transparency;
 import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferInt;
-import org.opencv.core.CvType;
-import org.opencv.core.Mat;
 
 /**
  *
@@ -48,10 +41,6 @@ public class Frame {
     public Frame(int w,int h,int rate){
         this.w=w;
         this.h=h;
-//        GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
-//        GraphicsDevice device = env.getDefaultScreenDevice();
-//        GraphicsConfiguration config = device.getDefaultConfiguration();
-//        image = config.createCompatibleImage(w, h, BufferedImage.TYPE_INT_ARGB);
         image = new BufferedImage(w,h,BufferedImage.TYPE_INT_ARGB);
         audioData= new byte[(aFreq *2 *2) / rate];
     }
@@ -126,7 +115,6 @@ public class Frame {
     }
     public void setImage(BufferedImage img){
         if (img != null){
-//            image = img;
             Graphics2D g = image.createGraphics();
             g.setRenderingHint(java.awt.RenderingHints.KEY_INTERPOLATION, 
                                java.awt.RenderingHints.VALUE_INTERPOLATION_BILINEAR);

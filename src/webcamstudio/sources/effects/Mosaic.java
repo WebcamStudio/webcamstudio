@@ -82,4 +82,4 @@ public class Mosaic extends Effect {
         nbSquaresWidthHeight=prefs.getInt("nbsquare",nbSquaresWidthHeight);
     }
 
-    }
+}
