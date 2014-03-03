@@ -35,7 +35,7 @@ public class SourceMovie extends Stream {
         rate = MasterMixer.getInstance().getRate();
         lastPreview = new BufferedImage(captureWidth,captureHeight,BufferedImage.TYPE_INT_ARGB);
         MasterFrameBuilder.register(this);
-        capture = new ProcessRenderer(this, ProcessRenderer.ACTION.CAPTURE, "movie");
+        capture = new ProcessRenderer(this, ProcessRenderer.ACTION.CAPTURE, "movie", comm);
         capture.read();
     }
 
@@ -46,6 +46,9 @@ public class SourceMovie extends Stream {
         if (capture != null) {
             capture.stop();
             capture = null;
+        }
+        if (this.getBackFF()){
+            this.setComm("FF");
         }
     }
     @Override

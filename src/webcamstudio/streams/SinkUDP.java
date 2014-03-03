@@ -5,6 +5,7 @@
 package webcamstudio.streams;
 
 import java.awt.image.BufferedImage;
+import static webcamstudio.WebcamStudio.outFFmpeg;
 import webcamstudio.externals.ProcessRenderer;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterMixer;
@@ -20,6 +21,9 @@ public class SinkUDP extends Stream {
 
     public SinkUDP() {
         name = "UDP";
+        if (outFFmpeg){
+            this.setComm("FF");
+        }
 
     }
 
@@ -29,9 +33,9 @@ public class SinkUDP extends Stream {
         captureWidth = MasterMixer.getInstance().getWidth();
         captureHeight = MasterMixer.getInstance().getHeight();
         if (standard.equals("STD")) {
-            capture = new ProcessRenderer(this, ProcessRenderer.ACTION.OUTPUT, "udp");
+            capture = new ProcessRenderer(this, ProcessRenderer.ACTION.OUTPUT, "udp", comm);
         } else {
-            capture = new ProcessRenderer(this, ProcessRenderer.ACTION.OUTPUT, "udpHQ");
+            capture = new ProcessRenderer(this, ProcessRenderer.ACTION.OUTPUT, "udpHQ", comm);
         }
         capture.writeCom();
     }
@@ -41,6 +45,9 @@ public class SinkUDP extends Stream {
         if (capture != null) {
             capture.stop();
             capture = null;
+        }
+        if (this.getBackFF()){
+            this.setComm("FF");
         }
     }
     @Override

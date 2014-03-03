@@ -33,7 +33,7 @@ public class SourceCustom extends Stream {
         lastPreview = new BufferedImage(captureWidth, captureHeight, BufferedImage.TYPE_INT_ARGB);
         rate = MasterMixer.getInstance().getRate();
         MasterFrameBuilder.register(this);
-        capture = new ProcessRenderer(this, ProcessRenderer.ACTION.CAPTURE, "custom");
+        capture = new ProcessRenderer(this, ProcessRenderer.ACTION.CAPTURE, "custom", comm);
         capture.read();
     }
 
@@ -43,6 +43,9 @@ public class SourceCustom extends Stream {
         if (capture != null) {
             capture.stop();
         }
+//        if (this.getBackFF()){
+//            this.setComm("FF");
+//        }
         MasterFrameBuilder.unregister(this);
     }
     @Override

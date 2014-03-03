@@ -4,6 +4,9 @@
  */
 package webcamstudio.media.renderer;
 
+import java.awt.Graphics2D;
+import java.awt.GraphicsConfiguration;
+import java.awt.GraphicsEnvironment;
 import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
@@ -196,13 +199,25 @@ public class Capturer {
             return null;
         }
     }
-
+    private BufferedImage toCompatibleImage(BufferedImage image) {
+	GraphicsConfiguration gfx_config = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
+	if (image.getColorModel().equals(gfx_config.getColorModel()))
+            return image;
+	BufferedImage new_image = gfx_config.createCompatibleImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
+	Graphics2D g2d = (Graphics2D) new_image.getGraphics();
+	g2d.drawImage(image, 0, 0, null);
+	g2d.dispose();
+	return new_image; 
+}
     public Frame getFrame() {
         BufferedImage nextImage = null;
         byte[] nextAudio = null;
         try {
-            if (stream.hasVideo()) {      
-                nextImage = getNextImage();
+            if (stream.hasVideo()) {
+                BufferedImage quantumImage = getNextImage();
+                if (quantumImage != null){
+                    nextImage = toCompatibleImage(quantumImage);
+                }
             }
             if (stream.hasAudio()) {
                 nextAudio = getNextAudio();

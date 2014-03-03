@@ -26,7 +26,7 @@ public class TwirlControl extends javax.swing.JPanel {
         initComponents();
         this.effect=effect;
         sliderAngle.setValue((int)Math.toDegrees(effect.getAngle()));
-        txtRadius.setText((int)effect.getRadius()+"");
+        sliderRadius.setValue((int)effect.getRadius());
     }
 
     /** This method is called from within the constructor to
@@ -41,7 +41,7 @@ public class TwirlControl extends javax.swing.JPanel {
         jLabel1 = new javax.swing.JLabel();
         sliderAngle = new javax.swing.JSlider();
         jLabel2 = new javax.swing.JLabel();
-        txtRadius = new javax.swing.JFormattedTextField();
+        sliderRadius = new javax.swing.JSlider();
 
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("webcamstudio/Languages"); // NOI18N
         jLabel1.setText(bundle.getString("ANGLE")); // NOI18N
@@ -61,12 +61,15 @@ public class TwirlControl extends javax.swing.JPanel {
         jLabel2.setText(bundle.getString("RADIUS")); // NOI18N
         jLabel2.setName("jLabel2"); // NOI18N
 
-        txtRadius.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
-        txtRadius.setText("0");
-        txtRadius.setName("txtRadius"); // NOI18N
-        txtRadius.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtRadiusActionPerformed(evt);
+        sliderRadius.setMajorTickSpacing(10);
+        sliderRadius.setMaximum(210);
+        sliderRadius.setMinimum(1);
+        sliderRadius.setMinorTickSpacing(30);
+        sliderRadius.setValue(160);
+        sliderRadius.setName("sliderRadius"); // NOI18N
+        sliderRadius.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                sliderRadiusStateChanged(evt);
             }
         });
 
@@ -77,28 +80,30 @@ public class TwirlControl extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(sliderAngle, javax.swing.GroupLayout.DEFAULT_SIZE, 321, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtRadius, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(sliderAngle, javax.swing.GroupLayout.DEFAULT_SIZE, 310, Short.MAX_VALUE)
+                    .addComponent(sliderRadius, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(sliderAngle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(27, 27, 27)
+                        .addComponent(jLabel1)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(txtRadius, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(51, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(sliderRadius, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(26, 26, 26)
+                        .addComponent(jLabel2)))
+                .addContainerGap(58, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -106,16 +111,16 @@ public class TwirlControl extends javax.swing.JPanel {
         effect.setAngle((float)Math.toRadians(sliderAngle.getValue()));
     }//GEN-LAST:event_sliderAngleStateChanged
 
-    private void txtRadiusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtRadiusActionPerformed
-        effect.setRadius(new Integer(txtRadius.getText()));
-    }//GEN-LAST:event_txtRadiusActionPerformed
+    private void sliderRadiusStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sliderRadiusStateChanged
+        effect.setRadius((float) sliderRadius.getValue());
+    }//GEN-LAST:event_sliderRadiusStateChanged
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JSlider sliderAngle;
-    private javax.swing.JFormattedTextField txtRadius;
+    private javax.swing.JSlider sliderRadius;
     // End of variables declaration//GEN-END:variables
 
 }

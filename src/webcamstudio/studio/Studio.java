@@ -41,6 +41,7 @@ import webcamstudio.sources.effects.Blink;
 import webcamstudio.sources.effects.Block;
 import webcamstudio.sources.effects.Cartoon;
 import webcamstudio.sources.effects.ChromaKey;
+import webcamstudio.sources.effects.ComboGhost;
 import webcamstudio.sources.effects.Contrast;
 import webcamstudio.sources.effects.Edge;
 import webcamstudio.sources.effects.Effect;
@@ -48,12 +49,13 @@ import webcamstudio.sources.effects.Emboss;
 import webcamstudio.sources.effects.FlipHorizontal;
 import webcamstudio.sources.effects.FlipVertical;
 import webcamstudio.sources.effects.Gain;
+import webcamstudio.sources.effects.Ghosting;
 import webcamstudio.sources.effects.Gray;
 import webcamstudio.sources.effects.Green;
 import webcamstudio.sources.effects.HSB;
-import webcamstudio.sources.effects.Laplace;
+import webcamstudio.sources.effects.Shapes;
 import webcamstudio.sources.effects.Marble;
-import webcamstudio.sources.effects.MegaMind;
+import webcamstudio.sources.effects.SaltNPepper;
 import webcamstudio.sources.effects.Mirror1;
 import webcamstudio.sources.effects.Mirror2;
 import webcamstudio.sources.effects.Mirror3;
@@ -105,10 +107,11 @@ public class Studio {
     private static final String ELEMENT_SOURCE = "Source";
     private static final String ELEMENT_CHANNEL = "Channel";
     private static final String ELEMENT_ROOT = "WebcamStudio";
-    private static final String ELEMENT_MIXER = "Mixer";   
+    private static final String ELEMENT_MIXER = "Mixer";
     public static ArrayList<Stream> extstream = new ArrayList<>();
     public static ArrayList<SourceChannel> chanLoad = new ArrayList<>();
     public static File filename;
+    public static String shapeImg = null;
     public static ArrayList<SourceText> LText = new ArrayList<>();
     public static ArrayList<String> ImgMovMus = new ArrayList<>();
     public static ArrayList<String> aGifKeys = new ArrayList<>();
@@ -263,10 +266,11 @@ public class Studio {
                 String name = f.getName();
                 Object value = f.get(o);
                 if (value instanceof String) {
+//                    Tools.sleep(5);
                     xml.writeStartElement(name);
                     xml.writeCData(value.toString());
-                    Tools.sleep(5);
                     xml.writeEndElement();
+//                    Tools.sleep(5);
                 } else if (value instanceof File) {
                     xml.writeStartElement(name);
                     xml.writeCData(((File) value).getAbsolutePath());
@@ -279,10 +283,11 @@ public class Studio {
             String name = f.getName();
             Object value = f.get(o);
             if (value instanceof String) {
+//                Tools.sleep(5);
                 xml.writeStartElement(name);
-                xml.writeCData(value.toString());
-                Tools.sleep(5);
+                xml.writeCData(value.toString());                
                 xml.writeEndElement();
+//                Tools.sleep(5);
             } else if (value instanceof File) {
                 xml.writeStartElement(name);
                 xml.writeCData(((File) value).getAbsolutePath());
@@ -412,6 +417,14 @@ public class Studio {
                 effeX = new ChromaKey();
                 readObjectFx(effeX, SuperChild);
                 
+            } else if (sClazz.endsWith("ComboGhost")) {
+                effeX = new ComboGhost();
+                readObjectFx(effeX, SuperChild);
+                
+            } else if (sClazz.endsWith("Ghosting")) {
+                effeX = new Ghosting();
+                readObjectFx(effeX, SuperChild);
+                
             } else if (sClazz.endsWith("Blink")) {
                 effeX = new Blink();
                 readObjectFx(effeX, SuperChild);
@@ -456,8 +469,8 @@ public class Studio {
                 effeX = new Sharpen();
                 readObjectFx(effeX, SuperChild);
                 
-            } else if (sClazz.endsWith("MegaMind")) {
-                effeX = new MegaMind();
+            } else if (sClazz.endsWith("SaltNPepper")) {
+                effeX = new SaltNPepper();
                 readObjectFx(effeX, SuperChild);
                 
             } else if (sClazz.endsWith("Mirror1")) {
@@ -524,10 +537,12 @@ public class Studio {
                 effeX = new Green();
                 readObjectFx(effeX, SuperChild);
                 
-            } else if (sClazz.endsWith("Laplace")) {
-                effeX = new Laplace();
+            } else if (sClazz.endsWith("Shapes")) {
+//                System.out.println("Into Shapes !!!");
+                effeX = new Shapes();
                 readObjectFx(effeX, SuperChild);
-               
+                effeX.setShape(shapeImg);
+                
             } else if (sClazz.endsWith("Marble")) {
                 effeX = new Marble();
                 readObjectFx(effeX, SuperChild);
@@ -560,6 +575,7 @@ public class Studio {
                 String comm = null;
                 String streamTime = null;
                 String strShapez = null;
+                
                 String chNameDvb = null;
                 ArrayList<String> SubChNames = new ArrayList<>();
                 ArrayList<String> SubText = new ArrayList<>();
@@ -621,9 +637,17 @@ public class Studio {
                         for (int nc = 0; nc < child.getChildNodes().getLength(); nc++) {
                             Node SuperChild = child.getChildNodes().item(nc);
 //                            System.out.println("SuperChildnodename: "+SuperChild.getNodeName());
-                            if (SuperChild.getNodeName().equals("effects")) {     
+                            if (SuperChild.getNodeName().equals("effects")) {
+                                for (int ncc = 0; ncc < SuperChild.getChildNodes().getLength(); ncc++) {
+                                    Node SSuperChild = SuperChild.getChildNodes().item(ncc);
+                                    if (SSuperChild.getNodeName().equals("shapeS")){
+                                        shapeImg = SSuperChild.getTextContent();
+//                                        System.out.println("Ass ShapeImg: "+ shapeImg);
+                                    }
+                                }
                                 String sClazz = SuperChild.getAttributes().getNamedItem("clazz").getTextContent();
                                 effeX = loadEffects (sClazz, SuperChild);
+//                                effeX.setShape(shapeImg);
                                 fXL.add(effeX);
 //                                System.out.println("effect clazz: "+ sClazz);
                             }
@@ -644,7 +668,14 @@ public class Studio {
                                 if (SSuperChild.getNodeName().equals("Effects")) {
                                     for (int ncs = 0; ncs < SSuperChild.getChildNodes().getLength(); ncs++) {
                                         Node SSSuperChild = SSuperChild.getChildNodes().item(ncs);            
-                                        if (SSSuperChild.getNodeName().equals("effects")) {     
+                                        if (SSSuperChild.getNodeName().equals("effects")) {
+                                            for (int nccC = 0; nccC < SSSuperChild.getChildNodes().getLength(); nccC++) {
+                                            Node SSSSuperChildC = SSSuperChild.getChildNodes().item(nccC);
+                                            if (SSSSuperChildC.getNodeName().equals("shapeS")){
+                                                shapeImg = SSSSuperChildC.getTextContent();
+//                                                System.out.println("Ass ShapeImg Chan: "+ shapeImg);
+                                            }
+                                            }
                                             String sClazz = SSSuperChild.getAttributes().getNamedItem("clazz").getTextContent();
                                             effeX = loadEffects (sClazz, SSSuperChild);
                                             sc.addEffects(effeX);
@@ -686,8 +717,11 @@ public class Studio {
                     readObject(stream, source);
                     stream.setComm(comm);
                     for (Effect fx : fXL) {
+                        if (fx.getName().endsWith("Shapes")){
+                            fx.setDoOne(true);
+                        }
                         stream.addEffect(fx);
-                            }
+                    }
                     if (streamTime != null){
                         stream.setStreamTime(streamTime);
                     } else {
@@ -706,6 +740,9 @@ public class Studio {
                     ImgMovMus.add("Desktop");
                     readObject(stream, source);  
                     for (Effect fx : fXL) {
+                        if (fx.getName().endsWith("Shapes")){
+                            fx.setDoOne(true);
+                        }
                         stream.addEffect(fx);
                     }
                     loadTransitions(SCL, stream, subSTrans, subETrans, SubChNames);
@@ -714,21 +751,28 @@ public class Studio {
                     LText.add(text);
                     readObject(text, source);
                     for (Effect fx : fXL) {
+                        if (fx.getName().endsWith("Shapes")){
+                            fx.setDoOne(true);
+                        }
                         text.addEffect(fx);
                     }
                     if (strShapez != null) {
                         switch (strShapez) {
                             case "none":
-                                text.setBackground(NONE);
+                                text.setBackground(NONE); 
+                                text.setStrBackground("none");
                                 break;
                             case "rectangle":
                                 text.setBackground(RECTANGLE);
+                                text.setStrBackground("rectangle");
                                 break;
                             case "oval":
                                 text.setBackground(OVAL);
+                                text.setStrBackground("oval");
                                 break;
                             case "roundrect":
                                 text.setBackground(ROUNDRECT);
+                                text.setStrBackground("roundrect");
                                 break;
                         }
                     }
@@ -789,6 +833,9 @@ public class Studio {
                     ImgMovMus.add("QRcode");
                     readObject(stream, source);
                     for (Effect fx : fXL) {
+                        if (fx.getName().endsWith("Shapes")){
+                            fx.setDoOne(true);
+                        }
                         stream.addEffect(fx);
                     }
                     int op=0;
@@ -848,6 +895,9 @@ public class Studio {
                     ImgMovMus.add("DVB-T");
                     readObject(stream, source);
                     for (Effect fx : fXL) {
+                        if (fx.getName().endsWith("Shapes")){
+                            fx.setDoOne(true);
+                        }
                         stream.addEffect(fx);
                     }
                     loadTransitions(SCL, stream, subSTrans, subETrans, SubChNames);
@@ -861,6 +911,9 @@ public class Studio {
                     stream.setComm(comm);
                     stream.setLoaded(true);
                     for (Effect fx : fXL) {
+                        if (fx.getName().endsWith("Shapes")){
+                            fx.setDoOne(true);
+                        }
                         stream.addEffect(fx);
                     }
                     loadTransitions(SCL, stream, subSTrans, subETrans, SubChNames);
@@ -879,6 +932,9 @@ public class Studio {
                     stream.setComm(comm);
                     stream.setLoaded(true);
                     for (Effect fx : fXL) {
+                        if (fx.getName().endsWith("Shapes")){
+                            fx.setDoOne(true);
+                        }
                         stream.addEffect(fx);
                     }
                     loadTransitions(SCL, stream, subSTrans, subETrans, SubChNames);
@@ -900,9 +956,9 @@ public class Studio {
                                 extstreamBis.add(stream);
                                 ImgMovMus.add("ImageGif");
                                 readObject(stream, source);  
-                                for (Effect fx : fXL) {
-                                    stream.addEffect(fx);
-                                }
+//                                for (Effect fx : fXL) {
+//                                    stream.addEffect(fx);
+//                                }
                                 loadTransitions(SCL, stream, subSTrans, subETrans, SubChNames);
                             }
                         }                   

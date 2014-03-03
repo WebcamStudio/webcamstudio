@@ -34,7 +34,7 @@ public class SourceURL extends Stream {
         rate = MasterMixer.getInstance().getRate();
         lastPreview = new BufferedImage(captureWidth,captureHeight,BufferedImage.TYPE_INT_ARGB);
         MasterFrameBuilder.register(this);
-        capture = new ProcessRenderer(this, ProcessRenderer.ACTION.CAPTURE, "url");
+        capture = new ProcessRenderer(this, ProcessRenderer.ACTION.CAPTURE, "url", comm);
         capture.readCom();           
     }
 
@@ -49,6 +49,9 @@ public class SourceURL extends Stream {
             for(File f: directory.listFiles())
                 if(f.getName().startsWith("WSFrom"))
                 f.delete();
+        }
+        if (this.getBackFF()){
+            this.setComm("FF");
         }
         isStillPicture = false;
     }

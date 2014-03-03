@@ -219,7 +219,7 @@
                 <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                   <ResourceString bundle="webcamstudio/Languages.properties" key="APPLY" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                 </Property>
-                <Property name="toolTipText" type="java.lang.String" value="Apply Mixer Settings"/>
+                <Property name="toolTipText" type="java.lang.String" value="Apply/Reset Mixer Settings"/>
                 <Property name="name" type="java.lang.String" value="btnApply" noResource="true"/>
               </Properties>
               <Events>

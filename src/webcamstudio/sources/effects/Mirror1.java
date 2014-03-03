@@ -5,6 +5,7 @@
 
 package webcamstudio.sources.effects;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
@@ -35,8 +36,8 @@ public class Mirror1 extends Effect{
         buffer.setRenderingHint(RenderingHints.KEY_DITHERING,
                            RenderingHints.VALUE_DITHER_DISABLE);
         BufferedImage original = cloneImage(img);
-        buffer.setBackground(new java.awt.Color(0,0,0,0));
-        buffer.clearRect(w, 0, w / 2, h);
+        buffer.setBackground(new Color(0,0,0,0));
+        buffer.clearRect(w / 2, 0, w / 2, h);
         buffer.drawImage(original, w, 0, w / 2, h, 0, 0, w / 2, h, null);
     }
 

@@ -63,6 +63,7 @@ public abstract class Stream implements Callable<Frame>{
     protected int chDVB = 0;
     protected int color = 0;
     protected String comm = "AV";
+    protected boolean backFF = false;
     protected String webURL = null;
     protected String content = "";
     protected String fontName = "";
@@ -112,6 +113,12 @@ public abstract class Stream implements Callable<Frame>{
     }
     public void setComm(String sComm) {
         this.comm = sComm;
+    }
+    public void setBackFF(boolean wasFF) {
+        this.backFF = wasFF;
+    }
+    public boolean getBackFF() {
+        return this.backFF;
     }
     public void setDVBChannelNumber(int chDVB) {
         this.chDVB = chDVB;

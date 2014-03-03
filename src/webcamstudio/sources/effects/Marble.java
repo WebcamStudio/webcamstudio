@@ -21,7 +21,7 @@ public class Marble extends Effect {
 
     @Override
     public boolean needApply(){
-        return needApply=true;
+        return needApply=false;
     }
     @Override
     public void applyEffect(BufferedImage img) {

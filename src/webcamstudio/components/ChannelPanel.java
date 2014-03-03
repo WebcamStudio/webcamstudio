@@ -32,11 +32,11 @@ import webcamstudio.util.Tools;
 public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Listener, Studio.Listener {
 
     MasterChannels master = MasterChannels.getInstance();
-    private final DefaultListModel model = new DefaultListModel();
-    private final DefaultComboBoxModel aModel = new DefaultComboBoxModel();
-    private final ArrayList<String> CHCurrNext = new ArrayList<>();
-    private final ArrayList<Integer> CHTimers = new ArrayList<>();
-    private final ArrayList<String> ListChannels = new ArrayList<>();
+    private DefaultListModel model = new DefaultListModel();
+    private DefaultComboBoxModel aModel = new DefaultComboBoxModel();
+    private ArrayList<String> CHCurrNext = new ArrayList<>();
+    private ArrayList<Integer> CHTimers = new ArrayList<>();
+    private ArrayList<String> ListChannels = new ArrayList<>();
     ArrayList<Stream> streamS = MasterChannels.getInstance().getStreams();   
     String selectChannel=null;   
     int CHon =0;
@@ -131,6 +131,7 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
         btnRemove.setToolTipText(bundle.getString("REMOVE_CHANNEL")); // NOI18N
         btnRemove.setEnabled(false);
         btnRemove.setName("btnRemove"); // NOI18N
+        btnRemove.setPreferredSize(new java.awt.Dimension(32, 30));
         btnRemove.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnRemoveActionPerformed(evt);
@@ -140,7 +141,9 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
         btnSelect.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-start.png"))); // NOI18N
         btnSelect.setToolTipText(bundle.getString("APPLY_CHANNEL")); // NOI18N
         btnSelect.setEnabled(false);
+        btnSelect.setMinimumSize(new java.awt.Dimension(32, 30));
         btnSelect.setName("btnSelect"); // NOI18N
+        btnSelect.setPreferredSize(new java.awt.Dimension(32, 30));
         btnSelect.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSelectActionPerformed(evt);
@@ -150,7 +153,9 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
         btnUpdate.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/view-refresh.png"))); // NOI18N
         btnUpdate.setToolTipText(bundle.getString("UPDATE_CHANNEL")); // NOI18N
         btnUpdate.setEnabled(false);
+        btnUpdate.setMinimumSize(new java.awt.Dimension(32, 25));
         btnUpdate.setName("btnUpdate"); // NOI18N
+        btnUpdate.setPreferredSize(new java.awt.Dimension(32, 30));
         btnUpdate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnUpdateActionPerformed(evt);
@@ -242,7 +247,7 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(ChDuration)
-                            .addComponent(lstNextChannel, 0, 103, Short.MAX_VALUE)))
+                            .addComponent(lstNextChannel, 0, 101, Short.MAX_VALUE)))
                     .addComponent(CHProgressTime, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addComponent(btnStopAllStream, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -260,16 +265,16 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
                         .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel1)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lstChannelsScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 196, Short.MAX_VALUE)
+                .addComponent(lstChannelsScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 217, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(lstNextChannel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(ChDuration))
-                .addGap(13, 13, 13)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel4)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(CHProgressTime, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -277,11 +282,12 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
                 .addComponent(btnStopAllStream)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(StopCHTimer)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(btnRemove)
-                    .addComponent(btnSelect)
-                    .addComponent(btnUpdate)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnRemove, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnSelect, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(10, 10, 10))
         );
 
         btnStopAllStream.getAccessibleContext().setAccessibleParent(StopCHTimer);

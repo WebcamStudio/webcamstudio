@@ -44,9 +44,10 @@ public class RotationControl extends javax.swing.JPanel {
         label.setText(bundle.getString("ROTATION")); // NOI18N
         label.setName("label"); // NOI18N
 
-        slider.setMaximum(359);
-        slider.setMinorTickSpacing(30);
-        slider.setPaintLabels(true);
+        slider.setMajorTickSpacing(10);
+        slider.setMaximum(90);
+        slider.setMinimum(-90);
+        slider.setMinorTickSpacing(10);
         slider.setPaintTicks(true);
         slider.setValue(0);
         slider.setName("slider"); // NOI18N

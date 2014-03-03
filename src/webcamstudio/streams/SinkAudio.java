@@ -5,6 +5,7 @@
 package webcamstudio.streams;
 
 import java.awt.image.BufferedImage;
+import static webcamstudio.WebcamStudio.outFFmpeg;
 import webcamstudio.externals.ProcessRenderer;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterMixer;
@@ -19,6 +20,9 @@ public class SinkAudio extends Stream {
 
     public SinkAudio() {
         name = "AudioOut";
+        if (outFFmpeg){
+            this.setComm("FF");
+        }
     }
 
     @Override
@@ -27,7 +31,7 @@ public class SinkAudio extends Stream {
         captureWidth = MasterMixer.getInstance().getWidth();
         captureHeight = MasterMixer.getInstance().getHeight();
         //        rate = MasterMixer.getInstance().getRate();
-        capture = new ProcessRenderer(this, ProcessRenderer.ACTION.OUTPUT, "spkAudioOut"); //"spkAudioOut"
+        capture = new ProcessRenderer(this, ProcessRenderer.ACTION.OUTPUT, "spkAudioOut", comm); //"spkAudioOut"
         capture.writeCom();
     }
 
@@ -36,6 +40,9 @@ public class SinkAudio extends Stream {
         if (capture != null) {
             capture.stop();
             capture = null;
+        }
+        if (this.getBackFF()){
+            this.setComm("FF");
         }
     }
     @Override

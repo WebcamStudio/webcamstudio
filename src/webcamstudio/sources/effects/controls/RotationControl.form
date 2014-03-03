@@ -49,9 +49,10 @@
     </Component>
     <Component class="javax.swing.JSlider" name="slider">
       <Properties>
-        <Property name="maximum" type="int" value="359"/>
-        <Property name="minorTickSpacing" type="int" value="30"/>
-        <Property name="paintLabels" type="boolean" value="true"/>
+        <Property name="majorTickSpacing" type="int" value="10"/>
+        <Property name="maximum" type="int" value="90"/>
+        <Property name="minimum" type="int" value="-90"/>
+        <Property name="minorTickSpacing" type="int" value="10"/>
         <Property name="paintTicks" type="boolean" value="true"/>
         <Property name="value" type="int" value="0"/>
         <Property name="name" type="java.lang.String" value="slider" noResource="true"/>

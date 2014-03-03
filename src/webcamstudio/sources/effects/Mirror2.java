@@ -36,7 +36,7 @@ public class Mirror2 extends Effect{
                            RenderingHints.VALUE_DITHER_DISABLE);
         BufferedImage original = cloneImage(img);
         buffer.setBackground(new java.awt.Color(0,0,0,0));
-        buffer.clearRect( w/2, 0, 0, h);
+        buffer.clearRect( 0, 0, w/2, h);
         buffer.drawImage(original, w/2, 0, 0, h, w/2, 0, w, h, null);
     }
 

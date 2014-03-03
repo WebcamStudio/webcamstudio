@@ -43,6 +43,7 @@ public enum Tags {
         PASSWORD("@PASSWORD"),
         PORT("@PORT"),
 //        IPCURL("@IPCURL"),
+        PAUDIOSRC ("@PAUDIOSRC"),
         AUDIOSRC ("@AUDIOSRC");
         
     private String name = "";

@@ -5,6 +5,8 @@
 
 package webcamstudio.sources.effects;
 
+import Catalano.Imaging.FastBitmap;
+import Catalano.Imaging.Filters.Grayscale;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
@@ -16,9 +18,15 @@ import javax.swing.JPanel;
  * @author pballeux
  */
 public class Gray extends Effect{
-    private final com.jhlabs.image.GrayscaleFilter filter = new com.jhlabs.image.GrayscaleFilter();
+
     @Override
     public void applyEffect(BufferedImage img) {
+        FastBitmap imageIn = new FastBitmap(img);
+        imageIn.toRGB();
+        Grayscale g = new Grayscale();
+        g.applyInPlace(imageIn);
+        BufferedImage temp = imageIn.toBufferedImage();
+        
         Graphics2D buffer = img.createGraphics();
         buffer.setRenderingHint(RenderingHints.KEY_RENDERING,
                            RenderingHints.VALUE_RENDER_SPEED);
@@ -32,9 +40,7 @@ public class Gray extends Effect{
                            RenderingHints.VALUE_COLOR_RENDER_SPEED);
         buffer.setRenderingHint(RenderingHints.KEY_DITHERING,
                            RenderingHints.VALUE_DITHER_DISABLE);
-        BufferedImage temp = filter.filter(img, null);
-        buffer.setBackground(new java.awt.Color(0,0,0,0));
-        buffer.clearRect(0,0,img.getWidth(),img.getHeight());
+        
         buffer.drawImage(temp, 0, 0,null);
         buffer.dispose();
     }
@@ -42,7 +48,7 @@ public class Gray extends Effect{
    
     @Override
     public boolean needApply(){
-        return needApply=true;
+        return needApply=false;
     }
     @Override
     public JPanel getControl() {

@@ -32,7 +32,7 @@ public class SourceMicrophone extends Stream {
         isPlaying = true;
         MasterFrameBuilder.register(this);
         lastPreview = new BufferedImage(captureWidth,captureHeight,BufferedImage.TYPE_INT_ARGB);
-        capture = new ProcessRenderer(this, ProcessRenderer.ACTION.CAPTURE, "mic");
+        capture = new ProcessRenderer(this, ProcessRenderer.ACTION.CAPTURE, "mic", comm);
         capture.read();
     }
 
@@ -43,6 +43,9 @@ public class SourceMicrophone extends Stream {
         if (capture != null) {
             capture.stop();
             capture = null;
+        }
+        if (this.getBackFF()){
+            this.setComm("FF");
         }
 
     }

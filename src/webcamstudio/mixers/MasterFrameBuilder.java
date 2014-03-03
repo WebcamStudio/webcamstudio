@@ -119,7 +119,7 @@ public class MasterFrameBuilder implements Runnable {
 
     @SuppressWarnings("unchecked")
     @Override
-    public void run() {
+    public void run() throws NullPointerException{
         stopMe = false;
         ArrayList<Frame> frames = new ArrayList<>();
         ArrayList<Future<Frame>> resultsT = new ArrayList<>();

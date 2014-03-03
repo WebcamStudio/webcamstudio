@@ -18,6 +18,8 @@ import java.net.URL;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import static webcamstudio.WebcamStudio.outFFmpeg;
+import static webcamstudio.externals.ProcessRenderer.ACTION.OUTPUT;
 import webcamstudio.media.renderer.Capturer;
 import webcamstudio.media.renderer.Exporter;
 import webcamstudio.media.renderer.ProcessExecutor;
@@ -46,6 +48,8 @@ public class ProcessRenderer {
     boolean stopped = true;
     private Properties plugins = null;
     String plugin = "";
+    String oPlug = "output";
+    String audioPulseInput = "";
     int videoPort = 0;
     int audioPort = 0;
     int frequency = webcamstudio.WebcamStudio.audioFreq;
@@ -59,9 +63,20 @@ public class ProcessRenderer {
     Exporter exporter;
     FME fme = null;
 
-    public ProcessRenderer(Stream s, ACTION action, String plugin) {
-        this.plugin = plugin;
+    public ProcessRenderer(Stream s, ACTION action, String plugin, String bkEnd) {
         stream = s;
+        if (bkEnd == "FF") {
+            if (action == OUTPUT){
+                this.oPlug = "ffmpeg_output";
+                this.plugin = plugin;
+            } else {
+                this.oPlug = "output";
+                this.plugin = "ffmpeg_"+plugin;
+                s.setComm("AV");
+            }
+        } else {
+            this.plugin = plugin;
+        }
         if (plugins == null) {
             plugins = new Properties();
             try {
@@ -118,6 +133,14 @@ public class ProcessRenderer {
 //                         System.out.println("Resu: " + resu);
                          temp = null;
                      }
+                 } else if (line.contains("alsa_input.pci")) {
+                     line = line.trim();
+                         line = line.replace(" ", "");
+                         String[] temp = line.split(":");
+                         String audioScrDev = (String) temp[1];
+                         audioPulseInput = audioScrDev.substring(0, 27);
+//                         System.out.println("Resu: " + resu);
+                         temp = null;
                  }
              } 
          } catch (IOException | InterruptedException e) {
@@ -137,6 +160,11 @@ public class ProcessRenderer {
     public ProcessRenderer(Stream s, FME fme, String plugin) {
         stream = s;
         this.plugin = plugin;
+        if (outFFmpeg) {
+            this.oPlug = "ffmpeg_output";
+        } else {
+            this.oPlug = "output";
+        }
         this.fme = fme;
         if (plugins == null) {
             plugins = new Properties();
@@ -173,7 +201,7 @@ public class ProcessRenderer {
                     path = path.replaceAll("OS", Tools.getOSName());
                     break;
                 case OUTPUT:
-                    path = "/webcamstudio/externals/OS/outputs/output.properties";
+                    path = "/webcamstudio/externals/OS/outputs/"+ oPlug +".properties";
                     path = path.replaceAll("OS", Tools.getOSName());
                     break;
             }
@@ -332,6 +360,9 @@ public class ProcessRenderer {
                     break;
                 case AUDIOSRC:
                     command = command.replaceAll(Tags.AUDIOSRC.toString(), "" + initAudioSource());
+                    break;
+                case PAUDIOSRC:
+                    command = command.replaceAll(Tags.PAUDIOSRC.toString(), "" + audioPulseInput);
                     break;
             }
         }
@@ -563,7 +594,7 @@ public class ProcessRenderer {
             @Override
             public void run() {
                 try {
-                    exporter = new Exporter(stream);
+                exporter = new Exporter(stream);
                 } catch (SocketException ex) {
                     Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -614,7 +645,7 @@ public class ProcessRenderer {
             @Override
             public void run() {
                 try {
-                    exporter = new Exporter(stream);
+                exporter = new Exporter(stream);
                 } catch (SocketException ex) {
                     Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -628,6 +659,7 @@ public class ProcessRenderer {
                 final String[] parms = command.split(" ");
                 try {
                     processVideo.execute(parms);
+                    Tools.sleep(100);
                     processAudio = null;
                     //We don't need processAudio on export.  Only 1 process is required...
                 } catch (IOException | InterruptedException e) {

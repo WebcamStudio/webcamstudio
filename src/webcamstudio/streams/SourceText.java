@@ -13,6 +13,7 @@ import java.awt.image.BufferedImage;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterFrameBuilder;
 import webcamstudio.sources.effects.Effect;
+import webcamstudio.util.Tools;
 
 /**
  *
@@ -36,17 +37,19 @@ public class SourceText extends Stream {
     public void readNext() {
         frame.setImage(image);
         if (frame != null) {
-            for (int fx = 0; fx < this.getEffects().size(); fx++) {
-                Effect fxT = this.getEffects().get(fx);
-                if (fxT.needApply()){
+//            for (int fx = 0; fx < this.getEffects().size(); fx++) {
+//                Effect fxT = this.getEffects().get(fx);
+//                if (fxT.needApply()){
                     BufferedImage txImage = frame.getImage(); 
-                    fxT.applyEffect(txImage);
+//                    fxT.applyEffect(txImage);
+                    applyEffects(txImage);
                 }
-            }
+       if (frame != null)     {
             frame.setOutputFormat(x, y, width, height, opacity, volume);
             frame.setZOrder(zorder);
             nextFrame=frame;
         }
+
 //        if (frame != null) {
 //            for (Effect fxT : this.getEffects()) {
 //                if (fxT.needApply()){   
@@ -102,6 +105,7 @@ public class SourceText extends Stream {
     public void setBackground(Shape s) {
         shape = s;
         updateContent(content);
+//        Tools.sleep(50);
     }
 
     public Shape getBackground() {
@@ -251,6 +255,7 @@ public class SourceText extends Stream {
     public void read() {
         stop = false;
         playing = true;
+        this.setBackground(shape);
         try {
             updateContent(content);
             frame.setID(uuid);
@@ -265,6 +270,12 @@ public class SourceText extends Stream {
 
     @Override
     public void stop() {
+        for (int fx = 0; fx < this.getEffects().size(); fx++) {
+            Effect fxT = this.getEffects().get(fx);
+            if (fxT.getName().endsWith("Shapes")){
+                fxT.setDoOne(true);
+            }
+        }
         stop = true;
         playing = false;
         frame = null;

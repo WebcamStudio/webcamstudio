@@ -75,6 +75,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
 
     public static Preferences prefs = null;
     public static Properties animations = new Properties();
+    public static boolean outFFmpeg = false;
     OutputPanel recorder = new OutputPanel(this);
     Frame about = new Frame();
     Frame vDevInfo = new Frame();
@@ -197,7 +198,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         this.add(new MasterPanel(), BorderLayout.WEST);
         initAnimations();
         initWebcam();
-        initAudioSW();
+        initAudioFFMainSW();
         loadCustomSources();       
     }
 
@@ -255,7 +256,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
     }
     
     @SuppressWarnings("unchecked")
-    private void initAudioSW() {
+    private void initAudioFFMainSW() {
         DefaultComboBoxModel model = new DefaultComboBoxModel();
         model.addElement("22050Hz");
         model.addElement("44100Hz");
@@ -265,6 +266,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         } else {
             cboAudioHz.setSelectedItem("44100Hz");
         }
+        tglFFmpeg.setSelected(outFFmpeg);
     }
 
     private void loadPrefs() {
@@ -279,6 +281,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         mainSplit.setDividerLocation(prefs.getInt("split-last-x", mainSplit.getLastDividerLocation()));
         lastFolder = new File(prefs.get("lastfolder", "."));
         audioFreq = prefs.getInt("audio-freq", audioFreq);
+        outFFmpeg = prefs.getBoolean("out-FFmpeg", outFFmpeg);
         this.setLocation(x, y);
         this.setSize(w, h);
         recorder.loadPrefs(prefs);
@@ -298,6 +301,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
             prefs.put("lastfolder", lastFolder.getAbsolutePath());
         }
         prefs.putInt("audio-freq", audioFreq);
+        prefs.putBoolean("out-FFmpeg", outFFmpeg);
         recorder.savePrefs(prefs);
         try {
             prefs.flush();
@@ -350,6 +354,10 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         jSeparator6 = new javax.swing.JToolBar.Separator();
         jLabel2 = new javax.swing.JLabel();
         cboAudioHz = new javax.swing.JComboBox();
+        jSeparator7 = new javax.swing.JToolBar.Separator();
+        tglFFmpeg = new javax.swing.JToggleButton();
+        lblFFmpeg = new javax.swing.JLabel();
+        jSeparator8 = new javax.swing.JToolBar.Separator();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("WebcamStudio");
@@ -375,6 +383,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         btnAddFile.setFocusable(false);
         btnAddFile.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnAddFile.setName("btnAddFile"); // NOI18N
+        btnAddFile.setPreferredSize(new java.awt.Dimension(25, 25));
         btnAddFile.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         btnAddFile.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -389,6 +398,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         btnAddDVB.setFocusable(false);
         btnAddDVB.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnAddDVB.setName("btnAddDVB"); // NOI18N
+        btnAddDVB.setPreferredSize(new java.awt.Dimension(25, 25));
         btnAddDVB.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         btnAddDVB.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -402,6 +412,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         btnAddURL.setFocusable(false);
         btnAddURL.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnAddURL.setName("btnAddURL"); // NOI18N
+        btnAddURL.setPreferredSize(new java.awt.Dimension(25, 25));
         btnAddURL.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         btnAddURL.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -410,11 +421,12 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         });
         toolbar.add(btnAddURL);
 
-        btnAddIPCam.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/camera-photo.png"))); // NOI18N
+        btnAddIPCam.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/ip-cam-2.png"))); // NOI18N
         btnAddIPCam.setToolTipText("Add IPCam Stream");
         btnAddIPCam.setFocusable(false);
         btnAddIPCam.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnAddIPCam.setName("btnAddIPCam"); // NOI18N
+        btnAddIPCam.setPreferredSize(new java.awt.Dimension(25, 25));
         btnAddIPCam.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         btnAddIPCam.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -429,6 +441,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         btnAddDesktop.setFocusable(false);
         btnAddDesktop.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnAddDesktop.setName("btnAddDesktop"); // NOI18N
+        btnAddDesktop.setPreferredSize(new java.awt.Dimension(25, 25));
         btnAddDesktop.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         btnAddDesktop.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -442,6 +455,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         btnAddText.setFocusable(false);
         btnAddText.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnAddText.setName("btnAddText"); // NOI18N
+        btnAddText.setPreferredSize(new java.awt.Dimension(25, 25));
         btnAddText.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         btnAddText.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -455,6 +469,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         btnAddQRCode.setFocusable(false);
         btnAddQRCode.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnAddQRCode.setName("btnAddQRCode"); // NOI18N
+        btnAddQRCode.setPreferredSize(new java.awt.Dimension(25, 25));
         btnAddQRCode.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         btnAddQRCode.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -468,6 +483,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         btnAddMic.setFocusable(false);
         btnAddMic.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnAddMic.setName("btnAddMic"); // NOI18N
+        btnAddMic.setPreferredSize(new java.awt.Dimension(25, 25));
         btnAddMic.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         btnAddMic.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -481,6 +497,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         btnAddMon.setFocusable(false);
         btnAddMon.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnAddMon.setName("btnAddMon"); // NOI18N
+        btnAddMon.setPreferredSize(new java.awt.Dimension(25, 25));
         btnAddMon.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         btnAddMon.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -505,6 +522,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         btnAddAnimation.setFocusable(false);
         btnAddAnimation.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnAddAnimation.setName("btnAddAnimation"); // NOI18N
+        btnAddAnimation.setPreferredSize(new java.awt.Dimension(25, 25));
         btnAddAnimation.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         btnAddAnimation.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -523,6 +541,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         btnMinimizeAll.setFocusable(false);
         btnMinimizeAll.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnMinimizeAll.setName("btnMinimizeAll"); // NOI18N
+        btnMinimizeAll.setPreferredSize(new java.awt.Dimension(25, 25));
         btnMinimizeAll.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         btnMinimizeAll.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -548,7 +567,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
             .addGroup(panSourcesLayout.createSequentialGroup()
                 .addComponent(toolbar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(desktop, javax.swing.GroupLayout.DEFAULT_SIZE, 393, Short.MAX_VALUE)
+                .addComponent(desktop, javax.swing.GroupLayout.DEFAULT_SIZE, 403, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -579,6 +598,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         btnNewStudio.setFocusable(false);
         btnNewStudio.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnNewStudio.setName("btnNewStudio"); // NOI18N
+        btnNewStudio.setPreferredSize(new java.awt.Dimension(25, 25));
         btnNewStudio.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         btnNewStudio.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -592,6 +612,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         btnLoadStudio.setFocusable(false);
         btnLoadStudio.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnLoadStudio.setName("btnLoadStudio"); // NOI18N
+        btnLoadStudio.setPreferredSize(new java.awt.Dimension(25, 25));
         btnLoadStudio.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         btnLoadStudio.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -605,6 +626,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         btnJoinStudio.setFocusable(false);
         btnJoinStudio.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnJoinStudio.setName("btnJoinStudio"); // NOI18N
+        btnJoinStudio.setPreferredSize(new java.awt.Dimension(25, 25));
         btnJoinStudio.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         btnJoinStudio.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -618,6 +640,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         btnSaveStudio.setFocusable(false);
         btnSaveStudio.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnSaveStudio.setName("btnSaveStudio"); // NOI18N
+        btnSaveStudio.setPreferredSize(new java.awt.Dimension(25, 25));
         btnSaveStudio.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         btnSaveStudio.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -632,6 +655,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         WCSAbout.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         WCSAbout.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         WCSAbout.setName("WCSAbout"); // NOI18N
+        WCSAbout.setPreferredSize(new java.awt.Dimension(25, 25));
         WCSAbout.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         WCSAbout.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -657,6 +681,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         btnAddWebcams.setFocusable(false);
         btnAddWebcams.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnAddWebcams.setName("btnAddWebcams"); // NOI18N
+        btnAddWebcams.setPreferredSize(new java.awt.Dimension(25, 25));
         btnAddWebcams.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         btnAddWebcams.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -670,6 +695,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         btnRefreshWebcam.setFocusable(false);
         btnRefreshWebcam.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnRefreshWebcam.setName("btnRefreshWebcam"); // NOI18N
+        btnRefreshWebcam.setPreferredSize(new java.awt.Dimension(25, 25));
         btnRefreshWebcam.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         btnRefreshWebcam.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -683,6 +709,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         btnVideoDevInfo.setFocusable(false);
         btnVideoDevInfo.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnVideoDevInfo.setName("btnVideoDevInfo"); // NOI18N
+        btnVideoDevInfo.setPreferredSize(new java.awt.Dimension(25, 25));
         btnVideoDevInfo.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         btnVideoDevInfo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -712,6 +739,39 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
             }
         });
         mainToolbar.add(cboAudioHz);
+
+        jSeparator7.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jSeparator7.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
+        jSeparator7.setName("jSeparator7"); // NOI18N
+        jSeparator7.setOpaque(true);
+        mainToolbar.add(jSeparator7);
+
+        tglFFmpeg.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/FFmpeg.png"))); // NOI18N
+        tglFFmpeg.setToolTipText("Use FFmpeg instead of AVconv for WS Outputs Commands");
+        tglFFmpeg.setFocusable(false);
+        tglFFmpeg.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        tglFFmpeg.setName("tglFFmpeg"); // NOI18N
+        tglFFmpeg.setPreferredSize(new java.awt.Dimension(25, 25));
+        tglFFmpeg.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/FFmpeg.png"))); // NOI18N
+        tglFFmpeg.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/FFmpegSelected.png"))); // NOI18N
+        tglFFmpeg.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        tglFFmpeg.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tglFFmpegActionPerformed(evt);
+            }
+        });
+        mainToolbar.add(tglFFmpeg);
+
+        lblFFmpeg.setFont(new java.awt.Font("Ubuntu Condensed", 0, 12)); // NOI18N
+        lblFFmpeg.setText("FFmpeg");
+        lblFFmpeg.setName("lblFFmpeg"); // NOI18N
+        mainToolbar.add(lblFFmpeg);
+
+        jSeparator8.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jSeparator8.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
+        jSeparator8.setName("jSeparator8"); // NOI18N
+        jSeparator8.setOpaque(true);
+        mainToolbar.add(jSeparator8);
 
         getContentPane().add(mainToolbar, java.awt.BorderLayout.PAGE_START);
 
@@ -981,8 +1041,9 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
                             File fileS = fileF;
                             lastFolder = fileS.getParentFile();
                             SystemPlayer.getInstance(null).stop();
-                            Tools.sleep(50);
+                            Tools.sleep(100);
                             MasterChannels.getInstance().stopAllStream();
+                            Tools.sleep(100);
                             listener.stopChTime(sEvt);
                             for (Stream s : MasterChannels.getInstance().getStreams()){
                                 s.updateStatus();
@@ -997,7 +1058,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
                             }
                             ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Studio is saved!");
                             ResourceMonitor.getInstance().addMessage(label);
-                            String build = new Version().getBuild();
+//                            String build = new Version().getBuild();
                             setTitle("WebcamStudio " + Version.version + " ("+fileS.getName()+")");
                         }
                         return null;  
@@ -1043,8 +1104,15 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
     } 
     
     public static void durationCalc(Stream stream, File file) {
+        String commandDuration;
         Runtime rt = Runtime.getRuntime();
-        String commandDuration = "avconv -i " + "\"" + file.getAbsolutePath() + "\"";
+        String distro = wsDistroWatch();
+        System.out.println("Distro: "+ distro);
+        if (distro.toLowerCase().equals("ubuntu")){
+            commandDuration = "avconv -i " + "\"" + file.getAbsolutePath() + "\"";
+        } else {
+            commandDuration = "ffmpeg -i " + "\"" + file.getAbsolutePath() + "\"";    
+        }
         File fileD=new File(System.getProperty("user.home")+"/.webcamstudio/"+"DurationCalc.sh");
         FileOutputStream fosD;
         DataOutputStream dosD = null;
@@ -1089,6 +1157,30 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         } catch (IOException | InterruptedException | NumberFormatException e) {
         }
     }
+    
+    public static String wsDistroWatch() {
+        String distro = null;
+        Runtime rt = Runtime.getRuntime();
+        String distroCmd = "uname -a";
+        try {
+            Process distroProc = rt.exec(distroCmd);
+            Tools.sleep(10);
+            distroProc.waitFor();
+            BufferedReader buf = new BufferedReader(new InputStreamReader(
+            distroProc.getInputStream()));
+            String lineR;
+            while ((lineR = buf.readLine()) != null) {
+                if(lineR.toLowerCase().contains("ubuntu")) {
+                    distro = "ubuntu";
+                } else {
+                    distro = "others";
+                }
+            } 
+        } catch (IOException | InterruptedException | NumberFormatException e) {
+        }
+        return distro;
+    }
+    
     @SuppressWarnings("unchecked")
     private void btnLoadStudioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoadStudioActionPerformed
         final java.awt.event.ActionEvent fEvt = evt;
@@ -1176,7 +1268,6 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
                             Stream s = Studio.extstream.get(u);
                             if (s != null) {
                                 StreamDesktop frame = new StreamDesktop(s, WebcamStudio.this);
-//                                Tools.sleep(40);
                                 desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
                             }
                                 System.out.println("Adding Source: "+s.getName());
@@ -1189,7 +1280,6 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
                         for (int t = 0; t < Studio.LText.size(); t++) {
                             SourceText text = Studio.LText.get(t);
                             StreamDesktop frame = new StreamDesktop(text, WebcamStudio.this);
-//                            Tools.sleep(40);
                             desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
                             System.out.println("Adding Source: "+text.getName());
                         }
@@ -1518,6 +1608,18 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
             Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnAddIPCamActionPerformed
+
+    private void tglFFmpegActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglFFmpegActionPerformed
+        if (tglFFmpeg.isSelected()){
+            outFFmpeg = true;
+            ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "FFmpeg Outputs BkEnd Activated ...");
+            ResourceMonitor.getInstance().addMessage(label);
+        } else {
+            outFFmpeg = false;
+            ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "FFmpeg Outputs BkEnd Deactivated ...");
+            ResourceMonitor.getInstance().addMessage(label);
+        }
+    }//GEN-LAST:event_tglFFmpegActionPerformed
     /**
      * @param args the command line arguments
      */
@@ -1525,6 +1627,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         if (System.getProperty("jna.nosys") == null) {
             System.setProperty("jna.nosys", "true");
         }
+        System.setProperty("java.util.Arrays.useLegacyMergeSort", "true"); // Java 8 Drag'n'Drop Fix
         File dir = new File(System.getProperty("user.home"), ".webcamstudio");
         if (!dir.exists()) {
             dir.mkdir();
@@ -1591,12 +1694,16 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
     private javax.swing.JToolBar.Separator jSeparator2;
     private javax.swing.JToolBar.Separator jSeparator5;
     private javax.swing.JToolBar.Separator jSeparator6;
+    private javax.swing.JToolBar.Separator jSeparator7;
+    private javax.swing.JToolBar.Separator jSeparator8;
+    private javax.swing.JLabel lblFFmpeg;
     private javax.swing.JLabel lblSourceSelected;
     private javax.swing.JSplitPane mainSplit;
     private javax.swing.JToolBar mainToolbar;
     private javax.swing.JPanel panControls;
     private javax.swing.JPanel panSources;
     public static javax.swing.JTabbedPane tabControls;
+    private javax.swing.JToggleButton tglFFmpeg;
     private javax.swing.JToolBar toolbar;
     // End of variables declaration//GEN-END:variables
       

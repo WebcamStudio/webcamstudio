@@ -4,7 +4,9 @@
  */
 package webcamstudio.sources.effects;
 
-import java.awt.Color;
+import Catalano.Imaging.FastBitmap;
+import Catalano.Imaging.Filters.Grayscale;
+import Catalano.Imaging.Filters.SobelEdgeDetector;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
@@ -16,11 +18,17 @@ import javax.swing.JPanel;
  * @author pballeux
  */
 public class Edge extends Effect {
-
-    private final com.jhlabs.image.EdgeFilter filter = new com.jhlabs.image.EdgeFilter();
-
+   
     @Override
     public void applyEffect(BufferedImage img) {
+        FastBitmap imageIn = new FastBitmap(img);
+        imageIn.toRGB();
+        Grayscale.Algorithm algorithm = Grayscale.Algorithm.Average;
+        Grayscale g = new Grayscale(algorithm);
+        g.applyInPlace(imageIn);
+        SobelEdgeDetector sobel = new SobelEdgeDetector ();
+        sobel.applyInPlace(imageIn);
+        BufferedImage temp = imageIn.toBufferedImage();
         
         Graphics2D buffer = img.createGraphics();
         buffer.setRenderingHint(java.awt.RenderingHints.KEY_INTERPOLATION, 
@@ -38,17 +46,14 @@ public class Edge extends Effect {
         buffer.setRenderingHint(RenderingHints.KEY_DITHERING,
                            RenderingHints.VALUE_DITHER_DISABLE);
 
-        BufferedImage temp = filter.filter(img, null);
-        buffer.setBackground(new Color(0, 0, 0, 0));
-        buffer.clearRect(0, 0, img.getWidth(), img.getHeight());
         buffer.drawImage(temp, 0, 0, null);
         buffer.dispose();
 
     }
-
+    
     @Override
     public boolean needApply(){
-        return needApply=true;
+        return needApply=false;
     }
     @Override
     public JPanel getControl() {
