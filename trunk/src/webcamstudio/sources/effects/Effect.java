@@ -6,6 +6,7 @@ package webcamstudio.sources.effects;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 /**
  *
@@ -45,16 +46,19 @@ public abstract class Effect {
         retValue.put(NoBackground.class.getSimpleName(), new NoBackground());
         retValue.put(RGB.class.getSimpleName(), new RGB());
         retValue.put(ZoomZoom.class.getSimpleName(), new ZoomZoom());
-        retValue.put(MegaMind.class.getSimpleName(), new MegaMind());
+        retValue.put(SaltNPepper.class.getSimpleName(), new SaltNPepper());
         retValue.put(Edge.class.getSimpleName(), new Edge());
         retValue.put(Radar.class.getSimpleName(), new Radar());
         retValue.put(Blink.class.getSimpleName(), new Blink());
         retValue.put(Gain.class.getSimpleName(), new Gain());
         retValue.put(HSB.class.getSimpleName(), new HSB());
         retValue.put(Weave.class.getSimpleName(), new Weave());
-        retValue.put(Laplace.class.getSimpleName(), new Laplace());
+        retValue.put(Shapes.class.getSimpleName(), new Shapes());
         retValue.put(Marble.class.getSimpleName(), new Marble());
         retValue.put(Green.class.getSimpleName(), new Green());
+//        retValue.put(MergeTest.class.getSimpleName(), new MergeTest());
+        retValue.put(ComboGhost.class.getSimpleName(), new ComboGhost());
+        retValue.put(Ghosting.class.getSimpleName(), new Ghosting());
         return retValue;
     }
     public BufferedImage cloneImage(BufferedImage src){
@@ -83,4 +87,12 @@ public abstract class Effect {
     public String toString(){
         return getClass().getSimpleName();
     }
-}
+
+    public void setShape(String shapeImg) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public void setDoOne(boolean b) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    }

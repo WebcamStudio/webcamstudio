@@ -95,17 +95,26 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
                         jCBAVConv.setSelected(true);
                         stream.setComm("AV");
                         jCBGStreamer.setSelected(false);
+                        jCBFFmpeg.setSelected(false);
                         break;
                     case "GS":
                         jCBGStreamer.setSelected(true);
                         stream.setComm("GS");
                         jCBAVConv.setSelected(false);
+                        jCBFFmpeg.setSelected(false);
+                        break;
+                    case "FF":
+                        jCBFFmpeg.setSelected(true);
+                        stream.setComm("FF");                        
+                        jCBAVConv.setSelected(false);
+                        jCBGStreamer.setSelected(false);
                         break;
                 }
             } else {
                     jCBAVConv.setSelected(true);
                     stream.setComm("AV");
                     jCBGStreamer.setSelected(false);
+                    jCBFFmpeg.setSelected(false);
             }
             JMBackEnd.setEnabled(true);
             panelURL = p;
@@ -124,11 +133,19 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
                         jCBAVConv.setSelected(true);
                         stream.setComm("AV");
                         jCBGStreamer.setSelected(false);
+                        jCBFFmpeg.setSelected(false);
                         break;
                     case "GS":
                         jCBGStreamer.setSelected(true);
                         stream.setComm("GS");
                         jCBAVConv.setSelected(false);
+                        jCBFFmpeg.setSelected(false);
+                        break;
+                    case "FF":
+                        jCBFFmpeg.setSelected(true);
+                        stream.setComm("FF");                        
+                        jCBAVConv.setSelected(false);
+                        jCBGStreamer.setSelected(false);
                         break;
                 }
                 switch (stream.getPtzBrand()) {
@@ -153,6 +170,7 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
                 }     
             } else {
                     jCBAVConv.setSelected(false);
+                    jCBFFmpeg.setSelected(false);
                     stream.setComm("GS");
                     jCBGStreamer.setSelected(true);
                     jCBoxFosCamPtz.setSelected(true);
@@ -181,15 +199,23 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
                         stream.setComm("GS");
                         jCBAVConv.setSelected(false);
                         break;
+                    case "FF":
+                        jCBFFmpeg.setSelected(true);
+                        stream.setComm("FF");                        
+                        jCBAVConv.setSelected(false);
+                        jCBGStreamer.setSelected(false);
+                        break;
                     default:
                         if (stream instanceof SourceWebcam || stream instanceof SourceMicrophone ||stream instanceof SourceImageU) {
                         jCBGStreamer.setSelected(true);
                         stream.setComm("GS");
                         jCBAVConv.setSelected(false);
+                        jCBFFmpeg.setSelected(false);
                         } else {
                         jCBAVConv.setSelected(true);
                         stream.setComm("AV");
                         jCBGStreamer.setSelected(false);
+                        jCBFFmpeg.setSelected(false);
                         }
                         break;
                 }
@@ -198,10 +224,12 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
                     jCBGStreamer.setSelected(true);
                     stream.setComm("GS");
                     jCBAVConv.setSelected(false);
+                    jCBFFmpeg.setSelected(false);
                 } else {
                     jCBAVConv.setSelected(true);
                     stream.setComm("AV");
                     jCBGStreamer.setSelected(false);
+                    jCBFFmpeg.setSelected(false);
                 }
             }
             if (stream instanceof SourceImageGif){
@@ -244,6 +272,7 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
         JMBackEnd = new javax.swing.JMenu();
         jCBGStreamer = new javax.swing.JCheckBoxMenuItem();
         jCBAVConv = new javax.swing.JCheckBoxMenuItem();
+        jCBFFmpeg = new javax.swing.JCheckBoxMenuItem();
 
         setClosable(true);
         setIconifiable(true);
@@ -267,6 +296,11 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
                 formInternalFrameIconified(evt);
             }
             public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
+            }
+        });
+        addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                formMouseClicked(evt);
             }
         });
         addFocusListener(new java.awt.event.FocusAdapter() {
@@ -420,6 +454,15 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
         });
         JMBackEnd.add(jCBAVConv);
 
+        jCBFFmpeg.setText("FFmpeg");
+        jCBFFmpeg.setName("jCBFFmpeg"); // NOI18N
+        jCBFFmpeg.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCBFFmpegActionPerformed(evt);
+            }
+        });
+        JMBackEnd.add(jCBFFmpeg);
+
         jMBOptions.add(Box.createHorizontalGlue());
 
         jMBOptions.add(JMBackEnd);
@@ -513,10 +556,14 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
     private void jCBGStreamerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCBGStreamerActionPerformed
         if (jCBGStreamer.isSelected()){
             stream.setComm("GS");
+            stream.setBackFF(false);
             jCBAVConv.setSelected(false);
+            jCBFFmpeg.setSelected(false);
         } else {
             jCBAVConv.setSelected(true);
             jCBGStreamer.setSelected(false);
+            jCBFFmpeg.setSelected(false);
+            stream.setBackFF(false);
             stream.setComm("AV");
         }
     }//GEN-LAST:event_jCBGStreamerActionPerformed
@@ -524,11 +571,15 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
     private void jCBAVConvActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCBAVConvActionPerformed
         if (jCBAVConv.isSelected()){
             stream.setComm("AV");
+            stream.setBackFF(false);
             jCBGStreamer.setSelected(false);
+            jCBFFmpeg.setSelected(false);
         } else {
             jCBGStreamer.setSelected(true);
             jCBAVConv.setSelected(false);
+            jCBFFmpeg.setSelected(false);
             stream.setComm("GS");
+            stream.setBackFF(false);
         }
     }//GEN-LAST:event_jCBAVConvActionPerformed
 
@@ -884,11 +935,39 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_jCBoxWansCamPtzActionPerformed
 
+    private void jCBFFmpegActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCBFFmpegActionPerformed
+        if (jCBFFmpeg.isSelected()){
+            stream.setComm("FF");
+            stream.setBackFF(true);
+            jCBAVConv.setSelected(false);
+            jCBGStreamer.setSelected(false);
+        } else {
+            stream.setComm("AV");
+            stream.setBackFF(false);
+            jCBAVConv.setSelected(true);
+            jCBGStreamer.setSelected(false);
+        }
+    }//GEN-LAST:event_jCBFFmpegActionPerformed
+
+    private void formMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseClicked
+        if (listener!=null){
+            new Thread(new Runnable(){
+                
+                @Override
+                public void run() {
+                    listener.selectedSource(stream);
+                }
+            }).start();
+            
+        }
+    }//GEN-LAST:event_formMouseClicked
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu JMBackEnd;
     private javax.swing.JCheckBoxMenuItem jCBAVConv;
     private javax.swing.JCheckBoxMenuItem jCBBottomToTop;
     private javax.swing.JCheckBoxMenuItem jCBBouncingRight;
+    private javax.swing.JCheckBoxMenuItem jCBFFmpeg;
     private javax.swing.JCheckBoxMenuItem jCBGStreamer;
     private javax.swing.JCheckBoxMenuItem jCBLeftToRight;
     private javax.swing.JCheckBoxMenuItem jCBMoreOptions;

@@ -42,7 +42,7 @@ public class SourceWebcam extends Stream {
         lastPreview = new BufferedImage(captureWidth,captureHeight,BufferedImage.TYPE_INT_ARGB);
         rate = MasterMixer.getInstance().getRate();
         MasterFrameBuilder.register(this);
-        capture = new ProcessRenderer(this, ProcessRenderer.ACTION.CAPTURE, "webcam");
+        capture = new ProcessRenderer(this, ProcessRenderer.ACTION.CAPTURE, "webcam", comm);
         capture.read();
     }
 
@@ -51,6 +51,9 @@ public class SourceWebcam extends Stream {
         isPlaying=false;
         if (capture != null) {
             capture.stop();
+        }
+        if (this.getBackFF()){
+            this.setComm("FF");
         }
         MasterFrameBuilder.unregister(this);
     }

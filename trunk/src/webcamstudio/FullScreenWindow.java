@@ -39,7 +39,7 @@ public class FullScreenWindow extends javax.swing.JFrame implements Stream.Liste
     private void initComponents() {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(310, 330));
+        setPreferredSize(new java.awt.Dimension(400, 330));
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosed(java.awt.event.WindowEvent evt) {
                 formWindowClosed(evt);

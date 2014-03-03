@@ -18,7 +18,7 @@ package com.jhlabs.image;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
-import java.awt.image.WritableRaster;
+//import java.awt.image.WritableRaster;
 
 /**
  * An experimental filter which can be used for keying against a clean shot. Given a source image, a clean image and a destination image, 
@@ -129,12 +129,12 @@ public class KeyFilter extends AbstractBufferedImageOp {
     public BufferedImage filter( BufferedImage src, BufferedImage dst ) {
         int width = src.getWidth();
         int height = src.getHeight();
-		int type = src.getType();
-		WritableRaster srcRaster = src.getRaster();
+//		int type = src.getType();
+//		WritableRaster srcRaster = src.getRaster();
 
         if ( dst == null )
             dst = createCompatibleDestImage( src, null );
-		WritableRaster dstRaster = dst.getRaster();
+//		WritableRaster dstRaster = dst.getRaster();
 
         if ( destination != null && cleanImage != null ) {
             float[] hsb1 = null;

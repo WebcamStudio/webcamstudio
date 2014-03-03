@@ -5,6 +5,8 @@
 
 package webcamstudio.sources.effects;
 
+import Catalano.Imaging.FastBitmap;
+import Catalano.Imaging.Filters.Rotate;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -18,13 +20,18 @@ import webcamstudio.sources.effects.controls.RotationControl;
  * @author pballeux
  */
 public class Rotation extends Effect{
-    private final com.jhlabs.image.RotateFilter filter = new com.jhlabs.image.RotateFilter();
-    private float rotation = 0;
+
+    private int rotation = 0;
     @Override
     public void applyEffect(BufferedImage img) {
-        filter.setAngle(rotation);
-        filter.setEdgeAction(com.jhlabs.image.RotateFilter.ZERO);
-        filter.setInterpolation(com.jhlabs.image.RotateFilter.BILINEAR);
+        
+        FastBitmap imageIn = new FastBitmap(img);
+               
+        Rotate.Algorithm algorithm = Rotate.Algorithm.BILINEAR;
+        Rotate c = new Rotate(rotation,algorithm);
+        c.applyInPlace(imageIn);
+        BufferedImage temp = imageIn.toBufferedImage();
+        
         Graphics2D buffer = img.createGraphics();
         buffer.setRenderingHint(RenderingHints.KEY_RENDERING,
                            RenderingHints.VALUE_RENDER_SPEED);
@@ -38,7 +45,6 @@ public class Rotation extends Effect{
                            RenderingHints.VALUE_COLOR_RENDER_SPEED);
         buffer.setRenderingHint(RenderingHints.KEY_DITHERING,
                            RenderingHints.VALUE_DITHER_DISABLE);
-        BufferedImage temp = filter.filter(img, null);
         buffer.setBackground(new Color(0,0,0,0));
         buffer.clearRect(0,0,img.getWidth(),img.getHeight());
         buffer.drawImage(temp, 0, 0,img.getWidth(),img.getHeight(),0,0,temp.getWidth(),temp.getHeight(),null);
@@ -46,13 +52,13 @@ public class Rotation extends Effect{
     }
     @Override
     public boolean needApply(){
-        return needApply=true;
+        return needApply=false;
     }
    public void setRotation(int value){
-       rotation=(float)Math.toRadians(value);
+       rotation= value;
    }
    public int getRotation(){
-       return (int)Math.toDegrees(rotation);
+       return rotation;
    }
     @Override
     public JPanel getControl() {
@@ -66,7 +72,7 @@ public class Rotation extends Effect{
 
     @Override
     public void loadFromStudioConfig(Preferences prefs) {
-        rotation = prefs.getFloat("rotation", rotation);
+        rotation = prefs.getInt("rotation", rotation);
     }
 
 }

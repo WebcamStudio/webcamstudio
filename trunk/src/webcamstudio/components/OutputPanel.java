@@ -12,6 +12,7 @@ package webcamstudio.components;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import webcamstudio.media.renderer.ProcessExecutor;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -21,12 +22,14 @@ import java.awt.dnd.DropTargetDropEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -47,6 +50,7 @@ import javax.swing.SwingWorker;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import webcamstudio.WebcamStudio;
+import static webcamstudio.WebcamStudio.wsDistroWatch;
 import webcamstudio.channels.MasterChannels;
 import webcamstudio.exporter.vloopback.VideoDevice;
 import webcamstudio.externals.FME;
@@ -216,6 +220,8 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
     private void addButtonBroadcast(FME fme) {
         final OutputPanel instanceSinkFME = this;
         JToggleButton button = new JToggleButton();
+        Dimension d = new Dimension(139,30);
+        button.setPreferredSize(d);
         button.setText(fme.getName());
         button.setActionCommand(fme.getUrl()+"/"+fme.getStream());
         button.setIcon(tglRecordToFile.getIcon());
@@ -340,8 +346,10 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
 
         tglSkyCam.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/camera-video.png"))); // NOI18N
         tglSkyCam.setText(bundle.getString("SKYCAM")); // NOI18N
-        tglSkyCam.setToolTipText("Activate Skype Cam Compatibility");
+        tglSkyCam.setToolTipText("Activate Skype/Flash Cam Compatibility");
+        tglSkyCam.setMinimumSize(new java.awt.Dimension(139, 21));
         tglSkyCam.setName("tglSkyCam"); // NOI18N
+        tglSkyCam.setPreferredSize(new java.awt.Dimension(139, 30));
         tglSkyCam.setRolloverEnabled(false);
         tglSkyCam.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/camera-video-on.png")));
         tglSkyCam.addActionListener(new java.awt.event.ActionListener() {
@@ -365,10 +373,12 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
         btnSkyFlip.setText("FlipSkyCam");
         btnSkyFlip.setToolTipText("Flips SkyCam Horizontally");
         btnSkyFlip.setEnabled(false);
+        btnSkyFlip.setMinimumSize(new java.awt.Dimension(117, 21));
         btnSkyFlip.setName("btnSkyFlip"); // NOI18N
         btnSkyFlip.setRolloverEnabled(false);
         btnSkyFlip.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/view-refresh-on.png"))); // NOI18N
         btnSkyFlip.setPreferredSize(new java.awt.Dimension(113, 21));
+        btnSkyFlip.setRolloverEnabled(false);
         btnSkyFlip.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSkyFlipActionPerformed(evt);
@@ -379,8 +389,9 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
         tglAudioOut.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/audio-card.png"))); // NOI18N
         tglAudioOut.setText("Audio Output");
         tglAudioOut.setToolTipText("WebcamStudio Master Audio Output");
+        tglAudioOut.setMinimumSize(new java.awt.Dimension(135, 21));
         tglAudioOut.setName("tglAudioOut"); // NOI18N
-        tglAudioOut.setPreferredSize(new java.awt.Dimension(32, 32));
+        tglAudioOut.setPreferredSize(new java.awt.Dimension(32, 30));
         tglAudioOut.setRolloverEnabled(false);
         tglAudioOut.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -392,7 +403,9 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
         tglRecordToFile.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-record.png"))); // NOI18N
         tglRecordToFile.setText(bundle.getString("RECORD")); // NOI18N
         tglRecordToFile.setToolTipText("Save to FIle.");
+        tglRecordToFile.setMinimumSize(new java.awt.Dimension(87, 21));
         tglRecordToFile.setName("tglRecordToFile"); // NOI18N
+        tglRecordToFile.setPreferredSize(new java.awt.Dimension(87, 30));
         tglRecordToFile.setRolloverEnabled(false);
         tglRecordToFile.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-stop.png"))); // NOI18N
         tglRecordToFile.addActionListener(new java.awt.event.ActionListener() {
@@ -405,7 +418,9 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
         tglUDP.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-record.png"))); // NOI18N
         tglUDP.setText(bundle.getString("UDP_MPEG_OUT")); // NOI18N
         tglUDP.setToolTipText("Stream to udp://@127.0.0.1:7000");
+        tglUDP.setMinimumSize(new java.awt.Dimension(237, 21));
         tglUDP.setName("tglUDP"); // NOI18N
+        tglUDP.setPreferredSize(new java.awt.Dimension(237, 30));
         tglUDP.setRolloverEnabled(false);
         tglUDP.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-stop.png"))); // NOI18N
         tglUDP.addActionListener(new java.awt.event.ActionListener() {
@@ -482,7 +497,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
                 ResourceMonitorLabel label = labels.get("RECORD");
                 ResourceMonitor.getInstance().removeMessage(label);
 
-                ResourceMonitorLabel label2 = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Stop Recording!");
+                ResourceMonitorLabel label2 = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "File is saved!");
                 ResourceMonitor.getInstance().addMessage(label2);
             }
         }
@@ -544,6 +559,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
         tglSkyCam.setName("tglSkyCam"); // NOI18N
         tglSkyCam.setRolloverEnabled(false);
         tglSkyCam.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/camera-video-on.png"))); // NOI18N
+        tglSkyCam.setPreferredSize(new java.awt.Dimension(32, 30));
         add(tglSkyCam);
         
         jcbV4l2loopback.setText("V4l2loopback");
@@ -565,7 +581,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
         tglAudioOut.setToolTipText("Audio to Speakers");
         tglAudioOut.setName("tglAudioOut"); // NOI18N
         tglSkyCam.setRolloverEnabled(false);
-        tglAudioOut.setPreferredSize(new java.awt.Dimension(32, 32));
+        tglAudioOut.setPreferredSize(new java.awt.Dimension(32, 30));
         add(tglAudioOut);
         
         tglRecordToFile.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-record.png"))); // NOI18N
@@ -574,6 +590,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
         tglRecordToFile.setName("tglRecordToFile"); // NOI18N
         tglRecordToFile.setRolloverEnabled(false);
         tglRecordToFile.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-stop.png"))); // NOI18N
+        tglRecordToFile.setPreferredSize(new java.awt.Dimension(32, 30));
         add(tglRecordToFile);
 
         tglUDP.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-record.png"))); // NOI18N
@@ -582,6 +599,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
         tglUDP.setName("tglUDP"); // NOI18N
         tglUDP.setRolloverEnabled(false);
         tglUDP.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-stop.png"))); // NOI18N
+        tglUDP.setPreferredSize(new java.awt.Dimension(32, 30));
         add(tglUDP);
     }
     private void paintWSCamButtons () {
@@ -590,6 +608,8 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
             if (vdName.endsWith("video21")) {
             } else {
                 JToggleButton wsCamButton = new JToggleButton();
+                Dimension dim = new Dimension(139,30);
+                wsCamButton.setPreferredSize(dim);
                 wsCamButton.setText(d.getName());
                 wsCamButton.setActionCommand(d.getFile().getAbsolutePath());
                 wsCamButton.setIcon(tglRecordToFile.getIcon());
@@ -646,6 +666,8 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
             if (vdName.endsWith("video21")) {
             } else {
                 JToggleButton skyCamButton = new JToggleButton();
+                Dimension dime = new Dimension(139,30);
+                skyCamButton.setPreferredSize(dime);
                 skyCamButton.setText(d.getName());
                 skyCamButton.setActionCommand(d.getFile().getAbsolutePath());
                 skyCamButton.setIcon(tglRecordToFile.getIcon());
@@ -778,99 +800,120 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
             setLocation(x, y);
             repaint();
         }
-    } 
+    }
     private void tglSkyCamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglSkyCamActionPerformed
         final WaitingDialogOP waitingD = new WaitingDialogOP(wDFrame);
-            waitingD.setModal(true);
-            SwingWorker<?,?> worker = new SwingWorker<Void,Integer>(){  
-                @Override
-                protected Void doInBackground() throws InterruptedException{
-        Runtime rt = Runtime.getRuntime();
-        String unregisterWSDevice = "modprobe -r "+virtualDevice;
-        String registerWSDevice = "modprobe "+virtualDevice;
-        String register2WSDevices = "modprobe "+virtualDevice+" devices=2 video_nr=21";
-        if (tglSkyCam.isSelected()) {          
-            jcbV4l2loopback.setEnabled(false);
-            camCount = 0;
-            fmeCount = 0;
-            skyCamMode = true;
-            File fileD=new File(System.getProperty("user.home")+"/.webcamstudio/"+"SkyCam.sh");
-            FileOutputStream fosD;
-            DataOutputStream dosD = null;
-            try {
-            fosD = new FileOutputStream(fileD);
-            dosD= new DataOutputStream(fosD);
-            } catch (FileNotFoundException ex) {
-            Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
+        waitingD.setModal(true);
+        SwingWorker<?,?> worker = new SwingWorker<Void,Integer>(){  
+        @Override
+        protected Void doInBackground() throws InterruptedException{
+            String unregisterWSDevice;
+            String registerWSDevice;
+            String register2WSDevices;
+            String distro = wsDistroWatch();
+            System.out.println("Distro: "+ distro);
+            String batchSkyCommR;
+            String batchSkyComm;
+            Runtime rt = Runtime.getRuntime();
+            if (distro.toLowerCase().equals("ubuntu")){
+                unregisterWSDevice = "modprobe -r "+virtualDevice;
+                registerWSDevice = "modprobe "+virtualDevice;
+                register2WSDevices = "modprobe "+virtualDevice+" devices=2 video_nr=21";
+            } else {
+                unregisterWSDevice = "/sbin/modprobe -r "+virtualDevice;
+                registerWSDevice = "/sbin/modprobe "+virtualDevice;
+                register2WSDevices = "/sbin/modprobe "+virtualDevice+" devices=2 video_nr=21";
             }
-            try {
-            dosD.writeBytes("#!/bin/bash\n");
-            dosD.writeBytes(unregisterWSDevice+"\n");
-            dosD.writeBytes("wait"+"\n");
-            dosD.writeBytes(register2WSDevices+"\n");
-            dosD.writeBytes("wait"+"\n");
-            } catch (IOException ex) {
-            Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
+            if (tglSkyCam.isSelected()) {          
+                jcbV4l2loopback.setEnabled(false);
+                camCount = 0;
+                fmeCount = 0;
+                skyCamMode = true;
+                File fileD=new File(System.getProperty("user.home")+"/.webcamstudio/"+"SkyCam.sh");
+                FileOutputStream fosD;
+                DataOutputStream dosD = null;
+                try {
+                fosD = new FileOutputStream(fileD);
+                dosD= new DataOutputStream(fosD);
+                } catch (FileNotFoundException ex) {
+                Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                try {
+                dosD.writeBytes("#!/bin/bash\n");
+                dosD.writeBytes(unregisterWSDevice+"\n");
+                dosD.writeBytes("wait"+"\n");
+                dosD.writeBytes(register2WSDevices+"\n");
+                dosD.writeBytes("wait"+"\n");
+                } catch (IOException ex) {
+                Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                if (distro.toLowerCase().equals("ubuntu")){
+                    batchSkyComm = "gksudo sh "+System.getProperty("user.home")+"/.webcamstudio/"+"SkyCam.sh";
+                } else {
+                    batchSkyComm = "gksu sh "+System.getProperty("user.home")+"/.webcamstudio/"+"SkyCam.sh";
+                }
+                try {
+                    Process urDevice = rt.exec(batchSkyComm); 
+                    Tools.sleep(50);
+                    urDevice.waitFor();
+                } catch (IOException | InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                repaintOuputButtons();
+                Tools.sleep(30);
+                repaintSkyCamButtons ();
+                Tools.sleep(30);
+                repaintFMEButtons();
+                ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "SkyCam Engaged");
+                ResourceMonitor.getInstance().addMessage(label);
+                instanceSink.repaint();
+            } else {
+                skyCamMode = false;
+                jcbV4l2loopback.setEnabled(true);
+                File fileD=new File(System.getProperty("user.home")+"/.webcamstudio/"+"SkyCamR.sh");
+                FileOutputStream fosD;
+                DataOutputStream dosD = null;
+                try {
+                fosD = new FileOutputStream(fileD);
+                dosD= new DataOutputStream(fosD);
+                } catch (FileNotFoundException ex) {
+                Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                try {
+                dosD.writeBytes("#!/bin/bash\n");
+                dosD.writeBytes(unregisterWSDevice +"\n");
+                dosD.writeBytes("wait"+"\n");
+                dosD.writeBytes(registerWSDevice +"\n");
+                dosD.writeBytes("wait"+"\n");
+                } catch (IOException ex) {
+                Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                if (distro.toLowerCase().equals("ubuntu")){
+                    batchSkyCommR = "gksudo sh "+System.getProperty("user.home")+"/.webcamstudio/"+"SkyCamR.sh";
+                } else {
+                    batchSkyCommR = "gksu sh "+System.getProperty("user.home")+"/.webcamstudio/"+"SkyCamR.sh";
+                }
+                try {
+                    Process rDevice = rt.exec(batchSkyCommR); 
+                    Tools.sleep(50);
+                    rDevice.waitFor();
+                } catch (IOException | InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                repaintOuputButtons();
+                Tools.sleep(30);
+                paintWSCamButtons ();
+                Tools.sleep(30);
+                repaintFMEButtons();
+                btnSkyFlip.setSelected(false);
+                btnSkyFlip.setEnabled(false);
+                flip = false;
+                ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "SkyCam Disengaged");
+                ResourceMonitor.getInstance().addMessage(label);
+                instanceSink.repaint();
             }
-            String batchSkyComm = "gksudo sh "+System.getProperty("user.home")+"/.webcamstudio/"+"SkyCam.sh";
-            try {
-                Process urDevice = rt.exec(batchSkyComm); 
-                Tools.sleep(50);
-                urDevice.waitFor();
-            } catch (IOException | InterruptedException e) {
-                e.printStackTrace();
-            }
-            
-            repaintOuputButtons();
-            Tools.sleep(30);
-            repaintSkyCamButtons ();
-            Tools.sleep(30);
-            repaintFMEButtons();
-            ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "SkyCam Engaged");
-            ResourceMonitor.getInstance().addMessage(label);
-            instanceSink.repaint();
-        } else {
-            skyCamMode = false;
-            jcbV4l2loopback.setEnabled(true);
-            File fileD=new File(System.getProperty("user.home")+"/.webcamstudio/"+"SkyCamR.sh");
-            FileOutputStream fosD;
-            DataOutputStream dosD = null;
-            try {
-            fosD = new FileOutputStream(fileD);
-            dosD= new DataOutputStream(fosD);
-            } catch (FileNotFoundException ex) {
-            Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            try {
-            dosD.writeBytes("#!/bin/bash\n");
-            dosD.writeBytes(unregisterWSDevice +"\n");
-            dosD.writeBytes("wait"+"\n");
-            dosD.writeBytes(registerWSDevice +"\n");
-            dosD.writeBytes("wait"+"\n");
-            } catch (IOException ex) {
-            Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            String batchSkyCommR = "gksudo sh "+System.getProperty("user.home")+"/.webcamstudio/"+"SkyCamR.sh";
-            try {
-                Process rDevice = rt.exec(batchSkyCommR); 
-                Tools.sleep(50);
-                rDevice.waitFor();
-            } catch (IOException | InterruptedException e) {
-                e.printStackTrace();
-            }
-            
-            repaintOuputButtons();
-            Tools.sleep(30);
-            paintWSCamButtons ();
-            Tools.sleep(30);
-            repaintFMEButtons();
-            btnSkyFlip.setSelected(false);
-            btnSkyFlip.setEnabled(false);
-            flip = false;
-            ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "SkyCam Disengaged");
-            ResourceMonitor.getInstance().addMessage(label);
-            instanceSink.repaint();
-        }
         return null; 
     }
                 @Override
@@ -903,9 +946,6 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
     private void tglAudioOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglAudioOutActionPerformed
         if (tglAudioOut.isSelected()) {
             SinkAudio audioStream = new SinkAudio();
-//            audioStream.setWidth(MasterMixer.getInstance().getWidth());
-//            audioStream.setHeight(MasterMixer.getInstance().getHeight());
-//            audioStream.setRate(MasterMixer.getInstance().getRate());
             audioStream.setListener(instanceSink);
             audioStream.read();
             audioOut.put("AudioOut", audioStream);
@@ -922,16 +962,6 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
                 ResourceMonitor.getInstance().removeMessage(label);
             }
         }
-//            ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "WS Audio-Out Active");
-//            ResourceMonitor.getInstance().addMessage(label);
-//        } else {
-//            if (audioStream != null) {
-//                audioStream.stop();
-//                audioStream = null;
-//            }
-//            ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "WS Audio-Out Stopped");
-//            ResourceMonitor.getInstance().addMessage(label);
-//        }
     }//GEN-LAST:event_tglAudioOutActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

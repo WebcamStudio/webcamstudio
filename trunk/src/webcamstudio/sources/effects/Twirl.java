@@ -19,7 +19,7 @@ import webcamstudio.sources.effects.controls.TwirlControl;
 public class Twirl extends Effect {
 
     private final com.jhlabs.image.TwirlFilter filter = new com.jhlabs.image.TwirlFilter();
-    private float radius = 160;
+    private float radius = (float)160f;
     private float angle = (float)Math.toRadians(90f);
     @Override
     public void applyEffect(BufferedImage img) {
@@ -47,7 +47,7 @@ public class Twirl extends Effect {
 
     @Override
     public boolean needApply(){
-        return needApply=true;
+        return needApply=false;
     }
     @Override
     public JPanel getControl() {

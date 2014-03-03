@@ -24,6 +24,7 @@ public class Mosaic extends Effect {
     public void applyEffect(BufferedImage img) {
         int w = img.getWidth();
         int h = img.getHeight();
+        
         Graphics2D buffer = img.createGraphics();
         buffer.setRenderingHint(RenderingHints.KEY_RENDERING,
                            RenderingHints.VALUE_RENDER_SPEED);

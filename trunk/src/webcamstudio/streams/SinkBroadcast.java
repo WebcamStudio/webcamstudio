@@ -5,6 +5,7 @@
 package webcamstudio.streams;
 
 import java.awt.image.BufferedImage;
+import static webcamstudio.WebcamStudio.outFFmpeg;
 import webcamstudio.externals.FME;
 import webcamstudio.externals.ProcessRenderer;
 import webcamstudio.mixers.MasterMixer;
@@ -23,6 +24,9 @@ public class SinkBroadcast extends Stream {
         this.fme=fme;
         name=fme.getName();
         url = fme.getUrl()+"/"+fme.getStream();
+        if (outFFmpeg){
+            this.setComm("FF");
+        }
     }
     @Override
     public String getName(){
@@ -66,6 +70,9 @@ public class SinkBroadcast extends Stream {
         if  (capture!=null){
             capture.stop();
             capture=null;
+        }
+        if (this.getBackFF()){
+            this.setComm("FF");
         }
     }
     @Override

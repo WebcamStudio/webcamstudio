@@ -4,6 +4,9 @@
  */
 package webcamstudio.streams;
 
+import java.awt.Graphics2D;
+import java.awt.GraphicsConfiguration;
+import java.awt.GraphicsEnvironment;
 import java.awt.image.BufferedImage;
 import webcamstudio.externals.ProcessRenderer;
 import webcamstudio.mixers.Frame;
@@ -38,8 +41,8 @@ public class SourceDVB extends Stream {
         rate = MasterMixer.getInstance().getRate();
         lastPreview = new BufferedImage(captureWidth,captureHeight,BufferedImage.TYPE_INT_ARGB);
         MasterFrameBuilder.register(this);
-        capture = new ProcessRenderer(this, ProcessRenderer.ACTION.CAPTURE, "DVB");
-        Tools.sleep(10);
+        capture = new ProcessRenderer(this, ProcessRenderer.ACTION.CAPTURE, "DVB", comm);
+        Tools.sleep(50);
         capture.read();
     }
 
@@ -51,10 +54,13 @@ public class SourceDVB extends Stream {
             capture.stop();
             capture = null;
         }
+        if (this.getBackFF()){
+            this.setComm("FF");
+        }
     }
     @Override
     public boolean needSeek() {
-            return needSeekCTRL=false;
+        return needSeekCTRL=false;
     }
     @Override
     public boolean isPlaying() {

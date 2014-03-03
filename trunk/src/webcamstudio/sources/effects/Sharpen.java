@@ -2,9 +2,10 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package webcamstudio.sources.effects;
 
+import Catalano.Imaging.FastBitmap;
+import Catalano.Imaging.Filters.Convolution;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
@@ -15,11 +16,26 @@ import javax.swing.JPanel;
  *
  * @author pballeux
  */
-public class Sharpen extends Effect{
-    private final com.jhlabs.image.SharpenFilter filter = new com.jhlabs.image.SharpenFilter();
+public class Sharpen extends Effect {
+
     @Override
     public void applyEffect(BufferedImage img) {
+        FastBitmap imageIn = new FastBitmap(img);
+        imageIn.toRGB();
+        //Sharpen using kernel.
+        int[][] kernel = {
+            {0 -1,0},
+            {-1,5,-1},
+            {0,-1,0}};
+        
+        //Convolution process.
+        Convolution c = new Convolution(kernel);
+        c.applyInPlace(imageIn);
+        BufferedImage temp = imageIn.toBufferedImage();
+
         Graphics2D buffer = img.createGraphics();
+        buffer.setRenderingHint(java.awt.RenderingHints.KEY_INTERPOLATION, 
+                           java.awt.RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         buffer.setRenderingHint(RenderingHints.KEY_RENDERING,
                            RenderingHints.VALUE_RENDER_SPEED);
         buffer.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
@@ -32,11 +48,14 @@ public class Sharpen extends Effect{
                            RenderingHints.VALUE_COLOR_RENDER_SPEED);
         buffer.setRenderingHint(RenderingHints.KEY_DITHERING,
                            RenderingHints.VALUE_DITHER_DISABLE);
-        BufferedImage temp = filter.filter(img, null);
-        buffer.setBackground(new java.awt.Color(0,0,0,0));
-        buffer.clearRect(0,0,img.getWidth(),img.getHeight());
-        buffer.drawImage(temp, 0, 0,null);
+        buffer.drawImage(temp, 0, 0, null);
         buffer.dispose();
+
+    }
+    
+    @Override
+    public boolean needApply(){
+        return needApply=false;
     }
     @Override
     public JPanel getControl() {
@@ -52,9 +71,4 @@ public class Sharpen extends Effect{
     public void loadFromStudioConfig(Preferences prefs) {
         
     }
-    @Override
-    public boolean needApply(){
-        return needApply=true;
-    }
-
 }

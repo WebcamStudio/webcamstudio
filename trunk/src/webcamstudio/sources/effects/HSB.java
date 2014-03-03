@@ -49,7 +49,7 @@ public class HSB extends Effect{
     }
     @Override
     public boolean needApply(){
-        return needApply=true;
+        return needApply=false;
     }
     @Override
     public JPanel getControl() {

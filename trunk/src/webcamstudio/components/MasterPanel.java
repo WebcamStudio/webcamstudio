@@ -127,7 +127,7 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
         spinHeight.setName("spinHeight"); // NOI18N
 
         btnApply.setText(bundle.getString("APPLY")); // NOI18N
-        btnApply.setToolTipText("Apply Mixer Settings");
+        btnApply.setToolTipText("Apply/Reset Mixer Settings");
         btnApply.setName("btnApply"); // NOI18N
         btnApply.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

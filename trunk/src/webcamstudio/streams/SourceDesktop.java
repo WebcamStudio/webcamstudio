@@ -48,7 +48,7 @@ public class SourceDesktop extends Stream {
         lastPreview = new BufferedImage(captureWidth,captureHeight,BufferedImage.TYPE_INT_ARGB);
         MasterFrameBuilder.register(this);
         if (os == OS.LINUX) {
-            capture = new ProcessRenderer(this, ProcessRenderer.ACTION.CAPTURE, "desktop");
+            capture = new ProcessRenderer(this, ProcessRenderer.ACTION.CAPTURE, "desktop", comm);
             capture.read();
         } else {
             try {
@@ -71,6 +71,9 @@ public class SourceDesktop extends Stream {
         if (capture != null) {
             capture.stop();
             capture = null;
+        }
+        if (this.getBackFF()){
+            this.setComm("FF");
         }
         MasterFrameBuilder.unregister(this);
     }
@@ -120,7 +123,7 @@ public class SourceDesktop extends Stream {
                 lastPreview = nextFrame.getImage();
             }
         } else if (defaultCapture != null) {
-                 frame.setImage(defaultCapture.createScreenCapture(area));
+            frame.setImage(defaultCapture.createScreenCapture(area));
             frame.setOutputFormat(x, y, width, height, opacity, volume);
             frame.setZOrder(zorder);
             applyEffects(frame.getImage());

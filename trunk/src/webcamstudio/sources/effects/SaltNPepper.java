@@ -4,6 +4,9 @@
  */
 package webcamstudio.sources.effects;
 
+import Catalano.Imaging.FastBitmap;
+import Catalano.Imaging.Filters.Merge;
+import Catalano.Imaging.Filters.SaltAndPepperNoise;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -15,16 +18,22 @@ import javax.swing.JPanel;
  *
  * @author pballeux
  */
-public class MegaMind extends Effect {
+public class SaltNPepper extends Effect {
 
     private final com.jhlabs.image.CircleFilter filter = new com.jhlabs.image.CircleFilter();
     private final RGB rgb = new RGB();
     @Override
     public void applyEffect(BufferedImage img) {
-        filter.setHeight(img.getHeight());
-        filter.setCentreY(1);
-        rgb.setGThreshold(0);
-        rgb.setRThreshold(0);
+//        filter.setHeight(img.getHeight());
+//        filter.setCentreY(1);
+//        rgb.setGThreshold(0);
+//        rgb.setRThreshold(0);
+        FastBitmap imageIn = new FastBitmap(img);
+//        FastBitmap overlayImg = new FastBitmap(overlay);
+        SaltAndPepperNoise sAndpNoise = new SaltAndPepperNoise();
+        sAndpNoise.applyInPlace(imageIn);
+        BufferedImage temp = imageIn.toBufferedImage();
+        
         Graphics2D buffer = img.createGraphics();
         buffer.setRenderingHint(RenderingHints.KEY_RENDERING,
                            RenderingHints.VALUE_RENDER_SPEED);
@@ -38,10 +47,10 @@ public class MegaMind extends Effect {
                            RenderingHints.VALUE_COLOR_RENDER_SPEED);
         buffer.setRenderingHint(RenderingHints.KEY_DITHERING,
                            RenderingHints.VALUE_DITHER_DISABLE);
-        BufferedImage temp = filter.filter(img, null);
-        rgb.applyEffect(temp);
-        buffer.setBackground(new Color(0, 0, 0, 0));
-        buffer.clearRect(0, 0, img.getWidth(), img.getHeight());
+//        BufferedImage temp = filter.filter(img, null);
+//        rgb.applyEffect(temp);
+//        buffer.setBackground(new Color(0, 0, 0, 0));
+//        buffer.clearRect(0, 0, img.getWidth(), img.getHeight());
         buffer.drawImage(temp, 0, 0, img.getWidth(), img.getHeight(), 0, 0, temp.getWidth(), temp.getHeight(), null);
         buffer.dispose();
 
@@ -62,7 +71,7 @@ public class MegaMind extends Effect {
     }
     @Override
     public boolean needApply(){
-        return needApply=true;
+        return needApply=false;
     }
 
 

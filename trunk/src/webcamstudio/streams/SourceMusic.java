@@ -34,7 +34,7 @@ public class SourceMusic extends Stream {
         isPlaying = true;
         MasterFrameBuilder.register(this);
         lastPreview = new BufferedImage(captureWidth,captureHeight,BufferedImage.TYPE_INT_ARGB);
-        capture = new ProcessRenderer(this, ProcessRenderer.ACTION.CAPTURE, "music");
+        capture = new ProcessRenderer(this, ProcessRenderer.ACTION.CAPTURE, "music", comm);
         capture.read();
     }
 
@@ -45,6 +45,9 @@ public class SourceMusic extends Stream {
         if (capture != null) {
             capture.stop();
             capture = null;
+        }
+        if (this.getBackFF()){
+            this.setComm("FF");
         }
 
     }
