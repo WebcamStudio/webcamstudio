@@ -28,7 +28,7 @@ import webcamstudio.util.Tools;
  *
  * @author patrick (modified by karl)
  */
-public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Listener{
+public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Listener, StreamDesktop.Listener{
 
     Stream stream = null;
     Viewer viewer = new Viewer();
@@ -43,7 +43,7 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
         stream.setIsIPCam(true);
         viewer.setOpaque(true);
         viewer.setVisible(true);
-        viewer.setBackground(Color.red);
+        viewer.setBackground(Color.black);
         panPreview.add(viewer, BorderLayout.CENTER);
         this.stream = stream;
         spinX.setValue(stream.getX());
@@ -105,16 +105,16 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
             jSlSpinO.setEnabled(false);
         }        
     }
-    public Viewer detachViewer(){
-        panPreview.remove(viewer);
-        panPreview.revalidate();
-        return viewer;
-    }
-    public Viewer attachViewer(){
-        panPreview.add(viewer, BorderLayout.CENTER);
-        panPreview.revalidate();
-        return viewer;
-    }
+//    public Viewer detachViewer(){
+//        panPreview.remove(viewer);
+//        panPreview.revalidate();
+//        return viewer;
+//    }
+//    public Viewer attachViewer(){
+//        panPreview.add(viewer, BorderLayout.CENTER);
+//        panPreview.revalidate();
+//        return viewer;
+//    }
     public ImageIcon getIcon(){
         ImageIcon icon = null;
         if (stream.getPreview()!=null){
@@ -772,6 +772,8 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
         labelPTZPanel.setName("labelPTZPanel"); // NOI18N
         labelPTZPanel.setOpaque(true);
         add(labelPTZPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(126, 7, 153, 130));
+
+        getAccessibleContext().setAccessibleParent(this);
     }// </editor-fold>//GEN-END:initComponents
     private void tglActiveStreamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglActiveStreamActionPerformed
         if (tglActiveStream.isSelected()) {
@@ -1013,7 +1015,7 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
                         Logger.getLogger(StreamPanelIPCam.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 } else if (stream.getPtzBrand().equals("wanscam")) {
-                    // Axis compatible commands
+                    // Wanscam compatible commands
                     String camCmdRight = "wget -qO- http://"+temp[0]+"/moveptz.xml?dir=right&user="+stream.getIPUser()+"&pwd="+stream.getIPPwd();
                     System.out.println("cmdRight: "+camCmdRight);
                     Runtime rt = Runtime.getRuntime();
@@ -1053,6 +1055,7 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
                         Logger.getLogger(StreamPanelIPCam.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 } else if (stream.getPtzBrand().equals("wanscam")) {
+                    // Wanscam compatible commands   
                     String camCmdStopLeft = "wget -qO- http://"+temp[0]+"/moveptz.xml?dir=stop&user="+stream.getIPUser()+"&pwd="+stream.getIPPwd();
                     System.out.println("cmdStopRight: "+camCmdStopLeft);
                     Runtime rt = Runtime.getRuntime();
@@ -1128,7 +1131,7 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
                         Logger.getLogger(StreamPanelIPCam.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 } else if (stream.getPtzBrand().equals("wanscam")) {
-                    // Axis compatible commands
+                    // Wanscam compatible commands   
                     String camCmdRight = "wget -qO- http://"+temp[0]+"/moveptz.xml?dir=up&user="+stream.getIPUser()+"&pwd="+stream.getIPPwd();
                     System.out.println("cmdUP: "+camCmdRight);
                     Runtime rt = Runtime.getRuntime();
@@ -1167,6 +1170,7 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
                         Logger.getLogger(StreamPanelIPCam.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 } else if (stream.getPtzBrand().equals("wanscam")) {
+                    // Wanscam compatible commands   
                     String camCmdStopLeft = "wget -qO- http://"+temp[0]+"/moveptz.xml?dir=stop&user="+stream.getIPUser()+"&pwd="+stream.getIPPwd();
                     System.out.println("cmdStopUP: "+camCmdStopLeft);
                     Runtime rt = Runtime.getRuntime();
@@ -1219,7 +1223,7 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
                         Logger.getLogger(StreamPanelIPCam.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 } else if (stream.getPtzBrand().equals("wanscam")) {
-                    // Axis compatible commands
+                    // Wanscam compatible commands   
                     String camCmdRight = "wget -qO- http://"+temp[0]+"/moveptz.xml?dir=down&user="+stream.getIPUser()+"&pwd="+stream.getIPPwd();
                     System.out.println("cmdDown: "+camCmdRight);
                     Runtime rt = Runtime.getRuntime();
@@ -1258,6 +1262,7 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
                         Logger.getLogger(StreamPanelIPCam.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 } else if (stream.getPtzBrand().equals("wanscam")) {
+                    // Wanscam compatible commands   
                     String camCmdStopLeft = "wget -qO- http://"+temp[0]+"/moveptz.xml?dir=stop&user="+stream.getIPUser()+"&pwd="+stream.getIPPwd();
                     System.out.println("cmdStopUP: "+camCmdStopLeft);
                     Runtime rt = Runtime.getRuntime();
@@ -1310,7 +1315,7 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
                         Logger.getLogger(StreamPanelIPCam.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 } else if (stream.getPtzBrand().equals("wanscam")) {
-                    // Axis compatible commands
+                    // Wanscam compatible commands   
                     String camCmdRight = "wget -qO- http://"+temp[0]+"/moveptz.xml?dir=left&user="+stream.getIPUser()+"&pwd="+stream.getIPPwd();
                     System.out.println("cmdLeft: "+camCmdRight);
                     Runtime rt = Runtime.getRuntime();
@@ -1326,6 +1331,7 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
                     camPTZon.destroy();
                 }
                 if (stream.getPtzBrand().equals("foscam")) {
+                    // Foscam compatible commands   
                     String camCmdStopLeft = "wget -qO- http://"+temp[0]+"/decoder_control.cgi?command=7&user="+stream.getIPUser()+"&pwd="+stream.getIPPwd();
                     System.out.println("cmdStopLeft: "+camCmdStopLeft);
                     Runtime rt = Runtime.getRuntime();
@@ -1348,6 +1354,7 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
                         Logger.getLogger(StreamPanelIPCam.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 } else if (stream.getPtzBrand().equals("wanscam")) {
+                    // Wanscam compatible commands   
                     String camCmdStopLeft = "wget -qO- http://"+temp[0]+"/moveptz.xml?dir=stop&user="+stream.getIPUser()+"&pwd="+stream.getIPPwd();
                     System.out.println("cmdStopLeft: "+camCmdStopLeft);
                     Runtime rt = Runtime.getRuntime();
@@ -1534,6 +1541,7 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
                     }
                     camPTZon.destroy();
                 } else if (stream.getPtzBrand().equals("wanscam")) {
+                    // Wanscam compatible commands   
                     String camCmdStopLeft = "wget -qO- http://"+temp[0]+"/moveptz.xml?dir=leftright&user="+stream.getIPUser()+"&pwd="+stream.getIPPwd();
                     System.out.println("cmdPreset1: "+camCmdStopLeft);
                     Runtime rt = Runtime.getRuntime();
@@ -1616,5 +1624,9 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
         viewer.setImage(image);
         viewer.setAudioLevel(stream.getAudioLevelLeft(), stream.getAudioLevelRight());
         viewer.repaint();
+    }
+
+    @Override
+    public void selectedSource(Stream source) {
     }
 }

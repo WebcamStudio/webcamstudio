@@ -24,7 +24,7 @@ import webcamstudio.streams.Stream;
  *
  * @author patrick (modified by karl)
  */
-public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listener{
+public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listener, StreamDesktop.Listener{
 
     Stream stream = null;
     Viewer viewer = new Viewer();
@@ -38,7 +38,7 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         
         viewer.setOpaque(true);
         viewer.setVisible(true);
-        viewer.setBackground(Color.red);
+        viewer.setBackground(Color.black);
         panPreview.add(viewer, BorderLayout.CENTER);
         this.stream = stream;
         spinX.setValue(stream.getX());
@@ -99,16 +99,16 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
             jSlSpinO.setEnabled(false);
         }        
     }
-    public Viewer detachViewer(){
-        panPreview.remove(viewer);
-        panPreview.revalidate();
-        return viewer;
-    }
-    public Viewer attachViewer(){
-        panPreview.add(viewer, BorderLayout.CENTER);
-        panPreview.revalidate();
-        return viewer;
-    }
+//    public Viewer detachViewer(){
+//        panPreview.remove(viewer);
+//        panPreview.revalidate();
+//        return viewer;
+//    }
+//    public Viewer attachViewer(){
+//        panPreview.add(viewer, BorderLayout.CENTER);
+//        panPreview.revalidate();
+//        return viewer;
+//    }
     public ImageIcon getIcon(){
         ImageIcon icon = null;
         if (stream.getPreview()!=null){
@@ -695,6 +695,8 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/splash100.png"))); // NOI18N
         jLabel3.setName("jLabel3"); // NOI18N
         add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(143, 14, 120, 110));
+
+        getAccessibleContext().setAccessibleParent(this);
     }// </editor-fold>//GEN-END:initComponents
     private void tglActiveStreamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglActiveStreamActionPerformed
         if (tglActiveStream.isSelected()) {
@@ -949,5 +951,9 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         viewer.setImage(image);
         viewer.setAudioLevel(stream.getAudioLevelLeft(), stream.getAudioLevelRight());
         viewer.repaint();
+    }
+    
+    @Override
+    public void selectedSource(Stream source) {
     }
 }

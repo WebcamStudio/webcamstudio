@@ -26,8 +26,7 @@ public class StreamFullScreen extends javax.swing.JInternalFrame {
         public void selectedSource(Stream source);
     }
     /** Creates new form StreamFullDesktop
-     * @param s
-     * @param l */
+     * @param viewer */
     public StreamFullScreen(Viewer viewer) {
         initComponents();
         StreamFullPanel p = new StreamFullPanel(viewer);
@@ -55,28 +54,21 @@ public class StreamFullScreen extends javax.swing.JInternalFrame {
         setMaximumSize(new java.awt.Dimension(1280, 1024));
         setVisible(true);
         addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
-            public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
+            public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameClosed(javax.swing.event.InternalFrameEvent evt) {
             }
             public void internalFrameClosing(javax.swing.event.InternalFrameEvent evt) {
                 formInternalFrameClosing(evt);
             }
-            public void internalFrameClosed(javax.swing.event.InternalFrameEvent evt) {
+            public void internalFrameDeactivated(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {
             }
             public void internalFrameIconified(javax.swing.event.InternalFrameEvent evt) {
                 formInternalFrameIconified(evt);
             }
-            public void internalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {
-                formInternalFrameDeiconified(evt);
-            }
-            public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
-                formInternalFrameActivated(evt);
-            }
-            public void internalFrameDeactivated(javax.swing.event.InternalFrameEvent evt) {
-            }
-        });
-        addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                formFocusGained(evt);
+            public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
             }
         });
 
@@ -89,33 +81,9 @@ public class StreamFullScreen extends javax.swing.JInternalFrame {
        }
     }//GEN-LAST:event_formInternalFrameIconified
 
-    private void formInternalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameDeiconified
-    }//GEN-LAST:event_formInternalFrameDeiconified
-
     private void formInternalFrameClosing(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameClosing
-//        stream.destroy();
-//        stream = null;
         panel = null;
-//        System.gc();
     }//GEN-LAST:event_formInternalFrameClosing
-
-    private void formFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_formFocusGained
-        
-    }//GEN-LAST:event_formFocusGained
-
-    private void formInternalFrameActivated(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameActivated
-//        
-//        if (listener!=null){
-//            new Thread(new Runnable(){
-//                
-//                @Override
-//                public void run() {
-//                    listener.selectedSource(stream);
-//                }
-//            }).start();
-//            
-//        }
-    }//GEN-LAST:event_formInternalFrameActivated
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables

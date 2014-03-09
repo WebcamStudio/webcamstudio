@@ -48,7 +48,7 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener, 
         
         viewer.setOpaque(true);
         viewer.setVisible(true);
-        viewer.setBackground(Color.red);
+        viewer.setBackground(Color.black);
         panPreview.add(viewer, BorderLayout.CENTER);
         this.stream = stream;
         spinX.setValue(stream.getX());
@@ -117,16 +117,16 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener, 
             tglAudio.setVisible(false);
         }
     }
-    public Viewer detachViewer(){
-        panPreview.remove(viewer);
-        panPreview.revalidate();
-        return viewer;
-    }
-    public Viewer attachViewer(){
-        panPreview.add(viewer, BorderLayout.CENTER);
-        panPreview.revalidate();
-        return viewer;
-    }
+//    public Viewer detachViewer(){
+//        panPreview.remove(viewer);
+//        panPreview.revalidate();
+//        return viewer;
+//    }
+//    public Viewer attachViewer(){
+//        panPreview.add(viewer, BorderLayout.CENTER);
+//        panPreview.revalidate();
+//        return viewer;
+//    }
     public ImageIcon getIcon(){
         ImageIcon icon = null;
         if (stream.getPreview()!=null){

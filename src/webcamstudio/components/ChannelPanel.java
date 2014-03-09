@@ -18,6 +18,7 @@ import javax.swing.DefaultListModel;
 import webcamstudio.WebcamStudio;
 import webcamstudio.channels.MasterChannels;
 import webcamstudio.mixers.SystemPlayer;
+import webcamstudio.streams.SourceChannel;
 import webcamstudio.streams.Stream;
 import webcamstudio.studio.Studio;
 import webcamstudio.util.Tools;
@@ -207,7 +208,7 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
             }
         });
 
-        btnRenameCh.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/view-refresh.png"))); // NOI18N
+        btnRenameCh.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/edit.png"))); // NOI18N
         btnRenameCh.setToolTipText(bundle.getString("RENAME_CHANNEL")); // NOI18N
         btnRenameCh.setEnabled(false);
         btnRenameCh.setName("btnRenameCh"); // NOI18N
@@ -533,25 +534,40 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
     @SuppressWarnings("unchecked")
     private void btnRenameChActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRenameChActionPerformed
         if (lstChannels != null) {
-            String rnName = txtName.getText();
-            String chName = lstChannels.getSelectedValue().toString();
-            int SelectCHIndex = lstChannels.getSelectedIndex();
-            master.removeChannel(chName);
-            model.removeElement(chName);
-            aModel.removeElement(chName);
-            CHCurrNext.remove(chName);
-            CHTimers.remove(SelectCHIndex);
-            ListChannels.remove(chName);
-            lstChannels.revalidate();
-            lstNextChannel.revalidate();
-            master.addChannel(rnName);
-            model.addElement(rnName);
-            aModel.addElement(rnName);
-            CHCurrNext.add(rnName);
-            CHTimers.add(CHTimer);
-            ListChannels.add(rnName);
-            lstChannels.revalidate();
-            lstNextChannel.revalidate();
+            if (txtName.getText().length() > 0) {
+                String rnName = txtName.getText();
+                String chName = lstChannels.getSelectedValue().toString();
+                int SelectCHIndex = lstChannels.getSelectedIndex();
+                for (Stream stream : streamS){
+                    for (SourceChannel sc : stream.getChannels()) {
+                        if (sc.getName().equals(chName)){
+                            sc.setName(rnName);
+                        }
+                    }
+                }
+                int coun =  0;
+                for (String chCurNx : CHCurrNext){
+                    if (chCurNx.equals(chName)){
+                        CHCurrNext.set(coun, rnName);
+                    }
+                    coun++;
+                }
+                lstNextChannel.revalidate();
+                master.addChannelAt(rnName, SelectCHIndex);
+                master.removeChannelAt(chName);
+                model.removeElement(chName);
+                aModel.removeElement(chName);
+                CHTimers.remove(SelectCHIndex);
+                ListChannels.remove(chName);
+                lstChannels.revalidate();
+                model.insertElementAt(rnName, SelectCHIndex);
+                aModel.insertElementAt(rnName, SelectCHIndex);
+                CHTimers.add(SelectCHIndex, CHTimer);
+                ListChannels.add(SelectCHIndex, rnName);
+                lstChannels.revalidate();
+                lstNextChannel.revalidate();
+                btnRenameCh.setEnabled(false);
+            }
         }
     }//GEN-LAST:event_btnRenameChActionPerformed
     

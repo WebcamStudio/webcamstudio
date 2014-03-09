@@ -4,9 +4,6 @@
  */
 package webcamstudio.streams;
 
-import java.awt.Graphics2D;
-import java.awt.GraphicsConfiguration;
-import java.awt.GraphicsEnvironment;
 import java.awt.image.BufferedImage;
 import webcamstudio.externals.ProcessRenderer;
 import webcamstudio.mixers.Frame;
