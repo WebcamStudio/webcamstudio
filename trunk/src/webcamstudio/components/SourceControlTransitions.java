@@ -57,12 +57,13 @@ public class SourceControlTransitions extends javax.swing.JPanel {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         lstStartTransitions = new javax.swing.JList();
+        btnResetTrans = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         lstEndTransitions = new javax.swing.JList();
 
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("webcamstudio/Languages"); // NOI18N
         setName(bundle.getString("TRANSITIONS")); // NOI18N
-        setLayout(new java.awt.GridLayout(1, 0));
+        setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.LINE_AXIS));
 
         jScrollPane1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("STARTING"))); // NOI18N
         jScrollPane1.setName("jScrollPane1"); // NOI18N
@@ -82,6 +83,20 @@ public class SourceControlTransitions extends javax.swing.JPanel {
 
         add(jScrollPane1);
         jScrollPane1.getAccessibleContext().setAccessibleName(bundle.getString("STARTING")); // NOI18N
+
+        btnResetTrans.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/button-small-clear.png"))); // NOI18N
+        btnResetTrans.setToolTipText("Clear Selections");
+        btnResetTrans.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnResetTrans.setMaximumSize(new java.awt.Dimension(29, 100));
+        btnResetTrans.setMinimumSize(new java.awt.Dimension(25, 25));
+        btnResetTrans.setName("btnResetTrans"); // NOI18N
+        btnResetTrans.setPreferredSize(new java.awt.Dimension(28, 28));
+        btnResetTrans.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnResetTransActionPerformed(evt);
+            }
+        });
+        add(btnResetTrans);
 
         jScrollPane2.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ENDING"))); // NOI18N
         jScrollPane2.setName("jScrollPane2"); // NOI18N
@@ -119,7 +134,15 @@ public class SourceControlTransitions extends javax.swing.JPanel {
         }        
     }//GEN-LAST:event_lstEndTransitionsValueChanged
 
+    private void btnResetTransActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetTransActionPerformed
+        source.getStartTransitions().clear();
+        source.getEndTransitions().clear();
+        lstEndTransitions.clearSelection();
+        lstStartTransitions.clearSelection();
+    }//GEN-LAST:event_btnResetTransActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnResetTrans;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JList lstEndTransitions;

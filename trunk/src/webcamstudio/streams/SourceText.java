@@ -13,7 +13,6 @@ import java.awt.image.BufferedImage;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterFrameBuilder;
 import webcamstudio.sources.effects.Effect;
-import webcamstudio.util.Tools;
 
 /**
  *
@@ -22,11 +21,8 @@ import webcamstudio.util.Tools;
 public class SourceText extends Stream {
 
     BufferedImage image = null;
-//    String content = "";
-    boolean playing = false;
+    boolean isPlaying = false;
     boolean stop = false;
-//    String fontName = Font.MONOSPACED;
-//    int color = 0xFFFFFF; 
     int bgColor = 0x000000;
     Frame frame = null;
     float bgOpacity = 1f;
@@ -37,34 +33,14 @@ public class SourceText extends Stream {
     public void readNext() {
         frame.setImage(image);
         if (frame != null) {
-//            for (int fx = 0; fx < this.getEffects().size(); fx++) {
-//                Effect fxT = this.getEffects().get(fx);
-//                if (fxT.needApply()){
-                    BufferedImage txImage = frame.getImage(); 
-//                    fxT.applyEffect(txImage);
-                    applyEffects(txImage);
-                }
-       if (frame != null)     {
+            BufferedImage txImage = frame.getImage(); 
+            applyEffects(txImage);
+        }
+        if (frame != null)     {
             frame.setOutputFormat(x, y, width, height, opacity, volume);
             frame.setZOrder(zorder);
             nextFrame=frame;
         }
-
-//        if (frame != null) {
-//            for (Effect fxT : this.getEffects()) {
-//                if (fxT.needApply()){   
-//                    fxT.applyEffect(frame.getImage());
-//                }
-//            }
-//            frame.setOutputFormat(x, y, width, height, opacity, volume);
-//            frame.setZOrder(zorder);
-//            nextFrame=frame;
-//        }
-//        BufferedImage txImage = frame.getImage(); 
-//        applyEffects(txImage);
-//        frame.setOutputFormat(x, y, width, height, opacity, volume);
-//        frame.setZOrder(zorder);
-//        nextFrame=frame;
     }
 
     public enum Shape {
@@ -82,18 +58,16 @@ public class SourceText extends Stream {
         name = "Text";
         updateContent(content);
         color = 0xFFFFFF;
-        fontName = Font.MONOSPACED;      
+        fontName = Font.MONOSPACED;        
     }
 
     @Override
     public void setX(int x){
         this.x=x;
-//        updateContent(content);
         }
     @Override
     public void setY(int y){
         this.y=y;
-//        updateContent(content);
         }
     public void setBackgroundOpacity(float o){
         bgOpacity=o;
@@ -105,7 +79,6 @@ public class SourceText extends Stream {
     public void setBackground(Shape s) {
         shape = s;
         updateContent(content);
-//        Tools.sleep(50);
     }
 
     public Shape getBackground() {
@@ -116,7 +89,7 @@ public class SourceText extends Stream {
     }
     @Override
     public void setIsPlaying(boolean setIsPlaying) {
-        playing = setIsPlaying;
+        isPlaying = setIsPlaying;
     }
 
     public String getStrBackground() {
@@ -169,7 +142,6 @@ public class SourceText extends Stream {
     @Override
     public void setZOrder(int layer) {
         zorder = layer;
-//        updateContent(content);
     }
 
     @Override
@@ -205,7 +177,6 @@ public class SourceText extends Stream {
             fm = buffer.getFontMetrics();
             textHeight = fm.getHeight();
             textWidth = fm.stringWidth(content);
-            
         }        
         buffer.setRenderingHint(java.awt.RenderingHints.KEY_TEXT_ANTIALIASING, java.awt.RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         buffer.setRenderingHint(java.awt.RenderingHints.KEY_INTERPOLATION, java.awt.RenderingHints.VALUE_INTERPOLATION_BICUBIC);
@@ -254,7 +225,7 @@ public class SourceText extends Stream {
     @Override
     public void read() {
         stop = false;
-        playing = true;
+        isPlaying = true;
         this.setBackground(shape);
         try {
             updateContent(content);
@@ -277,7 +248,7 @@ public class SourceText extends Stream {
             }
         }
         stop = true;
-        playing = false;
+        isPlaying = false;
         frame = null;
         MasterFrameBuilder.unregister(this);
     }
@@ -293,7 +264,7 @@ public class SourceText extends Stream {
 
     @Override
     public boolean isPlaying() {
-        return playing;
+        return isPlaying;
     }
 
     @Override

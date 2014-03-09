@@ -43,6 +43,11 @@ public class MasterChannels {
             s.addChannel(SourceChannel.getChannel(name, s));
         }
     }
+    
+    public void addChannelAt(String name, int index){
+        channelNames.add(index, name);
+
+    }
     public void updateChannel(String name){
         for (Stream s : streams){
             String streamName =s.getClass().getName().toString();
@@ -99,6 +104,7 @@ public class MasterChannels {
             }
         }
     }
+    
     public void removeChannel(String name){
         channelNames.remove(name);
         for (Stream s : streams){
@@ -113,6 +119,11 @@ public class MasterChannels {
             }
         }
     }
+    
+    public void removeChannelAt(String name){
+        channelNames.remove(name);
+    }
+    
     public void selectChannel(String name){
         for (Stream stream : streams){
             for (SourceChannel sc : stream.getChannels()){

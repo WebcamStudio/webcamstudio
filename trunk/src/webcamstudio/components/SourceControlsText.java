@@ -30,7 +30,11 @@ public class SourceControlsText extends javax.swing.JPanel {
         initComponents();
         SpinnerNumberModel model = new SpinnerNumberModel(100, 0, 100, 1);
         spinBGOpacity.setModel(model);
-        txtHexColor.setText(Integer.toHexString(stream.getBackgroundColor()));
+        if( stream.getLoaded()){
+            txtHexColor.setText(Integer.toHexString(stream.getBackgroundColor()));
+        } else {
+            txtHexColor.setText("000000");
+        }
         switch(stream.getBackground()){
             case NONE:
                 rdNone.setSelected(true);
@@ -210,12 +214,10 @@ public class SourceControlsText extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void txtHexColorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtHexColorActionPerformed
-
         stream.setBackGroundColor(Integer.parseInt(txtHexColor.getText().trim(), 16));
     }//GEN-LAST:event_txtHexColorActionPerformed
 
     private void txtHexColorFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtHexColorFocusLost
-
         stream.setBackGroundColor(Integer.parseInt(txtHexColor.getText().trim(), 16));
     }//GEN-LAST:event_txtHexColorFocusLost
 
@@ -226,8 +228,10 @@ public class SourceControlsText extends javax.swing.JPanel {
         c.setVisible(true);
         Color color = c.getColor();
         if (color != null) {
-            txtHexColor.setText(Integer.toHexString(color.getRGB()));
-            stream.setBackGroundColor(color.getRGB());
+            int col = color.getRGB();
+            String colText = Integer.toHexString(col).substring(2);
+            txtHexColor.setText(colText);
+            stream.setBackGroundColor(col);
         }
     }//GEN-LAST:event_btnSelectColorActionPerformed
 

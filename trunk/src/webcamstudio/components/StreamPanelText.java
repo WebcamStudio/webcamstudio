@@ -23,13 +23,11 @@ import webcamstudio.streams.Stream;
 
 /**
  *
- * @author patrick
+ * @author patrick (modified by karl)
  */
-public class StreamPanelText extends javax.swing.JPanel implements Stream.Listener{
+public class StreamPanelText extends javax.swing.JPanel implements Stream.Listener, StreamDesktop.Listener{
 
-    Stream stream = null;
-    Viewer viewer = new Viewer();
-    
+    Stream stream = null;    
 
     /** Creates new form StreamPanel
      * @param stream */
@@ -38,9 +36,6 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
 
         initComponents();
         
-        viewer.setOpaque(true);
-        viewer.setVisible(true);
-        viewer.setBackground(Color.red);
         DefaultComboBoxModel model = new DefaultComboBoxModel();
         GraphicsEnvironment e = GraphicsEnvironment.getLocalGraphicsEnvironment();
         Font[] fonts = e.getAllFonts(); // Get the fonts
@@ -64,7 +59,7 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
         jSlSpinZOrder.setValue(stream.getZOrder());
         
         txtContent.setText(stream.getContent());
-        setToolTipText(stream.getContent());
+//        setToolTipText(stream.getContent());
         cboFonts.setEnabled(!(stream instanceof SourceQRCode));
         txtHexColor.setEnabled(!(stream instanceof SourceQRCode));
         btnSelectColor.setEnabled(!(stream instanceof SourceQRCode));
@@ -94,6 +89,10 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        spinX = new javax.swing.JSpinner();
+        spinY = new javax.swing.JSpinner();
+        spinW = new javax.swing.JSpinner();
+        spinH = new javax.swing.JSpinner();
         labelFont = new javax.swing.JLabel();
         lblColor = new javax.swing.JLabel();
         txtContent = new javax.swing.JTextField();
@@ -106,10 +105,6 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
         jSeparator7 = new javax.swing.JSeparator();
         labelText = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        spinX = new javax.swing.JSpinner();
-        spinY = new javax.swing.JSpinner();
-        spinW = new javax.swing.JSpinner();
-        spinH = new javax.swing.JSpinner();
         labelX1 = new javax.swing.JLabel();
         labelY1 = new javax.swing.JLabel();
         labelW1 = new javax.swing.JLabel();
@@ -125,8 +120,46 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
         jSeparator3 = new javax.swing.JSeparator();
 
         setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        setFocusTraversalPolicyProvider(true);
+        setMaximumSize(new java.awt.Dimension(286, 370));
         setPreferredSize(new java.awt.Dimension(286, 370));
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        spinX.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
+        spinX.setName("spinX"); // NOI18N
+        spinX.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                spinXStateChanged(evt);
+            }
+        });
+        add(spinX, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 180, 50, -1));
+
+        spinY.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
+        spinY.setName("spinY"); // NOI18N
+        spinY.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                spinYStateChanged(evt);
+            }
+        });
+        add(spinY, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 200, 50, -1));
+
+        spinW.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
+        spinW.setName("spinW"); // NOI18N
+        spinW.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                spinWStateChanged(evt);
+            }
+        });
+        add(spinW, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 220, 50, -1));
+
+        spinH.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
+        spinH.setName("spinH"); // NOI18N
+        spinH.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                spinHStateChanged(evt);
+            }
+        });
+        add(spinH, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 240, 50, -1));
 
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("webcamstudio/Languages"); // NOI18N
         labelFont.setText(bundle.getString("FONT")); // NOI18N
@@ -216,49 +249,13 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
 
         labelText.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         labelText.setText(bundle.getString("ENTER_TEXT")); // NOI18N
-        labelText.setToolTipText("");
+        // labelText.setToolTipText("");
         labelText.setName("labelText"); // NOI18N
         add(labelText, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 142, 70, -1));
 
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/FontCC.png"))); // NOI18N
         jLabel2.setName("jLabel2"); // NOI18N
-        add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(12, 25, -1, -1));
-
-        spinX.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
-        spinX.setName("spinX"); // NOI18N
-        spinX.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                spinXStateChanged(evt);
-            }
-        });
-        add(spinX, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 180, 50, -1));
-
-        spinY.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
-        spinY.setName("spinY"); // NOI18N
-        spinY.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                spinYStateChanged(evt);
-            }
-        });
-        add(spinY, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 200, 50, -1));
-
-        spinW.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
-        spinW.setName("spinW"); // NOI18N
-        spinW.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                spinWStateChanged(evt);
-            }
-        });
-        add(spinW, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 220, 50, -1));
-
-        spinH.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
-        spinH.setName("spinH"); // NOI18N
-        spinH.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                spinHStateChanged(evt);
-            }
-        });
-        add(spinH, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 240, 50, -1));
+        add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(12, 23, -1, -1));
 
         labelX1.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         labelX1.setText(bundle.getString("X")); // NOI18N
@@ -315,7 +312,6 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
         jSlSpinW.setSnapToTicks(true);
         jSlSpinW.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jSlSpinW.setName("jSlSpinW"); // NOI18N
-        jSlSpinW.setOpaque(true);
         jSlSpinW.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 jSlSpinWStateChanged(evt);
@@ -328,7 +324,6 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
         jSlSpinH.setSnapToTicks(true);
         jSlSpinH.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jSlSpinH.setName("jSlSpinH"); // NOI18N
-        jSlSpinH.setOpaque(true);
         jSlSpinH.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 jSlSpinHStateChanged(evt);
@@ -376,16 +371,18 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
         jSeparator3.setName("jSeparator3"); // NOI18N
         jSeparator3.setPreferredSize(new java.awt.Dimension(48, 10));
         add(jSeparator3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 290, 268, 10));
+
+        getAccessibleContext().setAccessibleParent(this);
     }// </editor-fold>//GEN-END:initComponents
 
     private void txtContentFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtContentFocusLost
         stream.updateContent(txtContent.getText());
-        setToolTipText(stream.getContent());
+//        setToolTipText(stream.getContent());
     }//GEN-LAST:event_txtContentFocusLost
 
     private void txtContentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtContentActionPerformed
          stream.updateContent(txtContent.getText());
-         setToolTipText(stream.getContent());
+//         setToolTipText(stream.getContent());
     }//GEN-LAST:event_txtContentActionPerformed
 
     private void cboFontsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboFontsActionPerformed
@@ -406,7 +403,7 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
         c.setVisible(true);
         Color color = c.getColor();
         if (color!=null){
-            txtHexColor.setText(Integer.toHexString(color.getRGB()));
+            txtHexColor.setText(Integer.toHexString(color.getRGB()).substring(2));
             stream.setColor(color.getRGB());
         }    
     }//GEN-LAST:event_btnSelectColorActionPerformed
@@ -528,7 +525,9 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
 
     @Override
     public void updatePreview(BufferedImage image) {
-        viewer.setImage(image);
-        viewer.repaint();
+    }
+
+    @Override
+    public void selectedSource(Stream source) {
     }
 }

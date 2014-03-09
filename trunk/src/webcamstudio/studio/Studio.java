@@ -88,7 +88,6 @@ import static webcamstudio.streams.SourceText.Shape.RECTANGLE;
 import static webcamstudio.streams.SourceText.Shape.ROUNDRECT;
 import webcamstudio.streams.SourceURL;
 import webcamstudio.streams.Stream;
-import webcamstudio.util.Tools;
 
 /**
  *
@@ -776,6 +775,7 @@ public class Studio {
                                 break;
                         }
                     }
+                    text.setLoaded(true);
                     int op=0;
                     for (SourceChannel scs : SCL) {
                         scs.setName(SubChNames.get(op));
@@ -838,6 +838,7 @@ public class Studio {
                         }
                         stream.addEffect(fx);
                     }
+                    stream.setLoaded(true);
                     int op=0;
                     for (SourceChannel scs : SCL) {
                         scs.setName(SubChNames.get(op));
