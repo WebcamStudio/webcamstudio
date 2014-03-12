@@ -38,6 +38,13 @@ public class Exporter implements MasterMixer.SinkListener {
     private Stream stream = null;
     private Socket vConnection = null;
     private Socket aConnection = null;
+    public interface Listener {
+        public void resetFMECount();    
+    }
+    static Listener listenerEx = null;
+    public static void setListenerEx(Listener l) {
+        listenerEx = l;
+    }
 
     public Exporter(Stream s) throws SocketException {
         this.stream = s;
@@ -87,6 +94,7 @@ public class Exporter implements MasterMixer.SinkListener {
                         }
                         stream.stop();                   
                         stream.updateStatus();
+                        listenerEx.resetFMECount();
                         Logger.getLogger(Exporter.class.getName()).log(Level.SEVERE, null, ex);
                     }
                     System.out.println("Video output stopped");

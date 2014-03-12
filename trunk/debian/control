@@ -53,7 +53,6 @@ Depends: openjdk-7-jre,
   gstreamer0.10-plugins-ugly,
   gstreamer0.10-pulseaudio,
   gstreamer0.10-gnonlin,
-  ffmpeg | ffmpeg-real,
   gksu,
   pavucontrol,
   pulseaudio-utils,
@@ -62,6 +61,8 @@ Depends: openjdk-7-jre,
   ${misc:Depends}
 Recommends: webcamstudio-dkms | v4l2loopback-dkms,
   ${shlibs:Recommends}
+Suggests: ffmpeg | ffmpeg-real,
+  ${shlibs:Suggests}
 Description: Creates virtual webcam to broadcast over the internet.
  WebcamStudio is a virtual webcam software that can be used with Skype or a
  flash website like UStream, to create a professional looking broadcast, 
@@ -72,12 +73,12 @@ Description: Creates virtual webcam to broadcast over the internet.
  .
  Some of the features include:
    - Switch webcams on a single click
-   - Show an IRC channel in your video broadcast
+   - Show an IRC channel in your video broadcast (to do)
    - Broadcast your desktop for creation of nice HOWTO's
    - Be creative and put animations and banners
-   - Display what song is currently played by Rhythmbox
+   - Display what song is currently played by Rhythmbox (to do)
    - Co-host a remote friend, show his webcam inside your output (PicInPic?)
-   - Connect to WeatherBug and display your current weather
+   - Connect to WeatherBug and display your current weather (to do)
    - Apply some fancy effects on each source
    - Have a green wall, then why not use the ChromaKey effect to do the same as
    the weather man on the news network

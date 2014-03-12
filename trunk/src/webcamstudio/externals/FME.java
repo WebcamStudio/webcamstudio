@@ -17,6 +17,7 @@ import javax.xml.xpath.XPathFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 import webcamstudio.media.renderer.Capturer;
+import webcamstudio.mixers.MasterMixer;
 
 /**
  *
@@ -36,6 +37,8 @@ public class FME {
     private String mount = "";
     private String password = "";
     private String port = "";
+    private String keyInt = "";
+    private final MasterMixer mixer = MasterMixer.getInstance();
     
     public FME(File xml) {
         try{
@@ -45,7 +48,7 @@ public class FME {
         }
     }
     
-    public FME(String url,String stream, String name, String abitrate,String vbitrate, String vcodec, String acodec, String width, String height, String mount, String password, String port){
+    public FME(String url,String stream, String name, String abitrate,String vbitrate, String vcodec, String acodec, String width, String height, String mount, String password, String port, String keyint){
         this.name = name;
         this.width = width;
         this.height = height;
@@ -58,7 +61,7 @@ public class FME {
         this.mount = mount;
         this.password = password;
         this.port = port;
-        
+        this.keyInt = keyint;   
     }
     private void parse(File xml) throws ParserConfigurationException, SAXException, IOException, XPathExpressionException {
         XPath path = XPathFactory.newInstance().newXPath();
@@ -85,6 +88,18 @@ public class FME {
         password = (String)path.evaluate(root + "/output/rtmp/password", doc,XPathConstants.STRING);
         port = (String)path.evaluate(root + "/output/rtmp/port", doc,XPathConstants.STRING);
         
+        String keyI = (String)path.evaluate(root + "/encode/video/advanced/keyframe_frequency", doc,XPathConstants.STRING);
+        if (keyI != "") {
+            String[] kInt = keyI.split(" ");
+            String g = kInt[0].replaceAll(" ", "");
+            int sec = Integer.parseInt(g);
+            int kInteger = sec*mixer.getRate();
+            keyInt = Integer.toString(kInteger);
+        } else {
+            int kInteger = 5*mixer.getRate();
+            keyInt = Integer.toString(kInteger);
+        }
+//        System.out.println("Pharsed KeyInt: "+keyInt+"###");
     }
 
     /**
@@ -160,5 +175,8 @@ public class FME {
     }
     public String getPort() {
         return port;
+    }
+    public String getKeyInt() {
+        return keyInt;
     }
 }
