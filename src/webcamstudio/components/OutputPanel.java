@@ -53,6 +53,7 @@ import webcamstudio.channels.MasterChannels;
 import webcamstudio.exporter.vloopback.VideoDevice;
 import webcamstudio.externals.FME;
 import webcamstudio.externals.ProcessRenderer;
+import webcamstudio.media.renderer.Exporter;
 import webcamstudio.mixers.MasterMixer;
 import webcamstudio.streams.SinkAudio;
 import webcamstudio.streams.SinkBroadcast;
@@ -67,7 +68,7 @@ import webcamstudio.util.Tools.OS;
  *
  * @author patrick (modified by karl)
  */
-public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, WebcamStudio.Listener, ChannelPanel.Listener {
+public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, WebcamStudio.Listener, ChannelPanel.Listener, Exporter.Listener {
 
     TreeMap<String, SinkFile> files = new TreeMap<>();
     TreeMap<String, SinkBroadcast> broadcasts = new TreeMap<>();
@@ -94,6 +95,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
         final OutputPanel instanceSinkOP = this;
         WebcamStudio.setListenerOP(instanceSinkOP);
         ChannelPanel.setListenerCP(instanceSinkOP);
+        Exporter.setListenerEx(instanceSinkOP);
         if (Tools.getOS() == OS.LINUX) {
             paintWSCamButtons ();
         }
@@ -179,7 +181,14 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
                 String mount = service.get("mount", "");
                 String password = service.get("password", "");
                 String port = service.get("port", "");
-                FME fme = new FME(url, stream, name, abitrate, vbitrate, vcodec, acodec, width, height, mount, password, port);
+                String keyInt = service.get("keyint", "");
+                // for compatibility before KeyInt
+                if (keyInt == "") {
+                    keyInt = "125";
+                }
+                
+//                System.out.println("Loaded KeyInt: "+keyInt+"###");
+                FME fme = new FME(url, stream, name, abitrate, vbitrate, vcodec, acodec, width, height, mount, password, port, keyInt);
                 fmes.put(fme.getName(), fme);
                 addButtonBroadcast(fme);
             }
@@ -212,6 +221,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
             service.put("mount", fme.getMount());
             service.put("password", fme.getPassword());
             service.put("port", fme.getPort());
+            service.put("keyint", fme.getKeyInt());
         }
     }
 
@@ -780,6 +790,13 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
             }
         }
     }
+
+    @Override
+    public void resetFMECount() {
+        fmeCount=0;
+        tglSkyCam.setEnabled(true);
+    }
+    
     private static class WaitingDialogOP extends JDialog {
         private final JLabel workingLabelOP = new JLabel();
         public WaitingDialogOP(JFrame owner) {

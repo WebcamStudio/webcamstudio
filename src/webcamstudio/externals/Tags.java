@@ -44,7 +44,8 @@ public enum Tags {
         PORT("@PORT"),
 //        IPCURL("@IPCURL"),
         PAUDIOSRC ("@PAUDIOSRC"),
-        AUDIOSRC ("@AUDIOSRC");
+        AUDIOSRC ("@AUDIOSRC"),
+        KEYINT ("@KEYINT");
         
     private String name = "";
     private Tags(String name) {

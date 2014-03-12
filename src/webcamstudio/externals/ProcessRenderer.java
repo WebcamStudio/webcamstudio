@@ -28,6 +28,7 @@ import webcamstudio.streams.SinkFile;
 import webcamstudio.streams.Stream;
 import webcamstudio.util.Tools;
 import webcamstudio.util.Tools.OS;
+import webcamstudio.mixers.MasterMixer;
 
 /**
  *
@@ -62,6 +63,7 @@ public class ProcessRenderer {
     Capturer capture;
     Exporter exporter;
     FME fme = null;
+    private final MasterMixer mixer = MasterMixer.getInstance();
 
     public ProcessRenderer(Stream s, ACTION action, String plugin, String bkEnd) {
         stream = s;
@@ -284,6 +286,14 @@ public class ProcessRenderer {
                         if (fme.getName().toLowerCase().equals("icecast")){
                             command = command.replaceAll(Tags.PASSWORD.toString(), "" + fme.getPassword());
                         }
+                    }
+                case KEYINT:
+                    if (fme != null) {
+//                        if (fme.getName().toLowerCase().contains("icecast")){
+                            command = command.replaceAll(Tags.KEYINT.toString(), "" + fme.getKeyInt());
+//                        }
+                    } else {
+                        command = command.replaceAll(Tags.KEYINT.toString(), "" + Integer.toString(5*mixer.getRate()));
                     }
                 case PORT:
                     if (fme != null) {
