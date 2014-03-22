@@ -40,6 +40,7 @@ public abstract class Stream implements Callable<Frame>{
     protected int audioLevelRight = 0;
     protected ArrayList<Effect> effects = new ArrayList<>();
     protected ArrayList<SourceChannel> channels = new ArrayList<>();
+    protected String gsEffect = "";
     protected SourceChannel channel = new SourceChannel();
     protected int desktopN = 0;
     protected int desktopX = 0;
@@ -312,6 +313,10 @@ public abstract class Stream implements Callable<Frame>{
 
     public abstract void stop();
     
+    public abstract void pause();
+    
+    public abstract void play();
+    
     public abstract boolean needSeek();
 
     public abstract boolean isPlaying();
@@ -444,7 +449,15 @@ public abstract class Stream implements Callable<Frame>{
     public synchronized void setEffects(ArrayList<Effect> list) {
         effects = list;
     }
+    
+    public String getGSEffect() {
+        return gsEffect;
+    }
 
+    public synchronized void setGSEffect(String gsFx) {
+        gsEffect = gsFx;
+    }
+    
     public synchronized void addEffect(Effect e) {
         effects.add(e);
     }

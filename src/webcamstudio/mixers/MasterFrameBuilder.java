@@ -133,7 +133,7 @@ public class MasterFrameBuilder implements Runnable {
             Frame targetFrame = frameBuffer.getFrameToUpdate();
             frames.clear();
             try {
-                resultsT = ((ArrayList) pool.invokeAll(streams, 2, TimeUnit.SECONDS));
+                resultsT = ((ArrayList) pool.invokeAll(streams, 2, TimeUnit.SECONDS)); //modify to 10 give more time to pause
                 ArrayList<Future<Frame>> results = resultsT;
                 for (Future stream : results) {
                     if ((Frame)stream.get() != null) {

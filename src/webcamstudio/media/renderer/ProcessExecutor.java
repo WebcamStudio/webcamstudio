@@ -73,7 +73,8 @@ public class ProcessExecutor {
     }
     public void executeString(String params) throws IOException, InterruptedException {
         Runtime rt = Runtime.getRuntime();
-        process = rt.exec(params);        
+        process = rt.exec(params);
+//        System.out.println("Process: "+process);
         processRunning = true;
 //      readOutput(process);
     }
@@ -81,13 +82,65 @@ public class ProcessExecutor {
         processRunning=false;
         try {
             Tools.sleep(50);
-            killUnixProcess(process);
+//            if (process != null){
+                killUnixProcess(process);
+//            }
         } catch (Exception ex) {
             Logger.getLogger(ProcessExecutor.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    public String getProcessPID(){
+        try {
+            Tools.sleep(50);
+            if (process != null){
+                int parentPID = getUnixPID(process);
+                Runtime rt = Runtime.getRuntime();
+                String commandPids = "ps -ef | awk '{if ($3 == "+parentPID+") print $2;}'";
+                File fileP=new File(System.getProperty("user.home")+"/.webcamstudio/"+"WSPidsBuster.sh"); 
+                FileOutputStream fosV;
+                DataOutputStream dosV = null;
+                try {
+                    fosV = new FileOutputStream(fileP);
+                    dosV= new DataOutputStream(fosV);
+                } catch (FileNotFoundException ex) {
+                    Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                try {
+                    dosV.writeBytes("#!/bin/bash\n");
+                    dosV.writeBytes(commandPids+"\n");
+                    dosV.close();
+                } catch (IOException ex) {
+                    Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                try {
+                    Process pWPB = rt.exec("chmod a+x "+System.getProperty("user.home")+"/.webcamstudio/"+"WSPidsBuster.sh");
+                } catch (IOException ex) {
+                    Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                String batchPidCommand = System.getProperty("user.home")+"/.webcamstudio/"+"WSPidsBuster.sh";
+                try {
+                    Process getChildPids = rt.exec(batchPidCommand);
+                    Tools.sleep(10);
+                    getChildPids.waitFor(); //Author spoonybard896
+                    BufferedReader buf = new BufferedReader(new InputStreamReader(
+                    getChildPids.getInputStream()));
+                    String line = "";
+                    childPids = "";
+                    while ((line = buf.readLine()) != null) {
+                        childPids += line + "\n";
+                    } //Author spoonybard896
+                } catch (IOException | InterruptedException e) {
+                        e.printStackTrace();
+                }
+            }   
+        } catch (Exception ex) {
+            Logger.getLogger(ProcessExecutor.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return childPids;
+    }
     public static int getUnixPID(Process process) throws Exception //Author Martijn Courteaux Code
 {
+//    System.out.println("Process_GetUnixPid: "+process.getClass().getName());            
     if (process.getClass().getName().equals("java.lang.UNIXProcess")) {
         Class cl = process.getClass();
         Field field = cl.getDeclaredField("pid");
@@ -102,6 +155,7 @@ public class ProcessExecutor {
 public static void killUnixProcess(Process process) throws Exception //Modified from Martijn Courteaux Code
 {
     int pid = getUnixPID(process);
+//    System.out.println("Process_Pid: "+pid);     
     Runtime rt = Runtime.getRuntime();
     String commandPids = "ps -ef | awk '{if ($3 == "+pid+") print $2;}'";
     File fileP=new File(System.getProperty("user.home")+"/.webcamstudio/"+"WSPidsBuster.sh"); 
@@ -114,12 +168,18 @@ public static void killUnixProcess(Process process) throws Exception //Modified 
             Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
     }
     try {
-                    dosV.writeBytes("#!/bin/bash\n");
-                    dosV.writeBytes(commandPids+"\n");
+        dosV.writeBytes("#!/bin/bash\n");
+        dosV.writeBytes(commandPids+"\n");
+        dosV.close();
     } catch (IOException ex) {
         Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
     }
-    String batchPidCommand = "sh "+System.getProperty("user.home")+"/.webcamstudio/"+"WSPidsBuster.sh";
+    try {
+        Process pWPB = rt.exec("chmod a+x "+System.getProperty("user.home")+"/.webcamstudio/"+"WSPidsBuster.sh");
+    } catch (IOException ex) {
+        Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    String batchPidCommand = System.getProperty("user.home")+"/.webcamstudio/"+"WSPidsBuster.sh";
     try {
     Process getChildPids = rt.exec(batchPidCommand);
     Tools.sleep(10);
@@ -136,6 +196,7 @@ public static void killUnixProcess(Process process) throws Exception //Modified 
     }
     Runtime.getRuntime().exec("kill " + pid).waitFor(); // andrew.silver0 mod from -9
     Runtime.getRuntime().exec("kill " + childPids).waitFor(); //andrew.silver0 mod from -9
+//    System.out.println("ChildPid: "+childPids);
     childPids = null;
 }
 }

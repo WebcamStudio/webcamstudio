@@ -44,6 +44,11 @@ public class SourceDVB extends Stream {
     }
 
     @Override
+    public void pause() {
+        capture.pause();
+    }
+    
+    @Override
     public void stop() {
         isPlaying = false;
         MasterFrameBuilder.unregister(this);
@@ -112,6 +117,11 @@ public class SourceDVB extends Stream {
                 nextFrame=fDVB;
             }
         }
+    }
+
+    @Override
+    public void play() {
+        capture.play();
     }
 
 }

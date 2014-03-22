@@ -35,7 +35,12 @@ public class SourceSoundMonitor extends Stream {
         capture = new ProcessRenderer(this, ProcessRenderer.ACTION.CAPTURE, "monitor", comm);
         capture.read();
     }
-
+    
+    @Override
+    public void pause() {
+        capture.stop();
+    }
+    
     @Override
     public void stop() {
         isPlaying = false;
@@ -100,5 +105,10 @@ public class SourceSoundMonitor extends Stream {
             }
         }
         nextFrame=f;
+    }
+
+    @Override
+    public void play() {
+        capture.play();
     }
 }

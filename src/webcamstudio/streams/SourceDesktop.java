@@ -41,6 +41,11 @@ public class SourceDesktop extends Stream {
     }
 
     @Override
+    public void pause() {
+        capture.pause();
+    }
+    
+    @Override
     public void read() {
         stop = false;
         isPlaying = true;
@@ -131,5 +136,10 @@ public class SourceDesktop extends Stream {
             lastPreview = frame.getImage();
             
         } 
+    }
+
+    @Override
+    public void play() {
+        capture.play();
     }
 }

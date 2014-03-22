@@ -571,6 +571,16 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
             stream.setBackFF(false);
             jCBAVConv.setSelected(false);
             jCBFFmpeg.setSelected(false);
+            if (listener!=null){
+                new Thread(new Runnable(){
+
+                    @Override
+                    public void run() {
+                        listener.selectedSource(stream);
+                    }
+                }).start();
+
+            }
         } else {
             jCBAVConv.setSelected(true);
             jCBGStreamer.setSelected(false);
@@ -586,6 +596,16 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
             stream.setBackFF(false);
             jCBGStreamer.setSelected(false);
             jCBFFmpeg.setSelected(false);
+            if (listener!=null){
+                new Thread(new Runnable(){
+
+                    @Override
+                    public void run() {
+                        listener.selectedSource(stream);
+                    }
+                }).start();
+
+            }
         } else {
             jCBGStreamer.setSelected(true);
             jCBAVConv.setSelected(false);
@@ -953,6 +973,16 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
             stream.setBackFF(true);
             jCBAVConv.setSelected(false);
             jCBGStreamer.setSelected(false);
+            if (listener!=null){
+                new Thread(new Runnable(){
+
+                    @Override
+                    public void run() {
+                        listener.selectedSource(stream);
+                    }
+                }).start();
+
+            }
         } else {
             stream.setComm("AV");
             stream.setBackFF(false);

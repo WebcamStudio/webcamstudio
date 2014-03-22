@@ -52,6 +52,11 @@ public class SourceImage extends Stream{
     }
 
     @Override
+    public void pause() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates. 
+    }
+    
+    @Override
     public void stop() {
         playing = false;
         frame = null;
@@ -105,6 +110,11 @@ public class SourceImage extends Stream{
 //        frame.setOutputFormat(x, y, width, height, opacity, volume);
 //        frame.setZOrder(zorder);
 //        nextFrame=frame;
+    }
+
+    @Override
+    public void play() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

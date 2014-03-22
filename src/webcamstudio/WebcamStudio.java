@@ -1166,11 +1166,17 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
             if (dosD != null) {
             dosD.writeBytes("#!/bin/bash\n");
             dosD.writeBytes(commandDuration+"\n");
+            dosD.close();
             }
         } catch (IOException ex) {
             Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
         }
-        String batchDurationComm = "sh "+System.getProperty("user.home")+"/.webcamstudio/"+"DurationCalc.sh";
+        try {
+                Process pD = rt.exec("chmod a+x "+System.getProperty("user.home")+"/.webcamstudio/"+"DurationCalc.sh");
+            } catch (IOException ex) {
+                Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        String batchDurationComm = System.getProperty("user.home")+"/.webcamstudio/"+"DurationCalc.sh";
         try {
             Process duration = rt.exec(batchDurationComm);
             Tools.sleep(10);

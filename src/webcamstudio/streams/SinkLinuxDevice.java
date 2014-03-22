@@ -35,6 +35,11 @@ public class SinkLinuxDevice extends Stream implements MasterMixer.SinkListener 
     }
 
     @Override
+    public void pause() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    @Override
     public void stop() {
         stop = true;
         if (device != null) {
@@ -89,5 +94,10 @@ public class SinkLinuxDevice extends Stream implements MasterMixer.SinkListener 
     @Override
     public void readNext() {
         
+    }
+
+    @Override
+    public void play() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

@@ -45,7 +45,8 @@ public enum Tags {
 //        IPCURL("@IPCURL"),
         PAUDIOSRC ("@PAUDIOSRC"),
         AUDIOSRC ("@AUDIOSRC"),
-        KEYINT ("@KEYINT");
+        KEYINT ("@KEYINT"),
+        GSEFFECT ("@GSEFFECT");
         
     private String name = "";
     private Tags(String name) {
