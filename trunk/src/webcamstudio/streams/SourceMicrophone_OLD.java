@@ -64,6 +64,11 @@ public class SourceMicrophone_OLD extends Stream {
     }
 
     @Override
+    public void pause() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.        
+    }
+    
+    @Override
     public void stop() {
         isPlaying = false;
         if (line != null) {
@@ -118,5 +123,10 @@ public class SourceMicrophone_OLD extends Stream {
         frame.setOutputFormat(x, y, width, height, opacity, volume);
         frame.setZOrder(zorder);
         nextFrame=frame;
+    }
+
+    @Override
+    public void play() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

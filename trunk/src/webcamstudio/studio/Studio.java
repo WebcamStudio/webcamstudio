@@ -567,6 +567,7 @@ public class Studio {
                 String clazz = source.getAttributes().getNamedItem("clazz").getTextContent();
                 String file = null;
                 String ObjText = null;
+                String fontName = null;
                 String webUrl = null;
                 String ipcPWD = null;
                 String ipcUser = null;
@@ -606,6 +607,9 @@ public class Studio {
                     }
                     if (child.getNodeName().equals("content")) {
                         ObjText = child.getTextContent();
+                    }
+                    if (child.getNodeName().equals("fontName")) {
+                        fontName = child.getTextContent();
                     }
                     if (child.getNodeName().equals("strShape")) {
                         strShapez = child.getTextContent();
@@ -775,6 +779,7 @@ public class Studio {
                                 break;
                         }
                     }
+                    text.setFont(fontName);
                     text.setLoaded(true);
                     int op=0;
                     for (SourceChannel scs : SCL) {

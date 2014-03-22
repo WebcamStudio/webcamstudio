@@ -24,6 +24,7 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -32,6 +33,7 @@ import java.io.Reader;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
+import java.util.Scanner;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -669,6 +671,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
         }
     } 
     private void repaintSkyCamButtons (){
+        final Runtime rt = Runtime.getRuntime();
         for (VideoDevice d : VideoDevice.getInputDevices()) {
             String vdName = d.getFile().getName();
             if (vdName.endsWith("video21")) {
@@ -718,10 +721,16 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
                                     dosD.writeBytes("#!/bin/bash\n");
                                     dosD.writeBytes(skyRunComm +"\n");
                                     dosD.writeBytes("wait"+"\n");
+                                    dosD.close();
                                 } catch (IOException ex) {
                                     Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
                                 }
-                                String batchSkyCommC = "sh "+System.getProperty("user.home")+"/.webcamstudio/"+"SkyCamC.sh";
+                                try {
+                                    Process pSC = rt.exec("chmod a+x "+System.getProperty("user.home")+"/.webcamstudio/"+"SkyCamC.sh");
+                                } catch (IOException ex) {
+                                    Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                                String batchSkyCommC = System.getProperty("user.home")+"/.webcamstudio/"+"SkyCamC.sh";
                                 try {
                                     Tools.sleep(20);
                                     processSkyVideo.executeString(batchSkyCommC);
@@ -797,6 +806,27 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
         tglSkyCam.setEnabled(true);
     }
     
+    private String wsAuthCheck() throws IOException {
+    System.out.println("Reading syslog ...");
+    String distro = wsDistroWatch();
+    String text = new String();
+    if (distro.toLowerCase().equals("ubuntu")){
+        try (Scanner scanner = new Scanner(new FileInputStream("/var/log/auth.log"), "UTF-8")) {
+            while (scanner.hasNextLine()){
+                text = scanner.nextLine();
+            }
+        }
+    } else {
+        try (Scanner scanner = new Scanner(new FileInputStream("/var/log/warn"), "UTF-8")) {
+            while (scanner.hasNextLine()){
+                text = scanner.nextLine();
+            }
+        }
+    }
+    System.out.println("Text read in: " + text);
+    return text;
+    }
+    
     private static class WaitingDialogOP extends JDialog {
         private final JLabel workingLabelOP = new JLabel();
         public WaitingDialogOP(JFrame owner) {
@@ -859,13 +889,19 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
                 dosD.writeBytes("wait"+"\n");
                 dosD.writeBytes(register2WSDevices+"\n");
                 dosD.writeBytes("wait"+"\n");
+                dosD.close();
                 } catch (IOException ex) {
                 Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
                 }
+                try {
+                    Process pSky = rt.exec("chmod a+x "+System.getProperty("user.home")+"/.webcamstudio/"+"SkyCam.sh");
+                } catch (IOException ex) {
+                    Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 if (distro.toLowerCase().equals("ubuntu")){
-                    batchSkyComm = "gksudo sh "+System.getProperty("user.home")+"/.webcamstudio/"+"SkyCam.sh";
+                    batchSkyComm = "gksudo "+System.getProperty("user.home")+"/.webcamstudio/"+"SkyCam.sh";
                 } else {
-                    batchSkyComm = "gksu sh "+System.getProperty("user.home")+"/.webcamstudio/"+"SkyCam.sh";
+                    batchSkyComm = "gksu "+System.getProperty("user.home")+"/.webcamstudio/"+"SkyCam.sh";
                 }
                 try {
                     Process urDevice = rt.exec(batchSkyComm); 
@@ -874,15 +910,26 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
                 } catch (IOException | InterruptedException e) {
                     e.printStackTrace();
                 }
-
-                repaintOuputButtons();
-                Tools.sleep(30);
-                repaintSkyCamButtons ();
-                Tools.sleep(30);
-                repaintFMEButtons();
-                ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "SkyCam Engaged");
-                ResourceMonitor.getInstance().addMessage(label);
-                instanceSink.repaint();
+                String authText = "";
+                try {
+                    authText = wsAuthCheck();
+                } catch (IOException ex) {
+                    Logger.getLogger(OutputPanel.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                if (authText.contains("auth could not identify password")) {
+                    tglSkyCam.setSelected(false);
+                    ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "SkyCam Activation Cancelled!");
+                    ResourceMonitor.getInstance().addMessage(label);
+                } else {
+                    repaintOuputButtons();
+                    Tools.sleep(30);
+                    repaintSkyCamButtons ();
+                    Tools.sleep(30);
+                    repaintFMEButtons();
+                    ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "SkyCam Engaged");
+                    ResourceMonitor.getInstance().addMessage(label);
+                    instanceSink.repaint();
+                }
             } else {
                 skyCamMode = false;
                 jcbV4l2loopback.setEnabled(true);
@@ -901,13 +948,19 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
                 dosD.writeBytes("wait"+"\n");
                 dosD.writeBytes(registerWSDevice +"\n");
                 dosD.writeBytes("wait"+"\n");
+                dosD.close();
                 } catch (IOException ex) {
                 Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
                 }
+                try {
+                    Process pSR = rt.exec("chmod a+x "+System.getProperty("user.home")+"/.webcamstudio/"+"SkyCamR.sh");
+                } catch (IOException ex) {
+                    Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 if (distro.toLowerCase().equals("ubuntu")){
-                    batchSkyCommR = "gksudo sh "+System.getProperty("user.home")+"/.webcamstudio/"+"SkyCamR.sh";
+                    batchSkyCommR = "gksudo "+System.getProperty("user.home")+"/.webcamstudio/"+"SkyCamR.sh";
                 } else {
-                    batchSkyCommR = "gksu sh "+System.getProperty("user.home")+"/.webcamstudio/"+"SkyCamR.sh";
+                    batchSkyCommR = "gksu "+System.getProperty("user.home")+"/.webcamstudio/"+"SkyCamR.sh";
                 }
                 try {
                     Process rDevice = rt.exec(batchSkyCommR); 
@@ -916,18 +969,29 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
                 } catch (IOException | InterruptedException e) {
                     e.printStackTrace();
                 }
-
-                repaintOuputButtons();
-                Tools.sleep(30);
-                paintWSCamButtons ();
-                Tools.sleep(30);
-                repaintFMEButtons();
-                btnSkyFlip.setSelected(false);
-                btnSkyFlip.setEnabled(false);
-                flip = false;
-                ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "SkyCam Disengaged");
-                ResourceMonitor.getInstance().addMessage(label);
-                instanceSink.repaint();
+                String authText = "";
+                try {
+                    authText = wsAuthCheck();
+                } catch (IOException ex) {
+                    Logger.getLogger(OutputPanel.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                if (authText.contains("auth could not identify password")) {
+                    tglSkyCam.setSelected(true);
+                    ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "SkyCam is Still Active!");
+                    ResourceMonitor.getInstance().addMessage(label);
+                } else {
+                    repaintOuputButtons();
+                    Tools.sleep(30);
+                    paintWSCamButtons ();
+                    Tools.sleep(30);
+                    repaintFMEButtons();
+                    btnSkyFlip.setSelected(false);
+                    btnSkyFlip.setEnabled(false);
+                    flip = false;
+                    ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "SkyCam Disengaged");
+                    ResourceMonitor.getInstance().addMessage(label);
+                    instanceSink.repaint();
+                }
             }
         return null; 
     }

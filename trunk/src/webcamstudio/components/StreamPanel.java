@@ -258,6 +258,7 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener, 
         jSeparator5 = new javax.swing.JSeparator();
         btnFullCam = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
+        tglPause = new javax.swing.JToggleButton();
 
         setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
         setMaximumSize(new java.awt.Dimension(298, 440));
@@ -361,7 +362,7 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener, 
                 tglActiveStreamActionPerformed(evt);
             }
         });
-        add(tglActiveStream, new org.netbeans.lib.awtextra.AbsoluteConstraints(7, 120, 110, 20));
+        add(tglActiveStream, new org.netbeans.lib.awtextra.AbsoluteConstraints(7, 120, 80, 20));
 
         spinZOrder.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         spinZOrder.setName("spinZOrder"); // NOI18N
@@ -671,6 +672,17 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener, 
         jLabel2.setName("jLabel2"); // NOI18N
         add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(143, 14, 120, 110));
 
+        tglPause.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-pause.png"))); // NOI18N
+        tglPause.setToolTipText("Pause - Not supported yet.");
+        tglPause.setEnabled(false);
+        tglPause.setName("tglPause"); // NOI18N
+        tglPause.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tglPauseActionPerformed(evt);
+            }
+        });
+        add(tglPause, new org.netbeans.lib.awtextra.AbsoluteConstraints(87, 120, 30, 20));
+
         getAccessibleContext().setAccessibleDescription("");
         getAccessibleContext().setAccessibleParent(this);
     }// </editor-fold>//GEN-END:initComponents
@@ -869,6 +881,14 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener, 
         }
     }//GEN-LAST:event_tglAudioActionPerformed
 
+    private void tglPauseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglPauseActionPerformed
+        if (tglPause.isSelected()){
+            stream.pause();
+        } else {
+            stream.play();
+        }
+    }//GEN-LAST:event_tglPauseActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnFullCam;
     private javax.swing.JLabel jLabel2;
@@ -917,6 +937,7 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener, 
     private javax.swing.JSpinner spinZOrder;
     private javax.swing.JToggleButton tglActiveStream;
     private javax.swing.JToggleButton tglAudio;
+    private javax.swing.JToggleButton tglPause;
     // End of variables declaration//GEN-END:variables
 
     @Override

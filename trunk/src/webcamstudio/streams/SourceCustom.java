@@ -38,6 +38,11 @@ public class SourceCustom extends Stream {
     }
 
     @Override
+    public void pause() {
+        capture.pause();
+    }
+    
+    @Override
     public void stop() {
         isPlaying = false;
         if (capture != null) {
@@ -77,5 +82,10 @@ public class SourceCustom extends Stream {
                 lastPreview.getGraphics().drawImage(nextFrame.getImage(), 0, 0, null);
             }
         }
+    }
+
+    @Override
+    public void play() {
+        capture.play();
     }
 }

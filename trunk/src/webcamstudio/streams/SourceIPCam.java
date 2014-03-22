@@ -39,6 +39,11 @@ public class SourceIPCam extends Stream {
     }
 
     @Override
+    public void pause() {
+        capture.pause();
+    }
+    
+    @Override
     public void stop() {
         isPlaying = false;
         MasterFrameBuilder.unregister(this);
@@ -135,6 +140,11 @@ public class SourceIPCam extends Stream {
             }
         }
         nextFrame=f;
+    }
+
+    @Override
+    public void play() {
+        capture.play();
     }
 
 }

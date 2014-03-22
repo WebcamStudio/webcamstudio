@@ -45,7 +45,17 @@ public class SourceWebcam extends Stream {
         capture = new ProcessRenderer(this, ProcessRenderer.ACTION.CAPTURE, "webcam", comm);
         capture.read();
     }
-
+    
+    @Override
+    public void pause() {
+        capture.pause();
+    }
+    
+    @Override
+    public void play() {
+        capture.play();
+    }
+    
     @Override
     public void stop() {
         isPlaying=false;

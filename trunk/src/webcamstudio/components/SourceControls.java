@@ -10,9 +10,11 @@ import webcamstudio.streams.SourceDVB;
 import webcamstudio.streams.SourceDesktop;
 import webcamstudio.streams.SourceImage;
 import webcamstudio.streams.SourceImageU;
+import webcamstudio.streams.SourceMicrophone;
 import webcamstudio.streams.SourceMovie;
 import webcamstudio.streams.SourceMusic;
 import webcamstudio.streams.SourceQRCode;
+import webcamstudio.streams.SourceSoundMonitor;
 import webcamstudio.streams.SourceText;
 import webcamstudio.streams.SourceURL;
 import webcamstudio.streams.SourceWebcam;
@@ -39,25 +41,43 @@ public class SourceControls {
             c = new SourceControlEffects(source);
             c.setName("Effects");
             comps.add(c);
+            c = new SourceControlGSEffects(source);
+            c.setName("GS Fx");
+            comps.add(c);
         } else if (source instanceof SourceMovie) {
             c = new SourceControlEffects(source);
             c.setName("Effects");
+            comps.add(c);
+            c = new SourceControlGSEffects(source);
+            c.setName("GS Fx");
             comps.add(c);
         } else if (source instanceof SourceMusic) {
             c = new SourceControlEffects(source);
             c.setName("Effects");
             comps.add(c);
+            c = new SourceControlGSEffects(source);
+            c.setName("GS Fx");
+            comps.add(c);
         } else if (source instanceof SourceImageU) {
             c = new SourceControlEffects(source);
             c.setName("Effects");
+            comps.add(c);
+            c = new SourceControlGSEffects(source);
+            c.setName("GS Fx");
             comps.add(c);
         } else if (source instanceof SourceDVB) {
             c = new SourceControlEffects(source);
             c.setName("Effects");
             comps.add(c);
+            c = new SourceControlGSEffects(source);
+            c.setName("GS Fx");
+            comps.add(c);
         } else if (source instanceof SourceURL) {
             c = new SourceControlEffects(source);
             c.setName("Effects");
+            comps.add(c);
+            c = new SourceControlGSEffects(source);
+            c.setName("GS Fx");
             comps.add(c);
 //        } else if (source instanceof SourceIPCam) {
 //            c = new SourceControlEffects(source);
@@ -67,6 +87,23 @@ public class SourceControls {
             c = new SourceControlEffects(source);
             c.setName("Effects");
             comps.add(c);
+            c = new SourceControlGSEffects(source);
+            c.setName("GS Fx");
+            comps.add(c);
+        } else if (source instanceof SourceSoundMonitor) {
+            c = new SourceControlEffects(source);
+            c.setName("Effects");
+            comps.add(c);
+            c = new SourceControlGSEffects(source);
+            c.setName("GS Fx");
+            comps.add(c);
+        } else if (source instanceof SourceMicrophone) {
+            c = new SourceControlEffects(source);
+            c.setName("Effects");
+            comps.add(c);
+            c = new SourceControlGSEffects(source);
+            c.setName("GS Fx");
+            comps.add(c);
         } else if (source instanceof SourceQRCode) {
         } else if (source instanceof SourceText) {
             c = new SourceControlsText((SourceText) source);
@@ -74,11 +111,17 @@ public class SourceControls {
             c = new SourceControlEffects(source);
             c.setName("Effects");
             comps.add(c);
-        } else if (source instanceof SourceMusic) {
+//            c = new SourceControlGSEffects(source);
+//            c.setName("GS Effects");
+//            comps.add(c);
+//        } else if (source instanceof SourceMusic) {           
         } else if (source instanceof SourceImage) {
             c = new SourceControlEffects(source);
             c.setName("Effects");
             comps.add(c);
+//            c = new SourceControlGSEffects(source);
+//            c.setName("GS Effects");
+//            comps.add(c);
         } 
 //        else if (source instanceof SourceImageGif) {
 //            c = new SourceControlEffects(source);

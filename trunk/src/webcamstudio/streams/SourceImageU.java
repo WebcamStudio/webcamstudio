@@ -38,6 +38,12 @@ public class SourceImageU extends Stream {
             capture = new ProcessRenderer(this, ProcessRenderer.ACTION.CAPTURE, "image", comm);
             capture.read();           
     }
+    
+    @Override
+    public void pause() {
+        capture.pause();
+    }
+    
     @Override
     public void stop() {    
         isPlaying = false;
@@ -104,5 +110,10 @@ public class SourceImageU extends Stream {
             }
         }
         nextFrame=f;
+    }
+
+    @Override
+    public void play() {
+        capture.play();
     }
 }

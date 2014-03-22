@@ -37,7 +37,12 @@ public class SourceURL extends Stream {
         capture = new ProcessRenderer(this, ProcessRenderer.ACTION.CAPTURE, "url", comm);
         capture.readCom();           
     }
-
+    
+    @Override
+    public void pause() {
+        capture.pause();
+    }
+    
     @Override
     public void stop() {
         isPlaying = false;
@@ -135,6 +140,11 @@ public class SourceURL extends Stream {
             }
         }
         nextFrame=f;
+    }
+
+    @Override
+    public void play() {
+        capture.play();
     }
 
 }

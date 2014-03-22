@@ -37,6 +37,11 @@ public class SourceMicrophone extends Stream {
     }
 
     @Override
+    public void pause() {
+        capture.pause();
+    }
+    
+    @Override
     public void stop() {
         isPlaying = false;
         MasterFrameBuilder.unregister(this);
@@ -101,5 +106,10 @@ public class SourceMicrophone extends Stream {
             }
         }
         nextFrame=f;
+    }
+
+    @Override
+    public void play() {
+        capture.play();
     }
 }

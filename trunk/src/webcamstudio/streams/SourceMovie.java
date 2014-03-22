@@ -40,6 +40,12 @@ public class SourceMovie extends Stream {
     }
 
     @Override
+    public void pause() {
+        isPlaying = false;
+        capture.pause();
+    }
+    
+    @Override
     public void stop() {
         isPlaying = false;
         MasterFrameBuilder.unregister(this);
@@ -101,6 +107,12 @@ public class SourceMovie extends Stream {
             }
         }
         nextFrame=f;
+    }
+
+    @Override
+    public void play() {
+        isPlaying = true;
+        capture.play();
     }
 
 }

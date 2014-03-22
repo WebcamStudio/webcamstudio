@@ -41,6 +41,11 @@ public class SourceQRCode extends Stream {
         nextFrame=frame;
     }
 
+    @Override
+    public void play() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
     public enum Shape {
 
         NONE,
@@ -188,7 +193,12 @@ public class SourceQRCode extends Stream {
             e.printStackTrace();
         }
     }
-
+    
+    @Override
+    public void pause() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
     @Override
     public void stop() {
         stop = true;
