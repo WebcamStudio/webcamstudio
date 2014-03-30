@@ -12,6 +12,7 @@ package webcamstudio.components;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyVetoException;
 import java.util.logging.Level;
@@ -22,6 +23,10 @@ import javax.swing.SpinnerNumberModel;
 import webcamstudio.FullScreenWindow;
 import webcamstudio.WebcamStudio;
 import webcamstudio.exporter.vloopback.VideoDevice;
+import webcamstudio.streams.SourceImage;
+import webcamstudio.streams.SourceImageGif;
+import webcamstudio.streams.SourceImageU;
+import webcamstudio.streams.SourceMicrophone;
 import webcamstudio.streams.SourceMovie;
 import webcamstudio.streams.SourceSoundMonitor;
 import webcamstudio.streams.SourceWebcam;
@@ -38,6 +43,7 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener, 
 
     Stream stream = null;
     Viewer viewer = new Viewer();
+    float volume = 0;
     
 
     /** Creates new form StreamPanel
@@ -106,12 +112,24 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener, 
             spinOpacity.setEnabled(false);
             jSlSpinO.setEnabled(false);
         }        
-        if (stream instanceof SourceWebcam) {
+        if (stream instanceof SourceWebcam) { 
             btnFullCam.setVisible(true);
             tglAudio.setVisible(false);
-        } else if (stream instanceof SourceMovie || stream instanceof SourceSoundMonitor) {
+            tglPause.setVisible(false);
+            this.add(tglActiveStream, new org.netbeans.lib.awtextra.AbsoluteConstraints(7, 120, 110, 20));
+        } else if (stream instanceof SourceSoundMonitor) {
             btnFullCam.setVisible(false);
             tglAudio.setVisible(true);
+            tglPause.setVisible(false);
+            this.add(tglActiveStream, new org.netbeans.lib.awtextra.AbsoluteConstraints(7, 120, 110, 20));
+        } else if (stream instanceof SourceMovie) {
+            btnFullCam.setVisible(false);
+            tglAudio.setVisible(true);
+        } else if (stream instanceof SourceMicrophone || stream instanceof SourceImage || stream instanceof SourceImageU || stream instanceof SourceImageGif){
+            btnFullCam.setVisible(false);
+            tglAudio.setVisible(false);
+            tglPause.setVisible(false);
+            this.add(tglActiveStream, new org.netbeans.lib.awtextra.AbsoluteConstraints(7, 120, 110, 20));
         } else {
             btnFullCam.setVisible(false);
             tglAudio.setVisible(false);
@@ -183,6 +201,7 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener, 
             tglAudio.setEnabled(false);
             spinVolume.setEnabled(stream.hasAudio());
             jSlSpinV.setEnabled(stream.hasAudio());
+            tglPause.setEnabled(true);
         } else {
             this.setBorder(BorderFactory.createEmptyBorder());
             spinH1.setEnabled(stream.hasVideo());
@@ -199,6 +218,8 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener, 
             tglAudio.setEnabled(true);
             spinVolume.setEnabled(stream.hasAudio());
             jSlSpinV.setEnabled(stream.hasAudio());
+            tglPause.setSelected(false);
+            tglPause.setEnabled(false);
         }
         tglActiveStream.revalidate();
     }
@@ -673,9 +694,10 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener, 
         add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(143, 14, 120, 110));
 
         tglPause.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-pause.png"))); // NOI18N
-        tglPause.setToolTipText("Pause - Not supported yet.");
         tglPause.setEnabled(false);
         tglPause.setName("tglPause"); // NOI18N
+        tglPause.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-pause.png"))); // NOI18N
+        tglPause.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-play.png"))); // NOI18N
         tglPause.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 tglPauseActionPerformed(evt);
@@ -701,6 +723,7 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener, 
             jSlSpinSeek.setEnabled(false);
             btnFullCam.setEnabled(false);
             tglAudio.setEnabled(false);
+            tglPause.setEnabled(true);
             stream.read();
         } else {
             this.setBorder(BorderFactory.createEmptyBorder());
@@ -716,6 +739,8 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener, 
             jSlSpinSeek.setEnabled(stream.needSeekCTRL());
             btnFullCam.setEnabled(true);
             tglAudio.setEnabled(true);
+            tglPause.setSelected(false);
+            tglPause.setEnabled(false);
             stream.stop();
         }
     }//GEN-LAST:event_tglActiveStreamActionPerformed
@@ -762,7 +787,7 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener, 
             v = ((Integer)value).floatValue();
         }
         stream.setVolume(v/100f);
-        
+        volume = v/100f;
     }//GEN-LAST:event_spinVolumeStateChanged
 
     private void spinW1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinW1StateChanged
@@ -827,6 +852,7 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener, 
 
     private void jSlSpinVStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlSpinVStateChanged
         spinVolume.setValue(jSlSpinV.getValue());
+        volume = jSlSpinV.getValue();
     }//GEN-LAST:event_jSlSpinVStateChanged
 
     private void jSlSpinVDStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlSpinVDStateChanged
@@ -883,8 +909,11 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener, 
 
     private void tglPauseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglPauseActionPerformed
         if (tglPause.isSelected()){
+            volume = stream.getVolume();
+            stream.setVolume(0);
             stream.pause();
         } else {
+            stream.setVolume(volume);
             stream.play();
         }
     }//GEN-LAST:event_tglPauseActionPerformed
