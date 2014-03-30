@@ -28,6 +28,7 @@ public class StreamPanelURL extends javax.swing.JPanel implements Stream.Listene
 
     Stream stream = null;
     Viewer viewer = new Viewer();
+    float volume = 0;
     
 
     /** Creates new form StreamPanel
@@ -160,6 +161,7 @@ public class StreamPanelURL extends javax.swing.JPanel implements Stream.Listene
             txtWebURL.setEditable(false);
             tglAudio.setEnabled(false);
             tglVideo.setEnabled(false);
+            tglPause.setEnabled(true);
         } else {
             this.setBorder(BorderFactory.createEmptyBorder());
             spinH1.setEnabled(true);
@@ -173,6 +175,8 @@ public class StreamPanelURL extends javax.swing.JPanel implements Stream.Listene
             spinSeek.setEnabled(true);
             jSlSpinSeek.setEnabled(true);
             txtWebURL.setEditable(true);
+            tglPause.setSelected(false);
+            tglPause.setEnabled(false);
             if (tglAudio.isSelected()) {
                 tglAudio.setEnabled(true);
             } else if (tglVideo.isSelected()) {
@@ -241,6 +245,7 @@ public class StreamPanelURL extends javax.swing.JPanel implements Stream.Listene
         jSeparator2 = new javax.swing.JSeparator();
         labelVD = new javax.swing.JLabel();
         labelAD = new javax.swing.JLabel();
+        tglPause = new javax.swing.JToggleButton();
 
         setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
         setMaximumSize(new java.awt.Dimension(286, 356));
@@ -351,7 +356,7 @@ public class StreamPanelURL extends javax.swing.JPanel implements Stream.Listene
                 tglActiveStreamActionPerformed(evt);
             }
         });
-        add(tglActiveStream, new org.netbeans.lib.awtextra.AbsoluteConstraints(7, 129, 110, 20));
+        add(tglActiveStream, new org.netbeans.lib.awtextra.AbsoluteConstraints(7, 129, 78, 20));
 
         spinZOrder.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         spinZOrder.setName("spinZOrder"); // NOI18N
@@ -666,6 +671,18 @@ public class StreamPanelURL extends javax.swing.JPanel implements Stream.Listene
         labelAD.setName("labelAD"); // NOI18N
         add(labelAD, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 400, 60, 9));
 
+        tglPause.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-pause.png"))); // NOI18N
+        tglPause.setEnabled(false);
+        tglPause.setName("tglPause"); // NOI18N
+        tglPause.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-pause.png"))); // NOI18N
+        tglPause.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-play.png"))); // NOI18N
+        tglPause.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tglPauseActionPerformed(evt);
+            }
+        });
+        add(tglPause, new org.netbeans.lib.awtextra.AbsoluteConstraints(85, 129, 30, 20));
+
         getAccessibleContext().setAccessibleParent(this);
     }// </editor-fold>//GEN-END:initComponents
     private void tglActiveStreamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglActiveStreamActionPerformed
@@ -728,6 +745,7 @@ public class StreamPanelURL extends javax.swing.JPanel implements Stream.Listene
             txtWebURL.setEditable(false);
             tglAudio.setEnabled(false);
             tglVideo.setEnabled(false);
+            tglPause.setEnabled(true);
             stream.read();
         } else {
             this.setBorder(BorderFactory.createEmptyBorder());
@@ -764,6 +782,8 @@ public class StreamPanelURL extends javax.swing.JPanel implements Stream.Listene
                 tglAudio.setEnabled(true);
                 tglVideo.setEnabled(true);
             }
+            tglPause.setSelected(false);
+            tglPause.setEnabled(false);
             stream.stop();
             
         }
@@ -811,7 +831,7 @@ public class StreamPanelURL extends javax.swing.JPanel implements Stream.Listene
             v = ((Integer)value).floatValue();
         }
         stream.setVolume(v/100f);
-        
+        volume = v/100f;     
     }//GEN-LAST:event_spinVolumeStateChanged
 
     private void spinW1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinW1StateChanged
@@ -880,6 +900,7 @@ public class StreamPanelURL extends javax.swing.JPanel implements Stream.Listene
 
     private void jSlSpinVStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlSpinVStateChanged
         spinVolume.setValue(jSlSpinV.getValue());
+        volume = jSlSpinV.getValue();
     }//GEN-LAST:event_jSlSpinVStateChanged
 
     private void jSlSpinVDStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlSpinVDStateChanged
@@ -917,6 +938,17 @@ public class StreamPanelURL extends javax.swing.JPanel implements Stream.Listene
             tglAudio.setEnabled(true);
         }
     }//GEN-LAST:event_tglVideoActionPerformed
+
+    private void tglPauseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglPauseActionPerformed
+        if (tglPause.isSelected()){
+            volume = stream.getVolume();
+            stream.setVolume(0);
+            stream.pause();
+        } else {
+            stream.setVolume(volume);
+            stream.play();
+        }
+    }//GEN-LAST:event_tglPauseActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel3;
@@ -965,6 +997,7 @@ public class StreamPanelURL extends javax.swing.JPanel implements Stream.Listene
     private javax.swing.JSpinner spinZOrder;
     private javax.swing.JToggleButton tglActiveStream;
     private javax.swing.JToggleButton tglAudio;
+    private javax.swing.JToggleButton tglPause;
     private javax.swing.JToggleButton tglVideo;
     private javax.swing.JTextField txtWebURL;
     // End of variables declaration//GEN-END:variables

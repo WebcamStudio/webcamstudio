@@ -41,6 +41,8 @@ public class Capturer {
     private DataInputStream fakeAudioIn = null;
     private boolean noVideoPres = true;
     private boolean noAudioPres = true;
+    private boolean vPauseFlag = false;
+    private boolean aPauseFlag = false;
 
     public Capturer(Stream s) {
         stream = s;
@@ -173,6 +175,25 @@ public class Capturer {
     }
     }
 
+    public void vPause() {
+        vPauseFlag = true;
+        System.out.println("vCapture Paused ...");
+    }
+    
+    public void aPause() {
+        aPauseFlag = true;
+        System.out.println("aCapture Paused ...");
+    }
+    
+    public void vPlay() {
+        vPauseFlag = false;
+        System.out.println("vCapture Resumed ...");
+    }
+    
+    public void aPlay() {
+        aPauseFlag = false;
+        System.out.println("aCapture Resumed ...");
+    }
     public int getVideoPort() {
         return vport;
     }
@@ -182,7 +203,7 @@ public class Capturer {
     }
 
     private WSImage getNextImage() throws IOException {
-        if (videoIn != null) {
+        if (videoIn != null && !vPauseFlag) {
             image.readFully(videoIn);
             stream.applyEffects(image);
             return image;
@@ -192,7 +213,7 @@ public class Capturer {
     }
 
     private byte[] getNextAudio() throws IOException {
-        if (audioIn != null && audioIn.available()>0) {
+        if (audioIn != null && audioIn.available()>0 && !aPauseFlag) {
             audioIn.readFully(audio);
             return audio;
         } else {
