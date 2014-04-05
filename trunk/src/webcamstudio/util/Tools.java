@@ -12,7 +12,8 @@ import java.util.logging.Logger;
  * @author patrick
  */
 public class Tools {
-
+    final static String userHome = System.getProperty("user.home");
+    
     public enum OS {
 
         WINDOWS,
@@ -50,7 +51,11 @@ public class Tools {
 
         return name;
     }
-
+    
+    public static String getUserHome() {
+        return userHome;
+    }
+    
     public static void sleep(long millisec) {
         try {
             Thread.sleep(millisec);

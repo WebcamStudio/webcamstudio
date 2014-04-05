@@ -49,6 +49,8 @@ or
 For x86:
 From folder WS_libx86 (Shipped in this archive) Copy libwebcamstudio.so in /usr/lib
 
+Install wmctrl package to enable single desktop window capture.
+
 To use SkyCam you have to link "gksu" command to your existing gui-based-sudo installed Package.
 For example if you have "gnomesu" installed, open a terminal and type:
 $ sudo ln -s /usr/bin/gnomesu /usr/bin/gksu
@@ -77,6 +79,8 @@ From folder WS_libx64 (Shipped in the zip file) Copy libwebcamstudio.so in /usr/
 or
 For x86:
 From folder WS_libx86 (Shipped in the zip file) Copy libwebcamstudio.so in /usr/lib
+
+Install wmctrl package to enable single desktop window capture.
 
 Finally navigate where WebcamStudio.jar is and type from a terminal:
 java -jar WebcamStudio.jar

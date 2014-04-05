@@ -79,6 +79,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
     TreeMap<String, SinkAudio> audioOut = new TreeMap<>();
     TreeMap<String, FME> fmes = new TreeMap<>();
     ProcessExecutor processSkyVideo;
+    private final static String userHomeDir = Tools.getUserHome();
     boolean skyCamMode = false;
     boolean iSkyCamFree = true;
     boolean iSkyCam = true;
@@ -703,7 +704,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
                                 labels.put(button.getText(), label);
                                 ResourceMonitor.getInstance().addMessage(label);
                                 processSkyVideo = new ProcessExecutor(stream.getName());
-                                File fileD=new File(System.getProperty("user.home")+"/.webcamstudio/"+"SkyCamC.sh");
+                                File fileD=new File(userHomeDir+"/.webcamstudio/"+"SkyCamC.sh");
                                 if (flip){
                                     skyRunComm = "gst-launch-0.10 v4l2src device="+device+" ! videoflip method=horizontal-flip ! v4l2sink device=/dev/video21"; // videoflip method=horizontal-flip ! 
                                 } else {
@@ -726,11 +727,11 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
                                     Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
                                 }
                                 try {
-                                    Process pSC = rt.exec("chmod a+x "+System.getProperty("user.home")+"/.webcamstudio/"+"SkyCamC.sh");
+                                    Process pSC = rt.exec("chmod a+x "+userHomeDir+"/.webcamstudio/"+"SkyCamC.sh");
                                 } catch (IOException ex) {
                                     Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
                                 }
-                                String batchSkyCommC = System.getProperty("user.home")+"/.webcamstudio/"+"SkyCamC.sh";
+                                String batchSkyCommC = userHomeDir+"/.webcamstudio/"+"SkyCamC.sh";
                                 try {
                                     Tools.sleep(20);
                                     processSkyVideo.executeString(batchSkyCommC);
@@ -874,7 +875,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
                 camCount = 0;
                 fmeCount = 0;
                 skyCamMode = true;
-                File fileD=new File(System.getProperty("user.home")+"/.webcamstudio/"+"SkyCam.sh");
+                File fileD=new File(userHomeDir+"/.webcamstudio/"+"SkyCam.sh");
                 FileOutputStream fosD;
                 DataOutputStream dosD = null;
                 try {
@@ -894,14 +895,14 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
                 Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 try {
-                    Process pSky = rt.exec("chmod a+x "+System.getProperty("user.home")+"/.webcamstudio/"+"SkyCam.sh");
+                    Process pSky = rt.exec("chmod a+x "+userHomeDir+"/.webcamstudio/"+"SkyCam.sh");
                 } catch (IOException ex) {
                     Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 if (distro.toLowerCase().equals("ubuntu")){
-                    batchSkyComm = "gksudo "+System.getProperty("user.home")+"/.webcamstudio/"+"SkyCam.sh";
+                    batchSkyComm = "gksudo "+userHomeDir+"/.webcamstudio/"+"SkyCam.sh";
                 } else {
-                    batchSkyComm = "gksu "+System.getProperty("user.home")+"/.webcamstudio/"+"SkyCam.sh";
+                    batchSkyComm = "gksu "+userHomeDir+"/.webcamstudio/"+"SkyCam.sh";
                 }
                 try {
                     Process urDevice = rt.exec(batchSkyComm); 
@@ -933,7 +934,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
             } else {
                 skyCamMode = false;
                 jcbV4l2loopback.setEnabled(true);
-                File fileD=new File(System.getProperty("user.home")+"/.webcamstudio/"+"SkyCamR.sh");
+                File fileD=new File(userHomeDir+"/.webcamstudio/"+"SkyCamR.sh");
                 FileOutputStream fosD;
                 DataOutputStream dosD = null;
                 try {
@@ -953,14 +954,14 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
                 Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 try {
-                    Process pSR = rt.exec("chmod a+x "+System.getProperty("user.home")+"/.webcamstudio/"+"SkyCamR.sh");
+                    Process pSR = rt.exec("chmod a+x "+userHomeDir+"/.webcamstudio/"+"SkyCamR.sh");
                 } catch (IOException ex) {
                     Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 if (distro.toLowerCase().equals("ubuntu")){
-                    batchSkyCommR = "gksudo "+System.getProperty("user.home")+"/.webcamstudio/"+"SkyCamR.sh";
+                    batchSkyCommR = "gksudo "+userHomeDir+"/.webcamstudio/"+"SkyCamR.sh";
                 } else {
-                    batchSkyCommR = "gksu "+System.getProperty("user.home")+"/.webcamstudio/"+"SkyCamR.sh";
+                    batchSkyCommR = "gksu "+userHomeDir+"/.webcamstudio/"+"SkyCamR.sh";
                 }
                 try {
                     Process rDevice = rt.exec(batchSkyCommR); 

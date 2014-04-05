@@ -42,11 +42,14 @@ public abstract class Stream implements Callable<Frame>{
     protected ArrayList<SourceChannel> channels = new ArrayList<>();
     protected String gsEffect = "";
     protected SourceChannel channel = new SourceChannel();
-    protected int desktopN = 0;
+    protected String desktopN = "0";
     protected int desktopX = 0;
     protected int desktopY = 0;
     protected int desktopW = 1024;
     protected int desktopH = 768;
+    protected String desktopXid = "";
+    protected String elementXid = "";
+    protected boolean singleWindow = false;
     protected boolean hasVideo=true;
     protected boolean hasFakeVideo=false;
     protected boolean hasFakeAudio=false;
@@ -193,16 +196,33 @@ public abstract class Stream implements Callable<Frame>{
     public int getDVBBandwidth() {
         return bandwidthDVB;
     }
-    public int getDesktopN() {
+    public String getDesktopN() {
         return desktopN;
     }
-    public void setDesktopN(int desktopN) {
+    public void setDesktopN(String desktopN) {
         this.desktopN = desktopN;
     }
     public int getDesktopX() {
         return desktopX;
     }
-
+    public String getDesktopXid() {
+        return desktopXid;
+    }
+    public void setDesktopXid(String dXid) {
+        this.desktopXid = dXid;
+    }
+    public String getElementXid() {
+        return elementXid;
+    }
+    public void setElementXid(String eXid) {
+        this.elementXid = eXid;
+    }
+    public boolean getSingleWindow() {
+        return singleWindow;
+    }
+    public void setSingleWindow(boolean sWin) {
+        this.singleWindow = sWin;
+    }
     /**
      * @param desktopX the desktopX to set
      */

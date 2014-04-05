@@ -36,11 +36,13 @@ import java.util.prefs.BackingStoreException;
 import javax.swing.ImageIcon;
 import webcamstudio.InfoListener;
 import webcamstudio.sources.effects.Effect;
+import webcamstudio.util.Tools;
 
 public abstract class VideoSource implements InfoListener {
 
     public static java.util.TreeMap<String, VideoSource> loadedSources = new TreeMap<>();
     protected Timer timer = null;
+    private final static String userHomeDir = Tools.getUserHome();
 
     public abstract void startSource();
 
@@ -60,7 +62,7 @@ public abstract class VideoSource implements InfoListener {
 
     protected javax.swing.ImageIcon getCachedThumbnail() {
         ImageIcon icon = null;
-        File home = new File(System.getProperty("user.home"), ".webcamstudio");
+        File home = new File(userHomeDir, ".webcamstudio");
         File thumbs = new File(home, "thumbs");
         File img = new File(thumbs, location.replaceAll("/", "_").replaceAll("file:", "").replaceAll("\\\\", "_").replaceAll(":", "_") + ".png");
         if (img.exists()) {
@@ -92,7 +94,7 @@ public abstract class VideoSource implements InfoListener {
 
     public void saveThumbnail(ImageIcon icon) throws IOException {
 
-        File dir = new File(System.getProperty("user.home"), ".webcamstudio");
+        File dir = new File(userHomeDir, ".webcamstudio");
         if (!dir.exists()) {
             dir.mkdir();
         }
