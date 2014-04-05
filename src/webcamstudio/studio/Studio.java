@@ -573,6 +573,8 @@ public class Studio {
                 String ipcUser = null;
                 String pBrand = null;
                 String comm = null;
+                String desktopXid = null;
+                String elementXid = null;
                 String streamTime = null;
                 String strShapez = null;
                 
@@ -631,6 +633,12 @@ public class Studio {
                     }
                     if (child.getNodeName().equals("comm")) {                       
                         comm = child.getTextContent();
+                    }
+                    if (child.getNodeName().equals("desktopXid")) {                       
+                        desktopXid = child.getTextContent();
+                    }
+                    if (child.getNodeName().equals("elementXid")) {                       
+                        elementXid = child.getTextContent();
                     }
                     if (child.getNodeName().equals("streamTime")) {                       
                         streamTime = child.getTextContent();
@@ -741,13 +749,19 @@ public class Studio {
                     extstream.add(stream);
                     extstreamBis.add(stream);
                     ImgMovMus.add("Desktop");
-                    readObject(stream, source);  
+                    readObject(stream, source);
+                    stream.setComm(comm);
+                    if (desktopXid != ""){
+                        stream.setSingleWindow(true);
+                    }
+//                    stream.setElementXid(elementXid);
                     for (Effect fx : fXL) {
                         if (fx.getName().endsWith("Shapes")){
                             fx.setDoOne(true);
                         }
                         stream.addEffect(fx);
                     }
+                    stream.setLoaded(true);
                     loadTransitions(SCL, stream, subSTrans, subETrans, SubChNames);
                 } else if (clazz.toLowerCase().endsWith("sourcetext")) {
                     text = new SourceText(ObjText);

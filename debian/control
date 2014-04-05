@@ -57,6 +57,7 @@ Depends: openjdk-7-jre,
   pavucontrol,
   pulseaudio-utils,
   zenity,
+  wmctrl,
   ${shlibs:Depends},
   ${misc:Depends}
 Recommends: webcamstudio-dkms | v4l2loopback-dkms,

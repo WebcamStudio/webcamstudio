@@ -33,7 +33,7 @@ public class SourceDesktop extends Stream {
     long timeCode = 0;
     Rectangle area = null;
     BufferedImage lastPreview = null;
-
+    
     public SourceDesktop() {
         super();
         name = "Desktop";

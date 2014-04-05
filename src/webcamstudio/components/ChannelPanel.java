@@ -391,17 +391,17 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
         @Override
         public void run() {
             CHptS=null;
-            int CHpt=0;
+//            int CHpt=0;
             int CHpTemptime = CHNextTime/1000;
             CHProgressTime.setValue(0);
             CHProgressTime.setStringPainted(true);
             CHProgressTime.setMaximum(CHpTemptime);             
-            while (CHpt<CHpTemptime && StopCHpt==false){
-                CHptS = Integer.toString(CHpt);
-                CHProgressTime.setValue(CHpt);
+            while (CHpTemptime>0 && StopCHpt==false){
+                CHptS = Integer.toString(CHpTemptime);
+                CHProgressTime.setValue(CHpTemptime);
                 CHProgressTime.setString(CHptS);
                 Tools.sleep(1000);
-                CHpt += 1;
+                CHpTemptime -= 1;
             }
             UpdateCHtUITask.this.stop();
         }

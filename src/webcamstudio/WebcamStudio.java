@@ -76,6 +76,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
     public static Preferences prefs = null;
     public static Properties animations = new Properties();
     public static boolean outFFmpeg = false;
+    private final static String userHomeDir = Tools.getUserHome();
     OutputPanel recorder = new OutputPanel(this);
     Frame about = new Frame();
     Frame vDevInfo = new Frame();
@@ -207,7 +208,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
     }
     
     private void loadCustomSources() {
-        File userSettings = new File(System.getProperty("user.home") + "/.webcamstudio");
+        File userSettings = new File(userHomeDir + "/.webcamstudio");
         if (userSettings.exists() && userSettings.isDirectory()) {
             File sources = new File(userSettings, "sources");
             if (sources.exists() && sources.isDirectory()) {
@@ -1153,7 +1154,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         } else {
             commandDuration = "ffmpeg -i " + "\"" + file.getAbsolutePath() + "\"";    
         }
-        File fileD=new File(System.getProperty("user.home")+"/.webcamstudio/"+"DurationCalc.sh");
+        File fileD=new File(userHomeDir+"/.webcamstudio/"+"DurationCalc.sh");
         FileOutputStream fosD;
         DataOutputStream dosD = null;
         try {
@@ -1172,11 +1173,11 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
             Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
         }
         try {
-                Process pD = rt.exec("chmod a+x "+System.getProperty("user.home")+"/.webcamstudio/"+"DurationCalc.sh");
+                Process pD = rt.exec("chmod a+x "+userHomeDir+"/.webcamstudio/"+"DurationCalc.sh");
             } catch (IOException ex) {
                 Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
             }
-        String batchDurationComm = System.getProperty("user.home")+"/.webcamstudio/"+"DurationCalc.sh";
+        String batchDurationComm = userHomeDir+"/.webcamstudio/"+"DurationCalc.sh";
         try {
             Process duration = rt.exec(batchDurationComm);
             Tools.sleep(10);
@@ -1674,7 +1675,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
             System.setProperty("jna.nosys", "true");
         }
         System.setProperty("java.util.Arrays.useLegacyMergeSort", "true"); // Java 8 Drag'n'Drop Fix
-        File dir = new File(System.getProperty("user.home"), ".webcamstudio");
+        File dir = new File(userHomeDir, ".webcamstudio");
         if (!dir.exists()) {
             dir.mkdir();
         }
@@ -1755,7 +1756,14 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
       
     @Override
     public void selectedSource(Stream source) {
-        lblSourceSelected.setText(source.getName());     
+        String sourceName = source.getName();
+        String shortName = "";
+        if (sourceName.length() > 30) {
+            shortName = source.getName().substring(0, 30)+" ...";
+        } else {
+            shortName = sourceName;
+        }
+        lblSourceSelected.setText(shortName);     
         lblSourceSelected.setToolTipText(source.getName());      
         tabControls.removeAll();
         tabControls.repaint();

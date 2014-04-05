@@ -39,6 +39,8 @@ public class ProcessRenderer {
 
     final static String RES_CAP = "capture_OS.properties";
     final static String RES_OUT = "output_OS.properties";
+    private final static String userHomeDir = Tools.getUserHome();
+    
 
     public enum ACTION {
 
@@ -101,7 +103,7 @@ public class ProcessRenderer {
         Runtime rt = Runtime.getRuntime();
         String commandAudioSrc = "pactl list";
         String resu = null;
-        File fileD=new File(System.getProperty("user.home")+"/.webcamstudio/"+"SetAudioSrc.sh");
+        File fileD=new File(userHomeDir+"/.webcamstudio/"+"SetAudioSrc.sh");
         FileOutputStream fosD;
         DataOutputStream dosD = null;
         try {
@@ -118,11 +120,11 @@ public class ProcessRenderer {
         Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
         }
         try {
-            Process pAs = rt.exec("chmod a+x "+System.getProperty("user.home")+"/.webcamstudio/"+"SetAudioSrc.sh");
+            Process pAs = rt.exec("chmod a+x "+userHomeDir+"/.webcamstudio/"+"SetAudioSrc.sh");
         } catch (IOException ex) {
             Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
         }
-        String batchAudioSrcComm = System.getProperty("user.home")+"/.webcamstudio/"+"SetAudioSrc.sh";
+        String batchAudioSrcComm = userHomeDir+"/.webcamstudio/"+"SetAudioSrc.sh";
         try {
             Process audioSrc = rt.exec(batchAudioSrcComm);
             audioSrc.waitFor();
@@ -193,10 +195,10 @@ public class ProcessRenderer {
         File userSettings = null;
         switch (a) {
             case CAPTURE:
-                userSettings = new File(new File(System.getProperty("user.home") + "/.webcamstudio"), RES_CAP.replaceAll("OS", Tools.getOSName()));
+                userSettings = new File(new File(userHomeDir + "/.webcamstudio"), RES_CAP.replaceAll("OS", Tools.getOSName()));
                 break;
             case OUTPUT:
-                userSettings = new File(new File(System.getProperty("user.home") + "/.webcamstudio"), RES_OUT.replaceAll("OS", Tools.getOSName()));
+                userSettings = new File(new File(userHomeDir + "/.webcamstudio"), RES_OUT.replaceAll("OS", Tools.getOSName()));
                 break;
         }
         URL res = null;
@@ -245,6 +247,8 @@ public class ProcessRenderer {
                 case DESKTOPH:
                     command = command.replaceAll(Tags.DESKTOPH.toString(), stream.getDesktopH() + "");
                     break;
+                case XID:
+                    command = command.replaceAll(Tags.XID.toString(), stream.getDesktopXid() + "");
                 case VCODEC:
                     if (fme != null) {
                         command = command.replaceAll(Tags.VCODEC.toString(), translateTag(fme.getVcodec()));
@@ -323,7 +327,7 @@ public class ProcessRenderer {
                             command = command.replaceAll(Tags.FILE.toString(), "\"" + stream.getFile().getAbsolutePath().replaceAll("\\\\", "\\\\\\\\") + "\"");
                         } else {
                             if (stream.getFile().getAbsolutePath().contains("http")) {
-                                command = command.replaceAll(Tags.FILE.toString(), "" + stream.getFile().getAbsolutePath().replace(System.getProperty("user.home")+"/", "") + "");
+                                command = command.replaceAll(Tags.FILE.toString(), "" + stream.getFile().getAbsolutePath().replace(userHomeDir+"/", "") + "");
                             } else {
                                 String sFile = stream.getFile().getAbsolutePath().replaceAll(" ", "\\ ");
                                 if (stream instanceof SinkFile){
@@ -426,9 +430,17 @@ public class ProcessRenderer {
                         commandVideo = plugins.getProperty("AVvideo").replaceAll("  ", " "); //Making sure there is no double spaces 
                     } else {
                         if (stream.getGSEffect() != "") {
-                            commandVideo = plugins.getProperty("GSvideoFX").replaceAll("  ", " "); //Making sure there is no double spaces
+                            if (stream.getDesktopXid() != "") {
+                                commandVideo = plugins.getProperty("GSvideoFXSingle").replaceAll("  ", " "); //Making sure there is no double spaces
+                            } else {
+                                commandVideo = plugins.getProperty("GSvideoFX").replaceAll("  ", " "); //Making sure there is no double spaces
+                            }
                         } else {
-                            commandVideo = plugins.getProperty("GSvideo").replaceAll("  ", " "); //Making sure there is no double spaces
+                            if (stream.getDesktopXid() != "") {
+                                commandVideo = plugins.getProperty("GSvideoSingle").replaceAll("  ", " "); //Making sure there is no double spaces
+                            } else {
+                                commandVideo = plugins.getProperty("GSvideo").replaceAll("  ", " "); //Making sure there is no double spaces
+                            }
                         }
                     }
                 }
@@ -482,6 +494,7 @@ public class ProcessRenderer {
         final Runtime rt = Runtime.getRuntime();
         stopped = false;
         stopMe = false;
+        final String iD = stream.getID();
         new Thread(new Runnable() {
 
             @Override
@@ -602,8 +615,8 @@ public class ProcessRenderer {
                 }
                 System.out.println("CommandVideo: "+commandVideo);
                 System.out.println("CommandAudio: "+commandAudio);
-                File fileV=new File(System.getProperty("user.home")+"/.webcamstudio/"+"WSFromUrlVideo"+stream.getID()+".sh");
-                File fileA=new File(System.getProperty("user.home")+"/.webcamstudio/"+"WSFromUrlAudio"+stream.getID()+".sh");
+                File fileV=new File(userHomeDir + "/.webcamstudio/WSFromUrlVideo" + iD + ".sh");
+                File fileA=new File(userHomeDir + "/.webcamstudio/WSFromUrlAudio" + iD + ".sh");
                 
                 FileOutputStream fosV;
                 DataOutputStream dosV = null;
@@ -628,14 +641,14 @@ public class ProcessRenderer {
                     Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 try {
-                Process pV = rt.exec("chmod a+x "+System.getProperty("user.home")+"/.webcamstudio/"+"WSFromUrlVideo"+stream.getID()+".sh");
-                Process pA = rt.exec("chmod a+x "+System.getProperty("user.home")+"/.webcamstudio/"+"WSFromUrlAudio"+stream.getID()+".sh");
+                Process pV = rt.exec("chmod a+x "+userHomeDir+"/.webcamstudio/WSFromUrlVideo" + iD + ".sh");
+                Process pA = rt.exec("chmod a+x "+userHomeDir+"/.webcamstudio/WSFromUrlAudio" + iD + ".sh");
                 }   catch (IOException ex) {
                 Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
                 }   
 //                Runtime rt = Runtime.getRuntime();
-                String batchVideoCommand = System.getProperty("user.home")+"/.webcamstudio/"+"WSFromUrlVideo"+stream.getID()+".sh";
-                String batchAudioCommand = System.getProperty("user.home")+"/.webcamstudio/"+"WSFromUrlAudio"+stream.getID()+".sh";
+                String batchVideoCommand = userHomeDir+"/.webcamstudio/WSFromUrlVideo" + iD + ".sh";
+                String batchAudioCommand = userHomeDir+"/.webcamstudio/WSFromUrlAudio" + iD + ".sh";
                 try {
                     if (stream.hasVideo()) {
                         processVideo.executeString(batchVideoCommand);
@@ -670,7 +683,7 @@ public class ProcessRenderer {
                 String command = plugins.getProperty(plugin).replaceAll("  ", " "); //Making sure there is no double spaces
                 command = setParameters(command);
                 System.out.println("Command: "+command);
-                File file=new File(System.getProperty("user.home")+"/.webcamstudio/"+"WSBroadcast.sh");
+                File file=new File(userHomeDir+"/.webcamstudio/"+"WSBroadcast.sh");
                 FileOutputStream fos;
                 DataOutputStream dos = null;
                 try {
@@ -687,11 +700,11 @@ public class ProcessRenderer {
                     Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 try {
-                Process p = rt.exec("chmod a+x "+System.getProperty("user.home")+"/.webcamstudio/"+"WSBroadcast.sh");
+                Process p = rt.exec("chmod a+x "+userHomeDir+"/.webcamstudio/"+"WSBroadcast.sh");
                 }   catch (IOException ex) {
                 Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
                 }  
-                String batchCommand = System.getProperty("user.home")+"/.webcamstudio/"+"WSBroadcast.sh";
+                String batchCommand = userHomeDir+"/.webcamstudio/"+"WSBroadcast.sh";
                 try {
                     if (stream.hasVideo()) {
                         processVideo.executeString(batchCommand);

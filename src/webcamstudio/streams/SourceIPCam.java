@@ -11,6 +11,7 @@ import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterFrameBuilder;
 import webcamstudio.mixers.MasterMixer;
 import webcamstudio.sources.effects.Effect;
+import webcamstudio.util.Tools;
 
 /**
  *
@@ -21,6 +22,7 @@ public class SourceIPCam extends Stream {
     ProcessRenderer capture = null;
     BufferedImage lastPreview = null;
     boolean isPlaying = false;
+    private final static String userHomeDir = Tools.getUserHome();
     
     public SourceIPCam() {
         super();
@@ -50,7 +52,7 @@ public class SourceIPCam extends Stream {
         if (capture != null) {
             capture.stop();
             capture = null;
-            File directory = new File(System.getProperty("user.home")+"/.webcamstudio");
+            File directory = new File(userHomeDir+"/.webcamstudio");
             for(File f: directory.listFiles())
                 if(f.getName().startsWith("WSFrom"))
                 f.delete();

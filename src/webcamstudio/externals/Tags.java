@@ -46,6 +46,7 @@ public enum Tags {
         PAUDIOSRC ("@PAUDIOSRC"),
         AUDIOSRC ("@AUDIOSRC"),
         KEYINT ("@KEYINT"),
+        XID ("@XID"),
         GSEFFECT ("@GSEFFECT");
         
     private String name = "";

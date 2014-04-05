@@ -28,6 +28,7 @@ public class ProcessExecutor {
     private boolean processRunning = false;
     private String name = "";
     private static String childPids = "";
+    private final static String userHomeDir = Tools.getUserHome();
 
     public ProcessExecutor(String gName) {
         this.name = gName;
@@ -96,7 +97,7 @@ public class ProcessExecutor {
                 int parentPID = getUnixPID(process);
                 Runtime rt = Runtime.getRuntime();
                 String commandPids = "ps -ef | awk '{if ($3 == "+parentPID+") print $2;}'";
-                File fileP=new File(System.getProperty("user.home")+"/.webcamstudio/"+"WSPidsBuster.sh"); 
+                File fileP=new File(userHomeDir+"/.webcamstudio/"+"WSPidsBuster.sh"); 
                 FileOutputStream fosV;
                 DataOutputStream dosV = null;
                 try {
@@ -113,11 +114,11 @@ public class ProcessExecutor {
                     Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 try {
-                    Process pWPB = rt.exec("chmod a+x "+System.getProperty("user.home")+"/.webcamstudio/"+"WSPidsBuster.sh");
+                    Process pWPB = rt.exec("chmod a+x "+userHomeDir+"/.webcamstudio/"+"WSPidsBuster.sh");
                 } catch (IOException ex) {
                     Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                String batchPidCommand = System.getProperty("user.home")+"/.webcamstudio/"+"WSPidsBuster.sh";
+                String batchPidCommand = userHomeDir+"/.webcamstudio/"+"WSPidsBuster.sh";
                 try {
                     Process getChildPids = rt.exec(batchPidCommand);
                     Tools.sleep(10);
@@ -158,7 +159,7 @@ public static void killUnixProcess(Process process) throws Exception //Modified 
 //    System.out.println("Process_Pid: "+pid);     
     Runtime rt = Runtime.getRuntime();
     String commandPids = "ps -ef | awk '{if ($3 == "+pid+") print $2;}'";
-    File fileP=new File(System.getProperty("user.home")+"/.webcamstudio/"+"WSPidsBuster.sh"); 
+    File fileP=new File(userHomeDir+"/.webcamstudio/"+"WSPidsBuster.sh"); 
     FileOutputStream fosV;
     DataOutputStream dosV = null;
     try {
@@ -175,11 +176,11 @@ public static void killUnixProcess(Process process) throws Exception //Modified 
         Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
     }
     try {
-        Process pWPB = rt.exec("chmod a+x "+System.getProperty("user.home")+"/.webcamstudio/"+"WSPidsBuster.sh");
+        Process pWPB = rt.exec("chmod a+x "+userHomeDir+"/.webcamstudio/"+"WSPidsBuster.sh");
     } catch (IOException ex) {
         Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
     }
-    String batchPidCommand = System.getProperty("user.home")+"/.webcamstudio/"+"WSPidsBuster.sh";
+    String batchPidCommand = userHomeDir+"/.webcamstudio/"+"WSPidsBuster.sh";
     try {
     Process getChildPids = rt.exec(batchPidCommand);
     Tools.sleep(10);
