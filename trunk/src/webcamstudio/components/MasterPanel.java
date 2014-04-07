@@ -208,7 +208,7 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
                     .addComponent(btnFullScreen, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnApplyToStreams, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(65, 65, 65))
+                .addGap(69, 69, 69))
         );
 
         tabMixers.addTab(bundle.getString("MIXER"), panMixer); // NOI18N

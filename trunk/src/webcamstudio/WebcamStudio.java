@@ -87,6 +87,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
     public interface Listener {
         public void stopChTime(java.awt.event.ActionEvent evt);
         public void resetBtnStates(java.awt.event.ActionEvent evt);
+        public void resetAutoPLBtnState(java.awt.event.ActionEvent evt);
         public void addLoadingChannel(String name);
         public void removeChannels(String removeSc, int a);
     }
@@ -325,6 +326,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         panSources = new javax.swing.JPanel();
         toolbar = new javax.swing.JToolBar();
         btnAddFile = new javax.swing.JButton();
+        btnAddFolder = new javax.swing.JButton();
         btnAddDVB = new javax.swing.JButton();
         btnAddURL = new javax.swing.JButton();
         btnAddIPCam = new javax.swing.JButton();
@@ -368,7 +370,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
             }
         });
 
-        mainSplit.setDividerLocation(400);
+        mainSplit.setDividerLocation(500);
         mainSplit.setName("mainSplit"); // NOI18N
         mainSplit.setOneTouchExpandable(true);
 
@@ -394,6 +396,22 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
             }
         });
         toolbar.add(btnAddFile);
+
+        btnAddFolder.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-add-folder.png"))); // NOI18N
+        btnAddFolder.setToolTipText("Load Media Folder");
+        btnAddFolder.setFocusable(false);
+        btnAddFolder.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnAddFolder.setMaximumSize(new java.awt.Dimension(29, 28));
+        btnAddFolder.setMinimumSize(new java.awt.Dimension(25, 25));
+        btnAddFolder.setName("btnAddFolder"); // NOI18N
+        btnAddFolder.setPreferredSize(new java.awt.Dimension(28, 28));
+        btnAddFolder.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnAddFolder.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddFolderActionPerformed(evt);
+            }
+        });
+        toolbar.add(btnAddFolder);
 
         btnAddDVB.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/image-x-generic.png"))); // NOI18N
         btnAddDVB.setToolTipText("Add DVB-T Stream");
@@ -583,7 +601,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         panSourcesLayout.setHorizontalGroup(
             panSourcesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(desktop)
-            .addComponent(toolbar, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
+            .addComponent(toolbar, javax.swing.GroupLayout.DEFAULT_SIZE, 500, Short.MAX_VALUE)
         );
         panSourcesLayout.setVerticalGroup(
             panSourcesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1667,6 +1685,70 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
             ResourceMonitor.getInstance().addMessage(label);
         }
     }//GEN-LAST:event_tglFFmpegActionPerformed
+
+    private void btnAddFolderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddFolderActionPerformed
+        boolean noStreams = false;
+        ArrayList<Stream> allStreams = MasterChannels.getInstance().getStreams();
+        if (allStreams.isEmpty()){
+            noStreams = true;
+        }
+        JFileChooser chooser = new JFileChooser(lastFolder);
+        FileNameExtensionFilter mediaFilter = new FileNameExtensionFilter("Supported Media files", "avi", "ogg", "jpeg", "ogv", "mp4", "m4v", "mpg", "divx", "wmv", "flv", "mov", "mkv", "vob", "jpg", "bmp", "png", "gif", "mp3", "wav", "wma", "m4a", ".mp2");
+        chooser.setFileFilter(mediaFilter);
+        chooser.setMultiSelectionEnabled(false);
+        chooser.setDialogTitle("Add Media Folder ...");
+        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        int retVal = chooser.showOpenDialog(this);
+        if (retVal == JFileChooser.APPROVE_OPTION) {
+            File dir = chooser.getSelectedFile();
+            File[] contents = null;
+            if (dir != null) {
+                lastFolder = dir.getAbsoluteFile();
+                contents = dir.listFiles();
+                for ( File f : contents) {
+                    String fileName = f.getName();
+                    System.out.println("Name: " + fileName);
+                }
+            }
+            if (dir != null) {
+                for ( File file : contents) {
+                    Stream s = Stream.getInstance(file);
+                    if (s != null) {
+                        if (s instanceof SourceMovie || s instanceof SourceMusic) {
+                            durationCalc(s, file);
+                        }
+                        ArrayList<String> allChan = new ArrayList<>();
+                        for (String scn : MasterChannels.getInstance().getChannels()){
+                            allChan.add(scn); 
+                        } 
+                        for (String sc : allChan){
+                            s.addChannel(SourceChannel.getChannel(sc, s));
+                        }
+                        StreamDesktop frame = new StreamDesktop(s, this);
+                        desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+
+                        try {
+                            frame.setSelected(true);
+                        } catch (PropertyVetoException ex) {
+                            Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        if (noStreams) { 
+                            listener.resetAutoPLBtnState(evt);
+                        }
+                    }
+                }
+                ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Media Folder Imported!");
+                ResourceMonitor.getInstance().addMessage(label);
+            } else {
+                ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "No File Selected!");
+                ResourceMonitor.getInstance().addMessage(label);
+            }
+        } else {
+            ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Loading Cancelled!");
+            ResourceMonitor.getInstance().addMessage(label);
+        }
+        
+    }//GEN-LAST:event_btnAddFolderActionPerformed
     /**
      * @param args the command line arguments
      */
@@ -1718,6 +1800,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
     private javax.swing.JButton btnAddDVB;
     private javax.swing.JButton btnAddDesktop;
     private javax.swing.JButton btnAddFile;
+    private javax.swing.JButton btnAddFolder;
     private javax.swing.JButton btnAddIPCam;
     private javax.swing.JButton btnAddMic;
     private javax.swing.JButton btnAddMon;

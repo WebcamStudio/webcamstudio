@@ -56,6 +56,7 @@
                   <Component id="CHProgressTime" alignment="0" max="32767" attributes="0"/>
                   <Component id="jLabel4" alignment="0" pref="0" max="32767" attributes="0"/>
                   <Component id="btnStopAllStream" alignment="0" max="32767" attributes="0"/>
+                  <Component id="btnAutoPlayList" alignment="0" pref="214" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -67,8 +68,8 @@
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="1" attributes="0">
                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                      <Component id="btnAdd" min="-2" max="-2" attributes="0"/>
-                      <Component id="btnRenameCh" alignment="1" min="-2" max="-2" attributes="0"/>
+                      <Component id="btnAdd" min="-2" pref="28" max="-2" attributes="0"/>
+                      <Component id="btnRenameCh" alignment="1" min="-2" pref="28" max="-2" attributes="0"/>
                   </Group>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="txtName" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -76,8 +77,10 @@
                   </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="lstChannelsScroll" pref="217" max="32767" attributes="0"/>
-              <EmptySpace min="-2" max="-2" attributes="0"/>
+              <Component id="lstChannelsScroll" pref="194" max="32767" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="btnAutoPlayList" min="-2" pref="28" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jLabel2" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="lstNextChannel" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -92,16 +95,16 @@
               <EmptySpace max="-2" attributes="0"/>
               <Component id="CHProgressTime" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="btnStopAllStream" min="-2" max="-2" attributes="0"/>
+              <Component id="btnStopAllStream" min="-2" pref="28" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="StopCHTimer" min="-2" max="-2" attributes="0"/>
+              <Component id="StopCHTimer" min="-2" pref="28" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="btnRemove" min="-2" max="-2" attributes="0"/>
-                  <Component id="btnSelect" min="-2" max="-2" attributes="0"/>
-                  <Component id="btnUpdate" min="-2" max="-2" attributes="0"/>
+                  <Component id="btnRemove" min="-2" pref="28" max="-2" attributes="0"/>
+                  <Component id="btnSelect" min="-2" pref="28" max="-2" attributes="0"/>
+                  <Component id="btnUpdate" min="-2" pref="28" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -279,6 +282,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel4">
       <Properties>
+        <Property name="horizontalAlignment" type="int" value="0"/>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
           <ResourceString bundle="webcamstudio/Languages.properties" key="CURRENT_CHANNEL_TIMER" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
         </Property>
@@ -319,6 +323,17 @@
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnRenameChActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="btnAutoPlayList">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Automatic Play-List"/>
+        <Property name="toolTipText" type="java.lang.String" value="Do an Automatic PlayList. Works Only with &quot;Load Media Folder&quot;."/>
+        <Property name="enabled" type="boolean" value="false"/>
+        <Property name="name" type="java.lang.String" value="btnAutoPlayList" noResource="true"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAutoPlayListActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>
