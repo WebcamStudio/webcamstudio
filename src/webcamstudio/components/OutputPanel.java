@@ -827,6 +827,11 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
     System.out.println("Text read in: " + text);
     return text;
     }
+
+    @Override
+    public void resetAutoPLBtnState(ActionEvent evt) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
     private static class WaitingDialogOP extends JDialog {
         private final JLabel workingLabelOP = new JLabel();
