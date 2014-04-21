@@ -68,7 +68,7 @@ public class Contrast extends Effect{
      * @param brightness the brightness to set
      */
     public void setBrightness(int brightness) {
-        this.brightness = ((float)brightness)/ratio;
+        this.brightness = brightness/ratio;
     }
 
     /**
@@ -82,7 +82,7 @@ public class Contrast extends Effect{
      * @param contrast the contrast to set
      */
     public void setContrast(int contrast) {
-        this.contrast = ((float)contrast)/ratio;
+        this.contrast = contrast/ratio;
     }
 
     @Override

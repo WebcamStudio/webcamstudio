@@ -22,11 +22,13 @@ public class UnknownCommandError extends GenericError
         this.errorMessage = errorMessage;
     }
 
+    @Override
     public String getIrcIdentifier()
     {
         return "421";
     }
 
+    @Override
     public InCommand parse( String prefix, String identifier, String params )
     {
         return new UnknownCommandError(getParameter(params, 1), getParameter(params, 2));

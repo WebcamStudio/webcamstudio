@@ -162,8 +162,9 @@ public class MotionBlurFilter extends AbstractBufferedImageOp {
         int width = src.getWidth();
         int height = src.getHeight();
 
-        if ( dst == null )
+        if ( dst == null ) {
             dst = createCompatibleDestImage( src, null );
+        }
 
         int[] inPixels = new int[width*height];
         int[] outPixels = new int[width*height];
@@ -185,8 +186,9 @@ public class MotionBlurFilter extends AbstractBufferedImageOp {
 		AffineTransform t = new AffineTransform();
 		Point2D.Float p = new Point2D.Float();
 
-        if ( premultiplyAlpha )
-			ImageMath.premultiply( inPixels, 0, inPixels.length );
+        if ( premultiplyAlpha ) {
+            ImageMath.premultiply( inPixels, 0, inPixels.length );
+        }
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
 				int a = 0, r = 0, g = 0, b = 0;
@@ -201,24 +203,27 @@ public class MotionBlurFilter extends AbstractBufferedImageOp {
 					t.translate( cx+f*translateX, cy+f*translateY );
 					float s = 1-zoom*f;
 					t.scale( s, s );
-					if ( rotation != 0 )
-						t.rotate( -rotation*f );
+					if ( rotation != 0 ) {
+                                            t.rotate( -rotation*f );
+                                        }
 					t.translate( -cx, -cy );
 					t.transform( p, p );
 					newX = (int)p.x;
 					newY = (int)p.y;
 
 					if (newX < 0 || newX >= width) {
-						if ( wrapEdges )
-							newX = ImageMath.mod( newX, width );
-						else
-							break;
+						if ( wrapEdges ) {
+                                                    newX = ImageMath.mod( newX, width );
+                                                } else {
+                                                    break;
+                                                }
 					}
 					if (newY < 0 || newY >= height) {
-						if ( wrapEdges )
-							newY = ImageMath.mod( newY, height );
-						else
-							break;
+						if ( wrapEdges ) {
+                                                    newY = ImageMath.mod( newY, height );
+                                                } else {
+                                                    break;
+                                                }
 					}
 
 					count++;
@@ -231,17 +236,18 @@ public class MotionBlurFilter extends AbstractBufferedImageOp {
 				if (count == 0) {
 					outPixels[index] = inPixels[index];
 				} else {
-					a = PixelUtils.clamp((int)(a/count));
-					r = PixelUtils.clamp((int)(r/count));
-					g = PixelUtils.clamp((int)(g/count));
-					b = PixelUtils.clamp((int)(b/count));
+					a = PixelUtils.clamp((a/count));
+					r = PixelUtils.clamp((r/count));
+					g = PixelUtils.clamp((g/count));
+					b = PixelUtils.clamp((b/count));
 					outPixels[index] = (a << 24) | (r << 16) | (g << 8) | b;
 				}
 				index++;
 			}
 		}
-        if ( premultiplyAlpha )
-			ImageMath.unpremultiply( outPixels, 0, inPixels.length );
+        if ( premultiplyAlpha ) {
+            ImageMath.unpremultiply( outPixels, 0, inPixels.length );
+        }
 
         setRGB( dst, 0, 0, width, height, outPixels );
         return dst;

@@ -12,6 +12,7 @@ import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterFrameBuilder;
+import webcamstudio.mixers.MasterMixer;
 import webcamstudio.sources.effects.Effect;
 
 /**
@@ -28,6 +29,18 @@ public class SourceText extends Stream {
     float bgOpacity = 1f;
     private Shape shape = Shape.NONE;
     private String strShape = "";
+    private final MasterMixer mixer = MasterMixer.getInstance();
+    private int textCW = mixer.getWidth();
+    private int textCH = mixer.getHeight();
+
+    public SourceText(String content) {
+        super();
+        this.content = content;
+        name = "Text";
+        updateContent(content);
+        color = 0xFFFFFF;
+        fontName = Font.MONOSPACED;
+    }
 
     @Override
     public void readNext() {
@@ -43,47 +56,53 @@ public class SourceText extends Stream {
         }
     }
 
+    
+
     @Override
     public void play() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.        
     }
 
-    public enum Shape {
-
-        NONE,
-        RECTANGLE,
-        ROUNDRECT,
-        OVAL
+    public void setTextCW (int tCW) {
+        textCW = tCW;
     }
     
-
-    public SourceText(String content) {
-        super();
-        this.content = content;
-        name = "Text";
-        updateContent(content);
-        color = 0xFFFFFF;
-        fontName = Font.MONOSPACED;        
+    public int getTextCW(){
+        return textCW;
     }
-
+    
+    public void setTextCH(int tCH) {
+        textCH = tCH;
+    }
+    
+    public int getTextCH(){
+        return textCH;
+    }
+    
     @Override
     public void setX(int x){
         this.x=x;
+//        System.out.println("X set ... "+x);
         }
     @Override
     public void setY(int y){
         this.y=y;
+//        System.out.println("Y set ... "+y);
         }
     public void setBackgroundOpacity(float o){
         bgOpacity=o;
-        updateContent(content);
+        if (!this.isATimer) {
+            updateContent(content);
+        }
     }
     public float getBackgroundOpacity(){
         return bgOpacity;
     }
     public void setBackground(Shape s) {
         shape = s;
-        updateContent(content);
+        if (!this.isATimer) {
+            updateContent(content);
+        }
     }
 
     public Shape getBackground() {
@@ -105,18 +124,22 @@ public class SourceText extends Stream {
     public void setWidth(int w) {
         width = w;
         updateContent(content);
+//        System.out.println("W set ... "+w);
     }
     
     @Override
     public void setHeight(int h) {
         height = h;
         updateContent(content);
+//        System.out.println("H set ... "+h);
     }
     
     @Override
     public void setColor(int c) {
         color = c;
-        updateContent(content);
+        if (!this.isATimer) {
+            updateContent(content);
+        }
     }
 
     @Override
@@ -126,7 +149,9 @@ public class SourceText extends Stream {
 
     public void setBackGroundColor(int bgColor) {
         this.bgColor = bgColor;
-        updateContent(content);
+        if (!this.isATimer) {
+            updateContent(content);
+        }
     }
 
     public int getBackgroundColor() {
@@ -136,7 +161,9 @@ public class SourceText extends Stream {
     @Override
     public void setFont(String f) {
         fontName = f;
-        updateContent(content);
+        if (!this.isATimer) {
+            updateContent(content);
+        }
     }
 
     @Override
@@ -151,7 +178,11 @@ public class SourceText extends Stream {
 
     @Override
     public void updateContent(String content) {
-        this.content = content;
+        if (this.getIsATimer()){
+            this.content = "Text Clock Mode.";
+        } else {
+            this.content = content;
+        }
         captureWidth = width;
         captureHeight = height;
         int textHeight = captureHeight;
@@ -290,5 +321,10 @@ public class SourceText extends Stream {
     @Override
     public boolean hasVideo() {
         return true;
+    }
+
+    public enum Shape {
+
+        NONE, RECTANGLE, ROUNDRECT, OVAL
     }
 }

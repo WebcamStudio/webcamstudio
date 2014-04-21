@@ -40,6 +40,7 @@ public class KickCommand extends AbstractCommand
         this( null, channel, userToKick, comment );
     }
 
+    @Override
     public InCommand parse( String prefix, String identifier, String params )
     {
         return new KickCommand(
@@ -50,11 +51,13 @@ public class KickCommand extends AbstractCommand
         );
     }
 
+    @Override
     public String getIrcIdentifier()
     {
         return "KICK";
     }
 
+    @Override
     public String renderParams()
     {
         return channel + " " + userKicked + " :" + comment;
@@ -85,6 +88,7 @@ public class KickCommand extends AbstractCommand
         return userKicked.equals( state.getNick() );
     }
 
+    @Override
     public boolean updateClientState( ClientState state )
     {
         if( kickedUs( state ) )

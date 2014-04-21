@@ -34,6 +34,7 @@ import java.util.StringTokenizer;
  */
 public class ChannelModeCommand extends ModeCommand
 {
+    private static HashMap<Character,Mode> modeTypes;
 
     private String prefix;
     private final String channelName;
@@ -41,7 +42,6 @@ public class ChannelModeCommand extends ModeCommand
 	
 	private final List modes;
 
-	private static HashMap<Character,Mode> modeTypes;
 
 	/**
 	 * For receiving a mode command.
@@ -103,12 +103,15 @@ public class ChannelModeCommand extends ModeCommand
 	/**
 	 * Shouldn't be called, as ModeCommand should be responsible for parsing
 	 * and creating this class.
+     * @return 
 	 */
+    @Override
 	public InCommand parse( String prefix, String identifier, String params )
 	{
 		throw new IllegalStateException( "Don't call this method!" );
 	}
 	
+    @Override
 	public String render()
 	{
 		return "MODE " + channelName + renderParams();
@@ -162,7 +165,9 @@ public class ChannelModeCommand extends ModeCommand
 
     /**
 	 * Passes the modes on to the clientstate.Channel object.
+     * @return 
 	 */
+    @Override
 	public boolean updateClientState( ClientState state )
 	{
 		boolean changed = false;

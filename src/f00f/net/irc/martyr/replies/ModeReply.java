@@ -17,6 +17,7 @@ public class ModeReply extends GenericReply
 	{
 	}
 	
+        @Override
 	public String getIrcIdentifier()
 	{
 		return "324";
@@ -25,7 +26,9 @@ public class ModeReply extends GenericReply
 	/**
 	 * This is a factory that passes the command off to a
 	 * ChannelModeCommand.
+     * @return 
 	 */
+        @Override
 	public InCommand parse( String prefix, String identifier, String params )
 	{
 		StringTokenizer tokens = new StringTokenizer( params );
@@ -41,7 +44,9 @@ public class ModeReply extends GenericReply
 	/**
 	 * This should, theoretically, never be called, because this command is
 	 * only ever used as a factory.
+     * @return 
 	 */
+        @Override
 	public boolean updateClientState( ClientState state )
 	{
 		throw new IllegalStateException("This shouldn't be called!" );

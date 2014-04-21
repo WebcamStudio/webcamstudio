@@ -64,15 +64,19 @@ public class Member
         return nick.equals( fullNick );
     }
 
+    @Override
     public boolean equals( Object o )
     {
-        if( o instanceof Member )
+        if( o instanceof Member ) {
             return equals( (Member)o );
-        else if( o instanceof FullNick )
+        } else if( o instanceof FullNick ) {
             return equals( (FullNick)o );
-        else return false;
+        } else {
+            return false;
+        }
     }
 
+    @Override
     public int hashCode()
     {
         return nick.hashCode();

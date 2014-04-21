@@ -41,7 +41,9 @@ public class WelcomeCommand extends AbstractInCommand
     /**
      * Parses a string and produces a formed command object, if it can.
      * Should return null if it cannot form the command object.
+     * @return 
      */
+    @Override
     public InCommand parse( String prefix, String identifier, String params )
     {
         ParameterIterator pi = new ParameterIterator( params );
@@ -72,7 +74,9 @@ public class WelcomeCommand extends AbstractInCommand
     /**
      * Sets the nick of the client state, if there is one included with
      * this command.
+     * @return 
      */
+    @Override
     public boolean updateClientState( ClientState state )
     {
 
@@ -84,12 +88,15 @@ public class WelcomeCommand extends AbstractInCommand
     /**
      * Returns the string IRC uses to identify this command.  Examples:
      * NICK, PING, KILL, 332.  In our case, there is no one thing.
+     * @return 
      */
+    @Override
     public String getIrcIdentifier()
     {
         return "001";
     }
 
+    @Override
     public void selfRegister( CommandRegister commandRegister )
     {
         commandRegister.addCommand( "001", this );
@@ -113,6 +120,7 @@ public class WelcomeCommand extends AbstractInCommand
         return nick;
     }
 
+    @Override
     public String toString()
     {
         return "WelcomeCommand";

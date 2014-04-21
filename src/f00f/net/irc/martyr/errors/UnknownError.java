@@ -13,6 +13,11 @@ import f00f.net.irc.martyr.commands.UnknownCommand;
 public class UnknownError extends UnknownCommand
 {
 
+    public static boolean isError(String ident) {
+        char c = ident.charAt(0);
+        return ( c == '4' || c == '5' );
+    }
+
 	private final String errorStr;
 	private final int errorCode;
 
@@ -32,37 +37,38 @@ public class UnknownError extends UnknownCommand
 		return errorStr;
 	}
 
-	public static boolean isError( String ident )
-	{
-		char c = ident.charAt(0);
-		return ( c == '4' || c == '5' );
-	}
-
-	public State getState()
-	{
-		return State.UNKNOWN;
-	}
-
-	/** 
-	 * Never parsed.
-	 */
-	public InCommand parse( String prefix, String identifier, String params )
-	{
-		throw new UnsupportedOperationException("UnknownError does no parsing.");
-	}
+    @Override
+	public State getState(  )
+        {
+            return State.UNKNOWN;
+        }
 
 	/**
-	 * Unknown, so we don't know what the identifier is ahead of time.
-	 */
-	public String getIrcIdentifier()
-	{
-		return errorStr;
-	}
+     * Never parsed.
+     * @return 
+     */
+    @Override
+    public InCommand parse(String prefix, String identifier, String params)
+    {
+        throw new UnsupportedOperationException("UnknownError does no parsing.");
+    }
 
+	/**
+     * Unknown, so we don't know what the identifier is ahead of time.
+     * @return 
+     */
+    @Override
+	public String getIrcIdentifier(  )
+        {
+            return errorStr;
+        }
+
+    @Override
 	public String toString()
-	{
-		return "UnknownError[" + errorStr + "]";
-	}
+        {
+            return "UnknownError[" + errorStr + "]";
+        }
+
 
 }
 

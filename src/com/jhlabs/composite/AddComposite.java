@@ -20,7 +20,7 @@ import java.awt.CompositeContext;
 import java.awt.RenderingHints;
 import java.awt.image.ColorModel;
 
-public final class AddComposite extends RGBComposite {
+public class AddComposite extends RGBComposite {
 
 	public AddComposite( float alpha ) {
         super( alpha );
@@ -32,7 +32,7 @@ public final class AddComposite extends RGBComposite {
 	}
 
     static class Context extends RGBCompositeContext {
-        public Context( float alpha, ColorModel srcColorModel, ColorModel dstColorModel ) {
+        Context( float alpha, ColorModel srcColorModel, ColorModel dstColorModel ) {
             super( alpha, srcColorModel, dstColorModel );
         }
 
@@ -52,14 +52,17 @@ public final class AddComposite extends RGBComposite {
                 int dor, dog, dob;
 
                 dor = dir + sr;
-                if ( dor > 255 )
+                if ( dor > 255 ) {
                     dor = 255;
+                }
                 dog = dig + sg;
-                if ( dog > 255 )
+                if ( dog > 255 ) {
                     dog = 255;
+                }
                 dob = dib + sb;
-                if ( dob > 255 )
+                if ( dob > 255 ) {
                     dob = 255;
+                }
 
                 float a = alpha*sa/255f;
                 float ac = 1-a;

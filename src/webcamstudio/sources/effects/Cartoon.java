@@ -27,8 +27,8 @@ public class Cartoon extends Effect {
     }
     @Override
     public void applyEffect(BufferedImage img) {
-        counterFilter.setScale((float) scale / 10F);
-        counterFilter.setLevels((float) contourSize / 10F);
+        counterFilter.setScale(scale / 10F);
+        counterFilter.setLevels(contourSize / 10F);
 
         int[] data = ((java.awt.image.DataBufferInt) img.getRaster().getDataBuffer()).getData();
         int r, g, b, a, c;

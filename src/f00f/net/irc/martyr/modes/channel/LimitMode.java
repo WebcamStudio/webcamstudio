@@ -13,16 +13,19 @@ import f00f.net.irc.martyr.Mode;
 */
 public class LimitMode extends GenericChannelMode
 {
+        @Override
 	public boolean requiresParam()
 	{
 		return true;
 	}
 	
+        @Override
 	public char getChar()
 	{
 		return 'l';
 	}
 	
+        @Override
 	public Mode newInstance()
 	{
 		return new LimitMode();

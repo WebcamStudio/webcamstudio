@@ -16,7 +16,7 @@ limitations under the License.
 
 package com.jhlabs.image;
 
-import java.awt.*;
+import java.awt.Rectangle;
 
 /**
  * An edge-detection filter.
@@ -103,15 +103,17 @@ public class EdgeFilter extends WholeImageFilter {
                 for (int row = -1; row <= 1; row++) {
 					int iy = y+row;
                     int ioffset;
-					if (0 <= iy && iy < height)
-						ioffset = iy*width;
-					else
-						ioffset = y*width;
+					if (0 <= iy && iy < height) {
+                                            ioffset = iy*width;
+                                        } else {
+                                            ioffset = y*width;
+                                        }
 					int moffset = 3*(row+1)+1;
 					for (int col = -1; col <= 1; col++) {
 						int ix = x+col;
-						if (!(0 <= ix && ix < width))
-                                                ix = x;
+						if (!(0 <= ix && ix < width)) {
+                                                    ix = x;
+                                                }
 						int rgb = inPixels[ioffset+ix];
 						float h = hEdgeMatrix[moffset+col];
 						float v = vEdgeMatrix[moffset+col];

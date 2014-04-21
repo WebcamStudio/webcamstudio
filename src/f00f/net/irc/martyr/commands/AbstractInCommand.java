@@ -19,6 +19,7 @@ public abstract class AbstractInCommand implements InCommand
 {
 
     protected Map<String,String> attributes = new HashMap<>();
+    private String sourceString;
 
     protected AbstractInCommand()
     {
@@ -31,11 +32,13 @@ public abstract class AbstractInCommand implements InCommand
         }
     }
 
+    @Override
     public String getAttribute( String key )
     {
         return attributes.get( key );
     }
 
+    @Override
     public Iterator getAttributeKeys()
     {
         return Collections.unmodifiableSet( attributes.keySet() ).iterator();
@@ -46,7 +49,6 @@ public abstract class AbstractInCommand implements InCommand
         attributes.put( key, value );
     }
 
-    private String sourceString;
 
     /**
      * Some commands, when received by the server, can only occur in one
@@ -56,6 +58,7 @@ public abstract class AbstractInCommand implements InCommand
      * ping).  Most commands will occur in the REGISTERED state, so for a
      * few exeptions, commands can leave this alone.
      */
+    @Override
     public State getState()
     {
         return State.REGISTERED;
@@ -67,6 +70,7 @@ public abstract class AbstractInCommand implements InCommand
      * identifiers, then this method can be overridden and the addCommand
      * method can be called multiple times.
      */
+    @Override
     public void selfRegister( CommandRegister commandRegister )
     {
         commandRegister.addCommand( getIrcIdentifier(), this );
@@ -76,11 +80,13 @@ public abstract class AbstractInCommand implements InCommand
      * Parses a string and produces a formed command object, if it can.
      * Should return null if it cannot form the command object.
      */
+    @Override
     public abstract InCommand parse( String prefix, String identifier, String params );
 
     /**
      * By default, commands do not update the client state.
      */
+    @Override
     public boolean updateClientState( ClientState state )
     {
         return false;
@@ -112,11 +118,12 @@ public abstract class AbstractInCommand implements InCommand
         }
         else if( colonIndex == 0 )
         {
-            if( num == 0 )
+            if( num == 0 ) {
                 return params.substring( 1, params.length() );
-            else
+            } else {
                 return null;
                 // throw exception?
+            }
         }
         else
         {
@@ -135,10 +142,12 @@ public abstract class AbstractInCommand implements InCommand
             tokens.nextToken();
         }
 
-        if( num == 0 && tokens.hasMoreTokens() )
+        if( num == 0 && tokens.hasMoreTokens() ) {
             return tokens.nextToken();
-        if( num == 0 && !tokens.hasMoreTokens() )
+        }
+        if( num == 0 && !tokens.hasMoreTokens() ) {
             return textParam;
+        }
 
 
         return null;
@@ -158,11 +167,13 @@ public abstract class AbstractInCommand implements InCommand
 
     }
 
+    @Override
     public void setSourceString( String source )
     {
         this.sourceString = source;
     }
 
+    @Override
     public String getSourceString()
     {
         return sourceString;

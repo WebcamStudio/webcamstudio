@@ -13,16 +13,19 @@ import f00f.net.irc.martyr.Mode;
  */
 public class ModeratedMode extends GenericChannelMode
 {
+        @Override
 	public boolean requiresParam()
 	{
 		return false;
 	}
 	
+        @Override
 	public char getChar()
 	{
 		return 'm';
 	}
 	
+        @Override
 	public Mode newInstance()
 	{
 		return new ModeratedMode();

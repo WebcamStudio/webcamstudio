@@ -11,21 +11,15 @@
 package webcamstudio.components;
 
 import java.awt.event.ActionEvent;
-import java.beans.PropertyVetoException;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import webcamstudio.WebcamStudio;
-import static webcamstudio.WebcamStudio.durationCalc;
 import webcamstudio.channels.MasterChannels;
 import webcamstudio.mixers.SystemPlayer;
 import webcamstudio.streams.SourceChannel;
-import webcamstudio.streams.SourceMovie;
-import webcamstudio.streams.SourceMusic;
 import webcamstudio.streams.Stream;
 import webcamstudio.studio.Studio;
 import webcamstudio.util.Tools;
@@ -45,7 +39,7 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
     private ArrayList<String> CHCurrNext = new ArrayList<>();
     private ArrayList<Integer> CHTimers = new ArrayList<>();
     private ArrayList<String> ListChannels = new ArrayList<>();
-    ArrayList<Stream> streamS = MasterChannels.getInstance().getStreams();   
+    ArrayList<Stream> streamS = MasterChannels.getInstance().getStreams();
     String selectChannel=null;   
     int CHon =0;
     String CHNxName = null;
@@ -108,6 +102,8 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
         btnStopAllStream = new javax.swing.JButton();
         btnRenameCh = new javax.swing.JButton();
         btnAutoPlayList = new javax.swing.JButton();
+        btnUp = new javax.swing.JButton();
+        btnDown = new javax.swing.JButton();
 
         setPreferredSize(new java.awt.Dimension(238, 499));
 
@@ -126,6 +122,7 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
         });
         lstChannelsScroll.setViewportView(lstChannels);
 
+        jLabel1.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("webcamstudio/Languages"); // NOI18N
         jLabel1.setText(bundle.getString("Name")); // NOI18N
         jLabel1.setName("jLabel1"); // NOI18N
@@ -242,6 +239,26 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
             }
         });
 
+        btnUp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/go-up.png"))); // NOI18N
+        btnUp.setToolTipText("Move Channel UP");
+        btnUp.setEnabled(false);
+        btnUp.setName("btnUp"); // NOI18N
+        btnUp.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUpActionPerformed(evt);
+            }
+        });
+
+        btnDown.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/go-down.png"))); // NOI18N
+        btnDown.setToolTipText("Move Channel DOWN");
+        btnDown.setEnabled(false);
+        btnDown.setName("btnDown"); // NOI18N
+        btnDown.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDownActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -252,12 +269,16 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
                     .addComponent(StopCHTimer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(1, 1, 1)
                         .addComponent(txtName)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnRenameCh)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnAdd))
+                        .addGap(1, 1, 1)
+                        .addComponent(btnUp, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(1, 1, 1)
+                        .addComponent(btnDown, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(1, 1, 1)
+                        .addComponent(btnRenameCh, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(1, 1, 1)
+                        .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(lstChannelsScroll)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -272,11 +293,11 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(ChDuration)
-                            .addComponent(lstNextChannel, 0, 101, Short.MAX_VALUE)))
+                            .addComponent(lstNextChannel, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addComponent(CHProgressTime, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addComponent(btnStopAllStream, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnAutoPlayList, javax.swing.GroupLayout.DEFAULT_SIZE, 214, Short.MAX_VALUE))
+                    .addComponent(btnAutoPlayList, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -289,9 +310,11 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
                         .addComponent(btnRenameCh, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel1)))
+                        .addComponent(jLabel1))
+                    .addComponent(btnDown, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnUp, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lstChannelsScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 194, Short.MAX_VALUE)
+                .addComponent(lstChannelsScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 175, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnAutoPlayList, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -328,6 +351,8 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
             lstNextChannel.setSelectedItem(CHCurrNext.get(SelectCHIndex));
             ChDuration.setValue(CHTimers.get(SelectCHIndex)/1000);
             btnRemove.setEnabled(!inTimer);
+            btnUp.setEnabled(!inTimer);
+            btnDown.setEnabled(!inTimer);
             btnSelect.setEnabled(!inTimer);
             btnRenameCh.setEnabled(!inTimer);
             btnAdd.setEnabled(!inTimer);
@@ -342,7 +367,15 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
     @SuppressWarnings("unchecked") 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
         String name = txtName.getText();
-        if (name.length() > 0) {
+        boolean noDuplicateCh = true;
+        for (String chName : ListChannels){
+            if (name.equals(chName)){
+                noDuplicateCh = false;
+                break;
+            }
+        }
+        
+        if (name.length() > 0 && noDuplicateCh) {
             master.addChannel(name);
             model.addElement(name);
             aModel.addElement(name);
@@ -351,6 +384,11 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
             ListChannels.add(name);
             lstChannels.revalidate();
             lstNextChannel.revalidate();
+        } else {
+            if (!noDuplicateCh){
+                ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Channel "+name+" Duplicated !!!");
+                ResourceMonitor.getInstance().addMessage(label);
+            }
         }
     }//GEN-LAST:event_btnAddActionPerformed
 
@@ -366,6 +404,8 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
         lstChannels.revalidate();
         lstNextChannel.revalidate();
         btnRenameCh.setEnabled(false);
+        btnUp.setEnabled(false);
+        btnDown.setEnabled(false);
         btnRemove.setEnabled(false);
         StopCHTimer.setEnabled(inTimer);
     }//GEN-LAST:event_btnRemoveActionPerformed
@@ -405,6 +445,8 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
     @Override
     public void resetBtnStates(java.awt.event.ActionEvent evt) {
         btnRenameCh.setEnabled(false);
+        btnUp.setEnabled(false);
+        btnDown.setEnabled(false);
         btnRemove.setEnabled(false);
         btnSelect.setEnabled(false);
         txtName.setText("");
@@ -469,6 +511,8 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
                 btnStopAllStream.setEnabled(true);
                 btnSelect.setEnabled(true);
                 btnRenameCh.setEnabled(true);
+                btnUp.setEnabled(true);
+                btnDown.setEnabled(true);
                 btnRemove.setEnabled(true);
                 btnAdd.setEnabled(true);
                 inTimer=false;
@@ -486,6 +530,8 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
         if (CHTimers.get(lstChannels.getSelectedIndex()) != 0) {
             inTimer=true;
             btnRenameCh.setEnabled(false);
+            btnUp.setEnabled(false);
+            btnDown.setEnabled(false);
             btnRemove.setEnabled(false);
             btnAdd.setEnabled(false);
             lstChannels.setEnabled(false);
@@ -532,6 +578,8 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
         btnStopAllStream.setEnabled(true);
         btnSelect.setEnabled(true);
         btnRenameCh.setEnabled(true);
+        btnUp.setEnabled(true);
+        btnDown.setEnabled(true);
         btnRemove.setEnabled(true);
         btnAdd.setEnabled(true);
         inTimer=false;
@@ -564,7 +612,7 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
             if (txtName.getText().length() > 0) {
                 String rnName = txtName.getText();
                 String chName = lstChannels.getSelectedValue().toString();
-                int SelectCHIndex = lstChannels.getSelectedIndex();
+                int selectCHIndex = lstChannels.getSelectedIndex();
                 for (Stream stream : streamS){
                     for (SourceChannel sc : stream.getChannels()) {
                         if (sc.getName().equals(chName)){
@@ -580,20 +628,22 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
                     coun++;
                 }
                 lstNextChannel.revalidate();
-                master.addChannelAt(rnName, SelectCHIndex);
+                master.addChannelAt(rnName, selectCHIndex);
                 master.removeChannelAt(chName);
                 model.removeElement(chName);
                 aModel.removeElement(chName);
-                CHTimers.remove(SelectCHIndex);
+                CHTimers.remove(selectCHIndex);
                 ListChannels.remove(chName);
                 lstChannels.revalidate();
-                model.insertElementAt(rnName, SelectCHIndex);
-                aModel.insertElementAt(rnName, SelectCHIndex);
-                CHTimers.add(SelectCHIndex, CHTimer);
-                ListChannels.add(SelectCHIndex, rnName);
+                model.insertElementAt(rnName, selectCHIndex);
+                aModel.insertElementAt(rnName, selectCHIndex);
+                CHTimers.add(selectCHIndex, CHTimer);
+                ListChannels.add(selectCHIndex, rnName);
                 lstChannels.revalidate();
                 lstNextChannel.revalidate();
                 btnRenameCh.setEnabled(false);
+                btnUp.setEnabled(false);
+                btnDown.setEnabled(false);
             }
         }
     }//GEN-LAST:event_btnRenameChActionPerformed
@@ -602,6 +652,7 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
         ArrayList<Stream> allStreams = MasterChannels.getInstance().getStreams();
         for (Stream s : allStreams) {
             String sourceName = s.getName();
+            System.out.println("Source: "+sourceName);
             String shortName = "";
             if (sourceName.length() > 30) {
                 shortName = s.getName().substring(0, 30)+" ...";
@@ -620,18 +671,10 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
                 lstNextChannel.revalidate();
                 s.setIsPlaying(false);
             }
-            ArrayList<String> allChan = new ArrayList<>();
-            for (String scn : MasterChannels.getInstance().getChannels()){
-                allChan.add(scn); 
-            } 
-            for (String sc : allChan){
-                s.addChannel(SourceChannel.getChannel(sc, s));
-            }
         }
-        // add duration and nextChannel for every stream
         int index = 0;
         int lastItemIndex = ListChannels.size()-1;
-        System.out.println("LastItemIndex: " + lastItemIndex);
+//        System.out.println("LastItemIndex: " + lastItemIndex);
         for (Stream s : allStreams) {
             if (!"N/A".equals(s.getStreamTime())) {
                 String sPrepTime = s.getStreamTime().replaceAll("s", "");
@@ -648,11 +691,285 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
                 String nextChannel = ListChannels.get(0);
                 CHCurrNext.set(index, nextChannel);
             }
-            System.out.println("Name: "+s.getName()+" Duration: "+CHTimer);
+//            System.out.println("Name: "+s.getName()+" Duration: "+CHTimer);
             index++;
         }
         btnAutoPlayList.setEnabled(false);
     }//GEN-LAST:event_btnAutoPlayListActionPerformed
+    @SuppressWarnings("unchecked")
+    private void btnDownActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDownActionPerformed
+        int selectedCHIndex = lstChannels.getSelectedIndex();
+        String selectedChName = ListChannels.get(selectedCHIndex);
+        int selectedCHTimer = CHTimers.get(selectedCHIndex);
+        int nextCHIndex;
+        String nextChName;
+        int nextCHTimer;
+//        System.out.println("List Next Channels: "+CHCurrNext);
+//        System.out.println("List Channels Timers: "+CHTimers);
+        if (lstChannels != null && selectedCHIndex < ListChannels.size() - 1) {
+            if (selectedCHIndex == ListChannels.size() - 2) {
+                nextCHIndex = selectedCHIndex + 1;
+                nextChName = ListChannels.get(nextCHIndex);
+                nextCHTimer = CHTimers.get(nextCHIndex);
+//                System.out.println("Master Channels Before:"+master.getChannels());
+                // Update Master Channels
+                master.removeChannelAt(selectedChName);
+                master.removeChannelAt(nextChName);
+                master.addToChannels(nextChName);
+                master.addToChannels(selectedChName);
+                // Update Streams Channels
+                for (Stream stream : streamS){
+                    String streamName =stream.getClass().getName();
+                    if (streamName.contains("Sink")){
+                    } else {
+                        SourceChannel tempSelSC = null;
+                        SourceChannel tempNextSC = null;
+                        for (SourceChannel sc : stream.getChannels()) {
+                            if (sc.getName().equals(selectedChName)){
+                                tempSelSC = sc;
+                            }
+                            if (sc.getName().equals(nextChName)){
+                                tempNextSC = sc;
+                            }
+                        }                   
+                        stream.addChannelAt(tempSelSC, nextCHIndex);
+                        stream.addChannelAt(tempNextSC, selectedCHIndex);
+                    }
+                }
+//                System.out.println("Master Channels After:"+master.getChannels());
+                // Update UI lists and WS lists Channels
+                model.removeElement(selectedChName);
+                model.removeElement(nextChName);                
+                aModel.removeElement(selectedChName);
+                aModel.removeElement(nextChName);
+                CHCurrNext.remove(selectedChName);
+                CHTimers.remove(selectedCHIndex);
+                CHTimers.remove(selectedCHIndex);
+                ListChannels.remove(selectedChName);
+                ListChannels.remove(nextChName);
+                lstChannels.revalidate();
+                lstNextChannel.revalidate();
+//                System.out.println("List Next Channels Remove: "+CHCurrNext);
+                model.addElement(nextChName);
+                model.addElement(selectedChName);
+                aModel.addElement(nextChName);
+                aModel.addElement(selectedChName);
+                CHCurrNext.add(selectedCHIndex, selectedChName);
+                CHTimers.add(nextCHTimer);
+                CHTimers.add(selectedCHTimer);
+                ListChannels.add(nextChName);
+                ListChannels.add(selectedChName);
+                lstChannels.revalidate();
+                lstNextChannel.revalidate();      
+                lstChannels.setSelectedIndex(nextCHIndex);
+//                System.out.println("List Next Channels Insert: "+CHCurrNext);
+            } else {
+                nextCHIndex = selectedCHIndex + 1;
+                nextChName = ListChannels.get(nextCHIndex);
+                nextCHTimer = CHTimers.get(nextCHIndex);
+//                System.out.println("Master Channels Before:"+master.getChannels());
+                // Update Master Channels
+                master.removeChannelAt(selectedChName);
+                master.removeChannelAt(nextChName);
+                master.addChannelAt(nextChName, selectedCHIndex);
+                master.addChannelAt(selectedChName, nextCHIndex);
+                // Update Streams Channels
+                for (Stream stream : streamS){
+                    String streamName =stream.getClass().getName();
+                    if (streamName.contains("Sink")){
+                    } else {
+                        SourceChannel tempSelSC = null;
+                        SourceChannel tempNextSC = null;
+                        for (SourceChannel sc : stream.getChannels()) {
+                            if (sc.getName().equals(selectedChName)){
+                                tempSelSC = sc;
+                            }
+                            if (sc.getName().equals(nextChName)){
+                                tempNextSC = sc;
+                            }
+                        }                   
+                        stream.addChannelAt(tempSelSC, nextCHIndex);
+                        stream.addChannelAt(tempNextSC, selectedCHIndex);
+                    }
+                }
+//                System.out.println("Master Channels After:"+master.getChannels());
+                // Update UI Channels lists and WS lists
+                model.removeElement(selectedChName);
+                model.removeElement(nextChName);                
+                aModel.removeElement(selectedChName);
+                aModel.removeElement(nextChName);
+                if (selectedCHIndex == 0) {
+                  CHCurrNext.remove(selectedChName);
+                  CHCurrNext.remove(nextChName);
+                } else {
+                    CHCurrNext.remove(selectedChName);
+                }
+                CHTimers.remove(selectedCHIndex);
+                CHTimers.remove(selectedCHIndex);
+//                System.out.println("List Channels Timers Removed: "+CHTimers);
+                ListChannels.remove(selectedChName);
+                ListChannels.remove(nextChName);
+                lstChannels.revalidate();
+                lstNextChannel.revalidate();
+//                System.out.println("List Next Channels Remove: "+CHCurrNext);
+                model.insertElementAt(nextChName, selectedCHIndex);
+                model.insertElementAt(selectedChName, nextCHIndex);
+                aModel.insertElementAt(nextChName, selectedCHIndex);
+                aModel.insertElementAt(selectedChName, nextCHIndex);
+                if (selectedCHIndex == 0) {
+                    CHCurrNext.add(selectedCHIndex, selectedChName);
+                    CHCurrNext.add(nextChName);
+                } else {
+                    CHCurrNext.add(selectedCHIndex, selectedChName);
+                }
+                CHTimers.add(selectedCHIndex, nextCHTimer);
+                CHTimers.add(nextCHIndex, selectedCHTimer);
+//                System.out.println("List Channels Timers After: "+CHTimers);
+                ListChannels.add(selectedCHIndex, nextChName);
+                ListChannels.add(nextCHIndex, selectedChName);
+                lstChannels.revalidate();
+                lstNextChannel.revalidate();      
+                lstChannels.setSelectedIndex(nextCHIndex);
+//                System.out.println("List Next Channels Insert: "+CHCurrNext);
+            }
+        }
+    }//GEN-LAST:event_btnDownActionPerformed
+    @SuppressWarnings("unchecked")
+    private void btnUpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpActionPerformed
+        int selectedCHIndex = lstChannels.getSelectedIndex();
+        String selectedChName = ListChannels.get(selectedCHIndex);
+        int selectedCHTimer = CHTimers.get(selectedCHIndex);
+        int previousCHIndex;
+        String previousChName;
+        int previousCHTimer;
+        int previous2CHIndex;
+//        System.out.println("List Next Channels: "+CHCurrNext);
+//        System.out.println("List Channels Timers: "+CHTimers);
+        if (lstChannels != null && selectedCHIndex > 0) {
+            if (selectedCHIndex == 1) {
+                previousCHIndex = selectedCHIndex - 1;
+                previousChName = ListChannels.get(previousCHIndex);
+                previousCHTimer = CHTimers.get(previousCHIndex);
+//                System.out.println("Master Channels Before:"+master.getChannels());
+                // Update Master Channels
+                master.removeChannelAt(selectedChName);
+                master.removeChannelAt(previousChName);
+                master.addChannelAt(selectedChName, previousCHIndex);
+                master.addChannelAt(previousChName, selectedCHIndex);
+                // Update Streams Channels
+                for (Stream stream : streamS){
+                    String streamName =stream.getClass().getName();
+                    if (streamName.contains("Sink")){
+                    } else {
+                        SourceChannel tempSelSC = null;
+                        SourceChannel tempPrevSC = null;
+                        for (SourceChannel sc : stream.getChannels()) {
+                            if (sc.getName().equals(selectedChName)){
+                                tempSelSC = sc;
+                            }
+                            if (sc.getName().equals(previousChName)){
+                                tempPrevSC = sc;
+                            }
+                        }                   
+                        stream.addChannelAt(tempSelSC, previousCHIndex);
+                        stream.addChannelAt(tempPrevSC, selectedCHIndex);
+                    }
+                }
+//                System.out.println("Master Channels After:"+master.getChannels());
+                // Update UI lists and WS lists Channels
+                model.removeElement(selectedChName);
+                model.removeElement(previousChName);                
+                aModel.removeElement(selectedChName);
+                aModel.removeElement(previousChName);
+                CHCurrNext.remove(selectedChName);
+                CHTimers.remove(selectedCHIndex);
+                CHTimers.remove(previousCHIndex);
+                ListChannels.remove(selectedChName);
+                ListChannels.remove(previousChName);
+                lstChannels.revalidate();
+                lstNextChannel.revalidate();               
+//                System.out.println("List Next Channels Remove: "+CHCurrNext);                
+                model.insertElementAt(selectedChName, previousCHIndex);
+                model.insertElementAt(previousChName, selectedCHIndex);
+                aModel.insertElementAt(selectedChName, previousCHIndex);
+                aModel.insertElementAt(previousChName, selectedCHIndex);
+                CHCurrNext.add(previousCHIndex, previousChName);
+                CHTimers.add(previousCHIndex, selectedCHTimer);
+                CHTimers.add(selectedCHIndex, previousCHTimer);                
+                ListChannels.add(previousCHIndex, selectedChName);
+                ListChannels.add(selectedCHIndex, previousChName);                
+                lstChannels.revalidate();
+                lstNextChannel.revalidate();                     
+                CHCurrNext.remove(ListChannels.size()-1);
+                lstNextChannel.revalidate();
+                CHCurrNext.add(ListChannels.size()-1, selectedChName);
+                lstNextChannel.revalidate();               
+                lstChannels.setSelectedIndex(previousCHIndex);               
+//                System.out.println("List Next Channels Insert: "+CHCurrNext);
+            } else {
+                previous2CHIndex = selectedCHIndex - 2;
+                previousCHIndex = selectedCHIndex - 1;
+                previousChName = ListChannels.get(previousCHIndex);
+                previousCHTimer = CHTimers.get(previousCHIndex);
+//                System.out.println("Master Channels Before:"+master.getChannels());
+                // Update Master Channels
+                master.removeChannelAt(selectedChName);
+                master.removeChannelAt(previousChName);
+                master.addChannelAt(selectedChName, previousCHIndex);
+                master.addChannelAt(previousChName, selectedCHIndex);
+                // Update Streams Channels
+                for (Stream stream : streamS){
+                    String streamName =stream.getClass().getName();
+                    if (streamName.contains("Sink")){
+                    } else {
+                        SourceChannel tempSelSC = null;
+                        SourceChannel tempPrevSC = null;
+                        for (SourceChannel sc : stream.getChannels()) {
+                            if (sc.getName().equals(selectedChName)){
+                                tempSelSC = sc;
+                            }
+                            if (sc.getName().equals(previousChName)){
+                                tempPrevSC = sc;
+                            }
+                        }                   
+                        stream.addChannelAt(tempSelSC, previousCHIndex);
+                        stream.addChannelAt(tempPrevSC, selectedCHIndex);
+                    }
+                }
+//                System.out.println("Master Channels After:"+master.getChannels());
+                // Update UI Channels lists and WS lists
+                model.removeElement(selectedChName);
+                model.removeElement(previousChName);                
+                aModel.removeElement(selectedChName);
+                aModel.removeElement(previousChName);
+                CHCurrNext.remove(selectedChName);
+                CHTimers.remove(selectedCHIndex);
+                CHTimers.remove(previousCHIndex);
+                ListChannels.remove(selectedChName);
+                ListChannels.remove(previousChName);
+                lstChannels.revalidate();
+                lstNextChannel.revalidate();
+//                System.out.println("List Next Channels Remove: "+CHCurrNext);
+                model.insertElementAt(selectedChName, previousCHIndex);
+                model.insertElementAt(previousChName, selectedCHIndex);
+                aModel.insertElementAt(selectedChName, previousCHIndex);
+                aModel.insertElementAt(previousChName, selectedCHIndex);
+                CHCurrNext.add(previousCHIndex, previousChName);
+                CHTimers.add(previousCHIndex, selectedCHTimer);
+                CHTimers.add(selectedCHIndex, previousCHTimer);                
+                ListChannels.add(previousCHIndex, selectedChName);
+                ListChannels.add(selectedCHIndex, previousChName);
+                lstChannels.revalidate();
+                lstNextChannel.revalidate();      
+                lstChannels.setSelectedIndex(previousCHIndex);
+//                System.out.println("List Next Channels Insert: "+CHCurrNext);
+                CHCurrNext.remove(previous2CHIndex);
+                lstNextChannel.revalidate();
+                CHCurrNext.add(previous2CHIndex, selectedChName);
+                lstNextChannel.revalidate();
+            }
+        }
+    }//GEN-LAST:event_btnUpActionPerformed
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -661,10 +978,12 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
     private javax.swing.JButton StopCHTimer;
     private javax.swing.JButton btnAdd;
     private javax.swing.JButton btnAutoPlayList;
+    private javax.swing.JButton btnDown;
     private javax.swing.JButton btnRemove;
     private javax.swing.JButton btnRenameCh;
     private javax.swing.JButton btnSelect;
     private javax.swing.JButton btnStopAllStream;
+    private javax.swing.JButton btnUp;
     private javax.swing.JButton btnUpdate;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

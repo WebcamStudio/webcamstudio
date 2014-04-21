@@ -23,6 +23,11 @@ import webcamstudio.util.Tools;
  * @author patrick (modified by karl)
  */
 public class Exporter implements MasterMixer.SinkListener {
+    static Listener listenerEx = null;
+
+    public static void setListenerEx(Listener l) {
+        listenerEx = l;
+    }
 
     private boolean cancel = false;
     private ServerSocket videoServer = null;
@@ -38,14 +43,6 @@ public class Exporter implements MasterMixer.SinkListener {
     private Stream stream = null;
     private Socket vConnection = null;
     private Socket aConnection = null;
-    public interface Listener {
-        public void resetFMECount();    
-    }
-    static Listener listenerEx = null;
-    public static void setListenerEx(Listener l) {
-        listenerEx = l;
-    }
-
     public Exporter(Stream s) throws SocketException {
         this.stream = s;
         imageBuffer = new ImageBuffer(MasterMixer.getInstance().getWidth(),MasterMixer.getInstance().getHeight());
@@ -113,7 +110,7 @@ public class Exporter implements MasterMixer.SinkListener {
                         System.out.println("Audio output accepted");
                         audioOutput = new BufferedOutputStream(aConnection.getOutputStream(), 4096);
                         audioBuffer.clear();
-                         while (!cancel) {
+                        while (!cancel) {
                             byte[] audioData = audioBuffer.pop();
                             if (audioData == null || audioOutput==null) {
                                 Tools.sleep(30);
@@ -197,5 +194,10 @@ public class Exporter implements MasterMixer.SinkListener {
         if (stream.hasAudio()){
             audioBuffer.push(frame.getAudioData());
         }
+    }
+
+    public interface Listener {
+
+        public void resetFMECount();
     }
 }

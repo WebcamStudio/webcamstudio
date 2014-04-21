@@ -113,8 +113,9 @@ public class ColorHalftoneFilter extends AbstractBufferedImageOp {
 		int type = src.getType();
 		WritableRaster srcRaster = src.getRaster();
 
-        if ( dst == null )
+        if ( dst == null ) {
             dst = createCompatibleDestImage( src, null );
+        }
 
         float gridSize = 2*dotRadius*1.414f;
         float[] angles = { cyanScreenAngle, magentaScreenAngle, yellowScreenAngle };
@@ -124,8 +125,9 @@ public class ColorHalftoneFilter extends AbstractBufferedImageOp {
         int[] outPixels = new int[width];
         int[] inPixels = getRGB( src, 0, 0, width, height, null );
         for ( int y = 0; y < height; y++ ) {
-            for ( int x = 0, ix = y*width; x < width; x++, ix++ )
+            for ( int x = 0, ix = y*width; x < width; x++, ix++ ) {
                 outPixels[x] = (inPixels[ix] & 0xff000000) | 0xffffff;
+            }
             for ( int channel = 0; channel < 3; channel++ ) {
                 int shift = 16-8*channel;
                 int mask = 0x000000ff << shift;

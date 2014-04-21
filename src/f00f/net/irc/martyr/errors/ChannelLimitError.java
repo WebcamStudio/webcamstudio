@@ -38,11 +38,13 @@ public class ChannelLimitError extends GenericJoinError
 		super(chan, comment);
 	}
 
+        @Override
 	public String getIrcIdentifier()
     {
 		return "471";
 	}
 
+        @Override
 	protected InCommand create(String channel, String comment)
     {
 		return new ChannelLimitError( channel, comment );

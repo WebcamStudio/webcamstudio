@@ -38,11 +38,13 @@ public class ChannelWrongKeyError extends GenericJoinError
 		super(chan, comment);
 	}
 
+        @Override
 	public String getIrcIdentifier() 
 	{
 		return "475";
 	}
 
+        @Override
 	protected InCommand create(String channel, String comment) {
 		return new ChannelWrongKeyError(channel, comment);
 	}

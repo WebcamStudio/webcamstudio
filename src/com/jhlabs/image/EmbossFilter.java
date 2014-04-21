@@ -75,8 +75,9 @@ public class EmbossFilter extends WholeImageFilter {
 		bumpMapWidth = width;
 		bumpMapHeight = height;
 		bumpPixels = new int[bumpMapWidth * bumpMapHeight];
-		for (int i = 0; i < inPixels.length; i++)
-			bumpPixels[i] = PixelUtils.brightness(inPixels[i]);
+		for (int i = 0; i < inPixels.length; i++) {
+                    bumpPixels[i] = PixelUtils.brightness(inPixels[i]);
+                }
 
 		int Nx, Ny, Nz, Lx, Ly, Lz, Nz2, NzLz, NdotL;
 		int shade, background;
@@ -103,14 +104,16 @@ public class EmbossFilter extends WholeImageFilter {
 					Nx = bumpPixels[s1-1] + bumpPixels[s2-1] + bumpPixels[s3-1] - bumpPixels[s1+1] - bumpPixels[s2+1] - bumpPixels[s3+1];
 					Ny = bumpPixels[s3-1] + bumpPixels[s3] + bumpPixels[s3+1] - bumpPixels[s1-1] - bumpPixels[s1] - bumpPixels[s1+1];
 
-					if (Nx == 0 && Ny == 0)
-						shade = background;
-					else if ((NdotL = Nx*Lx + Ny*Ly + NzLz) < 0)
-						shade = 0;
-					else
-						shade = (int)(NdotL / Math.sqrt(Nx*Nx + Ny*Ny + Nz2));
-				} else
-					shade = background;
+					if (Nx == 0 && Ny == 0) {
+                                            shade = background;
+                                        } else if ((NdotL = Nx*Lx + Ny*Ly + NzLz) < 0) {
+                                            shade = 0;
+                                        } else {
+                                            shade = (int)(NdotL / Math.sqrt(Nx*Nx + Ny*Ny + Nz2));
+                                        }
+				} else {
+                                    shade = background;
+                                }
 
 				if (emboss) {
 					int rgb = inPixels[index];
@@ -122,8 +125,9 @@ public class EmbossFilter extends WholeImageFilter {
 					g = (g*shade) >> 8;
 					b = (b*shade) >> 8;
 					outPixels[index++] = a | (r << 16) | (g << 8) | b;
-				} else
-					outPixels[index++] = 0xff000000 | (shade << 16) | (shade << 8) | shade;
+				} else {
+                                    outPixels[index++] = 0xff000000 | (shade << 16) | (shade << 8) | shade;
+                                }
 			}
 		}
 

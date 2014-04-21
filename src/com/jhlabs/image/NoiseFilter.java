@@ -118,10 +118,11 @@ public class NoiseFilter extends PointFilter {
 	
 	private int random(int x) {
 		x += (int)(((distribution == GAUSSIAN ? randomNumbers.nextGaussian() : 2*randomNumbers.nextFloat() - 1)) * amount);
-		if (x < 0)
-			x = 0;
-		else if (x > 0xff)
-			x = 0xff;
+		if (x < 0) {
+                    x = 0;
+                } else if (x > 0xff) {
+                    x = 0xff;
+                }
 		return x;
 	}
 	

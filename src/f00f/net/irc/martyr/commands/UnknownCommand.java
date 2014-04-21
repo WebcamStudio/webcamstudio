@@ -12,6 +12,7 @@ import f00f.net.irc.martyr.State;
 public class UnknownCommand extends AbstractInCommand
 {
 
+    @Override
     public State getState()
     {
         return State.UNKNOWN;
@@ -19,7 +20,9 @@ public class UnknownCommand extends AbstractInCommand
 
     /**
      * Never parsed.
+     * @return 
      */
+    @Override
     public InCommand parse( String prefix, String identifier, String params )
     {
         throw new UnsupportedOperationException("UnknownCommand does no parsing.");
@@ -27,7 +30,9 @@ public class UnknownCommand extends AbstractInCommand
 
     /**
      * Unknown, so we don't know what the identifier is ahead of time.
+     * @return 
      */
+    @Override
     public String getIrcIdentifier()
     {
         return null;

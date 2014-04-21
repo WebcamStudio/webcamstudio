@@ -24,6 +24,7 @@ public class PingCommand extends AbstractCommand
         pingSource = source;
     }
 
+    @Override
     public State getState()
     {
         return State.UNKNOWN;
@@ -32,7 +33,9 @@ public class PingCommand extends AbstractCommand
     /**
      * Parses a string and produces a formed command object, if it can.
      * Should return null if it cannot form the command object.
+     * @return 
      */
+    @Override
     public InCommand parse( String prefix, String identifier, String params )
     {
         String str = getParameter( params, 0 );
@@ -42,7 +45,9 @@ public class PingCommand extends AbstractCommand
     /**
      * Returns the string IRC uses to identify this command.  Examples:
      * NICK, PING, KILL, 332
+     * @return 
      */
+    @Override
     public String getIrcIdentifier()
     {
         return "PING";
@@ -50,7 +55,9 @@ public class PingCommand extends AbstractCommand
 
     /**
      * Renders the parameters of this command.
+     * @return 
      */
+    @Override
     public String renderParams()
     {
         return ":" + pingSource;

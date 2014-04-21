@@ -15,43 +15,46 @@ public class TimerTaskCommand extends TimerTask
 
 	private final IRCConnection _conn;
 	private final OutCommand _cmd;
-	public TimerTaskCommand(IRCConnection conn, OutCommand cmd)
-	{
-		_conn = conn;
-		_cmd = cmd;
-	}
-	/* (non-Javadoc)
-	 * @see java.util.TimerTask#run()
-	 */
-	public synchronized void run()
-	{
-		if( !isScheduled )
-			return;
-
-		_conn.sendCommand(_cmd);
-		isScheduled = false;
-	}
 
 	private boolean isScheduled = true;
-	
-	/* (non-Javadoc)
-	 * @see java.util.TimerTask#cancel()
-	 */
-	public synchronized boolean cancel()
-	{
-		boolean ret = super.cancel();
-		isScheduled = false;
-		return ret;
-	}
 
-	/**
-	 * @return true if the command has yet to run or is running, false
-	 * otherwise.
-	 */
-	public synchronized boolean isScheduled()
-	{
-		return isScheduled;
-	}
+	public TimerTaskCommand(IRCConnection conn, OutCommand cmd)
+        {
+            _conn = conn;
+            _cmd = cmd;
+        }
+
+	/* (non-Javadoc)
+     * @see java.util.TimerTask#run()
+     */
+        @Override
+	public synchronized void run()
+        {
+            if( !isScheduled ) {
+                return;
+            }
+            
+            _conn.sendCommand(_cmd);
+            isScheduled = false;
+        }
+
+    /* (non-Javadoc)
+     * @see java.util.TimerTask#cancel()
+     */
+        @Override
+    public synchronized boolean cancel() {
+        boolean ret = super.cancel();
+        isScheduled = false;
+        return ret;
+    }
+
+    /**
+     * @return true if the command has yet to run or is running, false
+     * otherwise.
+     */
+    public synchronized boolean isScheduled() {
+        return isScheduled;
+    }
 
 }
 

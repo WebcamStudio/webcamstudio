@@ -17,11 +17,13 @@ public class LUserOpReply extends GenericStringReply
         this.numOps = ops;
     }
 
+    @Override
     public String getIrcIdentifier()
     {
         return "252";
     }
 
+    @Override
     public InCommand parse( String prefix, String identifier, String params )
     {
         return new LUserOpReply( getIntParameter( params, 1, -1 ), getParameter( params, 2 ) );

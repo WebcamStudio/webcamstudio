@@ -25,11 +25,13 @@ public class UserNotInChannelError extends GenericError
         this.errorMessage = errorMessage;
     }
 
+    @Override
     public String getIrcIdentifier()
     {
         return "441";
     }
 
+    @Override
     public InCommand parse( String prefix, String identifier, String params )
     {
         return new UserNotInChannelError(new FullNick(getParameter(params, 1)), getParameter(params, 2), getParameter(params, 3));

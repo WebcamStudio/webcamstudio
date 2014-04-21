@@ -86,8 +86,9 @@ public class DiffusionFilter extends WholeImageFilter {
 	public void setMatrix(int[] matrix) {
 		this.matrix = matrix;
 		sum = 0;
-		for (int i = 0; i < matrix.length; i++)
-			sum += matrix[i];
+		for (int i = 0; i < matrix.length; i++) {
+                    sum += matrix[i];
+                }
 	}
 
 	/**
@@ -128,8 +129,9 @@ public class DiffusionFilter extends WholeImageFilter {
 			map[i] = v;
 		}
 		int[] div = new int[256];
-		for (int i = 0; i < 256; i++)
-			div[i] = levels*i / 256;
+		for (int i = 0; i < 256; i++) {
+                    div[i] = levels*i / 256;
+                }
 
 		for (int y = 0; y < height; y++) {
 			boolean reverse = serpentine && (y & 1) == 1;
@@ -148,8 +150,9 @@ public class DiffusionFilter extends WholeImageFilter {
 				int g1 = (rgb1 >> 8) & 0xff;
 				int b1 = rgb1 & 0xff;
 
-				if (!colorDither)
-					r1 = g1 = b1 = (r1+g1+b1) / 3;
+				if (!colorDither) {
+                                    r1 = g1 = b1 = (r1+g1+b1) / 3;
+                                }
 
 				int r2 = map[div[r1]];
 				int g2 = map[div[g1]];
@@ -168,10 +171,11 @@ public class DiffusionFilter extends WholeImageFilter {
 							int jx = j+x;
 							if (0 <= jx && jx < width) {
 								int w;
-								if (reverse)
-									w = matrix[(i+1)*3-j+1];
-								else
-									w = matrix[(i+1)*3+j+1];
+								if (reverse) {
+                                                                    w = matrix[(i+1)*3-j+1];
+                                                                } else {
+                                                                    w = matrix[(i+1)*3+j+1];
+                                                                }
 								if (w != 0) {
 									int k = reverse ? index - j : index + j;
 									rgb1 = inPixels[k];

@@ -16,6 +16,11 @@ public class Emotes {
 
     private static final java.util.TreeMap<String, ImageIcon> emotes = new java.util.TreeMap<>();
 
+    public static void main(String[] args) {
+        new Emotes().getSmiley(":)");
+//        System.out.println("OK");
+    }
+
     public Emotes() {
         initialise();
     }
@@ -72,10 +77,5 @@ public class Emotes {
 
     public ImageIcon getSmiley(String word) {
         return emotes.get(word);
-    }
-
-    public static void main(String[] args) {
-        new Emotes().getSmiley(":)");
-//        System.out.println("OK");
     }
 }

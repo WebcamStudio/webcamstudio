@@ -26,6 +26,7 @@ public class WhoisChannelsReply extends AbstractWhoisReply
 		super( params );
 	}
 
+    @Override
 	public String getIrcIdentifier()
 	{
 		return "319";
@@ -54,6 +55,7 @@ public class WhoisChannelsReply extends AbstractWhoisReply
 		return set;
 	}
 
+    @Override
 	protected void parseParams( ParameterIterator pi )
 	{
 		channels = pi.last(); // Channels
@@ -61,6 +63,7 @@ public class WhoisChannelsReply extends AbstractWhoisReply
 
 	}
 
+    @Override
 	public InCommand parse( String prefix, String identifier, String params )
 	{
 		return new WhoisChannelsReply( params );

@@ -4,6 +4,7 @@ import f00f.net.irc.martyr.CommandRegister;
 import f00f.net.irc.martyr.InCommand;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -62,8 +63,10 @@ public class IsonCommand extends AbstractCommand
     }
 
     /**
+     * @return 
      * @see AbstractCommand#parse(String, String, String)
      */
+    @Override
     public InCommand parse(String prefix, String identifier, String params)
     {
         // when the command is used as a reply, the nick is parameter 0 and the rest are parameter 1.
@@ -80,8 +83,10 @@ public class IsonCommand extends AbstractCommand
     }
 
     /**
+     * @return 
      * @see f00f.net.irc.martyr.commands.AbstractCommand#renderParams()
      */
+    @Override
     public String renderParams()
     {
         String ret = "";
@@ -89,7 +94,7 @@ public class IsonCommand extends AbstractCommand
             Boolean isFirst = true;
             for (String nick : nicks) {
                 if (isFirst) {
-                    ret = ret + nick;
+                    ret += nick;
                     isFirst = false;
                 }
                 else {
@@ -101,8 +106,10 @@ public class IsonCommand extends AbstractCommand
     }
 
     /**
+     * @return 
      * @see f00f.net.irc.martyr.Command#getIrcIdentifier()
      */
+    @Override
     public String getIrcIdentifier()
     {
         //
@@ -113,8 +120,10 @@ public class IsonCommand extends AbstractCommand
     }
 
     /**
+     * @param commandRegister
      * @see AbstractCommand#selfRegister(f00f.net.irc.martyr.CommandRegister)
      */
+    @Override
     public void selfRegister(CommandRegister commandRegister)
     {
         commandRegister.addCommand( IDENTIFIER_PRIMARY, this );
@@ -137,7 +146,7 @@ public class IsonCommand extends AbstractCommand
      */
     public List<String> getNicks()
     {
-        return nicks;
+        return Collections.unmodifiableList(nicks);
     }
 
 }

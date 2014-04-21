@@ -62,7 +62,7 @@ public class ErodeAlphaFilter extends PointFilter {
 
         @Override
     public BufferedImage filter( BufferedImage src, BufferedImage dst ) {
-        dst = new GaussianFilter( (int)radius ).filter( src, null );
+        dst = new GaussianFilter( radius).filter( src, null );
         lowerThreshold = 255*(threshold - softness*0.5f);
         upperThreshold = 255*(threshold + softness*0.5f);
 		return super.filter(dst, dst);
@@ -74,14 +74,16 @@ public class ErodeAlphaFilter extends PointFilter {
 		int r = (rgb >> 16) & 0xff;
 		int g = (rgb >> 8) & 0xff;
 		int b = rgb & 0xff;
-		if ( a == 255 )
-            return 0xffffffff;
+		if ( a == 255 ) {
+                    return 0xffffffff;
+                }
         float f = ImageMath.smoothStep(lowerThreshold, upperThreshold, (float)a);
         a = (int)(f * 255);
-        if ( a < 0 )
+        if ( a < 0 ) {
             a = 0;
-        else if ( a > 255 )
-            a = 255;
+                } else if ( a > 255 ) {
+                    a = 255;
+                }
         return (a << 24) | 0xffffff;
 	}
 

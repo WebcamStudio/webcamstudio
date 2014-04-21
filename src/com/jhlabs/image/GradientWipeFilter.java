@@ -34,6 +34,7 @@ public class GradientWipeFilter extends AbstractBufferedImageOp {
 	/**
 	 * Set the density of the image in the range 0..1.
 	 * *arg density The density
+     * @param density
 	 */
 	public void setDensity( float density ) {
 		this.density = density;
@@ -84,10 +85,12 @@ public class GradientWipeFilter extends AbstractBufferedImageOp {
         int width = src.getWidth();
         int height = src.getHeight();
 
-        if ( dst == null )
+        if ( dst == null ) {
             dst = createCompatibleDestImage( src, null );
-		if ( mask == null )
-			return dst;
+        }
+		if ( mask == null ) {
+                    return dst;
+        }
 
         int maskWidth = mask.getWidth();
         int maskHeight = mask.getHeight();
@@ -110,8 +113,9 @@ public class GradientWipeFilter extends AbstractBufferedImageOp {
 				float f = ImageMath.smoothStep( lower, upper, v );
 				int a = (int)(255 * f);
 
-				if ( invert )
-					a = 255-a;
+				if ( invert ) {
+                                    a = 255-a;
+                                }
 				inPixels[x] = (a << 24) | (inRGB & 0x00ffffff);
 			}
 

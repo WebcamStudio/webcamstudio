@@ -26,11 +26,13 @@ public class AwayReply extends GenericReply
         this.message = message;
     }
 
+    @Override
     public String getIrcIdentifier()
     {
 		return "301";
 	}
 
+    @Override
     public InCommand parse( String prefix, String identifier, String params )
     {
 		return new AwayReply(getParameter(params, 1), getParameter(params, 2));

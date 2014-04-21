@@ -25,6 +25,7 @@ public class WhoisIdleReply extends AbstractWhoisReply
 		super( params );
 	}
 
+    @Override
 	public String getIrcIdentifier()
 	{
 		return "317";
@@ -46,6 +47,7 @@ public class WhoisIdleReply extends AbstractWhoisReply
 		return loginTime;
 	}
 
+    @Override
 	protected void parseParams( ParameterIterator pi )
 	{
 		String idleTimeStr = (String)pi.next(); // Idle name
@@ -58,6 +60,7 @@ public class WhoisIdleReply extends AbstractWhoisReply
 
 	}
 
+    @Override
 	public InCommand parse( String prefix, String identifier, String params )
 	{
 		return new WhoisIdleReply( params );

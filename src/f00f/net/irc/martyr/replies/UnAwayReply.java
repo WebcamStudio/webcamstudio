@@ -25,11 +25,13 @@ public class UnAwayReply extends GenericReply
         this.message = message;
     }
 
+    @Override
     public String getIrcIdentifier()
     {
 		return "305";
 	}
 
+    @Override
     public InCommand parse( String prefix, String identifier, String params )
     {
 		return new UnAwayReply(getParameter(params, 0));

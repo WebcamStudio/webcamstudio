@@ -21,11 +21,13 @@ public class CantKillServerError extends GenericError
         this.errorMessage = errorMessage;
     }
 
+    @Override
     public String getIrcIdentifier()
     {
         return "483";
     }
 
+    @Override
     public InCommand parse( String prefix, String identifier, String params )
     {
         return new CantKillServerError(getParameter(params, 1));

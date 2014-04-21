@@ -13,7 +13,6 @@ import java.util.logging.Logger;
 import webcamstudio.externals.ProcessRenderer;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterFrameBuilder;
-import webcamstudio.mixers.MasterMixer;
 import webcamstudio.sources.effects.Effect;
 import webcamstudio.util.Tools;
 import webcamstudio.util.Tools.OS;
@@ -37,7 +36,7 @@ public class SourceDesktop extends Stream {
     public SourceDesktop() {
         super();
         name = "Desktop";
-        rate = MasterMixer.getInstance().getRate();
+        rate = this.getRate();
     }
 
     @Override
@@ -49,7 +48,7 @@ public class SourceDesktop extends Stream {
     public void read() {
         stop = false;
         isPlaying = true;
-        rate = MasterMixer.getInstance().getRate();
+        rate = this.getRate();
         lastPreview = new BufferedImage(captureWidth,captureHeight,BufferedImage.TYPE_INT_ARGB);
         MasterFrameBuilder.register(this);
         if (os == OS.LINUX) {

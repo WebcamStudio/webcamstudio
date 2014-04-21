@@ -23,6 +23,7 @@ public class WhoisServerReply extends AbstractWhoisReply
 		super( params );
 	}
 
+    @Override
 	public String getIrcIdentifier()
 	{
 		return "312";
@@ -44,12 +45,14 @@ public class WhoisServerReply extends AbstractWhoisReply
 		return serverDesc;
 	}
 
+    @Override
 	protected void parseParams( ParameterIterator pi )
 	{
 		serverName = (String)pi.next(); // Server name
 		serverDesc = (String)pi.next(); // Server description
 	}
 
+    @Override
 	public InCommand parse( String prefix, String identifier, String params )
 	{
 		return new WhoisServerReply( params );

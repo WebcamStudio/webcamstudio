@@ -83,8 +83,9 @@ public class ContourFilter extends WholeImageFilter {
 
 		short[] table = new short[256];
 		int offsetl = (int)(offset * 256 / levels);
-		for ( int i = 0; i < 256; i++ )
-			table[i] = (short)PixelUtils.clamp( (int)(255 * Math.floor(levels*(i+offsetl) / 256) / (levels-1) - offsetl) );
+		for ( int i = 0; i < 256; i++ ) {
+                    table[i] = (short)PixelUtils.clamp( (int)(255 * Math.floor(levels*(i+offsetl) / 256) / (levels-1) - offsetl) );
+                }
 
 		for (int x = 0; x < width; x++) {
 			int rgb = inPixels[x];
@@ -118,16 +119,18 @@ public class ContourFilter extends WholeImageFilter {
 					if (nw != ne || nw != sw || ne != se || sw != se) {
 						v = (int)(scale * (Math.abs(nwb - neb) + Math.abs(nwb - swb) + Math.abs(neb - seb) + Math.abs(swb - seb)));
 //						v /= 255;
-						if (v > 255)
-							v = 255;
+						if (v > 255) {
+                                                    v = 255;
+                                                }
 					}
 				}
 
-				if ( v != 0 )
-					outPixels[index] = PixelUtils.combinePixels( inPixels[index], contourColor, PixelUtils.NORMAL, v );
+				if ( v != 0 ) {
+                                    outPixels[index] = PixelUtils.combinePixels( inPixels[index], contourColor, PixelUtils.NORMAL, v );
 //					outPixels[index] = PixelUtils.combinePixels( (contourColor & 0xff)|(v << 24), inPixels[index], PixelUtils.NORMAL );
-				else
-					outPixels[index] = inPixels[index];
+                                } else {
+                                    outPixels[index] = inPixels[index];
+                                }
 				index++;
 			}
 			short[] t;

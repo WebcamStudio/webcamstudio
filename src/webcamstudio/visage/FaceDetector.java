@@ -17,6 +17,7 @@ import svm.svm_node;
 This class detects the eyes and nose locations in a given frame
  */
 public class FaceDetector {
+    private static svm_model model;
 
     final int fWidth = 320, fHeight = 240;
     int[] labels, start, binaryPixels;
@@ -24,7 +25,6 @@ public class FaceDetector {
     private int[] lastPoints = null;
     int[][] s, ii, clustersMembers, eyes;
     int faces, cluster;
-    private static svm_model model;
     svm_node nodes[];
 
     //////////////////////////////
@@ -245,8 +245,8 @@ public class FaceDetector {
         svm_node template[] = new svm_node[735];
         xLen = x1 - x0;
         yLen = y1 - y0;
-        xInc = (double) xLen / 23d;
-        yInc = (double) yLen / 23d;
+        xInc = xLen / 23d;
+        yInc = yLen / 23d;
         scale = Math.sqrt(Math.pow(xLen, 2) + Math.pow(yLen, 2)) / 23d;
         oX = x0 - (int) (6 * xInc) + (int) (8 * yInc);
         nY = (yLen != 0 ? (8 * yInc * xLen) / yLen : 8 * scale);
@@ -476,21 +476,21 @@ public class FaceDetector {
                     lInd2 = i;
                 }
             }
-            if ((double) lMin2 / (double) lMin1 >= 0.5) {
+            if (lMin2 / lMin1 >= 0.5) {
                 lMinGrad = lMin1;
                 lMinIndex = lInd1;
             } else {
                 lMinGrad = lMin2;
                 lMinIndex = lInd2;
             }
-            if ((double) uMin1 / (double) uMin2 >= 0.5) {
+            if (uMin1 / uMin2 >= 0.5) {
                 uMinGrad = uMin2;
                 uMinIndex = uInd2;
             } else {
                 uMinGrad = uMin1;
                 uMinIndex = uInd1;
             }
-            if ((double) uMinGrad / (double) lMinGrad >= 0.5) {
+            if (uMinGrad / lMinGrad >= 0.5) {
                 minGrad = lMinGrad;
                 minIndex = lMinIndex;
             } else {
@@ -520,7 +520,7 @@ public class FaceDetector {
                 return null;
             }
             Point noseTip = new Point((int) candidates[index].getX(), index);
-            slope = (double) yLen / (double) xLen;
+            slope = yLen / xLen;
             double angle = Math.atan(slope); //rotate ROI to it's original state
             double x = Math.cos(angle) * noseTip.getX() - Math.sin(angle) * noseTip.getY();
             double y = Math.sin(angle) * noseTip.getX() + Math.cos(angle) * noseTip.getY();

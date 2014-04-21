@@ -33,6 +33,7 @@ public class ShadeFilter extends WholeImageFilter {
 	public final static int BUMPS_FROM_IMAGE_ALPHA = 1;
 	public final static int BUMPS_FROM_MAP = 2;
 	public final static int BUMPS_FROM_BEVEL = 3;
+    protected static final float r255 = 1.0f/255.0f;
 
 	private float bumpHeight;
 	private float bumpSoftness;
@@ -112,7 +113,6 @@ public class ShadeFilter extends WholeImageFilter {
 		return bumpSource;
 	}
 
-	protected final static float r255 = 1.0f/255.0f;
 
 	protected void setFromRGB( Color4f c, int argb ) {
 		c.set( ((argb >> 16) & 0xff) * r255, ((argb >> 8) & 0xff) * r255, (argb & 0xff) * r255, ((argb >> 24) & 0xff) * r255 );
@@ -125,7 +125,7 @@ public class ShadeFilter extends WholeImageFilter {
 		float width45 = Math.abs(6.0f * bumpHeight);
 		boolean invertBumps = bumpHeight < 0;
 		Vector3f position = new Vector3f(0.0f, 0.0f, 0.0f);
-		Vector3f viewpoint = new Vector3f((float)width / 2.0f, (float)height / 2.0f, viewDistance);
+		Vector3f viewpoint = new Vector3f(width / 2.0f, height / 2.0f, viewDistance);
 		Vector3f normal = new Vector3f();
 		Color4f c = new Color4f();
 		Function2D bump = bumpFunction;
@@ -147,8 +147,9 @@ public class ShadeFilter extends WholeImageFilter {
 				GaussianFilter.convolveAndTranspose( kernel, bumpPixels, tmpPixels, bumpWidth, bumpHeight, true, false, false, ConvolveFilter.CLAMP_EDGES);
 				GaussianFilter.convolveAndTranspose( kernel, tmpPixels, softPixels, bumpHeight, bumpWidth, true, false, false, ConvolveFilter.CLAMP_EDGES);
 				bump = new ImageFunction2D(softPixels, bumpWidth, bumpHeight, ImageFunction2D.CLAMP, bumpSource == BUMPS_FROM_IMAGE_ALPHA);
-			} else
-				bump = new ImageFunction2D(inPixels, width, height, ImageFunction2D.CLAMP, bumpSource == BUMPS_FROM_IMAGE_ALPHA);
+			} else {
+                            bump = new ImageFunction2D(inPixels, width, height, ImageFunction2D.CLAMP, bumpSource == BUMPS_FROM_IMAGE_ALPHA);
+                        }
 		}
 
 		Vector3f v1 = new Vector3f();
@@ -179,8 +180,9 @@ public class ShadeFilter extends WholeImageFilter {
 						v2.x = 0.0f; v2.y = 1.0f; v2.z = m4;
 						n.cross(v1, v2);
 						n.normalize();
-						if (n.z < 0.0)
-							n.z = -n.z;
+						if (n.z < 0.0) {
+                                                    n.z = -n.z;
+                                                }
 						normal.add(n);
 						count++;
 					}
@@ -190,8 +192,9 @@ public class ShadeFilter extends WholeImageFilter {
 						v2.x = 0.0f; v2.y = -1.0f; v2.z = m2;
 						n.cross(v1, v2);
 						n.normalize();
-						if (n.z < 0.0)
-							n.z = -n.z;
+						if (n.z < 0.0) {
+                                                    n.z = -n.z;
+                                                }
 						normal.add(n);
 						count++;
 					}
@@ -201,8 +204,9 @@ public class ShadeFilter extends WholeImageFilter {
 						v2.x = 1.0f; v2.y = 0.0f; v2.z = m3;
 						n.cross(v1, v2);
 						n.normalize();
-						if (n.z < 0.0)
-							n.z = -n.z;
+						if (n.z < 0.0) {
+                                                    n.z = -n.z;
+                                                }
 						normal.add(n);
 						count++;
 					}
@@ -212,8 +216,9 @@ public class ShadeFilter extends WholeImageFilter {
 						v2.x = 0.0f; v2.y = 1.0f; v2.z = m4;
 						n.cross(v1, v2);
 						n.normalize();
-						if (n.z < 0.0)
-							n.z = -n.z;
+						if (n.z < 0.0) {
+                                                    n.z = -n.z;
+                                                }
 						normal.add(n);
 						count++;
 					}
@@ -268,10 +273,12 @@ public class ShadeFilter extends WholeImageFilter {
 						int alpha = inPixels[index] & 0xff000000;
 						int rgb = ((int)(c.x * 255) << 16) | ((int)(c.y * 255) << 8) | (int)(c.z * 255);
 						outPixels[index++] = alpha | rgb;
-					} else
-						outPixels[index++] = 0;
-				} else
-					outPixels[index++] = 0;
+					} else {
+                                            outPixels[index++] = 0;
+                                        }
+				} else {
+                                    outPixels[index++] = 0;
+                                }
 			}
 		}
 		return outPixels;

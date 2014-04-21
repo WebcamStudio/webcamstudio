@@ -26,10 +26,12 @@ package webcamstudio.exporter.vloopback;
  */
 public class video_picture extends com.sun.jna.Structure {
 
+    public short brightness,hue,color,contrast,whiteness,depth,palette;
+
     public static class ByValue extends video_picture implements com.sun.jna.Structure.ByValue {
     }
+
     public static class ByReference extends video_picture implements com.sun.jna.Structure.ByReference {
     }
-    public short brightness,hue,color,contrast,whiteness,depth,palette;
    
 }

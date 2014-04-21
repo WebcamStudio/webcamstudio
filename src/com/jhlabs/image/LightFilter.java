@@ -26,7 +26,6 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.awt.image.Kernel;
 import java.util.ArrayList;
-import java.util.Vector;
 
 /**
  * A filter which produces lighting and embossing effects.
@@ -62,6 +61,11 @@ public class LightFilter extends WholeImageFilter {
      * Use a custom function as the bump map.
      */
 	public final static int BUMPS_FROM_BEVEL = 3;
+    protected static final float r255 = 1.0f/255.0f;
+    public static final int AMBIENT = 0;
+    public static final int DISTANT = 1;
+    public static final int POINT = 2;
+    public static final int SPOT = 3;
 
 	private float bumpHeight;
 	private float bumpSoftness;
@@ -202,7 +206,6 @@ public class LightFilter extends WholeImageFilter {
 		return lights;
 	}
 	
-	protected final static float r255 = 1.0f/255.0f;
 
 	protected void setFromRGB( Color4f c, int argb ) {
 		c.set( ((argb >> 16) & 0xff) * r255, ((argb >> 8) & 0xff) * r255, (argb & 0xff) * r255, ((argb >> 24) & 0xff) * r255 );
@@ -215,7 +218,7 @@ public class LightFilter extends WholeImageFilter {
 		float width45 = Math.abs(6.0f * bumpHeight);
 		boolean invertBumps = bumpHeight < 0;
 		Vector3f position = new Vector3f(0.0f, 0.0f, 0.0f);
-		Vector3f viewpoint = new Vector3f((float)width / 2.0f, (float)height / 2.0f, viewDistance);
+		Vector3f viewpoint = new Vector3f(width / 2.0f, height / 2.0f, viewDistance);
 		Vector3f normal = new Vector3f();
 		Color4f envColor = new Color4f();
 		Color4f diffuseColor = new Color4f( new Color(material.diffuseColor) );
@@ -276,8 +279,9 @@ if ( bumpShape != 0 ) {
 		}
 	};
 }
-			} else if ( bumpSource != BUMPS_FROM_MAP )
-				bump = new ImageFunction2D(inPixels, width, height, ImageFunction2D.CLAMP, bumpSource == BUMPS_FROM_IMAGE_ALPHA);
+			} else if ( bumpSource != BUMPS_FROM_MAP ) {
+                            bump = new ImageFunction2D(inPixels, width, height, ImageFunction2D.CLAMP, bumpSource == BUMPS_FROM_IMAGE_ALPHA);
+                        }
 		}
 
 		float reflectivity = material.reflectivity;
@@ -287,20 +291,23 @@ if ( bumpShape != 0 ) {
 		Vector3f n = new Vector3f();
 		Light[] lightsArray = new Light[lights.size()];
 		lights.toArray(lightsArray);
-		for (int i = 0; i < lightsArray.length; i++)
-			lightsArray[i].prepare(width, height);
+		for (int i = 0; i < lightsArray.length; i++) {
+                    lightsArray[i].prepare(width, height);
+                }
 
 		float[][] heightWindow = new float[3][width];
-		for (int x = 0; x < width; x++)
-			heightWindow[1][x] = width45*bump.evaluate(x, 0);
+		for (int x = 0; x < width; x++) {
+                    heightWindow[1][x] = width45*bump.evaluate(x, 0);
+                }
 
 		// Loop through each source pixel
 		for (int y = 0; y < height; y++) {
 			boolean y0 = y > 0;
 			boolean y1 = y < height-1;
 			position.y = y;
-			for (int x = 0; x < width; x++)
-				heightWindow[2][x] = width45*bump.evaluate(x, y+1);
+			for (int x = 0; x < width; x++) {
+                            heightWindow[2][x] = width45*bump.evaluate(x, y+1);
+                        }
 			for (int x = 0; x < width; x++) {
 				boolean x0 = x > 0;
 				boolean x1 = x < width-1;
@@ -322,8 +329,9 @@ if ( bumpShape != 0 ) {
 						v2.x = 0.0f; v2.y = 1.0f; v2.z = m4;
 						n.cross(v1, v2);
 						n.normalize();
-						if (n.z < 0.0)
-							n.z = -n.z;
+						if (n.z < 0.0) {
+                                                    n.z = -n.z;
+                                                }
 						normal.add(n);
 						count++;
 					}
@@ -333,8 +341,9 @@ if ( bumpShape != 0 ) {
 						v2.x = 0.0f; v2.y = -1.0f; v2.z = m2;
 						n.cross(v1, v2);
 						n.normalize();
-						if (n.z < 0.0)
-							n.z = -n.z;
+						if (n.z < 0.0) {
+                                                    n.z = -n.z;
+                                                }
 						normal.add(n);
 						count++;
 					}
@@ -344,8 +353,9 @@ if ( bumpShape != 0 ) {
 						v2.x = 1.0f; v2.y = 0.0f; v2.z = m3;
 						n.cross(v1, v2);
 						n.normalize();
-						if (n.z < 0.0)
-							n.z = -n.z;
+						if (n.z < 0.0) {
+                                                    n.z = -n.z;
+                                                }
 						normal.add(n);
 						count++;
 					}
@@ -355,8 +365,9 @@ if ( bumpShape != 0 ) {
 						v2.x = 0.0f; v2.y = 1.0f; v2.z = m4;
 						n.cross(v1, v2);
 						n.normalize();
-						if (n.z < 0.0)
-							n.z = -n.z;
+						if (n.z < 0.0) {
+                                                    n.z = -n.z;
+                                                }
 						normal.add(n);
 						count++;
 					}
@@ -374,10 +385,11 @@ if ( bumpShape != 0 ) {
 
 				if (normal.z >= 0) {
 					// Get the material colour at this point
-					if (colorSource == COLORS_FROM_IMAGE)
-						setFromRGB(diffuseColor, inPixels[index]);
-					else
-						setFromRGB(diffuseColor, material.diffuseColor);
+					if (colorSource == COLORS_FROM_IMAGE) {
+                                            setFromRGB(diffuseColor, inPixels[index]);
+                                        } else {
+                                            setFromRGB(diffuseColor, material.diffuseColor);
+                                        }
 					if (reflectivity != 0 && environmentMap != null) {
 						//FIXME-too much normalizing going on here
 						tmpv2.set(viewpoint);
@@ -401,8 +413,9 @@ if ( bumpShape != 0 ) {
 					int alpha = inPixels[index] & 0xff000000;
 					int rgb = ((int)(c.x * 255) << 16) | ((int)(c.y * 255) << 8) | (int)(c.z * 255);
 					outPixels[index++] = alpha | rgb;
-				} else
-					outPixels[index++] = 0;
+				} else {
+                                    outPixels[index++] = 0;
+                                }
 			}
 			float[] t = heightWindow[0];
 			heightWindow[0] = heightWindow[1];
@@ -420,8 +433,9 @@ if ( bumpShape != 0 ) {
 			Light light = lightsArray[i];
 			n.set(normal);
 			l.set(light.position);
-			if (light.type != DISTANT)
-				l.sub(position);
+			if (light.type != DISTANT) {
+                            l.sub(position);
+                        }
 			l.normalize();
 			float nDotL = n.dot(l);
 			if (nDotL >= 0.0) {
@@ -434,8 +448,9 @@ if ( bumpShape != 0 ) {
 				// Spotlight
 				if (light.type == SPOT) {
 					dDotL = light.direction.dot(l);
-					if (dDotL < light.cosConeAngle)
-						continue;
+					if (dDotL < light.cosConeAngle) {
+                                            continue;
+                                        }
 				}
 
 				n.scale(2.0f * nDotL);
@@ -443,11 +458,12 @@ if ( bumpShape != 0 ) {
 				float rDotV = n.dot(v);
 
 				float rv;
-				if (rDotV < 0.0)
-					rv = 0.0f;
-				else
-//					rv = (float)Math.pow(rDotV, material.highlight);
-					rv = rDotV / (material.highlight - material.highlight*rDotV + rDotV);	// Fast approximation to pow
+				if (rDotV < 0.0) {
+                                    rv = 0.0f;
+                                } else {
+                                    //					rv = (float)Math.pow(rDotV, material.highlight);
+                                    rv = rDotV / (material.highlight - material.highlight*rDotV + rDotV);	// Fast approximation to pow
+                                }
 
 				// Spotlight
 				if (light.type == SPOT) {
@@ -487,15 +503,16 @@ if ( bumpShape != 0 ) {
 			float x, y;
 			y = angle/ImageMath.PI;
 
-			if (y == 0.0f || y == 1.0f)
-				x = 0.0f;
-			else {
+			if (y == 0.0f || y == 1.0f) {
+                            x = 0.0f;
+                        } else {
 				float f = normal.x/(float)Math.sin(angle);
 
-				if (f > 1.0f)
-					f = 1.0f;
-				else if (f < -1.0f) 
-					f = -1.0f;
+				if (f > 1.0f) {
+                                    f = 1.0f;
+                            } else if (f < -1.0f) {
+                                f = -1.0f;
+                            }
 
 				x = (float)Math.acos(f)/ImageMath.PI;
 			}
@@ -561,10 +578,6 @@ if ( bumpShape != 0 ) {
 
 	}
 
-	public final static int AMBIENT = 0;
-	public final static int DISTANT = 1;
-	public final static int POINT = 2;
-	public final static int SPOT = 3;
 
     /**
      * A class representing a light.
@@ -653,6 +666,7 @@ if ( bumpShape != 0 ) {
 
         /**
          * Set the centre of the light in the X direction as a proportion of the image size.
+             * @param x
          * @param centreX the center
          * @see #getCentreX
          */
@@ -671,6 +685,7 @@ if ( bumpShape != 0 ) {
 
         /**
          * Set the centre of the light in the Y direction as a proportion of the image size.
+             * @param y
          * @param centreY the center
          * @see #getCentreY
          */

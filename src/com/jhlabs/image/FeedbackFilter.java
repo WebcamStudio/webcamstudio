@@ -246,10 +246,11 @@ public class FeedbackFilter extends AbstractBufferedImageOp {
 	
     @Override
     public BufferedImage filter( BufferedImage src, BufferedImage dst ) {
-        if ( dst == null )
+        if ( dst == null ) {
             dst = createCompatibleDestImage( src, null );
-        float cx = (float)src.getWidth() * centreX;
-        float cy = (float)src.getHeight() * centreY;
+        }
+        float cx = src.getWidth() * centreX;
+        float cy = src.getHeight() * centreY;
         float imageRadius = (float)Math.sqrt( cx*cx + cy*cy );
         float translateX = (float)(distance * Math.cos( angle ));
         float translateY = (float)(distance * -Math.sin( angle ));
@@ -297,8 +298,9 @@ public class FeedbackFilter extends AbstractBufferedImageOp {
 
             g.translate( cx+translateX, cy+translateY );
             g.scale( scale, scale );  // The .0001 works round a bug on Windows where drawImage throws an ArrayIndexOutofBoundException
-            if ( rotation != 0 )
+            if ( rotation != 0 ) {
                 g.rotate( rotate );
+                        }
             g.translate( -cx, -cy );
 
             g.drawImage( src, null, null );

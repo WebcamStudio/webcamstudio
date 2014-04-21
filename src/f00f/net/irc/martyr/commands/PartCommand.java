@@ -60,22 +60,26 @@ public class PartCommand extends AbstractCommand
         this( null, channel, null );
     }
 
+    @Override
     public InCommand parse( String prefix, String identifier, String params )
     {
         return new PartCommand( new FullNick( prefix ), getParameter( params, 0 ), getParameter( params, 1 ) );
     }
 
+    @Override
     public String getIrcIdentifier()
     {
         return "PART";
     }
 
+    @Override
     public String renderParams()
     {
-        if( reason != null )
+        if( reason != null ) {
             return channel + " :" + reason;
-        else
+        } else {
             return channel;
+        }
     }
 
     public String getReason()
@@ -96,7 +100,9 @@ public class PartCommand extends AbstractCommand
     /** Takes client state action.  If we are parting, then remove that
      * channel from our list of channels.  If someone else is parting,
      * remove them from the channel they are parting from.
+     * @return 
      */
+    @Override
     public boolean updateClientState( ClientState state )
     {
         // We parted

@@ -53,9 +53,7 @@ import webcamstudio.sources.effects.Ghosting;
 import webcamstudio.sources.effects.Gray;
 import webcamstudio.sources.effects.Green;
 import webcamstudio.sources.effects.HSB;
-import webcamstudio.sources.effects.Shapes;
 import webcamstudio.sources.effects.Marble;
-import webcamstudio.sources.effects.SaltNPepper;
 import webcamstudio.sources.effects.Mirror1;
 import webcamstudio.sources.effects.Mirror2;
 import webcamstudio.sources.effects.Mirror3;
@@ -67,6 +65,8 @@ import webcamstudio.sources.effects.Perspective;
 import webcamstudio.sources.effects.RGB;
 import webcamstudio.sources.effects.Radar;
 import webcamstudio.sources.effects.Rotation;
+import webcamstudio.sources.effects.SaltNPepper;
+import webcamstudio.sources.effects.Shapes;
 import webcamstudio.sources.effects.Sharpen;
 import webcamstudio.sources.effects.SwapRedBlue;
 import webcamstudio.sources.effects.Twirl;
@@ -95,11 +95,6 @@ import webcamstudio.streams.Stream;
  */
 public class Studio {
 
-    private final ArrayList<String> channels = MasterChannels.getInstance().getChannels();
-    private final ArrayList<Integer> Durations = listener.getCHTimers();
-    private final ArrayList<String> nextChannel = listener.getCHCurrNext();
-    ArrayList<Stream> streams = MasterChannels.getInstance().getStreams();
-    Stream streamC = null;
     private static final String ELEMENT_SOURCES = "Sources";
     private static final String ELEMENT_CHANNELS = "Channels";
     private static final String ELEMENT_EFFECTS = "Effects";
@@ -115,15 +110,9 @@ public class Studio {
     public static ArrayList<String> ImgMovMus = new ArrayList<>();
     public static ArrayList<String> aGifKeys = new ArrayList<>();
     static boolean FirstChannel=false;
-    public interface Listener {
-        public ArrayList<String> getCHCurrNext ();
-        public ArrayList<Integer> getCHTimers ();
-    }
     static Listener listener = null;
     public static void setListener(Studio.Listener l) {
         listener = l;
-    }
-    protected Studio() {
     }
     // Studio removed, put void
     public static void load(File file, String loadType) throws ParserConfigurationException, SAXException, IOException, XPathExpressionException {
@@ -163,7 +152,6 @@ public class Studio {
         }
 //      return studio;
     }
-
     public static void save(File file) throws IOException, XMLStreamException, TransformerConfigurationException, TransformerException, IllegalArgumentException, IllegalAccessException {
         ArrayList<String> channels = MasterChannels.getInstance().getChannels();
         ArrayList<Stream> streams = MasterChannels.getInstance().getStreams();
@@ -181,7 +169,7 @@ public class Studio {
         for (String c : channels) {
             int index = channels.indexOf(c);
             xml.writeStartElement(ELEMENT_CHANNEL);
-            System.out.println("Saving Channel: "+c);
+//            System.out.println("Saving Channel: "+c);
             xml.writeAttribute("name", c);
             xml.writeAttribute("duration", Durations.get(index) + "");
             xml.writeAttribute("NextChannel", nextChannel.get(index) + "");
@@ -193,9 +181,9 @@ public class Studio {
         for (Stream s : streams) {
             String clazzSink = s.getClass().getCanonicalName();
             if (clazzSink.contains("Sink")){
-                System.out.println("Skipping Sink: "+clazzSink);
+//                System.out.println("Skipping Sink: "+clazzSink);
             } else {
-                System.out.println("Saving Stream: "+s.getName());
+//                System.out.println("Saving Stream: "+s.getName());
                 xml.writeStartElement(ELEMENT_SOURCE);
                 writeObject(s, xml);
                 xml.writeEndElement(); // Save Source
@@ -221,8 +209,9 @@ public class Studio {
         transformer.transform(new StreamSource(new StringReader(writer.getBuffer().toString())), new StreamResult(file));
 
     }
-    private static void writeObject(Object o, XMLStreamWriter xml) throws IllegalArgumentException, IllegalAccessException, XMLStreamException {
 
+    private static void writeObject(Object o, XMLStreamWriter xml) throws IllegalArgumentException, IllegalAccessException, XMLStreamException {
+        
         Field[] fields = o.getClass().getDeclaredFields();
         Field[] superFields = null;
         if (o instanceof Stream) {
@@ -243,8 +232,8 @@ public class Studio {
                     xml.writeAttribute(name, f.getFloat(o) + "");
                 } else if (value instanceof Boolean) {
                     xml.writeAttribute(name, f.getBoolean(o) + "");
-                } 
-
+                }
+                
             }
         }
         for (Field f : fields) {
@@ -256,8 +245,8 @@ public class Studio {
             } else if (value instanceof Float) {
                 xml.writeAttribute(name, f.getFloat(o) + "");
             } else if (value instanceof Boolean) {
-                    xml.writeAttribute(name, f.getBoolean(o) + "");
-            } 
+                xml.writeAttribute(name, f.getBoolean(o) + "");
+            }
         }    
         if (superFields != null) {
             for (Field f : superFields) {
@@ -302,29 +291,29 @@ public class Studio {
                     switch (name) {
                         case "channels":
                             xml.writeStartElement(ELEMENT_CHANNELS);
-                            for (Object subO : ((List) value)) {
-                            if (clazz != null){
-                            xml.writeStartElement(name);
-                            writeObject(subO, xml);
-                            xml.writeEndElement(); 
-                            }
+                            for (Object subO : ((Iterable<? extends Object>) value)) {
+                                if (clazz != null){
+                                    xml.writeStartElement(name);
+                                    writeObject(subO, xml);
+                                    xml.writeEndElement(); 
+                                }
                             }
                             break;
                         case "effects":
                             xml.writeStartElement(ELEMENT_EFFECTS);
-                            for (Object subO : ((List) value)) {
-                            if (clazz != null){
-                            xml.writeStartElement(name);
-                            writeObject(subO, xml);
-                            xml.writeEndElement(); 
-                            }
+                            for (Object subO : ((Iterable<? extends Object>) value)) {
+                                if (clazz != null){
+                                    xml.writeStartElement(name);
+                                    writeObject(subO, xml);
+                                    xml.writeEndElement(); 
+                                }
                             }
                             break;
                         default:
                             xml.writeStartElement(name);
-                            for (Object subO : ((List) value)) {
+                            for (Object subO : ((Iterable<? extends Object>) value)) {
                                 if (clazz != null){
-                                writeObject(subO, xml);
+                                    writeObject(subO, xml);
                                 }
                             
                             }
@@ -341,7 +330,7 @@ public class Studio {
             if (value instanceof List) {
                 if ("effects".equals(name)) {
                     xml.writeStartElement(ELEMENT_EFFECTS);
-                    for (Object subO : ((List) value)) {
+                    for (Object subO : ((Iterable<? extends Object>) value)) {
                         if (clazz != null){
                             xml.writeStartElement(name);
                             writeObject(subO, xml);
@@ -350,7 +339,7 @@ public class Studio {
                     }
                 } else {
                     xml.writeStartElement(name);
-                    for (Object subO : ((List) value)) {
+                    for (Object subO : ((Iterable<? extends Object>) value)) {
                         writeObject(subO, xml);
                     }
                 }
@@ -358,8 +347,7 @@ public class Studio {
             }
         }
     }
-    
-    private static void loadTransitions(ArrayList<SourceChannel> SCL, Stream stream, ArrayList<String> subSTrans, ArrayList<String> subETrans,ArrayList<String> SubChNames){
+    private static void loadTransitions(ArrayList<SourceChannel> SCL, Stream stream, ArrayList<String> subSTrans, ArrayList<String> subETrans, ArrayList<String> SubChNames) {
         int op=0;
         for (SourceChannel scs : SCL) {
             scs.setName(SubChNames.get(op));
@@ -409,7 +397,7 @@ public class Studio {
         subETrans.clear();
     }
     
-    private static Effect loadEffects (String sClazz, Node SuperChild){
+    private static Effect loadEffects(String sClazz, Node SuperChild){
         Effect effeX = null;
         try {
             if (sClazz.endsWith("ChromaKey")) {
@@ -555,7 +543,8 @@ public class Studio {
         }
         return effeX;
     }
-    private static void readStreams(Document xml) throws IllegalArgumentException, IllegalAccessException, XPathExpressionException {
+
+    private static void readStreams (Document xml) throws IllegalArgumentException, IllegalAccessException, XPathExpressionException{
         XPath path = XPathFactory.newInstance().newXPath();
         NodeList sources = (NodeList) path.evaluate("/" + ELEMENT_ROOT + "/" + ELEMENT_SOURCES + "/" + ELEMENT_SOURCE, xml.getDocumentElement(), XPathConstants.NODESET);
         String videoDev;      
@@ -670,7 +659,7 @@ public class Studio {
                             for (int ncc = 0; ncc < SuperChild.getChildNodes().getLength(); ncc++) {
                                 Node SSuperChild = SuperChild.getChildNodes().item(ncc);                        
                                 if (SSuperChild.getNodeName().equals("name")) {
-                                    SubChNames.add(SSuperChild.getTextContent()); 
+                                    SubChNames.add(SSuperChild.getTextContent());
                                     sc = new SourceChannel();                                    
                                     readObjectSC(sc, SuperChild);
                                     SCL.add(sc);                                    
@@ -681,16 +670,16 @@ public class Studio {
                                         Node SSSuperChild = SSuperChild.getChildNodes().item(ncs);            
                                         if (SSSuperChild.getNodeName().equals("effects")) {
                                             for (int nccC = 0; nccC < SSSuperChild.getChildNodes().getLength(); nccC++) {
-                                            Node SSSSuperChildC = SSSuperChild.getChildNodes().item(nccC);
-                                            if (SSSSuperChildC.getNodeName().equals("shapeS")){
-                                                shapeImg = SSSSuperChildC.getTextContent();
+                                                Node SSSSuperChildC = SSSuperChild.getChildNodes().item(nccC);
+                                                if (SSSSuperChildC.getNodeName().equals("shapeS")){
+                                                    shapeImg = SSSSuperChildC.getTextContent();
 //                                                System.out.println("Ass ShapeImg Chan: "+ shapeImg);
-                                            }
+                                                }
                                             }
                                             String sClazz = SSSuperChild.getAttributes().getNamedItem("clazz").getTextContent();
                                             effeX = loadEffects (sClazz, SSSuperChild);
                                             sc.addEffects(effeX);
-//                                            System.out.println("channel effect clazz: "+ sClazz);                               
+//                                            System.out.println("channel effect clazz: "+ sClazz);
                                         }     
                                     }
                                 }
@@ -751,7 +740,7 @@ public class Studio {
                     ImgMovMus.add("Desktop");
                     readObject(stream, source);
                     stream.setComm(comm);
-                    if (desktopXid != ""){
+                    if (!"".equals(desktopXid)){
                         stream.setSingleWindow(true);
                     }
 //                    stream.setElementXid(elementXid);
@@ -991,22 +980,21 @@ public class Studio {
                 int multi=0;
                 String streamName = dST.getName();
 //                System.out.println("Found Stream Name: "+streamName);
-                    for (String vDev : videoDevs){
-                        if (vDev.contains(streamName)){
-                                    multi += 1;
-                        } 
+                for (String vDev : videoDevs){
+                    if (vDev.contains(streamName)){
+                        multi += 1; 
                     }
-                    if (multi>1) {
-                        extstream.remove(dST);
-                        ImgMovMus.remove("/dev/"+streamName);
+                }
+                if (multi>1) {
+                    extstream.remove(dST);
+                    ImgMovMus.remove("/dev/"+streamName);
 //                        System.out.println(dST+" Removed ...");
 //                        System.out.println(streamName+" Removed ...");
-                        multi=0;
-                }                 
-             }          
+                    multi=0;
+                }
+            }
         }   
     }
-
     private static void readObject(Stream stream, Node source) throws IllegalArgumentException, IllegalAccessException {
         Field[] fields = stream.getClass().getDeclaredFields();
         Field[] superFields = stream.getClass().getSuperclass().getDeclaredFields();
@@ -1033,8 +1021,8 @@ public class Studio {
                 }
             }
         }
-
-
+        
+        
         for (Field field : fields) {
             field.setAccessible(true);
             String name = field.getName();
@@ -1061,7 +1049,8 @@ public class Studio {
         // Read List
         
     }
-    private static void readObjectFx (Effect fx, Node source) throws IllegalArgumentException, IllegalAccessException {
+
+    private static void readObjectFx(Effect fx, Node source) throws IllegalArgumentException, IllegalAccessException {
         Field[] fields = fx.getClass().getDeclaredFields();
         Field[] superFields = fx.getClass().getSuperclass().getDeclaredFields();
         // Read integer and floats
@@ -1114,7 +1103,7 @@ public class Studio {
         // Read List
         
     }
-    private static void readObjectSC(SourceChannel sc, Node source) throws IllegalArgumentException, IllegalAccessException {
+    private static void readObjectSC (SourceChannel sc, Node source) throws IllegalArgumentException, IllegalAccessException {
         Field[] fields = sc.getClass().getDeclaredFields();
         Field[] superFields = sc.getClass().getSuperclass().getDeclaredFields();
         // Read integer and floats
@@ -1138,8 +1127,8 @@ public class Studio {
                         }
                     }                       
                     
-                } 
-
+                }
+                
             }
         }
 
@@ -1180,6 +1169,20 @@ public class Studio {
         } catch (ParserConfigurationException ex) {
             Logger.getLogger(Studio.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
+    }
+    private final ArrayList<String> channels = MasterChannels.getInstance().getChannels();
+    private final ArrayList<Integer> Durations = listener.getCHTimers();
+    private final ArrayList<String> nextChannel = listener.getCHCurrNext();
+    ArrayList<Stream> streams = MasterChannels.getInstance().getStreams();
+    Stream streamC = null;
+    protected Studio() {
+    }
 
+    public interface Listener {
+
+        public ArrayList<String> getCHCurrNext ();
+
+        public ArrayList<Integer> getCHTimers ();
     }
 }

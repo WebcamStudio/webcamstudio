@@ -4,6 +4,7 @@ import f00f.net.irc.martyr.InCommand;
 import f00f.net.irc.martyr.clientstate.Channel;
 import f00f.net.irc.martyr.clientstate.ClientState;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -24,11 +25,13 @@ public class NamesReply extends GenericReply
         this.channel = channel;
     }
 
+    @Override
     public String getIrcIdentifier()
     {
         return "353";
     }
 
+    @Override
     public InCommand parse( String prefix, String identifier, String params )
     {
         return new NamesReply( getParameter( params, 2 ), Arrays.asList(getParameter( params, 3 ).split(" ")) );
@@ -36,7 +39,9 @@ public class NamesReply extends GenericReply
 
     /**
      * Adds the list of names to the client state.
+     * @return 
      */
+    @Override
     public boolean updateClientState( ClientState state )
     {
         boolean stateChanged = false;
@@ -72,7 +77,7 @@ public class NamesReply extends GenericReply
 
     public List<String> getNames()
     {
-        return names;
+        return Collections.unmodifiableList(names);
     }
 
     public String getChannel()

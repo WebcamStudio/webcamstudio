@@ -23,29 +23,29 @@ public class BlockFilter extends TransformFilter {
 	
 	private int blockSize = 2;
 
+	public BlockFilter() {
+        }
+
 	/**
-	 * Set the pixel block size.
-	 * @param blockSize the number of pixels along each block edge
+     * Set the pixel block size.
+     * @param blockSize the number of pixels along each block edge
      * @min-value 1
      * @max-value 100+
      * @see #getBlockSize
-	 */
+     */
 	public void setBlockSize(int blockSize) {
-		this.blockSize = blockSize;
-	}
+            this.blockSize = blockSize;
+        }
+
 
 	/**
-	 * Get the pixel block size.
-	 * @return the number of pixels along each block edge
+     * Get the pixel block size.
+     * @return the number of pixels along each block edge
      * @see #setBlockSize
-	 */
-	public int getBlockSize() {
-		return blockSize;
-	}
-
-
-	public BlockFilter() {
-	}
+     */
+    public int getBlockSize() {
+        return blockSize;
+    }
 
         @Override
 	protected void transformInverse(int x, int y, float[] out) {

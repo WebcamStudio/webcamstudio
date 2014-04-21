@@ -20,7 +20,7 @@ import java.awt.CompositeContext;
 import java.awt.RenderingHints;
 import java.awt.image.ColorModel;
 
-public final class SoftLightComposite extends RGBComposite {
+public class SoftLightComposite extends RGBComposite {
 
 	public SoftLightComposite( float alpha ) {
         super( alpha );
@@ -32,7 +32,7 @@ public final class SoftLightComposite extends RGBComposite {
 	}
 
     static class Context extends RGBCompositeContext {
-        public Context( float alpha, ColorModel srcColorModel, ColorModel dstColorModel ) {
+        Context( float alpha, ColorModel srcColorModel, ColorModel dstColorModel ) {
             super( alpha, srcColorModel, dstColorModel );
         }
 

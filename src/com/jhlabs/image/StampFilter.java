@@ -141,7 +141,7 @@ public class StampFilter extends PointFilter {
 
         @Override
     public BufferedImage filter( BufferedImage src, BufferedImage dst ) {
-        dst = new GaussianFilter( (int)radius ).filter( src, null );
+        dst = new GaussianFilter( radius).filter( src, null );
         lowerThreshold3 = 255*3*(threshold - softness*0.5f);
         upperThreshold3 = 255*3*(threshold + softness*0.5f);
 		return super.filter(dst, dst);

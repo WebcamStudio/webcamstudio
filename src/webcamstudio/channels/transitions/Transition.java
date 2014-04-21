@@ -13,23 +13,7 @@ import webcamstudio.streams.Stream;
  */
 public abstract class Transition implements Runnable{
 
-    Stream source= null;
-    SourceChannel channel = null;
-    
-    protected Transition(Stream source){
-        this.source=source;
-    }
-    protected abstract void execute();
-    
-    public Transition run(SourceChannel sc){
-        channel=sc;
-        return this;
-    }
-    @Override
-    public void run() {
-        execute();
-    }
-    public static Transition getInstance(Stream source,String name){
+    public static Transition getInstance(Stream source, String name) {
         Transition t = null;
         switch (name) {
             case "FadeIn":
@@ -62,13 +46,31 @@ public abstract class Transition implements Runnable{
         }
         return t;
     }
-    
-    public static String[] getStartTransitions(){
+
+    public static String[] getStartTransitions() {
         String[] ts = {"FadeIn","AudioFadeIn","TranslateIn","Resize","RevealLeft"};
         return ts;
     }
-    public static String[] getEndTransitions(){
+
+    public static String[] getEndTransitions() {
         String[] ts = {"FadeOut","AudioFadeOut","TranslateOut","ShrinkOut"};
         return ts;
+    }
+
+    Stream source= null;
+    SourceChannel channel = null;
+    
+    protected Transition(Stream source){
+        this.source=source;
+    }
+    protected abstract void execute();
+    
+    public Transition run(SourceChannel sc){
+        channel=sc;
+        return this;
+    }
+    @Override
+    public void run() {
+        execute();
     }
 }

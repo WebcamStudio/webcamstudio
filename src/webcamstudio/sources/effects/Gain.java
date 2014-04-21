@@ -66,7 +66,7 @@ public class Gain extends Effect{
      * @param gain
      */
     public void setGain(int gain) {
-        this.gain = ((float)gain)/ratio;
+        this.gain = gain/ratio;
     }
 
     /**
@@ -80,7 +80,7 @@ public class Gain extends Effect{
      * @param bias
      */
     public void setBias(int bias) {
-        this.bias = ((float)bias)/ratio;
+        this.bias = bias/ratio;
     }
 
     @Override

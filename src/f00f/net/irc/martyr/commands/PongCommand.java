@@ -17,12 +17,15 @@ public class PongCommand extends PingCommand
 
     /**
      * PONG shouldn't be sent to us.
+     * @return 
      */
+    @Override
     public InCommand parse( String prefix, String identifier, String params )
     {
         throw new UnsupportedOperationException("PONG is not an incommand.");
     }
 
+    @Override
     public String getIrcIdentifier()
     {
         return "PONG";

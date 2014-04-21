@@ -134,10 +134,12 @@ public class SphereFilter extends TransformFilter {
 		int height = src.getHeight();
 		icentreX = width * centreX;
 		icentreY = height * centreY;
-		if (a == 0)
-			a = width/2;
-		if (b == 0)
-			b = height/2;
+		if (a == 0) {
+                    a = width/2;
+                }
+		if (b == 0) {
+                    b = height/2;
+                }
 		a2 = a*a;
 		b2 = b*b;
 		return super.filter( src, dst );

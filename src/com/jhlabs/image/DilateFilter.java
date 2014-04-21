@@ -73,18 +73,20 @@ public class DilateFilter extends BinaryFilter {
 									int ix = x+dx;
 									if (!(dy == 0 && dx == 0) && 0 <= ix && ix < width) {
 										int rgb = inPixels[ioffset+ix];
-										if (blackFunction.isBlack(rgb))
-											neighbours++;
+										if (blackFunction.isBlack(rgb)) {
+                                                                                    neighbours++;
+                                                                                }
 									}
 								}
 							}
 						}
 						
 						if (neighbours >= threshold) {
-							if (colormap != null)
-								pixel = colormap.getColor((float)i/iterations);
-							else
-								pixel = newColor;
+							if (colormap != null) {
+                                                            pixel = colormap.getColor((float)i/iterations);
+                                                        } else {
+                                                            pixel = newColor;
+                                                        }
 						}
 					}
 					outPixels[index++] = pixel;

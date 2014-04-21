@@ -38,16 +38,19 @@ public class NickCommand extends AbstractCommand
         this( null, new FullNick( newNick ) );
     }
 
+    @Override
     public InCommand parse( String prefix, String identifier, String params )
     {
         return new NickCommand( new FullNick( prefix ), new FullNick ( getParameter( params, 0 ) ) );
     }
 
+    @Override
     public String getIrcIdentifier()
     {
         return "NICK";
     }
 
+    @Override
     public String renderParams()
     {
         return getNick();
@@ -63,6 +66,7 @@ public class NickCommand extends AbstractCommand
         return oldNick.getNick();
     }
 
+    @Override
     public boolean updateClientState( ClientState state )
     {
         // Does this apply to us?
@@ -84,8 +88,9 @@ public class NickCommand extends AbstractCommand
             {
                 Channel channel = (Channel)channels.nextElement();
                 Member member = channel.findMember( oldNick.getNick() );
-                if( member != null )
+                if( member != null ) {
                     member.setNick( newNick );
+                }
             }
         }
         return false;

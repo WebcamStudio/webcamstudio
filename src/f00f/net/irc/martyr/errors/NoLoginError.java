@@ -24,11 +24,13 @@ public class NoLoginError extends GenericError
         this.errorMessage = errorMessage;
     }
 
+    @Override
     public String getIrcIdentifier()
     {
         return "444";
     }
 
+    @Override
     public InCommand parse( String prefix, String identifier, String params )
     {
         return new NoLoginError(new FullNick(getParameter(params, 1)), getParameter(params, 2));

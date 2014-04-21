@@ -112,7 +112,7 @@ public class TwirlControl extends javax.swing.JPanel {
     }//GEN-LAST:event_sliderAngleStateChanged
 
     private void sliderRadiusStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sliderRadiusStateChanged
-        effect.setRadius((float) sliderRadius.getValue());
+        effect.setRadius(sliderRadius.getValue());
     }//GEN-LAST:event_sliderRadiusStateChanged
 
 

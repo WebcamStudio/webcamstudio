@@ -27,6 +27,7 @@ public class TopicInfoReply extends GenericReply
 		this.author = author;
 	}
 	
+        @Override
 	public String getIrcIdentifier()
 	{
 		return "333";
@@ -37,6 +38,7 @@ public class TopicInfoReply extends GenericReply
         return this.channelName;
     }
 	
+        @Override
     public InCommand parse( String prefix, String identifier, String params )
 	{
 		StringTokenizer tokens = new StringTokenizer( params );
@@ -65,6 +67,7 @@ public class TopicInfoReply extends GenericReply
 		return new TopicInfoReply( chan, date, author );
 	}
 	
+        @Override
 	public boolean updateClientState( ClientState state )
 	{
 		Channel channel = state.getChannel( channelName );

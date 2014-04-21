@@ -62,22 +62,26 @@ public class Tuple4f {
 	}
 
 	public void clamp( float min, float max ) {
-		if ( x < min )
-			x = min;
-		else if ( x > max )
-			x = max;
-		if ( y < min )
-			y = min;
-		else if ( y > max )
-			y = max;
-		if ( z < min )
-			z = min;
-		else if ( z > max )
-			z = max;
-		if ( w < min )
-			w = min;
-		else if ( w > max )
-			w = max;
+		if ( x < min ) {
+                    x = min;
+                } else if ( x > max ) {
+                    x = max;
+                }
+		if ( y < min ) {
+                    y = min;
+                } else if ( y > max ) {
+                    y = max;
+                }
+		if ( z < min ) {
+                    z = min;
+                } else if ( z > max ) {
+                    z = max;
+                }
+		if ( w < min ) {
+                    w = min;
+                } else if ( w > max ) {
+                    w = max;
+                }
 	}
 
 	public void set( float x, float y, float z, float w ) {

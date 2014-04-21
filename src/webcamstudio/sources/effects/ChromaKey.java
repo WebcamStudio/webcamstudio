@@ -35,7 +35,7 @@ public class ChromaKey extends Effect {
             int gRatio = Math.abs(color.getGreen() - g) * 100 / 255;
             int bRatio = Math.abs(color.getBlue() - b) * 100 / 255;
             if (rTolerance >= rRatio && gTolerance >= gRatio && bTolerance >= bRatio) {
-                data[i] = data[i] & 0x00FFFFFF;
+                data[i] &= 0x00FFFFFF;
             }
         }
     }

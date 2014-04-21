@@ -14,21 +14,24 @@ import webcamstudio.util.Tools;
  * @author patrick (modified by karl)
  */
 public class MasterChannels {
-    ArrayList<String> channelNames = new ArrayList<>();
-    ArrayList<Stream> streams = new ArrayList<>();
-    ArrayList<ArrayList<String>> CHOfSource = new ArrayList<>();
     static MasterChannels instance = null;
-    
-    private MasterChannels(){
-    }
-    public static MasterChannels getInstance(){
+
+    public static MasterChannels getInstance() {
         if (instance==null){
             instance = new MasterChannels();
         }
         return instance;
     }
+    ArrayList<String> channelNames = new ArrayList<>();
+    ArrayList<Stream> streams = new ArrayList<>();
+//    ArrayList<ArrayList<String>> CHOfSource = new ArrayList<>();
+    int rmAddIndex = 0;
+    ArrayList<SourceChannel> tempSC = null;
+    
+    private MasterChannels(){
+    }
     public void register(Stream s){
-        String streamName =s.getClass().getName().toString();
+        String streamName =s.getClass().getName();
         streamName = streamName.replace("webcamstudio.streams.", "");
         System.out.println(streamName + " registered.");
         streams.add(s);
@@ -44,13 +47,28 @@ public class MasterChannels {
         }
     }
     
+    public void addToChannels(String name){
+        channelNames.add(name);
+        
+    }
+    
     public void addChannelAt(String name, int index){
         channelNames.add(index, name);
-
+        
     }
+    
+//    public void swapChannels(String ch1Name, String ch2Name){
+//        channelNames.add(index, name);
+//        for (Stream s : streams) {
+//            SourceChannel tempSC = (SourceChannel.getChannel(name, s));
+//            s.removeChannelAt(index);
+//            s.addChannelAt(tempSC, index);
+//        }
+//    }
+    
     public void updateChannel(String name){
         for (Stream s : streams){
-            String streamName =s.getClass().getName().toString();
+            String streamName =s.getClass().getName();
             SourceChannel sc = null;
             int x = 0;
             for (int i=0; i < s.getChannels().size(); i++){
@@ -70,7 +88,6 @@ public class MasterChannels {
             }
         }
     }
-    
     public void insertStudio(String name){
         for (Stream s : streams){
             int co = 0;
@@ -92,7 +109,7 @@ public class MasterChannels {
             } else {
                 ArrayList<String> allChan = new ArrayList<>();
                 for (String scn : MasterChannels.getInstance().getChannels()){
-                    allChan.add(scn); 
+                    allChan.add(scn);
                 } 
                 for (SourceChannel scc3 : s.getChannels()){
                     String removech = scc3.getName();
@@ -115,15 +132,19 @@ public class MasterChannels {
                 }
             }
             if (toRemove!=null){
-            s.removeChannel(toRemove);
+                s.removeChannel(toRemove);
             }
         }
     }
     
     public void removeChannelAt(String name){
         channelNames.remove(name);
-    }
+        
+        }
     
+    public void removeChannelIndex(int index){
+        channelNames.remove(index);
+    }
     public void selectChannel(String name){
         for (Stream stream : streams){
             for (SourceChannel sc : stream.getChannels()){
@@ -145,6 +166,7 @@ public class MasterChannels {
             s.stop();
         }
     }
+    
     public ArrayList<Stream> getStreams(){
         return streams;
     }

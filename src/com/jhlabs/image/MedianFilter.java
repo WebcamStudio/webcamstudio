@@ -42,8 +42,9 @@ public class MedianFilter extends WholeImageFilter {
 		}
 		max = 0;
 		for (int i = 0; i < 9; i++) {
-			if (array[i] > max)
-				max = array[i];
+			if (array[i] > max) {
+                            max = array[i];
+                        }
 		}
 		return max;
 	}

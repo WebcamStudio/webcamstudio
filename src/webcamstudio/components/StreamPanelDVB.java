@@ -719,7 +719,7 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         if (tglActiveStream.isSelected()) {
             this.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.green));
             if (txtChName.getText() != null) {
-            stream.setChName((String) txtChName.getText());
+            stream.setChName(txtChName.getText());
             }
             spinW1.setEnabled(false);
             jSlSpinCW.setEnabled(false);
@@ -797,7 +797,7 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         if (value instanceof Float){
             v = (Float)value;
         } else if (value instanceof Integer){
-            v = ((Integer)value).floatValue();
+            v = ((Number)value).floatValue();
         }
         stream.setVolume(v/100f);
         volume = v/100f;        
@@ -851,37 +851,37 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
     }//GEN-LAST:event_txtChNameFocusLost
 
     private void jSlSpinXStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlSpinXStateChanged
-        stream.setX((Integer)jSlSpinX.getValue());
+        stream.setX(jSlSpinX.getValue());
         spinX.setValue(jSlSpinX.getValue());
     }//GEN-LAST:event_jSlSpinXStateChanged
 
     private void jSlSpinYStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlSpinYStateChanged
-        stream.setY((Integer)jSlSpinY.getValue());
+        stream.setY(jSlSpinY.getValue());
         spinY.setValue(jSlSpinY.getValue());
     }//GEN-LAST:event_jSlSpinYStateChanged
 
     private void jSlSpinCWStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlSpinCWStateChanged
-        stream.setCaptureWidth((Integer)jSlSpinCW.getValue());
+        stream.setCaptureWidth(jSlSpinCW.getValue());
         spinW1.setValue(jSlSpinCW.getValue());
     }//GEN-LAST:event_jSlSpinCWStateChanged
 
     private void jSlSpinCHStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlSpinCHStateChanged
-        stream.setCaptureHeight((Integer)jSlSpinCH.getValue());
+        stream.setCaptureHeight(jSlSpinCH.getValue());
         spinH1.setValue(jSlSpinCH.getValue());
     }//GEN-LAST:event_jSlSpinCHStateChanged
 
     private void jSlSpinWStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlSpinWStateChanged
-        stream.setWidth((Integer)jSlSpinW.getValue());
+        stream.setWidth(jSlSpinW.getValue());
         spinW.setValue(jSlSpinW.getValue());
     }//GEN-LAST:event_jSlSpinWStateChanged
 
     private void jSlSpinHStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlSpinHStateChanged
-        stream.setHeight((Integer)jSlSpinH.getValue());
+        stream.setHeight(jSlSpinH.getValue());
         spinH.setValue(jSlSpinH.getValue());
     }//GEN-LAST:event_jSlSpinHStateChanged
 
     private void jSlSpinOStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlSpinOStateChanged
-        stream.setOpacity((Integer)jSlSpinO.getValue());
+        stream.setOpacity(jSlSpinO.getValue());
         spinOpacity.setValue(jSlSpinO.getValue());
     }//GEN-LAST:event_jSlSpinOStateChanged
 
@@ -891,22 +891,22 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
     }//GEN-LAST:event_jSlSpinVStateChanged
 
     private void jSlSpinVDStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlSpinVDStateChanged
-        stream.setVDelay((Integer)jSlSpinVD.getValue());
+        stream.setVDelay(jSlSpinVD.getValue());
         spinVDelay.setValue(jSlSpinVD.getValue());
     }//GEN-LAST:event_jSlSpinVDStateChanged
 
     private void jSlSpinADStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlSpinADStateChanged
-        stream.setADelay((Integer)jSlSpinAD.getValue());
+        stream.setADelay(jSlSpinAD.getValue());
         spinADelay.setValue(jSlSpinAD.getValue());
     }//GEN-LAST:event_jSlSpinADStateChanged
 
     private void jSlSpinSeekStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlSpinSeekStateChanged
-        stream.setSeek((Integer)jSlSpinSeek.getValue());
+        stream.setSeek(jSlSpinSeek.getValue());
         spinSeek.setValue(jSlSpinSeek.getValue());
     }//GEN-LAST:event_jSlSpinSeekStateChanged
 
     private void jSlSpinZOrderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlSpinZOrderStateChanged
-        stream.setZOrder((Integer)jSlSpinZOrder.getValue());
+        stream.setZOrder(jSlSpinZOrder.getValue());
         spinZOrder.setValue(jSlSpinZOrder.getValue());
     }//GEN-LAST:event_jSlSpinZOrderStateChanged
 

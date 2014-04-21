@@ -122,7 +122,7 @@ public class PerspectiveFilter extends TransformFilter {
      * @return the X origin.
      */
 	public float getOriginX() {
-		return x0 - (int)Math.min( Math.min( x0, x1 ), Math.min( x2, x3 ) );
+		return x0 - Math.min( Math.min( x0, x1 ), Math.min( x2, x3 ) );
 	}
 
     /**
@@ -130,7 +130,7 @@ public class PerspectiveFilter extends TransformFilter {
      * @return the Y origin.
      */
 	public float getOriginY() {
-		return y0 - (int)Math.min( Math.min( y0, y1 ), Math.min( y2, y3 ) );
+		return y0 - Math.min( Math.min( y0, y1 ), Math.min( y2, y3 ) );
 	}
 
 /*

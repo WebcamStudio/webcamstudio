@@ -67,22 +67,26 @@ public class JoinCommand extends AbstractCommand
         this.channel = channel;
     }
 
+    @Override
     public InCommand parse( String prefix, String identifier, String params )
     {
         return new JoinCommand( new FullNick( prefix ), getParameter( params, 0 ) );
     }
 
+    @Override
     public String getIrcIdentifier()
     {
         return "JOIN";
     }
 
+    @Override
     public String renderParams()
     {
-        if( secret == null )
+        if( secret == null ) {
             return channel;
-        else
+        } else {
             return channel + " " + secret;
+        }
     }
 
     public String getChannel()
@@ -105,6 +109,7 @@ public class JoinCommand extends AbstractCommand
         return user.equals( state.getNick() );
     }
 
+    @Override
     public boolean updateClientState( ClientState state )
     {
         if( weJoined( state ) )

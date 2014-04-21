@@ -131,4 +131,7 @@ public class SourceControls {
 
         return comps;
     }
+
+    private SourceControls() {
+    }
 }

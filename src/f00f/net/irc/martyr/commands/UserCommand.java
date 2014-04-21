@@ -8,13 +8,12 @@ import f00f.net.irc.martyr.OutCommand;
  */
 public class UserCommand implements OutCommand
 {
+    public static final String IDENTIFIER = "USER";
 
     private final String name;
     private final String user;
     private final String someA; // Might be a mode on some networks
     private final String someB; // might be ignored
-
-    public static final String IDENTIFIER = "USER";
 
     /**
      * @param user the login name on the computer the client is on
@@ -31,11 +30,13 @@ public class UserCommand implements OutCommand
         someB = connection.getRemotehost(); // ignored, apparently
     }
 
+    @Override
     public String render()
     {
         return IDENTIFIER + " " + user + " " + someA + " " + someB + " :" + name;
     }
 
+    @Override
     public String getIrcIdentifier()
     {
         return IDENTIFIER;

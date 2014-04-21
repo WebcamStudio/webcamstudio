@@ -87,23 +87,23 @@ public class Capturer {
                                     noVideoPres=false;
                                     Tools.sleep(stream.getVDelay());
                                     videoIn = fakeVideoIn;
-                                    System.out.println("Start Movie/DVB Video.");
+//                                    System.out.println("Start Movie/DVB Video.");
                                 }
                             } else if (stream.getName().contains("Desktop")) {
                                 noVideoPres=false;
                                 Tools.sleep(stream.getVDelay());
                                 videoIn = new DataInputStream(connection.getInputStream());
-                                System.out.println("Start Desktop Video.");
+//                                System.out.println("Start Desktop Video.");
                             } else if (stream.getClass().getName().contains("SourceWebcam")) { //hasaudio ||
                                 noVideoPres=false;
                                 Tools.sleep(stream.getVDelay());
                                 videoIn = new DataInputStream(new BufferedInputStream(connection.getInputStream(), 4096));
-                                System.out.println("Start Webcam Video.");
+//                                System.out.println("Start Webcam Video.");
                             } else if (!stream.hasAudio()) {
                                 noVideoPres=false;
                                 Tools.sleep(stream.getVDelay());
                                 videoIn = fakeVideoIn;
-                                System.out.println("Start Muted Video.");
+//                                System.out.println("Start Muted Video.");
                             }
                         } while (noVideoPres);
 
@@ -134,13 +134,13 @@ public class Capturer {
                                     noAudioPres = false; 
                                     Tools.sleep(stream.getADelay());
                                     audioIn = fakeAudioIn;
-                                    System.out.println("Start Movie/DVB Audio.");
+//                                    System.out.println("Start Movie/DVB Audio.");
                                 }
                           } else if (stream.getName().endsWith(".mp3") || !stream.hasVideo() ) {
                                 noAudioPres = false;
                                 Tools.sleep(stream.getADelay());
                                 audioIn = new DataInputStream(new BufferedInputStream(connection.getInputStream(), 4096));
-                                System.out.println("Start Music/Mic Audio.");  
+//                                System.out.println("Start Music/Mic Audio.");  
                           } 
                         }  while (noAudioPres);
                     } catch (IOException ex) {
@@ -177,22 +177,22 @@ public class Capturer {
 
     public void vPause() {
         vPauseFlag = true;
-        System.out.println("vCapture Paused ...");
+//        System.out.println("vCapture Paused ...");
     }
     
     public void aPause() {
         aPauseFlag = true;
-        System.out.println("aCapture Paused ...");
+//        System.out.println("aCapture Paused ...");
     }
     
     public void vPlay() {
         vPauseFlag = false;
-        System.out.println("vCapture Resumed ...");
+//        System.out.println("vCapture Resumed ...");
     }
     
     public void aPlay() {
         aPauseFlag = false;
-        System.out.println("aCapture Resumed ...");
+//        System.out.println("aCapture Resumed ...");
     }
     public int getVideoPort() {
         return vport;
@@ -222,8 +222,9 @@ public class Capturer {
     }
     private BufferedImage toCompatibleImage(BufferedImage image) {
 	GraphicsConfiguration gfx_config = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
-	if (image.getColorModel().equals(gfx_config.getColorModel()))
+	if (image.getColorModel().equals(gfx_config.getColorModel())) {
             return image;
+        }
 	BufferedImage new_image = gfx_config.createCompatibleImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
 	Graphics2D g2d = (Graphics2D) new_image.getGraphics();
 	g2d.drawImage(image, 0, 0, null);

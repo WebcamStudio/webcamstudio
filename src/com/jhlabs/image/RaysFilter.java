@@ -145,9 +145,9 @@ public class RaysFilter extends MotionBlurOp {
 				int g = (rgb >> 8) & 0xff;
 				int b = rgb & 0xff;
 				int l = r + g + b;
-				if (l < threshold3)
-					pixels[x] = 0xff000000;
-				else {
+				if (l < threshold3) {
+                                    pixels[x] = 0xff000000;
+                                } else {
 					l /= 3;
 					pixels[x] = a | (l << 16) | (l << 8) | l;
 				}
@@ -182,8 +182,9 @@ public class RaysFilter extends MotionBlurOp {
 			setRGB( rays, 0, y, width, 1, pixels );
 		}
 
-        if ( dst == null )
+        if ( dst == null ) {
             dst = createCompatibleDestImage( src, null );
+        }
 
 		Graphics2D g = dst.createGraphics();
                 g.setRenderingHint(RenderingHints.KEY_RENDERING,

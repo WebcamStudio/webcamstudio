@@ -15,25 +15,25 @@ import webcamstudio.util.Tools;
  * @author patrick (modified by karl)
  */
 public class SystemPlayer implements Runnable {
-
-    boolean stopMe = false;
-    public boolean stopMePub = stopMe;
-    private SourceDataLine source;
-    private ExecutorService executor = null;
     private static SystemPlayer instance = null;
-    private FrameBuffer frames = null;
-    private Viewer viewer = null;
-    private int aFreq = webcamstudio.WebcamStudio.audioFreq;
-
-    private SystemPlayer(Viewer viewer) {
-        this.viewer = viewer;
-    }
 
     public static SystemPlayer getInstance(Viewer viewer) {
         if (instance == null) {
             instance = new SystemPlayer(viewer);
         }
         return instance;
+    }
+
+    boolean stopMe = false;
+    public boolean stopMePub = stopMe;
+    private SourceDataLine source;
+    private ExecutorService executor = null;
+    private FrameBuffer frames = null;
+    private Viewer viewer = null;
+    private int aFreq = webcamstudio.WebcamStudio.audioFreq;
+
+    private SystemPlayer(Viewer viewer) {
+        this.viewer = viewer;
     }
 
     public void addFrame(Frame frame) {
@@ -49,23 +49,6 @@ public class SystemPlayer implements Runnable {
     }
 
 //    public void play() throws LineUnavailableException {
-//        aFreq = webcamstudio.WebcamStudio.audioFreq;
-//        int fWidth = MasterMixer.getInstance().getWidth();
-//        int fHeight = MasterMixer.getInstance().getHeight();
-//        int fRate = MasterMixer.getInstance().getRate();
-//        frames = new FrameBuffer(fWidth, fHeight, fRate);
-//        AudioFormat format = new AudioFormat(aFreq, 16, 2, true, true);
-////        System.out.println("SysPlayer AFreq: "+aFreq);
-//        source = javax.sound.sampled.AudioSystem.getSourceDataLine(format);
-//        Tools.sleep(20);
-//        source.open(format, 2048);
-//        source.start();
-//        executor = java.util.concurrent.Executors.newCachedThreadPool();
-//        executor.submit(this);
-//        Tools.sleep(20);
-//        executor.shutdown();
-//    }
-
     @Override
     public void run() {
         stopMe = false;
@@ -95,6 +78,7 @@ public class SystemPlayer implements Runnable {
         }
         Tools.sleep(20);
         executor = null;
-        webcamstudio.components.MasterPanel.tglSound.setSelected(false);
+//        webcamstudio.components.MasterPanel.tglSound.setSelected(false);
     }
+
 }

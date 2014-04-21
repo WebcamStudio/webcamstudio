@@ -208,7 +208,7 @@ public class DoubleJSlider extends javax.swing.JSlider {
     public double getScaledValue() {
         return ((double)super.getValue()) / this.scale;
     }
-}
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnSelectColor;
     private javax.swing.JLabel jLabel1;

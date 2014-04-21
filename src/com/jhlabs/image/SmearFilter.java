@@ -137,11 +137,12 @@ public class SmearFilter extends WholeImageFilter {
 		int i = 0;
 		int numShapes;
 
-		for (int y = 0; y < height; y++)
-			for (int x = 0; x < width; x++) {
-				outPixels[i] = background ? 0xffffffff : inPixels[i];
-				i++;
-			}
+		for (int y = 0; y < height; y++) {
+                    for (int x = 0; x < width; x++) {
+                        outPixels[i] = background ? 0xffffffff : inPixels[i];
+                        i++;
+                    }
+                }
 
 		switch (shape) {
 		case CROSSES:
@@ -183,14 +184,16 @@ public class SmearFilter extends WholeImageFilter {
 				int y1 = sy+dy;
 				int x, y, d, incrE, incrNE, ddx, ddy;
 				
-				if (x1 < x0)
-					ddx = -1;
-				else
-					ddx = 1;
-				if (y1 < y0)
-					ddy = -1;
-				else
-					ddy = 1;
+				if (x1 < x0) {
+                                    ddx = -1;
+                                } else {
+                                    ddx = 1;
+                                }
+				if (y1 < y0) {
+                                    ddy = -1;
+                                } else {
+                                    ddy = 1;
+                                }
 				dx = x1-x0;
 				dy = y1-y0;
 				dx = Math.abs(dx);
@@ -208,9 +211,9 @@ public class SmearFilter extends WholeImageFilter {
 					incrNE = 2*(dy-dx);
 
 					while (x != x1) {
-						if (d <= 0)
-							d += incrE;
-						else {
+						if (d <= 0) {
+                                                    d += incrE;
+                                                } else {
 							d += incrNE;
 							y += ddy;
 						}
@@ -226,9 +229,9 @@ public class SmearFilter extends WholeImageFilter {
 					incrNE = 2*(dx-dy);
 
 					while (y != y1) {
-						if (d <= 0)
-							d += incrE;
-						else {
+						if (d <= 0) {
+                                                    d += incrE;
+                                                } else {
 							d += incrNE;
 							x += ddx;
 						}
@@ -253,10 +256,11 @@ public class SmearFilter extends WholeImageFilter {
 				for (int x = sx - radius; x < sx + radius + 1; x++) {
 					for (int y = sy - radius; y < sy + radius + 1; y++) {
 						int f;
-						if (shape == CIRCLES)
-							f = (x - sx) * (x - sx) + (y - sy) * (y - sy);
-						else
-							f = 0;
+						if (shape == CIRCLES) {
+                                                    f = (x - sx) * (x - sx) + (y - sy) * (y - sy);
+                                                } else {
+                                                    f = 0;
+                                                }
 						if (x >= 0 && x < width && y >= 0 && y < height && f <= radius2) {
 							int rgb2 = background ? 0xffffffff : outPixels[y*width+x];
 							outPixels[y*width+x] = ImageMath.mixColors(mix, rgb2, rgb);

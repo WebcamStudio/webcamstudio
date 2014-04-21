@@ -11,7 +11,6 @@ import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.util.prefs.Preferences;
 import javax.swing.JPanel;
-import webcamstudio.sources.effects.controls.NoBackgroundControl;
 
 /**
  *

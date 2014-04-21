@@ -11,7 +11,7 @@ import java.util.StringTokenizer;
 public class svm_predict {
 	public static double atof(String s)
 	{
-		return Double.valueOf(s).doubleValue();
+		return Double.valueOf(s);
 	}
 
 	public static int atoi(String s)
@@ -43,15 +43,18 @@ public class svm_predict {
 				svm.svm_get_labels(model,labels);
 				prob_estimates = new double[nr_class];
 				output.writeBytes("labels");
-				for(int j=0;j<nr_class;j++)
-					output.writeBytes(" "+labels[j]);
+				for(int j=0;j<nr_class;j++) {
+                                    output.writeBytes(" "+labels[j]);
+                                }
 				output.writeBytes("\n");
 			}
 		}
 		while(true)
 		{
 			String line = input.readLine();
-			if(line == null) break;
+			if(line == null) {
+                            break;
+                        }
 
 			StringTokenizer st = new StringTokenizer(line," \t\n\r\f:");
 
@@ -70,8 +73,9 @@ public class svm_predict {
 			{
 				v = svm.svm_predict_probability(model,x,prob_estimates);
 				output.writeBytes(v+" ");
-				for(int j=0;j<nr_class;j++)
-					output.writeBytes(prob_estimates[j]+" ");
+				for(int j=0;j<nr_class;j++) {
+                                    output.writeBytes(prob_estimates[j]+" ");
+                                }
 				output.writeBytes("\n");
 			}
 			else
@@ -80,8 +84,9 @@ public class svm_predict {
 				output.writeBytes(v+"\n");
 			}
 
-			if(v == target)
-				++correct;
+			if(v == target) {
+                            ++correct;
+                        }
 			error += (v-target)*(v-target);
 			sumv += v;
 			sumy += target;
@@ -114,7 +119,9 @@ public class svm_predict {
 		// parse options
 		for(i=0;i<argv.length;i++)
 		{
-			if(argv[i].charAt(0) != '-') break;
+			if(argv[i].charAt(0) != '-') {
+                            break;
+                        }
 			++i;
 			switch(argv[i-1].charAt(1))
 			{
@@ -126,20 +133,22 @@ public class svm_predict {
 					exit_with_help();
 			}
 		}
-		if(i>=argv.length)
-			exit_with_help();
+		if(i>=argv.length) {
+                    exit_with_help();
+                }
 		try
 		{
                 DataOutputStream output;
                 try (BufferedReader input = new BufferedReader(new FileReader(argv[i]))) {
                     output = new DataOutputStream(new FileOutputStream(argv[i+2]));
                     svm_model model = svm.svm_load_model(argv[i+1]);
-                    if(predict_probability == 1)
-                            if(svm.svm_check_probability_model(model)==0)
-                            {
-                                    System.err.print("Model does not support probabiliy estimates\n");
-                                    System.exit(1);
-                            }
+                    if(predict_probability == 1) {
+                        if(svm.svm_check_probability_model(model)==0)
+                        {
+                            System.err.print("Model does not support probabiliy estimates\n");
+                            System.exit(1);
+                        }
+                    }
                     predict(input,output,model,predict_probability);
                 }
 			output.close();

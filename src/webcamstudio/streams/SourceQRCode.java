@@ -13,6 +13,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterFrameBuilder;
+import webcamstudio.mixers.MasterMixer;
 
 /**
  *
@@ -31,6 +32,16 @@ public class SourceQRCode extends Stream {
     float bgOpacity = 1f;
     private Shape shape = Shape.NONE;
     private String strShape = "";
+    private final MasterMixer mixer = MasterMixer.getInstance();
+    private int textCW = mixer.getWidth();
+    private int textCH = mixer.getHeight();
+
+    public SourceQRCode(String content) {
+        super();
+        this.content = content;
+        name = "QRCode";
+        updateContent(content);
+    }
 
     @Override
     public void readNext() {
@@ -41,27 +52,29 @@ public class SourceQRCode extends Stream {
         nextFrame=frame;
     }
 
+    
+
     @Override
     public void play() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public enum Shape {
-
-        NONE,
-        RECTANGLE,
-        ROUNDRECT,
-        OVAL
+    public void setTextCW (int tCW) {
+        textCW = tCW;
     }
     
-
-    public SourceQRCode(String content) {
-        super();
-        this.content = content;
-        name = "QRCode";
-        updateContent(content);
+    public int getTextCW(){
+        return textCW;
     }
-
+    
+    public void setTextCH(int tCH) {
+        textCH = tCH;
+    }
+    
+    public int getTextCH(){
+        return textCH;
+    }
+    
     @Override
     public void setX(int x){
         this.x=x;
@@ -150,7 +163,11 @@ public class SourceQRCode extends Stream {
     
     @Override
     public void updateContent(String content) {
-        this.content = content;
+        if (this.getIsATimer()){
+            this.content = "QRCode Clock Mode.";
+        } else {
+            this.content = content;
+        }
         captureWidth = width;
         captureHeight = height;
         if (content != null && content.length() > 0) {
@@ -234,5 +251,10 @@ public class SourceQRCode extends Stream {
     @Override
     public boolean hasVideo() {
         return true;
+    }
+
+    public enum Shape {
+
+        NONE, RECTANGLE, ROUNDRECT, OVAL
     }
 }

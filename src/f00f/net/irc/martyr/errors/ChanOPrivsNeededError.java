@@ -24,11 +24,13 @@ public class ChanOPrivsNeededError extends GenericError
         this.errorMessage = errorMessage;
     }
 
+    @Override
     public String getIrcIdentifier()
     {
         return "482";
     }
 
+    @Override
     public InCommand parse( String prefix, String identifier, String params )
     {
         return new ChanOPrivsNeededError(getParameter(params, 1), getParameter(params, 2));

@@ -33,6 +33,7 @@ public class AwayCommand implements OutCommand
     /**
      * @see f00f.net.irc.martyr.OutCommand#render()
      */
+    @Override
     public String render()
     {
         String ret = getIrcIdentifier();
@@ -45,6 +46,7 @@ public class AwayCommand implements OutCommand
     /**
      * @see f00f.net.irc.martyr.Command#getIrcIdentifier()
      */
+    @Override
     public String getIrcIdentifier()
     {
         return "AWAY";

@@ -22,6 +22,7 @@ public abstract class AbstractWhoisReply extends GenericReply
 		parseParams( pi );
 	}
 
+    @Override
 	public abstract String getIrcIdentifier();
 
 	/**

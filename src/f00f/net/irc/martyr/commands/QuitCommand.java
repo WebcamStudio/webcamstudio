@@ -55,16 +55,19 @@ public class QuitCommand extends AbstractCommand
         this( null, reason );
     }
 
+    @Override
     public InCommand parse( String prefix, String identifier, String params )
     {
         return new QuitCommand( new FullNick( prefix ), getParameter( params, 0 ) );
     }
 
+    @Override
     public String getIrcIdentifier()
     {
         return "QUIT";
     }
 
+    @Override
     public String renderParams()
     {
         return ":" + reason;
@@ -94,7 +97,9 @@ public class QuitCommand extends AbstractCommand
     /** If we are quitting, we won't be worrying about our client state.
      * If someone else is leaving, then remove them from all the groups
      * they are in.
+     * @return 
      */
+    @Override
     public boolean updateClientState( ClientState state )
     {
         

@@ -20,7 +20,7 @@ import java.awt.CompositeContext;
 import java.awt.RenderingHints;
 import java.awt.image.ColorModel;
 
-public final class ColorDodgeComposite extends RGBComposite {
+public class ColorDodgeComposite extends RGBComposite {
 
 	public ColorDodgeComposite( float alpha ) {
         super( alpha );
@@ -32,7 +32,7 @@ public final class ColorDodgeComposite extends RGBComposite {
 	}
 
     static class Context extends RGBCompositeContext {
-        public Context( float alpha, ColorModel srcColorModel, ColorModel dstColorModel ) {
+        Context( float alpha, ColorModel srcColorModel, ColorModel dstColorModel ) {
             super( alpha, srcColorModel, dstColorModel );
         }
 
@@ -51,18 +51,21 @@ public final class ColorDodgeComposite extends RGBComposite {
                 int dia = dst[i+3];
                 int dor, dog, dob;
 
-                if (sr != 255)
+                if (sr != 255) {
                     dor = Math.min((dir << 8) / (255-sr), 255);
-                else
+                } else {
                     dor = sr;
-                if (sg != 255)
+                }
+                if (sg != 255) {
                     dog = Math.min((dig << 8) / (255-sg), 255);
-                else
+                } else {
                     dog = sg;
-                if (sb != 255)
+                }
+                if (sb != 255) {
                     dob = Math.min((dib << 8) / (255-sb), 255);
-                else
+                } else {
                     dob = sb;
+                }
 
                 float a = alpha*sa/255f;
                 float ac = 1-a;

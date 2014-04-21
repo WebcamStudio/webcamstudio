@@ -12,16 +12,19 @@ import f00f.net.irc.martyr.Mode;
  */
 public class InviteMaskMode extends GenericChannelMask
 {
+        @Override
 	public boolean requiresParam()
 	{
 		return true;
 	}
 	
+        @Override
 	public char getChar()
 	{
 		return 'I';
 	}
 	
+        @Override
 	public Mode newInstance()
 	{
 		return new InviteMaskMode();

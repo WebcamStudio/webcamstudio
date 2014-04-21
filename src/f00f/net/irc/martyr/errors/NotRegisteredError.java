@@ -21,11 +21,13 @@ public class NotRegisteredError extends GenericError
         this.errorMessage = errorMessage;
     }
 
+    @Override
     public String getIrcIdentifier()
     {
         return "451";
     }
 
+    @Override
     public InCommand parse( String prefix, String identifier, String params )
     {
         return new NotRegisteredError(getParameter(params, 1));

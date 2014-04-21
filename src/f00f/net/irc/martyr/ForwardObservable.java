@@ -15,6 +15,7 @@ public class ForwardObservable extends Observable
 	private final Object localMonitor = new Object();
 
 
+        @Override
 	public void setChanged()
 	{
 		synchronized(localMonitor)
@@ -23,6 +24,7 @@ public class ForwardObservable extends Observable
 		}
 	}
 
+        @Override
 	protected void clearChanged()
 	{
 		synchronized(localMonitor)
@@ -31,6 +33,7 @@ public class ForwardObservable extends Observable
 		}
 	}
 	
+        @Override
 	public void addObserver( Observer o )
 	{
 		synchronized(localMonitor)
@@ -39,6 +42,7 @@ public class ForwardObservable extends Observable
 		}
 	}
 
+        @Override
 	public void deleteObserver( Observer o )
 	{
 		synchronized(localMonitor)
@@ -47,12 +51,14 @@ public class ForwardObservable extends Observable
 		}
 	}
 
+        @Override
 	public void notifyObservers(Object arg) 
 	{
 		synchronized(localMonitor)
 		{
-			if (!changed)
-				return;
+			if (!changed) {
+                            return;
+                        }
 			clearChanged();
 
             for (Observer ob : obs) {

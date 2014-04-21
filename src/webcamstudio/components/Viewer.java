@@ -49,6 +49,7 @@ public class Viewer extends javax.swing.JPanel {
     @Override
     public void paintComponent(Graphics g) {
         Graphics2D graph = (Graphics2D) g;
+        
         graph.setRenderingHint(java.awt.RenderingHints.KEY_INTERPOLATION, 
                                java.awt.RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         graph.setRenderingHint(java.awt.RenderingHints.KEY_RENDERING,

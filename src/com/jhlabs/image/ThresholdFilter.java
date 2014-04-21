@@ -125,10 +125,11 @@ public class ThresholdFilter extends PointFilter {
 		int g = (rgb >> 8) & 0xff;
 		int b = rgb & 0xff;
 		int l = r + g + b;
-		if (l < lowerThreshold3)
-			return a | black;
-		else if (l > upperThreshold3)
-			return a | white;
+		if (l < lowerThreshold3) {
+                    return a | black;
+                } else if (l > upperThreshold3) {
+                    return a | white;
+                }
 		return rgb;
 	}
 

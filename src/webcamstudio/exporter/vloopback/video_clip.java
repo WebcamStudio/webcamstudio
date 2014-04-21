@@ -25,10 +25,12 @@ package webcamstudio.exporter.vloopback;
  */
 public class video_clip extends com.sun.jna.Structure {
 
-    public static class ByValue extends video_clip implements com.sun.jna.Structure.ByValue {
-    }
-    public static class ByReference extends video_clip implements com.sun.jna.Structure.ByReference {
-    }
     public int x,y,width,height;
     public com.sun.jna.Pointer next;
+
+    public static class ByValue extends video_clip implements com.sun.jna.Structure.ByValue {
+    }
+
+    public static class ByReference extends video_clip implements com.sun.jna.Structure.ByReference {
+    }
 }

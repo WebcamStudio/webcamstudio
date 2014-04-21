@@ -53,11 +53,11 @@ public class ComboGhost extends Effect {
                            RenderingHints.VALUE_COLOR_RENDER_SPEED);
         buffer.setRenderingHint(RenderingHints.KEY_DITHERING,
                            RenderingHints.VALUE_DITHER_DISABLE);
-        buffer.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, ((float) 50) / 100F));
+        buffer.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 50 / 100F));
         buffer.drawImage(temp, x, y, null);
         buffer.dispose();
-        angle = angle+2;
-        scale = scale+2;
+        angle += 2;
+        scale += 2;
         if (scale>=height || scale>=width){
             scale = 1;
         }

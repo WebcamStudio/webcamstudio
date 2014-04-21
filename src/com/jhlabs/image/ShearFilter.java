@@ -66,13 +66,15 @@ public class ShearFilter extends TransformFilter {
 	protected void transformSpace(Rectangle r) {
 		float tangent = (float)Math.tan(xangle);
 		xoffset = -r.height * tangent;
-		if (tangent < 0.0)
-			tangent = -tangent;
+		if (tangent < 0.0) {
+                    tangent = -tangent;
+                }
 		r.width = (int)(r.height * tangent + r.width + 0.999999f);
 		tangent = (float)Math.tan(yangle);
 		yoffset = -r.width * tangent;
-		if (tangent < 0.0)
-			tangent = -tangent;
+		if (tangent < 0.0) {
+                    tangent = -tangent;
+                }
 		r.height = (int)(r.width * tangent + r.height + 0.999999f);
 	}
 

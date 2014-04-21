@@ -21,11 +21,13 @@ public class SummonDisabledError extends GenericError
         this.errorMessage = errorMessage;
     }
 
+    @Override
     public String getIrcIdentifier()
     {
         return "445";
     }
 
+    @Override
     public InCommand parse( String prefix, String identifier, String params )
     {
         return new SummonDisabledError(getParameter(params, 1));

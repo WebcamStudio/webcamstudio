@@ -17,17 +17,20 @@ public class WhoisEndReply extends AbstractWhoisReply
 		super( params );
 	}
 
+        @Override
 	public String getIrcIdentifier()
 	{
 		return "318";
 	}
 
 
+        @Override
 	protected void parseParams( ParameterIterator pi )
 	{
 		// nothing to do here
 	}
 
+        @Override
 	public InCommand parse( String prefix, String identifier, String params )
 	{
 		return new WhoisEndReply( params );

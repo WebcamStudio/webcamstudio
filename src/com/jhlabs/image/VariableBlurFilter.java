@@ -58,21 +58,24 @@ public class VariableBlurFilter extends AbstractBufferedImageOp {
 		int width = src.getWidth();
         int height = src.getHeight();
 
-        if ( dst == null )
+        if ( dst == null ) {
             dst = new BufferedImage( width, height, BufferedImage.TYPE_INT_ARGB );
+                }
 
         int[] inPixels = new int[width*height];
         int[] outPixels = new int[width*height];
         getRGB( src, 0, 0, width, height, inPixels );
 
-        if ( premultiplyAlpha )
-			ImageMath.premultiply( inPixels, 0, inPixels.length );
+        if ( premultiplyAlpha ) {
+            ImageMath.premultiply( inPixels, 0, inPixels.length );
+                }
         for (int i = 0; i < iterations; i++ ) {
             blur( inPixels, outPixels, width, height, hRadius, 1 );
             blur( outPixels, inPixels, height, width, vRadius, 2 );
         }
-        if ( premultiplyAlpha )
-			ImageMath.unpremultiply( inPixels, 0, inPixels.length );
+        if ( premultiplyAlpha ) {
+            ImageMath.unpremultiply( inPixels, 0, inPixels.length );
+                }
 
         setRGB( dst, 0, 0, width, height, inPixels );
         return dst;
@@ -80,8 +83,9 @@ public class VariableBlurFilter extends AbstractBufferedImageOp {
 
         @Override
     public BufferedImage createCompatibleDestImage(BufferedImage src, ColorModel dstCM) {
-        if ( dstCM == null )
+        if ( dstCM == null ) {
             dstCM = src.getColorModel();
+        }
         return new BufferedImage(dstCM, dstCM.createCompatibleWritableRaster(src.getWidth(), src.getHeight()), dstCM.isAlphaPremultiplied(), null);
     }
     
@@ -92,8 +96,9 @@ public class VariableBlurFilter extends AbstractBufferedImageOp {
     
         @Override
     public Point2D getPoint2D( Point2D srcPt, Point2D dstPt ) {
-        if ( dstPt == null )
+        if ( dstPt == null ) {
             dstPt = new Point2D.Double();
+        }
         dstPt.setLocation( srcPt.getX(), srcPt.getY() );
         return dstPt;
     }
@@ -117,10 +122,11 @@ public class VariableBlurFilter extends AbstractBufferedImageOp {
             int outIndex = y;
 
 			if ( blurMask != null ) {
-				if ( pass == 1 )
-					getRGB( blurMask, 0, y, width, 1, mask );
-				else
-					getRGB( blurMask, y, 0, 1, width, mask );
+				if ( pass == 1 ) {
+                                    getRGB( blurMask, 0, y, width, 1, mask );
+                                } else {
+                                    getRGB( blurMask, y, 0, 1, width, mask );
+                                }
 			}
 
             for ( int x = 0; x < width; x++ ) {
@@ -141,15 +147,17 @@ public class VariableBlurFilter extends AbstractBufferedImageOp {
 				// Get the blur radius at x, y
 				int ra;
 				if ( blurMask != null ) {
-					if ( pass == 1 )
-						ra = (int)((mask[x] & 0xff)*hRadius/255f);
-					else
-						ra = (int)((mask[x] & 0xff)*vRadius/255f);
+					if ( pass == 1 ) {
+                                            ra = (int)((mask[x] & 0xff)*hRadius/255f);
+                                        } else {
+                                            ra = (int)((mask[x] & 0xff)*vRadius/255f);
+                                        }
 				} else {
-					if ( pass == 1 )
-						ra = (int)(blurRadiusAt( x, y, width, height ) * hRadius);
-					else
-						ra = (int)(blurRadiusAt( y, x, height, width ) * vRadius);
+					if ( pass == 1 ) {
+                                            ra = (int)(blurRadiusAt( x, y, width, height ) * hRadius);
+                                        } else {
+                                            ra = (int)(blurRadiusAt( y, x, height, width ) * vRadius);
+                                        }
 				}
 
                 int divisor = 2*ra+1;

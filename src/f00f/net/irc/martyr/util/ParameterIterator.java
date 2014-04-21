@@ -48,10 +48,12 @@ public class ParameterIterator implements Iterator
 	 * @return true if there are more parameters, and false
 	 * otherwise.
 	 */
+    @Override
 	public boolean hasNext()
 	{
-		if( paramStr == null )
-			return false;
+		if( paramStr == null ) {
+                    return false;
+                }
 		
 		return position < paramStr.length();
 	}
@@ -70,8 +72,10 @@ public class ParameterIterator implements Iterator
 	}
 
 	/**
+     * @return 
 	 * @throws NoSuchElementException if there are no more params
 	 * */
+    @Override
 	public Object next()
 	{
 		if( ! hasNext() )
@@ -109,12 +113,14 @@ public class ParameterIterator implements Iterator
 	 * */
 	public String last()
 	{
-		while( hasNext() )
-			next();
+		while( hasNext() ) {
+                    next();
+                }
 
 		return last;
 	}
 	
+    @Override
 	public void remove()
 	{
 		// hmm, nah.  This can be implemented some other time.

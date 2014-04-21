@@ -148,8 +148,9 @@ public class GradientFilter extends AbstractBufferedImageOp {
         int width = src.getWidth();
         int height = src.getHeight();
 
-        if ( dst == null )
+        if ( dst == null ) {
             dst = createCompatibleDestImage( src, null );
+        }
 
 		int rgb1, rgb2;
 		float x1, y1, x2, y2;
@@ -176,11 +177,11 @@ public class GradientFilter extends AbstractBufferedImageOp {
 		this.x1 = x1;
 		this.y1 = y1;
 		if (lenSq >= Float.MIN_VALUE) {
-			dx = dx / lenSq;
-			dy = dy / lenSq;
+			dx /= lenSq;
+			dy /= lenSq;
 			if (repeat) {
-				dx = dx % 1.0f;
-				dy = dy % 1.0f;
+				dx %= 1.0f;
+				dy %= 1.0f;
 			}
 		}
 		this.dx = dx;
@@ -217,10 +218,11 @@ public class GradientFilter extends AbstractBufferedImageOp {
 			int j = w;
 			int rgb;
 			while (--j >= 0) {
-				if (type == BILINEAR)
-					rgb = colormap.getColor(map(ImageMath.triangle(colrel)));
-				else
-					rgb = colormap.getColor(map(ImageMath.mod(colrel, 1.0f)));
+				if (type == BILINEAR) {
+                                    rgb = colormap.getColor(map(ImageMath.triangle(colrel)));
+                                } else {
+                                    rgb = colormap.getColor(map(ImageMath.mod(colrel, 1.0f)));
+                                }
 				pixels[off] = PixelUtils.combinePixels(rgb, pixels[off], paintMode);
 				off++;
 				colrel += dx;
@@ -244,19 +246,21 @@ public class GradientFilter extends AbstractBufferedImageOp {
 				} while (--j > 0 && colrel <= 0.0);
 			}
 			while (colrel < 1.0 && --j >= 0) {
-				if (type == BILINEAR)
-					rgb = colormap.getColor(map(ImageMath.triangle(colrel)));
-				else
-					rgb = colormap.getColor(map(colrel));
+				if (type == BILINEAR) {
+                                    rgb = colormap.getColor(map(ImageMath.triangle(colrel)));
+                                } else {
+                                    rgb = colormap.getColor(map(colrel));
+                                }
 				pixels[off] = PixelUtils.combinePixels(rgb, pixels[off], paintMode);
 				off++;
 				colrel += dx;
 			}
 			if (j > 0) {
-				if (type == BILINEAR)
-					rgb = colormap.getColor(0.0f);
-				else
-					rgb = colormap.getColor(1.0f);
+				if (type == BILINEAR) {
+                                    rgb = colormap.getColor(0.0f);
+                                } else {
+                                    rgb = colormap.getColor(1.0f);
+                                }
 				do {
 					pixels[off] = PixelUtils.combinePixels(rgb, pixels[off], paintMode);
 					off++;
@@ -269,10 +273,11 @@ public class GradientFilter extends AbstractBufferedImageOp {
 	private void linearGradient(int[] pixels, int y, int w, int h) {
 		int x = 0;
 		float rowrel = (x - x1) * dx + (y - y1) * dy;
-		if (repeat)
-			repeatGradient(pixels, w, h, rowrel, dx, dy);
-		else
-			singleGradient(pixels, w, h, rowrel, dx, dy);
+		if (repeat) {
+                    repeatGradient(pixels, w, h, rowrel, dx, dy);
+                } else {
+                    singleGradient(pixels, w, h, rowrel, dx, dy);
+                }
 	}
 	
 	private void radialGradient(int[] pixels, int y, int w, int h) {
@@ -281,10 +286,11 @@ public class GradientFilter extends AbstractBufferedImageOp {
 		for (int x = 0; x < w; x++) {
 			float distance = distance(x-p1.x, y-p1.y);
 			float ratio = distance / radius;
-			if (repeat)
-				ratio = ratio % 2;
-			else if (ratio > 1.0)
-				ratio = 1.0f;
+			if (repeat) {
+                            ratio %= 2;
+                        } else if (ratio > 1.0) {
+                            ratio = 1.0f;
+                        }
 			int rgb = colormap.getColor(map(ratio));
 			pixels[off] = PixelUtils.combinePixels(rgb, pixels[off], paintMode);
 			off++;
@@ -297,10 +303,11 @@ public class GradientFilter extends AbstractBufferedImageOp {
 		for (int x = 0; x < w; x++) {
 			float distance = Math.max(Math.abs(x-p1.x), Math.abs(y-p1.y));
 			float ratio = distance / radius;
-			if (repeat)
-				ratio = ratio % 2;
-			else if (ratio > 1.0)
-				ratio = 1.0f;
+			if (repeat) {
+                            ratio %= 2;
+                        } else if (ratio > 1.0) {
+                            ratio = 1.0f;
+                        }
 			int rgb = colormap.getColor(map(ratio));
 			pixels[off] = PixelUtils.combinePixels(rgb, pixels[off], paintMode);
 			off++;
@@ -314,8 +321,9 @@ public class GradientFilter extends AbstractBufferedImageOp {
 			float angle = (float)(Math.atan2(x-p1.x, y-p1.y) - angle0) / (ImageMath.TWO_PI);
 			angle += 1.0f;
 			angle %= 1.0f;
-			if (type == BICONICAL)
-				angle = ImageMath.triangle(angle);
+			if (type == BICONICAL) {
+                            angle = ImageMath.triangle(angle);
+                        }
 			int rgb = colormap.getColor(map(angle));
 			pixels[off] = PixelUtils.combinePixels(rgb, pixels[off], paintMode);
 			off++;
@@ -323,8 +331,9 @@ public class GradientFilter extends AbstractBufferedImageOp {
 	}
 	
 	private float map(float v) {
-		if (repeat)
-			v = v > 1.0 ? 2.0f-v : v;
+		if (repeat) {
+                    v = v > 1.0 ? 2.0f-v : v;
+                }
 		switch (interpolation) {
 		case INT_CIRCLE_UP:
 			v = ImageMath.circleUp(ImageMath.clamp(v, 0.0f, 1.0f));

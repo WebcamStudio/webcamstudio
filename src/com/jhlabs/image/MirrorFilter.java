@@ -106,8 +106,9 @@ public class MirrorFilter extends AbstractBufferedImageOp {
 	
     @Override
     public BufferedImage filter( BufferedImage src, BufferedImage dst ) {
-        if ( dst == null )
+        if ( dst == null ) {
             dst = createCompatibleDestImage( src, null );
+        }
         BufferedImage tsrc = src;
 		Shape clip;
 		int width = src.getWidth();

@@ -37,11 +37,13 @@ public class ChannelBannedError extends GenericJoinError {
 		super(chan, comment);
 	}
 
+        @Override
 	public String getIrcIdentifier()
 	{
 		return "474";
 	}
 
+        @Override
 	protected InCommand create( String channel, String comment)
 	{
 		return new ChannelBannedError( channel, comment );

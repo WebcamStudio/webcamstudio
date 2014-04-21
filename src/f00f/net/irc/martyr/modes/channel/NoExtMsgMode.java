@@ -12,16 +12,19 @@ import f00f.net.irc.martyr.Mode;
  */
 public class NoExtMsgMode extends GenericChannelMode
 {
+        @Override
 	public boolean requiresParam()
 	{
 		return false;
 	}
 	
+        @Override
 	public char getChar()
 	{
 		return 'n';
 	}
 	
+        @Override
 	public Mode newInstance()
 	{
 		return new NoExtMsgMode();

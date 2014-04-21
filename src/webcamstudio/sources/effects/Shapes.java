@@ -118,9 +118,9 @@ public class Shapes extends Effect {
     @Override
     public void setShape(String shape) {
         this.shapeS = shape;
-        System.out.println("SetShape: "+this.shapeS);
+//        System.out.println("SetShape: "+this.shapeS);
         String shapeF = shapeP.getProperty(shapeS);
-        System.out.println("shapeFile: "+shapeF);
+//        System.out.println("shapeFile: "+shapeF);
         try {
             this.overlay = ImageIO.read(getClass().getResource("/webcamstudio/resources/shapes/"+shapeF));
             this.overlay = Scalr.resize(overlay, Scalr.Mode.AUTOMATIC, width, height);

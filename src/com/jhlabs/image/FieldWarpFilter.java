@@ -24,25 +24,6 @@ import java.awt.image.BufferedImage;
  */
 public class FieldWarpFilter extends TransformFilter {
 
-	public static class Line {
-		public int x1, y1, x2, y2;
-		public int dx, dy;
-		public float length, lengthSquared;
-		
-		public Line(int x1, int y1, int x2, int y2) {
-			this.x1 = x1;
-			this.y1 = y1;
-			this.x2 = x2;
-			this.y2 = y2;
-		}
-		
-		public void setup() {
-			dx = x2-x1;
-			dy = y2-y1;
-			lengthSquared = dx*dx + dy*dy;
-			length = (float)Math.sqrt(lengthSquared);
-		}
-	}
 
 	private float amount = 1.0f;
 	private float power = 1.0f;
@@ -133,16 +114,17 @@ public class FieldWarpFilter extends TransformFilter {
 
 			fraction = (dx * l.dx + dy * l.dy) / l.lengthSquared;
 			fdist = (dy * l.dx - dx * l.dy) / l.length;
-			if (fraction <= 0)
-				distance = (float)Math.sqrt(dx*dx + dy*dy);
-			else if (fraction >= 1) {
+			if (fraction <= 0) {
+                            distance = (float)Math.sqrt(dx*dx + dy*dy);
+                        } else if (fraction >= 1) {
 				dx = x - l.x2;
 				dy = y - l.y2;
 				distance = (float)Math.sqrt(dx*dx + dy*dy);
-			} else if (fdist >= 0)
-				distance = fdist;
-			else
-				distance = -fdist;
+			} else if (fdist >= 0) {
+                            distance = fdist;
+                        } else {
+                            distance = -fdist;
+                        }
 			u = l1.x1 + fraction * l1.dx - fdist * l1.dy / l1.length;
 			v = l1.y1 + fraction * l1.dy + fdist * l1.dx / l1.length;
 
@@ -187,5 +169,31 @@ public class FieldWarpFilter extends TransformFilter {
 	public String toString() {
 		return "Distort/Field Warp...";
 	}
+
+    public static class Line {
+
+        public int x1;
+        public int y1;
+        public int x2;
+        public int y2;
+        public int dx;
+        public int dy;
+        public float length;
+        public float lengthSquared;
+
+        public Line(int x1, int y1, int x2, int y2) {
+            this.x1 = x1;
+            this.y1 = y1;
+            this.x2 = x2;
+            this.y2 = y2;
+        }
+
+        public void setup() {
+            dx = x2-x1;
+            dy = y2-y1;
+            lengthSquared = dx*dx + dy*dy;
+            length = (float)Math.sqrt(lengthSquared);
+        }
+    }
 
 }

@@ -14,21 +14,15 @@ import java.util.logging.Logger;
 public class Tools {
     final static String userHome = System.getProperty("user.home");
     
-    public enum OS {
-
-        WINDOWS,
-        LINUX,
-        OSX
-    }
 
     public static OS getOS() {
         OS os = OS.LINUX;
         String value = System.getProperty("os.name").toLowerCase().trim();
-        if (value.indexOf("linux") != -1) {
+        if (value.contains("linux")) {
             os = OS.LINUX;
-        } else if (value.indexOf("windows") != -1) {
+        } else if (value.contains("windows")) {
             os = OS.WINDOWS;
-        } else if (value.indexOf("os x") != -1) {
+        } else if (value.contains("os x")) {
             os = OS.OSX;
         }
         return os;
@@ -79,5 +73,13 @@ public class Tools {
                 Logger.getLogger(Tools.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+    }
+
+    private Tools() {
+    }
+
+    public enum OS {
+
+        WINDOWS, LINUX, OSX
     }
 }

@@ -157,8 +157,9 @@ public class PlasmaFilter extends WholeImageFilter {
 			mx = (x1 + x2) / 2;
 			my = (y1 + y2) / 2;
 
-			if (mx == x1 && mx == x2 && my == y1 && my == y2)
-				return true;
+			if (mx == x1 && mx == x2 && my == y1 && my == y2) {
+                            return true;
+                        }
 
 			if (mx != x1 || mx != x2) {
 				ml = average(tl, bl);
@@ -194,9 +195,7 @@ public class PlasmaFilter extends WholeImageFilter {
 				putPixel(mx, my, mm, pixels, stride);
 			}
 
-			if (x2-x1 < 3 && y2-y1 < 3)
-				return false;
-			return true;
+			return x2-x1 >= 3 || y2-y1 >= 3;
 		}
 
 		mx = (x1 + x2) / 2;
@@ -227,8 +226,9 @@ public class PlasmaFilter extends WholeImageFilter {
 		putPixel(w1/2, h1, randomRGB(inPixels, w1/2, h1), outPixels, width);
 
 		int depth = 1;
-		while (doPixel(0, 0, width-1, height-1, outPixels, width, depth, 0))
-			depth++;
+		while (doPixel(0, 0, width-1, height-1, outPixels, width, depth, 0)) {
+                    depth++;
+                }
 
 		if (useColormap && colormap != null) {
 			int index = 0;

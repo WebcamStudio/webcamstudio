@@ -82,8 +82,9 @@ public class TransitionFilter extends AbstractBufferedImageOp {
                     break;
                 }
             }
-            if ( method == null )
+            if ( method == null ) {
                 throw new IllegalArgumentException( "No such property in object: "+property );
+                        }
 		}
 		catch (IntrospectionException e) {
             throw new IllegalArgumentException( e.toString() );
@@ -145,7 +146,7 @@ public class TransitionFilter extends AbstractBufferedImageOp {
      */
 	public void prepareFilter( float transition ) {
         try {
-            method.invoke( filter, new Object[] { new Float( transition ) } );
+            method.invoke( filter, new Object[] { transition} );
         }
         catch ( IllegalAccessException | IllegalArgumentException | InvocationTargetException e ) {
             throw new IllegalArgumentException("Error setting value for property: "+property);
@@ -154,10 +155,12 @@ public class TransitionFilter extends AbstractBufferedImageOp {
 	
         @Override
     public BufferedImage filter( BufferedImage src, BufferedImage dst ) {
-        if ( dst == null )
+        if ( dst == null ) {
             dst = createCompatibleDestImage( src, null );
-		if ( destination == null )
-			return dst;
+        }
+		if ( destination == null ) {
+                    return dst;
+        }
 
 		float itransition = 1-transition;
 

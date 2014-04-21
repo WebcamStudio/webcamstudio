@@ -26,7 +26,7 @@ public class ContrastFilter extends TransferFilter {
 	
         @Override
 	protected float transferFunction( float f ) {
-		f = f*brightness;
+		f *= brightness;
 		f = (f-0.5f)*contrast+0.5f;
 		return f;
 	}

@@ -9,6 +9,35 @@ import java.util.StringTokenizer;
 public class FullNick
 {
 
+    /**
+     * Unit test.
+     *
+     * @param args Args passed to program
+     */
+    public static void main(String args[]) {
+        FullNick nick = new FullNick( args[0] );
+        
+        System.out.println( nick.getNick() );
+        System.out.println( nick.getUser() );
+        System.out.println( nick.getHost() );
+        System.out.println( nick.getSource() );
+        
+        if( args.length > 1 )
+        {
+            
+            FullNick nick2 = new FullNick( args[1] );
+            
+            System.out.println( "" );
+            System.out.println( nick2.getNick() );
+            System.out.println( nick2.getUser() );
+            System.out.println( nick2.getHost() );
+            System.out.println( nick2.getSource() );
+            
+            System.out.println( nick2.equals( nick ) ? "Equal." : "Not equal." );
+            
+        }
+    }
+
     private String nick;
     private String user;
     private String remotehost;
@@ -32,8 +61,9 @@ public class FullNick
      */
     private void parse( String original )
     {
-        if( original == null )
+        if( original == null ) {
             return;
+        }
 
         StringTokenizer tokens = new StringTokenizer( original, "!", false );
 
@@ -42,15 +72,17 @@ public class FullNick
         if( tokens.hasMoreTokens() )
         {
             user = tokens.nextToken("@");
-            if( user.charAt(0) == '!' )
+            if( user.charAt(0) == '!' ) {
                 user = user.substring(1);
+            }
         }
 
         if( tokens.hasMoreTokens() )
         {
             remotehost = tokens.nextToken("");
-            if( remotehost.charAt(0) == '@' )
+            if( remotehost.charAt(0) == '@' ) {
                 remotehost = remotehost.substring(1);
+            }
         }
     }
 
@@ -76,10 +108,12 @@ public class FullNick
     }
 
 
+    @Override
     public int hashCode()
     {
-        if( nick == null )
+        if( nick == null ) {
             return 0;
+        }
 
         return nick.hashCode();
     }
@@ -95,64 +129,39 @@ public class FullNick
 
     public boolean equals( String nick )
     {
-        if( nick == null )
+        if( nick == null ) {
             return false;
+        }
 
         return nick.equalsIgnoreCase( this.nick );
     }
 
     public boolean equals( FullNick nick )
     {
-        if( nick == null )
+        if( nick == null ) {
             return false;
+        }
         return equals( nick.getNick() );
     }
 
+    @Override
     public boolean equals( Object object )
     {
-        if( object instanceof FullNick )
+        if( object instanceof FullNick ) {
             return equals( (FullNick)object );
+        }
         return false;
     }
 
     /**
      * @return the nick part
      * */
+    @Override
     public String toString()
     {
         return nick;
     }
 
-    /**
-     * Unit test.
-     *
-     * @param args Args passed to program
-     */
-    public static void main( String args[] )
-    {
-
-        FullNick nick = new FullNick( args[0] );
-
-        System.out.println( nick.getNick() );
-        System.out.println( nick.getUser() );
-        System.out.println( nick.getHost() );
-        System.out.println( nick.getSource() );
-
-        if( args.length > 1 )
-        {
-
-            FullNick nick2 = new FullNick( args[1] );
-
-            System.out.println( "" );
-            System.out.println( nick2.getNick() );
-            System.out.println( nick2.getUser() );
-            System.out.println( nick2.getHost() );
-            System.out.println( nick2.getSource() );
-
-            System.out.println( nick2.equals( nick ) ? "Equal." : "Not equal." );
-
-        }
-    }
 
 }
 

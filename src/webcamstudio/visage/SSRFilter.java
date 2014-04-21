@@ -16,8 +16,8 @@ public class SSRFilter
   {
     this.width = width;
     this.height = height;
-    this.sectorWidth = (int)(width/3);
-    this.sectorHeight = (int)(height/2);
+    this.sectorWidth = (width/3);
+    this.sectorHeight = (height/2);
     this.ii = ii; //Integral image array
     area = width*height;
   }
@@ -35,11 +35,8 @@ public class SSRFilter
     s4 = ii[x+sectorWidth][y+2*sectorHeight] - ii[x+sectorWidth][y+sectorHeight] - ii[x][y+2*sectorHeight] + ii[x][y+sectorHeight];
     s6 = ii[x+3*sectorWidth][y+2*sectorHeight] - ii[x+3*sectorWidth][y+sectorHeight] - ii[x+2*sectorWidth][y+2*sectorHeight] + ii[x+2*sectorWidth][y+sectorHeight];
 
-    //Face candidate conditions
-    if( (s1<s2) && (s1<s4) && (s3<s2) && (s3<s6) )
-      return true;
-    else
-      return false;
+      //Face candidate conditions
+      return (s1<s2) && (s1<s4) && (s3<s2) && (s3<s6);
   }
 
   ////////////////////////////////////////
@@ -54,10 +51,11 @@ public class SSRFilter
     s3 = ii[x+3*sectorWidth][y] - ii[x+2*sectorWidth][y];
 
     //Nose bridge candidate conditions
-    if( (s1<s2) && (s3<s2) )
-      return s2;
-    else
-      return Integer.MIN_VALUE;
+    if( (s1<s2) && (s3<s2) ) {
+        return s2;
+    } else {
+        return Integer.MIN_VALUE;
+    }
   }
 
   /////////////////////////////////////////

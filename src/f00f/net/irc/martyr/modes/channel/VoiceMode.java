@@ -11,21 +11,25 @@ import f00f.net.irc.martyr.Mode;
  */
 public class VoiceMode extends GenericChannelMode
 {
+        @Override
 	public boolean requiresParam()
 	{
 		return true;
 	}
 	
+        @Override
 	public char getChar()
 	{
 		return 'v';
 	}
 	
+        @Override
 	public boolean recordInChannel()
 	{
 		return false;
 	}
 	
+        @Override
 	public Mode newInstance()
 	{
 		return new VoiceMode();

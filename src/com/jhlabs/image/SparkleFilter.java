@@ -106,8 +106,9 @@ public class SparkleFilter extends PointFilter {
 		super.setDimensions(width, height);
 		randomNumbers.setSeed(seed);
 		rayLengths = new float[rays];
-		for (int i = 0; i < rays; i++)
-			rayLengths[i] = radius + randomness / 100.0f * radius * (float)randomNumbers.nextGaussian();
+		for (int i = 0; i < rays; i++) {
+                    rayLengths[i] = radius + randomness / 100.0f * radius * (float)randomNumbers.nextGaussian();
+                }
 	}
 	
         @Override

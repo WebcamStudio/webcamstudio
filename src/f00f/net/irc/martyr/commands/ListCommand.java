@@ -46,16 +46,17 @@ public class ListCommand implements OutCommand
     /**
      * @see f00f.net.irc.martyr.OutCommand#render()
      */
+    @Override
     public String render()
     {
         String ret = getIrcIdentifier();
         if (channels.size() > 0)
         {
-            ret = ret + " ";
+            ret += " ";
             Boolean isFirst = true;
             for (String channel : channels) {
                 if (isFirst) {
-                    ret = ret + channel;
+                    ret += channel;
                     isFirst = false;
                 }
                 else {
@@ -69,6 +70,7 @@ public class ListCommand implements OutCommand
     /**
      * @see f00f.net.irc.martyr.Command#getIrcIdentifier()
      */
+    @Override
     public String getIrcIdentifier()
     {
         return "LIST";

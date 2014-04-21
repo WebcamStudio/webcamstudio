@@ -11,6 +11,15 @@ import java.util.ArrayList;
  * @author patrick
  */
 public class MasterMixer {
+    private static MasterMixer instance = null;
+    public static int BUFFER_SIZE = 50;
+
+    public static MasterMixer getInstance() {
+        if (instance==null){
+            instance = new MasterMixer();
+        }
+        return instance;
+    }
 
     protected int frameRate = 25;
     protected int width = 320;
@@ -20,27 +29,19 @@ public class MasterMixer {
     private int audioLevelLeft = 0;
     private int audioLevelRight = 0;
     private float avgFPS = 0;
-    private static MasterMixer instance = null;
-    
-    public static int BUFFER_SIZE = 50;
     
     private MasterMixer(){
         listeners = new ArrayList<>();
     }
     
-    public static MasterMixer getInstance(){
-        if (instance==null){
-            instance = new MasterMixer();
-        }
-        return instance;
-    }
     /**
      * @return the audioLevelLeft
      */
-    public int getAudioLevelLeft() {
+    public int getAudioLevelLeft(){
         return audioLevelLeft;
     }
-    public void setFPS(float f){
+
+    public void setFPS(float f) {
         avgFPS=f;
     }
     public float getFPS(){
@@ -49,24 +50,21 @@ public class MasterMixer {
     /**
      * @return the audioLevelRight
      */
-    public int getAudioLevelRight() {
+    public int getAudioLevelRight(){
         return audioLevelRight;
     }
 
-    public interface SinkListener{
-        public void newFrame(Frame frame);
-    }
-    
-    public synchronized void register(SinkListener l){
+    public synchronized void register(SinkListener l) {
         listeners.add(l);
     }
+
+    
     public synchronized void unregister(SinkListener l){
         listeners.remove(l);
     }
-    public void setWidth(int w) {
+    public void setWidth(int w){
         width = w;
     }
-
     public void setHeight(int h) {
         height = h;
     }
@@ -95,17 +93,17 @@ public class MasterMixer {
     public void stop() {
         builder.stop();
     }
-    public  void setCurrentFrame(Frame f ){
+
+    public void setCurrentFrame(Frame f) {
         setAudioLevel(f);
         updateListeners(f);
     }
-    private synchronized void updateListeners(Frame f){
+    private synchronized  void updateListeners(Frame f){
         for (SinkListener l : listeners){
             l.newFrame(f);
         }
     }
-
-    protected void setAudioLevel(Frame f) {
+    protected void setAudioLevel(Frame f){
         byte[] data = f.getAudioData();
         if (data != null) {
             audioLevelLeft = 0;
@@ -129,6 +127,11 @@ public class MasterMixer {
                 }
             }
         }
+    }
+
+    public interface SinkListener {
+
+        public void newFrame(Frame frame);
     }
 }
 

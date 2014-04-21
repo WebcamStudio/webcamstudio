@@ -28,6 +28,16 @@ import java.io.IOException;
  */
 public class AutoReconnect extends GenericAutoService
 {
+    // How many times to try reconnecting?
+    public static final int DEFAULT_MAX_ATTEMPTS = 5;
+    // TODO This is a rather simplistic method, personally I would like to
+    // see a version of this class that implements a backoff algorithm.
+    // If we tried to connect, but failed, how long do we wait until we
+    // try again (ms)?
+    public static final int DEFAULT_CONNECT_SLEEPTIME = 1000;
+    // If we get a QUIT command from the server notifying us that we have
+    // QUIT, then self-disable so that we don't reconnect.
+    public static final boolean DEFAULT_DISABLE_ON_QUIT = true;
     
 
     private int attempt;
@@ -35,18 +45,6 @@ public class AutoReconnect extends GenericAutoService
     private int sleepTime;
     private boolean disableOnQuit;
 
-    // How many times to try reconnecting?
-    public static final int DEFAULT_MAX_ATTEMPTS = 5;
-    // TODO This is a rather simplistic method, personally I would like to
-    // see a version of this class that implements a backoff algorithm.
-
-    // If we tried to connect, but failed, how long do we wait until we
-    // try again (ms)?
-    public static final int DEFAULT_CONNECT_SLEEPTIME = 1000;
-
-    // If we get a QUIT command from the server notifying us that we have
-    // QUIT, then self-disable so that we don't reconnect.
-    public static final boolean DEFAULT_DISABLE_ON_QUIT = true;
 
     /**
      * @param connection The IRCConnection
@@ -122,6 +120,7 @@ public class AutoReconnect extends GenericAutoService
         getConnection().connect( server, port );
     }
 
+    @Override
     protected void updateState( State state )
     {
         if( state == State.UNCONNECTED )
@@ -132,8 +131,9 @@ public class AutoReconnect extends GenericAutoService
             // failedToConnect() prevents insane-reconnecting loop if
             // we never registered, however, it introduces a delay if we
             // were registered properly previously
-            if (failedToConnect(null))
+            if (failedToConnect(null)) {
                 doConnectionLoop();
+            }
         } else if( state == State.REGISTERED ) {
             this.attempt = 0;
         }
@@ -178,7 +178,7 @@ public class AutoReconnect extends GenericAutoService
                 }
                 keeptrying = false;
             }
-            catch( Exception e )
+            catch( IOException e )
             {
                 error = e;
                 keeptrying = true;
@@ -242,7 +242,9 @@ public class AutoReconnect extends GenericAutoService
      * before the server terminates the connection.  Note that this would
      * really be better if we could intercept messages on their way out,
      * but Martyr doesn't do that.
+     * @param command
      */
+    @Override
     protected void updateCommand( InCommand command )
     {
         if( disableOnQuit
@@ -253,6 +255,7 @@ public class AutoReconnect extends GenericAutoService
         }
     }
 
+    @Override
     public String toString()
     {
         return "AutoReconnect [" + attempt + "]";

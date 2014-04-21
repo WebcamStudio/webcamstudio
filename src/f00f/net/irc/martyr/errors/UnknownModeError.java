@@ -21,11 +21,13 @@ public class UnknownModeError extends GenericError
         this.errorMessage = errorMessage;
     }
 
+    @Override
     public String getIrcIdentifier()
     {
         return "472";
     }
 
+    @Override
     public InCommand parse( String prefix, String identifier, String params )
     {
         return new UnknownModeError(getParameter(params, 1).charAt(0), getParameter(params, 2));

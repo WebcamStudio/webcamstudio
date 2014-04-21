@@ -30,6 +30,23 @@ import org.xml.sax.SAXException;
  */
 public class VideoSourceWidget extends VideoSource {
 
+    public static void main(String[] args) {
+        try {
+            VideoSourceWidget source = new VideoSourceWidget(new URL("file:///home/pballeux/Desktop/widget.xml"));
+            
+            System.out.println("toString: " + source.toString());
+            System.out.println("Name: " + source.getName());
+            System.out.println("Description: " + source.description);
+            System.out.println("Author: " + source.author);
+            System.out.println("Data URL: " + source.data.toString());
+            System.out.println("Width: " + source.getCaptureWidth());
+            System.out.println("Height: " + source.getCaptureHeight());
+            System.out.println("Frequency: " + source.getUpdateTimeLapse());
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(VideoSourceWidget.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     private URL data = null;
     private String author = "";
     private String description = "";
@@ -244,23 +261,6 @@ public class VideoSourceWidget extends VideoSource {
         return retValue;
     }
 
-    public static void main(String[] args) {
-        try {
-            VideoSourceWidget source = new VideoSourceWidget(new URL("file:///home/pballeux/Desktop/widget.xml"));
-
-            System.out.println("toString: " + source.toString());
-            System.out.println("Name: " + source.getName());
-            System.out.println("Description: " + source.description);
-            System.out.println("Author: " + source.author);
-            System.out.println("Data URL: " + source.data.toString());
-            System.out.println("Width: " + source.getCaptureWidth());
-            System.out.println("Height: " + source.getCaptureHeight());
-            System.out.println("Frequency: " + source.getUpdateTimeLapse());
-        } catch (MalformedURLException ex) {
-            Logger.getLogger(VideoSourceWidget.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
     @Override
     public void startSource() {
         isPlaying = true;
@@ -327,12 +327,13 @@ public class VideoSourceWidget extends VideoSource {
     public void play() {
     }
 
+    @Override
     public String toString() {
         return "Widget: " + name;
     }
 
     @Override
-        public javax.swing.ImageIcon getThumbnail() {
+    public javax.swing.ImageIcon getThumbnail() {
         ImageIcon icon = super.getCachedThumbnail();
         if (icon==null){
             icon = super.getThumbnail();
@@ -344,5 +345,6 @@ public class VideoSourceWidget extends VideoSource {
         }
         return icon;
     }
+
 
 }

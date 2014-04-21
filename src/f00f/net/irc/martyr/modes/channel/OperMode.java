@@ -13,16 +13,19 @@ import f00f.net.irc.martyr.Mode;
  */
 public class OperMode extends GenericChannelMode
 {
+        @Override
 	public boolean requiresParam()
 	{
 		return true;
 	}
 	
+        @Override
 	public char getChar()
 	{
 		return 'o';
 	}
 	
+        @Override
 	public Mode newInstance()
 	{
 		return new OperMode();

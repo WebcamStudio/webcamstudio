@@ -17,15 +17,15 @@ import java.beans.PropertyVetoException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.sound.sampled.LineUnavailableException;
 import javax.swing.SpinnerNumberModel;
-import webcamstudio.channels.MasterChannels;
-import webcamstudio.mixers.Frame;
 import webcamstudio.FullScreen;
 import webcamstudio.WebcamStudio;
+import webcamstudio.channels.MasterChannels;
+import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterMixer;
 import webcamstudio.mixers.SystemPlayer;
 import webcamstudio.streams.SourceChannel;
+import webcamstudio.streams.SourceQRCode;
 import webcamstudio.streams.SourceText;
 import webcamstudio.streams.Stream;
 import webcamstudio.util.Tools;
@@ -43,6 +43,9 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
     final static public Dimension PANEL_SIZE = new Dimension(150, 400);
     ArrayList<Stream> streamM = MasterChannels.getInstance().getStreams();   
     Stream stream = null;
+    SourceText sTx = null;
+    SourceQRCode sTqr = null;
+    boolean lockRatio = false;
 
     /** Creates new form MasterPanel */
     public MasterPanel() {
@@ -74,7 +77,6 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
         tabMixers = new javax.swing.JTabbedPane();
         panChannels = new javax.swing.JPanel();
         panMixer = new javax.swing.JPanel();
-        tglSound = new javax.swing.JToggleButton();
         lblWidth = new javax.swing.JLabel();
         lblHeight = new javax.swing.JLabel();
         spinWidth = new javax.swing.JSpinner();
@@ -84,9 +86,11 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
         spinFPS = new javax.swing.JSpinner();
         btnApplyToStreams = new javax.swing.JButton();
         btnFullScreen = new javax.swing.JButton();
+        tglLockRatio = new javax.swing.JToggleButton();
 
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("webcamstudio/Languages"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("PREVIEW"))); // NOI18N
+        setPreferredSize(new java.awt.Dimension(257, 465));
         setLayout(new java.awt.BorderLayout());
 
         panelPreview.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
@@ -98,23 +102,13 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
         add(panelPreview, java.awt.BorderLayout.NORTH);
 
         tabMixers.setName("tabMixers"); // NOI18N
+        tabMixers.setPreferredSize(new java.awt.Dimension(257, 353));
 
         panChannels.setName("panChannels"); // NOI18N
         panChannels.setLayout(new java.awt.BorderLayout());
         tabMixers.addTab(bundle.getString("CHANNELS"), panChannels); // NOI18N
 
         panMixer.setName("panMixer"); // NOI18N
-
-        tglSound.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/audio-card.png"))); // NOI18N
-        tglSound.setToolTipText("WebcamStudio Master Audio Output");
-        tglSound.setEnabled(false);
-        tglSound.setName("tglSound"); // NOI18N
-        tglSound.setPreferredSize(new java.awt.Dimension(32, 30));
-        tglSound.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                tglSoundActionPerformed(evt);
-            }
-        });
 
         lblWidth.setText(bundle.getString("WIDTH")); // NOI18N
         lblWidth.setName("lblWidth"); // NOI18N
@@ -123,6 +117,11 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
         lblHeight.setName("lblHeight"); // NOI18N
 
         spinWidth.setName("spinWidth"); // NOI18N
+        spinWidth.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                spinWidthStateChanged(evt);
+            }
+        });
 
         spinHeight.setName("spinHeight"); // NOI18N
 
@@ -160,6 +159,14 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
             }
         });
 
+        tglLockRatio.setText("Lock Mixer Aspect Ratio");
+        tglLockRatio.setName("tglLockRatio"); // NOI18N
+        tglLockRatio.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tglLockRatioActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout panMixerLayout = new javax.swing.GroupLayout(panMixer);
         panMixer.setLayout(panMixerLayout);
         panMixerLayout.setHorizontalGroup(
@@ -167,23 +174,22 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
             .addGroup(panMixerLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(panMixerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(tglLockRatio, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(panMixerLayout.createSequentialGroup()
                         .addGroup(panMixerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(lblHeight1)
                             .addComponent(lblWidth)
                             .addComponent(lblHeight))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(panMixerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(spinFPS, javax.swing.GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE)
+                        .addGap(14, 14, 14)
+                        .addGroup(panMixerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(spinFPS, javax.swing.GroupLayout.DEFAULT_SIZE, 125, Short.MAX_VALUE)
                             .addComponent(spinHeight)
                             .addComponent(spinWidth)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panMixerLayout.createSequentialGroup()
-                        .addComponent(btnApply, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnFullScreen, javax.swing.GroupLayout.DEFAULT_SIZE, 21, Short.MAX_VALUE)
+                        .addComponent(btnApply, javax.swing.GroupLayout.DEFAULT_SIZE, 157, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(tglSound, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(btnApplyToStreams, javax.swing.GroupLayout.DEFAULT_SIZE, 203, Short.MAX_VALUE))
+                        .addComponent(btnFullScreen, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnApplyToStreams, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         panMixerLayout.setVerticalGroup(
@@ -201,13 +207,14 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
                 .addGroup(panMixerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(spinFPS, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblHeight1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(panMixerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(btnApply, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(tglSound, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnFullScreen, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnApplyToStreams, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(tglLockRatio)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panMixerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(btnApply)
+                    .addComponent(btnFullScreen, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnApplyToStreams)
                 .addGap(69, 69, 69))
         );
 
@@ -218,38 +225,16 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
     }// </editor-fold>//GEN-END:initComponents
 
     public void releaseTglButton(){
-        tglSound.setEnabled(!player.stopMePub);
-    }
-    private void tglSoundActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglSoundActionPerformed
-//        if (tglSound.isSelected()) {
-//            try {
-//                player.play();
-//            } catch (LineUnavailableException ex) {
-//                Logger.getLogger(MasterPanel.class.getName()).log(Level.SEVERE, null, ex);
-//            }
-//        } else {
-//            player.stop();
-//        }
-    }//GEN-LAST:event_tglSoundActionPerformed
-    public void applyLoadedMixer(){
+    }    public void applyLoadedMixer(){
         int w = (Integer) spinWidth.getValue();
         int h = (Integer) spinHeight.getValue();
-        if (tglSound.isSelected()) {
-            player.stop();
-        }
         mixer.stop();
         mixer.setWidth(w);
         mixer.setHeight(h);
         mixer.setRate((Integer) spinFPS.getValue());
         MasterMixer.getInstance().start();
-//        if (tglSound.isSelected()) {
-//            try {
-//                player.play();
-//            } catch (LineUnavailableException ex) {
-//                Logger.getLogger(MasterPanel.class.getName()).log(Level.SEVERE, null, ex);
-//            }
-//        }
     }
+    
     private void btnApplyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnApplyActionPerformed
         SystemPlayer.getInstance(null).stop();
         Tools.sleep(30);
@@ -260,21 +245,11 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
         Tools.sleep(30);
         int w = (Integer) spinWidth.getValue();
         int h = (Integer) spinHeight.getValue();
-//        if (tglSound.isSelected()) {
-//            player.stop();
-//        }
         mixer.stop();
         mixer.setWidth(w);
         mixer.setHeight(h);
         mixer.setRate((Integer) spinFPS.getValue());
         MasterMixer.getInstance().start();
-//        if (tglSound.isSelected()) {
-//            try {
-//                player.play();
-//            } catch (LineUnavailableException ex) {
-//                Logger.getLogger(MasterPanel.class.getName()).log(Level.SEVERE, null, ex);
-//            }
-//        }
         ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "New Mixer Settings Applied");
         ResourceMonitor.getInstance().addMessage(label);
     }//GEN-LAST:event_btnApplyActionPerformed
@@ -283,31 +258,57 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
         ArrayList<Stream> allStreams = MasterChannels.getInstance().getStreams();
         int wi = mixer.getWidth();
         int he = mixer.getHeight();
-        int oldCW = mixer.getWidth();
-        int oldCH = mixer.getHeight();
-        for (int l=0; l< allStreams.size(); l++) {
-            if (allStreams.get(l) instanceof SourceText) {       
+        int oldCW;
+        int oldCH;
+        for (Stream oneStream : allStreams) {
+            if (oneStream instanceof SourceText) {
+                    sTx = (SourceText) oneStream;
+                    oldCW = sTx.getTextCW();
+                    oldCH = sTx.getTextCH();
             } else {
-            oldCW = allStreams.get(l).getCaptureWidth();
-            oldCH = allStreams.get(l).getCaptureHeight();
+                if (oneStream instanceof SourceQRCode){
+                    sTqr = (SourceQRCode) oneStream;
+                    oldCW = sTqr.getTextCW();
+                    oldCH = sTqr.getTextCH();    
+                } else {
+                oldCW = oneStream.getCaptureWidth();
+                oldCH = oneStream.getCaptureHeight();
+                }
             }
-            int oldW = allStreams.get(l).getWidth();
-            int oldH = allStreams.get(l).getHeight();
-            int oldX = allStreams.get(l).getX();
-            int oldY = allStreams.get(l).getY();
+//            System.out.println("oldCW: "+oldCW);
+//            System.out.println("oldCH: "+oldCH);
+            int oldW = oneStream.getWidth();
+//            System.out.println("oldW: "+oldW);
+            int oldH = oneStream.getHeight();
+//            System.out.println("oldH: "+oldH);
+            int oldX = oneStream.getX();
+//            System.out.println("oldX: "+oldX);
+            int oldY = oneStream.getY();
+//            System.out.println("oldY: "+oldY);
             int newW = (oldW * wi) / oldCW;
+//            System.out.println("newW: "+newW);
             int newH = (oldH * he) / oldCH;
+//            System.out.println("newH: "+newH);
             int newX = (oldX * wi) / oldCW;
+//            System.out.println("newX: "+newX);
             int newY = (oldY * he) / oldCH;
-            if (allStreams.get(l) instanceof SourceText) {
-                allStreams.get(l).setWidth(newW);
-                allStreams.get(l).setHeight(newH);
-                allStreams.get(l).setX(newX);
-                allStreams.get(l).setY(newY);
-                allStreams.get(l).setCaptureWidth(newW);
-                allStreams.get(l).setCaptureHeight(newH);
-                allStreams.get(l).updateStatus();
-                for (SourceChannel ssc : allStreams.get(l).getChannels()){
+//            System.out.println("newY: "+newY);
+            if (oneStream instanceof SourceText || oneStream instanceof SourceQRCode) {
+                oneStream.setWidth(newW);
+                oneStream.setHeight(newH);
+                oneStream.setX(newX);
+                oneStream.setY(newY);
+                oneStream.setCaptureWidth(newW);
+                oneStream.setCaptureHeight(newH);
+                if (oneStream instanceof SourceText) {
+                    sTx.setTextCW(wi);
+                    sTx.setTextCH(he);
+                } else {
+                    sTqr.setTextCW(wi);
+                    sTqr.setTextCH(he);
+                }
+                oneStream.updateStatus();
+                for (SourceChannel ssc : oneStream.getChannels()) {
                     ssc.setWidth(newW);
                     ssc.setHeight(newH);
                     ssc.setX(newX);
@@ -316,14 +317,14 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
                     ssc.setCapHeight(newH);
                 }
             } else {
-                allStreams.get(l).setWidth(newW);
-                allStreams.get(l).setHeight(newH);
-                allStreams.get(l).setX(newX);
-                allStreams.get(l).setY(newY);
-                allStreams.get(l).setCaptureWidth(wi);
-                allStreams.get(l).setCaptureHeight(he);
-                allStreams.get(l).updateStatus();
-                for (SourceChannel ssc : allStreams.get(l).getChannels()){
+                oneStream.setWidth(newW);
+                oneStream.setHeight(newH);
+                oneStream.setX(newX);
+                oneStream.setY(newY);
+                oneStream.setCaptureWidth(wi);
+                oneStream.setCaptureHeight(he);
+                oneStream.updateStatus();
+                for (SourceChannel ssc : oneStream.getChannels()) {
                     ssc.setWidth(newW);
                     ssc.setHeight(newH);
                     ssc.setX(newX);
@@ -331,7 +332,7 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
                     ssc.setCapWidth(wi);
                     ssc.setCapHeight(he);
                 }
-            }   
+            }
         }
         ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Mixer Settings Applied To All Streams");
         ResourceMonitor.getInstance().addMessage(label);
@@ -350,6 +351,27 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
         window.setAlwaysOnTop(true);
         window.setVisible(true);
     }//GEN-LAST:event_btnFullScreenActionPerformed
+
+    private void tglLockRatioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglLockRatioActionPerformed
+        if (tglLockRatio.isSelected()){
+            spinHeight.setEnabled(false);
+            lockRatio = true;
+        } else {
+            spinHeight.setEnabled(true);
+            lockRatio = false;
+        }
+    }//GEN-LAST:event_tglLockRatioActionPerformed
+
+    private void spinWidthStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinWidthStateChanged
+        int oldW = mixer.getWidth();
+        int oldH = mixer.getHeight();
+        int w = (Integer) spinWidth.getValue();
+        int h;
+        if (tglLockRatio.isSelected()){
+            h = (oldH * w) / oldW; 
+            spinHeight.setValue(h);
+        }
+    }//GEN-LAST:event_spinWidthStateChanged
     @Override
     public void resetViewer(ActionEvent evt){
         viewer.setOpaque(true);
@@ -373,7 +395,7 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
     public static javax.swing.JSpinner spinHeight;
     public static javax.swing.JSpinner spinWidth;
     private javax.swing.JTabbedPane tabMixers;
-    public static javax.swing.JToggleButton tglSound;
+    private javax.swing.JToggleButton tglLockRatio;
     // End of variables declaration//GEN-END:variables
 
     @Override

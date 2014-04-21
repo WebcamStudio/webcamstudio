@@ -23,11 +23,13 @@ public class WasNoSuchNickError extends GenericError
         this.errorMessage = errorMessage;
     }
 
+    @Override
     public String getIrcIdentifier()
     {
         return "406";
     }
 
+    @Override
     public InCommand parse( String prefix, String identifier, String params )
     {
         return new WasNoSuchNickError(new FullNick(getParameter(params, 1)), getParameter(params, 2));

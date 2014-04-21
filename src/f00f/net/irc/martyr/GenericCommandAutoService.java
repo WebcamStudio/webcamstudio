@@ -24,8 +24,9 @@ protected GenericCommandAutoService( IRCConnection connection )
 
 public synchronized void enable()
 {
-	if( enabled )
-		return;
+	if( enabled ) {
+            return;
+        }
 	
 	connection.addCommandObserver( this );
 	enabled = true;
@@ -33,17 +34,20 @@ public synchronized void enable()
 
 public synchronized void disable()
 {
-	if( !enabled )
-		return;
+	if( !enabled ) {
+            return;
+        }
 		
 	connection.removeCommandObserver( this );
 	enabled = false;
 }
 
+@Override
 public synchronized void update( Observable observer, Object updated )
 {
-	if( !enabled )
-		throw new IllegalStateException("This observer is not enabled." );
+	if( !enabled ) {
+            throw new IllegalStateException("This observer is not enabled." );
+        }
 	if( updated instanceof State )
 	{
 		throw new IllegalArgumentException("This is not a state observer." );

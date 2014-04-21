@@ -23,6 +23,7 @@ public class WhoisCommand implements OutCommand
 	/**
 	 * @return "WHOIS"
 	 */
+        @Override
 	public String getIrcIdentifier()
 	{
 		return WHOIS;
@@ -31,6 +32,7 @@ public class WhoisCommand implements OutCommand
 	/**
 	 * Simply returns the string given in the constructor.
 	 */
+        @Override
 	public String render()
 	{
 		return WHOIS + " " + target;

@@ -6,22 +6,13 @@ package webcamstudio.sources.effects;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 
 /**
  *
  * @author pballeux
  */
 public abstract class Effect {
-    protected boolean needApply=true;
 
-    public boolean needApply(){
-        return needApply;
-    }
-    public abstract void applyEffect(BufferedImage img);
-    public abstract void applyStudioConfig(java.util.prefs.Preferences prefs);
-    public abstract void loadFromStudioConfig(java.util.prefs.Preferences prefs);
-    public abstract javax.swing.JPanel getControl();
     public static java.util.TreeMap<String, Effect> getEffects() {
         java.util.TreeMap<String, Effect> retValue = new java.util.TreeMap<>();
         retValue.put(FlipHorizontal.class.getSimpleName(), new FlipHorizontal());
@@ -62,21 +53,30 @@ public abstract class Effect {
         retValue.put(Ghosting.class.getSimpleName(), new Ghosting());
         return retValue;
     }
-    public BufferedImage cloneImage(BufferedImage src){
+    protected boolean needApply=true;
+
+    public boolean needApply(){
+        return needApply;
+    }
+    public abstract void applyEffect(BufferedImage img);
+    public abstract void applyStudioConfig(java.util.prefs.Preferences prefs);
+    public abstract void loadFromStudioConfig(java.util.prefs.Preferences prefs);
+    public abstract javax.swing.JPanel getControl();
+    public BufferedImage cloneImage(BufferedImage src) {
         BufferedImage tempimage = java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().createCompatibleImage(src.getWidth(), src.getHeight(), java.awt.image.BufferedImage.TRANSLUCENT);
         Graphics2D tempbuffer = tempimage.createGraphics();
         tempbuffer.setRenderingHint(java.awt.RenderingHints.KEY_RENDERING,
-                           java.awt.RenderingHints.VALUE_RENDER_SPEED);
+                java.awt.RenderingHints.VALUE_RENDER_SPEED);
         tempbuffer.setRenderingHint(java.awt.RenderingHints.KEY_ANTIALIASING,
-                           java.awt.RenderingHints.VALUE_ANTIALIAS_OFF);
+                java.awt.RenderingHints.VALUE_ANTIALIAS_OFF);
         tempbuffer.setRenderingHint(java.awt.RenderingHints.KEY_TEXT_ANTIALIASING,
-                           java.awt.RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
+                java.awt.RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
         tempbuffer.setRenderingHint(java.awt.RenderingHints.KEY_FRACTIONALMETRICS,
-                           java.awt.RenderingHints.VALUE_FRACTIONALMETRICS_OFF);
+                java.awt.RenderingHints.VALUE_FRACTIONALMETRICS_OFF);
         tempbuffer.setRenderingHint(java.awt.RenderingHints.KEY_COLOR_RENDERING,
-                           java.awt.RenderingHints.VALUE_COLOR_RENDER_SPEED);
+                java.awt.RenderingHints.VALUE_COLOR_RENDER_SPEED);
         tempbuffer.setRenderingHint(java.awt.RenderingHints.KEY_DITHERING,
-                           java.awt.RenderingHints.VALUE_DITHER_DISABLE);
+                java.awt.RenderingHints.VALUE_DITHER_DISABLE);
         tempbuffer.drawImage(src, 0, 0, null);
         tempbuffer.dispose();
         return tempimage;
@@ -88,12 +88,12 @@ public abstract class Effect {
     public String toString(){
         return getClass().getSimpleName();
     }
-
-    public void setShape(String shapeImg) {
+    public void setShape(String shapeImg){
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     public void setDoOne(boolean b) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
     }

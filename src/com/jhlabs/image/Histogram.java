@@ -98,9 +98,9 @@ public class Histogram {
 			for (int j = 0; j < 256; j++) {
 				minFrequency[i] = Math.min(minFrequency[i], histogram[i][j]);
 				maxFrequency[i] = Math.max(maxFrequency[i], histogram[i][j]);
-				mean[i] += (float)(j*histogram[i][j]);
+				mean[i] += (j*histogram[i][j]);
 			}
-			mean[i] /= (float)numSamples;
+			mean[i] /= numSamples;
 		}
 		minValue[GRAY] = Math.min(Math.min(minValue[RED], minValue[GREEN]), minValue[BLUE]);
 		maxValue[GRAY] = Math.max(Math.max(maxValue[RED], maxValue[GREEN]), maxValue[BLUE]);
@@ -115,47 +115,54 @@ public class Histogram {
 	}
 
 	public int getFrequency(int value) {
-		if (numSamples > 0 && isGray && value >= 0 && value <= 255)
-			return histogram[0][value];
+		if (numSamples > 0 && isGray && value >= 0 && value <= 255) {
+                    return histogram[0][value];
+                }
 		return -1;
 	}
 
 	public int getFrequency(int channel, int value) {
 		if (numSamples < 1 || channel < 0 || channel > 2 ||
-		 value < 0 || value > 255)
-			return -1;
+		 value < 0 || value > 255) {
+                    return -1;
+                }
 		return histogram[channel][value];
 	}
 
 	public int getMinFrequency() {
-		if (numSamples > 0 && isGray)
-			return minFrequency[0];
+		if (numSamples > 0 && isGray) {
+                    return minFrequency[0];
+                }
 		return -1;
 	}
 
 	public int getMinFrequency(int channel) {
-		if (numSamples < 1 || channel < 0 || channel > 2)
-			return -1;
+		if (numSamples < 1 || channel < 0 || channel > 2) {
+                    return -1;
+                }
 		return minFrequency[channel];
 	}
 
 
 	public int getMaxFrequency() {
-		if (numSamples > 0 && isGray)
-			return maxFrequency[0];
+		if (numSamples > 0 && isGray) {
+                    return maxFrequency[0];
+                }
 		return -1;
 	}
 
 	public int getMaxFrequency(int channel) {
-		if (numSamples < 1 || channel < 0 || channel > 2)
-			return -1;
+		if (numSamples < 1 || channel < 0 || channel > 2) {
+                    return -1;
+                }
 		return maxFrequency[channel];
 	}
 
 
 	public int getMinValue() {
-		if (numSamples > 0 && isGray)
-			return minValue[0];
+		if (numSamples > 0 && isGray) {
+                    return minValue[0];
+                }
 		return -1;
 	}
 
@@ -164,8 +171,9 @@ public class Histogram {
 	}
 
 	public int getMaxValue() {
-		if (numSamples > 0 && isGray)
-			return maxValue[0];
+		if (numSamples > 0 && isGray) {
+                    return maxValue[0];
+                }
 		return -1;
 	}
 
@@ -174,14 +182,16 @@ public class Histogram {
 	}
 
 	public float getMeanValue() {
-		if (numSamples > 0 && isGray)
-			return mean[0];
+		if (numSamples > 0 && isGray) {
+                    return mean[0];
+                }
 		return -1.0F;
 	}
 
 	public float getMeanValue(int channel) {
-		if (numSamples > 0 && RED <= channel && channel <= BLUE)
-			return mean[channel];
+		if (numSamples > 0 && RED <= channel && channel <= BLUE) {
+                    return mean[channel];
+                }
 		return -1.0F;
 	}
 
