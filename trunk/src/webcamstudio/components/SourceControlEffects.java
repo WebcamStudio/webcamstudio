@@ -163,7 +163,7 @@ public class SourceControlEffects extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
     @SuppressWarnings("unchecked") 
     private void btnAddEffectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddEffectActionPerformed
-        listModel.addElement((Effect) cboEffects.getSelectedItem());
+        listModel.addElement(cboEffects.getSelectedItem());
         stream.addEffect((Effect) cboEffects.getSelectedItem());
         lstEffects.revalidate();
     }//GEN-LAST:event_btnAddEffectActionPerformed
@@ -172,8 +172,9 @@ public class SourceControlEffects extends javax.swing.JPanel {
         panSettings.removeAll();
         if (lstEffects.getSelectedValue() != null) {
             Effect e = (Effect)lstEffects.getSelectedValue();
-            if (e.getControl()!=null)
-            panSettings.add(e.getControl());
+            if (e.getControl()!=null) {
+                panSettings.add(e.getControl());
+            }
         }
         panSettings.revalidate();
         panSettings.repaint();

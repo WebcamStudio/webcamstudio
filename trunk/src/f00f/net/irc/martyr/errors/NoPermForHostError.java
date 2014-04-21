@@ -21,11 +21,13 @@ public class NoPermForHostError extends GenericError
         this.errorMessage = errorMessage;
     }
 
+    @Override
     public String getIrcIdentifier()
     {
         return "463";
     }
 
+    @Override
     public InCommand parse( String prefix, String identifier, String params )
     {
         return new NoPermForHostError(getParameter(params, 1));

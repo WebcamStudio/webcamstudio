@@ -56,7 +56,9 @@ public class MessageCommand extends AbstractCommand
     /**
      * Parses a string and produces a formed command object, if it can.
      * Should return null if it cannot form the command object.
+     * @return 
      */
+    @Override
     public InCommand parse( String prefix, String identifier, String params )
     {
         FullNick from;
@@ -82,7 +84,9 @@ public class MessageCommand extends AbstractCommand
     /**
      * Returns the string IRC uses to identify this command.  Examples:
      * NICK, PING, KILL, 332
+     * @return 
      */
+    @Override
     public String getIrcIdentifier()
     {
         return "PRIVMSG";
@@ -90,7 +94,9 @@ public class MessageCommand extends AbstractCommand
 
     /**
      * Renders the parameters of this command.
+     * @return 
      */
+    @Override
     public String renderParams()
     {
         return dest + " :" + message;

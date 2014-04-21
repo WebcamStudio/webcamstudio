@@ -33,8 +33,9 @@ public class SmartBlurFilter extends AbstractBufferedImageOp {
         int width = src.getWidth();
         int height = src.getHeight();
 
-        if ( dst == null )
+        if ( dst == null ) {
             dst = createCompatibleDestImage( src, null );
+        }
 
         int[] inPixels = new int[width*height];
         int[] outPixels = new int[width*height];
@@ -75,8 +76,9 @@ public class SmartBlurFilter extends AbstractBufferedImageOp {
 
 					if (f != 0) {
 						int ix = x+col;
-						if (!(0 <= ix && ix < width))
-							ix = x;
+						if (!(0 <= ix && ix < width)) {
+                                                    ix = x;
+                                                }
 						int rgb2 = inPixels[ioffset+ix];
                         int a2 = (rgb2 >> 24) & 0xff;
                         int r2 = (rgb2 >> 16) & 0xff;

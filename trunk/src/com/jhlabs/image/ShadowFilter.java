@@ -201,8 +201,9 @@ public class ShadowFilter extends AbstractBufferedImageOp {
     
         @Override
     public Point2D getPoint2D( Point2D srcPt, Point2D dstPt ) {
-        if ( dstPt == null )
+        if ( dstPt == null ) {
             dstPt = new Point2D.Double();
+        }
 
 		if ( addMargins ) {
             float xOffset = distance*(float)Math.cos(angle);
@@ -210,8 +211,9 @@ public class ShadowFilter extends AbstractBufferedImageOp {
 			float topShadow = Math.max( 0, radius-yOffset );
 			float leftShadow = Math.max( 0, radius-xOffset );
             dstPt.setLocation( srcPt.getX()+leftShadow, srcPt.getY()+topShadow );
-		} else
-            dstPt.setLocation( srcPt.getX(), srcPt.getY() );
+		} else {
+                    dstPt.setLocation( srcPt.getX(), srcPt.getY() );
+        }
 
         return dstPt;
     }
@@ -225,8 +227,9 @@ public class ShadowFilter extends AbstractBufferedImageOp {
             if ( addMargins ) {
 				ColorModel cm = src.getColorModel();
 				dst = new BufferedImage(cm, cm.createCompatibleWritableRaster(src.getWidth(), src.getHeight()), cm.isAlphaPremultiplied(), null);
-			} else
-				dst = createCompatibleDestImage( src, null );
+			} else {
+                dst = createCompatibleDestImage( src, null );
+            }
 		}
 
         float shadowR = ((shadowColor >> 16) & 0xff) / 255f;

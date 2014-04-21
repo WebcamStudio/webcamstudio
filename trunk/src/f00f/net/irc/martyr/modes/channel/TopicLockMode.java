@@ -9,16 +9,19 @@ import f00f.net.irc.martyr.Mode;
  */
 public class TopicLockMode extends GenericChannelMode
 {
+        @Override
 	public boolean requiresParam()
 	{
 		return false;
 	}
 	
+        @Override
 	public char getChar()
 	{
 		return 't';
 	}
 	
+        @Override
 	public Mode newInstance()
 	{
 		return new TopicLockMode();

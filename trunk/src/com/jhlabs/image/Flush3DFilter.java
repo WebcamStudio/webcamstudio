@@ -37,14 +37,18 @@ public class Flush3DFilter extends WholeImageFilter {
 
 				if (pixel != 0xff000000 && y > 0 && x > 0) {
 					int count = 0;
-					if (inPixels[y*width+x-1] == 0xff000000)
-						count++;
-					if (inPixels[(y-1)*width+x] == 0xff000000)
-						count++;
-					if (inPixels[(y-1)*width+x-1] == 0xff000000)
-						count++;
-					if (count >= 2)
-						pixel = 0xffffffff;
+					if (inPixels[y*width+x-1] == 0xff000000) {
+                                            count++;
+                                        }
+					if (inPixels[(y-1)*width+x] == 0xff000000) {
+                                            count++;
+                                        }
+					if (inPixels[(y-1)*width+x-1] == 0xff000000) {
+                                            count++;
+                                        }
+					if (count >= 2) {
+                                            pixel = 0xffffffff;
+                                        }
 				}
 				outPixels[index++] = pixel;
 			}

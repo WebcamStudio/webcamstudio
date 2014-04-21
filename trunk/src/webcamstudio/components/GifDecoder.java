@@ -52,6 +52,8 @@ public class GifDecoder {
 	 * File read status: Unable to open source.
 	 */
 	public static final int STATUS_OPEN_ERROR = 2;
+    protected static final int MaxStackSize = 4096;
+    // max decoder pixel stack size
 
 	protected BufferedInputStream in;
 	protected int status;
@@ -91,9 +93,6 @@ public class GifDecoder {
 	protected int delay = 0; // delay in milliseconds
 	protected int transIndex; // transparent color index
 
-	protected static final int MaxStackSize = 4096;
-	// max decoder pixel stack size
-
 	// LZW decoder working arrays
 	protected short[] prefix;
 	protected byte[] suffix;
@@ -103,14 +102,6 @@ public class GifDecoder {
 	protected ArrayList<GifFrame> frames; // frames read from current file
 	protected int frameCount;
 
-	static class GifFrame {
-		public GifFrame(BufferedImage im, int del) {
-			image = im;
-			delay = del;
-		}
-		public BufferedImage image;
-		public int delay;
-	}
 
 	/**
 	 * Gets display duration for specified frame.
@@ -122,7 +113,7 @@ public class GifDecoder {
 		//
 		delay = -1;
 		if ((n >= 0) && (n < frameCount)) {
-			delay = ((GifFrame) frames.get(n)).delay;
+			delay = frames.get(n).delay;
 		}
 		return delay;
 	}
@@ -269,7 +260,7 @@ public class GifDecoder {
 	public BufferedImage getFrame(int n) {
 		BufferedImage im = null;
 		if ((n >= 0) && (n < frameCount)) {
-			im = ((GifFrame) frames.get(n)).image;
+			im = frames.get(n).image;
 		}
 		return im;
 	}
@@ -319,8 +310,9 @@ public class GifDecoder {
 	public int read(InputStream is) {
 		init();
 		if (is != null) {
-			if (!(is instanceof BufferedInputStream))
-                        is = new BufferedInputStream(is);
+			if (!(is instanceof BufferedInputStream)) {
+                            is = new BufferedInputStream(is);
+                        }
 			in = (BufferedInputStream) is;
 			readHeader();
 			if (!err()) {
@@ -350,7 +342,7 @@ public class GifDecoder {
 		status = STATUS_OK;
 		try {
 			name = name.trim().toLowerCase();
-			if ((name.indexOf("file:") >= 0) ||
+			if ((name.contains("file:")) ||
 				(name.indexOf(":/") > 0)) {
 				URL url = new URL(name);
 				in = new BufferedInputStream(url.openStream());
@@ -393,9 +385,15 @@ public class GifDecoder {
 		if ((pixels == null) || (pixels.length < npix)) {
 			pixels = new byte[npix]; // allocate new pixel array
 		}
-		if (prefix == null) prefix = new short[MaxStackSize];
-		if (suffix == null) suffix = new byte[MaxStackSize];
-		if (pixelStack == null) pixelStack = new byte[MaxStackSize + 1];
+		if (prefix == null) {
+                    prefix = new short[MaxStackSize];
+                }
+		if (suffix == null) {
+                    suffix = new byte[MaxStackSize];
+                }
+		if (pixelStack == null) {
+                    pixelStack = new byte[MaxStackSize + 1];
+                }
 
 		//  Initialize GIF data stream decoder.
 
@@ -422,8 +420,9 @@ public class GifDecoder {
 					if (count == 0) {
 						// Read a new data block.
 						count = readBlock();
-						if (count <= 0)
-                                                break;
+						if (count <= 0) {
+                                                    break;
+                                                }
 						bi = 0;
 					}
 					datum += (((int) block[bi]) & 0xff) << bits;
@@ -441,8 +440,9 @@ public class GifDecoder {
 
 				//  Interpret the code
 
-				if ((code > available) || (code == end_of_information))
-                                break;
+				if ((code > available) || (code == end_of_information)) {
+                                    break;
+                                }
 				if (code == clear) {
 					//  Reset decoder.
 					code_size = data_size + 1;
@@ -470,8 +470,9 @@ public class GifDecoder {
 
 				//  Add a new string to the string table,
 
-				if (available >= MaxStackSize)
-                                break;
+				if (available >= MaxStackSize) {
+                                    break;
+                                }
 				pixelStack[top++] = (byte) first;
 				prefix[available] = (short) old_code;
 				suffix[available] = (byte) first;
@@ -543,8 +544,9 @@ public class GifDecoder {
 				int count = 0;
 				while (n < blockSize) {
 					count = in.read(block, n, blockSize - n);
-					if (count == -1) 
-                                        break;
+					if (count == -1) {
+                                            break;
+                                        }
 					n += count;
 				}
 			} catch (IOException e) {
@@ -618,8 +620,9 @@ public class GifDecoder {
 							if (app.equals("NETSCAPE2.0")) {
 								readNetscapeExt();
 							}
-							else
-								skip(); // don't care
+							else {
+                                                            skip(); // don't care
+                        }
 							break;
 
 						default : // uninteresting extension
@@ -697,8 +700,9 @@ public class GifDecoder {
 			act = lct; // make local table active
 		} else {
 			act = gct; // make global table active
-			if (bgIndex == transIndex)
-                        bgColor = 0;
+			if (bgIndex == transIndex) {
+                            bgColor = 0;
+                        }
                     }
 		int save = 0;
 		if (transparency) {
@@ -710,12 +714,16 @@ public class GifDecoder {
 			status = STATUS_FORMAT_ERROR; // no color table defined
 		}
 
-		if (err()) return;
+		if (err()) {
+                    return;
+                }
 
 		decodeImageData(); // decode pixel data
 		skip();
 
-		if (err()) return;
+		if (err()) {
+                    return;
+                }
 
 		frameCount++;
 
@@ -800,4 +808,14 @@ public class GifDecoder {
 			readBlock();
 		} while ((blockSize > 0) && !err());
 	}
+
+    static class GifFrame {
+
+        GifFrame(BufferedImage im, int del) {
+            image = im;
+            delay = del;
+        }
+        public BufferedImage image;
+        public int delay;
+    }
 }

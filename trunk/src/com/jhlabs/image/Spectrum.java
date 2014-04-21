@@ -22,8 +22,9 @@ package com.jhlabs.image;
 public class Spectrum {
 
 	private static int adjust(float color, float factor, float gamma) {
-		if (color == 0.0)
-			return 0;
+		if (color == 0.0) {
+                    return 0;
+                }
 		return (int)Math.round(255 * Math.pow(color * factor, gamma));
 	}
 	
@@ -72,14 +73,15 @@ public class Spectrum {
 		}
 
 		// Let the intensity fall off near the vision limits
-		if (380 <= w && w <= 419)
-			factor = 0.3f + 0.7f*(wavelength - 380) / (420 - 380);
-		else if (420 <= w && w <= 700)
-			factor = 1.0f;
-		else if (701 <= w && w <= 780)
-			factor = 0.3f + 0.7f*(780 - wavelength) / (780 - 700);
-		else
-			factor = 0.0f;
+		if (380 <= w && w <= 419) {
+                    factor = 0.3f + 0.7f*(wavelength - 380) / (420 - 380);
+                } else if (420 <= w && w <= 700) {
+                    factor = 1.0f;
+                } else if (701 <= w && w <= 780) {
+                    factor = 0.3f + 0.7f*(780 - wavelength) / (780 - 700);
+                } else {
+                    factor = 0.0f;
+                }
 
 		int ir = adjust(r, factor, gamma);
 		int ig = adjust(g, factor, gamma);
@@ -87,5 +89,8 @@ public class Spectrum {
 
 		return 0xff000000 | (ir << 16) | (ig << 8) | ib;
 	}
+
+    private Spectrum() {
+    }
 
 }

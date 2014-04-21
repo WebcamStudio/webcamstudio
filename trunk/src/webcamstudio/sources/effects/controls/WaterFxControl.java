@@ -11,7 +11,6 @@
 
 package webcamstudio.sources.effects.controls;
 
-import webcamstudio.sources.effects.HSB;
 import webcamstudio.sources.effects.WaterFx;
 
 /**
@@ -133,15 +132,15 @@ public class WaterFxControl extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void sliderRadiusStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sliderRadiusStateChanged
-        effect.setRadius((float)sliderRadius.getValue());
+        effect.setRadius(sliderRadius.getValue());
     }//GEN-LAST:event_sliderRadiusStateChanged
 
     private void sliderAmplitudeStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sliderAmplitudeStateChanged
-        effect.setAmplitude((float)sliderAmplitude.getValue());
+        effect.setAmplitude(sliderAmplitude.getValue());
     }//GEN-LAST:event_sliderAmplitudeStateChanged
 
     private void sliderWavelengthStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sliderWavelengthStateChanged
-        effect.setWavelength((float)sliderWavelength.getValue());
+        effect.setWavelength(sliderWavelength.getValue());
     }//GEN-LAST:event_sliderWavelengthStateChanged
 
 

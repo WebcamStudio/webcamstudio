@@ -25,6 +25,74 @@ import java.util.Random;
  */
 public class CausticsFilter extends WholeImageFilter {
 
+    private static int add(int rgb, float brightness) {
+        int r = (rgb >> 16) & 0xff;
+        int g = (rgb >> 8) & 0xff;
+        int b = rgb & 0xff;
+        r += brightness;
+        g += brightness;
+        b += brightness;
+        if (r > 255) {
+            r = 255;
+        }
+        if (g > 255) {
+            g = 255;
+        }
+        if (b > 255) {
+            b = 255;
+        }
+        return 0xff000000 | (r << 16) | (g << 8) | b;
+    }
+
+    private static int add(int rgb, float brightness, int c) {
+        int r = (rgb >> 16) & 0xff;
+        int g = (rgb >> 8) & 0xff;
+        int b = rgb & 0xff;
+        if (c == 2) {
+            r += brightness;
+        } else if (c == 1) {
+            g += brightness;
+        } else {
+            b += brightness;
+        }
+        if (r > 255) {
+            r = 255;
+        }
+        if (g > 255) {
+            g = 255;
+        }
+        if (b > 255) {
+            b = 255;
+        }
+        return 0xff000000 | (r << 16) | (g << 8) | b;
+    }
+
+    private static float turbulence2(float x, float y, float time, float octaves) {
+        float value = 0.0f;
+        float remainder;
+        float lacunarity = 2.0f;
+        float f = 1.0f;
+        int i;
+        
+        // to prevent "cascading" effects
+        x += 371;
+        y += 529;
+        
+        for (i = 0; i < octaves; i++) {
+            value += Noise.noise3(x, y, time) / f;
+            x *= lacunarity;
+            y *= lacunarity;
+            f *= 2;
+        }
+        
+        remainder = octaves - octaves;
+        if (remainder != 0) {
+            value += remainder * Noise.noise3(x, y, time) / f;
+        }
+        
+        return value;
+    }
+
 	private float scale = 32;
 	private final float angle = 0.0f;
 	private int brightness = 10;
@@ -215,8 +283,9 @@ public class CausticsFilter extends WholeImageFilter {
 		}
 		
 		int v = brightness/samples;
-		if (v == 0)
-			v = 1;
+		if (v == 0) {
+                    v = 1;
+                }
 
 		float rs = 1.0f/scale;
 		float d = 0.95f;
@@ -246,18 +315,22 @@ public class CausticsFilter extends WholeImageFilter {
 								int r = (rgb >> 16) & 0xff;
 								int g = (rgb >> 8) & 0xff;
 								int b = rgb & 0xff;
-								if (c == 2)
-									r += v;
-								else if (c == 1)
-									g += v;
-								else
-									b += v;
-								if (r > 255)
-									r = 255;
-								if (g > 255)
-									g = 255;
-								if (b > 255)
-									b = 255;
+								if (c == 2) {
+                                                                    r += v;
+                                                                } else if (c == 1) {
+                                                                    g += v;
+                                                                } else {
+                                                                    b += v;
+                                                                }
+								if (r > 255) {
+                                                                    r = 255;
+                                                                }
+								if (g > 255) {
+                                                                    g = 255;
+                                                                }
+								if (b > 255) {
+                                                                    b = 255;
+                                                                }
 								pixels[i] = 0xff000000 | (r << 16) | (g << 8) | b;
 							}
 						}
@@ -275,12 +348,15 @@ public class CausticsFilter extends WholeImageFilter {
 							r += v;
 							g += v;
 							b += v;
-							if (r > 255)
-								r = 255;
-							if (g > 255)
-								g = 255;
-							if (b > 255)
-								b = 255;
+							if (r > 255) {
+                                                            r = 255;
+                                                        }
+							if (g > 255) {
+                                                            g = 255;
+                                                        }
+							if (b > 255) {
+                                                            b = 255;
+                                                        }
 							pixels[i] = 0xff000000 | (r << 16) | (g << 8) | b;
 						}
 					}
@@ -290,76 +366,17 @@ public class CausticsFilter extends WholeImageFilter {
 		return pixels;
 	}
 
-	private static int add(int rgb, float brightness) {
-		int r = (rgb >> 16) & 0xff;
-		int g = (rgb >> 8) & 0xff;
-		int b = rgb & 0xff;
-		r += brightness;
-		g += brightness;
-		b += brightness;
-		if (r > 255)
-			r = 255;
-		if (g > 255)
-			g = 255;
-		if (b > 255)
-			b = 255;
-		return 0xff000000 | (r << 16) | (g << 8) | b;
-	}
-	
-	private static int add(int rgb, float brightness, int c) {
-		int r = (rgb >> 16) & 0xff;
-		int g = (rgb >> 8) & 0xff;
-		int b = rgb & 0xff;
-		if (c == 2)
-			r += brightness;
-		else if (c == 1)
-			g += brightness;
-		else
-			b += brightness;
-		if (r > 255)
-			r = 255;
-		if (g > 255)
-			g = 255;
-		if (b > 255)
-			b = 255;
-		return 0xff000000 | (r << 16) | (g << 8) | b;
-	}
-	
-	private static float turbulence2(float x, float y, float time, float octaves) {
-		float value = 0.0f;
-		float remainder;
-		float lacunarity = 2.0f;
-		float f = 1.0f;
-		int i;
-		
-		// to prevent "cascading" effects
-		x += 371;
-		y += 529;
-		
-		for (i = 0; i < (int)octaves; i++) {
-			value += Noise.noise3(x, y, time) / f;
-			x *= lacunarity;
-			y *= lacunarity;
-			f *= 2;
-		}
-
-		remainder = octaves - (int)octaves;
-		if (remainder != 0)
-			value += remainder * Noise.noise3(x, y, time) / f;
-
-		return value;
-	}
-
 	private float evaluate(float x, float y) {
-		float xt = s*x + c*time;
-		float tt = c*x - c*time;
-		float f = turbulence == 0.0 ? Noise.noise3(xt, y, tt) : turbulence2(xt, y, tt, turbulence);
-		return f;
-	}
+            float xt = s*x + c*time;
+            float tt = c*x - c*time;
+            float f = turbulence == 0.0 ? Noise.noise3(xt, y, tt) : turbulence2(xt, y, tt, turbulence);
+            return f;
+        }
 	
         @Override
 	public String toString() {
-		return "Texture/Caustics...";
-	}
+            return "Texture/Caustics...";
+        }
+	
 	
 }

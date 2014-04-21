@@ -39,20 +39,24 @@ public class EqualizeFilter extends WholeImageFilter {
 			lut = new int[3][256];
 			for (i = 0; i < 3; i++) {
 				lut[i][0] = histogram.getFrequency(i, 0);
-				for (j = 1; j < 256; j++)
-					lut[i][j] = lut[i][j-1] + histogram.getFrequency(i, j);
-				for (j = 0; j < 256; j++)
-					lut[i][j] = (int)Math.round(lut[i][j]*scale);
+				for (j = 1; j < 256; j++) {
+                                    lut[i][j] = lut[i][j-1] + histogram.getFrequency(i, j);
+                                }
+				for (j = 0; j < 256; j++) {
+                                    lut[i][j] = Math.round(lut[i][j]*scale);
+                                }
 			}
-		} else
-			lut = null;
+		} else {
+                    lut = null;
+                }
 
 		i = 0;
-		for (int y = 0; y < height; y++)
-			for (int x = 0; x < width; x++) {
-				inPixels[i] = filterRGB(x, y, inPixels[i]);
-				i++;
-			}
+		for (int y = 0; y < height; y++) {
+                    for (int x = 0; x < width; x++) {
+                        inPixels[i] = filterRGB(x, y, inPixels[i]);
+                        i++;
+                    }
+                }
 		lut = null;
 		
 		return inPixels;

@@ -19,6 +19,51 @@ import webcamstudio.sources.effects.Effect;
  */
 public class SourceChannel  {
 
+    public static SourceChannel getChannel(String channelName, Stream stream) {
+        SourceChannel s = new SourceChannel();
+        s.x = stream.x;
+        s.y = stream.y;
+        s.width = stream.width;
+        s.height = stream.height;
+        s.opacity = stream.opacity;
+        s.effects.addAll(stream.effects);
+        s.startTransitions.addAll(stream.startTransitions);
+        s.endTransitions.addAll(stream.endTransitions);
+        s.volume = stream.volume;
+        s.zorder = stream.zorder;
+        s.name = channelName;
+        s.isPlaying = stream.isPlaying();
+        s.capHeight = stream.captureHeight;
+        s.capWidth = stream.captureWidth;
+        if (stream instanceof SourceText) {
+            SourceText st = (SourceText) stream;
+            s.isATimer = st.getIsATimer();
+            if (st.getIsATimer()) {
+                s.text = "Text Clock Mode.";
+                st.updateContent("Text Clock Mode.");
+            } else {
+                s.text = st.content;
+            }
+            s.font = st.fontName;
+            s.color = st.color;
+        } else if (stream instanceof SourceQRCode) {
+            SourceQRCode sQ = (SourceQRCode)stream;
+            s.isATimer = sQ.getIsATimer();
+            if (sQ.getIsATimer()) {
+                s.text = "QRCode Clock Mode.";
+                sQ.updateContent("QRCode Clock Mode.");
+            } else {
+                s.text = sQ.content;
+            }
+//            s.font = sQ.fontName;
+//            s.color = sQ.color;
+        } 
+//            else if (stream instanceof SourceDesktop) {
+//            SourceDesktop sd = (SourceDesktop) stream;
+//        }
+        return s;
+    }
+
     private int x = 0;
     private int y = 0;
     private int capWidth = 0;
@@ -32,7 +77,8 @@ public class SourceChannel  {
     private String font = "";
     private int color = 0;
     private String name = "";
-    boolean isPlaying = false;
+    private boolean isATimer = false;
+    private boolean isPlaying = false;
     ArrayList<Effect> effects = new ArrayList<>();
     private final boolean followMouse = false;
     private final int captureX = 0;
@@ -60,38 +106,6 @@ public class SourceChannel  {
     public synchronized void addEffects(Effect fX) {
         effects.add(fX);
     }
-    public static SourceChannel getChannel(String channelName, Stream stream) {
-        SourceChannel s = new SourceChannel();
-        s.x = stream.x;
-        s.y = stream.y;
-        s.width = stream.width;
-        s.height = stream.height;
-        s.opacity = stream.opacity;
-        s.effects.addAll(stream.effects);
-        s.startTransitions.addAll(stream.startTransitions);
-        s.endTransitions.addAll(stream.endTransitions);
-        s.volume = stream.volume;
-        s.zorder = stream.zorder;
-        s.name = channelName;
-        s.isPlaying = stream.isPlaying();
-        s.capHeight = stream.captureHeight;
-        s.capWidth = stream.captureWidth;
-        if (stream instanceof SourceText) {
-            SourceText st = (SourceText) stream;
-            s.text = st.content;
-            s.font = st.fontName;
-            s.color = st.color;
-        } else if (stream instanceof SourceQRCode) {
-            SourceQRCode sQ = (SourceQRCode)stream;
-            s.text = sQ.content;
-            s.font = sQ.fontName;
-            s.color = sQ.color;
-        } else if (stream instanceof SourceDesktop) {
-            SourceDesktop sd = (SourceDesktop) stream;
-        }
-        return s;
-    }
-    
     public void apply(final Stream s) {
         final SourceChannel instance = this;
         new Thread(new Runnable() {
@@ -114,7 +128,7 @@ public class SourceChannel  {
                     if (isPlaying) {
                         if (!s.isPlaying()) {
                             s.read();
-                            s.updateStatus();
+//                            s.updateStatus();
                         }
                         if (s.startTransitions != null) {
                             pool = java.util.concurrent.Executors.newCachedThreadPool();
@@ -130,8 +144,8 @@ public class SourceChannel  {
                         }
                     } else {
                         if (s.isPlaying()) {
-                                s.stop();
-                                s.updateStatus();
+                            s.stop();
+//                            s.updateStatus();
                         }
                     }
 
@@ -150,12 +164,13 @@ public class SourceChannel  {
                     s.zorder = getZorder();
                     s.captureHeight = getCapHeight();
                     s.captureWidth = getCapWidth();
+                    s.isATimer = getIsATimer();
                     if (s instanceof SourceText) {
                         SourceText st = (SourceText) s;
-                        st.content = getText();
-                        st.fontName = getFont();
-                        st.color = getColor();
-                        st.updateContent(getText());
+                            st.content = getText();
+                            st.fontName = getFont();
+                            st.color = getColor();
+                            st.updateContent(getText());
                     } else if (s instanceof SourceQRCode) {
                         SourceQRCode sQ = (SourceQRCode)s;
                         sQ.content = getText();
@@ -182,6 +197,7 @@ public class SourceChannel  {
     public void setX(int xp) {
         x = xp;
     }
+
     /**
      * @return the y
      */
@@ -192,12 +208,14 @@ public class SourceChannel  {
     public void setY(int yp) {
         y = yp;
     }
+
     /**
      * @return the capWidth
      */
     public int getCapWidth() {
         return capWidth;
     }
+
     public void setCapWidth(int cWidth) {
         capWidth = cWidth;
     }
@@ -207,6 +225,7 @@ public class SourceChannel  {
     public int getCapHeight() {
         return capHeight;
     }
+
     public void setCapHeight(int cHeight) {
         capHeight = cHeight;
     }
@@ -216,6 +235,7 @@ public class SourceChannel  {
     public int getWidth() {
         return width;
     }
+
     public void setWidth(int cWidth) {
         width = cWidth;
     }
@@ -225,10 +245,10 @@ public class SourceChannel  {
     public int getHeight() {
         return height;
     }
+
     public void setHeight(int cHeight) {
         height = cHeight;
     }
-
     /**
      * @return the opacity
      */
@@ -270,7 +290,11 @@ public class SourceChannel  {
     public int getColor() {
         return color;
     }
-
+    
+    public boolean getIsATimer() {
+        return isATimer;
+    }
+    
     /**
      * @return the followMouse
      */
@@ -291,4 +315,5 @@ public class SourceChannel  {
     public int getCaptureY() {
         return captureY;
     }
+
 }

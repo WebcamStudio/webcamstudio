@@ -13,7 +13,6 @@ package webcamstudio.components;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import webcamstudio.media.renderer.ProcessExecutor;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.DnDConstants;
@@ -56,12 +55,13 @@ import webcamstudio.exporter.vloopback.VideoDevice;
 import webcamstudio.externals.FME;
 import webcamstudio.externals.ProcessRenderer;
 import webcamstudio.media.renderer.Exporter;
+import webcamstudio.media.renderer.ProcessExecutor;
 import webcamstudio.mixers.MasterMixer;
 import webcamstudio.streams.SinkAudio;
 import webcamstudio.streams.SinkBroadcast;
-import webcamstudio.streams.SinkUDP;
 import webcamstudio.streams.SinkFile;
 import webcamstudio.streams.SinkLinuxDevice;
+import webcamstudio.streams.SinkUDP;
 import webcamstudio.streams.Stream;
 import webcamstudio.util.Tools;
 import webcamstudio.util.Tools.OS;
@@ -186,7 +186,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
                 String port = service.get("port", "");
                 String keyInt = service.get("keyint", "");
                 // for compatibility before KeyInt
-                if (keyInt == "") {
+                if ("".equals(keyInt)) {
                     keyInt = "125";
                 }
                 
@@ -282,7 +282,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
                             tglSkyCam.setEnabled(true);
                         }                        
                     }
-                    System.out.println("FMECount = "+fmeCount);
+//                    System.out.println("FMECount = "+fmeCount);
                 } else {
                     SinkBroadcast broadcast = broadcasts.get(button.getText());
                     if (broadcast != null) {
@@ -291,7 +291,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
                         broadcasts.remove(fme.getName());
                         ResourceMonitorLabel label = labels.get(fme.getName());
                         labels.remove(fme.getName());
-                        System.out.println("FMECount = "+fmeCount);
+//                        System.out.println("FMECount = "+fmeCount);
                         if (fmeCount == 0 && camCount == 0) {
                             tglSkyCam.setEnabled(true);
                         }                        
@@ -645,17 +645,17 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
                             labels.put(button.getText(), label);
                             ResourceMonitor.getInstance().addMessage(label);
                             tglSkyCam.setEnabled(false);
-                            System.out.println("CamCount = "+camCount);
+//                            System.out.println("CamCount = "+camCount);
                         } else {
                             SinkLinuxDevice stream = devices.get(button.getText());
                             if (stream != null) {
                                 camCount --;
                                 stream.stop();
                                 devices.remove(button.getText());
-                                System.out.println("WS Camera Stopped ...");
+//                                System.out.println("WS Camera Stopped ...");
                                 ResourceMonitorLabel label = labels.remove(button.getText());
                                 ResourceMonitor.getInstance().removeMessage(label);
-                                System.out.println("CamCount = "+camCount);
+//                                System.out.println("CamCount = "+camCount);
                                 if (camCount == 0 && fmeCount == 0) {
                                     tglSkyCam.setEnabled(true);
                                 }
@@ -743,7 +743,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
                                 btnSkyFlip.setEnabled(false);
                                 iSkyCamFree = false;
                                 iSkyCam = true;
-                                System.out.println("Skype Camera on /dev/video21 ...");
+//                                System.out.println("Skype Camera on /dev/video21 ...");
                             } else {
                                 if (processSkyVideo != null) {
                                     iSkyCam = false;
@@ -759,7 +759,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
                                 labels.put(button.getText(), label);
                                 ResourceMonitor.getInstance().addMessage(label);
                             }
-                            System.out.println("CamCount = "+camCount);
+//                            System.out.println("CamCount = "+camCount);
                         } else {
                             SinkLinuxDevice stream = devices.get(button.getText());
                             if (stream != null) {
@@ -770,8 +770,8 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
                                     if (processSkyVideo != null){
                                         processSkyVideo.destroy();
                                         processSkyVideo = null;
-                                        System.out.println("WS Skype Camera Stopped iSkyCam ...");
-                                        System.out.println("CamCount = "+camCount);
+//                                        System.out.println("WS Skype Camera Stopped iSkyCam ...");
+//                                        System.out.println("CamCount = "+camCount);
                                         if (camCount == 0 && fmeCount == 0) {
                                             tglSkyCam.setEnabled(true);
                                         }
@@ -808,7 +808,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
     }
     
     private String wsAuthCheck() throws IOException {
-    System.out.println("Reading syslog ...");
+//    System.out.println("Reading syslog ...");
     String distro = wsDistroWatch();
     String text = new String();
     if (distro.toLowerCase().equals("ubuntu")){
@@ -824,7 +824,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
             }
         }
     }
-    System.out.println("Text read in: " + text);
+//    System.out.println("Text read in: " + text);
     return text;
     }
 
@@ -835,7 +835,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
     
     private static class WaitingDialogOP extends JDialog {
         private final JLabel workingLabelOP = new JLabel();
-        public WaitingDialogOP(JFrame owner) {
+        WaitingDialogOP(JFrame owner) {
             workingLabelOP.setBorder(BorderFactory.createLineBorder(Color.black));
             workingLabelOP.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/working-4.png"))); // NOI18N        
             workingLabelOP.setText(" Working... ");
@@ -862,7 +862,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
             String registerWSDevice;
             String register2WSDevices;
             String distro = wsDistroWatch();
-            System.out.println("Distro: "+ distro);
+//            System.out.println("Distro: "+ distro);
             String batchSkyCommR;
             String batchSkyComm;
             Runtime rt = Runtime.getRuntime();
@@ -1013,11 +1013,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
     }//GEN-LAST:event_tglSkyCamActionPerformed
 
     private void btnSkyFlipActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSkyFlipActionPerformed
-        if (btnSkyFlip.isSelected()) {
-            flip = true;
-        } else {
-            flip = false;
-        }
+        flip = btnSkyFlip.isSelected();
     }//GEN-LAST:event_btnSkyFlipActionPerformed
 
     private void jcbV4l2loopbackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcbV4l2loopbackActionPerformed
@@ -1111,7 +1107,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
         iSkyCamFree = true;
         if (processSkyVideo != null){
             processSkyVideo.destroy();
-            System.out.println("WS Skype Camera Stopped ...");   
+//            System.out.println("WS Skype Camera Stopped ...");   
         }
                          
     }

@@ -92,8 +92,9 @@ public class CompositeFilter extends AbstractBufferedImageOp {
 	
         @Override
 	public BufferedImage filter( BufferedImage src, BufferedImage dst ) {
-        if ( dst == null )
+        if ( dst == null ) {
             dst = createCompatibleDestImage( src, null );
+        }
 
 		Graphics2D g = dst.createGraphics();
                 g.setRenderingHint(RenderingHints.KEY_RENDERING,

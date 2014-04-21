@@ -22,9 +22,6 @@ public class StreamFullScreen extends javax.swing.JInternalFrame {
     StreamPanelDVB panelDVB = null;
     StreamPanelURL panelURL = null;
     
-    public interface Listener{
-        public void selectedSource(Stream source);
-    }
     /** Creates new form StreamFullDesktop
      * @param viewer */
     public StreamFullScreen(Viewer viewer) {
@@ -87,4 +84,9 @@ public class StreamFullScreen extends javax.swing.JInternalFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
+
+    public interface Listener {
+
+        public void selectedSource(Stream source);
+    }
 }

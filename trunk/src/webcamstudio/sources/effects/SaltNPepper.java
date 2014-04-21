@@ -5,9 +5,7 @@
 package webcamstudio.sources.effects;
 
 import Catalano.Imaging.FastBitmap;
-import Catalano.Imaging.Filters.Merge;
 import Catalano.Imaging.Filters.SaltAndPepperNoise;
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;

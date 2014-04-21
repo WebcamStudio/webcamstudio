@@ -32,16 +32,19 @@ import f00f.net.irc.martyr.Mode;
  */
 public class SecretMode extends GenericChannelMode
 {
+        @Override
 	public boolean requiresParam()
 	{
 		return false;
 	}
 	
+        @Override
 	public char getChar()
 	{
 		return 's';
 	}
 	
+        @Override
 	public Mode newInstance()
 	{
 		return new SecretMode();

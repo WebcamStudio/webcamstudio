@@ -30,11 +30,13 @@ public class ListReply extends GenericReply
         this.topic = topic;
     }
 
+    @Override
     public String getIrcIdentifier()
     {
 		return "322";
 	}
 
+    @Override
     public InCommand parse( String prefix, String identifier, String params )
     {
 		return new ListReply(getParameter(params, 0), getParameter(params, 1), Integer.parseInt(getParameter(params, 2)), getParameter(params, 3));

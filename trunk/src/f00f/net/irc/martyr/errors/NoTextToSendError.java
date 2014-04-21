@@ -22,11 +22,13 @@ public class NoTextToSendError extends GenericError
         this.errorMessage = errorMessage;
     }
 
+    @Override
     public String getIrcIdentifier()
     {
         return "412";
     }
 
+    @Override
     public InCommand parse( String prefix, String identifier, String params )
     {
         return new NoTextToSendError(getParameter(params, 1));

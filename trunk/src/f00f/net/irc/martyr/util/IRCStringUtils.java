@@ -87,4 +87,7 @@ public class IRCStringUtils
         return stripControlChars(htmlStr);
     }
 
+    private IRCStringUtils() {
+    }
+
 }

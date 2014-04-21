@@ -149,28 +149,33 @@ public class WeaveFilter extends PointFilter {
 			} else {
 				if (shadeCrossings) {
 					if (m != matrix[(iy+1) % rows][ixc]) {
-						if (m == 0)
-							cY = 1-cY;
+						if (m == 0) {
+                                                    cY = 1-cY;
+                                                }
 						cY *= 0.5f;
 						lrgbX = ImageMath.mixColors(cY, lrgbX, 0xff000000);
-					} else if (m == 0)
-						lrgbX = ImageMath.mixColors(0.5f, lrgbX, 0xff000000);
+					} else if (m == 0) {
+                                            lrgbX = ImageMath.mixColors(0.5f, lrgbX, 0xff000000);
+                                        }
 				}
 				v = ImageMath.mixColors(2 * dX, lrgbX, 0xff000000);
 			}
 		} else if (inY) {
 			if (shadeCrossings) {
 				if (m != matrix[iyr][(ix+1) % cols]) {
-					if (m == 1)
-						cX = 1-cX;
+					if (m == 1) {
+                                            cX = 1-cX;
+                                        }
 					cX *= 0.5f;
 					lrgbY = ImageMath.mixColors(cX, lrgbY, 0xff000000);
-				} else if (m == 1)
-					lrgbY = ImageMath.mixColors(0.5f, lrgbY, 0xff000000);
+				} else if (m == 1) {
+                                    lrgbY = ImageMath.mixColors(0.5f, lrgbY, 0xff000000);
+                                }
 			}
 			v = ImageMath.mixColors(2 * dY, lrgbY, 0xff000000);
-		} else
-			v = 0x00000000;
+		} else {
+                    v = 0x00000000;
+                }
 		return v;
 	}
 

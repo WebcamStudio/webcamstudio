@@ -175,8 +175,9 @@ public class WaterFilter extends TransformFilter {
     public BufferedImage filter( BufferedImage src, BufferedImage dst ) {
 		icentreX = src.getWidth() * centreX;
 		icentreY = src.getHeight() * centreY;
-		if ( radius == 0 )
-			radius = Math.min(icentreX, icentreY);
+		if ( radius == 0 ) {
+                    radius = Math.min(icentreX, icentreY);
+                }
 		radius2 = radius*radius;
 		return super.filter( src, dst );
 	}
@@ -193,8 +194,9 @@ public class WaterFilter extends TransformFilter {
 			float distance = (float)Math.sqrt(distance2);
 			float amount = amplitude * (float)Math.sin(distance / wavelength * ImageMath.TWO_PI - phase);
 			amount *= (radius-distance)/radius;
-			if ( distance != 0 )
-				amount *= wavelength/distance;
+			if ( distance != 0 ) {
+                            amount *= wavelength/distance;
+                        }
 			out[0] = x + dx*amount;
 			out[1] = y + dy*amount;
 		}

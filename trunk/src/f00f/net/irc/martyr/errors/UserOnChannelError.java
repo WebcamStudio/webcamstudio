@@ -25,11 +25,13 @@ public class UserOnChannelError extends GenericError
         this.errorMessage = errorMessage;
     }
 
+    @Override
     public String getIrcIdentifier()
     {
         return "443";
     }
 
+    @Override
     public InCommand parse( String prefix, String identifier, String params )
     {
         return new UserOnChannelError(new FullNick(getParameter(params, 1)), getParameter(params, 2), getParameter(params, 3));

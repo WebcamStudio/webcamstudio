@@ -23,11 +23,13 @@ public class ErroneusNicknameError extends GenericError
         this.errorMessage = errorMessage;
     }
 
+    @Override
     public String getIrcIdentifier()
     {
         return "432";
     }
 
+    @Override
     public InCommand parse( String prefix, String identifier, String params )
     {
         return new ErroneusNicknameError(new FullNick(getParameter(params, 1)), getParameter(params, 2));

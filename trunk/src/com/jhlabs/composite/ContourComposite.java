@@ -27,7 +27,7 @@ import java.awt.image.WritableRaster;
  * A special Composite used for drawing "marching ants". It draws the ants at the 127 contour of the alpha channel of the source.
  * This can only be used on TYPE_INT_RGBA images.
  */
-public final class ContourComposite implements Composite {
+public class ContourComposite implements Composite {
 
 	private final int offset;
 
@@ -47,9 +47,7 @@ public final class ContourComposite implements Composite {
 
         @Override
 	public boolean equals(Object o) {
-		if (!(o instanceof ContourComposite))
-			return false;
-		return true;
+		return o instanceof ContourComposite;
 	}
 
 }
@@ -58,7 +56,7 @@ class ContourCompositeContext implements CompositeContext {
 
 	private final int offset;
 
-	public ContourCompositeContext( int offset, ColorModel srcColorModel, ColorModel dstColorModel ) {
+	ContourCompositeContext( int offset, ColorModel srcColorModel, ColorModel dstColorModel ) {
 		this.offset = offset;
 	}
 

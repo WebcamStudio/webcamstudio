@@ -20,11 +20,13 @@ public class NoMotdError extends GenericError
         this.errorMessage = errorMessage;
     }
 
+    @Override
     public String getIrcIdentifier()
     {
         return "422";
     }
 
+    @Override
     public InCommand parse( String prefix, String identifier, String params )
     {
         return new NoMotdError(getParameter(params, 1));

@@ -21,11 +21,13 @@ public class KeySetError extends GenericError
         this.errorMessage = errorMessage;
     }
 
+    @Override
     public String getIrcIdentifier()
     {
         return "467";
     }
 
+    @Override
     public InCommand parse( String prefix, String identifier, String params )
     {
         return new KeySetError(getParameter(params, 1), getParameter(params, 2));

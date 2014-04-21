@@ -42,6 +42,7 @@ public class InviteCommand extends AbstractCommand {
 	/* (non-Javadoc)
 	 * @see f00f.net.irc.martyr.Command#parse(java.lang.String, java.lang.String, java.lang.String)
 	 */
+        @Override
 	public InCommand parse(String prefix, String identifier, String params) 
 	{
 			ParameterIterator iter = new ParameterIterator(params);
@@ -51,6 +52,7 @@ public class InviteCommand extends AbstractCommand {
 	/* (non-Javadoc)
 	 * @see f00f.net.irc.martyr.commands.AbstractCommand#getIrcIdentifier()
 	 */
+        @Override
 	public String getIrcIdentifier() 
 	{
 		return "INVITE";
@@ -59,6 +61,7 @@ public class InviteCommand extends AbstractCommand {
 	/* (non-Javadoc)
 	 * @see f00f.net.irc.martyr.commands.AbstractCommand#renderParams()
 	 */
+        @Override
 	public String renderParams() 
 	{
 		return _nick+" "+_channel;

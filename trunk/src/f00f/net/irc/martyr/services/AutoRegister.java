@@ -49,6 +49,7 @@ import java.util.NoSuchElementException;
  */
 public class AutoRegister extends GenericAutoService
 {
+    public static final int MAX_ATTEMPTS = 5;
 
 
     // I've lost track of why the timer stuff was in here.  I think the
@@ -73,7 +74,6 @@ public class AutoRegister extends GenericAutoService
     // attempt is only used for the debug output.
     private int attempt = 0;
 
-    public static final int MAX_ATTEMPTS = 5;
 
     public AutoRegister( IRCConnection connection, String nick,
         String user, String name )
@@ -121,46 +121,8 @@ public class AutoRegister extends GenericAutoService
         return new UnderscoreIterator(baseNick);
     }
 
-    private static class UnderscoreIterator implements Iterator
-    {
-        int count = 1;
-        String nick;
 
-        public UnderscoreIterator( String base )
-        {
-            this.nick = base;
-        }
-
-        public boolean hasNext()
-        {
-            return count <= MAX_ATTEMPTS;
-        }
-
-        public Object next()
-        {
-            if( hasNext() )
-            {
-                String result = nick;
-
-                // Set up the next round
-                nick = nick + "_";
-                ++count;
-
-                // return the value for this round.
-                return result;
-            }
-            else
-            {
-                throw new NoSuchElementException("No more nicknames");
-            }
-        }
-
-        public void remove()
-        {
-            throw new UnsupportedOperationException();
-        }
-    }
-
+    @Override
     protected void updateState( State state )
     {
 
@@ -184,6 +146,7 @@ public class AutoRegister extends GenericAutoService
 
     }
 
+    @Override
     protected void updateCommand( InCommand command )
     {
         // First, check the state, because if we are already registered
@@ -275,12 +238,55 @@ public class AutoRegister extends GenericAutoService
         getConnection().sendCommand( new UserCommand( user, name, getConnection() ) );
     }
 
+    @Override
     public String toString()
     {
         return "AutoRegister [" + attempt + "]";
     }
 
     // END AutoRegister
+
+    private static class UnderscoreIterator implements Iterator {
+
+        int count = 1;
+        String nick;
+
+        UnderscoreIterator(String base) {
+            this.nick = base;
+        }
+
+        @Override
+        public boolean hasNext()
+        {
+            return count <= MAX_ATTEMPTS;
+        }
+
+        @Override
+        public Object next()
+        {
+            if( hasNext() )
+            {
+                String result = nick;
+                
+                // Set up the next round
+                nick += "_";
+                ++count;
+                
+                // return the value for this round.
+                return result;
+            }
+            else
+            {
+                throw new NoSuchElementException("No more nicknames");
+            }
+        }
+
+        @Override
+        public void remove()
+        {
+            throw new UnsupportedOperationException();
+        }
+    }
 }
  
 

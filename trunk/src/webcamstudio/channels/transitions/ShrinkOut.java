@@ -19,8 +19,8 @@ public class ShrinkOut extends Transition {
     protected void execute() {
             int rate = source.getRate();
             int frames = rate * 1;
-            float deltaW = (float) source.getWidth() / (float) frames / 2F;
-            float deltaH = (float) source.getHeight() / (float) frames / 2F;
+            float deltaW = source.getWidth() / frames / 2F;
+            float deltaH = source.getHeight() / frames / 2F;
             source.setX(channel.getX());
             source.setY(channel.getY());
             int x = channel.getX();

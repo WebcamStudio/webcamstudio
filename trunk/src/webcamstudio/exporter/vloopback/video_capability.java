@@ -25,11 +25,12 @@ package webcamstudio.exporter.vloopback;
  */
 public class video_capability extends com.sun.jna.Structure {
 
+    public byte[] name = new byte[32];
+    public int type,  channels,  audios,  maxwidth,  maxheight,  minwidth,  minheight;
+
     public static class ByValue extends video_capability implements com.sun.jna.Structure.ByValue {
     }
 
     public static class ByReference extends video_capability implements com.sun.jna.Structure.ByReference {
     }
-    public byte[] name = new byte[32];
-    public int type,  channels,  audios,  maxwidth,  maxheight,  minwidth,  minheight;
 }

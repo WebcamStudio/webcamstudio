@@ -25,6 +25,12 @@ import java.util.Random;
  * A filter which produces an image with a cellular texture.
  */
 public class CellularFilter extends WholeImageFilter implements Function2D, Cloneable {
+    private static byte[] probabilities;
+    public static final int RANDOM = 0;
+    public static final int SQUARE = 1;
+    public static final int HEXAGONAL = 2;
+    public static final int OCTAGONAL = 3;
+    public static final int TRIANGULAR = 4;
 
 	protected float scale = 32;
 	protected float stretch = 1.0f;
@@ -48,33 +54,30 @@ public class CellularFilter extends WholeImageFilter implements Function2D, Clon
 	protected int gridType = HEXAGONAL;
 	private float min;
 	private float max;
-	private static byte[] probabilities;
 	private float gradientCoefficient;
 	
-	public final static int RANDOM = 0;
-	public final static int SQUARE = 1;
-	public final static int HEXAGONAL = 2;
-	public final static int OCTAGONAL = 3;
-	public final static int TRIANGULAR = 4;
 
 	public CellularFilter() {
 		results = new Point[3];
-		for (int j = 0; j < results.length; j++)
-			results[j] = new Point();
+		for (int j = 0; j < results.length; j++) {
+                    results[j] = new Point();
+                }
 		if (probabilities == null) {
 			probabilities = new byte[8192];
 			float factorial = 1;
 			float total = 0;
 			float mean = 2.5f;
 			for (int i = 0; i < 10; i++) {
-				if (i > 1)
-					factorial *= i;
+				if (i > 1) {
+                                    factorial *= i;
+                                }
 				float probability = (float)Math.pow(mean, i) * (float)Math.exp(-mean) / factorial;
 				int start = (int)(total * 8192);
 				total += probability;
 				int end = (int)(total * 8192);
-				for (int j = start; j < end; j++)
-					probabilities[j] = (byte)i;
+				for (int j = start; j < end; j++) {
+                                    probabilities[j] = (byte)i;
+                                }
 			}	
 		}
 	}
@@ -282,13 +285,6 @@ public class CellularFilter extends WholeImageFilter implements Function2D, Clon
 		return amount;
 	}
 
-	public class Point {
-		public int index;
-		public float x, y;
-		public float dx, dy;
-		public float cubeX, cubeY;
-		public float distance;
-	}
 	
 	private float checkCube(float x, float y, int cubeX, int cubeY, Point[] results) {
 		int numPoints;
@@ -367,17 +363,18 @@ public class CellularFilter extends WholeImageFilter implements Function2D, Clon
 				}
 				break;
 			}
-			float dx = (float)Math.abs(x-px);
-			float dy = (float)Math.abs(y-py);
+			float dx = Math.abs(x-px);
+			float dy = Math.abs(y-py);
 			float d;
 			dx *= weight;
 			dy *= weight;
-			if (distancePower == 1.0f)
-				d = dx + dy;
-			else if (distancePower == 2.0f)
-				d = (float)Math.sqrt(dx*dx + dy*dy);
-			else
-				d = (float)Math.pow((float)Math.pow(dx, distancePower) + (float)Math.pow(dy, distancePower), 1/distancePower);
+			if (distancePower == 1.0f) {
+                            d = dx + dy;
+                        } else if (distancePower == 2.0f) {
+                            d = (float)Math.sqrt(dx*dx + dy*dy);
+                        } else {
+                            d = (float)Math.pow((float)Math.pow(dx, distancePower) + (float)Math.pow(dy, distancePower), 1/distancePower);
+                        }
 
 			// Insertion sort the long way round to speed it up a bit
 			if (d < results[0].distance) {
@@ -413,8 +410,9 @@ public class CellularFilter extends WholeImageFilter implements Function2D, Clon
 	
         @Override
 	public float evaluate(float x, float y) {
-		for (int j = 0; j < results.length; j++)
-			results[j].distance = Float.POSITIVE_INFINITY;
+		for (int j = 0; j < results.length; j++) {
+                    results[j].distance = Float.POSITIVE_INFINITY;
+                }
 
 		int ix = (int)x;
 		int iy = (int)y;
@@ -422,32 +420,40 @@ public class CellularFilter extends WholeImageFilter implements Function2D, Clon
 		float fy = y-iy;
 
 		float d = checkCube(fx, fy, ix, iy, results);
-		if (d > fy)
-			d = checkCube(fx, fy+1, ix, iy-1, results);
-		if (d > 1-fy)
-			d = checkCube(fx, fy-1, ix, iy+1, results);
+		if (d > fy) {
+                    d = checkCube(fx, fy+1, ix, iy-1, results);
+                }
+		if (d > 1-fy) {
+                    d = checkCube(fx, fy-1, ix, iy+1, results);
+                }
 		if (d > fx) {
 			checkCube(fx+1, fy, ix-1, iy, results);
-			if (d > fy)
-				d = checkCube(fx+1, fy+1, ix-1, iy-1, results);
-			if (d > 1-fy)
-				d = checkCube(fx+1, fy-1, ix-1, iy+1, results);
+			if (d > fy) {
+                            d = checkCube(fx+1, fy+1, ix-1, iy-1, results);
+                        }
+			if (d > 1-fy) {
+                            d = checkCube(fx+1, fy-1, ix-1, iy+1, results);
+                        }
 		}
 		if (d > 1-fx) {
 			d = checkCube(fx-1, fy, ix+1, iy, results);
-			if (d > fy)
-				d = checkCube(fx-1, fy+1, ix+1, iy-1, results);
-			if (d > 1-fy)
-				d = checkCube(fx-1, fy-1, ix+1, iy+1, results);
+			if (d > fy) {
+                            d = checkCube(fx-1, fy+1, ix+1, iy-1, results);
+                        }
+			if (d > 1-fy) {
+                            d = checkCube(fx-1, fy-1, ix+1, iy+1, results);
+                        }
 		}
 
 		float t = 0;
-		for (int i = 0; i < 3; i++)
-			t += coefficients[i] * results[i].distance;
+		for (int i = 0; i < 3; i++) {
+                    t += coefficients[i] * results[i].distance;
+                }
 		if (angleCoefficient != 0) {
 			float angle = (float)Math.atan2(y-results[0].y, x-results[0].x);
-			if (angle < 0)
-				angle += 2*(float)Math.PI;
+			if (angle < 0) {
+                            angle += 2*(float)Math.PI;
+                        }
 			angle /= 4*(float)Math.PI;
 			t += angleCoefficient * angle;
 		}
@@ -461,8 +467,9 @@ public class CellularFilter extends WholeImageFilter implements Function2D, Clon
 	public float turbulence2(float x, float y, float freq) {
 		float t = 0.0f;
 
-		for (float f = 1.0f; f <= freq; f *= 2)
-			t += evaluate(f*x, f*y) / f;
+		for (float f = 1.0f; f <= freq; f *= 2) {
+                    t += evaluate(f*x, f*y) / f;
+                }
 		return t;
 	}
 
@@ -520,8 +527,8 @@ public class CellularFilter extends WholeImageFilter implements Function2D, Clon
         @Override
 	public Object clone() {
 		CellularFilter f = (CellularFilter)super.clone();
-		f.coefficients = (float[])coefficients.clone();
-		f.results = (Point[])results.clone();
+		f.coefficients = coefficients.clone();
+		f.results = results.clone();
 		f.random = new Random();
 //		if (colormap != null)
 //			f.colormap = (Colormap)colormap.clone();
@@ -532,5 +539,17 @@ public class CellularFilter extends WholeImageFilter implements Function2D, Clon
 	public String toString() {
 		return "Texture/Cellular...";
 	}
+
+    public class Point {
+
+        public int index;
+        public float x;
+        public float y;
+        public float dx;
+        public float dy;
+        public float cubeX;
+        public float cubeY;
+        public float distance;
+    }
 	
 }

@@ -20,11 +20,13 @@ public class LoadTooHighError extends GenericError
         this.errorMessage = errorMessage;
     }
 
+    @Override
     public String getIrcIdentifier()
     {
         return "263";
     }
 
+    @Override
     public InCommand parse( String prefix, String identifier, String params )
     {
         return new LoadTooHighError(new FullNick(getParameter(params, 1)), getParameter(params, 2), getParameter(params, 3));

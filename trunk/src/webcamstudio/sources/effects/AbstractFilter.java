@@ -60,6 +60,7 @@ public abstract class AbstractFilter implements BufferedImageOp {
 
     /**
      * {@inheritDoc}
+     * @return 
      */
     @Override
     public Rectangle2D getBounds2D(BufferedImage src) {
@@ -68,6 +69,7 @@ public abstract class AbstractFilter implements BufferedImageOp {
 
     /**
      * {@inheritDoc}
+     * @return 
      */
     @Override
     public BufferedImage createCompatibleDestImage(BufferedImage src,
@@ -84,6 +86,7 @@ public abstract class AbstractFilter implements BufferedImageOp {
 
     /**
      * {@inheritDoc}
+     * @return 
      */
     @Override
     public Point2D getPoint2D(Point2D srcPt, Point2D dstPt) {
@@ -92,6 +95,7 @@ public abstract class AbstractFilter implements BufferedImageOp {
 
     /**
      * {@inheritDoc}
+     * @return 
      */
     @Override
     public RenderingHints getRenderingHints() {

@@ -48,17 +48,19 @@ public class ConnectedComponents
           clustersMembers[x][y] = label;
           labels[label] = Integer.MIN_VALUE;
          }
-         else
-           clustersMembers[x][y] = clustersMembers[x-1][y];
+         else {
+            clustersMembers[x][y] = clustersMembers[x-1][y];
+        }
       }
     }
     else
     {
       n = clustersMembers[x][y-1] ;
-      if( x+1 == width )
-        ne = 0;
-      else
-        ne = clustersMembers[x+1][y-1] ;
+      if( x+1 == width ) {
+          ne = 0;
+      } else {
+          ne = clustersMembers[x+1][y-1] ;
+      }
       if(x != 0)
       {
         nw = clustersMembers[x-1][y-1] ;
@@ -76,21 +78,25 @@ public class ConnectedComponents
             clustersMembers[x][y] = w;
             if(nw != 0)
             {
-              if( nw != w )
-                labels[nw] = w;
-              if( (n==0) && (ne!=0) && (nw != ne) && (labels[nw] != ne) )
-                labels[ne] = nw;
+              if( nw != w ) {
+                  labels[nw] = w;
+              }
+              if( (n==0) && (ne!=0) && (nw != ne) && (labels[nw] != ne) ) {
+                  labels[ne] = nw;
+              }
             }
             else
             {
               if(n != 0)
               {
-                if( w != n)
-                  labels[n] = w;
+                if( w != n) {
+                    labels[n] = w;
+                }
               }
               else
-                if( (ne != 0) && (ne != w) && (labels[w] != ne) )
+                if( (ne != 0) && (ne != w) && (labels[w] != ne) ) {
                     labels[ne] = w;
+              }
             }
           }
           else
@@ -98,15 +104,17 @@ public class ConnectedComponents
             if (nw != 0)
             {
               clustersMembers[x][y] = nw;
-              if( (n==0) && (ne!=0) && (ne !=nw) && (labels[nw] != ne) )
+              if( (n==0) && (ne!=0) && (ne !=nw) && (labels[nw] != ne) ) {
                   labels[ne] = nw;
+              }
             }
             else
-              if (n != 0)
-                clustersMembers[x][y] = n;
-              else
-              if (ne != 0)
-                clustersMembers[x][y] = ne;
+              if (n != 0) {
+                  clustersMembers[x][y] = n;
+            } else
+              if (ne != 0) {
+                  clustersMembers[x][y] = ne;
+            }
           }
         }
       }
@@ -120,10 +128,11 @@ public class ConnectedComponents
         }
         else
         {
-          if( n != 0)
-            clustersMembers[x][y] = n;
-          else
-            clustersMembers[x][y] = ne;
+          if( n != 0) {
+              clustersMembers[x][y] = n;
+          } else {
+              clustersMembers[x][y] = ne;
+          }
         }
       }
     }
@@ -152,8 +161,9 @@ public class ConnectedComponents
       {
         if( labels[i] != Integer.MIN_VALUE )
         {
-          for (int q = 1; q < visited.length; q++)
-            visited[q] = false;
+          for (int q = 1; q < visited.length; q++) {
+              visited[q] = false;
+          }
           visited[i] = true;
           j = i;
           while (labels[j] != Integer.MIN_VALUE)
@@ -164,8 +174,9 @@ public class ConnectedComponents
               labels[i] = Integer.MIN_VALUE;
               break;
             }
-            else
-              visited[j] = true;
+            else {
+                visited[j] = true;
+            }
           }
           labels[i] = j;
         }
@@ -175,9 +186,11 @@ public class ConnectedComponents
           clusters[cluster] = i;
         }
       }
-      for (i = 1; labels[i] != Integer.MAX_VALUE ; i++)
-        if (labels[i] == Integer.MIN_VALUE)
-          labels[i] = i;
+      for (i = 1; labels[i] != Integer.MAX_VALUE ; i++) {
+          if (labels[i] == Integer.MIN_VALUE) {
+              labels[i] = i;
+          }
+      }
       clusters[cluster + 1] = Integer.MAX_VALUE;
     }
    }
@@ -206,13 +219,14 @@ public class ConnectedComponents
       if( counter > limit ) //if cluster size is larger than the threshold
       {
         int centers[][] = new int[cluster+2][2];
-        centers[1][0] = (int)centerX / counter;
-        centers[1][1] = (int)centerY / counter;
+        centers[1][0] = centerX / counter;
+        centers[1][1] = centerY / counter;
         centers[cluster+1][0] = Integer.MAX_VALUE;
         return centers;
       }
-      else
-        return null;
+      else {
+          return null;
+      }
     }
     else
     {
@@ -222,8 +236,9 @@ public class ConnectedComponents
       counters = new int[cluster + 2];
       indecies = new int[label + 2];
       int index, clusterArea;
-      for (int i = 1; clusters[i] != Integer.MAX_VALUE; i++)
-        indecies[clusters[i]] = i;
+      for (int i = 1; clusters[i] != Integer.MAX_VALUE; i++) {
+          indecies[clusters[i]] = i;
+      }
       Vector<Integer> finalClusters = new Vector<>();
 
       for (int y = 0; y < height; y++)
@@ -242,15 +257,17 @@ public class ConnectedComponents
       for (int i = 1; clusters[i] != Integer.MAX_VALUE; i++)
       {
         clusterArea = counters[indecies[clusters[i]]];
-        if (clusterArea > limit)
-          finalClusters.add(new Integer(clusters[i]));
-        else
-          cluster--;
+        if (clusterArea > limit) {
+            finalClusters.add(clusters[i]);
+        } else {
+            cluster--;
+        }
       }
       if( cluster != 0 )
       {
-        for (int i = 0; i < finalClusters.size(); i++)
-          clusters[i + 1] = ( (Integer) (finalClusters.get(i))).intValue();
+        for (int i = 0; i < finalClusters.size(); i++) {
+            clusters[i + 1] = (finalClusters.get(i));
+        }
         clusters[cluster + 1] = Integer.MAX_VALUE;
         int centers[][] = new int[cluster + 2][2];
 
@@ -263,8 +280,9 @@ public class ConnectedComponents
         centers[cluster + 1][0] = Integer.MAX_VALUE;
         return centers;
       }
-      else
-        return null;
+      else {
+          return null;
+      }
     }
   }
 
@@ -285,14 +303,15 @@ public class ConnectedComponents
         }
       }
     }
-    if (counter > (double) limit / 2d)
+    if (counter > limit / 2d)
     {
       Point center = new Point();
-      center.setLocation( (int) (centerX / counter), (int) (centerY / counter));
+      center.setLocation( (centerX / counter), (centerY / counter));
       return center;
     }
-    else
-      return null;
+    else {
+        return null;
+    }
   }
 
   //////////////////////////////////////////////////
@@ -306,8 +325,9 @@ public class ConnectedComponents
     int[] counter = new int[cluster + 2];
     int[] indecies = new int[label + 2];
     int index = 0, clusterArea, darkestPixel = 256, pixelColor, darkestX = 0, darkestY = 0, ind;
-    for (int i = 1; clusters[i] != Integer.MAX_VALUE; i++)
-      indecies[clusters[i]] = i;
+    for (int i = 1; clusters[i] != Integer.MAX_VALUE; i++) {
+        indecies[clusters[i]] = i;
+    }
     for (int y = start; y < end; y++)
     {
       for (int x = 0; x < width; x++)
@@ -335,7 +355,7 @@ public class ConnectedComponents
     for (int i = 1; clusters[i] != Integer.MAX_VALUE; i++)
     {
       clusterArea = counter[indecies[clusters[i]]];
-      if (clusterArea > (double) limit / 2d)
+      if (clusterArea > limit / 2d)
       {
         ind = indecies[clusters[i]];
         cX = (int) (centerX[ind] / counter[ind]);
@@ -357,8 +377,9 @@ public class ConnectedComponents
                          (int) (centerY[index] / counter[index]));
       return center;
     }
-    else
-      return null;
+    else {
+        return null;
+    }
   }
 
   //////////////////////////////////////////////////
@@ -370,24 +391,26 @@ public class ConnectedComponents
       int centerX = 0;
       int centerY = 0;
       int counter = 0; //look in the lower half
-      Point center = oneClusterCenter(centerX,centerY,counter,(int)height/2,height,width,limit);
-      if( center != null )
-        return center;
-      else
+      Point center = oneClusterCenter(centerX,centerY,counter,height/2,height,width,limit);
+      if( center != null ) {
+          return center;
+      } else
       {
         centerX = 0;
         centerY = 0;
         counter = 0; //look in the upper half
-        return oneClusterCenter(centerX,centerY,counter,0,(int)height/2,width,limit);
+        return oneClusterCenter(centerX,centerY,counter,0,height/2,width,limit);
       }
     }
     else
     { //look in the lower half
-      Point center = multipleClustersCenter(clusters,(int)height/2,height,width,limit,grayPixels,x0,y0,fWidth);
-      if( center != null )
-        return center;
-      else  //look in the upper half
-        return multipleClustersCenter(clusters,0,(int)height/2,width,limit,grayPixels,x0,y0,fWidth);
+      Point center = multipleClustersCenter(clusters,height/2,height,width,limit,grayPixels,x0,y0,fWidth);
+      if( center != null ) {
+          return center;
+      } else {
+          //look in the upper half
+          return multipleClustersCenter(clusters,0,height/2,width,limit,grayPixels,x0,y0,fWidth);
+      }
     }
   }
 

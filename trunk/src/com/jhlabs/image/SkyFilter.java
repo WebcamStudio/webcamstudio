@@ -26,6 +26,7 @@ import java.awt.image.BufferedImage;
 import java.util.Random;
 
 public class SkyFilter extends PointFilter {
+    private static final float r255 = 1.0f/255.0f;
 
 	private float scale = 0.1f;
 	private float stretch = 1.0f;
@@ -67,9 +68,10 @@ public class SkyFilter extends PointFilter {
 	private BufferedImage skyColors;
 	private int[] skyPixels;
 	
-	private final static float r255 = 1.0f/255.0f;
 
 	private float width, height;
+        float mn;
+    float mx;
 
 	public SkyFilter() {
 		if ( skyColors == null ) {
@@ -269,19 +271,18 @@ public class SkyFilter extends PointFilter {
 		return windSpeed;
 	}
 
-float mn, mx;
         @Override
     public BufferedImage filter( BufferedImage src, BufferedImage dst ) {
 long start = System.currentTimeMillis();
-		sunR = (float)((sunColor >> 16) & 0xff) * r255;
-		sunG = (float)((sunColor >> 8) & 0xff) * r255;
-		sunB = (float)(sunColor & 0xff) * r255;
+		sunR = ((sunColor >> 16) & 0xff) * r255;
+		sunG = ((sunColor >> 8) & 0xff) * r255;
+		sunB = (sunColor & 0xff) * r255;
 
 mn = 10000;
 mx = -10000;
 		exponents = new float[(int)octaves+1];
 		float frequency = 1.0f;
-		for (int i = 0; i <= (int)octaves; i++) {
+		for (int i = 0; i <= octaves; i++) {
 			exponents[i] = (float)Math.pow(2, -i);
 			frequency *= lacunarity;
 		}
@@ -297,11 +298,13 @@ mx = -10000;
 
 		int h = src.getHeight();
 		tan = new float[h];
-		for (int i = 0; i < h; i++)
-			tan[i] = (float)Math.tan( fov * (float)i/h * Math.PI * 0.5 );
+		for (int i = 0; i < h; i++) {
+                    tan[i] = (float)Math.tan( fov * i/h * Math.PI * 0.5 );
+}
 
-		if ( dst == null )
-			dst = createCompatibleDestImage( src, null );
+		if ( dst == null ) {
+                    dst = createCompatibleDestImage( src, null );
+}
 		int t = (int)(63*time);
 //		skyPixels = getRGB( skyColors, t, 0, 1, 64, skyPixels );
 		Graphics2D g = dst.createGraphics();
@@ -338,15 +341,16 @@ System.out.println(mn+" "+mx+" "+(finish-start)*0.001f);
 		x += 371;
 		y += 529;
 		
-		for (i = 0; i < (int)octaves; i++) {
+		for (i = 0; i < octaves; i++) {
 			value += Noise.noise3(x, y, t) * exponents[i];
 			x *= lacunarity;
 			y *= lacunarity;
 		}
 
-		remainder = octaves - (int)octaves;
-		if (remainder != 0)
-			value += remainder * Noise.noise3(x, y, t) * exponents[i];
+		remainder = octaves - octaves;
+		if (remainder != 0) {
+                    value += remainder * Noise.noise3(x, y, t) * exponents[i];
+                }
 
 		return value;
 	}
@@ -355,14 +359,14 @@ System.out.println(mn+" "+mx+" "+(finish-start)*0.001f);
 	public int filterRGB(int x, int y, int rgb) {
 
 // Curvature
-float fx = (float)x / width;
+float fx = x / width;
 //y += 20*Math.sin( fx*Math.PI*0.5 );
 		float fy = y / height;
 		float haze = (float)Math.pow( haziness, 100*fy*fy );
 //		int argb = skyPixels[(int)fy];
-		float r = (float)((rgb >> 16) & 0xff) * r255;
-		float g = (float)((rgb >> 8) & 0xff) * r255;
-		float b = (float)(rgb & 0xff) * r255;
+		float r = ((rgb >> 16) & 0xff) * r255;
+		float g = ((rgb >> 8) & 0xff) * r255;
+		float b = (rgb & 0xff) * r255;
 
 		float cx = width*0.5f;
 		float nx = x-cx;
@@ -389,8 +393,9 @@ float fg = f;//FIXME-bump map
 
 		// Work out cloud cover
 		float c = f - cloudCover;
-		if (c < 0)
-			c = 0;
+		if (c < 0) {
+                    c = 0;
+}
 
 		float cloudAlpha = 1 - (float)Math.pow(cloudSharpness, c);
 //cloudAlpha *= amount;

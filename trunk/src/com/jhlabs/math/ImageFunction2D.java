@@ -71,11 +71,13 @@ public class ImageFunction2D implements Function2D {
 	/**
 	 * A convenience method for getting ARGB pixels from an image. This tries to avoid the performance
 	 * penalty of BufferedImage.getRGB unmanaging the image.
+     * @return 
 	 */
 	public int[] getRGB( BufferedImage image, int x, int y, int width, int height, int[] pixels ) {
 		int type = image.getType();
-		if ( type == BufferedImage.TYPE_INT_ARGB || type == BufferedImage.TYPE_INT_RGB )
-			return (int [])image.getRaster().getDataElements( x, y, width, height, pixels );
+		if ( type == BufferedImage.TYPE_INT_ARGB || type == BufferedImage.TYPE_INT_RGB ) {
+                    return (int [])image.getRaster().getDataElements( x, y, width, height, pixels );
+                }
 		return image.getRGB( x, y, width, height, pixels, 0, width );
     }
 
@@ -95,16 +97,19 @@ public class ImageFunction2D implements Function2D {
 			ix = ImageMath.mod(ix, width);
 			iy = ImageMath.mod(iy, height);
 		} else if (ix < 0 || iy < 0 || ix >= width || iy >= height) {
-			if (edgeAction == ZERO)
-				return 0;
-			if (ix < 0)
-				ix = 0;
-			else if (ix >= width)
-				ix = width-1;
-			if (iy < 0)
-				iy = 0;
-			else if (iy >= height)
-				iy = height-1;
+			if (edgeAction == ZERO) {
+                            return 0;
+                        }
+			if (ix < 0) {
+                            ix = 0;
+                        } else if (ix >= width) {
+                            ix = width-1;
+                        }
+			if (iy < 0) {
+                            iy = 0;
+                        } else if (iy >= height) {
+                            iy = height-1;
+                        }
 		}
 		return alpha ? ((pixels[iy*width+ix] >> 24) & 0xff) / 255.0f : PixelUtils.brightness(pixels[iy*width+ix]) / 255.0f;
 	}

@@ -23,11 +23,13 @@ public class NeedMoreParamsError extends GenericError
         this.errorMessage = errorMessage;
     }
 
+    @Override
     public String getIrcIdentifier()
     {
         return "461";
     }
 
+    @Override
     public InCommand parse( String prefix, String identifier, String params )
     {
         return new NeedMoreParamsError(getParameter(params, 1), getParameter(params, 2));

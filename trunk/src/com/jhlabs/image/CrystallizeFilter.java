@@ -77,8 +77,9 @@ public class CrystallizeFilter extends CellularFilter {
 			int v2 = inPixels[srcy * width + srcx];
 			v2 = ImageMath.mixColors(0.5f, v2, v);
 			v = ImageMath.mixColors(f, v2, v);
-		} else
-			v = ImageMath.mixColors(f, edgeColor, v);
+		} else {
+                    v = ImageMath.mixColors(f, edgeColor, v);
+                }
 		return v;
 	}
 

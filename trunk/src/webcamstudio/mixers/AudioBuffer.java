@@ -38,7 +38,7 @@ public class AudioBuffer {
             Tools.sleep(30);
         }
         currentIndex++;
-        currentIndex = currentIndex % bufferSize;
+        currentIndex %= bufferSize;
         byte[] d = buffer.get(currentIndex);
         System.arraycopy(data, 0, d, 0, d.length);
         framePushed++;
@@ -46,7 +46,7 @@ public class AudioBuffer {
     }
     public void doneUpdate(){
         currentIndex++;
-        currentIndex = currentIndex % bufferSize;
+        currentIndex %= bufferSize;
         framePushed++;
     }    
     public byte[] getAudioToUpdate(){

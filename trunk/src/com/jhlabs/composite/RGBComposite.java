@@ -31,8 +31,9 @@ public abstract class RGBComposite implements Composite {
 	}
 
 	public RGBComposite( float alpha ) {
-		if ( alpha < 0.0f || alpha > 1.0f )
-			throw new IllegalArgumentException("RGBComposite: alpha must be between 0 and 1");
+		if ( alpha < 0.0f || alpha > 1.0f ) {
+                    throw new IllegalArgumentException("RGBComposite: alpha must be between 0 and 1");
+                }
 		this.extraAlpha = alpha;
 	}
 
@@ -47,16 +48,25 @@ public abstract class RGBComposite implements Composite {
 
         @Override
 	public boolean equals(Object o) {
-		if (!(o instanceof RGBComposite))
-			return false;
+		if (!(o instanceof RGBComposite)) {
+                    return false;
+                }
 		RGBComposite c = (RGBComposite)o;
 
-		if ( extraAlpha != c.extraAlpha )
-			return false;
-		return true;
+		return extraAlpha == c.extraAlpha;
 	}
 
     public abstract static class RGBCompositeContext implements CompositeContext {
+
+        // Multiply two numbers in the range 0..255 such that 255*255=255
+        static int multiply255(int a, int b) {
+            int t = a * b + 0x80;
+            return ((t >> 8) + t) >> 8;
+        }
+
+        static int clamp(int a) {
+            return a < 0 ? 0 : a > 255 ? 255 : a;
+        }
 
         private final float alpha;
         private final ColorModel srcColorModel;
@@ -71,21 +81,10 @@ public abstract class RGBComposite implements Composite {
         @Override
         public void dispose() {
         }
+        public abstract void composeRGB( int[] src, int[] dst, float alpha);
         
-        // Multiply two numbers in the range 0..255 such that 255*255=255
-        static int multiply255( int a, int b ) {
-            int t = a * b + 0x80;
-            return ((t >> 8) + t) >> 8;
-        }
-        
-        static int clamp( int a ) {
-            return a < 0 ? 0 : a > 255 ? 255 : a;
-        }
-	
-        public abstract void composeRGB( int[] src, int[] dst, float alpha );
-
         @Override
-        public void compose( Raster src, Raster dstIn, WritableRaster dstOut ) {
+        public void compose( Raster src, Raster dstIn, WritableRaster dstOut) {
             float alpha = this.alpha;
 
             int[] srcPix = null;
@@ -103,6 +102,7 @@ public abstract class RGBComposite implements Composite {
                 dstOut.setPixels( x, y, w, 1, dstPix );
             }
         }
+	
 
     }
 }

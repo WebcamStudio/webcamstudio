@@ -14,16 +14,19 @@ import f00f.net.irc.martyr.Mode;
  */
 public class InviteOnlyMode extends GenericChannelMode
 {
+        @Override
 	public boolean requiresParam()
 	{
 		return false;
 	}
 	
+        @Override
 	public char getChar()
 	{
 		return 'i';
 	}
 	
+        @Override
 	public Mode newInstance()
 	{
 		return new InviteOnlyMode();

@@ -21,11 +21,13 @@ public class WhoisUserReply extends AbstractWhoisReply
 		super( params );
 	}
 
+        @Override
 	public String getIrcIdentifier()
 	{
 		return "311";
 	}
 
+        @Override
 	protected void parseParams( ParameterIterator pi )
 	{
 		pi.next(); // throw away the nick
@@ -35,6 +37,7 @@ public class WhoisUserReply extends AbstractWhoisReply
 
 	}
 
+        @Override
 	public InCommand parse( String prefix, String identifier, String params )
 	{
 		return new WhoisUserReply( params );

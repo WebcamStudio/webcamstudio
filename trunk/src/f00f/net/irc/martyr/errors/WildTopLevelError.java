@@ -24,11 +24,13 @@ public class WildTopLevelError extends GenericError
         this.errorMessage = errorMessage;
     }
 
+    @Override
     public String getIrcIdentifier()
     {
         return "414";
     }
 
+    @Override
     public InCommand parse( String prefix, String identifier, String params )
     {
         return new WildTopLevelError(getParameter(params, 1), getParameter(params, 2));

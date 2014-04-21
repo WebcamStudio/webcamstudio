@@ -45,6 +45,33 @@ import java.util.Vector;
 public class Channel
 {
 
+    /**
+     * Determines if the string represents a channel name or not.
+     *
+     * @param str String to test if it's a channel or not
+     * @return True or false if a string looks like a channel
+     */
+    public static boolean isChannel(String str) {
+        return str.charAt(0) == '#' || str.charAt(0) == '!' || str.charAt(0) == '&';
+    }
+
+    /**
+     * Compares the two channel names for equality.  Returns false if
+     * either are null.
+     *
+     * @param one Left side of comparison
+     * @param two Right side of comparison
+     * @return True or false whether two channels are equal, false of either are null/
+     */
+    public static boolean areEqual(String one, String two) {
+        if( one == null || two == null )
+        {
+            return false;
+        }
+        
+        return one.equalsIgnoreCase( two );
+    }
+
     
 
     private String name = null;
@@ -338,34 +365,6 @@ public class Channel
 	}
 	
 	
-	/**
-	 * Determines if the string represents a channel name or not.
-     *
-     * @param str String to test if it's a channel or not
-     * @return True or false if a string looks like a channel
-	 */
-	public static boolean isChannel( String str )
-	{
-		return str.charAt(0) == '#' || str.charAt(0) == '!' || str.charAt(0) == '&';
-	}
-
-	/**
-	 * Compares the two channel names for equality.  Returns false if
-	 * either are null.
-     *
-     * @param one Left side of comparison
-     * @param two Right side of comparison
-     * @return True or false whether two channels are equal, false of either are null/
-	 */
-	public static boolean areEqual( String one, String two )
-	{
-		if( one == null || two == null )
-		{
-			return false;
-		}
-		
-		return one.equalsIgnoreCase( two );
-	}
 }
 
 

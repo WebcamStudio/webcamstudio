@@ -89,7 +89,7 @@ public class FME {
         port = (String)path.evaluate(root + "/output/rtmp/port", doc,XPathConstants.STRING);
         
         String keyI = (String)path.evaluate(root + "/encode/video/advanced/keyframe_frequency", doc,XPathConstants.STRING);
-        if (keyI != "") {
+        if (!"".equals(keyI)) {
             String[] kInt = keyI.split(" ");
             String g = kInt[0].replaceAll(" ", "");
             int sec = Integer.parseInt(g);

@@ -36,4 +36,7 @@ public abstract class StudioConstants {
 //    public static final String ATTRIBUTE_CHDVB = "chDVB";
 //    public static final String ATTRIBUTE_BANDWIDTHDVB = "bandwidthDVB";
 //    public static final String ATTRIBUTE_FREQUENCYDVB = "frequencyDVB";
+
+    private StudioConstants() {
+    }
 }

@@ -27,14 +27,18 @@ public class DespeckleFilter extends WholeImageFilter {
 	}
 
 	private short pepperAndSalt( short c, short v1, short v2 ) {
-		if ( c < v1 )
-			c++;
-		if ( c < v2 )
-			c++;
-		if ( c > v1 )
-			c--;
-		if ( c > v2 )
-			c--;
+		if ( c < v1 ) {
+                    c++;
+                }
+		if ( c < v2 ) {
+                    c++;
+                }
+		if ( c > v1 ) {
+                    c--;
+                }
+		if ( c > v2 ) {
+                    c--;
+                }
 		return c;
 	}
 	

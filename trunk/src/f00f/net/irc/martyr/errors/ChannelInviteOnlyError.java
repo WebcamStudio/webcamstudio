@@ -36,11 +36,13 @@ public class ChannelInviteOnlyError extends GenericJoinError
 		super(chan, comment);
 	}
 
+        @Override
 	public String getIrcIdentifier()
 	{
 		return "473";
 	}
 
+        @Override
 	protected InCommand create(String channel, String comment)
 	{
 		return new ChannelInviteOnlyError( channel, comment );

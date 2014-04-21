@@ -51,7 +51,7 @@ public class Ghosting extends Effect {
         buffer.setRenderingHint(RenderingHints.KEY_DITHERING,
                            RenderingHints.VALUE_DITHER_DISABLE);
         
-        buffer.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, ((float) 90) / 100F));
+        buffer.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 90 / 100F));
         buffer.drawImage(temp, 0, 0, null);
         buffer.dispose();
         imageCount ++ ;

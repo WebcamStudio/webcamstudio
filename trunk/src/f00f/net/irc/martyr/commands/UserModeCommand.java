@@ -14,13 +14,14 @@ import java.util.StringTokenizer;
  */
 public class UserModeCommand extends ModeCommand
 {
+    private static HashMap<Character,Mode> modeTypes;
+    static {
+    }
 
 
     private final FullNick user;
 	private final FullNick sender;
 	//private List modes;
-
-	private static HashMap<Character,Mode> modeTypes;
 	
 	public UserModeCommand( String prefix, String userStr, StringTokenizer tokens )
 	{
@@ -56,12 +57,15 @@ public class UserModeCommand extends ModeCommand
 	/**
 	 * Should not be called, as ModeCommand does the parsing and instantiation
 	 * of this class.
+     * @return 
 	 */
+    @Override
 	public InCommand parse( String prefix, String identifier, String params )
 	{
 		throw new IllegalStateException( "Don't call this method!" );
 	}
 	
+    @Override
 	public String render()
 	{
 		throw new UnsupportedOperationException("Can't send user modes, yet." );
@@ -76,15 +80,15 @@ public class UserModeCommand extends ModeCommand
         return sender;
     }
 
-    {
-	}
 
+    @Override
     public boolean updateClientState( ClientState state )
 	{
 		// TODO implement
 		return false;
 	}
 	
+    @Override
 	public String toString()
 	{
 		return "UserModeCommand";

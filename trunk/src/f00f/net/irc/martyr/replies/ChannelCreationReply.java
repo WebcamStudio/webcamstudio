@@ -26,6 +26,7 @@ public class ChannelCreationReply extends GenericReply
 		this.date = date;
 	}
 	
+        @Override
 	public String getIrcIdentifier()
 	{
 		return "329";
@@ -34,7 +35,9 @@ public class ChannelCreationReply extends GenericReply
 	/**
 	 * This is a factory that passes the command off to a
 	 * ChannelModeCommand.
+     * @return 
 	 */
+        @Override
 	public InCommand parse( String prefix, String identifier, String params )
 	{
 		StringTokenizer tokens = new StringTokenizer( params );
@@ -63,7 +66,9 @@ public class ChannelCreationReply extends GenericReply
 	/**
 	 * This should, theoretically, never be called, because this command is
 	 * only ever used as a factory.
+     * @return 
 	 */
+        @Override
 	public boolean updateClientState( ClientState state )
 	{
 		Channel channel = state.getChannel( channelName );

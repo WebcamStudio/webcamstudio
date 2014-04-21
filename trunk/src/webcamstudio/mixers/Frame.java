@@ -32,17 +32,17 @@ public class Frame {
         uuid=id;
     }
    
+    public Frame(int w, int h, int rate){
+        this.w=w;
+        this.h=h;
+        image = new BufferedImage(w,h,BufferedImage.TYPE_INT_ARGB);
+        audioData= new byte[(aFreq *2 *2) / rate];
+    }
     public void setFrameNumber(long n){
         frameNb=n;
     }
     public long getFrameNumber(){
         return frameNb;
-    }
-    public Frame(int w,int h,int rate){
-        this.w=w;
-        this.h=h;
-        image = new BufferedImage(w,h,BufferedImage.TYPE_INT_ARGB);
-        audioData= new byte[(aFreq *2 *2) / rate];
     }
 //    public void copyFrame(Frame frame){
 //        

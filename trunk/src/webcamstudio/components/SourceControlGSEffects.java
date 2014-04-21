@@ -30,7 +30,7 @@ public class SourceControlGSEffects extends javax.swing.JPanel {
     public SourceControlGSEffects(Stream s) {
         initComponents();
         stream = s;
-        if (s.getComm() == "GS"){
+        if ("GS".equals(s.getComm())){
             cboGSEffects.setEnabled(true);
             btnSetGSEffect.setEnabled(true);
         } else {
@@ -48,7 +48,7 @@ public class SourceControlGSEffects extends javax.swing.JPanel {
         } catch (IOException ex) {
             Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
         }
-        if (s.getGSEffect() != ""){
+        if (!"".equals(s.getGSEffect())){
             btnSetGSEffect.setEnabled(false);
             btnUnsetGSEffect.setEnabled(true);
             lblGSEffect.setText(s.getGSEffect());
@@ -156,7 +156,7 @@ public class SourceControlGSEffects extends javax.swing.JPanel {
     }//GEN-LAST:event_btnSetGSEffectActionPerformed
 
     private void btnUnsetGSEffectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUnsetGSEffectActionPerformed
-        if (lblGSEffect.getText() != ""){
+        if (!"".equals(lblGSEffect.getText())){
 //            String e = lstEffects.getSelectedValue().toString();
 //            listModel.removeElement(e);
             stream.setGSEffect("");

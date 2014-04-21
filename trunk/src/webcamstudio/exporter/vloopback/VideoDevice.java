@@ -30,6 +30,73 @@ import java.util.ArrayList;
  * @author pballeux
  */
 public class VideoDevice {
+    static final int O_RDWR = 2;
+    static final int VIDIOCGCAP = -2143521279;
+    static final int VIDIOC_QUERYCAP = -2140645888;
+
+    public static VideoDevice[] getInputDevices() {
+        VideoDevice[] d = new VideoDevice[0];
+        VideoDevice[] dAll = new VideoDevice[0];
+        ArrayList<VideoDevice> devices = new ArrayList<>();
+        dAll = getDevices();
+        for (VideoDevice dAll1 : dAll) {
+            if (dAll1.getType() == Type.Input || dAll1.getType() == Type.InputOutput) {
+                devices.add(dAll1);
+            }
+        }
+        d = new VideoDevice[devices.size()];
+        for (int i = 0; i < d.length; i++) {
+            d[i] = devices.get(i);
+        }
+        devices.clear();
+        devices = null;
+        return d;
+    }
+
+    public static VideoDevice[] getOutputDevices() {
+        VideoDevice[] d = new VideoDevice[0];
+        VideoDevice[] dAll = new VideoDevice[0];
+        ArrayList<VideoDevice> devices = new ArrayList<>();
+        dAll = getDevices();
+        for (VideoDevice dAll1 : dAll) {
+            if (dAll1.getType() == Type.Output) {
+                devices.add(dAll1);
+            }
+        }
+        d = new VideoDevice[devices.size()];
+        for (int i = 0; i < d.length; i++) {
+            d[i] = devices.get(i);
+        }
+        devices.clear();
+        devices = null;
+        return d;
+    }
+
+    public static VideoDevice[] getDevices() {
+        VideoDevice[] d = new VideoDevice[0];
+        java.io.File[] fs = new java.io.File("/dev/").listFiles();
+        ArrayList<VideoDevice> devices = new ArrayList<>();
+        if (fs != null) {
+            for (File f : fs) {
+                if (f.getName().startsWith("video") && !f.isDirectory()) {
+                    devices.add(new VideoDevice(f.getAbsolutePath()));
+                }
+            }
+        }
+        d = new VideoDevice[devices.size()];
+        for (int i = 0; i < d.length; i++) {
+            d[i] = devices.get(i);
+        }
+        devices.clear();
+        devices = null;
+        return d;
+    }
+
+    private Version version = Version.Unknown;
+    private Type type = Type.Unknown;
+    private String name = "";
+    private java.io.File device = null;
+    private int deviceFD = 0;
 
     public VideoDevice(String name) {
         device = new java.io.File(name);
@@ -99,90 +166,19 @@ public class VideoDevice {
         return name;
     }
 
-    public static VideoDevice[] getInputDevices() {
-        VideoDevice[] d = new VideoDevice[0];
-        VideoDevice[] dAll = new VideoDevice[0];
-        ArrayList<VideoDevice> devices = new ArrayList<>();
-        dAll = getDevices();
-        for (VideoDevice dAll1 : dAll) {
-            if (dAll1.getType() == Type.Input || dAll1.getType() == Type.InputOutput) {
-                devices.add(dAll1);
-            }
-        }
-        d = new VideoDevice[devices.size()];
-        for (int i = 0; i < d.length; i++) {
-            d[i] = devices.get(i);
-        }
-        devices.clear();
-        devices = null;
-        return d;
-    }
-
-    public static VideoDevice[] getOutputDevices() {
-        VideoDevice[] d = new VideoDevice[0];
-        VideoDevice[] dAll = new VideoDevice[0];
-        ArrayList<VideoDevice> devices = new ArrayList<>();
-        dAll = getDevices();
-        for (VideoDevice dAll1 : dAll) {
-            if (dAll1.getType() == Type.Output) {
-                devices.add(dAll1);
-            }
-        }
-        d = new VideoDevice[devices.size()];
-        for (int i = 0; i < d.length; i++) {
-            d[i] = devices.get(i);
-        }
-        devices.clear();
-        devices = null;
-        return d;
-    }
-
-    public static VideoDevice[] getDevices() {
-        VideoDevice[] d = new VideoDevice[0];
-        java.io.File[] fs = new java.io.File("/dev/").listFiles();
-        ArrayList<VideoDevice> devices = new ArrayList<>();
-        if (fs != null) {
-            for (File f : fs) {
-                if (f.getName().startsWith("video") && !f.isDirectory()) {
-                    devices.add(new VideoDevice(f.getAbsolutePath()));
-                }
-            }
-        }
-        d = new VideoDevice[devices.size()];
-        for (int i = 0; i < d.length; i++) {
-            d[i] = devices.get(i);
-        }
-        devices.clear();
-        devices = null;
-        return d;
-    }
-
     private void closeDevice() {
         CLibrary.INSTANCE.close(deviceFD);
     }
 
     public enum Type {
 
-        Input,
-        Output,
-        InputOutput,
-        Unknown
+        Input, Output, InputOutput, Unknown
     }
 
     public enum Version {
 
-        V4L,
-        V4L2,
-        Unknown
+        V4L, V4L2, Unknown
     }
-    private Version version = Version.Unknown;
-    private Type type = Type.Unknown;
-    private String name = "";
-    private java.io.File device = null;
-    private int deviceFD = 0;
-    final static int O_RDWR = 2;
-    final static int VIDIOCGCAP = -2143521279;
-    final static int VIDIOC_QUERYCAP = -2140645888;
 
     public interface CLibrary extends Library {
 

@@ -26,16 +26,19 @@ import f00f.net.irc.martyr.Mode;
  */
 public class AnonChannelMode extends GenericChannelMode
 {
+        @Override
 	public boolean requiresParam()
 	{
 		return false;
 	}
 	
+        @Override
 	public char getChar()
 	{
 		return 'a';
 	}
 	
+        @Override
 	public Mode newInstance()
 	{
 		return new AnonChannelMode();

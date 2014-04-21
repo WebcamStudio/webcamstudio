@@ -99,8 +99,9 @@ public class QuantizeFilter extends WholeImageFilter {
 		int[] table =  quantizer.buildColorTable();
 
 		if (!dither) {
-			for (int i = 0; i < count; i++)
-				outPixels[i] = table[quantizer.getIndexForColor(inPixels[i])];
+			for (int i = 0; i < count; i++) {
+                            outPixels[i] = table[quantizer.getIndexForColor(inPixels[i])];
+                        }
 		} else {
 			int index = 0;
 			for (int y = 0; y < height; y++) {
@@ -138,10 +139,11 @@ public class QuantizeFilter extends WholeImageFilter {
 								int jx = j+x;
 								if (0 <= jx && jx < width) {
 									int w;
-									if (reverse)
-										w = matrix[(i+1)*3-j+1];
-									else
-										w = matrix[(i+1)*3+j+1];
+									if (reverse) {
+                                                                            w = matrix[(i+1)*3-j+1];
+                                                                        } else {
+                                                                            w = matrix[(i+1)*3+j+1];
+                                                                        }
 									if (w != 0) {
 										int k = reverse ? index - j : index + j;
 										rgb1 = inPixels[k];

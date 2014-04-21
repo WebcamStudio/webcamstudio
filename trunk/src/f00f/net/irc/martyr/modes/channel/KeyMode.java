@@ -13,16 +13,19 @@ import f00f.net.irc.martyr.Mode;
  */ 
 public class KeyMode extends GenericChannelMask
 {
+        @Override
 	public boolean requiresParam()
 	{
 		return true;
 	}
 	
+        @Override
 	public char getChar()
 	{
 		return 'k';
 	}
 	
+        @Override
 	public Mode newInstance()
 	{
 		return new KeyMode();

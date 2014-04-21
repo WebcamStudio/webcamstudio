@@ -25,28 +25,12 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" attributes="0">
-              <EmptySpace min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" attributes="0">
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="lblDesktopX" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="lblDesktopY" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="lblDesktopW" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="lblDesktopH" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="jLabel5" alignment="0" min="-2" max="-2" attributes="0"/>
-                      </Group>
+                  <Group type="102" alignment="0" attributes="0">
+                      <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="spinN" max="32767" attributes="0"/>
-                          <Component id="spinH" alignment="0" pref="235" max="32767" attributes="0"/>
-                          <Component id="spinY" alignment="1" pref="235" max="32767" attributes="0"/>
-                          <Component id="spinX" alignment="0" pref="235" max="32767" attributes="0"/>
-                          <Component id="spinW" alignment="1" pref="235" max="32767" attributes="0"/>
-                      </Group>
-                  </Group>
-                  <Group type="102" attributes="0">
-                      <Component id="jchEnableWindowsCap" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                      <Component id="spinN" max="32767" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="lblWindowsCap" min="-2" max="-2" attributes="0"/>
@@ -55,8 +39,29 @@
                       <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
                       <Component id="btnRefreshWindowsList" min="-2" max="-2" attributes="0"/>
                   </Group>
+                  <Group type="102" attributes="0">
+                      <Component id="jchEnableWindowsCap" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                  </Group>
+                  <Group type="102" alignment="0" attributes="0">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="lblDesktopX" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="lblDesktopY" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="lblDesktopW" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="lblDesktopH" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="lblDesktopRate" alignment="0" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="spinH" alignment="0" pref="235" max="32767" attributes="0"/>
+                          <Component id="spinY" alignment="1" pref="235" max="32767" attributes="0"/>
+                          <Component id="spinX" alignment="0" pref="235" max="32767" attributes="0"/>
+                          <Component id="spinW" alignment="1" pref="235" max="32767" attributes="0"/>
+                          <Component id="spinRate" alignment="1" max="32767" attributes="0"/>
+                      </Group>
+                  </Group>
               </Group>
-              <EmptySpace min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -85,12 +90,17 @@
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="lblDesktopRate" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="spinRate" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="spinN" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jLabel5" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="1" attributes="0">
-                  <Group type="102" attributes="0">
+                  <Group type="102" alignment="1" attributes="0">
                       <Component id="jchEnableWindowsCap" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
@@ -100,7 +110,7 @@
                   </Group>
                   <Component id="btnRefreshWindowsList" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="20" max="32767" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -237,6 +247,22 @@
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnRefreshWindowsListActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JLabel" name="lblDesktopRate">
+      <Properties>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="webcamstudio/Languages.properties" key="DESKTOP_CAPTURE_RATE" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+        </Property>
+        <Property name="name" type="java.lang.String" value="lblDesktopRate" noResource="true"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JSpinner" name="spinRate">
+      <Properties>
+        <Property name="name" type="java.lang.String" value="spinRate" noResource="true"/>
+      </Properties>
+      <Events>
+        <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="spinRateStateChanged"/>
       </Events>
     </Component>
   </SubComponents>

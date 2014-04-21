@@ -40,7 +40,7 @@ public class ImageBuffer {
             Tools.sleep(30);
         }
         currentIndex++;
-        currentIndex = currentIndex % bufferSize;
+        currentIndex %= bufferSize;
         int[] data = ((DataBufferInt) img.getRaster().getDataBuffer()).getData();
         WSImage image = buffer.get(currentIndex);
         image.setData(data);
@@ -48,7 +48,7 @@ public class ImageBuffer {
     }
     public void doneUpdate(){
         currentIndex++;
-        currentIndex = currentIndex % bufferSize;
+        currentIndex %= bufferSize;
         framePushed++;
     }
     public WSImage getImageToUpdate(){

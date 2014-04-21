@@ -39,8 +39,9 @@ public class LaplaceFilter extends AbstractBufferedImageOp {
         int width = src.getWidth();
         int height = src.getHeight();
 
-        if ( dst == null )
+        if ( dst == null ) {
             dst = createCompatibleDestImage( src, null );
+        }
 
         int[] row1 = null;
         int[] row2 = null;

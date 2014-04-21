@@ -55,8 +55,9 @@ public class GlowFilter extends GaussianFilter {
         int width = src.getWidth();
         int height = src.getHeight();
 
-        if ( dst == null )
+        if ( dst == null ) {
             dst = createCompatibleDestImage( src, null );
+        }
 
         int[] inPixels = new int[width*height];
         int[] outPixels = new int[width*height];

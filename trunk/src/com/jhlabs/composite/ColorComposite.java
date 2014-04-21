@@ -21,7 +21,7 @@ import java.awt.CompositeContext;
 import java.awt.RenderingHints;
 import java.awt.image.ColorModel;
 
-public final class ColorComposite extends RGBComposite {
+public class ColorComposite extends RGBComposite {
 
 	public ColorComposite( float alpha ) {
         super( alpha );
@@ -36,7 +36,7 @@ public final class ColorComposite extends RGBComposite {
 		private final float[] sHSB = new float[3];
         private final float[] dHSB = new float[3];
 
-        public Context( float alpha, ColorModel srcColorModel, ColorModel dstColorModel ) {
+        Context( float alpha, ColorModel srcColorModel, ColorModel dstColorModel ) {
             super( alpha, srcColorModel, dstColorModel );
         }
 

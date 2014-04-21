@@ -10,6 +10,17 @@ package webcamstudio.media.config;
  */
 public class Media {
 
+    private String guid;
+    private String name = null;
+    private boolean handleSample = false;
+    private boolean handleImage = false;
+    private Type type = null;
+    private Format sourceFormat = null;
+    private Format sinkFormat = null;
+    private String launchConfig = null;
+    private Icon icon;
+    private int fps;
+    
     /**
      * @return the guid
      */
@@ -22,8 +33,8 @@ public class Media {
      */
     public void setGuid(String guid) {
         this.guid = guid;
-    }
-
+    }    
+    
     /**
      * @return the name
      */
@@ -66,22 +77,6 @@ public class Media {
         this.handleImage = handleImage;
     }
 
-
-    public enum Type{
-        Source,
-        Sink
-    }
-    private String guid;
-    private String name = null;
-    private boolean handleSample = false;
-    private boolean handleImage = false;
-    private Type type = null;
-    private Format sourceFormat = null;
-    private Format sinkFormat = null;
-    private String launchConfig = null;
-    private Icon icon;
-    private int fps;
-    
     /**
      * @return the FPS
      */
@@ -94,8 +89,8 @@ public class Media {
      */
     public void setFps(int fps) {
         this.fps = fps;
-    }    
-    
+    }
+
     /**
      * @return the type
      */
@@ -164,6 +159,11 @@ public class Media {
      */
     public void setIcon(Icon icon) {
         this.icon = icon;
+    }
+
+    public enum Type {
+
+        Source, Sink
     }
     
     

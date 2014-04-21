@@ -14,6 +14,7 @@ public abstract class AbstractCommand extends AbstractInCommand implements OutCo
      * Forms a string appropriate to send to the server.  All commands can
      * be sent by the client.
      */
+    @Override
     public String render()
     {
         // no prefix, since we are sending as a client.

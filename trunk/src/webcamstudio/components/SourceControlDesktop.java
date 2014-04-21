@@ -16,6 +16,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.SpinnerNumberModel;
+import webcamstudio.mixers.MasterMixer;
 import webcamstudio.streams.SourceDesktop;
 import webcamstudio.util.Tools;
 
@@ -46,6 +47,11 @@ public class SourceControlDesktop extends javax.swing.JPanel {
         spinY.setValue(source.getDesktopY());
         spinW.setValue(source.getDesktopW());
         spinH.setValue(source.getDesktopH());
+        
+        SpinnerNumberModel rateModel = new SpinnerNumberModel(source.getRate(), 1, MasterMixer.getInstance().getRate(), 1);
+        spinRate.setModel(rateModel);
+        spinRate.setValue(source.getRate());
+        
         initCapWindows();
         if ("GS".equals(source.getComm())){
             jchEnableWindowsCap.setSelected(source.getSingleWindow());
@@ -92,7 +98,7 @@ public class SourceControlDesktop extends javax.swing.JPanel {
             source.setElementXid("");
             source.setDesktopN("0");
         }
-        if (source.getElementXid() != ""){
+        if (!"".equals(source.getElementXid())){
             jcbWindowsCapList.setSelectedItem(source.getElementXid());
         }
     }
@@ -121,6 +127,8 @@ public class SourceControlDesktop extends javax.swing.JPanel {
         jcbWindowsCapList = new javax.swing.JComboBox();
         jchEnableWindowsCap = new javax.swing.JCheckBox();
         btnRefreshWindowsList = new javax.swing.JButton();
+        lblDesktopRate = new javax.swing.JLabel();
+        spinRate = new javax.swing.JSpinner();
 
         jButton2.setText("jButton2");
         jButton2.setName("jButton2"); // NOI18N
@@ -210,6 +218,16 @@ public class SourceControlDesktop extends javax.swing.JPanel {
             }
         });
 
+        lblDesktopRate.setText(bundle.getString("DESKTOP_CAPTURE_RATE")); // NOI18N
+        lblDesktopRate.setName("lblDesktopRate"); // NOI18N
+
+        spinRate.setName("spinRate"); // NOI18N
+        spinRate.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                spinRateStateChanged(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -218,28 +236,32 @@ public class SourceControlDesktop extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblDesktopX)
-                            .addComponent(lblDesktopY)
-                            .addComponent(lblDesktopW)
-                            .addComponent(lblDesktopH)
-                            .addComponent(jLabel5))
+                        .addComponent(jLabel5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(spinN)
-                            .addComponent(spinH, javax.swing.GroupLayout.DEFAULT_SIZE, 235, Short.MAX_VALUE)
-                            .addComponent(spinY, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 235, Short.MAX_VALUE)
-                            .addComponent(spinX, javax.swing.GroupLayout.DEFAULT_SIZE, 235, Short.MAX_VALUE)
-                            .addComponent(spinW, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 235, Short.MAX_VALUE)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jchEnableWindowsCap)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addComponent(spinN))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(lblWindowsCap)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jcbWindowsCapList, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGap(2, 2, 2)
-                        .addComponent(btnRefreshWindowsList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(btnRefreshWindowsList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jchEnableWindowsCap)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblDesktopX)
+                            .addComponent(lblDesktopY)
+                            .addComponent(lblDesktopW)
+                            .addComponent(lblDesktopH)
+                            .addComponent(lblDesktopRate))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(spinH, javax.swing.GroupLayout.DEFAULT_SIZE, 235, Short.MAX_VALUE)
+                            .addComponent(spinY, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 235, Short.MAX_VALUE)
+                            .addComponent(spinX, javax.swing.GroupLayout.DEFAULT_SIZE, 235, Short.MAX_VALUE)
+                            .addComponent(spinW, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 235, Short.MAX_VALUE)
+                            .addComponent(spinRate, javax.swing.GroupLayout.Alignment.TRAILING))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -263,6 +285,10 @@ public class SourceControlDesktop extends javax.swing.JPanel {
                     .addComponent(spinH, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblDesktopRate)
+                    .addComponent(spinRate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(spinN, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel5))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -274,7 +300,7 @@ public class SourceControlDesktop extends javax.swing.JPanel {
                             .addComponent(jcbWindowsCapList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(lblWindowsCap)))
                     .addComponent(btnRefreshWindowsList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(20, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -347,6 +373,10 @@ public class SourceControlDesktop extends javax.swing.JPanel {
     private void btnRefreshWindowsListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshWindowsListActionPerformed
         initCapWindows();
     }//GEN-LAST:event_btnRefreshWindowsListActionPerformed
+
+    private void spinRateStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinRateStateChanged
+        source.setRate((Integer)spinRate.getValue());
+    }//GEN-LAST:event_spinRateStateChanged
     
     @SuppressWarnings("unchecked")
     private void initCapWindows() {
@@ -362,7 +392,7 @@ public class SourceControlDesktop extends javax.swing.JPanel {
             getAllWindowsList.getInputStream()));
             String line = "";
             while ((line = buf.readLine()) != null) {
-                System.out.println("Windows: "+line);
+//                System.out.println("Windows: "+line);
                 line = line.replaceAll("  ", " ");
                 String[] window = line.split(" ");
                 String windowRest = "";
@@ -399,12 +429,14 @@ public class SourceControlDesktop extends javax.swing.JPanel {
     private javax.swing.JComboBox jcbWindowsCapList;
     private javax.swing.JCheckBox jchEnableWindowsCap;
     private javax.swing.JLabel lblDesktopH;
+    private javax.swing.JLabel lblDesktopRate;
     private javax.swing.JLabel lblDesktopW;
     private javax.swing.JLabel lblDesktopX;
     private javax.swing.JLabel lblDesktopY;
     private javax.swing.JLabel lblWindowsCap;
     private javax.swing.JSpinner spinH;
     private javax.swing.JSpinner spinN;
+    private javax.swing.JSpinner spinRate;
     private javax.swing.JSpinner spinW;
     private javax.swing.JSpinner spinX;
     private javax.swing.JSpinner spinY;

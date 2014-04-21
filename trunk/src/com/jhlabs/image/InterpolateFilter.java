@@ -74,8 +74,9 @@ public class InterpolateFilter extends AbstractBufferedImageOp {
 		int type = src.getType();
 		WritableRaster srcRaster = src.getRaster();
 
-        if ( dst == null )
+        if ( dst == null ) {
             dst = createCompatibleDestImage( src, null );
+        }
 		WritableRaster dstRaster = dst.getRaster();
 
         if ( destination != null ) {

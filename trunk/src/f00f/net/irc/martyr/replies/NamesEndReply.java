@@ -20,11 +20,13 @@ public class NamesEndReply extends GenericReply
         this.comment = comment;
     }
 
+    @Override
     public String getIrcIdentifier()
     {
         return "366";
     }
 
+    @Override
     public InCommand parse( String prefix, String identifier, String params )
     {
         return new NamesEndReply( getParameter( params, 1 ), getParameter( params, 2 ) );

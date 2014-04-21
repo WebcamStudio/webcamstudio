@@ -103,7 +103,7 @@ public class ResourceMonitor extends javax.swing.JPanel {
 }
 class ResourceMonitorThread extends TimerTask{
     ResourceMonitor monitor;
-    public ResourceMonitorThread(ResourceMonitor m){
+    ResourceMonitorThread(ResourceMonitor m){
         monitor=m;
     }
     @Override

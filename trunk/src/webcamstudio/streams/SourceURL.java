@@ -18,11 +18,11 @@ import webcamstudio.util.Tools;
  * @author patrick (modified by karl)
  */
 public class SourceURL extends Stream {
+    private static final String userHomeDir = Tools.getUserHome();
 
     ProcessRenderer capture = null;
     BufferedImage lastPreview = null;
     boolean isPlaying = false;
-    private final static String userHomeDir = Tools.getUserHome();
     
     public SourceURL() {
         super();
@@ -53,9 +53,11 @@ public class SourceURL extends Stream {
             capture.stop();
             capture = null;
             File directory = new File(userHomeDir+"/.webcamstudio");
-            for(File f: directory.listFiles())
-                if(f.getName().startsWith("WSFrom"))
-                f.delete();
+            for(File f: directory.listFiles()) {
+                if(f.getName().startsWith("WSFrom")) {
+                    f.delete();
+                }
+            }
         }
         if (this.getBackFF()){
             this.setComm("FF");

@@ -152,8 +152,9 @@ public class BorderFilter extends AbstractBufferedImageOp {
 		int width = src.getWidth();
 		int height = src.getHeight();
 
-		if ( dst == null )
-			dst = new BufferedImage( width+leftBorder+rightBorder, height+topBorder+bottomBorder, src.getType() );
+		if ( dst == null ) {
+                    dst = new BufferedImage( width+leftBorder+rightBorder, height+topBorder+bottomBorder, src.getType() );
+                }
 		Graphics2D g = dst.createGraphics();
                 g.setRenderingHint(RenderingHints.KEY_RENDERING,
                                    RenderingHints.VALUE_RENDER_SPEED);
@@ -169,14 +170,18 @@ public class BorderFilter extends AbstractBufferedImageOp {
                                    RenderingHints.VALUE_DITHER_DISABLE);
 		if ( borderPaint != null ) {
 			g.setPaint( borderPaint );
-			if ( leftBorder > 0 )
-				g.fillRect( 0, 0, leftBorder, height );
-			if ( rightBorder > 0 )
-				g.fillRect( width-rightBorder, 0, rightBorder, height );
-			if ( topBorder > 0 )
-				g.fillRect( leftBorder, 0, width-leftBorder-rightBorder, topBorder );
-			if ( bottomBorder > 0 )
-				g.fillRect( leftBorder, height-bottomBorder, width-leftBorder-rightBorder, bottomBorder );
+			if ( leftBorder > 0 ) {
+                            g.fillRect( 0, 0, leftBorder, height );
+                        }
+			if ( rightBorder > 0 ) {
+                            g.fillRect( width-rightBorder, 0, rightBorder, height );
+                        }
+			if ( topBorder > 0 ) {
+                            g.fillRect( leftBorder, 0, width-leftBorder-rightBorder, topBorder );
+                        }
+			if ( bottomBorder > 0 ) {
+                            g.fillRect( leftBorder, height-bottomBorder, width-leftBorder-rightBorder, bottomBorder );
+                        }
 		}
 		g.drawRenderedImage( src, AffineTransform.getTranslateInstance( leftBorder, rightBorder ) );
 		g.dispose();

@@ -10,6 +10,7 @@ import java.util.LinkedList;
  */
 public class InputHandler extends Thread
 {
+    private static int serialGen = 0;
     
 
     private final BufferedReader reader;
@@ -18,7 +19,6 @@ public class InputHandler extends Thread
 
     private final Object eventMonitor;
 
-    private static int serialGen = 0;
     private final int serialNumber = serialGen++;
     private boolean doShutdown = false;
 
@@ -76,6 +76,7 @@ public class InputHandler extends Thread
      * Waits for input from the server.  When input arrives, it is added to a
      * queue and eventMonitor.notifyAll() is called.
      */
+    @Override
     public void run()
     {
 
@@ -121,6 +122,7 @@ public class InputHandler extends Thread
         }
     }
 
+    @Override
     public String toString()
     {
         return "InputHandler[" + serialNumber + "]";

@@ -129,20 +129,16 @@ public class ShatterFilter extends AbstractBufferedImageOp {
 		return tile;
 	}
 	
-	static class Tile {
-		float x, y, vx, vy, w, h;
-		float rotation;
-		Shape shape;
-	}
 	
     @Override
     public BufferedImage filter( BufferedImage src, BufferedImage dst ) {
-        if ( dst == null )
+        if ( dst == null ) {
             dst = createCompatibleDestImage( src, null );
-        float width = (float)src.getWidth();
-        float height = (float)src.getHeight();
-        float cx = (float)src.getWidth() * centreX;
-        float cy = (float)src.getHeight() * centreY;
+        }
+        float width = src.getWidth();
+        float height = src.getHeight();
+        float cx = src.getWidth() * centreX;
+        float cy = src.getHeight() * centreY;
         float imageRadius = (float)Math.sqrt( cx*cx + cy*cy );
 
 //        BufferedImage[] tiles = new BufferedImage[iterations];
@@ -249,4 +245,16 @@ y = tile.y + transition * tile.vy;
 	public String toString() {
 		return "Transition/Shatter...";
 	}
+
+    static class Tile {
+
+        float x;
+        float y;
+        float vx;
+        float vy;
+        float w;
+        float h;
+        float rotation;
+        Shape shape;
+    }
 }

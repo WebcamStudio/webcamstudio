@@ -67,7 +67,7 @@ public class HSB extends Effect{
      * @param hFactor
      */
     public void setHFactor(int hFactor) {
-        this.hFactor = ((float)hFactor)/ratio;
+        this.hFactor = hFactor/ratio;
     }
 
     /**
@@ -81,7 +81,7 @@ public class HSB extends Effect{
      * @param sFactor
      */
     public void setSFactor(int sFactor) {
-        this.sFactor = ((float)sFactor)/ratio;
+        this.sFactor = sFactor/ratio;
     }
     
     public int getBFactor() {
@@ -92,7 +92,7 @@ public class HSB extends Effect{
      * @param bFactor
      */
     public void setBFactor(int bFactor) {
-        this.bFactor = ((float)bFactor)/ratio;
+        this.bFactor = bFactor/ratio;
     }
 
     @Override

@@ -37,6 +37,7 @@ public class DoGFilter extends AbstractBufferedImageOp {
 	
 	/**
 	 * Set the radius of the kernel, and hence the amount of blur. The bigger the radius, the longer this filter will take.
+     * @param radius1
 	 * @param radius the radius of the blur in pixels.
      * @min-value 0
      * @max-value 100+
@@ -57,6 +58,7 @@ public class DoGFilter extends AbstractBufferedImageOp {
 
 	/**
 	 * Set the radius of the kernel, and hence the amount of blur. The bigger the radius, the longer this filter will take.
+     * @param radius2
 	 * @param radius the radius of the blur in pixels.
      * @min-value 0
      * @max-value 100+
@@ -124,12 +126,15 @@ public class DoGFilter extends AbstractBufferedImageOp {
                     int r = (rgb >> 16) & 0xff;
                     int g = (rgb >> 8) & 0xff;
                     int b = rgb & 0xff;
-                    if ( r > max )
+                    if ( r > max ) {
                         max = r;
-                    if ( g > max )
+                    }
+                    if ( g > max ) {
                         max = g;
-                    if ( b > max )
+                    }
+                    if ( b > max ) {
                         max = b;
+                    }
                 }
             }
 
@@ -150,8 +155,9 @@ public class DoGFilter extends AbstractBufferedImageOp {
 
         }
 
-        if ( invert )
+        if ( invert ) {
             image2 = new InvertFilter().filter( image2, image2 );
+        }
 
         return image2;
     }

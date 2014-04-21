@@ -10,6 +10,20 @@ package webcamstudio.media.config;
  */
 public class Format {
 
+    private int width;
+    private int height;
+    private int x;
+    private int y;
+    private String url;
+    private String file;
+    private String tcp;
+    private String device;
+    private int volume;
+    private int seek;
+    private int audioFrequency;
+    private int audioBitSize;
+    private int audioChannels;
+
     /**
      * @return the width
      */
@@ -191,25 +205,11 @@ public class Format {
     public void setAudioChannels(int audioChannels) {
         this.audioChannels = audioChannels;
     }
-    public enum Type{
-        FILE,
-        HTTP,
-        TCP,
-        DEVICE
+
+    public enum Type {
+
+        FILE, HTTP, TCP, DEVICE
     }
-    private int width;
-    private int height;
-    private int x;
-    private int y;
-    private String url;
-    private String file;
-    private String tcp;
-    private String device;
-    private int volume;
-    private int seek;
-    private int audioFrequency;
-    private int audioBitSize;
-    private int audioChannels;
     
             
 }

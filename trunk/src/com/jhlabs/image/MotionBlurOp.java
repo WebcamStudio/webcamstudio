@@ -194,11 +194,12 @@ public class MotionBlurOp extends AbstractBufferedImageOp {
 
     @Override
     public BufferedImage filter( BufferedImage src, BufferedImage dst ) {
-        if ( dst == null )
+        if ( dst == null ) {
             dst = createCompatibleDestImage( src, null );
+        }
         BufferedImage tsrc = src;
-        float cx = (float)src.getWidth() * centreX;
-        float cy = (float)src.getHeight() * centreY;
+        float cx = src.getWidth() * centreX;
+        float cy = src.getHeight() * centreY;
         float imageRadius = (float)Math.sqrt( cx*cx + cy*cy );
         float translateX = (float)(distance * Math.cos( angle ));
         float translateY = (float)(distance * -Math.sin( angle ));
@@ -253,8 +254,9 @@ public class MotionBlurOp extends AbstractBufferedImageOp {
 
             g.translate( cx+translateX, cy+translateY );
             g.scale( 1.0001+scale, 1.0001+scale );  // The .0001 works round a bug on Windows where drawImage throws an ArrayIndexOutofBoundException
-            if ( rotation != 0 )
+            if ( rotation != 0 ) {
                 g.rotate( rotate );
+            }
             g.translate( -cx, -cy );
 
             g.drawImage( dst, null, null );

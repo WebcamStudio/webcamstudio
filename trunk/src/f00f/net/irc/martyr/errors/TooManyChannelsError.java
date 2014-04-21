@@ -22,11 +22,13 @@ public class TooManyChannelsError extends GenericError
         this.errorMessage = errorMessage;
     }
 
+    @Override
     public String getIrcIdentifier()
     {
         return "405";
     }
 
+    @Override
     public InCommand parse( String prefix, String identifier, String params )
     {
         return new TooManyChannelsError(getParameter(params, 1), getParameter(params, 2));

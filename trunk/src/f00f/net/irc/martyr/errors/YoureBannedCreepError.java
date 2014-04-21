@@ -21,11 +21,13 @@ public class YoureBannedCreepError extends GenericError
         this.errorMessage = errorMessage;
     }
 
+    @Override
     public String getIrcIdentifier()
     {
         return "465";
     }
 
+    @Override
     public InCommand parse( String prefix, String identifier, String params )
     {
         return new YoureBannedCreepError(getParameter(params, 1));

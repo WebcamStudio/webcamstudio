@@ -20,8 +20,8 @@ import webcamstudio.streams.SourceImageGif;
 import webcamstudio.streams.SourceImageU;
 import webcamstudio.streams.SourceMicrophone;
 import webcamstudio.streams.SourceQRCode;
-import webcamstudio.streams.SourceURL;
 import webcamstudio.streams.SourceText;
+import webcamstudio.streams.SourceURL;
 import webcamstudio.streams.SourceWebcam;
 import webcamstudio.streams.Stream;
 import webcamstudio.util.Tools;
@@ -56,7 +56,7 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
         stream = s;
         initComponents();
         if (s instanceof SourceText) {
-            StreamPanelText p = new StreamPanelText((SourceText)s);
+            StreamPanelText p = new StreamPanelText((Stream)s);
             this.setLayout(new BorderLayout());
             this.add(p, BorderLayout.CENTER);
             this.setTitle(s.getName());

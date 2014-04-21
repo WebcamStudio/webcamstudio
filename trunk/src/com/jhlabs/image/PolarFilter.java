@@ -102,10 +102,10 @@ public class PolarFilter extends TransformFilter {
 			theta = 0;
 			if (x >= centreX) {
 				if (y > centreY) {
-					theta = ImageMath.PI - (float)Math.atan(((float)(x - centreX))/((float)(y - centreY)));
+					theta = ImageMath.PI - (float)Math.atan((x - centreX)/(y - centreY));
 					r = (float)Math.sqrt(sqr (x - centreX) + sqr (y - centreY));
 				} else if (y < centreY) {
-					theta = (float)Math.atan (((float)(x - centreX))/((float)(centreY - y)));
+					theta = (float)Math.atan ((x - centreX)/(centreY - y));
 					r = (float)Math.sqrt (sqr (x - centreX) + sqr (centreY - y));
 				} else {
 					theta = ImageMath.HALF_PI;
@@ -113,22 +113,23 @@ public class PolarFilter extends TransformFilter {
 				}
 			} else if (x < centreX) {
 				if (y < centreY) {
-					theta = ImageMath.TWO_PI - (float)Math.atan (((float)(centreX -x))/((float)(centreY - y)));
+					theta = ImageMath.TWO_PI - (float)Math.atan ((centreX -x)/(centreY - y));
 					r = (float)Math.sqrt (sqr (centreX - x) + sqr (centreY - y));
 				} else if (y > centreY) {
-					theta = ImageMath.PI + (float)Math.atan (((float)(centreX - x))/((float)(y - centreY)));
+					theta = ImageMath.PI + (float)Math.atan ((centreX - x)/(y - centreY));
 					r = (float)Math.sqrt (sqr (centreX - x) + sqr (y - centreY));
 				} else {
 					theta = 1.5f * ImageMath.PI;
 					r = centreX - x;
 				}
 			}
-			if (x != centreX)
-				m = Math.abs (((float)(y - centreY)) / ((float)(x - centreX)));
-			else
-				m = 0;
+			if (x != centreX) {
+                            m = Math.abs ((y - centreY) / (x - centreX));
+                } else {
+                            m = 0;
+                }
 			
-			if (m <= ((float)height / (float)width)) {
+			if (m <= (height / width)) {
 				if (x == centreX) {
 					xmax = 0;
 					ymax = centreY;
@@ -148,22 +149,24 @@ public class PolarFilter extends TransformFilter {
 			theta = x / width * ImageMath.TWO_PI;
 			float theta2;
 
-			if (theta >= 1.5f * ImageMath.PI)
-				theta2 = ImageMath.TWO_PI - theta;
-			else if (theta >= ImageMath.PI)
-				theta2 = theta - ImageMath.PI;
-			else if (theta >= 0.5f * ImageMath.PI)
-				theta2 = ImageMath.PI - theta;
-			else
-				theta2 = theta;
+			if (theta >= 1.5f * ImageMath.PI) {
+                            theta2 = ImageMath.TWO_PI - theta;
+                } else if (theta >= ImageMath.PI) {
+                    theta2 = theta - ImageMath.PI;
+                } else if (theta >= 0.5f * ImageMath.PI) {
+                    theta2 = ImageMath.PI - theta;
+                } else {
+                    theta2 = theta;
+                }
 	
 			t = (float)Math.tan(theta2);
-			if (t != 0)
-				m = 1.0f / t;
-			else
-				m = 0;
+			if (t != 0) {
+                            m = 1.0f / t;
+                } else {
+                            m = 0;
+                }
 	
-			if (m <= ((float)(height) / (float)(width))) {
+			if (m <= ((height) / (width))) {
 				if (theta2 == 0) {
 					xmax = 0;
 					ymax = centreY;
@@ -176,23 +179,23 @@ public class PolarFilter extends TransformFilter {
 				xmax = ymax / m;
 			}
 	
-			r = radius * (float)(y / (float)(height));
+			r = radius * (y / (float)(height));
 
 			float nx = -r * (float)Math.sin(theta2);
 			float ny = r * (float)Math.cos(theta2);
 			
 			if (theta >= 1.5f * ImageMath.PI) {
-				out[0] = (float)centreX - nx;
-				out[1] = (float)centreY - ny;
+				out[0] = centreX - nx;
+				out[1] = centreY - ny;
 			} else if (theta >= Math.PI) {
-				out[0] = (float)centreX - nx;
-				out[1] = (float)centreY + ny;
+				out[0] = centreX - nx;
+				out[1] = centreY + ny;
 			} else if (theta >= 0.5 * Math.PI) {
-				out[0] = (float)centreX + nx;
-				out[1] = (float)centreY + ny;
+				out[0] = centreX + nx;
+				out[1] = centreY + ny;
 			} else {
-				out[0] = (float)centreX + nx;
-				out[1] = (float)centreY - ny;
+				out[0] = centreX + nx;
+				out[1] = centreY - ny;
 			}
 			break;
 		case INVERT_IN_CIRCLE:

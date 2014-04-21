@@ -34,6 +34,7 @@ public class HalftoneFilter extends AbstractBufferedImageOp {
 	/**
 	 * Set the density of the image in the range 0..1.
 	 * *arg density The density
+     * @param density
 	 */
 	public void setDensity( float density ) {
 		this.density = density;
@@ -84,10 +85,12 @@ public class HalftoneFilter extends AbstractBufferedImageOp {
         int width = src.getWidth();
         int height = src.getHeight();
 
-        if ( dst == null )
+        if ( dst == null ) {
             dst = createCompatibleDestImage( src, null );
-		if ( mask == null )
-			return dst;
+        }
+		if ( mask == null ) {
+                    return dst;
+        }
 
         int maskWidth = mask.getWidth();
         int maskHeight = mask.getHeight();
@@ -112,8 +115,9 @@ public class HalftoneFilter extends AbstractBufferedImageOp {
 				float f = ImageMath.smoothStep( iv-s, iv+s, v );
 				int a = (int)(255 * f);
 
-				if ( invert )
-					a = 255-a;
+				if ( invert ) {
+                                    a = 255-a;
+                                }
 //				inPixels[x] = (a << 24) | (inRGB & 0x00ffffff);
 				inPixels[x] = (inRGB & 0xff000000) | (a << 16) | (a << 8) | a;
 			}

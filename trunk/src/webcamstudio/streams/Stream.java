@@ -20,6 +20,46 @@ import webcamstudio.sources.effects.Effect;
  */
 public abstract class Stream implements Callable<Frame>{
 
+    public static Stream getInstance(File file) {
+        Stream stream = null;
+        String ext = file.getName().toLowerCase().trim();
+        if (ext.endsWith(".avi")
+                || ext.endsWith(".ogg")
+                || ext.endsWith(".ogv")
+                || ext.endsWith(".mp4")
+                || ext.endsWith(".m4v")
+                || ext.endsWith(".mpg")
+                || ext.endsWith(".divx")
+                || ext.endsWith(".wmv")
+                || ext.endsWith(".flv")
+                || ext.endsWith(".mov")
+                || ext.endsWith(".mkv")
+                || ext.endsWith(".vob")) {
+            stream = new SourceMovie(file);
+        } else if (file.getAbsolutePath().toLowerCase().startsWith("/dev/video")) {
+            stream = new SourceWebcam(file);
+        } else if (ext.endsWith(".jpg")
+                || ext.endsWith(".bmp")
+                || ext.endsWith(".jpeg")) {
+            stream = new SourceImageU(file);
+        } else if (ext.endsWith(".png")) {
+            stream = new SourceImage(file);
+        } else if (ext.endsWith(".gif")) {
+            stream = new SourceImageGif(file);
+        } else if (ext.endsWith(".mp3")
+                || ext.endsWith(".wav")
+                || ext.endsWith(".wma")
+                || ext.endsWith(".m4a")
+                || ext.endsWith(".mp2")) {
+            stream = new SourceMusic(file);
+        } else if (ext.endsWith(".wss")){
+            stream = new SourceCustom(file);
+        } else if (ext.startsWith("/dev/video")){
+            stream = new SourceWebcam(file);
+        }
+        return stream;
+    }
+
     private final MasterMixer mixer = MasterMixer.getInstance();
     protected String uuid = java.util.UUID.randomUUID().toString();
     protected int captureWidth = mixer.getWidth();
@@ -66,6 +106,7 @@ public abstract class Stream implements Callable<Frame>{
     protected int bandwidthDVB = 0;
     protected int chDVB = 0;
     protected int color = 0;
+    protected boolean isATimer = false;
     protected String comm = "AV";
     protected boolean backFF = false;
     protected String webURL = null;
@@ -117,6 +158,12 @@ public abstract class Stream implements Callable<Frame>{
     }
     public void setComm(String sComm) {
         this.comm = sComm;
+    }
+    public boolean getIsATimer() {
+        return isATimer;
+    }
+    public void setIsATimer(boolean tTimer) {
+        this.isATimer = tTimer;
     }
     public void setBackFF(boolean wasFF) {
         this.backFF = wasFF;
@@ -278,14 +325,6 @@ public abstract class Stream implements Callable<Frame>{
         this.desktopH = desktopH;
     }
 
-    public interface chListener {
-        public void loadingPostOP();
-    }
-    public interface Listener {
-
-        public void sourceUpdated(Stream stream);
-        public void updatePreview(BufferedImage image);
-    }
 
     public void setListener(Listener l) {
         listener = l;
@@ -704,49 +743,22 @@ public abstract class Stream implements Callable<Frame>{
         return ADelay;
     }
 
-    public static Stream getInstance(File file) {
-        Stream stream = null;
-        String ext = file.getName().toLowerCase().trim();
-        if (ext.endsWith(".avi")
-                || ext.endsWith(".ogg")
-                || ext.endsWith(".ogv")
-                || ext.endsWith(".mp4")
-                || ext.endsWith(".m4v")
-                || ext.endsWith(".mpg")
-                || ext.endsWith(".divx")
-                || ext.endsWith(".wmv")
-                || ext.endsWith(".flv")
-                || ext.endsWith(".mov")
-                || ext.endsWith(".mkv")
-                || ext.endsWith(".vob")) {
-            stream = new SourceMovie(file);
-        } else if (file.getAbsolutePath().toLowerCase().startsWith("/dev/video")) {
-            stream = new SourceWebcam(file);
-        } else if (ext.endsWith(".jpg")
-                || ext.endsWith(".bmp")
-                || ext.endsWith(".jpeg")) {
-            stream = new SourceImageU(file);
-        } else if (ext.endsWith(".png")) {
-            stream = new SourceImage(file);
-        } else if (ext.endsWith(".gif")) {
-            stream = new SourceImageGif(file);
-        } else if (ext.endsWith(".mp3")
-                || ext.endsWith(".wav")
-                || ext.endsWith(".wma")
-                || ext.endsWith(".m4a")
-                || ext.endsWith(".mp2")) {
-            stream = new SourceMusic(file);
-        } else if (ext.endsWith(".wss")){
-            stream = new SourceCustom(file);
-        } else if (ext.startsWith("/dev/video")){
-            stream = new SourceWebcam(file);
-        }
-        return stream;
-    }
     @Override
-     public Frame call() throws Exception {
+    public Frame call() throws Exception {
         readNext();
         updatePreview();
         return nextFrame;
+    }
+
+    public interface chListener {
+
+        public void loadingPostOP();
+    }
+
+    public interface Listener {
+
+        public void sourceUpdated(Stream stream);
+
+        public void updatePreview(BufferedImage image);
     }
 }

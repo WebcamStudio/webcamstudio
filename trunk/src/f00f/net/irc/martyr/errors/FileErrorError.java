@@ -20,11 +20,13 @@ public class FileErrorError extends GenericError
         this.errorMessage = errorMessage;
     }
 
+    @Override
     public String getIrcIdentifier()
     {
         return "424";
     }
 
+    @Override
     public InCommand parse( String prefix, String identifier, String params )
     {
         return new FileErrorError(getParameter(params, 1));

@@ -7,6 +7,7 @@ import f00f.net.irc.martyr.modes.GenericMode;
  */
 public abstract class GenericUserMode extends GenericMode
 {
+        @Override
 	public boolean recordInChannel()
 	{
 		return false;
@@ -14,7 +15,9 @@ public abstract class GenericUserMode extends GenericMode
 
 	/**
 	 * Well, this is kind of irrelevent isn't it?
+     * @return 
 	 */
+        @Override
 	public boolean onePerChannel()
 	{
 		return false;

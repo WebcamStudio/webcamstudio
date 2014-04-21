@@ -64,65 +64,6 @@ public class CurlFilter extends TransformFilter {
 		return radius;
 	}
 	
-/*
-    public BufferedImage filter( BufferedImage src, BufferedImage dst ) {
-		this.width = src.getWidth();
-		this.height = src.getHeight();
-		return super.filter( src, dst );
-	}
-*/
-
-	static class Sampler {
-		private int edgeAction;
-		private int width, height;
-		private final int[] inPixels;
-		
-		public Sampler( BufferedImage image ) {
-			int width = image.getWidth();
-			int height = image.getHeight();
-			int type = image.getType();
-			inPixels = ImageUtils.getRGB( image, 0, 0, width, height, null );
-		}
-		
-		public int sample( float x, float y ) {
-			int srcX = (int)Math.floor( x );
-			int srcY = (int)Math.floor( y );
-			float xWeight = x-srcX;
-			float yWeight = y-srcY;
-			int nw, ne, sw, se;
-
-			if ( srcX >= 0 && srcX < width-1 && srcY >= 0 && srcY < height-1) {
-				// Easy case, all corners are in the image
-				int i = width*srcY + srcX;
-				nw = inPixels[i];
-				ne = inPixels[i+1];
-				sw = inPixels[i+width];
-				se = inPixels[i+width+1];
-			} else {
-				// Some of the corners are off the image
-				nw = getPixel( inPixels, srcX, srcY, width, height );
-				ne = getPixel( inPixels, srcX+1, srcY, width, height );
-				sw = getPixel( inPixels, srcX, srcY+1, width, height );
-				se = getPixel( inPixels, srcX+1, srcY+1, width, height );
-			}
-			return ImageMath.bilinearInterpolate(xWeight, yWeight, nw, ne, sw, se);
-		}
-
-		final private int getPixel( int[] pixels, int x, int y, int width, int height ) {
-			if (x < 0 || x >= width || y < 0 || y >= height) {
-				switch (edgeAction) {
-				case ZERO:
-				default:
-					return 0;
-				case WRAP:
-					return pixels[(ImageMath.mod(y, height) * width) + ImageMath.mod(x, width)];
-				case CLAMP:
-					return pixels[(ImageMath.clamp(y, 0, height-1) * width) + ImageMath.clamp(x, 0, width-1)];
-				}
-			}
-			return pixels[ y*width+x ];
-		}
-	}
 	
         @Override
     public BufferedImage filter( BufferedImage src, BufferedImage dst ) {
@@ -144,8 +85,9 @@ public class CurlFilter extends TransformFilter {
 
 		int[] inPixels = getRGB( src, 0, 0, width, height, null );
 
-		if ( interpolation == NEAREST_NEIGHBOUR )
-			return filterPixelsNN( dst, width, height, inPixels, transformedSpace );
+		if ( interpolation == NEAREST_NEIGHBOUR ) {
+                    return filterPixelsNN( dst, width, height, inPixels, transformedSpace );
+        }
 
 		int srcWidth = width;
 		int srcHeight = height;
@@ -193,17 +135,18 @@ public class CurlFilter extends TransformFilter {
 				g = (int)(g * shade);
 				b = (int)(b * shade);
 				rgb = (rgb & 0xff000000) | (r << 16) | (g << 8) | b;
-				if ( out[3] != 0 )
-					outPixels[x] = PixelUtils.combinePixels( rgb, inPixels[srcWidth*y + x], PixelUtils.NORMAL );
-				else
-					outPixels[x] = rgb;
+				if ( out[3] != 0 ) {
+                                    outPixels[x] = PixelUtils.combinePixels( rgb, inPixels[srcWidth*y + x], PixelUtils.NORMAL );
+                                } else {
+                                    outPixels[x] = rgb;
+                                }
 			}
 			setRGB( dst, 0, y, transformedSpace.width, 1, outPixels );
 		}
 		return dst;
 	}
 
-	final private int getPixel( int[] pixels, int x, int y, int width, int height ) {
+	private int getPixel( int[] pixels, int x, int y, int width, int height ) {
 		if (x < 0 || x >= width || y < 0 || y >= height) {
 			switch (edgeAction) {
 			case ZERO:
@@ -292,5 +235,66 @@ public class CurlFilter extends TransformFilter {
 	public String toString() {
 		return "Distort/Curl...";
 	}
+
+/*
+    public BufferedImage filter( BufferedImage src, BufferedImage dst ) {
+    this.width = src.getWidth();
+    this.height = src.getHeight();
+    return super.filter( src, dst );
+    }
+     */
+    static class Sampler {
+
+        private int edgeAction;
+        private int width;
+        private int height;
+        private final int[] inPixels;
+
+        Sampler(BufferedImage image) {
+            int width = image.getWidth();
+            int height = image.getHeight();
+            int type = image.getType();
+            inPixels = ImageUtils.getRGB( image, 0, 0, width, height, null );
+        }
+
+        public int sample( float x, float y ) {
+            int srcX = (int)Math.floor( x );
+            int srcY = (int)Math.floor( y );
+            float xWeight = x-srcX;
+            float yWeight = y-srcY;
+            int nw, ne, sw, se;
+            
+            if ( srcX >= 0 && srcX < width-1 && srcY >= 0 && srcY < height-1) {
+                // Easy case, all corners are in the image
+                int i = width*srcY + srcX;
+                nw = inPixels[i];
+                ne = inPixels[i+1];
+                sw = inPixels[i+width];
+                se = inPixels[i+width+1];
+            } else {
+                // Some of the corners are off the image
+                nw = getPixel( inPixels, srcX, srcY, width, height );
+                ne = getPixel( inPixels, srcX+1, srcY, width, height );
+                sw = getPixel( inPixels, srcX, srcY+1, width, height );
+                se = getPixel( inPixels, srcX+1, srcY+1, width, height );
+            }
+            return ImageMath.bilinearInterpolate(xWeight, yWeight, nw, ne, sw, se);
+        }
+
+        private int getPixel( int[] pixels, int x, int y, int width, int height ) {
+            if (x < 0 || x >= width || y < 0 || y >= height) {
+                switch (edgeAction) {
+                    case ZERO:
+                    default:
+                        return 0;
+                    case WRAP:
+                        return pixels[(ImageMath.mod(y, height) * width) + ImageMath.mod(x, width)];
+                    case CLAMP:
+                        return pixels[(ImageMath.clamp(y, 0, height-1) * width) + ImageMath.clamp(x, 0, width-1)];
+                }
+            }
+            return pixels[ y*width+x ];
+        }
+    }
 
 }

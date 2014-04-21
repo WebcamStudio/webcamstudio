@@ -10,6 +10,11 @@ import f00f.net.irc.martyr.commands.UnknownCommand;
  */
 public class UnknownReply extends UnknownCommand
 {
+
+    public static boolean isReply(String ident) {
+        char c = ident.charAt(0);
+        return ( c == '0' || c == '2' || c == '3' );
+    }
 	private final String replyStr;
 	private final int replyCode;
 
@@ -29,37 +34,38 @@ public class UnknownReply extends UnknownCommand
 		return replyStr;
 	}
 
-	public static boolean isReply( String ident )
-	{
-		char c = ident.charAt(0);
-		return ( c == '0' || c == '2' || c == '3' );
-	}
-
-	public State getState()
-	{
-		return State.UNKNOWN;
-	}
-
-	/** 
-	 * Never parsed.
-	 */
-	public InCommand parse( String prefix, String identifier, String params )
-	{
-		throw new UnsupportedOperationException("UnknownReply does no parsing.");
-	}
+    @Override
+	public State getState(  )
+        {
+            return State.UNKNOWN;
+        }
 
 	/**
-	 * Unknown, so we don't know what the identifier is ahead of time.
-	 */
-	public String getIrcIdentifier()
-	{
-		return replyStr;
-	}
+     * Never parsed.
+     * @return 
+     */
+    @Override
+    public InCommand parse(String prefix, String identifier, String params)
+    {
+        throw new UnsupportedOperationException("UnknownReply does no parsing.");
+    }
 
+	/**
+     * Unknown, so we don't know what the identifier is ahead of time.
+     * @return 
+     */
+    @Override
+	public String getIrcIdentifier(  )
+        {
+            return replyStr;
+        }
+
+    @Override
 	public String toString()
-	{
-		return "UnknownReply[" + replyStr + "]";
-	}
+        {
+            return "UnknownReply[" + replyStr + "]";
+        }
+
 
 }
 

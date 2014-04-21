@@ -30,16 +30,18 @@ public class MasterFrameBuilder implements Runnable {
 
     private static ArrayList<Stream> streams = new ArrayList<>();// add private
     private static int fps = 0;
-    private Image imageF;
-    private int imageX, imageY, imageW, imageH;
-    public synchronized static void register(Stream s) {
+
+    public static synchronized void register(Stream s) {
         if (!streams.contains(s)) {
             streams.add(s);
         }
     }
-    public synchronized static void unregister(Stream s) {
+
+    public static synchronized void unregister(Stream s) {
         streams.remove(s);
     }
+    private Image imageF;
+    private int imageX, imageY, imageW, imageH;
     private boolean stopMe = false;
     private long mark = System.currentTimeMillis();
     private FrameBuffer frameBuffer = null;
@@ -76,7 +78,7 @@ public class MasterFrameBuilder implements Runnable {
                 imageY = f.getY();
                 imageW = f.getWidth();
                 imageH = f.getHeight();
-                g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, ((float) f.getOpacity()) / 100F));
+                g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, f.getOpacity() / 100F));
                 g.drawImage(imageF, imageX, imageY, imageW, imageH, null);
             }
             g.dispose();
@@ -97,7 +99,7 @@ public class MasterFrameBuilder implements Runnable {
                 ShortBuffer buffer = ByteBuffer.wrap(data).asShortBuffer();
                 outputBuffer.rewind();
                 while (buffer.hasRemaining()) {
-                    float mix = (float) buffer.get() * f.getVolume();
+                    float mix = buffer.get() * f.getVolume();
                     outputBuffer.mark();
                     if (outputBuffer.position()< outputBuffer.limit()){ //25fps IOException                     
                         mix += outputBuffer.get();
@@ -152,7 +154,7 @@ public class MasterFrameBuilder implements Runnable {
                 float delta = System.currentTimeMillis() - mark;
                 if (delta >= 1000) {
                     mark = System.currentTimeMillis();
-                    MasterMixer.getInstance().setFPS((((float) fps) / (delta / 1000F)));
+                    MasterMixer.getInstance().setFPS((fps / (delta / 1000F)));
                     fps = 0;
                 }
                 long sleepTime = timeCode - System.currentTimeMillis();

@@ -9,11 +9,13 @@ import f00f.net.irc.martyr.modes.GenericMode;
  */
 public abstract class GenericChannelMode extends GenericMode
 {
+        @Override
 	public boolean recordInChannel()
 	{
 		return true;
 	}
 	
+        @Override
 	public boolean onePerChannel()
 	{
 		return true;

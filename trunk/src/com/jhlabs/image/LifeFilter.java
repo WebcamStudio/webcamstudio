@@ -47,17 +47,19 @@ public class LifeFilter extends BinaryFilter {
 							int ix = x+col;
 							if (!(row == 0 && col == 0) && 0 <= ix && ix < width) {
 								int rgb = inPixels[ioffset+ix];
-								if (blackFunction.isBlack(rgb))
-									neighbours++;
+								if (blackFunction.isBlack(rgb)) {
+                                                                    neighbours++;
+                                                                }
 							}
 						}
 					}
 				}
 				
-				if (blackFunction.isBlack(pixel))
-					outPixels[index++] = (neighbours == 2 || neighbours == 3) ? pixel : 0xffffffff;
-				else
-					outPixels[index++] = neighbours == 3 ? 0xff000000 : pixel;
+				if (blackFunction.isBlack(pixel)) {
+                                    outPixels[index++] = (neighbours == 2 || neighbours == 3) ? pixel : 0xffffffff;
+                                } else {
+                                    outPixels[index++] = neighbours == 3 ? 0xff000000 : pixel;
+                                }
 			}
 
 		}

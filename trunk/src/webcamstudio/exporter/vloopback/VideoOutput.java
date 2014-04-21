@@ -15,18 +15,11 @@ import webcamstudio.sources.effects.FlipVertical;
 abstract public class VideoOutput{
 
     protected static String devicePath = "/dev/video2";
-    protected int devFD = 0;
-    protected int w = 320;
-    protected int h = 240;
     final public static int RGB24 = 1;
     final public static int UYVY = 2;
     protected static int pixFormat = 2;
     protected static boolean flipImage = false;
-    protected FlipVertical flipper = new FlipVertical();
-    protected InfoListener listener = null;
-    protected byte[] rgbs = null;
 
-   
     public static void setFlipImage(boolean flip) {
         flipImage = flip;
     }
@@ -35,6 +28,17 @@ abstract public class VideoOutput{
         return pixFormat;
     }
 
+    public static String getDevice() {
+        return devicePath;
+    }
+    protected int devFD = 0;
+    protected int w = 320;
+    protected int h = 240;
+    protected FlipVertical flipper = new FlipVertical();
+    protected InfoListener listener = null;
+    protected byte[] rgbs = null;
+
+   
     protected byte[] img2rgb24(int[] data) {
         if (rgbs == null || rgbs.length != data.length * 3) {
             rgbs = new byte[data.length * 3];
@@ -68,8 +72,8 @@ abstract public class VideoOutput{
                     int Y = (int) (R * .299000 + G * .587000 + B * 0.114000);
                     int U = (int) (R * -.168736 + G * -.331264 + B * 0.500000 + 128);
                     int V = (int) (R * .500000 + G * -.418688 + B * -0.081312 + 128);
-
-
+                    
+                    
                     int arraySize = w * h;
                     int yLoc = j * w + i;
                     int uLoc = (j / 2) * (w / 2) + i / 2 + arraySize;
@@ -129,13 +133,10 @@ abstract public class VideoOutput{
         return yuvs;
     }
 
-    public static String getDevice() {
-        return devicePath;
-    }
+    public abstract void open(String path, int w, int h, int pixFormat);
 
-    abstract public void open(String path, int w, int h, int pixFormat);
+    public abstract void close();
 
-    abstract public void close();
+    public abstract void write(int[] data);
 
-    abstract public void write(int[] data);
 }

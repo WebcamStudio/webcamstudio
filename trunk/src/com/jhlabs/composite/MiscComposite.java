@@ -22,7 +22,7 @@ import java.awt.CompositeContext;
 import java.awt.RenderingHints;
 import java.awt.image.ColorModel;
 
-public final class MiscComposite implements Composite {
+public class MiscComposite implements Composite {
 
 	public final static int BLEND = 0;
 	public final static int ADD = 1;
@@ -93,6 +93,62 @@ public final class MiscComposite implements Composite {
 		"Silhouette",
 	};
 
+    public static Composite getInstance(int rule, float alpha) {
+        switch ( rule ) {
+            case MiscComposite.BLEND:
+                return AlphaComposite.getInstance( AlphaComposite.SRC_OVER, alpha );
+            case MiscComposite.ADD:
+                return new AddComposite( alpha );
+            case MiscComposite.SUBTRACT:
+                return new SubtractComposite( alpha );
+            case MiscComposite.DIFFERENCE:
+                return new DifferenceComposite( alpha );
+            case MiscComposite.MULTIPLY:
+                return new MultiplyComposite( alpha );
+            case MiscComposite.DARKEN:
+                return new DarkenComposite( alpha );
+            case MiscComposite.BURN:
+                return new BurnComposite( alpha );
+            case MiscComposite.COLOR_BURN:
+                return new ColorBurnComposite( alpha );
+            case MiscComposite.SCREEN:
+                return new ScreenComposite( alpha );
+            case MiscComposite.LIGHTEN:
+                return new LightenComposite( alpha );
+            case MiscComposite.DODGE:
+                return new DodgeComposite( alpha );
+            case MiscComposite.COLOR_DODGE:
+                return new ColorDodgeComposite( alpha );
+            case MiscComposite.HUE:
+                return new HueComposite( alpha );
+            case MiscComposite.SATURATION:
+                return new SaturationComposite( alpha );
+            case MiscComposite.VALUE:
+                return new ValueComposite( alpha );
+            case MiscComposite.COLOR:
+                return new ColorComposite( alpha );
+            case MiscComposite.OVERLAY:
+                return new OverlayComposite( alpha );
+            case MiscComposite.SOFT_LIGHT:
+                return new SoftLightComposite( alpha );
+            case MiscComposite.HARD_LIGHT:
+                return new HardLightComposite( alpha );
+            case MiscComposite.PIN_LIGHT:
+                return new PinLightComposite( alpha );
+            case MiscComposite.EXCLUSION:
+                return new ExclusionComposite( alpha );
+            case MiscComposite.NEGATION:
+                return new NegationComposite( alpha );
+            case MiscComposite.AVERAGE:
+                return new AverageComposite( alpha );
+            case MiscComposite.STENCIL:
+                return AlphaComposite.getInstance( AlphaComposite.DST_IN, alpha );
+            case MiscComposite.SILHOUETTE:
+                return AlphaComposite.getInstance( AlphaComposite.DST_OUT, alpha );
+        }
+        return new MiscComposite(rule, alpha);
+    }
+
 	protected float extraAlpha;
 	protected int rule;
 
@@ -101,99 +157,46 @@ public final class MiscComposite implements Composite {
 	}
 
 	private MiscComposite(int rule, float alpha) {
-		if (alpha < 0.0f || alpha > 1.0f)
-			throw new IllegalArgumentException("alpha value out of range");
-		if (rule < MIN_RULE || rule > MAX_RULE)
-			throw new IllegalArgumentException("unknown composite rule");
+		if (alpha < 0.0f || alpha > 1.0f) {
+                    throw new IllegalArgumentException("alpha value out of range");
+                }
+		if (rule < MIN_RULE || rule > MAX_RULE) {
+                    throw new IllegalArgumentException("unknown composite rule");
+                }
 		this.rule = rule;
 		this.extraAlpha = alpha;
 	}
 
-	public static Composite getInstance(int rule, float alpha) {
-		switch ( rule ) {
-		case MiscComposite.BLEND:
-			return AlphaComposite.getInstance( AlphaComposite.SRC_OVER, alpha );
-		case MiscComposite.ADD:
-			return new AddComposite( alpha );
-		case MiscComposite.SUBTRACT:
-			return new SubtractComposite( alpha );
-		case MiscComposite.DIFFERENCE:
-			return new DifferenceComposite( alpha );
-		case MiscComposite.MULTIPLY:
-			return new MultiplyComposite( alpha );
-		case MiscComposite.DARKEN:
-			return new DarkenComposite( alpha );
-		case MiscComposite.BURN:
-			return new BurnComposite( alpha );
-		case MiscComposite.COLOR_BURN:
-			return new ColorBurnComposite( alpha );
-		case MiscComposite.SCREEN:
-			return new ScreenComposite( alpha );
-		case MiscComposite.LIGHTEN:
-			return new LightenComposite( alpha );
-		case MiscComposite.DODGE:
-			return new DodgeComposite( alpha );
-		case MiscComposite.COLOR_DODGE:
-			return new ColorDodgeComposite( alpha );
-		case MiscComposite.HUE:
-			return new HueComposite( alpha );
-		case MiscComposite.SATURATION:
-			return new SaturationComposite( alpha );
-		case MiscComposite.VALUE:
-			return new ValueComposite( alpha );
-		case MiscComposite.COLOR:
-			return new ColorComposite( alpha );
-		case MiscComposite.OVERLAY:
-			return new OverlayComposite( alpha );
-		case MiscComposite.SOFT_LIGHT:
-			return new SoftLightComposite( alpha );
-		case MiscComposite.HARD_LIGHT:
-			return new HardLightComposite( alpha );
-		case MiscComposite.PIN_LIGHT:
-			return new PinLightComposite( alpha );
-		case MiscComposite.EXCLUSION:
-			return new ExclusionComposite( alpha );
-		case MiscComposite.NEGATION:
-			return new NegationComposite( alpha );
-		case MiscComposite.AVERAGE:
-			return new AverageComposite( alpha );
-		case MiscComposite.STENCIL:
-			return AlphaComposite.getInstance( AlphaComposite.DST_IN, alpha );
-		case MiscComposite.SILHOUETTE:
-			return AlphaComposite.getInstance( AlphaComposite.DST_OUT, alpha );
-		}
-		return new MiscComposite(rule, alpha);
-	}
-
         @Override
 	public CompositeContext createContext(ColorModel srcColorModel, ColorModel dstColorModel, RenderingHints hints) {
-		return new MiscCompositeContext( rule, extraAlpha, srcColorModel, dstColorModel );
-	}
+            return new MiscCompositeContext( rule, extraAlpha, srcColorModel, dstColorModel );
+        }
 
 	public float getAlpha() {
-		return extraAlpha;
-	}
+            return extraAlpha;
+        }
 
 	public int getRule() {
-		return rule;
-	}
+            return rule;
+        }
 
         @Override
 	public int hashCode() {
-		return (Float.floatToIntBits(extraAlpha) * 31 + rule);
-	}
+            return (Float.floatToIntBits(extraAlpha) * 31 + rule);
+        }
 
         @Override
 	public boolean equals(Object o) {
-		if (!(o instanceof MiscComposite))
-			return false;
-		MiscComposite c = (MiscComposite)o;
+            if (!(o instanceof MiscComposite)) {
+                return false;
+            }
+            MiscComposite c = (MiscComposite)o;
+            
+            if (rule != c.rule) {
+                return false;
+            }
+            return extraAlpha == c.extraAlpha;
+        }
 
-		if (rule != c.rule)
-			return false;
-		if (extraAlpha != c.extraAlpha)
-			return false;
-		return true;
-	}
 			
 }

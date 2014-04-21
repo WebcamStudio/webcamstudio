@@ -50,10 +50,12 @@ public abstract class GenericJoinError extends GenericError {
 		return comment;
 	}
 
+        @Override
 	public State getState() {
 		return State.UNKNOWN;
 	}
 
+        @Override
 	public InCommand parse( String prefix, String identifier, String params )
 	{
 		ParameterIterator pI = new ParameterIterator( params );

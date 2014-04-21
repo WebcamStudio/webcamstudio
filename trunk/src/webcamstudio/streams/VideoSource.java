@@ -41,8 +41,83 @@ import webcamstudio.util.Tools;
 public abstract class VideoSource implements InfoListener {
 
     public static java.util.TreeMap<String, VideoSource> loadedSources = new TreeMap<>();
-    protected Timer timer = null;
     private final static String userHomeDir = Tools.getUserHome();
+    public static final int SCROLL_NONE = 0;
+    public static final int SCROLL_TOPTOBOTTOM = 1;
+    public static final int SCROLL_BOTTOMTOTOP = 2;
+    public static final int SCROLL_LEFTTORIGHT = 3;
+    public static final int SCROLL_RIGHTTOLEFT = 4;
+    private static final String key = "WS4GL"; // The key for 'encrypting' and 'decrypting'
+    protected Timer timer = null;
+
+ 
+    protected String location = null;
+    protected int outputWidth = 0;
+    protected int outputHeight = 0;
+    protected int showAtX = 0;
+    protected int showAtY = 0;
+    protected int captureAtX = 0;
+    protected int captureAtY = 0;
+    protected int captureWidth = 320;
+    protected int captureHeight = 240;
+    protected int opacity = 100;
+    protected String activeEffect = "";
+    protected String uuId = java.util.UUID.randomUUID().toString();
+    protected int videoEffect = 0;
+    protected java.awt.image.BufferedImage tempimage = null;
+    protected java.awt.image.BufferedImage image = null;
+    protected int[] dataInputImage = null;
+    protected int[] dataOutputImage = null;
+    protected int frameRate = 15;
+    protected String name = "";
+    protected int volume = 15;
+    protected boolean loadSound = true;
+    protected boolean hasSound = false;
+    protected boolean doLoop = true;
+    protected int effectsSensitivityLow = 10;
+    protected int effectsSensitivityHigh = 100;
+    protected boolean isRendering = false;
+    protected int[] pixels = null;
+    protected boolean stopMe = true;
+    protected boolean isPlaying = false;
+    protected java.awt.Color foregroundColor = java.awt.Color.WHITE;
+    protected java.awt.Color backgroundColor = java.awt.Color.BLACK;
+    protected boolean followMouseCursor = true;
+    protected int fontSize = 10;
+    protected InfoListener listener = null;
+    protected String username = "";
+    protected boolean visibleOnlyWhenSelected = false;
+    protected boolean isSelected = false;
+    protected ColorFormat colorFormat = ColorFormat.YUV;
+    protected long updateTimeLaspe = 0;
+    protected java.awt.Image shape = null;
+    protected String shapeName = "";
+    protected String audioSink = "autoaudiosink";
+    protected boolean activityDetected = true;
+    protected int activityThreshold = 0;
+    private java.awt.image.BufferedImage lastInputImage = null;
+    private long lastTimeStamp = 0;    //Scrolling method
+    protected int scrollDirection = 0;
+    protected String fontName = "Monospaced";
+    protected String nick = "";
+    protected boolean forViewerOnly = false;
+    protected String virtualHostKeywords = "";
+    protected String oldvirtualHostKeywords = "";
+    private VideoSourceListener vlistener = null;
+    private String customShapeFileName = "";
+    protected boolean showMouseCursor = false;
+    protected boolean lightMode = false;
+    protected String customText = "";
+    protected java.util.Vector<Effect> effects = new java.util.Vector<>();
+    protected boolean doRescale = true;
+    protected boolean doReverseShapeMask = false;
+    protected Image faceDetection = null;
+    protected BufferedImage rawImage = null;
+    protected boolean ignoreLayoutTransition = false;
+    protected float backgroundOpacity = 0;
+    protected int layer = -1;
+    protected String password = "";
+    protected boolean keepRatio = false;
 
     public abstract void startSource();
 
@@ -93,7 +168,6 @@ public abstract class VideoSource implements InfoListener {
     }
 
     public void saveThumbnail(ImageIcon icon) throws IOException {
-
         File dir = new File(userHomeDir, ".webcamstudio");
         if (!dir.exists()) {
             dir.mkdir();
@@ -110,7 +184,7 @@ public abstract class VideoSource implements InfoListener {
         BufferedImage i = new BufferedImage(icon.getIconWidth(), icon.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
         i.getGraphics().drawImage(icon.getImage(), 0, 0, null);
 //        System.out.println("Saving to " + img.getAbsolutePath());
-        RenderedImage ri = (RenderedImage) i;
+        RenderedImage ri = i;
         if (ri != null) {
             javax.imageio.ImageIO.write(ri, "png", img);
         }
@@ -119,9 +193,6 @@ public abstract class VideoSource implements InfoListener {
     public boolean hasSound() {
         return hasSound;
     }
-
-
-    
 
     public void setLoadSound(boolean doLoad) {
         loadSound = doLoad;
@@ -144,7 +215,6 @@ public abstract class VideoSource implements InfoListener {
     }
 
     public void applyStudioConfig(java.util.prefs.Preferences prefs, int order) {
-
         prefs.put("class", this.getClass().getName());
         prefs.put("location", location);
         prefs.putInt("outputWidth", outputWidth);
@@ -355,7 +425,7 @@ public abstract class VideoSource implements InfoListener {
     }
 
     public void updateOldKeywords() {
-        oldvirtualHostKeywords = virtualHostKeywords.toString();
+        oldvirtualHostKeywords = virtualHostKeywords;
     }
 
     public String getKeywords() {
@@ -392,7 +462,6 @@ public abstract class VideoSource implements InfoListener {
 
     public void setCaptureHeight(int h) {
         captureHeight = h;
-
     }
 
     public String getName() {
@@ -407,7 +476,6 @@ public abstract class VideoSource implements InfoListener {
 
     @Override
     public String toString() {
-
         return location;
     }
 
@@ -497,7 +565,6 @@ public abstract class VideoSource implements InfoListener {
 
     public void setVolume(int v) {
         volume = v;
-
     }
 
     public int getVolume() {
@@ -509,7 +576,6 @@ public abstract class VideoSource implements InfoListener {
         if (listener != null) {
             listener.info(info);
         }
-
     }
 
     @Override
@@ -517,7 +583,6 @@ public abstract class VideoSource implements InfoListener {
         if (listener != null) {
             listener.error(message);
         }
-
     }
 
     @Override
@@ -525,7 +590,6 @@ public abstract class VideoSource implements InfoListener {
         if (listener != null) {
             listener.newTextLine(line);
         }
-
     }
 
     public java.awt.image.BufferedImage getImage() {
@@ -630,7 +694,6 @@ public abstract class VideoSource implements InfoListener {
             buffer.drawImage(shape, 0, 0, img.getWidth(), img.getHeight(), 0, 0, shape.getWidth(null), shape.getHeight(null), null);
             buffer.dispose();
         }
-
     }
 
     public void setShape(java.awt.Image img) {
@@ -655,12 +718,6 @@ public abstract class VideoSource implements InfoListener {
 
     public void setShowMouseCursor(boolean showMouseCursor) {
         this.showMouseCursor = showMouseCursor;
-    }
-
-    public enum ColorFormat {
-
-        YUV,
-        RGB
     }
 
     public void setAudioSink(String gstSink) {
@@ -691,7 +748,6 @@ public abstract class VideoSource implements InfoListener {
     public int getScrollingMode() {
         return scrollDirection;
     }
-
 
     protected void detectActivity(java.awt.image.BufferedImage input) {
         if (activityDetected && System.currentTimeMillis() - lastTimeStamp > 5000) {
@@ -734,17 +790,12 @@ public abstract class VideoSource implements InfoListener {
 
             }
 
-            if (nbDiffPixels * 100 / data1.length > activityThreshold) {
-                activityDetected = true;
-            } else {
-                activityDetected = false;
-            }
+            activityDetected = nbDiffPixels * 100 / data1.length > activityThreshold;
 
             lastInputImage.getGraphics().drawImage(input, 0, 0, null);
             lastTimeStamp =
                     System.currentTimeMillis();
         }
-
     }
 
     public void setFont(String name) {
@@ -785,7 +836,6 @@ public abstract class VideoSource implements InfoListener {
             }).start();
 
         }
-
     }
 
     public void setCustomShapeFileName(String f) {
@@ -895,78 +945,8 @@ public abstract class VideoSource implements InfoListener {
         return layer;
     }
 
- 
-    protected String location = null;
-    protected int outputWidth = 0;
-    protected int outputHeight = 0;
-    protected int showAtX = 0;
-    protected int showAtY = 0;
-    protected int captureAtX = 0;
-    protected int captureAtY = 0;
-    protected int captureWidth = 320;
-    protected int captureHeight = 240;
-    protected int opacity = 100;
-    protected String activeEffect = "";
-    protected String uuId = java.util.UUID.randomUUID().toString();
-    protected int videoEffect = 0;
-    protected java.awt.image.BufferedImage tempimage = null;
-    protected java.awt.image.BufferedImage image = null;
-    protected int[] dataInputImage = null;
-    protected int[] dataOutputImage = null;
-    protected int frameRate = 15;
-    protected String name = "";
-    protected int volume = 15;
-    protected boolean loadSound = true;
-    protected boolean hasSound = false;
-    protected boolean doLoop = true;
-    protected int effectsSensitivityLow = 10;
-    protected int effectsSensitivityHigh = 100;
-    protected boolean isRendering = false;
-    protected int[] pixels = null;
-    protected boolean stopMe = true;
-    protected boolean isPlaying = false;
-    protected java.awt.Color foregroundColor = java.awt.Color.WHITE;
-    protected java.awt.Color backgroundColor = java.awt.Color.BLACK;
-    protected boolean followMouseCursor = true;
-    protected int fontSize = 10;
-    protected InfoListener listener = null;
-    protected String username = "";
-    protected boolean visibleOnlyWhenSelected = false;
-    protected boolean isSelected = false;
-    protected ColorFormat colorFormat = ColorFormat.YUV;
-    protected long updateTimeLaspe = 0;
-    protected java.awt.Image shape = null;
-    protected String shapeName = "";
-    protected String audioSink = "autoaudiosink";
-    protected boolean activityDetected = true;
-    protected int activityThreshold = 0;
-    private java.awt.image.BufferedImage lastInputImage = null;
-    private long lastTimeStamp = 0;    //Scrolling method
-    public static final int SCROLL_NONE = 0;
-    public static final int SCROLL_TOPTOBOTTOM = 1;
-    public static final int SCROLL_BOTTOMTOTOP = 2;
-    public static final int SCROLL_LEFTTORIGHT = 3;
-    public static final int SCROLL_RIGHTTOLEFT = 4;
-    protected int scrollDirection = 0;
-    protected String fontName = "Monospaced";
-    protected String nick = "";
-    protected boolean forViewerOnly = false;
-    protected String virtualHostKeywords = "";
-    protected String oldvirtualHostKeywords = "";
-    private VideoSourceListener vlistener = null;
-    private String customShapeFileName = "";
-    protected boolean showMouseCursor = false;
-    protected boolean lightMode = false;
-    protected String customText = "";
-    protected java.util.Vector<Effect> effects = new java.util.Vector<>();
-    protected boolean doRescale = true;
-    protected boolean doReverseShapeMask = false;
-    protected Image faceDetection = null;
-    protected BufferedImage rawImage = null;
-    protected boolean ignoreLayoutTransition = false;
-    protected float backgroundOpacity = 0;
-    protected int layer = -1;
-    protected String password = "";
-    protected boolean keepRatio = false;
-    private static final String key = "WS4GL"; // The key for 'encrypting' and 'decrypting'
+    public enum ColorFormat {
+
+        YUV, RGB
+    }
 }

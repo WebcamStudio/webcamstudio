@@ -149,8 +149,9 @@ public class RenderTextFilter extends AbstractBufferedImageOp {
 	
         @Override
 	public BufferedImage filter( BufferedImage src, BufferedImage dst ) {
-        if ( dst == null )
+        if ( dst == null ) {
             dst = createCompatibleDestImage( src, null );
+        }
 
 		Graphics2D g = dst.createGraphics();
                 g.setRenderingHint(RenderingHints.KEY_RENDERING,
@@ -166,16 +167,21 @@ public class RenderTextFilter extends AbstractBufferedImageOp {
                 g.setRenderingHint(RenderingHints.KEY_DITHERING,
                                    RenderingHints.VALUE_DITHER_DISABLE);
         g.setRenderingHint( RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON );
-        if ( font != null )
+        if ( font != null ) {
             g.setFont( font );
-        if ( transform != null )
+        }
+        if ( transform != null ) {
             g.setTransform( transform );
-        if ( composite != null )
+        }
+        if ( composite != null ) {
             g.setComposite( composite );
-        if ( paint != null )
+        }
+        if ( paint != null ) {
             g.setPaint( paint );
-        if ( text != null )
+        }
+        if ( text != null ) {
             g.drawString( text, 10, 100 );
+        }
         g.dispose();
 		return dst;
 	}

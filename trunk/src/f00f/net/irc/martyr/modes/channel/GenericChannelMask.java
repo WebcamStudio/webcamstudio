@@ -7,6 +7,7 @@ package f00f.net.irc.martyr.modes.channel;
  */
 public abstract class GenericChannelMask extends GenericChannelMode
 {
+        @Override
 	public boolean onePerChannel()
 	{
 		return false;

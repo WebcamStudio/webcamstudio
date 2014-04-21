@@ -112,7 +112,7 @@ public class ShapesControl extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void cboShapesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboShapesActionPerformed
-        System.out.println("Shape: "+cboShapes.getSelectedItem().toString());
+//        System.out.println("Shape: "+cboShapes.getSelectedItem().toString());
         effect.setShape(cboShapes.getSelectedItem().toString());
     }//GEN-LAST:event_cboShapesActionPerformed
 

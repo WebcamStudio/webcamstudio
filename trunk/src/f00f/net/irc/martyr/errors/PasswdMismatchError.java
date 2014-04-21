@@ -21,11 +21,13 @@ public class PasswdMismatchError extends GenericError
         this.errorMessage = errorMessage;
     }
 
+    @Override
     public String getIrcIdentifier()
     {
         return "464";
     }
 
+    @Override
     public InCommand parse( String prefix, String identifier, String params )
     {
         return new PasswdMismatchError(getParameter(params, 1));

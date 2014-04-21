@@ -25,11 +25,13 @@ public class NowAwayReply extends GenericReply
         this.message = message;
     }
 
+    @Override
     public String getIrcIdentifier()
     {
 		return "306";
 	}
 
+    @Override
     public InCommand parse( String prefix, String identifier, String params )
     {
 		return new NowAwayReply(getParameter(params, 0));

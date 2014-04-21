@@ -32,12 +32,26 @@ import javax.swing.ImageIcon;
  */
 public class VideoSourceIRC extends VideoSource {
 
+    protected java.util.Vector<String> lines = new java.util.Vector<>();
+    private IRCConnection connection = null;
+    private AutoReconnect autoReconnect = null;
+    private ClientState state = null;
+    private String secret = "one";
+    private long kickTime = 0; // The last time kick was used.
+    private Channel mainChannel;
+    private String channelName;
+    private boolean quit = false;
+    private MessageMonitor messageMonitor = null;
+    private int charWidth = 12;
+    private final java.util.Vector<VideoSourceIRCListener> ircListeners = new java.util.Vector<>();
+    private java.awt.Graphics2D buffer = null;
+    private final Emotes emotes = new Emotes();
+
     public VideoSourceIRC(String address, int port, String channel, String nick) {
         location = address + ":" + port + ":" + channel;
         name = location;
         this.nick = nick;
         frameRate = 1;
-
     }
 
     public VideoSourceIRC() {
@@ -60,7 +74,7 @@ public class VideoSourceIRC extends VideoSource {
             nick = "webcamstudio";
         }
         String server = location.split(":")[0];
-        int port = new Integer(location.split(":")[1]).intValue();
+        int port = new Integer(location.split(":")[1]);
         String channel = location.split(":")[2];
         state = new ClientState();
         state.addChannel(channel);
@@ -187,7 +201,7 @@ public class VideoSourceIRC extends VideoSource {
 
                         Thread.sleep(1000/frameRate);
 
-                    } catch (Exception e) {
+                    } catch (InterruptedException e) {
                         error("IRC Error  :" + e.getMessage());
                     }
                 }
@@ -257,7 +271,6 @@ public class VideoSourceIRC extends VideoSource {
     }
 
     protected void incomingMessage(MessageCommand msg) {
-
         String sayCommand = "say ";
         String meCommand = "me ";
         String kickCommand = "kick ";
@@ -277,11 +290,11 @@ public class VideoSourceIRC extends VideoSource {
             if (tokenizer.countTokens() != 2) {
                 connection.sendCommand(
                         new MessageCommand(msg.getSource(),
-                        "Incorrect number of parameters: " + message));
+                                "Incorrect number of parameters: " + message));
                 return;
             }
-
-
+            
+            
             String personToOp = tokenizer.nextToken();
             String maybeSecret = tokenizer.nextToken();
 
@@ -292,31 +305,31 @@ public class VideoSourceIRC extends VideoSource {
             } else {
                 connection.sendCommand(
                         new MessageCommand(msg.getSource(),
-                        "Bad secret." + message));
+                                "Bad secret." + message));
             }
         } else if (commandStr.equals(setSecret)) {
             if (tokenizer.countTokens() != 2) {
                 connection.sendCommand(
                         new MessageCommand(msg.getSource(),
-                        "Incorrect number of parameters: " + message));
+                                "Incorrect number of parameters: " + message));
                 return;
             }
             if (tokenizer.nextToken().equals(secret)) {
                 secret = tokenizer.nextToken();
                 connection.sendCommand(
                         new MessageCommand(msg.getSource(),
-                        "Secret has been set to " + secret));
+                                "Secret has been set to " + secret));
             } else {
                 connection.sendCommand(
                         new MessageCommand(msg.getSource(),
-                        "Bad secret f00! Try using the '"
-                        + showSecret + "' command."));
+                                "Bad secret f00! Try using the '"
+                                        + showSecret + "' command."));
             }
         } else if (commandStr.equals(showSecret)) {
 //            System.out.println("Show secret requested.  Secret is: " + secret);
             connection.sendCommand(
                     new MessageCommand(msg.getSource(),
-                    "Secret has been output on standard out."));
+                            "Secret has been output on standard out."));
         } else if (message.toLowerCase().startsWith(quitCommand)) {
             // we have a 'quit' command
             String comment = getParameter(message, quitCommand);
@@ -370,6 +383,7 @@ public class VideoSourceIRC extends VideoSource {
         return raw.substring(command.length(), raw.length());
     }
 
+    @Override
     public boolean canUpdateSource() {
         return false;
     }
@@ -381,6 +395,7 @@ public class VideoSourceIRC extends VideoSource {
         isPlaying = false;
     }
 
+    @Override
     public boolean hasText() {
         return true;
     }
@@ -423,20 +438,6 @@ public class VideoSourceIRC extends VideoSource {
     public String toString() {
         return "IRC: " + name;
     }
-    protected java.util.Vector<String> lines = new java.util.Vector<>();
-    private IRCConnection connection = null;
-    private AutoReconnect autoReconnect = null;
-    private ClientState state = null;
-    private String secret = "one";
-    private long kickTime = 0; // The last time kick was used.
-    private Channel mainChannel;
-    private String channelName;
-    private boolean quit = false;
-    private MessageMonitor messageMonitor = null;
-    private int charWidth = 12;
-    private final java.util.Vector<VideoSourceIRCListener> ircListeners = new java.util.Vector<>();
-    private java.awt.Graphics2D buffer = null;
-    private final Emotes emotes = new Emotes();
 
 }
 
@@ -444,7 +445,7 @@ class MessageMonitor extends GenericAutoService {
 
     private VideoSourceIRC source;
 
-    public MessageMonitor(VideoSourceIRC source) {
+    MessageMonitor(VideoSourceIRC source) {
         super(source.getConnection());
         this.source = source;
         enable();
@@ -455,12 +456,13 @@ class MessageMonitor extends GenericAutoService {
         super.connection = null;
     }
 
+    @Override
     public void updateCommand(InCommand command) {
 //        System.out.println(command.getSourceString());
         if (command instanceof MessageCommand) {
             MessageCommand msg = (MessageCommand) command;
 
-            source.updateLines(msg.getSource().getNick(), msg.getMessage(), command.getSourceString().indexOf("ACTION ") != -1, msg.isPrivateToUs(source.getState()));
+            source.updateLines(msg.getSource().getNick(), msg.getMessage(), command.getSourceString().contains("ACTION "), msg.isPrivateToUs(source.getState()));
 
 
         } else if (command instanceof PingCommand) {
@@ -469,6 +471,7 @@ class MessageMonitor extends GenericAutoService {
 
     }
 
+    @Override
     protected void updateState(State state) {
         if (state == State.UNCONNECTED) {
             source.error("IRC: " + "Disconnected");

@@ -42,10 +42,12 @@ public class ReduceNoiseFilter extends WholeImageFilter {
 				}
 			}
 		}
-		if ( v[4] < min )
-			return v[minindex];
-		if ( v[4] > max )
-			return v[maxindex];
+		if ( v[4] < min ) {
+                    return v[minindex];
+                }
+		if ( v[4] > max ) {
+                    return v[maxindex];
+                }
 		return v[4];
 	}
 

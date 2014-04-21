@@ -23,9 +23,6 @@ public class StreamFullDesktop extends javax.swing.JInternalFrame {
     StreamPanelURL panelURL = null;
     Stream stream = null;
     Listener listener = null;  
-    public interface Listener{
-        public void selectedSource(Stream source);
-    }
     /** Creates new form StreamFullDesktop
      * @param s
      * @param l */
@@ -127,4 +124,9 @@ public class StreamFullDesktop extends javax.swing.JInternalFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
+
+    public interface Listener {
+
+        public void selectedSource(Stream source);
+    }
 }

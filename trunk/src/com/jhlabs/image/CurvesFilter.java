@@ -20,7 +20,50 @@ public class CurvesFilter extends TransferFilter {
 
 	private Curve[] curves = new Curve[1];
 	
+    
+    public CurvesFilter() {
+        curves = new Curve[3];
+        curves[0] = new Curve();
+        curves[1] = new Curve();
+        curves[2] = new Curve();
+    }
+    
+        @Override
+	protected void initialize() {
+		initialized = true;
+		if ( curves.length == 1 ) {
+                    rTable = gTable = bTable = curves[0].makeTable();
+                } else {
+            rTable = curves[0].makeTable();
+            gTable = curves[1].makeTable();
+            bTable = curves[2].makeTable();
+        }
+	}
+
+	public void setCurve( Curve curve ) {
+        curves = new Curve[] { curve };
+		initialized = false;
+	}
+	
+	public void setCurves( Curve[] curves ) {
+		if ( curves == null || (curves.length != 1 && curves.length != 3) ) {
+                    throw new IllegalArgumentException( "Curves must be length 1 or 3" );
+                }
+        this.curves = curves;
+		initialized = false;
+	}
+	
+	public Curve[] getCurves() {
+		return curves;
+	}
+
+        @Override
+	public String toString() {
+		return "Colors/Curves...";
+	}
+
     public static class Curve {
+
         public float[] x;
         public float[] y;
         
@@ -28,10 +71,10 @@ public class CurvesFilter extends TransferFilter {
             x = new float[] { 0, 1 };
             y = new float[] { 0, 1 };
         }
-        
-        public Curve( Curve curve ) {
-            x = (float[])curve.x.clone();
-            y = (float[])curve.y.clone();
+
+        public Curve(Curve curve) {
+            x = curve.x.clone();
+            y = curve.y.clone();
         }
         
         public int addKnot( float kx, float ky ) {
@@ -63,22 +106,25 @@ public class CurvesFilter extends TransferFilter {
         
         public void removeKnot( int n ) {
             int numKnots = x.length;
-            if ( numKnots <= 2 )
+            if ( numKnots <= 2 ) {
                 return;
+            }
             float[] nx = new float[numKnots-1];
             float[] ny = new float[numKnots-1];
             int j = 0;
             for ( int i = 0; i < numKnots-1; i++ ) {
-                if ( i == n )
+                if ( i == n ) {
                     j++;
+                }
                 nx[i] = x[j];
                 ny[i] = y[j];
                 j++;
             }
             x = nx;
             y = ny;
-            for ( int i = 0; i < x.length; i++ )
+            for ( int i = 0; i < x.length; i++ ) {
                 System.out.println( i+": "+x[i]+" "+y[i]);
+            }
         }
 
         private void sortKnots() {
@@ -123,46 +169,6 @@ public class CurvesFilter extends TransferFilter {
             return table;
         }
     }
-    
-    public CurvesFilter() {
-        curves = new Curve[3];
-        curves[0] = new Curve();
-        curves[1] = new Curve();
-        curves[2] = new Curve();
-    }
-    
-        @Override
-	protected void initialize() {
-		initialized = true;
-		if ( curves.length == 1 )
-            rTable = gTable = bTable = curves[0].makeTable();
-        else {
-            rTable = curves[0].makeTable();
-            gTable = curves[1].makeTable();
-            bTable = curves[2].makeTable();
-        }
-	}
-
-	public void setCurve( Curve curve ) {
-        curves = new Curve[] { curve };
-		initialized = false;
-	}
-	
-	public void setCurves( Curve[] curves ) {
-		if ( curves == null || (curves.length != 1 && curves.length != 3) )
-            throw new IllegalArgumentException( "Curves must be length 1 or 3" );
-        this.curves = curves;
-		initialized = false;
-	}
-	
-	public Curve[] getCurves() {
-		return curves;
-	}
-
-        @Override
-	public String toString() {
-		return "Colors/Curves...";
-	}
 
 }
 

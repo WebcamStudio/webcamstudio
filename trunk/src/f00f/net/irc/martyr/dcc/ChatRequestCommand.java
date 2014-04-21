@@ -52,7 +52,7 @@ public class ChatRequestCommand implements OutCommand
         for (byte aRaw : raw) {
             int one = (((int) aRaw) & 0xff);
             //	System.out.print("." + one);
-            addr = addr << 8;
+            addr <<= 8;
             addr += one;
         }
         //System.out.println();
@@ -85,45 +85,48 @@ public class ChatRequestCommand implements OutCommand
 		new HandlerStarter( ss, handler ).start();
 	}
 
-	private static class HandlerStarter extends Thread
-	{
-		private final ServerSocket ss;
-		private final DccChatHandler handler;
 
-		public HandlerStarter( ServerSocket ss, DccChatHandler handler )
-		{
-			this.ss = ss;
-			this.handler = handler;
-		}
-
-		public void run()
-		{
-			try
-			{
-				Socket s = ss.accept();
-
-				handler.setSocket( s );
-				handler.start();
-			}
-			catch( IOException ioe )
-			{
-
-				ioe.printStackTrace();
-			}
-		}
-	}
-
+        @Override
 	public String getIrcIdentifier()
 	{
 		return null;
 	}
 
+        @Override
 	public String render()
 	{
 		return rendered;
 	}
 
 // END ChatRequestCommand
+
+    private static class HandlerStarter extends Thread {
+
+        private final ServerSocket ss;
+        private final DccChatHandler handler;
+
+        HandlerStarter(ServerSocket ss, DccChatHandler handler) {
+            this.ss = ss;
+            this.handler = handler;
+        }
+
+        @Override
+        public void run()
+        {
+            try
+            {
+                Socket s = ss.accept();
+                
+                handler.setSocket( s );
+                handler.start();
+            }
+            catch( IOException ioe )
+            {
+                
+                ioe.printStackTrace();
+            }
+        }
+    }
 }
  
 

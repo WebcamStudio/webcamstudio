@@ -29,7 +29,8 @@ public class StreamFullPanel extends javax.swing.JPanel implements MasterMixer.S
     private SystemPlayer player = null;
     
 
-    /** Creates new form StreamPanel */
+    /** Creates new form StreamPanel
+     * @param viewer */
     public StreamFullPanel(Viewer viewer) {
 
         initComponents();

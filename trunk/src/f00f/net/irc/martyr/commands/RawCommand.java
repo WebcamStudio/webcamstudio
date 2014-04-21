@@ -39,6 +39,7 @@ public class RawCommand implements OutCommand
     /**
      * Returns the identifier, if supplied, or null.
      */
+    @Override
     public String getIrcIdentifier()
     {
         return ident;
@@ -47,6 +48,7 @@ public class RawCommand implements OutCommand
     /**
      * Simply returns the string given in the constructor.
      */
+    @Override
     public String render()
     {
         return sourceString;

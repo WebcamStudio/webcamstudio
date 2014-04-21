@@ -56,13 +56,16 @@ public class AutoJoin extends GenericAutoService
         updateState( connection.getState() );
     }
 
+    @Override
     protected void updateState( State state )
     {
 
-        if( state == State.REGISTERED )
+        if( state == State.REGISTERED ) {
             performJoin();
+        }
     }
 
+    @Override
     protected void updateCommand( InCommand command_o )
     {
         if( command_o instanceof KickCommand )
@@ -143,10 +146,12 @@ public class AutoJoin extends GenericAutoService
         }
     }
 
+    @Override
     public String toString()
     {
-        if( key == null )
+        if( key == null ) {
             return "AutoJoin [" + channel + "]";
+        }
         return "AutoJoin [" + channel + "," + key + "]";
     }
 

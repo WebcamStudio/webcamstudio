@@ -142,8 +142,9 @@ public abstract class TransformFilter extends AbstractBufferedImageOp {
 
 		int[] inPixels = getRGB( src, 0, 0, width, height, null );
 
-		if ( interpolation == NEAREST_NEIGHBOUR )
-			return filterPixelsNN( dst, width, height, inPixels, transformedSpace );
+		if ( interpolation == NEAREST_NEIGHBOUR ) {
+                    return filterPixelsNN( dst, width, height, inPixels, transformedSpace );
+        }
 
 		int srcWidth = width;
 		int srcHeight = height;
@@ -189,7 +190,7 @@ public abstract class TransformFilter extends AbstractBufferedImageOp {
 		return dst;
 	}
 
-	final private int getPixel( int[] pixels, int x, int y, int width, int height ) {
+	private int getPixel( int[] pixels, int x, int y, int width, int height ) {
 		if (x < 0 || x >= width || y < 0 || y >= height) {
 			switch (edgeAction) {
 			case ZERO:

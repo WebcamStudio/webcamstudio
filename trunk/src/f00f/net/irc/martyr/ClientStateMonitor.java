@@ -31,8 +31,9 @@ public class ClientStateMonitor implements Observer
 
     public void enable()
     {
-        if( enabled )
+        if( enabled ) {
             return;
+        }
         enabled = true;
 
         connection.addCommandObserver( this );
@@ -40,12 +41,14 @@ public class ClientStateMonitor implements Observer
 
     public void disable()
     {
-        if( !enabled )
+        if( !enabled ) {
             return;
+        }
         connection.removeCommandObserver( this );
         enabled = false;
     }
 
+    @Override
     public void update( Observable observable, Object command_o )
     {
         InCommand command = (InCommand)command_o;

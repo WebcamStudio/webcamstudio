@@ -55,7 +55,9 @@ public abstract class AutoDccSetup extends GenericCommandAutoService
      * wish to handle exceptions, you should override this method.  Simply
      * check if updated is an instance of CtcpMessage, and then call
      * handleCtcp.
+     * @param updated
      */
+    @Override
     public void updateCommand( InCommand updated )
     {
         if( updated instanceof CtcpMessage )
@@ -256,6 +258,7 @@ public abstract class AutoDccSetup extends GenericCommandAutoService
 
 
 
+    @Override
     public String toString()
     {
         return "AutoDccSetup";

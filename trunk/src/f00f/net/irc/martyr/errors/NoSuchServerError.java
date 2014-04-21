@@ -22,11 +22,13 @@ public class NoSuchServerError extends GenericError
         this.errorMessage = errorMessage;
     }
 
+    @Override
     public String getIrcIdentifier()
     {
         return "402";
     }
 
+    @Override
     public InCommand parse( String prefix, String identifier, String params )
     {
         return new NoSuchServerError(getParameter(params, 1), getParameter(params, 2));

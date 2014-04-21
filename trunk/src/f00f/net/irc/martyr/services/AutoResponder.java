@@ -26,8 +26,9 @@ public class AutoResponder implements Observer
 
     public void enable()
     {
-        if( enabled )
+        if( enabled ) {
             return;
+        }
 
         connection.addCommandObserver( this );
         enabled = true;
@@ -35,8 +36,9 @@ public class AutoResponder implements Observer
 
     public void disable()
     {
-        if( !enabled )
+        if( !enabled ) {
             return;
+        }
 
         connection.removeCommandObserver( this );
         enabled = false;
@@ -46,7 +48,9 @@ public class AutoResponder implements Observer
      * Does the work of figuring out what to respond to.
      * If a PING is received, send a PONG.  If we JOIN a channel, send a
      * request for modes.
-     * */
+     *
+     * @param updated */
+    @Override
     public void update( Observable observer, Object updated )
     {
 

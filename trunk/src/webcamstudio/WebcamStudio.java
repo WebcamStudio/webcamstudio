@@ -56,13 +56,36 @@ import javax.xml.transform.TransformerException;
 import javax.xml.xpath.XPathExpressionException;
 import org.xml.sax.SAXException;
 import webcamstudio.channels.MasterChannels;
-import webcamstudio.components.*;
-import static webcamstudio.components.MasterPanel.*;
+import webcamstudio.components.MasterPanel;
+import static webcamstudio.components.MasterPanel.spinFPS;
+import static webcamstudio.components.MasterPanel.spinHeight;
+import static webcamstudio.components.MasterPanel.spinWidth;
+import webcamstudio.components.OutputPanel;
+import webcamstudio.components.ResourceMonitor;
+import webcamstudio.components.ResourceMonitorLabel;
+import webcamstudio.components.SourceControls;
+import webcamstudio.components.StreamDesktop;
+import webcamstudio.components.StreamFullDesktop;
+import webcamstudio.components.VideoDeviceInfo;
 import webcamstudio.exporter.vloopback.VideoDevice;
 import webcamstudio.externals.ProcessRenderer;
 import webcamstudio.mixers.MasterMixer;
 import webcamstudio.mixers.SystemPlayer;
-import webcamstudio.streams.*;
+import webcamstudio.streams.SourceChannel;
+import webcamstudio.streams.SourceCustom;
+import webcamstudio.streams.SourceDVB;
+import webcamstudio.streams.SourceDesktop;
+import webcamstudio.streams.SourceIPCam;
+import webcamstudio.streams.SourceImageGif;
+import webcamstudio.streams.SourceMicrophone;
+import webcamstudio.streams.SourceMovie;
+import webcamstudio.streams.SourceMusic;
+import webcamstudio.streams.SourceQRCode;
+import webcamstudio.streams.SourceSoundMonitor;
+import webcamstudio.streams.SourceText;
+import webcamstudio.streams.SourceURL;
+import webcamstudio.streams.SourceWebcam;
+import webcamstudio.streams.Stream;
 import webcamstudio.studio.Studio;
 import webcamstudio.util.Tools;
 import webcamstudio.util.Tools.OS;
@@ -1166,7 +1189,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         String commandDuration;
         Runtime rt = Runtime.getRuntime();
         String distro = wsDistroWatch();
-        System.out.println("Distro: "+ distro);
+//        System.out.println("Distro: "+ distro);
         if (distro.toLowerCase().equals("ubuntu")){
             commandDuration = "avconv -i " + "\"" + file.getAbsolutePath() + "\"";
         } else {
@@ -1687,11 +1710,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
     }//GEN-LAST:event_tglFFmpegActionPerformed
 
     private void btnAddFolderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddFolderActionPerformed
-        boolean noStreams = false;
-        ArrayList<Stream> allStreams = MasterChannels.getInstance().getStreams();
-        if (allStreams.isEmpty()){
-            noStreams = true;
-        }
+        final java.awt.event.ActionEvent fEvt = evt;
         JFileChooser chooser = new JFileChooser(lastFolder);
         FileNameExtensionFilter mediaFilter = new FileNameExtensionFilter("Supported Media files", "avi", "ogg", "jpeg", "ogv", "mp4", "m4v", "mpg", "divx", "wmv", "flv", "mov", "mkv", "vob", "jpg", "bmp", "png", "gif", "mp3", "wav", "wma", "m4a", ".mp2");
         chooser.setFileFilter(mediaFilter);
@@ -1700,49 +1719,70 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         int retVal = chooser.showOpenDialog(this);
         if (retVal == JFileChooser.APPROVE_OPTION) {
-            File dir = chooser.getSelectedFile();
-            File[] contents = null;
-            if (dir != null) {
-                lastFolder = dir.getAbsoluteFile();
-                contents = dir.listFiles();
-                for ( File f : contents) {
-                    String fileName = f.getName();
-                    System.out.println("Name: " + fileName);
-                }
-            }
-            if (dir != null) {
-                for ( File file : contents) {
-                    Stream s = Stream.getInstance(file);
-                    if (s != null) {
-                        if (s instanceof SourceMovie || s instanceof SourceMusic) {
-                            durationCalc(s, file);
-                        }
-                        ArrayList<String> allChan = new ArrayList<>();
-                        for (String scn : MasterChannels.getInstance().getChannels()){
-                            allChan.add(scn); 
-                        } 
-                        for (String sc : allChan){
-                            s.addChannel(SourceChannel.getChannel(sc, s));
-                        }
-                        StreamDesktop frame = new StreamDesktop(s, this);
-                        desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
-
-                        try {
-                            frame.setSelected(true);
-                        } catch (PropertyVetoException ex) {
-                            Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                        if (noStreams) { 
-                            listener.resetAutoPLBtnState(evt);
+            final File dir = chooser.getSelectedFile();
+            System.out.println("Dir: "+dir);
+            final WaitingDialog waitingD = new WaitingDialog(this);
+            waitingD.setModal(true);
+            SwingWorker<?,?> worker = new SwingWorker<Void,Integer>(){  
+                @Override
+                protected Void doInBackground() throws InterruptedException {
+                    boolean noStreams = false;
+                    ArrayList<Stream> allStreams = MasterChannels.getInstance().getStreams();
+                    if (allStreams.isEmpty()){
+                        noStreams = true;
+                    }
+                    File[] contents = null;
+                    if (dir != null) {
+                        lastFolder = dir.getAbsoluteFile();
+                        contents = dir.listFiles();
+                        for ( File f : contents) {
+                            String fileName = f.getName();
+                            System.out.println("Name: " + fileName);
                         }
                     }
-                }
-                ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Media Folder Imported!");
-                ResourceMonitor.getInstance().addMessage(label);
-            } else {
-                ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "No File Selected!");
-                ResourceMonitor.getInstance().addMessage(label);
-            }
+                    if (dir != null) {
+                        for ( File file : contents) {
+                            Stream s = Stream.getInstance(file);
+                            if (s != null) {
+                                if (s instanceof SourceMovie || s instanceof SourceMusic) {
+                                    durationCalc(s, file);
+                                }
+//                                ArrayList<String> allChan = new ArrayList<>();
+//                                for (String scn : MasterChannels.getInstance().getChannels()){
+//                                    allChan.add(scn); 
+//                                } 
+//                                for (String sc : allChan){
+//                                    s.addChannel(SourceChannel.getChannel(sc, s));
+//                                }
+                                StreamDesktop frame = new StreamDesktop(s, WebcamStudio.this);
+                                desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+
+//                                try {
+//                                    frame.setSelected(true);
+//                                } catch (PropertyVetoException ex) {
+//                                    Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
+//                                }
+                                if (noStreams) { 
+                                    listener.resetAutoPLBtnState(fEvt);
+                                }
+                            }
+                        }
+                        ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Media Folder Imported!");
+                        ResourceMonitor.getInstance().addMessage(label);
+                    } else {
+                        ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "No Directory Selected!");
+                        ResourceMonitor.getInstance().addMessage(label);
+                    }
+                return null;
+                }  
+                @Override
+                protected void done(){
+                    waitingD.dispose();
+                }  
+            }; 
+        worker.execute();
+        waitingD.toFront();
+        waitingD.setVisible(true);
         } else {
             ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Loading Cancelled!");
             ResourceMonitor.getInstance().addMessage(label);

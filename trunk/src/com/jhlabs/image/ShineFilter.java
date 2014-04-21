@@ -114,8 +114,9 @@ public class ShineFilter extends AbstractBufferedImageOp {
         int width = src.getWidth();
         int height = src.getHeight();
 
-        if ( dst == null )
+        if ( dst == null ) {
             dst = createCompatibleDestImage( src, null );
+        }
 
 		float xOffset = distance*(float)Math.cos(angle);
 		float yOffset = -distance*(float)Math.sin(angle);

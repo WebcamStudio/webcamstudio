@@ -32,16 +32,17 @@ package webcamstudio.exporter.vloopback;
  */
 public class v4l2_capability extends com.sun.jna.Structure {
 
-    public static class ByValue extends v4l2_capability implements com.sun.jna.Structure.ByValue {
-    }
-
-    public static class ByReference extends v4l2_capability implements com.sun.jna.Structure.ByReference {
-    }
     public byte[] driver = new byte[16];
     public byte[] card = new byte[32];
     public byte[] bus_info = new byte[32];
     public int version;
     public int capabilities;
     public int[] reserved = new int[4];
+
+    public static class ByValue extends v4l2_capability implements com.sun.jna.Structure.ByValue {
+    }
+
+    public static class ByReference extends v4l2_capability implements com.sun.jna.Structure.ByReference {
+    }
 
 }

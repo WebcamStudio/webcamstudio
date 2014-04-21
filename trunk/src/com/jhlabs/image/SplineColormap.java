@@ -97,8 +97,9 @@ public class SplineColormap extends ArrayColormap {
      * @see #addKnot
      */
 	public void removeKnot(int n) {
-		if (numKnots <= 4)
-			return;
+		if (numKnots <= 4) {
+                    return;
+                }
 		if (n < numKnots-1) {
 			System.arraycopy(xKnots, n+1, xKnots, n, numKnots-n-1);
 			System.arraycopy(yKnots, n+1, yKnots, n, numKnots-n-1);
@@ -123,8 +124,9 @@ public class SplineColormap extends ArrayColormap {
 		xKnots[numKnots-1] = 256;
 		yKnots[0] = yKnots[1];
 		yKnots[numKnots-1] = yKnots[numKnots-2];
-		for (int i = 0; i < 256; i++)
-			map[i] = ImageMath.colorSpline(i, numKnots, xKnots, yKnots);
+		for (int i = 0; i < 256; i++) {
+                    map[i] = ImageMath.colorSpline(i, numKnots, xKnots, yKnots);
+                }
 	}
 
 	private void sortKnots() {

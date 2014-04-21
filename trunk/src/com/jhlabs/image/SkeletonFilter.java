@@ -65,37 +65,47 @@ public class SkeletonFilter extends BinaryFilter {
 						if (pixel == black) {
 							int tableIndex = 0;
 
-							if (inPixels[offset-width-1] == black)
-								tableIndex |= 1;
-							if (inPixels[offset-width] == black)
-								tableIndex |= 2;
-							if (inPixels[offset-width+1] == black)
-								tableIndex |= 4;
-							if (inPixels[offset+1] == black)
-								tableIndex |= 8;
-							if (inPixels[offset+width+1] == black)
-								tableIndex |= 16;
-							if (inPixels[offset+width] == black)
-								tableIndex |= 32;
-							if (inPixels[offset+width-1] == black)
-								tableIndex |= 64;
-							if (inPixels[offset-1] == black)
-								tableIndex |= 128;
+							if (inPixels[offset-width-1] == black) {
+                                                            tableIndex |= 1;
+                                                        }
+							if (inPixels[offset-width] == black) {
+                                                            tableIndex |= 2;
+                                                        }
+							if (inPixels[offset-width+1] == black) {
+                                                            tableIndex |= 4;
+                                                        }
+							if (inPixels[offset+1] == black) {
+                                                            tableIndex |= 8;
+                                                        }
+							if (inPixels[offset+width+1] == black) {
+                                                            tableIndex |= 16;
+                                                        }
+							if (inPixels[offset+width] == black) {
+                                                            tableIndex |= 32;
+                                                        }
+							if (inPixels[offset+width-1] == black) {
+                                                            tableIndex |= 64;
+                                                        }
+							if (inPixels[offset-1] == black) {
+                                                            tableIndex |= 128;
+                                                        }
 							int code = skeletonTable[tableIndex];
 							if (pass == 1) {
 								if (code == 2 || code == 3) {
-									if (colormap != null)
-										pixel = colormap.getColor((float)i/iterations);
-									else
-										pixel = newColor;
+									if (colormap != null) {
+                                                                            pixel = colormap.getColor((float)i/iterations);
+                                                                        } else {
+                                                                            pixel = newColor;
+                                                                        }
 									count++;
 								}
 							} else {
 								if (code == 1 || code == 3) {
-									if (colormap != null)
-										pixel = colormap.getColor((float)i/iterations);
-									else
-										pixel = newColor;
+									if (colormap != null) {
+                                                                            pixel = colormap.getColor((float)i/iterations);
+                                                                        } else {
+                                                                            pixel = newColor;
+                                                                        }
 									count++;
 								}
 							}
@@ -108,8 +118,9 @@ public class SkeletonFilter extends BinaryFilter {
 					outPixels = new int[width * height];
 				}
 			}
-			if (count == 0)
-				break;
+			if (count == 0) {
+                            break;
+                        }
 		}
 		return outPixels;
 	}

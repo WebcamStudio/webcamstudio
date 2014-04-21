@@ -20,16 +20,19 @@ import f00f.net.irc.martyr.Mode;
  */
 public class BanMode extends GenericChannelMask
 {
+        @Override
 	public boolean requiresParam()
 	{
 		return true;
 	}
 	
+        @Override
 	public char getChar()
 	{
 		return 'b';
 	}
 	
+        @Override
 	public Mode newInstance()
 	{
 		return new BanMode();

@@ -33,6 +33,7 @@ public class SaturationFilter extends PointFilter {
     /**
      * Construct a SaturationFilter.
      * The amount of saturation change.
+     * @param amount
      */
 	public SaturationFilter( float amount ) {
 		this.amount = amount;

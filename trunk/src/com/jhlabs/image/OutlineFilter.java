@@ -47,16 +47,19 @@ public class OutlineFilter extends BinaryFilter {
 								int ix = x+dx;
 								if (!(dy == 0 && dx == 0) && 0 <= ix && ix < width) {
 									int rgb = inPixels[ioffset+ix];
-									if (blackFunction.isBlack(rgb))
-										neighbours++;
-								} else
-									neighbours++;
+									if (blackFunction.isBlack(rgb)) {
+                                                                            neighbours++;
+                                                                        }
+								} else {
+                                                                    neighbours++;
+                                                                }
 							}
 						}
 					}
 					
-					if (neighbours == 9)
-						pixel = newColor;
+					if (neighbours == 9) {
+                                            pixel = newColor;
+                                        }
 				}
 				outPixels[index++] = pixel;
 			}
