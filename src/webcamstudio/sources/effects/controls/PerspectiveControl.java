@@ -25,22 +25,10 @@ public class PerspectiveControl extends javax.swing.JPanel {
     public PerspectiveControl(Perspective effect) {
         initComponents();
         this.effect=effect;
-/*        txtX1.setText((int)effect.getX1()+"");
-        txtY1.setText((int)effect.getY1()+"");
-        txtX2.setText((int)effect.getX2()+"");
-        txtY2.setText((int)effect.getY2()+"");
-        txtX3.setText((int)effect.getX3()+"");
-        txtY3.setText((int)effect.getY3()+"");
-        txtX4.setText((int)effect.getX4()+"");
-        txtY4.setText((int)effect.getY4()+""); */
-        jSpinX1.setValue(effect.getX1());
-        jSpinY1.setValue(effect.getY1());
-//        jSpinX2.setValue((int)effect.getX2());
-//        jSpinY2.setValue((int)effect.getY2());
-        jSpinX3.setValue(effect.getX3());
-        jSpinY3.setValue(effect.getY3());
-//        jSpinX4.setValue((int)effect.getX4());
-//        jSpinY4.setValue((int)effect.getY4());
+        jSpinX1.setValue((int)effect.getX1());
+        jSpinY1.setValue((int)effect.getY1());
+        jSpinX3.setValue((int)effect.getX3());
+        jSpinY3.setValue((int)effect.getY3());
     }
 
     /** This method is called from within the constructor to
@@ -237,38 +225,38 @@ public class PerspectiveControl extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jSpinX1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinX1StateChanged
-        effect.setX1((float) jSpinX1.getValue());
+        effect.setX1((Integer) jSpinX1.getValue());
     }//GEN-LAST:event_jSpinX1StateChanged
 
     private void jSpinY1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinY1StateChanged
-        effect.setY1((float) jSpinY1.getValue());
+        effect.setY1((Integer) jSpinY1.getValue());
     }//GEN-LAST:event_jSpinY1StateChanged
 
     private void jSpinX3StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinX3StateChanged
-        effect.setX3((float) jSpinX3.getValue());
+        effect.setX3((Integer) jSpinX3.getValue());
     }//GEN-LAST:event_jSpinX3StateChanged
 
     private void jSpinY3StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinY3StateChanged
-        effect.setY3((float) jSpinY3.getValue());
+        effect.setY3((Integer) jSpinY3.getValue());
     }//GEN-LAST:event_jSpinY3StateChanged
 
     private void jSlX1LeftStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlX1LeftStateChanged
-        effect.setX1(jSlX1Left.getValue());
+        effect.setX1((Integer)jSlX1Left.getValue());
         jSpinX1.setValue(jSlX1Left.getValue());
     }//GEN-LAST:event_jSlX1LeftStateChanged
 
     private void jSY1TopStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSY1TopStateChanged
-        effect.setY1(jSY1Top.getValue());
+        effect.setY1((Integer)jSY1Top.getValue());
         jSpinY1.setValue(jSY1Top.getValue());
     }//GEN-LAST:event_jSY1TopStateChanged
 
     private void jSlX3RightStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlX3RightStateChanged
-        effect.setX3(jSlX3Right.getValue());
+        effect.setX3((Integer)jSlX3Right.getValue());
         jSpinX3.setValue(jSlX3Right.getValue());
     }//GEN-LAST:event_jSlX3RightStateChanged
 
     private void jSlY3BottomStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlY3BottomStateChanged
-        effect.setY3(jSlY3Bottom.getValue());
+        effect.setY3((Integer)jSlY3Bottom.getValue());
         jSpinY3.setValue(jSlY3Bottom.getValue());
     }//GEN-LAST:event_jSlY3BottomStateChanged
 

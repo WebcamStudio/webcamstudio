@@ -128,13 +128,13 @@ public class SourceImageGif extends Stream {
     public void readNext() {
         image = decoder.getFrame(index);
         frame = new Frame(uuid, image, null);
-        for (Effect fxG : this.getEffects()) {
-            if (frame != null) {
-                if (fxG.needApply()){   
-                    fxG.applyEffect(frame.getImage());
-                }
-            }
-        }
+//        for (Effect fxG : this.getEffects()) {
+//            if (frame != null) {
+//                if (fxG.needApply()){   
+//                    fxG.applyEffect(frame.getImage());
+//                }
+//            }
+//        }
         frame.setOutputFormat(x, y, width, height, opacity, volume);
         frame.setZOrder(zorder);
         nextFrame=frame;

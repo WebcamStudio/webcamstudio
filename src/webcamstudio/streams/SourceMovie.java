@@ -93,11 +93,13 @@ public class SourceMovie extends Stream {
         Frame f = null;
         if (capture != null) {
             f = capture.getFrame();
-            for (int fx = 0; fx < this.getEffects().size(); fx++) {
-                if (f != null) {
-                    Effect fxM = this.getEffects().get(fx);
-                    if (fxM.needApply()){   
-                        fxM.applyEffect(f.getImage());
+            if (this.getEffects() != null) {
+                for (int fx = 0; fx < this.getEffects().size(); fx++) {
+                    if (f != null) {
+                        Effect fxM = this.getEffects().get(fx);
+                        if (fxM.needApply()){   
+                            fxM.applyEffect(f.getImage());
+                        }
                     }
                 }
             }

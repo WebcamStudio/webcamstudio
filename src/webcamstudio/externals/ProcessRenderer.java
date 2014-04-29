@@ -4,14 +4,14 @@
  */
 package webcamstudio.externals;
 
-import java.io.BufferedReader;
+//import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+//import java.io.InputStream;
+//import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.net.SocketException;
@@ -27,6 +27,7 @@ import webcamstudio.media.renderer.ProcessExecutor;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterMixer;
 import webcamstudio.streams.SinkFile;
+//import webcamstudio.streams.SourceAudioSource;
 import webcamstudio.streams.Stream;
 import webcamstudio.util.Tools;
 import webcamstudio.util.Tools.OS;
@@ -40,22 +41,22 @@ public class ProcessRenderer {
     final static String RES_CAP = "capture_OS.properties";
     final static String RES_OUT = "output_OS.properties";
     private final static String userHomeDir = Tools.getUserHome();
-    private final String audioSource = initAudioSource();
+//    private final String audioSource = initAudioSource();
     public static String pidOutput;    
 
-    public static int getUnixPID(Process process) throws Exception //Author Martijn Courteaux Code
-    {
-    System.out.println("Process_GetUnixPid: "+process.getClass().getName());
-    if (process.getClass().getName().equals("java.lang.UNIXProcess")) {
-        Class cl = process.getClass();
-        Field field = cl.getDeclaredField("pid");
-        field.setAccessible(true);
-        Object pidObject = field.get(process);
-        return (Integer) pidObject;
-    } else {
-        throw new IllegalArgumentException("Needs to be a UNIXProcess");
+    public static int getUnixPID(Process process) throws Exception { //Author Martijn Courteaux Code
+        System.out.println("Process_GetUnixPid: "+process.getClass().getName());
+        if (process.getClass().getName().equals("java.lang.UNIXProcess")) {
+            Class cl = process.getClass();
+            Field field = cl.getDeclaredField("pid");
+            field.setAccessible(true);
+            Object pidObject = field.get(process);
+            return (Integer) pidObject;
+        } else {
+            throw new IllegalArgumentException("Needs to be a UNIXProcess");
+        }
     }
-    }
+    
     java.io.DataInput input = null;
     boolean stopMe = false;
     boolean stopped = true;
@@ -128,67 +129,67 @@ public class ProcessRenderer {
         
     }
 
-    @SuppressWarnings("empty-statement")
-    private String initAudioSource() {
-        Runtime rt = Runtime.getRuntime();
-        String commandAudioSrc = "pactl list";
-        String resu = null;
-        File fileD=new File(userHomeDir+"/.webcamstudio/"+"SetAudioSrc.sh");
-        FileOutputStream fosD;
-        DataOutputStream dosD = null;
-        try {
-            fosD = new FileOutputStream(fileD);
-            dosD= new DataOutputStream(fosD);
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        try {
-            dosD.writeBytes("#!/bin/bash\n");
-            dosD.writeBytes(commandAudioSrc+"\n");
-            dosD.close();
-        } catch (IOException ex) {
-            Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        try {
-            rt.exec("chmod a+x "+userHomeDir+"/.webcamstudio/"+"SetAudioSrc.sh");
-        } catch (IOException ex) {
-            Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        String batchAudioSrcComm = userHomeDir+"/.webcamstudio/"+"SetAudioSrc.sh";
-        try {
-            Process audioSrc = rt.exec(batchAudioSrcComm);
-            audioSrc.waitFor();
-            InputStream lsOut = audioSrc.getInputStream();
-            InputStreamReader isr = new InputStreamReader(lsOut);
-            BufferedReader in = new BufferedReader(isr);
-            String line = "";
-            while ((line = in.readLine()) != null) {
-                if(line.contains("alsa_output.pci")) {
-                    if (line.contains("hdmi")) {
-                    } else {
-                        line = line.trim();
-                        line = line.replace(" ", "");
-                        String[] temp = line.split(":");
-                        String audioScrDev = temp[1];
-                        resu = audioScrDev.substring(0, 28);
-//                        System.out.println("Resu: " + resu);
-                        temp = null;
-                    }
-                } else if (line.contains("alsa_input.pci")) {
-                    line = line.trim();
-                    line = line.replace(" ", "");
-                    String[] temp = line.split(":");
-                    String audioScrDev = temp[1];
-                    audioPulseInput = audioScrDev.substring(0, 27);
-//                        System.out.println("Resu: " + resu);
-                    temp = null;
-                }
-            } 
-        } catch (IOException | InterruptedException e) {
-            Logger.getLogger(Capturer.class.getName()).log(Level.SEVERE, null, e);
-        }
-        return resu;
-    }
+//    @SuppressWarnings("empty-statement")
+//    private String initAudioSource() {
+//        Runtime rt = Runtime.getRuntime();
+//        String commandAudioSrc = "pactl list";
+//        String resu = null;
+//        File fileD=new File(userHomeDir+"/.webcamstudio/"+"SetAudioSrc.sh");
+//        FileOutputStream fosD;
+//        DataOutputStream dosD = null;
+//        try {
+//            fosD = new FileOutputStream(fileD);
+//            dosD= new DataOutputStream(fosD);
+//        } catch (FileNotFoundException ex) {
+//            Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        try {
+//            dosD.writeBytes("#!/bin/bash\n");
+//            dosD.writeBytes(commandAudioSrc+"\n");
+//            dosD.close();
+//        } catch (IOException ex) {
+//            Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        try {
+//            rt.exec("chmod a+x "+userHomeDir+"/.webcamstudio/"+"SetAudioSrc.sh");
+//        } catch (IOException ex) {
+//            Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        String batchAudioSrcComm = userHomeDir+"/.webcamstudio/"+"SetAudioSrc.sh";
+//        try {
+//            Process audioSrc = rt.exec(batchAudioSrcComm);
+//            audioSrc.waitFor();
+//            InputStream lsOut = audioSrc.getInputStream();
+//            InputStreamReader isr = new InputStreamReader(lsOut);
+//            BufferedReader in = new BufferedReader(isr);
+//            String line = "";
+//            while ((line = in.readLine()) != null) {
+//                if(line.contains("alsa_output.pci")) {
+//                    if (line.contains("hdmi")) {
+//                    } else {
+//                        line = line.trim();
+//                        line = line.replace(" ", "");
+//                        String[] temp = line.split(":");
+//                        String audioScrDev = temp[1];
+//                        resu = audioScrDev.substring(0, 28);
+////                        System.out.println("Resu: " + resu);
+//                        temp = null;
+//                    }
+//                } else if (line.contains("alsa_input.pci")) {
+//                    line = line.trim();
+//                    line = line.replace(" ", "");
+//                    String[] temp = line.split(":");
+//                    String audioScrDev = temp[1];
+//                    audioPulseInput = audioScrDev.substring(0, 27);
+////                        System.out.println("Resu: " + resu);
+//                    temp = null;
+//                }
+//            } 
+//        } catch (IOException | InterruptedException e) {
+//            Logger.getLogger(Capturer.class.getName()).log(Level.SEVERE, null, e);
+//        }
+//        return resu;
+//    }
 
     private String translateTag(String value) {
         String result = value.toUpperCase().replace('.', '_');
@@ -391,7 +392,7 @@ public class ProcessRenderer {
                     command = command.replaceAll(Tags.CHANNELS.toString(), "" + channels);
                     break;
                 case AUDIOSRC:
-                    command = command.replaceAll(Tags.AUDIOSRC.toString(), "" + audioSource);
+                    command = command.replaceAll(Tags.AUDIOSRC.toString(), "" + stream.getAudioSource() + "");
                     break;
                 case PAUDIOSRC:
                     command = command.replaceAll(Tags.PAUDIOSRC.toString(), "" + audioPulseInput);
@@ -572,31 +573,30 @@ public class ProcessRenderer {
                                 commandVideo = plugins.getProperty("AVvideo").replaceAll("  ", " "); //Making sure there is no double spaces
                             }
                         } else {
-                        if (!stream.isOnlyAudio()) {
-                            if (stream.hasVideo()) {
+                            if (!stream.isOnlyAudio()) {
+                                if (stream.hasVideo()) {
+                                    if (!"".equals(stream.getGSEffect())) {
+                                        commandVideo = plugins.getProperty("GSvideoFX").replaceAll("  ", " "); //Making sure there is no double spaces
+                                    } else {
+                                        commandVideo = plugins.getProperty("GSvideo").replaceAll("  ", " "); //Making sure there is no double spaces
+                                    }
+                                } else {
+                                    if (!"".equals(stream.getGSEffect())) {
+                                        commandVideo = plugins.getProperty("SndvideoFX").replaceAll("  ", " "); //Making sure there is no double spaces
+                                        stream.setHasVideo(true);
+                                    } else {
+                                        commandVideo = plugins.getProperty("Sndvideo").replaceAll("  ", " "); //Making sure there is no double spaces
+                                        stream.setHasVideo(true);
+                                    }
+                                }
+                            } else {
                                 if (!"".equals(stream.getGSEffect())) {
                                     commandVideo = plugins.getProperty("GSvideoFX").replaceAll("  ", " "); //Making sure there is no double spaces
                                 } else {
                                     commandVideo = plugins.getProperty("GSvideo").replaceAll("  ", " "); //Making sure there is no double spaces
                                 }
-                            } else {
-                                if (!"".equals(stream.getGSEffect())) {
-                                    commandVideo = plugins.getProperty("SndvideoFX").replaceAll("  ", " "); //Making sure there is no double spaces
-                                    stream.setHasVideo(true);
-                                } else {
-                                    commandVideo = plugins.getProperty("Sndvideo").replaceAll("  ", " "); //Making sure there is no double spaces
-                                    stream.setHasVideo(true);
-                                }
-                            }
-                        } else {
-                            if (!"".equals(stream.getGSEffect())) {
-                                commandVideo = plugins.getProperty("GSvideoFX").replaceAll("  ", " "); //Making sure there is no double spaces
-                            } else {
-                                commandVideo = plugins.getProperty("GSvideo").replaceAll("  ", " "); //Making sure there is no double spaces
                             }
                         }
-                        }
-//                    commandVideo = plugins.getProperty("video").replaceAll("  ", " "); //Making sure there is no double spaces
                     }
                 }
                 if (plugins.containsKey("audio")) {
@@ -607,13 +607,12 @@ public class ProcessRenderer {
                     } else if (stream.isRTMP()) {
                         commandAudio = plugins.getProperty("RTMPaudio").replaceAll("  ", " "); //Making sure there is no double spaces
                     } else {
-                    if ("AV".equals(stream.getComm())){
-                        commandAudio = plugins.getProperty("AVaudio").replaceAll("  ", " "); //Making sure there is no double spaces
-                    } else {
-                        commandAudio = plugins.getProperty("GSaudio").replaceAll("  ", " "); //Making sure there is no double spaces
+                        if ("AV".equals(stream.getComm())){
+                            commandAudio = plugins.getProperty("AVaudio").replaceAll("  ", " "); //Making sure there is no double spaces
+                        } else {
+                            commandAudio = plugins.getProperty("GSaudio").replaceAll("  ", " "); //Making sure there is no double spaces
+                        }
                     }
-//                    commandAudio = plugins.getProperty("audio").replaceAll("  ", " "); //Making sure there is no double spaces
-                }
                 }
                 if (commandVideo != null) {
                     commandVideo = setParameters(commandVideo);

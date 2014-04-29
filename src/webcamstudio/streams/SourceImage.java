@@ -97,19 +97,17 @@ public class SourceImage extends Stream{
     public void readNext() {
         frame.setImage(image);
         if (frame != null) {
-            for (Effect fxI : this.getEffects()) {
-                if (fxI.needApply()){   
-                    fxI.applyEffect(frame.getImage());
+            if (this.getEffects() != null) {
+                for (Effect fxI : this.getEffects()) {
+                    if (fxI.needApply()){   
+                        fxI.applyEffect(frame.getImage());
+                    }
                 }
             }
             frame.setOutputFormat(x, y, width, height, opacity, volume);
             frame.setZOrder(zorder);
             nextFrame=frame;
         }
-//        applyEffects(frame.getImage());
-//        frame.setOutputFormat(x, y, width, height, opacity, volume);
-//        frame.setZOrder(zorder);
-//        nextFrame=frame;
     }
 
     @Override

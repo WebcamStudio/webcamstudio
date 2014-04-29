@@ -12,18 +12,25 @@ package webcamstudio.components;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.Box;
+import javax.swing.JCheckBoxMenuItem;
 import webcamstudio.mixers.MasterMixer;
+import webcamstudio.streams.SourceAudioSource;
 import webcamstudio.streams.SourceDVB;
 import webcamstudio.streams.SourceIPCam;
 import webcamstudio.streams.SourceImageGif;
 import webcamstudio.streams.SourceImageU;
-import webcamstudio.streams.SourceMicrophone;
+//import webcamstudio.streams.SourceMicrophone;
 import webcamstudio.streams.SourceQRCode;
 import webcamstudio.streams.SourceText;
 import webcamstudio.streams.SourceURL;
 import webcamstudio.streams.SourceWebcam;
 import webcamstudio.streams.Stream;
+import webcamstudio.util.PaCTL;
 import webcamstudio.util.Tools;
 
 /**
@@ -41,6 +48,7 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
     Listener listener = null;
     private boolean runMe = true;
     private int speed = 5; // - is faster + is slower
+    String[] sourcesAudio;
 
 /*    StreamDesktop(Stream webcam, ActionListener aThis) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -51,10 +59,12 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
     /** Creates new form StreamDesktop
      * @param s
      * @param l */
-    public StreamDesktop(Stream s,Listener l) {
+    public StreamDesktop(final Stream s,Listener l) {
         listener = l;
         stream = s;
         initComponents();
+        
+        
         if (s instanceof SourceText) {
             StreamPanelText p = new StreamPanelText((Stream)s);
             this.setLayout(new BorderLayout());
@@ -63,6 +73,7 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
             this.setVisible(true);
             jMControls.setVisible(false);
             JMBackEnd.setVisible(false);
+            jMAudioSource.setVisible(false);
             panelText = p;
             s.setPanelType("PanelText");
         } else if (s instanceof SourceQRCode) {
@@ -73,6 +84,7 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
             this.setVisible(true);
             jMControls.setVisible(false);
             JMBackEnd.setVisible(false);
+            jMAudioSource.setVisible(false);
             panelText = p;
             s.setPanelType("PanelText");
         } else if (s instanceof SourceDVB) {
@@ -83,6 +95,7 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
             this.setVisible(true);
             JMBackEnd.setVisible(false);
             jMIPCBrand.setVisible(false);
+            jMAudioSource.setVisible(false);
             stream.setComm("GS");
             panelDVB = p;
             s.setPanelType("PanelDVB");
@@ -124,6 +137,7 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
             s.setPanelType("PanelURL");
             jCBShowSliders.setVisible(false);
             jMIPCBrand.setVisible(false);
+            jMAudioSource.setVisible(false);
         } else if (s instanceof SourceIPCam) {
             StreamPanelIPCam p = new StreamPanelIPCam(s);
             this.setLayout(new BorderLayout());
@@ -184,7 +198,47 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
             panelIPCam = p;
             s.setPanelType("PanelIPCam");
             jCBShowSliders.setVisible(false);
+            jMAudioSource.setVisible(false);
         } else {
+            
+            if (s instanceof SourceAudioSource) {
+                final ArrayList<JCheckBoxMenuItem> aSMenuItem = new ArrayList<>();
+                try {
+                    sourcesAudio = PaCTL.getSources();
+                } catch (IOException ex) {
+                    Logger.getLogger(StreamDesktop.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                for (String audioSource : sourcesAudio){
+                    final JCheckBoxMenuItem jCBMenuItem = new javax.swing.JCheckBoxMenuItem();
+                    jCBMenuItem.setText(audioSource);
+                    jCBMenuItem.setName(audioSource); // NOI18N
+                    jCBMenuItem.addActionListener(new java.awt.event.ActionListener() {
+                        @Override
+                        public void actionPerformed(java.awt.event.ActionEvent evt) {
+                            s.setAudioSource(jCBMenuItem.getText());
+                            for (JCheckBoxMenuItem jCb : aSMenuItem) {
+                                if (!jCb.getText().equals(s.getAudioSource())) {
+                                    jCb.setSelected(false);
+                                }
+                            }
+                        }
+                    });
+                    jMAudioSource.add(jCBMenuItem);
+                    aSMenuItem.add(jCBMenuItem);
+                    if (s.getLoaded()){
+                        for (JCheckBoxMenuItem jCb : aSMenuItem) {
+                            if (jCb.getText().equals(s.getAudioSource())) {
+                                jCb.setSelected(true);
+                            }
+                        }
+                    } else {
+                        JCheckBoxMenuItem initJCb = aSMenuItem.get(0);
+                        initJCb.setSelected(true);
+                        s.setAudioSource(initJCb.getText());
+                    }
+                }
+            }
+        
             StreamPanel p = new StreamPanel(s);
             this.setLayout(new BorderLayout());
             this.add(p, BorderLayout.CENTER);
@@ -209,21 +263,21 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
                         jCBGStreamer.setSelected(false);
                         break;
                     default:
-                        if (stream instanceof SourceWebcam || stream instanceof SourceMicrophone ||stream instanceof SourceImageU) {
-                        jCBGStreamer.setSelected(true);
-                        stream.setComm("GS");
-                        jCBAVConv.setSelected(false);
-                        jCBFFmpeg.setSelected(false);
+                        if (stream instanceof SourceWebcam || stream instanceof SourceAudioSource ||stream instanceof SourceImageU) {
+                            jCBGStreamer.setSelected(true);
+                            stream.setComm("GS");
+                            jCBAVConv.setSelected(false);
+                            jCBFFmpeg.setSelected(false);
                         } else {
-                        jCBAVConv.setSelected(true);
-                        stream.setComm("AV");
-                        jCBGStreamer.setSelected(false);
-                        jCBFFmpeg.setSelected(false);
+                            jCBAVConv.setSelected(true);
+                            stream.setComm("AV");
+                            jCBGStreamer.setSelected(false);
+                            jCBFFmpeg.setSelected(false);
                         }
                         break;
                 }
             } else {
-                if (stream instanceof SourceWebcam || stream instanceof SourceMicrophone ||stream instanceof SourceImageU) {
+                if (stream instanceof SourceWebcam || stream instanceof SourceAudioSource ||stream instanceof SourceImageU) {
                     jCBGStreamer.setSelected(true);
                     stream.setComm("GS");
                     jCBAVConv.setSelected(false);
@@ -242,6 +296,11 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
             s.setPanelType("Panel");
             jCBMoreOptions.setEnabled(true);
             jMIPCBrand.setVisible(false);
+            if (s instanceof SourceAudioSource) {
+                jMAudioSource.setVisible(true);
+            } else {
+                jMAudioSource.setVisible(false);
+            }
         }
         this.setVisible(true);
         this.setDesktopIcon(new DesktopIcon(this,s));
@@ -273,6 +332,7 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
         jCBTopToBottom = new javax.swing.JCheckBoxMenuItem();
         jCBBouncingRight = new javax.swing.JCheckBoxMenuItem();
         jMRefresh = new javax.swing.JMenu();
+        jMAudioSource = new javax.swing.JMenu();
         JMBackEnd = new javax.swing.JMenu();
         jCBGStreamer = new javax.swing.JCheckBoxMenuItem();
         jCBAVConv = new javax.swing.JCheckBoxMenuItem();
@@ -283,22 +343,22 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
         setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/user-desktop.png"))); // NOI18N
         setVisible(true);
         addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
-            public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
-                formInternalFrameActivated(evt);
-            }
-            public void internalFrameClosed(javax.swing.event.InternalFrameEvent evt) {
+            public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
             }
             public void internalFrameClosing(javax.swing.event.InternalFrameEvent evt) {
                 formInternalFrameClosing(evt);
             }
-            public void internalFrameDeactivated(javax.swing.event.InternalFrameEvent evt) {
-            }
-            public void internalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {
+            public void internalFrameClosed(javax.swing.event.InternalFrameEvent evt) {
             }
             public void internalFrameIconified(javax.swing.event.InternalFrameEvent evt) {
                 formInternalFrameIconified(evt);
             }
-            public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
+            public void internalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
+                formInternalFrameActivated(evt);
+            }
+            public void internalFrameDeactivated(javax.swing.event.InternalFrameEvent evt) {
             }
         });
         addFocusListener(new java.awt.event.FocusAdapter() {
@@ -441,6 +501,11 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
             }
         });
         jMBOptions.add(jMRefresh);
+
+        jMAudioSource.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/audiosource.png"))); // NOI18N
+        jMAudioSource.setToolTipText("Audio Source Selector");
+        jMAudioSource.setName("jMAudioSource"); // NOI18N
+        jMBOptions.add(jMAudioSource);
 
         JMBackEnd.setForeground(new java.awt.Color(74, 7, 1));
         JMBackEnd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/bkend-switch5-button-small.png"))); // NOI18N
@@ -1019,6 +1084,7 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
     private javax.swing.JCheckBoxMenuItem jCBoxAxisPtz;
     private javax.swing.JCheckBoxMenuItem jCBoxFosCamPtz;
     private javax.swing.JCheckBoxMenuItem jCBoxWansCamPtz;
+    private javax.swing.JMenu jMAudioSource;
     private javax.swing.JMenuBar jMBOptions;
     private javax.swing.JMenu jMControls;
     private javax.swing.JMenu jMIPCBrand;

@@ -17,6 +17,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.WSImage;
+//import webcamstudio.streams.SourceAudioSource;
 import webcamstudio.streams.Stream;
 import webcamstudio.util.Tools;
 
@@ -76,34 +77,36 @@ public class Capturer {
 
                     try {
                         Socket connection = videoServer.accept();  
-    //                    System.out.println(stream.getName() + " video accepted...");
+                        System.out.println(stream.getName() + " Video accepted...");
                         if (stream.hasFakeVideo()) {
                             fakeVideoIn = new DataInputStream(new BufferedInputStream(connection.getInputStream(), 4096));
                         }
                         do {
                             Tools.sleep(20);
                             if (fakeAudioIn != null) {
+//                                System.out.println("Audio still not avaiable ...");
                                 if (fakeAudioIn.available() != 0) {
                                     noVideoPres=false;
                                     Tools.sleep(stream.getVDelay());
                                     videoIn = fakeVideoIn;
-//                                    System.out.println("Start Movie/DVB Video.");
+//                                    System.out.println("Audio avaiable !!!");
+                                    System.out.println("Start Video ...");
                                 }
                             } else if (stream.getName().contains("Desktop")) {
                                 noVideoPres=false;
                                 Tools.sleep(stream.getVDelay());
                                 videoIn = new DataInputStream(connection.getInputStream());
-//                                System.out.println("Start Desktop Video.");
+                                System.out.println("Start Video ...");
                             } else if (stream.getClass().getName().contains("SourceWebcam")) { //hasaudio ||
                                 noVideoPres=false;
                                 Tools.sleep(stream.getVDelay());
                                 videoIn = new DataInputStream(new BufferedInputStream(connection.getInputStream(), 4096));
-//                                System.out.println("Start Webcam Video.");
+                                System.out.println("Start Video ...");
                             } else if (!stream.hasAudio()) {
                                 noVideoPres=false;
                                 Tools.sleep(stream.getVDelay());
                                 videoIn = fakeVideoIn;
-//                                System.out.println("Start Muted Video.");
+                                System.out.println("Start Video ...");
                             }
                         } while (noVideoPres);
 
@@ -123,24 +126,27 @@ public class Capturer {
                 public void run() {
                     try {                    
                         Socket connection = audioServer.accept();
-    //                    System.out.println(stream.getName() + " audio accepted...");
+                        System.out.println(stream.getName() + " Audio accepted...");
                         if (stream.hasFakeAudio()) {
                             fakeAudioIn = new DataInputStream(new BufferedInputStream(connection.getInputStream(), 4096));
                         }
                         do {
                             Tools.sleep(20);
-                            if (fakeVideoIn != null)  {                            
+                            if (fakeVideoIn != null)  {
+//                                System.out.println("Video still not avaiable ...");
                                 if (fakeVideoIn.available() != 0) {
                                     noAudioPres = false; 
                                     Tools.sleep(stream.getADelay());
+//                                    Tools.sleep(60);
                                     audioIn = fakeAudioIn;
-//                                    System.out.println("Start Movie/DVB Audio.");
+//                                    System.out.println("Video avaiable !!!");
+                                    System.out.println("Start Audio ...");
                                 }
                           } else if (stream.getName().endsWith(".mp3") || !stream.hasVideo() ) {
                                 noAudioPres = false;
                                 Tools.sleep(stream.getADelay());
                                 audioIn = new DataInputStream(new BufferedInputStream(connection.getInputStream(), 4096));
-//                                System.out.println("Start Music/Mic Audio.");  
+                                System.out.println("Start Audio ...");  
                           } 
                         }  while (noAudioPres);
                     } catch (IOException ex) {
@@ -177,22 +183,22 @@ public class Capturer {
 
     public void vPause() {
         vPauseFlag = true;
-//        System.out.println("vCapture Paused ...");
+        System.out.println("VideoCapture Paused ...");
     }
     
     public void aPause() {
         aPauseFlag = true;
-//        System.out.println("aCapture Paused ...");
+        System.out.println("AudioCapture Paused ...");
     }
     
     public void vPlay() {
         vPauseFlag = false;
-//        System.out.println("vCapture Resumed ...");
+        System.out.println("VideoCapture Resumed ...");
     }
     
     public void aPlay() {
         aPauseFlag = false;
-//        System.out.println("aCapture Resumed ...");
+        System.out.println("AudioCapture Resumed ...");
     }
     public int getVideoPort() {
         return vport;

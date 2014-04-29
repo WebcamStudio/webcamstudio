@@ -4,12 +4,18 @@
  */
 package webcamstudio.streams;
 
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterFrameBuilder;
 import webcamstudio.mixers.MasterMixer;
@@ -178,78 +184,108 @@ public class SourceText extends Stream {
 
     @Override
     public void updateContent(String content) {
-        if (this.getIsATimer()){
-            this.content = "Text Clock Mode.";
+        if (this.getIsQRCode()) {
+            if (this.getIsATimer()){
+                this.content = "QRCode Clock Mode.";
+            } else {
+                this.content = content;
+            }
+            captureWidth = width;
+            captureHeight = height;
+            if (content != null && content.length() > 0) {
+                frame = new Frame(captureWidth, captureHeight, rate);
+                MultiFormatWriter w = new MultiFormatWriter();
+                image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+                BitMatrix b;
+                try {
+                    b = w.encode(content, BarcodeFormat.QR_CODE, width, height);
+                    image = com.google.zxing.client.j2se.MatrixToImageWriter.toBufferedImage(b);
+                } catch (WriterException ex) {
+                    Logger.getLogger(SourceQRCode.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+                if (frame != null) {
+                    frame.setImage(image);
+                    frame.setOutputFormat(x, y, width, height, opacity, volume);
+                    frame.setZOrder(zorder);
+                }
+            }
         } else {
-            this.content = content;
-        }
-        captureWidth = width;
-        captureHeight = height;
-        int textHeight = captureHeight;
-        int textWidth; // = captureWidth;
-        image = new BufferedImage(captureWidth, captureHeight, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D buffer = image.createGraphics();
-        buffer.setRenderingHint(RenderingHints.KEY_RENDERING,
-                           RenderingHints.VALUE_RENDER_SPEED);
-        buffer.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                           RenderingHints.VALUE_ANTIALIAS_OFF);
-        buffer.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-                           RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
-        buffer.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,
-                           RenderingHints.VALUE_FRACTIONALMETRICS_OFF);
-        buffer.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING,
-                           RenderingHints.VALUE_COLOR_RENDER_SPEED);
-        buffer.setRenderingHint(RenderingHints.KEY_DITHERING,
-                           RenderingHints.VALUE_DITHER_DISABLE);
-        Font font = new java.awt.Font(fontName, java.awt.Font.PLAIN, textHeight);
-        buffer.setFont(font);
-        FontMetrics fm = buffer.getFontMetrics();
-        textHeight = fm.getHeight();
-        textWidth = fm.stringWidth(content);
-        int fontSize = font.getSize();
-        while ((textHeight > captureHeight || textWidth > captureWidth) && fontSize>1){
-            font = new java.awt.Font(fontName, java.awt.Font.PLAIN, fontSize--);
+            if (this.getIsATimer()){
+                this.content = "Text Clock Mode.";
+            } else {
+                this.content = content;
+            }
+            captureWidth = width;
+            captureHeight = height;
+            int textHeight = captureHeight;
+            int textWidth; // = captureWidth;
+            image = new BufferedImage(captureWidth, captureHeight, BufferedImage.TYPE_INT_ARGB);
+            Graphics2D buffer = image.createGraphics();
+
+            buffer.setRenderingHint(RenderingHints.KEY_RENDERING,
+                               RenderingHints.VALUE_RENDER_SPEED);
+            buffer.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                               RenderingHints.VALUE_ANTIALIAS_OFF);
+    //        buffer.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+    //                           RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
+            buffer.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,
+                               RenderingHints.VALUE_FRACTIONALMETRICS_OFF);
+            buffer.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING,
+                               RenderingHints.VALUE_COLOR_RENDER_SPEED);
+            buffer.setRenderingHint(RenderingHints.KEY_DITHERING,
+                               RenderingHints.VALUE_DITHER_DISABLE);
+
+            Font font = new java.awt.Font(fontName, java.awt.Font.PLAIN, textHeight);
             buffer.setFont(font);
-            fm = buffer.getFontMetrics();
+            FontMetrics fm = buffer.getFontMetrics();
             textHeight = fm.getHeight();
             textWidth = fm.stringWidth(content);
-        }        
-        buffer.setRenderingHint(java.awt.RenderingHints.KEY_TEXT_ANTIALIASING, java.awt.RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-        buffer.setRenderingHint(java.awt.RenderingHints.KEY_INTERPOLATION, java.awt.RenderingHints.VALUE_INTERPOLATION_BICUBIC);
-        buffer.setRenderingHint(java.awt.RenderingHints.KEY_RENDERING, java.awt.RenderingHints.VALUE_RENDER_QUALITY);
-        buffer.setRenderingHint(java.awt.RenderingHints.KEY_DITHERING, java.awt.RenderingHints.VALUE_DITHER_ENABLE);
-        buffer.setRenderingHint(java.awt.RenderingHints.KEY_COLOR_RENDERING, java.awt.RenderingHints.VALUE_COLOR_RENDER_QUALITY);
-        frame = new Frame(captureWidth, captureHeight, rate);
-        buffer.setBackground(new Color(0,0,0,0));
-        buffer.clearRect(0, 0, captureWidth, captureHeight);
-        switch (shape) {
-            case RECTANGLE:
-                buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC, bgOpacity));
-                buffer.setColor(new Color(bgColor));
-                buffer.fill3DRect(0, 0, captureWidth, captureHeight,true);
-                break;
-            case OVAL:
-                buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC, bgOpacity));
-                buffer.setColor(new Color(bgColor));
-                buffer.fillOval(0, 0, captureWidth, captureHeight);
-                break;
-            case ROUNDRECT:
-                buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC, bgOpacity));
-                buffer.setColor(new Color(bgColor));
-                buffer.fillRoundRect(0, 0, captureWidth, captureHeight,captureWidth/5,captureHeight/5);
-                
-                break;
-        }
+            int fontSize = font.getSize();
+            while ((textHeight > captureHeight || textWidth > captureWidth) && fontSize>1){
+                font = new java.awt.Font(fontName, java.awt.Font.PLAIN, fontSize--);
+                buffer.setFont(font);
+                fm = buffer.getFontMetrics();
+                textHeight = fm.getHeight();
+                textWidth = fm.stringWidth(content);
+            }
+            buffer.setRenderingHint(java.awt.RenderingHints.KEY_TEXT_ANTIALIASING, java.awt.RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+    //        buffer.setRenderingHint(java.awt.RenderingHints.KEY_INTERPOLATION, java.awt.RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+    //        buffer.setRenderingHint(java.awt.RenderingHints.KEY_RENDERING, java.awt.RenderingHints.VALUE_RENDER_QUALITY);
+    //        buffer.setRenderingHint(java.awt.RenderingHints.KEY_DITHERING, java.awt.RenderingHints.VALUE_DITHER_ENABLE);
+    //        buffer.setRenderingHint(java.awt.RenderingHints.KEY_COLOR_RENDERING, java.awt.RenderingHints.VALUE_COLOR_RENDER_QUALITY);
+            frame = new Frame(captureWidth, captureHeight, rate);
+            buffer.setBackground(new Color(0,0,0,0));
+            buffer.clearRect(0, 0, captureWidth, captureHeight);
+            switch (shape) {
+                case RECTANGLE:
+                    buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC, bgOpacity));
+                    buffer.setColor(new Color(bgColor));
+                    buffer.fill3DRect(0, 0, captureWidth, captureHeight,true);
+                    break;
+                case OVAL:
+                    buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC, bgOpacity));
+                    buffer.setColor(new Color(bgColor));
+                    buffer.fillOval(0, 0, captureWidth, captureHeight);
+                    break;
+                case ROUNDRECT:
+                    buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC, bgOpacity));
+                    buffer.setColor(new Color(bgColor));
+                    buffer.fillRoundRect(0, 0, captureWidth, captureHeight,captureWidth/5,captureHeight/5);
 
-        buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC, 1F));
-        buffer.setColor(new Color(color));
-        buffer.drawString(content, (captureWidth-textWidth)/2, (captureHeight/2)+(textHeight/2)-fm.getDescent());
-        buffer.dispose();
-        frame.setImage(image);
-        if (frame != null) {
-            frame.setImage(image);
-            frame.setOutputFormat(x, y, width, height, opacity, volume);
-            frame.setZOrder(zorder);
+                    break;
+            }
+
+            buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC, 1F));
+            buffer.setColor(new Color(color));
+            buffer.drawString(content, (captureWidth-textWidth)/2, (captureHeight/2)+(textHeight/2)-fm.getDescent());
+            buffer.dispose();
+    //        frame.setImage(image);
+            if (frame != null) {
+                frame.setImage(image);
+                frame.setOutputFormat(x, y, width, height, opacity, volume);
+                frame.setZOrder(zorder);
+            }
         }
     }
 

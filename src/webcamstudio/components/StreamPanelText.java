@@ -59,17 +59,17 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
         cboFonts.setModel(model);
         
         this.stream = stream;
-        if (stream instanceof SourceText) {
+//        if (stream instanceof SourceText) {
             sTx = (SourceText) stream;
             cW = sTx.getTextCW();
     //        System.out.println("Stream CW: "+cW);
             cH = sTx.getTextCW();
     //        System.out.println("Stream CH: "+cH);
-        } else {
-            sTqr = (SourceQRCode) stream;
-            cW = sTqr.getTextCW();
-            cH = sTqr.getTextCH();
-        }
+//        } else {
+//            sTqr = (SourceQRCode) stream;
+//            cW = sTqr.getTextCW();
+//            cH = sTqr.getTextCH();
+//        }
         spinX.setValue(stream.getX());
         jSlSpinX.setValue(stream.getX());
         spinY.setValue(stream.getY());
@@ -83,7 +83,7 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
         spinZOrder.setValue(stream.getZOrder());
         jSlSpinZOrder.setValue(stream.getZOrder());
         if (stream.getIsATimer()){
-            if (stream instanceof SourceQRCode) {
+            if (stream.getIsQRCode()) {
                 txtContent.setText("QRCode Clock Mode.");
             } else {
                 txtContent.setText("Text Clock Mode.");
@@ -92,10 +92,11 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
             txtContent.setText(stream.getContent());
         }
 //        setToolTipText(stream.getContent());
-        cboFonts.setEnabled(!(stream instanceof SourceQRCode));
-        txtHexColor.setEnabled(!(stream instanceof SourceQRCode));
-        btnSelectColor.setEnabled(!(stream instanceof SourceQRCode));
+        cboFonts.setEnabled(!(stream.getIsQRCode()));
+        txtHexColor.setEnabled(!(stream.getIsQRCode()));
+        btnSelectColor.setEnabled(!(stream.getIsQRCode()));
         tglClock.setSelected(stream.getIsATimer());
+        tglQRCode.setSelected(stream.getIsQRCode());
         stream.setListener(this);
     }
     
@@ -175,6 +176,7 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
         jSlSpinZOrder = new javax.swing.JSlider();
         jSeparator3 = new javax.swing.JSeparator();
         tglClock = new javax.swing.JToggleButton();
+        tglQRCode = new javax.swing.JToggleButton();
 
         setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
         setFocusTraversalPolicyProvider(true);
@@ -290,7 +292,7 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
                 tglActiveStreamActionPerformed(evt);
             }
         });
-        add(tglActiveStream, new org.netbeans.lib.awtextra.AbsoluteConstraints(7, 114, 79, 20));
+        add(tglActiveStream, new org.netbeans.lib.awtextra.AbsoluteConstraints(7, 100, 110, 20));
 
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/splash100.png"))); // NOI18N
         jLabel3.setName("jLabel3"); // NOI18N
@@ -430,7 +432,7 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
         add(jSeparator3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 290, 268, 10));
 
         tglClock.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/clock-add.png"))); // NOI18N
-        tglClock.setToolTipText("Switch to Text Date/Clock Mode.");
+        tglClock.setToolTipText("Switch to Date/Clock Mode.");
         tglClock.setName("tglClock"); // NOI18N
         tglClock.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/clock-add.png"))); // NOI18N
         tglClock.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/clock-add-selected.png"))); // NOI18N
@@ -439,7 +441,19 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
                 tglClockActionPerformed(evt);
             }
         });
-        add(tglClock, new org.netbeans.lib.awtextra.AbsoluteConstraints(85, 114, 30, 20));
+        add(tglClock, new org.netbeans.lib.awtextra.AbsoluteConstraints(65, 125, 50, 20));
+
+        tglQRCode.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/qrcode.png"))); // NOI18N
+        tglQRCode.setToolTipText("Switch to QRCode mode.");
+        tglQRCode.setName("tglQRCode"); // NOI18N
+        tglQRCode.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/qrcode.png"))); // NOI18N
+        tglQRCode.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/qrcode-selected.png"))); // NOI18N
+        tglQRCode.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tglQRCodeActionPerformed(evt);
+            }
+        });
+        add(tglQRCode, new org.netbeans.lib.awtextra.AbsoluteConstraints(8, 125, 50, 20));
 
         getAccessibleContext().setAccessibleParent(this);
     }// </editor-fold>//GEN-END:initComponents
@@ -484,7 +498,8 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
             if (tglActiveStream.isSelected()) {
                 this.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.green));
                 tglClock.setEnabled(false);
-                if (stream instanceof SourceQRCode) {
+                tglQRCode.setEnabled(false);
+                if (stream.getIsQRCode()) {
                     txtContent.setText("QRCode Clock Mode.");
                     stream.updateContent("QRCode Clock Mode.");
                 } else {
@@ -499,6 +514,7 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
             } else {
                 this.setBorder(BorderFactory.createEmptyBorder());
                 tglClock.setEnabled(true);
+                tglQRCode.setEnabled(true);
                 time.cancel();
                 time.purge();
                 clockIn.cancel();
@@ -509,10 +525,12 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
         } else {
             if (tglActiveStream.isSelected()) {
                 tglClock.setEnabled(false);
+                tglQRCode.setEnabled(false);
                 this.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.green));
                 stream.read();
             } else {
                 tglClock.setEnabled(true);
+                tglQRCode.setEnabled(true);
                 this.setBorder(BorderFactory.createEmptyBorder());
                 stream.stop();
             }
@@ -572,7 +590,7 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
     private void tglClockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglClockActionPerformed
         if (tglClock.isSelected()){
             stream.setIsATimer(true);
-            if (stream instanceof SourceQRCode) {
+            if (stream.getIsQRCode()) {
                 txtContent.setText("QRCode Clock Mode.");
             } else {
                 txtContent.setText("Text Clock Mode.");
@@ -582,7 +600,7 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
         } else {
             stream.setIsATimer(false);
             txtContent.setEditable(true);
-            if (stream instanceof SourceQRCode) {
+            if (stream.getIsQRCode()) {
                 txtContent.setText("QRCode Normal Mode.");
                 stream.updateContent("QRCode Normal Mode."); 
             } else {
@@ -592,6 +610,24 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
             stopClock=true;
         }
     }//GEN-LAST:event_tglClockActionPerformed
+
+    private void tglQRCodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglQRCodeActionPerformed
+        if (tglQRCode.isSelected()){
+            stream.setIsQRCode(true);
+            txtContent.setText("Text QRCode Mode.");
+            stream.updateContent("Text QRCode Mode.");
+            cboFonts.setEnabled(!(stream.getIsQRCode()));
+            txtHexColor.setEnabled(!(stream.getIsQRCode()));
+            btnSelectColor.setEnabled(!(stream.getIsQRCode()));
+        } else {
+            stream.setIsQRCode(false);
+            txtContent.setText("Text Normal Mode.");
+            stream.updateContent("Text Normal Mode.");
+            cboFonts.setEnabled(!(stream.getIsQRCode()));
+            txtHexColor.setEnabled(!(stream.getIsQRCode()));
+            btnSelectColor.setEnabled(!(stream.getIsQRCode()));
+        }
+    }//GEN-LAST:event_tglQRCodeActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnSelectColor;
@@ -622,6 +658,7 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
     private javax.swing.JSpinner spinZOrder;
     private javax.swing.JToggleButton tglActiveStream;
     private javax.swing.JToggleButton tglClock;
+    private javax.swing.JToggleButton tglQRCode;
     private javax.swing.JTextField txtContent;
     private javax.swing.JFormattedTextField txtHexColor;
     // End of variables declaration//GEN-END:variables
@@ -636,11 +673,16 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
                 time = new Timer();
                 clockIn = new clock();
                 stopClock=false;
-//                System.out.println("Source Updated Starting Clock ...");
+                System.out.println("Source Updated Starting Clock ...");
                 time.schedule(clockIn, 0);
             } else {
                 tglClock.setSelected(false);
                 txtContent.setEditable(true);
+                time.cancel();
+                time.purge();
+                clockIn.cancel();
+                stopClock=true;
+                System.out.println("Source Updated Stopping Clock ...");
             }
         } else {
             this.setBorder(BorderFactory.createEmptyBorder());
@@ -650,11 +692,23 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
                 time.cancel();
                 time.purge();
                 clockIn.cancel();
+                stopClock=true;
 //                System.out.println("Source Updated Stopping Clock ...");
             } else {
                 tglClock.setSelected(false);
                 txtContent.setEditable(true);
             }
+        }
+        if (stream.getIsQRCode()){
+            tglQRCode.setSelected(true);
+            cboFonts.setEnabled(!(stream.getIsQRCode()));
+            txtHexColor.setEnabled(!(stream.getIsQRCode()));
+            btnSelectColor.setEnabled(!(stream.getIsQRCode()));
+        } else {
+            tglQRCode.setSelected(false);
+            cboFonts.setEnabled(!(stream.getIsQRCode()));
+            txtHexColor.setEnabled(!(stream.getIsQRCode()));
+            btnSelectColor.setEnabled(!(stream.getIsQRCode()));
         }
         spinX.setValue(stream.getX());
         jSlSpinX.setValue(stream.getX());
@@ -664,13 +718,13 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
         jSlSpinW.setValue(stream.getWidth());
         spinH.setValue(stream.getHeight());
         jSlSpinH.setValue(stream.getHeight());
-        if (stream instanceof SourceText){
+//        if (stream instanceof SourceText){
             cW = sTx.getTextCW();
             cH = sTx.getTextCH();
-        } else {
-            cW = sTqr.getTextCW();
-            cH = sTqr.getTextCH();
-        }
+//        } else {
+//            cW = sTqr.getTextCW();
+//            cH = sTqr.getTextCH();
+//        }
         cboFonts.setSelectedItem(this.stream.getFont());
         txtHexColor.setText(Integer.toHexString(this.stream.getColor()));
         spinZOrder.setValue(stream.getZOrder());
@@ -678,18 +732,19 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
         txtContent.setText(this.stream.getContent());
         tglActiveStream.setSelected(stream.isPlaying());
         tglClock.setEnabled(!stream.isPlaying());
-        if (stream.isPlaying()) {
-            stopClock=false;
-        } else {
-            if (stream.getIsATimer()){
-                time.cancel();
-                time.purge();
-                clockIn.cancel();
+        tglQRCode.setEnabled(!stream.isPlaying());
+//        if (stream.isPlaying()) {
+//            stopClock=false;
+//        } else {
+//            if (stream.getIsATimer()){
+//                time.cancel();
+//                time.purge();
+//                clockIn.cancel();
 //                stopClock=true;
-//                tglClock.setSelected(false);
-//                stream.setIsATimer(false);
-            }
-        }
+////                tglClock.setSelected(false);
+////                stream.setIsATimer(false);
+//            }
+//        }
     }
 
     @Override

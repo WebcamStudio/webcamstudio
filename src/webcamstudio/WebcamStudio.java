@@ -71,17 +71,18 @@ import webcamstudio.exporter.vloopback.VideoDevice;
 import webcamstudio.externals.ProcessRenderer;
 import webcamstudio.mixers.MasterMixer;
 import webcamstudio.mixers.SystemPlayer;
+import webcamstudio.streams.SinkAudio;
 import webcamstudio.streams.SourceChannel;
 import webcamstudio.streams.SourceCustom;
 import webcamstudio.streams.SourceDVB;
 import webcamstudio.streams.SourceDesktop;
 import webcamstudio.streams.SourceIPCam;
 import webcamstudio.streams.SourceImageGif;
-import webcamstudio.streams.SourceMicrophone;
+//import webcamstudio.streams.SourceMicrophone;
 import webcamstudio.streams.SourceMovie;
 import webcamstudio.streams.SourceMusic;
-import webcamstudio.streams.SourceQRCode;
-import webcamstudio.streams.SourceSoundMonitor;
+//import webcamstudio.streams.SourceQRCode;
+import webcamstudio.streams.SourceAudioSource;
 import webcamstudio.streams.SourceText;
 import webcamstudio.streams.SourceURL;
 import webcamstudio.streams.SourceWebcam;
@@ -224,7 +225,8 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         initAnimations();
         initWebcam();
         initAudioFFMainSW();
-        loadCustomSources();       
+        loadCustomSources();
+        initAudioOut();
     }
 
     private StreamDesktop getNewStreamDesktop(Stream s) {
@@ -269,6 +271,18 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         }
     }
     
+    @SuppressWarnings("unchecked")  
+    private void initAudioOut() {
+        System.out.println("Init AudioOut ...");
+        SinkAudio audioStream = new SinkAudio();
+        audioStream.read();
+        Tools.sleep(1000);
+        audioStream.stop();
+//        audioStream = null;
+        Tools.sleep(500);
+        audioStream.destroy();
+    }
+    
     @SuppressWarnings("unchecked")
     private void initWebcam() {
         DefaultComboBoxModel model = new DefaultComboBoxModel();
@@ -291,7 +305,14 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         } else {
             cboAudioHz.setSelectedItem("44100Hz");
         }
-        tglFFmpeg.setSelected(outFFmpeg);
+        String distro = wsDistroWatch();
+        System.out.println("Distro: "+distro);
+        if (distro.toLowerCase().equals("ubuntu")){
+            tglFFmpeg.setSelected(false);
+            tglFFmpeg.setEnabled(false);
+        } else {
+            tglFFmpeg.setSelected(outFFmpeg);
+        }
     }
 
     private void loadPrefs() {
@@ -355,9 +376,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         btnAddIPCam = new javax.swing.JButton();
         btnAddDesktop = new javax.swing.JButton();
         btnAddText = new javax.swing.JButton();
-        btnAddQRCode = new javax.swing.JButton();
-        btnAddMic = new javax.swing.JButton();
-        btnAddMon = new javax.swing.JButton();
+        btnAddAudioSrc = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JToolBar.Separator();
         cboAnimations = new javax.swing.JComboBox();
         btnAddAnimation = new javax.swing.JButton();
@@ -518,53 +537,21 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         });
         toolbar.add(btnAddText);
 
-        btnAddQRCode.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/dialog-information.png"))); // NOI18N
-        btnAddQRCode.setToolTipText(bundle.getString("QRCODE")); // NOI18N
-        btnAddQRCode.setFocusable(false);
-        btnAddQRCode.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnAddQRCode.setMaximumSize(new java.awt.Dimension(29, 28));
-        btnAddQRCode.setMinimumSize(new java.awt.Dimension(25, 25));
-        btnAddQRCode.setName("btnAddQRCode"); // NOI18N
-        btnAddQRCode.setPreferredSize(new java.awt.Dimension(28, 28));
-        btnAddQRCode.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnAddQRCode.addActionListener(new java.awt.event.ActionListener() {
+        btnAddAudioSrc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/audio-volume-high.png"))); // NOI18N
+        btnAddAudioSrc.setToolTipText("AudioSource");
+        btnAddAudioSrc.setFocusable(false);
+        btnAddAudioSrc.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnAddAudioSrc.setMaximumSize(new java.awt.Dimension(29, 28));
+        btnAddAudioSrc.setMinimumSize(new java.awt.Dimension(25, 25));
+        btnAddAudioSrc.setName("btnAddAudioSrc"); // NOI18N
+        btnAddAudioSrc.setPreferredSize(new java.awt.Dimension(28, 28));
+        btnAddAudioSrc.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnAddAudioSrc.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAddQRCodeActionPerformed(evt);
+                btnAddAudioSrcActionPerformed(evt);
             }
         });
-        toolbar.add(btnAddQRCode);
-
-        btnAddMic.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/audio-input-microphone.png"))); // NOI18N
-        btnAddMic.setToolTipText(bundle.getString("MICROPHONE")); // NOI18N
-        btnAddMic.setFocusable(false);
-        btnAddMic.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnAddMic.setMaximumSize(new java.awt.Dimension(29, 28));
-        btnAddMic.setMinimumSize(new java.awt.Dimension(25, 25));
-        btnAddMic.setName("btnAddMic"); // NOI18N
-        btnAddMic.setPreferredSize(new java.awt.Dimension(28, 28));
-        btnAddMic.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnAddMic.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAddMicActionPerformed(evt);
-            }
-        });
-        toolbar.add(btnAddMic);
-
-        btnAddMon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/audio-volume-high.png"))); // NOI18N
-        btnAddMon.setToolTipText("Sound Monitor");
-        btnAddMon.setFocusable(false);
-        btnAddMon.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnAddMon.setMaximumSize(new java.awt.Dimension(29, 28));
-        btnAddMon.setMinimumSize(new java.awt.Dimension(25, 25));
-        btnAddMon.setName("btnAddMon"); // NOI18N
-        btnAddMon.setPreferredSize(new java.awt.Dimension(28, 28));
-        btnAddMon.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnAddMon.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAddMonActionPerformed(evt);
-            }
-        });
-        toolbar.add(btnAddMon);
+        toolbar.add(btnAddAudioSrc);
 
         jSeparator1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jSeparator1.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
@@ -946,25 +933,6 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         }
     }//GEN-LAST:event_btnAddTextActionPerformed
 
-    private void btnAddQRCodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddQRCodeActionPerformed
-        SourceQRCode streamQR;
-        streamQR = new SourceQRCode("WebcamStudio");
-        ArrayList<String> allChan = new ArrayList<>();
-        for (String scn : MasterChannels.getInstance().getChannels()){
-            allChan.add(scn); 
-        } 
-        for (String sc : allChan){
-            streamQR.addChannel(SourceChannel.getChannel(sc, streamQR));
-        }
-        StreamDesktop frame = new StreamDesktop(streamQR, this);
-        desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        try {
-            frame.setSelected(true);
-        } catch (PropertyVetoException ex) {
-            Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }//GEN-LAST:event_btnAddQRCodeActionPerformed
-
     private void btnAddFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddFileActionPerformed
         JFileChooser chooser = new JFileChooser(lastFolder);
         FileNameExtensionFilter mediaFilter = new FileNameExtensionFilter("Supported Media files", "avi", "ogg", "jpeg", "ogv", "mp4", "m4v", "mpg", "divx", "wmv", "flv", "mov", "mkv", "vob", "jpg", "bmp", "png", "gif", "mp3", "wav", "wma", "m4a", ".mp2");
@@ -1033,24 +1001,6 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
             Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnAddAnimationActionPerformed
-
-    private void btnAddMicActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddMicActionPerformed
-        SourceMicrophone source = new SourceMicrophone();
-        ArrayList<String> allChan = new ArrayList<>();
-        for (String scn : MasterChannels.getInstance().getChannels()){
-            allChan.add(scn); 
-        } 
-        for (String sc : allChan){
-            source.addChannel(SourceChannel.getChannel(sc, source));
-        }
-        StreamDesktop frame = new StreamDesktop(source, this);
-        desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        try {
-            frame.setSelected(true);
-        } catch (PropertyVetoException ex) {
-            Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }//GEN-LAST:event_btnAddMicActionPerformed
 
     private void btnMinimizeAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMinimizeAllActionPerformed
         for (Component c : desktop.getComponents()) {
@@ -1536,8 +1486,8 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         initWebcam();
     }//GEN-LAST:event_btnRefreshWebcamActionPerformed
 
-    private void btnAddMonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddMonActionPerformed
-        SourceSoundMonitor source = new SourceSoundMonitor();
+    private void btnAddAudioSrcActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddAudioSrcActionPerformed
+        SourceAudioSource source = new SourceAudioSource();
         ArrayList<String> allChan = new ArrayList<>();
         for (String scn : MasterChannels.getInstance().getChannels()){
             allChan.add(scn); 
@@ -1552,7 +1502,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         } catch (PropertyVetoException ex) {
             Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }//GEN-LAST:event_btnAddMonActionPerformed
+    }//GEN-LAST:event_btnAddAudioSrcActionPerformed
 
     private void cboAudioHzActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboAudioHzActionPerformed
         final String audioHz = cboAudioHz.getSelectedItem().toString();
@@ -1837,14 +1787,12 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton WCSAbout;
     private javax.swing.JButton btnAddAnimation;
+    private javax.swing.JButton btnAddAudioSrc;
     private javax.swing.JButton btnAddDVB;
     private javax.swing.JButton btnAddDesktop;
     private javax.swing.JButton btnAddFile;
     private javax.swing.JButton btnAddFolder;
     private javax.swing.JButton btnAddIPCam;
-    private javax.swing.JButton btnAddMic;
-    private javax.swing.JButton btnAddMon;
-    private javax.swing.JButton btnAddQRCode;
     private javax.swing.JButton btnAddText;
     private javax.swing.JButton btnAddURL;
     private javax.swing.JButton btnAddWebcams;

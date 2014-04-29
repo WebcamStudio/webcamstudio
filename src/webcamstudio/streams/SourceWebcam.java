@@ -110,10 +110,12 @@ public class SourceWebcam extends Stream {
         Frame f = null;
         if (capture != null) {
             f = capture.getFrame();
-            for (Effect fxW : this.getEffects()) {
-                if (f != null) {
-                    if (fxW.needApply()){                    
-                        fxW.applyEffect(f.getImage());                    
+            if (this.getEffects() != null) {
+                for (Effect fxW : this.getEffects()) {
+                    if (f != null) {
+                        if (fxW.needApply()){                    
+                            fxW.applyEffect(f.getImage());                    
+                        }
                     }
                 }
             }
