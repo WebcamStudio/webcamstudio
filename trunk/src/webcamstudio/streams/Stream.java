@@ -13,6 +13,7 @@ import webcamstudio.channels.transitions.Transition;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterMixer;
 import webcamstudio.sources.effects.Effect;
+import webcamstudio.util.Screen;
 
 /**
  *
@@ -85,8 +86,9 @@ public abstract class Stream implements Callable<Frame>{
     protected String desktopN = "0";
     protected int desktopX = 0;
     protected int desktopY = 0;
-    protected int desktopW = 1024;
-    protected int desktopH = 768;
+//    protected String[] screenID = Screen.getSources();
+    protected int desktopW = 0;
+    protected int desktopH = 0;
     protected String desktopXid = "";
     protected String elementXid = "";
     protected boolean singleWindow = false;
@@ -107,6 +109,7 @@ public abstract class Stream implements Callable<Frame>{
     protected int chDVB = 0;
     protected int color = 0;
     protected boolean isATimer = false;
+    protected boolean isQRCode = false;
     protected String comm = "AV";
     protected boolean backFF = false;
     protected String webURL = null;
@@ -125,6 +128,7 @@ public abstract class Stream implements Callable<Frame>{
     Listener listener = null;
     protected String panelType = "Panel";
     protected String streamTime = "N/A";
+    protected String audioSource = "";
 
     protected Stream() {
         MasterChannels.getInstance().register(this);
@@ -164,6 +168,12 @@ public abstract class Stream implements Callable<Frame>{
     }
     public void setIsATimer(boolean tTimer) {
         this.isATimer = tTimer;
+    }
+    public boolean getIsQRCode() {
+        return isQRCode;
+    }
+    public void setIsQRCode(boolean tQRCode) {
+        this.isQRCode = tQRCode;
     }
     public void setBackFF(boolean wasFF) {
         this.backFF = wasFF;
@@ -433,6 +443,12 @@ public abstract class Stream implements Callable<Frame>{
     }
     public String getStreamTime(){
         return streamTime;
+    }
+    public void setAudioSource(String sAS) {
+        audioSource = sAS;
+    }
+    public String getAudioSource(){
+        return audioSource;
     }
     public boolean needSeekCTRL(){
         needSeekCTRL = needSeek();

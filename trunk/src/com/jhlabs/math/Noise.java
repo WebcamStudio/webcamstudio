@@ -90,7 +90,7 @@ public class Noise implements Function1D, Function2D, Function3D {
             t = x + N;
             bx0 = ((int)t) & BM;
             bx1 = (bx0+1) & BM;
-            rx0 = t - t;
+            rx0 = t - (int)t;
             rx1 = rx0 - 1.0f;
             
             sx = sCurve(rx0);
@@ -119,13 +119,13 @@ public class Noise implements Function1D, Function2D, Function3D {
         t = x + N;
         bx0 = ((int)t) & BM;
         bx1 = (bx0+1) & BM;
-        rx0 = t - t;
+	rx0 = t - (int)t;
         rx1 = rx0 - 1.0f;
         
         t = y + N;
         by0 = ((int)t) & BM;
         by1 = (by0+1) & BM;
-        ry0 = t - t;
+	ry0 = t - (int)t;
         ry1 = ry0 - 1.0f;
         
         i = p[bx0];
@@ -171,19 +171,19 @@ public class Noise implements Function1D, Function2D, Function3D {
         t = x + N;
         bx0 = ((int)t) & BM;
         bx1 = (bx0+1) & BM;
-        rx0 = t - t;
+	rx0 = t - (int)t;
         rx1 = rx0 - 1.0f;
         
         t = y + N;
         by0 = ((int)t) & BM;
         by1 = (by0+1) & BM;
-        ry0 = t - t;
+	ry0 = t - (int)t;
         ry1 = ry0 - 1.0f;
         
         t = z + N;
         bz0 = ((int)t) & BM;
         bz1 = (bz0+1) & BM;
-        rz0 = t - t;
+	rz0 = t - (int)t;
         rz1 = rz0 - 1.0f;
         
         i = p[bx0];

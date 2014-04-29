@@ -131,10 +131,12 @@ public class SourceURL extends Stream {
         Frame f = null;
         if (capture != null) {
             f = capture.getFrame();
-            for (Effect fxUR : this.getEffects()) {
-                if (f != null) {
-                    if (fxUR.needApply()){   
-                        fxUR.applyEffect(f.getImage());
+            if (this.getEffects() != null) {
+                for (Effect fxUR : this.getEffects()) {
+                    if (f != null) {
+                        if (fxUR.needApply()){   
+                            fxUR.applyEffect(f.getImage());
+                        }
                     }
                 }
             }

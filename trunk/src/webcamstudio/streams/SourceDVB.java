@@ -10,7 +10,7 @@ import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterFrameBuilder;
 import webcamstudio.mixers.MasterMixer;
 import webcamstudio.sources.effects.Effect;
-import webcamstudio.util.Tools;
+//import webcamstudio.util.Tools;
 
 /**
  *
@@ -33,14 +33,13 @@ public class SourceDVB extends Stream {
     }
 
     @Override
-    public void read() {
-        isPlaying = true;
-        rate = MasterMixer.getInstance().getRate();
-        lastPreview = new BufferedImage(captureWidth,captureHeight,BufferedImage.TYPE_INT_ARGB);
+    public void read() {      
+//        rate = MasterMixer.getInstance().getRate();      
         MasterFrameBuilder.register(this);
         capture = new ProcessRenderer(this, ProcessRenderer.ACTION.CAPTURE, "DVB", comm);
-        Tools.sleep(200);
         capture.read();
+        lastPreview = new BufferedImage(captureWidth,captureHeight,BufferedImage.TYPE_INT_ARGB);
+        isPlaying = true;
     }
 
     @Override
@@ -105,11 +104,13 @@ public class SourceDVB extends Stream {
         if (capture != null) {
             fDVB = capture.getFrame();
             if (fDVB != null) {
-                for (int fx = 0; fx < this.getEffects().size(); fx++) {
-                    Effect fxT = this.getEffects().get(fx);
-                    if (fxT.needApply()){
-                        BufferedImage txImage = fDVB.getImage(); 
-                        fxT.applyEffect(txImage);
+                if (this.getEffects() != null) {
+                    for (int fx = 0; fx < this.getEffects().size(); fx++) {
+                        Effect fxT = this.getEffects().get(fx);
+                        if (fxT.needApply()){
+                            BufferedImage txImage = fDVB.getImage(); 
+                            fxT.applyEffect(txImage);
+                        }
                     }
                 }
                 setAudioLevel(fDVB);

@@ -14,6 +14,7 @@ import webcamstudio.externals.ProcessRenderer;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterFrameBuilder;
 import webcamstudio.sources.effects.Effect;
+import webcamstudio.util.Screen;
 import webcamstudio.util.Tools;
 import webcamstudio.util.Tools.OS;
 
@@ -32,11 +33,14 @@ public class SourceDesktop extends Stream {
     long timeCode = 0;
     Rectangle area = null;
     BufferedImage lastPreview = null;
+    protected String[] screenID = Screen.getSources();
     
     public SourceDesktop() {
         super();
         name = "Desktop";
         rate = this.getRate();
+        desktopW = Screen.getWidth(screenID[0]);
+        desktopH = Screen.getHeight(screenID[0]);
     }
 
     @Override
@@ -117,10 +121,12 @@ public class SourceDesktop extends Stream {
     @Override
     public void readNext() {
          if (capture != null) {
-                 nextFrame = capture.getFrame();
-            for (Effect fxD : this.getEffects()) {
-                if (fxD.needApply() && nextFrame != null){   
-                    fxD.applyEffect(nextFrame.getImage());
+            nextFrame = capture.getFrame();
+            if (this.getEffects() != null) {
+                for (Effect fxD : this.getEffects()) {
+                    if (fxD.needApply() && nextFrame != null){   
+                        fxD.applyEffect(nextFrame.getImage());
+                    }
                 }
             }
             if (nextFrame != null) {
@@ -133,7 +139,6 @@ public class SourceDesktop extends Stream {
             applyEffects(frame.getImage());
             nextFrame=frame;
             lastPreview = frame.getImage();
-            
         } 
     }
 

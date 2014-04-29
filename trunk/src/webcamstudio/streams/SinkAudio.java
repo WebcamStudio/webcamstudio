@@ -8,7 +8,7 @@ import java.awt.image.BufferedImage;
 import static webcamstudio.WebcamStudio.outFFmpeg;
 import webcamstudio.externals.ProcessRenderer;
 import webcamstudio.mixers.Frame;
-import webcamstudio.mixers.MasterMixer;
+//import webcamstudio.mixers.MasterMixer;
 
 /**
  *
@@ -27,9 +27,9 @@ public class SinkAudio extends Stream {
 
     @Override
     public void read() {
-        rate = MasterMixer.getInstance().getRate();
-        captureWidth = MasterMixer.getInstance().getWidth();
-        captureHeight = MasterMixer.getInstance().getHeight();
+//        rate = MasterMixer.getInstance().getRate();
+//        captureWidth = MasterMixer.getInstance().getWidth();
+//        captureHeight = MasterMixer.getInstance().getHeight();
         //        rate = MasterMixer.getInstance().getRate();
         capture = new ProcessRenderer(this, ProcessRenderer.ACTION.OUTPUT, "spkAudioOut", comm); //"spkAudioOut"
         capture.writeCom();

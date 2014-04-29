@@ -72,6 +72,7 @@ import webcamstudio.sources.effects.SwapRedBlue;
 import webcamstudio.sources.effects.Twirl;
 import webcamstudio.sources.effects.Weave;
 import webcamstudio.sources.effects.ZoomZoom;
+import webcamstudio.streams.SourceAudioSource;
 import webcamstudio.streams.SourceChannel;
 import webcamstudio.streams.SourceDVB;
 import webcamstudio.streams.SourceDesktop;
@@ -169,7 +170,7 @@ public class Studio {
         for (String c : channels) {
             int index = channels.indexOf(c);
             xml.writeStartElement(ELEMENT_CHANNEL);
-//            System.out.println("Saving Channel: "+c);
+            System.out.println("Saving Channel: "+c);
             xml.writeAttribute("name", c);
             xml.writeAttribute("duration", Durations.get(index) + "");
             xml.writeAttribute("NextChannel", nextChannel.get(index) + "");
@@ -183,7 +184,7 @@ public class Studio {
             if (clazzSink.contains("Sink")){
 //                System.out.println("Skipping Sink: "+clazzSink);
             } else {
-//                System.out.println("Saving Stream: "+s.getName());
+                System.out.println("Saving Stream: "+s.getName());
                 xml.writeStartElement(ELEMENT_SOURCE);
                 writeObject(s, xml);
                 xml.writeEndElement(); // Save Source
@@ -565,6 +566,7 @@ public class Studio {
                 String desktopXid = null;
                 String elementXid = null;
                 String streamTime = null;
+                String streamAudioSrc = null;
                 String strShapez = null;
                 
                 String chNameDvb = null;
@@ -632,6 +634,10 @@ public class Studio {
                     if (child.getNodeName().equals("streamTime")) {                       
                         streamTime = child.getTextContent();
                     }
+                    if (child.getNodeName().equals("audioSource")) {                       
+                        streamAudioSrc = child.getTextContent();
+                    }
+                    
                     if (child.getNodeName().equals("Effects")) { // Read Effects
 //                        System.out.println("childnodename: "+child.getNodeName());
                         for (int nc = 0; nc < child.getChildNodes().getLength(); nc++) {
@@ -947,12 +953,15 @@ public class Studio {
                         stream.addEffect(fx);
                     }
                     loadTransitions(SCL, stream, subSTrans, subETrans, SubChNames);
-                } else if (clazz.toLowerCase().endsWith("sourcemicrophone")) {
-                    stream = new SourceMicrophone(); 
+                } else if (clazz.toLowerCase().endsWith("sourceaudiosource")) {
+                    stream = new SourceAudioSource();
                     extstream.add(stream);
                     extstreamBis.add(stream);
                     ImgMovMus.add("Mic");
                     readObject(stream, source);
+                    stream.setComm(comm);
+                    stream.setAudioSource(streamAudioSrc);
+                    stream.setLoaded(true);
                     loadTransitions(SCL, stream, subSTrans, subETrans, SubChNames);
                 } else if (clazz.toLowerCase().endsWith("sourceimagegif")) {
                     for (int an=0;an < webcamstudio.WebcamStudio.cboAnimations.getItemCount(); an++){

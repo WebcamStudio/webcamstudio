@@ -14,31 +14,31 @@ import webcamstudio.mixers.MasterMixer;
  *
  * @author patrick (modified by Karl)
  */
-public class SourceSoundMonitor extends Stream {
+public class SourceAudioSource extends Stream {
 
     ProcessRenderer capture = null;
     BufferedImage lastPreview = null;
     boolean isPlaying = false;
 
-    public SourceSoundMonitor() {
+    public SourceAudioSource() {
         super();
         rate = MasterMixer.getInstance().getRate();
-        name = "SoundMonitor";
+        name = "AudioSource";
 
     }
 
     @Override
     public void read() {
-        isPlaying = true;
         MasterFrameBuilder.register(this);
-        lastPreview = new BufferedImage(captureWidth,captureHeight,BufferedImage.TYPE_INT_ARGB);
-        capture = new ProcessRenderer(this, ProcessRenderer.ACTION.CAPTURE, "monitor", comm);
+        capture = new ProcessRenderer(this, ProcessRenderer.ACTION.CAPTURE, "audiosource", comm);
         capture.read();
+        lastPreview = new BufferedImage(captureWidth,captureHeight,BufferedImage.TYPE_INT_ARGB);
+        isPlaying = true;
     }
     
     @Override
     public void pause() {
-        capture.stop();
+        capture.pause();
     }
     
     @Override
@@ -54,6 +54,7 @@ public class SourceSoundMonitor extends Stream {
         }
 
     }
+    
     @Override
     public boolean needSeek() {
             return needSeekCTRL=false;
@@ -73,18 +74,20 @@ public class SourceSoundMonitor extends Stream {
     }
 
     @Override
-    public Frame getFrame() {
-       
+    public Frame getFrame() { 
         return nextFrame;
     }
+    
     @Override
     public boolean hasFakeVideo(){
         return true;
     }
+    
     @Override
     public boolean hasFakeAudio(){
         return true;
     }
+    
     @Override
     public boolean hasAudio() {
         return this.hasAudio;
@@ -94,13 +97,14 @@ public class SourceSoundMonitor extends Stream {
     public boolean hasVideo() {
         return true;
     }
+    
     @Override
     public void readNext() {
-         Frame f = null;
+        Frame f = null;
         if (capture != null) {
             f = capture.getFrame();
             if (f != null) {
-                setAudioLevel(f);
+//                setAudioLevel(f);
                 lastPreview.getGraphics().drawImage(f.getImage(), 0, 0, null);
             }
         }

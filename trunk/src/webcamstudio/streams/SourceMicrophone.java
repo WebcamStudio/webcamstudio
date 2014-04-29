@@ -75,7 +75,6 @@ public class SourceMicrophone extends Stream {
 
     @Override
     public Frame getFrame() {
-       
         return nextFrame;
     }
     @Override

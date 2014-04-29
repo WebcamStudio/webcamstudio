@@ -43,6 +43,7 @@ public class Exporter implements MasterMixer.SinkListener {
     private Stream stream = null;
     private Socket vConnection = null;
     private Socket aConnection = null;
+    @SuppressWarnings("SocketException")
     public Exporter(Stream s) throws SocketException {
         this.stream = s;
         imageBuffer = new ImageBuffer(MasterMixer.getInstance().getWidth(),MasterMixer.getInstance().getHeight());
@@ -102,7 +103,7 @@ public class Exporter implements MasterMixer.SinkListener {
         }
         if (stream.hasAudio()) { //stream.hasVideo()
             Thread aExCapture = new Thread(new Runnable() {
-
+                
                 @Override
                 public void run() {
                     try {                    
@@ -116,7 +117,9 @@ public class Exporter implements MasterMixer.SinkListener {
                                 Tools.sleep(30);
                             } else {
                                 audioOutput.write(audioData);
-                                audioOutput.flush();
+                                if (audioOutput != null) {
+                                    audioOutput.flush();
+                                }
                                 aCounter++;
                             }                        
                         }

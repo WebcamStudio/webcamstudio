@@ -27,7 +27,7 @@ import webcamstudio.streams.SourceImageGif;
 import webcamstudio.streams.SourceImageU;
 import webcamstudio.streams.SourceMicrophone;
 import webcamstudio.streams.SourceMovie;
-import webcamstudio.streams.SourceSoundMonitor;
+import webcamstudio.streams.SourceAudioSource;
 import webcamstudio.streams.SourceWebcam;
 import webcamstudio.streams.Stream;
 import webcamstudio.util.Tools;
@@ -116,7 +116,7 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener, 
             tglAudio.setVisible(false);
             tglPause.setVisible(false);
             this.add(tglActiveStream, new org.netbeans.lib.awtextra.AbsoluteConstraints(7, 120, 110, 20));
-        } else if (stream instanceof SourceSoundMonitor) {
+        } else if (stream instanceof SourceAudioSource) {
             btnFullCam.setVisible(false);
             tglAudio.setVisible(true);
             tglPause.setVisible(false);
@@ -124,7 +124,7 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener, 
         } else if (stream instanceof SourceMovie) {
             btnFullCam.setVisible(false);
             tglAudio.setVisible(true);
-        } else if (stream instanceof SourceMicrophone || stream instanceof SourceImage || stream instanceof SourceImageU || stream instanceof SourceImageGif){
+        } else if (stream instanceof SourceImage || stream instanceof SourceImageU || stream instanceof SourceImageGif){
             btnFullCam.setVisible(false);
             tglAudio.setVisible(false);
             tglPause.setVisible(false);

@@ -494,6 +494,7 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
             lstChannels.setSelectedValue(CHNxName, true);
             String name = lstChannels.getSelectedValue().toString();
             System.out.println("Apply Select: "+name);
+            Tools.sleep(50);
             master.selectChannel(CHNxName);
             if (CHNextTime != 0) {
                 CHt=new Timer();

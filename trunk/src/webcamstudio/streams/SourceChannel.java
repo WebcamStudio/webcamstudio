@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import webcamstudio.channels.transitions.Transition;
-import webcamstudio.mixers.MasterMixer;
+//import webcamstudio.mixers.MasterMixer;
 import webcamstudio.sources.effects.Effect;
 
 /**
@@ -38,26 +38,32 @@ public class SourceChannel  {
         if (stream instanceof SourceText) {
             SourceText st = (SourceText) stream;
             s.isATimer = st.getIsATimer();
+            s.isQRCode = st.getIsQRCode();
             if (st.getIsATimer()) {
-                s.text = "Text Clock Mode.";
-                st.updateContent("Text Clock Mode.");
+                if (st.getIsQRCode()) {
+                    s.text = "QRCode Clock Mode.";
+                    st.updateContent("QRCode Clock Mode.");
+                } else {
+                    s.text = "Text Clock Mode.";
+                    st.updateContent("Text Clock Mode.");
+                }
             } else {
                 s.text = st.content;
             }
             s.font = st.fontName;
             s.color = st.color;
-        } else if (stream instanceof SourceQRCode) {
-            SourceQRCode sQ = (SourceQRCode)stream;
-            s.isATimer = sQ.getIsATimer();
-            if (sQ.getIsATimer()) {
-                s.text = "QRCode Clock Mode.";
-                sQ.updateContent("QRCode Clock Mode.");
-            } else {
-                s.text = sQ.content;
-            }
-//            s.font = sQ.fontName;
-//            s.color = sQ.color;
-        } 
+        } // else if (stream instanceof SourceQRCode) {
+//            SourceQRCode sQ = (SourceQRCode)stream;
+//            s.isATimer = sQ.getIsATimer();
+//            if (sQ.getIsATimer()) {
+//                s.text = "QRCode Clock Mode.";
+//                sQ.updateContent("QRCode Clock Mode.");
+//            } else {
+//                s.text = sQ.content;
+//            }
+////            s.font = sQ.fontName;
+////            s.color = sQ.color;
+//        } 
 //            else if (stream instanceof SourceDesktop) {
 //            SourceDesktop sd = (SourceDesktop) stream;
 //        }
@@ -78,6 +84,7 @@ public class SourceChannel  {
     private int color = 0;
     private String name = "";
     private boolean isATimer = false;
+    private boolean isQRCode = false;
     private boolean isPlaying = false;
     ArrayList<Effect> effects = new ArrayList<>();
     private final boolean followMouse = false;
@@ -85,7 +92,7 @@ public class SourceChannel  {
     private final int captureY = 0;
     public ArrayList<Transition> startTransitions = new ArrayList<>();
     public ArrayList<Transition> endTransitions = new ArrayList<>();
-    private final MasterMixer mixer = MasterMixer.getInstance();
+//    private final MasterMixer mixer = MasterMixer.getInstance();
 
     public SourceChannel() {
     }
@@ -114,7 +121,7 @@ public class SourceChannel  {
             public void run() {
                 if (!s.getClass().toString().contains("Sink")){ // Don't Update SinkStreams
                     ExecutorService pool = java.util.concurrent.Executors.newCachedThreadPool();
-                    if (s.endTransitions != null) {
+                    if (endTransitions != null) {
                         for (Transition t : s.endTransitions) {
                             pool.submit(t.run(instance));
                         }
@@ -130,7 +137,7 @@ public class SourceChannel  {
                             s.read();
 //                            s.updateStatus();
                         }
-                        if (s.startTransitions != null) {
+                        if (startTransitions != null) {
                             pool = java.util.concurrent.Executors.newCachedThreadPool();
                             for (Transition t : instance.startTransitions) {
                                 pool.submit(t.run(instance));
@@ -154,32 +161,40 @@ public class SourceChannel  {
                     s.width = getWidth();
                     s.height = getHeight();
                     s.opacity = getOpacity();
-                    s.effects.clear();
-                    s.effects.addAll(effects);
-                    s.startTransitions.clear();
-                    s.startTransitions.addAll(startTransitions);
-                    s.endTransitions.clear();
-                    s.endTransitions.addAll(endTransitions);
                     s.volume = getVolume();
                     s.zorder = getZorder();
                     s.captureHeight = getCapHeight();
                     s.captureWidth = getCapWidth();
-                    s.isATimer = getIsATimer();
+                    s.effects.clear();
+                    s.startTransitions.clear();
+                    s.endTransitions.clear();
+                    if (effects != null) {                        
+                        s.effects.addAll(effects);
+                    }
+                    if (startTransitions != null){
+                        s.startTransitions.addAll(startTransitions);
+                    }
+                    if (endTransitions != null) {   
+                        s.endTransitions.addAll(endTransitions);
+                    }       
                     if (s instanceof SourceText) {
                         SourceText st = (SourceText) s;
+                            st.isATimer = getIsATimer();
+                            st.isQRCode = getIsQRCode();
                             st.content = getText();
                             st.fontName = getFont();
                             st.color = getColor();
                             st.updateContent(getText());
-                    } else if (s instanceof SourceQRCode) {
-                        SourceQRCode sQ = (SourceQRCode)s;
-                        sQ.content = getText();
-                        sQ.fontName = getFont();
-                        sQ.color = getColor();
-                        sQ.updateContent(getText());
-                    }else if (s instanceof SourceDesktop) {
-                        SourceDesktop sd = (SourceDesktop) s;
-                    }               
+                    } // else if (s instanceof SourceQRCode) {
+//                        SourceQRCode sQ = (SourceQRCode)s;
+//                        sQ.isATimer = getIsATimer();
+//                        sQ.content = getText();
+//                        sQ.fontName = getFont();
+//                        sQ.color = getColor();
+//                        sQ.updateContent(getText());
+////                    } else if (s instanceof SourceDesktop) {
+////                        SourceDesktop sd = (SourceDesktop) s;
+//                    }               
                     s.updateStatus();
                 }
             }
@@ -293,6 +308,10 @@ public class SourceChannel  {
     
     public boolean getIsATimer() {
         return isATimer;
+    }
+    
+    public boolean getIsQRCode() {
+        return isQRCode;
     }
     
     /**

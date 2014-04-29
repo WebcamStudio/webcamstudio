@@ -14,7 +14,7 @@ import webcamstudio.streams.SourceMicrophone;
 import webcamstudio.streams.SourceMovie;
 import webcamstudio.streams.SourceMusic;
 import webcamstudio.streams.SourceQRCode;
-import webcamstudio.streams.SourceSoundMonitor;
+import webcamstudio.streams.SourceAudioSource;
 import webcamstudio.streams.SourceText;
 import webcamstudio.streams.SourceURL;
 import webcamstudio.streams.SourceWebcam;
@@ -90,7 +90,7 @@ public class SourceControls {
             c = new SourceControlGSEffects(source);
             c.setName("GS Fx");
             comps.add(c);
-        } else if (source instanceof SourceSoundMonitor) {
+        } else if (source instanceof SourceAudioSource) {
             c = new SourceControlEffects(source);
             c.setName("Effects");
             comps.add(c);
