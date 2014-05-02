@@ -18,19 +18,21 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.Box;
 import javax.swing.JCheckBoxMenuItem;
+import static webcamstudio.WebcamStudio.wsDistroWatch;
 import webcamstudio.mixers.MasterMixer;
 import webcamstudio.streams.SourceAudioSource;
 import webcamstudio.streams.SourceDVB;
 import webcamstudio.streams.SourceIPCam;
 import webcamstudio.streams.SourceImageGif;
 import webcamstudio.streams.SourceImageU;
-//import webcamstudio.streams.SourceMicrophone;
-import webcamstudio.streams.SourceQRCode;
+//import webcamstudio.streams.SourceQRCode;
 import webcamstudio.streams.SourceText;
 import webcamstudio.streams.SourceURL;
 import webcamstudio.streams.SourceWebcam;
 import webcamstudio.streams.Stream;
+import webcamstudio.util.AudioSource;
 import webcamstudio.util.PaCTL;
+import webcamstudio.util.Screen;
 import webcamstudio.util.Tools;
 
 /**
@@ -48,7 +50,8 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
     Listener listener = null;
     private boolean runMe = true;
     private int speed = 5; // - is faster + is slower
-    String[] sourcesAudio;
+    AudioSource[] sourcesAudio;
+    String distro = wsDistroWatch();
 
 /*    StreamDesktop(Stream webcam, ActionListener aThis) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -64,7 +67,8 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
         stream = s;
         initComponents();
         
-        
+        jCBAVConv.setVisible(Screen.avconvDetected());
+        jCBFFmpeg.setVisible(Screen.ffmpegDetected());
         if (s instanceof SourceText) {
             StreamPanelText p = new StreamPanelText((Stream)s);
             this.setLayout(new BorderLayout());
@@ -76,17 +80,17 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
             jMAudioSource.setVisible(false);
             panelText = p;
             s.setPanelType("PanelText");
-        } else if (s instanceof SourceQRCode) {
-            StreamPanelText p = new StreamPanelText(s);
-            this.setLayout(new BorderLayout());
-            this.add(p, BorderLayout.CENTER);
-            this.setTitle(s.getName());
-            this.setVisible(true);
-            jMControls.setVisible(false);
-            JMBackEnd.setVisible(false);
-            jMAudioSource.setVisible(false);
-            panelText = p;
-            s.setPanelType("PanelText");
+//        } else if (s instanceof SourceQRCode) {
+//            StreamPanelText p = new StreamPanelText(s);
+//            this.setLayout(new BorderLayout());
+//            this.add(p, BorderLayout.CENTER);
+//            this.setTitle(s.getName());
+//            this.setVisible(true);
+//            jMControls.setVisible(false);
+//            JMBackEnd.setVisible(false);
+//            jMAudioSource.setVisible(false);
+//            panelText = p;
+//            s.setPanelType("PanelText");
         } else if (s instanceof SourceDVB) {
             StreamPanelDVB p = new StreamPanelDVB(s);
             this.setLayout(new BorderLayout());
@@ -127,10 +131,17 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
                         break;
                 }
             } else {
+                if (distro.toLowerCase().equals("ubuntu")){
                     jCBAVConv.setSelected(true);
                     stream.setComm("AV");
                     jCBGStreamer.setSelected(false);
                     jCBFFmpeg.setSelected(false);
+                } else {
+                    jCBAVConv.setSelected(false);
+                    stream.setComm("FF");
+                    jCBGStreamer.setSelected(false);
+                    jCBFFmpeg.setSelected(true);
+                }
             }
             JMBackEnd.setEnabled(true);
             panelURL = p;
@@ -208,16 +219,16 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
                 } catch (IOException ex) {
                     Logger.getLogger(StreamDesktop.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                for (String audioSource : sourcesAudio){
+                for (AudioSource audioSource : sourcesAudio){
                     final JCheckBoxMenuItem jCBMenuItem = new javax.swing.JCheckBoxMenuItem();
-                    jCBMenuItem.setText(audioSource);
-                    jCBMenuItem.setName(audioSource); // NOI18N
+                    jCBMenuItem.setText(audioSource.description);
+                    jCBMenuItem.setName(audioSource.device); // NOI18N
                     jCBMenuItem.addActionListener(new java.awt.event.ActionListener() {
                         @Override
                         public void actionPerformed(java.awt.event.ActionEvent evt) {
-                            s.setAudioSource(jCBMenuItem.getText());
+                            s.setAudioSource(jCBMenuItem.getName());
                             for (JCheckBoxMenuItem jCb : aSMenuItem) {
-                                if (!jCb.getText().equals(s.getAudioSource())) {
+                                if (!jCb.getName().equals(s.getAudioSource())) {
                                     jCb.setSelected(false);
                                 }
                             }
@@ -227,14 +238,14 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
                     aSMenuItem.add(jCBMenuItem);
                     if (s.getLoaded()){
                         for (JCheckBoxMenuItem jCb : aSMenuItem) {
-                            if (jCb.getText().equals(s.getAudioSource())) {
+                            if (jCb.getName().equals(s.getAudioSource())) {
                                 jCb.setSelected(true);
                             }
                         }
                     } else {
                         JCheckBoxMenuItem initJCb = aSMenuItem.get(0);
                         initJCb.setSelected(true);
-                        s.setAudioSource(initJCb.getText());
+                        s.setAudioSource(initJCb.getName());
                     }
                 }
             }
@@ -283,10 +294,17 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
                     jCBAVConv.setSelected(false);
                     jCBFFmpeg.setSelected(false);
                 } else {
-                    jCBAVConv.setSelected(true);
-                    stream.setComm("AV");
-                    jCBGStreamer.setSelected(false);
-                    jCBFFmpeg.setSelected(false);
+                    if (distro.toLowerCase().equals("ubuntu")){
+                        jCBAVConv.setSelected(true);
+                        stream.setComm("AV");
+                        jCBGStreamer.setSelected(false);
+                        jCBFFmpeg.setSelected(false);
+                    } else {
+                        jCBAVConv.setSelected(false);
+                        stream.setComm("FF");
+                        jCBGStreamer.setSelected(false);
+                        jCBFFmpeg.setSelected(true);
+                    }
                 }
             }
             if (stream instanceof SourceImageGif){

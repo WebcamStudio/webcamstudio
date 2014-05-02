@@ -6,15 +6,19 @@ WebcamStudio 0.65
 In Ubuntu you can install the latest WS build using the WebcamStudio PPA:
 "https://launchpad.net/~webcamstudio/+archive/webcamstudio-dailybuilds"
 
-If you want to use FFmpeg backend in Ubuntu 14.04 open a terminal and type:
+If you want to use FFmpeg backend in Ubuntu 14.04 (ffmpeg is deprecated for this distro) open a terminal and type:
 
-$ sudo ln -s /opt/ffmpeg/bin/ffmpeg /usr/bin/ffmpeg
-
-To link the "ffmpeg-real" package correctly.
+sudo add-apt-respository ppa:mc3man/trusty-media
+sudo apt-get update
+sudo apt-get install ffmpeg
 
 =======================
    OPENSUSE/FEDORA
 =======================
+
+Update 01/05/2014 for NonUbuntu Users:
+WS have to pass to gstreamer 1.x backend but seems that the 0.10 version is still best supported outside Ubuntu. For now I will let WS with the gstreamer 0.10 backend commands. Be sure you also install the gstreamer-0.10-ffmpeg package. For example gst-launch1.0 seems to not recognize "videoconvert" element or h264 decoding (gstreamer1.0-libav and all plugins are installed) ... maybe my Opensuse Installation is broken.
+It would be very useful any feedback about gstreamer 1.0 backend outside Ubuntu :)
 
 First of all add Pacman repository if not done yet.
 
@@ -40,6 +44,10 @@ i | gstreamer-0_10-plugins-ugly                          | GStrea-> | package
 i | gstreamer-0_10-plugins-ugly-orig-addon               | GStrea-> | package   
 --+------------------------------------------------------+----------+-----------
 
+Install "wmctrl" package also, to enable single desktop window capture.
+
+Install "pactl" package for the Audiosource Stream-Panel.
+
 Compile webcamstudio-module-109 (Shipped in this archive) and modprobe it.
 
 Install libwebcamstudio:
@@ -48,8 +56,6 @@ From folder WS_libx64 (Shipped in this archive) Copy libwebcamstudio.so in /usr/
 or
 For x86:
 From folder WS_libx86 (Shipped in this archive) Copy libwebcamstudio.so in /usr/lib
-
-Install wmctrl package to enable single desktop window capture.
 
 To use SkyCam you have to link "gksu" command to your existing gui-based-sudo installed Package.
 For example if you have "gnomesu" installed, open a terminal and type:
@@ -68,9 +74,14 @@ $./configure --enable-gpl --enable-nonfree --enable-pthreads --enable-libx264 --
       ARCH/MANJARO
 ========================
 
+Update 01/05/2014 for NonUbuntu Users:
+WS have to pass to gstreamer 1.x backend but seems that the 0.10 version is still best supported outside Ubuntu. For now I will let WS with the gstreamer 0.10 backend commands. Be sure you also install the gstreamer-0.10-ffmpeg package. For example gst-launch1.0 seems to not recognize "videoconvert" element or h264 decoding (gstreamer1.0-libav and all plugins are installed) ... maybe my Opensuse Installation is broken.
+It would be very useful any feedback about gstreamer 1.0 backend outside Ubuntu :)
+
 Compile gnonlin from source 0.10.17 ... "http://gstreamer.freedesktop.org/src/gnonlin/"
 Once "sudo make install" is done, copy the gnonlin libs from "usr/local/lib/gstreamer" to "usr/lib/gstreamer" ... in Manjaro Linux ...
 
+Install "wmctrl" package to enable single desktop window capture.
 For SkyCam install "gksu" from AUR.
 
 Install libwebcamstudio:
@@ -80,8 +91,6 @@ or
 For x86:
 From folder WS_libx86 (Shipped in the zip file) Copy libwebcamstudio.so in /usr/lib
 
-Install wmctrl package to enable single desktop window capture.
-
 Finally navigate where WebcamStudio.jar is and type from a terminal:
 java -jar WebcamStudio.jar
 
@@ -90,6 +99,11 @@ If you want you can compile libAV from sources. "http://libav.org/download.html"
 For WS to work, please use this libAV ./configure settings:
 
 $./configure --enable-gpl --enable-nonfree --enable-pthreads --enable-libx264 --enable-libfaac --enable-libmp3lame --enable-version3 --enable-librtmp --enable-x11grab --enable-libpulse
+
+********************************************************
+For any suggestions, comments or others please write to:
+soylent.tv@gmail.com
+********************************************************
 
 Have a nice day.
 karl.

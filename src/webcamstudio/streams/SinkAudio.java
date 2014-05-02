@@ -22,6 +22,8 @@ public class SinkAudio extends Stream {
         name = "AudioOut";
         if (outFFmpeg){
             this.setComm("FF");
+        } else {
+            this.setComm("AV");
         }
     }
 

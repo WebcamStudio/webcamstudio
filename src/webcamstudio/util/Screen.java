@@ -66,6 +66,33 @@ public class Screen {
         return retValue;
     }
     
+    public static int getX(String id){
+        GraphicsEnvironment g = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        GraphicsDevice[] devices = g.getScreenDevices();
+
+        int retValue = 0;
+        for (GraphicsDevice d : devices){
+           if (d.getIDstring().equals(id)){
+               retValue = d.getDefaultConfiguration().getBounds().x;
+               break;
+           } 
+        }
+        return retValue;
+    }
+    
+    public static int getY(String id){
+        GraphicsEnvironment g = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        GraphicsDevice[] devices = g.getScreenDevices();
+        int retValue = 0;
+        for (GraphicsDevice d : devices){
+           if (d.getIDstring().equals(id)){
+               retValue = d.getDefaultConfiguration().getBounds().y;
+               break;
+           } 
+        }
+        return retValue;
+    }
+    
     public static boolean avconvDetected(){
         boolean retValue = false;
         Process p = null;
@@ -76,7 +103,27 @@ public class Screen {
             //System.out.println(p.exitValue());
             retValue = (p.exitValue() == 1);
         } catch (IOException | InterruptedException ex) {
-            System.err.println(ex.getMessage());
+//            System.err.println(ex.getMessage());
+        } finally {
+            if (p != null){
+                p.destroy();
+                p=null;
+            }
+        }
+        return retValue;
+    }
+    
+    public static boolean ffmpegDetected(){
+        boolean retValue = false;
+        Process p = null;
+        try {
+            
+            p = Runtime.getRuntime().exec("ffmpeg");
+            p.waitFor();
+            //System.out.println(p.exitValue());
+            retValue = (p.exitValue() == 1);
+        } catch (IOException | InterruptedException ex) {
+//            System.err.println(ex.getMessage());
         } finally {
             if (p != null){
                 p.destroy();

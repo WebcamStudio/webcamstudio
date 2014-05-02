@@ -21,7 +21,7 @@ import java.util.TimerTask;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
-import webcamstudio.streams.SourceQRCode;
+//import webcamstudio.streams.SourceQRCode;
 import webcamstudio.streams.SourceText;
 import webcamstudio.streams.Stream;
 import webcamstudio.util.Tools;
@@ -35,7 +35,7 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
 
     Stream stream = null;
     SourceText sTx = null;
-    SourceQRCode sTqr = null;
+//    SourceQRCode sTqr = null;
     boolean stopClock = false;
     private Timer time = new Timer();
     private TimerTask clockIn = new clock();

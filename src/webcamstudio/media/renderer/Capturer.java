@@ -79,7 +79,7 @@ public class Capturer {
                         Socket connection = videoServer.accept();  
                         System.out.println(stream.getName() + " Video accepted...");
                         if (stream.hasFakeVideo()) {
-                            fakeVideoIn = new DataInputStream(new BufferedInputStream(connection.getInputStream(), 4096));
+                            fakeVideoIn = new DataInputStream(new BufferedInputStream(connection.getInputStream(), 8192));
                         }
                         do {
                             Tools.sleep(20);
@@ -100,7 +100,7 @@ public class Capturer {
                             } else if (stream.getClass().getName().contains("SourceWebcam")) { //hasaudio ||
                                 noVideoPres=false;
                                 Tools.sleep(stream.getVDelay());
-                                videoIn = new DataInputStream(new BufferedInputStream(connection.getInputStream(), 4096));
+                                videoIn = new DataInputStream(new BufferedInputStream(connection.getInputStream(), 8192));
                                 System.out.println("Start Video ...");
                             } else if (!stream.hasAudio()) {
                                 noVideoPres=false;
@@ -128,7 +128,7 @@ public class Capturer {
                         Socket connection = audioServer.accept();
                         System.out.println(stream.getName() + " Audio accepted...");
                         if (stream.hasFakeAudio()) {
-                            fakeAudioIn = new DataInputStream(new BufferedInputStream(connection.getInputStream(), 4096));
+                            fakeAudioIn = new DataInputStream(new BufferedInputStream(connection.getInputStream(), 8192));
                         }
                         do {
                             Tools.sleep(20);
@@ -145,7 +145,7 @@ public class Capturer {
                           } else if (stream.getName().endsWith(".mp3") || !stream.hasVideo() ) {
                                 noAudioPres = false;
                                 Tools.sleep(stream.getADelay());
-                                audioIn = new DataInputStream(new BufferedInputStream(connection.getInputStream(), 4096));
+                                audioIn = new DataInputStream(new BufferedInputStream(connection.getInputStream(), 8192));
                                 System.out.println("Start Audio ...");  
                           } 
                         }  while (noAudioPres);
