@@ -20,6 +20,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import static webcamstudio.WebcamStudio.outFFmpeg;
+import static webcamstudio.WebcamStudio.wsDistroWatch;
 import static webcamstudio.externals.ProcessRenderer.ACTION.OUTPUT;
 import webcamstudio.media.renderer.Capturer;
 import webcamstudio.media.renderer.Exporter;
@@ -79,18 +80,35 @@ public class ProcessRenderer {
 
     public ProcessRenderer(Stream s, ACTION action, String plugin, String bkEnd) {
         stream = s;
+        System.out.println("BackEnd:"+bkEnd);
+        String distro = wsDistroWatch();
         if ("FF".equals(bkEnd)) {
             if (action == OUTPUT){
                 this.oPlug = "ffmpeg_output";
                 this.plugin = plugin;
             } else {
                 this.oPlug = "output";
-                this.plugin = "ffmpeg_"+plugin;
+                this.plugin = "ffmpeg_" + plugin;
                 s.setComm("AV");
             }
         } else {
-            this.plugin = plugin;
+            if (action == OUTPUT){
+                this.oPlug = "output";
+                this.plugin = plugin;
+            } else {
+                if (distro.toLowerCase().equals("ubuntu")){
+                    this.plugin = plugin;
+                } else if ("AV".equals(bkEnd) && plugin.equals("audiosource")) {
+                    this.plugin = "av_" + plugin;
+                } else if ("AV".equals(bkEnd)) {
+                    this.plugin = plugin;
+                } else {
+                    this.plugin = "ffmpeg_" + plugin; // to keep GS to 0.10 Outside Ubuntu
+                }
+            }
         }
+        System.out.println("OPlugin:"+oPlug);
+        System.out.println("Plugin: "+this.plugin);
         if (plugins == null) {
             plugins = new Properties();
             try {
@@ -687,6 +705,7 @@ public class ProcessRenderer {
                 stopMe = false;
                 videoPort = exporter.getVideoPort();
                 audioPort = exporter.getAudioPort();
+//                System.out.println("plugin: "+plugin);
                 String command = plugins.getProperty(plugin).replaceAll("  ", " "); //Making sure there is no double spaces
                 command = setParameters(command);
                 System.out.println("Command Out: "+command);

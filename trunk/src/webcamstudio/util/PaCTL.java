@@ -31,8 +31,8 @@ import java.util.logging.Logger;
 public class PaCTL {
     
     
-    public static String[] getSources() throws IOException {
-        java.util.ArrayList<String> list = new java.util.ArrayList<>();
+    public static AudioSource[] getSources() throws IOException {
+        java.util.ArrayList<AudioSource> list = new java.util.ArrayList<>();
         System.out.println("Source Audio List:");
         Process p = Runtime.getRuntime().exec("pactl list sources");
         InputStream in = p.getInputStream();
@@ -41,12 +41,17 @@ public class PaCTL {
         String line = reader.readLine();
         while (line != null){
             if (line.trim().toUpperCase().matches("^.* #[1234567890]$")){
+                AudioSource s = new AudioSource();
                 reader.readLine();
                 line = reader.readLine();
                 String l = line.trim().split(":")[1];
                 l = l.replaceAll(" ", "");
                 System.out.println(l);
-                list.add(l);
+                s.device = l;
+                line = reader.readLine();
+                l = line.trim().split(":")[1];
+                s.description = l;
+                list.add(s);
             }
             line = reader.readLine();
         }
@@ -55,7 +60,7 @@ public class PaCTL {
         reader.close();
         p.destroy();
         
-        return list.toArray(new String[list.size()]);
+        return list.toArray(new AudioSource[list.size()]);
     }
     
     public static void main(String[] args){

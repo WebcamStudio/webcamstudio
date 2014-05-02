@@ -70,6 +70,7 @@ import webcamstudio.sources.effects.Shapes;
 import webcamstudio.sources.effects.Sharpen;
 import webcamstudio.sources.effects.SwapRedBlue;
 import webcamstudio.sources.effects.Twirl;
+import webcamstudio.sources.effects.WaterFx;
 import webcamstudio.sources.effects.Weave;
 import webcamstudio.sources.effects.ZoomZoom;
 import webcamstudio.streams.SourceAudioSource;
@@ -78,10 +79,10 @@ import webcamstudio.streams.SourceDVB;
 import webcamstudio.streams.SourceDesktop;
 import webcamstudio.streams.SourceIPCam;
 import webcamstudio.streams.SourceImageGif;
-import webcamstudio.streams.SourceMicrophone;
+//import webcamstudio.streams.SourceMicrophone;
 import webcamstudio.streams.SourceMovie;
 import webcamstudio.streams.SourceMusic;
-import webcamstudio.streams.SourceQRCode;
+//import webcamstudio.streams.SourceQRCode;
 import webcamstudio.streams.SourceText;
 import static webcamstudio.streams.SourceText.Shape.NONE;
 import static webcamstudio.streams.SourceText.Shape.OVAL;
@@ -539,6 +540,10 @@ public class Studio {
                 effeX = new Weave();
                 readObjectFx(effeX, SuperChild);
                 
+            } else if (sClazz.endsWith("WaterFx")) {
+                effeX = new WaterFx();
+                readObjectFx(effeX, SuperChild);
+                
             }
         } catch (IllegalArgumentException | IllegalAccessException illegalArgumentException) {
         }
@@ -840,68 +845,68 @@ public class Studio {
                     SubChNames.clear();
                     subSTrans.clear();
                     subETrans.clear();
-                } else if (clazz.toLowerCase().endsWith("sourceqrcode")) {
-                    stream = new SourceQRCode(ObjText);
-                    extstream.add(stream); 
-                    extstreamBis.add(stream);
-                    ImgMovMus.add("QRcode");
-                    readObject(stream, source);
-                    for (Effect fx : fXL) {
-                        if (fx.getName().endsWith("Shapes")){
-                            fx.setDoOne(true);
-                        }
-                        stream.addEffect(fx);
-                    }
-                    stream.setLoaded(true);
-                    int op=0;
-                    for (SourceChannel scs : SCL) {
-                        scs.setName(SubChNames.get(op));
-                        scs.setText(SubText.get(op));
-//                        String sNamet=SubChNames.get(op);
-                        if (!subSTrans.isEmpty()){
-                            if (subSTrans.get(op) != null) {
-                                if (subSTrans.get(op).endsWith("FadeIn")){
-                                    Transition t = Transition.getInstance(stream, "FadeIn");
-                                    scs.startTransitions.add(t);
-                                } if (subSTrans.get(op).endsWith("AudioFadeIn")){
-                                    Transition t = Transition.getInstance(stream, "AudioFadeIn");
-                                    scs.startTransitions.add(t);
-                                } if (subSTrans.get(op).endsWith("TranslateIn")){
-                                    Transition t = Transition.getInstance(stream, "TranslateIn");
-                                    scs.startTransitions.add(t);
-                                } if (subSTrans.get(op).endsWith("Resize")){
-                                    Transition t = Transition.getInstance(stream, "Resize");
-                                    scs.startTransitions.add(t);
-                                } if (subSTrans.get(op).endsWith("RevealLeft")){
-                                    Transition t = Transition.getInstance(stream, "RevealLeft");
-                                    scs.startTransitions.add(t);
-                                }
-                            }
-                        }
-                        if (!subETrans.isEmpty()){
-                            if (subETrans.get(op) != null) {
-                                if (subETrans.get(op).endsWith("FadeOut")){
-                                    Transition t = Transition.getInstance(stream, "FadeOut");
-                                    scs.endTransitions.add(t);
-                                } if (subETrans.get(op).endsWith("TranslateOut")){
-                                    Transition t = Transition.getInstance(stream, "TranslateOut");
-                                    scs.endTransitions.add(t);
-                                } if (subETrans.get(op).endsWith("AudioFadeOut")){
-                                    Transition t = Transition.getInstance(stream, "AudioFadeOut");
-                                    scs.endTransitions.add(t);
-                                } if (subETrans.get(op).endsWith("ShrinkOut")){
-                                    Transition t = Transition.getInstance(stream, "ShrinkOut");
-                                    scs.endTransitions.add(t);
-                                }
-                            }
-                        }
-                        stream.addChannel(scs);                    
-                        op+=1;
-                    }
-                    SCL.clear();
-                    SubChNames.clear();
-                    subSTrans.clear();
-                    subETrans.clear();
+//                } else if (clazz.toLowerCase().endsWith("sourceqrcode")) {
+//                    stream = new SourceQRCode(ObjText);
+//                    extstream.add(stream); 
+//                    extstreamBis.add(stream);
+//                    ImgMovMus.add("QRcode");
+//                    readObject(stream, source);
+//                    for (Effect fx : fXL) {
+//                        if (fx.getName().endsWith("Shapes")){
+//                            fx.setDoOne(true);
+//                        }
+//                        stream.addEffect(fx);
+//                    }
+//                    stream.setLoaded(true);
+//                    int op=0;
+//                    for (SourceChannel scs : SCL) {
+//                        scs.setName(SubChNames.get(op));
+//                        scs.setText(SubText.get(op));
+////                        String sNamet=SubChNames.get(op);
+//                        if (!subSTrans.isEmpty()){
+//                            if (subSTrans.get(op) != null) {
+//                                if (subSTrans.get(op).endsWith("FadeIn")){
+//                                    Transition t = Transition.getInstance(stream, "FadeIn");
+//                                    scs.startTransitions.add(t);
+//                                } if (subSTrans.get(op).endsWith("AudioFadeIn")){
+//                                    Transition t = Transition.getInstance(stream, "AudioFadeIn");
+//                                    scs.startTransitions.add(t);
+//                                } if (subSTrans.get(op).endsWith("TranslateIn")){
+//                                    Transition t = Transition.getInstance(stream, "TranslateIn");
+//                                    scs.startTransitions.add(t);
+//                                } if (subSTrans.get(op).endsWith("Resize")){
+//                                    Transition t = Transition.getInstance(stream, "Resize");
+//                                    scs.startTransitions.add(t);
+//                                } if (subSTrans.get(op).endsWith("RevealLeft")){
+//                                    Transition t = Transition.getInstance(stream, "RevealLeft");
+//                                    scs.startTransitions.add(t);
+//                                }
+//                            }
+//                        }
+//                        if (!subETrans.isEmpty()){
+//                            if (subETrans.get(op) != null) {
+//                                if (subETrans.get(op).endsWith("FadeOut")){
+//                                    Transition t = Transition.getInstance(stream, "FadeOut");
+//                                    scs.endTransitions.add(t);
+//                                } if (subETrans.get(op).endsWith("TranslateOut")){
+//                                    Transition t = Transition.getInstance(stream, "TranslateOut");
+//                                    scs.endTransitions.add(t);
+//                                } if (subETrans.get(op).endsWith("AudioFadeOut")){
+//                                    Transition t = Transition.getInstance(stream, "AudioFadeOut");
+//                                    scs.endTransitions.add(t);
+//                                } if (subETrans.get(op).endsWith("ShrinkOut")){
+//                                    Transition t = Transition.getInstance(stream, "ShrinkOut");
+//                                    scs.endTransitions.add(t);
+//                                }
+//                            }
+//                        }
+//                        stream.addChannel(scs);                    
+//                        op+=1;
+//                    }
+//                    SCL.clear();
+//                    SubChNames.clear();
+//                    subSTrans.clear();
+//                    subETrans.clear();
                 } else if (clazz.toLowerCase().endsWith("sourcedvb")) {
                     stream = new SourceDVB();
                     stream.setChName(chNameDvb);

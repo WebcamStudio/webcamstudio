@@ -25,7 +25,7 @@ import webcamstudio.exporter.vloopback.VideoDevice;
 import webcamstudio.streams.SourceImage;
 import webcamstudio.streams.SourceImageGif;
 import webcamstudio.streams.SourceImageU;
-import webcamstudio.streams.SourceMicrophone;
+//import webcamstudio.streams.SourceMicrophone;
 import webcamstudio.streams.SourceMovie;
 import webcamstudio.streams.SourceAudioSource;
 import webcamstudio.streams.SourceWebcam;

@@ -201,7 +201,7 @@ public class SourceText extends Stream {
                     b = w.encode(content, BarcodeFormat.QR_CODE, width, height);
                     image = com.google.zxing.client.j2se.MatrixToImageWriter.toBufferedImage(b);
                 } catch (WriterException ex) {
-                    Logger.getLogger(SourceQRCode.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(SourceText.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
                 if (frame != null) {

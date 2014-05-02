@@ -71,23 +71,22 @@ import webcamstudio.exporter.vloopback.VideoDevice;
 import webcamstudio.externals.ProcessRenderer;
 import webcamstudio.mixers.MasterMixer;
 import webcamstudio.mixers.SystemPlayer;
-import webcamstudio.streams.SinkAudio;
+//import webcamstudio.streams.SinkAudio;
 import webcamstudio.streams.SourceChannel;
 import webcamstudio.streams.SourceCustom;
 import webcamstudio.streams.SourceDVB;
 import webcamstudio.streams.SourceDesktop;
 import webcamstudio.streams.SourceIPCam;
 import webcamstudio.streams.SourceImageGif;
-//import webcamstudio.streams.SourceMicrophone;
 import webcamstudio.streams.SourceMovie;
 import webcamstudio.streams.SourceMusic;
-//import webcamstudio.streams.SourceQRCode;
 import webcamstudio.streams.SourceAudioSource;
 import webcamstudio.streams.SourceText;
 import webcamstudio.streams.SourceURL;
 import webcamstudio.streams.SourceWebcam;
 import webcamstudio.streams.Stream;
 import webcamstudio.studio.Studio;
+import webcamstudio.util.Screen;
 import webcamstudio.util.Tools;
 import webcamstudio.util.Tools.OS;
 
@@ -226,7 +225,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         initWebcam();
         initAudioFFMainSW();
         loadCustomSources();
-        initAudioOut();
+//        initAudioOut();
     }
 
     private StreamDesktop getNewStreamDesktop(Stream s) {
@@ -271,17 +270,14 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         }
     }
     
-    @SuppressWarnings("unchecked")  
-    private void initAudioOut() {
-        System.out.println("Init AudioOut ...");
-        SinkAudio audioStream = new SinkAudio();
-        audioStream.read();
-        Tools.sleep(1000);
-        audioStream.stop();
-//        audioStream = null;
-        Tools.sleep(500);
-        audioStream.destroy();
-    }
+//    @SuppressWarnings("unchecked")  
+//    private void initAudioOut() {
+//        System.out.println("Init AudioOut ...");
+//        SinkAudio audioStream = new SinkAudio();
+//        audioStream.read();
+//        Tools.sleep(2000);
+//        audioStream.destroy();
+//    }
     
     @SuppressWarnings("unchecked")
     private void initWebcam() {
@@ -305,13 +301,20 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
         } else {
             cboAudioHz.setSelectedItem("44100Hz");
         }
-        String distro = wsDistroWatch();
-        System.out.println("Distro: "+distro);
-        if (distro.toLowerCase().equals("ubuntu")){
-            tglFFmpeg.setSelected(false);
+        System.out.println("Outffmpeg: "+outFFmpeg);
+        boolean ffmpeg = Screen.ffmpegDetected();
+        boolean avconv = Screen.avconvDetected();
+        if (ffmpeg && !avconv){
+            tglFFmpeg.setSelected(true);
+            outFFmpeg = true;
             tglFFmpeg.setEnabled(false);
-        } else {
+        } else if (ffmpeg && avconv) {
             tglFFmpeg.setSelected(outFFmpeg);
+            tglFFmpeg.setEnabled(true);
+        } else if (!ffmpeg && avconv){
+            tglFFmpeg.setSelected(false);
+            outFFmpeg = false;
+            tglFFmpeg.setEnabled(false);
         }
     }
 
@@ -1138,9 +1141,7 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
     public static void durationCalc(Stream stream, File file) {
         String commandDuration;
         Runtime rt = Runtime.getRuntime();
-        String distro = wsDistroWatch();
-//        System.out.println("Distro: "+ distro);
-        if (distro.toLowerCase().equals("ubuntu")){
+        if (Screen.avconvDetected()){
             commandDuration = "avconv -i " + "\"" + file.getAbsolutePath() + "\"";
         } else {
             commandDuration = "ffmpeg -i " + "\"" + file.getAbsolutePath() + "\"";    
@@ -1648,10 +1649,25 @@ public class WebcamStudio extends javax.swing.JFrame implements StreamDesktop.Li
     }//GEN-LAST:event_btnAddIPCamActionPerformed
 
     private void tglFFmpegActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglFFmpegActionPerformed
+        String distro = wsDistroWatch();
         if (tglFFmpeg.isSelected()){
-            outFFmpeg = true;
-            ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "FFmpeg Outputs BkEnd Activated ...");
-            ResourceMonitor.getInstance().addMessage(label);
+            if (distro.toLowerCase().equals("ubuntu")){
+                int result = JOptionPane.showConfirmDialog(this,"If you use ffmpeg Output under Ubuntu it may Crash WebcamStudio.","Warning !!!", JOptionPane.INFORMATION_MESSAGE, JOptionPane.YES_NO_CANCEL_OPTION);
+                if ((result == JOptionPane.YES_OPTION)) {
+                    outFFmpeg = true;
+                    ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "FFmpeg Outputs BkEnd Activated ...");
+                    ResourceMonitor.getInstance().addMessage(label);
+                } else {
+                    outFFmpeg = false;
+                    ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "FFmpeg Outputs BkEnd Deactivated ...");
+                    ResourceMonitor.getInstance().addMessage(label);
+                    tglFFmpeg.setSelected(false);
+                }
+            } else {
+                outFFmpeg = true;
+                ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "FFmpeg Outputs BkEnd Activated ...");
+                ResourceMonitor.getInstance().addMessage(label);
+            }
         } else {
             outFFmpeg = false;
             ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "FFmpeg Outputs BkEnd Deactivated ...");

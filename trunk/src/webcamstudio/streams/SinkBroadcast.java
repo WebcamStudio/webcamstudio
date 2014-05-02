@@ -26,6 +26,8 @@ public class SinkBroadcast extends Stream {
         url = fme.getUrl()+"/"+fme.getStream();
         if (outFFmpeg){
             this.setComm("FF");
+        } else {
+            this.setComm("AV");
         }
     }
     @Override

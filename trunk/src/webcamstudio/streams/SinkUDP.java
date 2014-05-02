@@ -23,6 +23,8 @@ public class SinkUDP extends Stream {
         name = "UDP";
         if (outFFmpeg){
             this.setComm("FF");
+        } else {
+            this.setComm("AV");
         }
 
     }

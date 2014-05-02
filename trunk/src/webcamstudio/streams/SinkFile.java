@@ -24,6 +24,8 @@ public class SinkFile extends Stream {
         name = f.getName();
         if (outFFmpeg){
             this.setComm("FF");
+        } else {
+            this.setComm("AV");
         }
 
     }
