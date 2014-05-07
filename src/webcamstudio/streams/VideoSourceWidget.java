@@ -145,7 +145,7 @@ public class VideoSourceWidget extends VideoSource {
         bgColor = new Color(color, true);
         bgColor = new Color(bgColor.getRed(), bgColor.getGreen(), bgColor.getBlue(), alpha);
         // Init image
-        tempimage = new BufferedImage(captureWidth, captureHeight, java.awt.image.BufferedImage.TYPE_INT_ARGB);
+        tempimage = new BufferedImage(captureWidth, captureHeight, BufferedImage.TYPE_INT_ARGB);
 
         //Go over all the items in the list
         NodeList elements = rootNode.getChildNodes();
@@ -231,10 +231,8 @@ public class VideoSourceWidget extends VideoSource {
                 if (item.getTextContent().equalsIgnoreCase("true")) {
                     style += Font.BOLD;
                 }
-            } else if (item.getNodeName().equalsIgnoreCase("italic")) {
-                if (item.getTextContent().equalsIgnoreCase("true")) {
-                    style += Font.ITALIC;
-                }
+            } else if (item.getNodeName().equalsIgnoreCase("italic") && item.getTextContent().equalsIgnoreCase("true")) {
+                style += Font.ITALIC;
             }
         }
         Font font = new Font(fontName, style, fontSize);
@@ -333,7 +331,7 @@ public class VideoSourceWidget extends VideoSource {
     }
 
     @Override
-    public javax.swing.ImageIcon getThumbnail() {
+    public ImageIcon getThumbnail() {
         ImageIcon icon = super.getCachedThumbnail();
         if (icon==null){
             icon = super.getThumbnail();

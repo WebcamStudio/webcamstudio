@@ -19,7 +19,7 @@ import webcamstudio.sources.effects.NoBackground;
 
 /**
  *
- * @author pballeux
+ * @author pballeux (modified by karl)
  */
 public class NoBackgroundControl extends javax.swing.JPanel {
 

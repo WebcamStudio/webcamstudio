@@ -74,7 +74,7 @@ public class VideoDevice {
 
     public static VideoDevice[] getDevices() {
         VideoDevice[] d = new VideoDevice[0];
-        java.io.File[] fs = new java.io.File("/dev/").listFiles();
+        File[] fs = new File("/dev/").listFiles();
         ArrayList<VideoDevice> devices = new ArrayList<>();
         if (fs != null) {
             for (File f : fs) {
@@ -95,11 +95,11 @@ public class VideoDevice {
     private Version version = Version.Unknown;
     private Type type = Type.Unknown;
     private String name = "";
-    private java.io.File device = null;
+    private File device = null;
     private int deviceFD = 0;
 
     public VideoDevice(String name) {
-        device = new java.io.File(name);
+        device = new File(name);
         loadInfo();
     }
 
@@ -157,7 +157,7 @@ public class VideoDevice {
         return name;
     }
 
-    public java.io.File getFile() {
+    public File getFile() {
         return device;
     }
 

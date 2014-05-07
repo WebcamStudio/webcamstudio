@@ -99,10 +99,8 @@ public class SourceImageU extends Stream {
             f = capture.getFrame();
             if (this.getEffects() != null) {
                 for (Effect fxI : this.getEffects()) {
-                    if (f != null) {
-                        if (fxI.needApply()){
-                            fxI.applyEffect(f.getImage());
-                        }
+                    if (f != null && fxI.needApply()) {
+                        fxI.applyEffect(f.getImage());
                     }
                 }
             }

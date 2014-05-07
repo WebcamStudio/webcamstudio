@@ -14,7 +14,7 @@ import webcamstudio.sources.effects.controls.ContrastControl;
 
 /**
  *
- * @author pballeux
+ * @author pballeux (modified by karl)
  */
 public class Contrast extends Effect{
     private final com.jhlabs.image.ContrastFilter filter = new com.jhlabs.image.ContrastFilter();

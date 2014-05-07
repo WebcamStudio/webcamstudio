@@ -12,7 +12,7 @@ import webcamstudio.mixers.Frame;
 
 /**
  *
- * @author patrick
+ * @author karl
  */
 public class SinkAudio extends Stream {
 

@@ -14,7 +14,7 @@ import webcamstudio.sources.effects.controls.TwirlControl;
 
 /**
  *
- * @author pballeux
+ * @author pballeux (modified by karl)
  */
 public class Twirl extends Effect {
 

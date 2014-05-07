@@ -112,7 +112,7 @@ public class GifDecoder {
 	public int getDelay(int n) {
 		//
 		delay = -1;
-		if ((n >= 0) && (n < frameCount)) {
+		if (n >= 0 && n < frameCount) {
 			delay = frames.get(n).delay;
 		}
 		return delay;
@@ -259,7 +259,7 @@ public class GifDecoder {
 	 */
 	public BufferedImage getFrame(int n) {
 		BufferedImage im = null;
-		if ((n >= 0) && (n < frameCount)) {
+		if (n >= 0 && n < frameCount) {
 			im = frames.get(n).image;
 		}
 		return im;
@@ -342,8 +342,8 @@ public class GifDecoder {
 		status = STATUS_OK;
 		try {
 			name = name.trim().toLowerCase();
-			if ((name.contains("file:")) ||
-				(name.indexOf(":/") > 0)) {
+			if (name.contains("file:") ||
+				name.indexOf(":/") > 0) {
 				URL url = new URL(name);
 				in = new BufferedInputStream(url.openStream());
 			} else {
@@ -382,7 +382,7 @@ public class GifDecoder {
 			bi,
 			pi;
 
-		if ((pixels == null) || (pixels.length < npix)) {
+		if (pixels == null || pixels.length < npix) {
 			pixels = new byte[npix]; // allocate new pixel array
 		}
 		if (prefix == null) {
@@ -440,7 +440,7 @@ public class GifDecoder {
 
 				//  Interpret the code
 
-				if ((code > available) || (code == end_of_information)) {
+				if (code > available || code == end_of_information) {
                                     break;
                                 }
 				if (code == clear) {
@@ -477,8 +477,8 @@ public class GifDecoder {
 				prefix[available] = (short) old_code;
 				suffix[available] = (byte) first;
 				available++;
-				if (((available & code_mask) == 0)
-					&& (available < MaxStackSize)) {
+				if ((available & code_mask) == 0
+					&& available < MaxStackSize) {
 					code_size++;
 					code_mask += available;
 				}
@@ -773,7 +773,7 @@ public class GifDecoder {
 				int b2 = ((int) block[2]) & 0xff;
 				loopCount = (b2 << 8) | b1;
 			}
-		} while ((blockSize > 0) && !err());
+		} while (blockSize > 0 && !err());
 	}
 
 	/**
@@ -806,7 +806,7 @@ public class GifDecoder {
 	protected void skip() {
 		do {
 			readBlock();
-		} while ((blockSize > 0) && !err());
+		} while (blockSize > 0 && !err());
 	}
 
     static class GifFrame {

@@ -55,7 +55,7 @@ public class ChatRequestCommand implements OutCommand
             addr <<= 8;
             addr += one;
         }
-        //System.out.println();
+//        System.out.println();
 		//
 
 		// any port, queue size, localaddr

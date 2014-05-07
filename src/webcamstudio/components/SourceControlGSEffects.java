@@ -150,15 +150,12 @@ public class SourceControlGSEffects extends javax.swing.JPanel {
             Tools.sleep(100);
             stream.read();
         }
-//        lstEffects.revalidate();
         btnSetGSEffect.setEnabled(false);
         btnUnsetGSEffect.setEnabled(true);
     }//GEN-LAST:event_btnSetGSEffectActionPerformed
 
     private void btnUnsetGSEffectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUnsetGSEffectActionPerformed
         if (!"".equals(lblGSEffect.getText())){
-//            String e = lstEffects.getSelectedValue().toString();
-//            listModel.removeElement(e);
             stream.setGSEffect("");
             if (stream.isPlaying()){
                 stream.stop();
@@ -166,7 +163,6 @@ public class SourceControlGSEffects extends javax.swing.JPanel {
                 stream.read();
             }
             lblGSEffect.setText("None");
-//            lstEffects.revalidate();
             btnSetGSEffect.setEnabled(true);
             btnUnsetGSEffect.setEnabled(false);
         }

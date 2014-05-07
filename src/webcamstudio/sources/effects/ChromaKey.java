@@ -12,7 +12,7 @@ import webcamstudio.sources.effects.controls.ChromaKeyControl;
 
 /**
  *
- * @author pballeux
+ * @author pballeux (modified by karl)
  */
 public class ChromaKey extends Effect {
 
@@ -45,7 +45,6 @@ public class ChromaKey extends Effect {
     }
 
     public void setColor(int col) {
-//        color = new Color(c);
         colorInt = col;
     }
 

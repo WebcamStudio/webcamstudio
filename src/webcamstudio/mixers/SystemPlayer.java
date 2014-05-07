@@ -48,7 +48,6 @@ public class SystemPlayer implements Runnable {
 //        }
     }
 
-//    public void play() throws LineUnavailableException {
     @Override
     public void run() {
         stopMe = false;
@@ -78,7 +77,6 @@ public class SystemPlayer implements Runnable {
         }
         Tools.sleep(20);
         executor = null;
-//        webcamstudio.components.MasterPanel.tglSound.setSelected(false);
     }
 
 }

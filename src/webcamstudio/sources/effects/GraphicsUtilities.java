@@ -283,8 +283,8 @@ public class GraphicsUtilities {
 
         BufferedImage temp = createCompatibleImage(image, width, height);
         Graphics2D g2 = temp.createGraphics();
-        g2.setRenderingHint(java.awt.RenderingHints.KEY_INTERPOLATION,
-                java.awt.RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+                RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         g2.setRenderingHint(RenderingHints.KEY_RENDERING,
                 RenderingHints.VALUE_RENDER_SPEED);
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,

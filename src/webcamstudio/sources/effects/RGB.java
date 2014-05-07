@@ -25,10 +25,10 @@ public class RGB extends Effect {
         int r, g, b, c, a;
         for (int i = 0; i < data.length; i++) {
             c = data[i];
-            r = ((((c & 0x00FF0000) >> 16)));
-            g = (((c & 0x0000FF00) >> 8));
-            b = (((c & 0x000000FF)));
-            a = ((((c & 0xFF000000) >> 24)));
+            r = (c & 0x00FF0000) >> 16;
+            g = (c & 0x0000FF00) >> 8;
+            b = c & 0x000000FF;
+            a = (c & 0xFF000000) >> 24;
             r = r * rThreshold / 100;
             g = g * gThreshold / 100;
             b = b * bThreshold / 100;

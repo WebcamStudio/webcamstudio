@@ -15,7 +15,7 @@ import webcamstudio.util.Tools;
 
 /**
  *
- * @author patrick (modified by karl)
+ * @author karl
  */
 public class SourceURL extends Stream {
     private static final String userHomeDir = Tools.getUserHome();
@@ -133,10 +133,8 @@ public class SourceURL extends Stream {
             f = capture.getFrame();
             if (this.getEffects() != null) {
                 for (Effect fxUR : this.getEffects()) {
-                    if (f != null) {
-                        if (fxUR.needApply()){   
-                            fxUR.applyEffect(f.getImage());
-                        }
+                    if (f != null && fxUR.needApply()) {   
+                        fxUR.applyEffect(f.getImage());
                     }
                 }
             }

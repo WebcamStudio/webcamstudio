@@ -21,7 +21,7 @@ import webcamstudio.sources.effects.Shapes;
 
 /**
  *
- * @author pballeux
+ * @author pballeux (modified by karl)
  */
 public class ShapesControl extends javax.swing.JPanel {
 

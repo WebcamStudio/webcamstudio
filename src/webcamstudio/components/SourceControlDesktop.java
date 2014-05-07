@@ -416,12 +416,7 @@ public class SourceControlDesktop extends javax.swing.JPanel {
         }
         
     }
-    
-//    private String getSelectedWindowXid() {    
-//        String[] xid = jcbWindowsCapList.getSelectedItem().toString().split(" ");
-//        return xid[0];   
-//    }
-    
+        
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnRefreshWindowsList;
     private javax.swing.JButton jButton2;

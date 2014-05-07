@@ -14,11 +14,11 @@ import webcamstudio.sources.effects.controls.WaterFxControl;
 
 /**
  *
- * @author pballeux
+ * @author karl
  */
 public class WaterFx extends Effect{
     final com.jhlabs.image.WaterFilter filter = new com.jhlabs.image.WaterFilter();
-    private float radius = 320;//gain
+    private float radius = 250;//gain
     private float amplitude = 5;//bias
     private float wavelength = 50;
     @Override

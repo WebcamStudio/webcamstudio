@@ -10,10 +10,8 @@ import webcamstudio.streams.SourceDVB;
 import webcamstudio.streams.SourceDesktop;
 import webcamstudio.streams.SourceImage;
 import webcamstudio.streams.SourceImageU;
-//import webcamstudio.streams.SourceMicrophone;
 import webcamstudio.streams.SourceMovie;
 import webcamstudio.streams.SourceMusic;
-//import webcamstudio.streams.SourceQRCode;
 import webcamstudio.streams.SourceAudioSource;
 import webcamstudio.streams.SourceText;
 import webcamstudio.streams.SourceURL;
@@ -97,14 +95,6 @@ public class SourceControls {
             c = new SourceControlGSEffects(source);
             c.setName("GS Fx");
             comps.add(c);
-//        } else if (source instanceof SourceMicrophone) {
-//            c = new SourceControlEffects(source);
-//            c.setName("Effects");
-//            comps.add(c);
-//            c = new SourceControlGSEffects(source);
-//            c.setName("GS Fx");
-//            comps.add(c);
-//        } else if (source instanceof SourceQRCode) {
         } else if (source instanceof SourceText) {
             c = new SourceControlsText((SourceText) source);
             comps.add(c);

@@ -14,7 +14,7 @@ import webcamstudio.sources.effects.controls.OpacityControl;
 
 /**
  *
- * @author pballeux
+ * @author pballeux (modified by karl)
  */
 public class Opacity extends Effect {
 

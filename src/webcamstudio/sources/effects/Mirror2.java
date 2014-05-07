@@ -13,7 +13,7 @@ import javax.swing.JPanel;
 
 /**
  *
- * @author pballeux
+ * @author pballeux (modified by karl)
  */
 public class Mirror2 extends Effect{
 

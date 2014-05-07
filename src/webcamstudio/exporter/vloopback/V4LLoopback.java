@@ -63,7 +63,7 @@ public class V4LLoopback extends VideoOutput {
         //We have to detect if we are in 32bits or 64bits
         listener = l;
 //        System.out.println("Pointer Size: " + com.sun.jna.Native.POINTER_SIZE);
-        switch (com.sun.jna.Native.POINTER_SIZE) {
+        switch (Native.POINTER_SIZE) {
             case 4:
                 VIDIOCGWIN = -2145356279;
                 VIDIOCSWIN = 1075869194;
@@ -169,10 +169,8 @@ public class V4LLoopback extends VideoOutput {
             }
             int countWritten = 0;
             countWritten = CLibrary.INSTANCE.write(devFD, buffer, buffer.length);
-            if (countWritten != buffer.length) {
-                if (listener != null) {
-                    listener.error("WebcamStudio: Error while writing image...");
-                }
+            if (countWritten != buffer.length && listener != null) {
+                listener.error("WebcamStudio: Error while writing image...");
             }
         }
     }

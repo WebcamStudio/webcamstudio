@@ -13,7 +13,7 @@ import javax.swing.JPanel;
 
 /**
  *
- * @author pballeux
+ * @author karl
  */
 public class Sharpen_Old extends Effect{
     private final com.jhlabs.image.SharpenFilter filter = new com.jhlabs.image.SharpenFilter();

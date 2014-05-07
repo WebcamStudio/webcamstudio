@@ -31,9 +31,9 @@ public class NoBackground_Old extends Effect {
             for (int i = 0; i < data.length; i++) {
                 c = data[i];
                 cb = dataBG[i];
-                r = ((((c & 0x00FF0000) >> 16))) - (((cb & 0x00FF0000) >> 16));
-                g = (((c & 0x0000FF00) >> 8)) - (((cb & 0x0000FF00) >> 8));
-                b = (((c & 0x000000FF))) - ((cb & 0x000000FF));
+                r = (c & 0x00FF0000) >> 16 - (cb & 0x00FF0000) >> 16;
+                g = (c & 0x0000FF00) >> 8 - (cb & 0x0000FF00) >> 8;
+                b = c & 0x000000FF - cb & 0x000000FF;
                 if (r < 0) {
                     r *= -1;
                 }

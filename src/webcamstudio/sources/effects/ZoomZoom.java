@@ -14,7 +14,7 @@ import javax.swing.JPanel;
 
 /**
  *
- * @author pballeux
+ * @author pballeux (modified by karl)
  */
 public class ZoomZoom extends Effect {
 
@@ -48,9 +48,9 @@ public class ZoomZoom extends Effect {
         counter++;
         if (counter==100){
             counter = 0;
-            xDir = (random.nextInt(3)-1);
-            yDir = (random.nextInt(3)-1);
-            zoomDir = (random.nextInt(3)-1);
+            xDir = random.nextInt(3)-1;
+            yDir = random.nextInt(3)-1;
+            zoomDir = random.nextInt(3)-1;
         }
         x += xDir;
         y += yDir;

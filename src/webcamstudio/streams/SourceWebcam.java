@@ -26,8 +26,6 @@ public class SourceWebcam extends Stream {
         rate = MasterMixer.getInstance().getRate();
         file = device;
         name = device.getName();
-
-
     }
 
     public SourceWebcam(String defaultName) {
@@ -112,10 +110,8 @@ public class SourceWebcam extends Stream {
             f = capture.getFrame();
             if (this.getEffects() != null) {
                 for (Effect fxW : this.getEffects()) {
-                    if (f != null) {
-                        if (fxW.needApply()){                    
-                            fxW.applyEffect(f.getImage());                    
-                        }
+                    if (f != null && fxW.needApply()) {                    
+                        fxW.applyEffect(f.getImage());
                     }
                 }
             }

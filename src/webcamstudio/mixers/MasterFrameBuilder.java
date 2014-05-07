@@ -154,7 +154,7 @@ public class MasterFrameBuilder implements Runnable {
                 float delta = System.currentTimeMillis() - mark;
                 if (delta >= 1000) {
                     mark = System.currentTimeMillis();
-                    MasterMixer.getInstance().setFPS((fps / (delta / 1000F)));
+                    MasterMixer.getInstance().setFPS(fps / (delta / 1000F));
                     fps = 0;
                 }
                 long sleepTime = timeCode - System.currentTimeMillis();

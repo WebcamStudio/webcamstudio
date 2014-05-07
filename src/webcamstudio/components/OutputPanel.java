@@ -242,7 +242,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
         button.addActionListener(new java.awt.event.ActionListener() {
 
             @Override
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            public void actionPerformed(ActionEvent evt) {
                 JToggleButton button = ((JToggleButton) evt.getSource());
                 FME fme = fmes.get(button.getText());
                 if (button.isSelected()) {                    
@@ -309,18 +309,16 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
             public void mouseDragged(MouseEvent e) {
                 if (e.getX() > getWidth()) {
                     JToggleButton button = ((JToggleButton) e.getSource());
-                    if (!button.isSelected()) {
-                        if (e.getX() > getWidth()) {
-                            System.out.println(button.getText());
-                            SinkBroadcast broadcast = broadcasts.remove(button.getText());
-                            if (broadcast != null) {
-                                MasterChannels.getInstance().unregister(broadcast);
-                            }
-                            FME fme = fmes.remove(button.getText());
-                            ResourceMonitorLabel label = labels.remove(fme.getName());
-                            remove(button);
-                            revalidate();
+                    if (!button.isSelected() && e.getX() > getWidth()) {
+                        System.out.println(button.getText());
+                        SinkBroadcast broadcast = broadcasts.remove(button.getText());
+                        if (broadcast != null) {
+                            MasterChannels.getInstance().unregister(broadcast);
                         }
+//                        FME fme = fmes.remove(button.getText());
+//                        ResourceMonitorLabel label = labels.remove(fme.getName());
+                        remove(button);
+                        revalidate();
                     }
                 }
             }
@@ -460,10 +458,8 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
                     if(!chooser.getSelectedFile().getAbsolutePath().endsWith(".avi")){
                         f =  new File(chooser.getSelectedFile() + ".avi");
                     }
-                } else if (chooser.getFileFilter().equals(mp4Filter)) {
-                    if(!chooser.getSelectedFile().getAbsolutePath().endsWith(".mp4")){
-                        f =  new File(chooser.getSelectedFile() + ".mp4");
-                    }
+                } else if (chooser.getFileFilter().equals(mp4Filter) && !chooser.getSelectedFile().getAbsolutePath().endsWith(".mp4")) {
+                    f =  new File(chooser.getSelectedFile() + ".mp4");
                 }
                 if(f.exists()){
                     int result = JOptionPane.showConfirmDialog(this,"File exists, overwrite?","Attention",JOptionPane.YES_NO_CANCEL_OPTION);
@@ -570,7 +566,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
         tglSkyCam.setName("tglSkyCam"); // NOI18N
         tglSkyCam.setRolloverEnabled(false);
         tglSkyCam.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/camera-video-on.png"))); // NOI18N
-        tglSkyCam.setPreferredSize(new java.awt.Dimension(32, 30));
+        tglSkyCam.setPreferredSize(new Dimension(32, 30));
         add(tglSkyCam);
         
         jcbV4l2loopback.setText("V4l2loopback");
@@ -584,7 +580,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
         btnSkyFlip.setEnabled(true);
         btnSkyFlip.setRolloverEnabled(false);
         btnSkyFlip.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/view-refresh-on.png"))); // NOI18N
-        btnSkyFlip.setPreferredSize(new java.awt.Dimension(113, 21));
+        btnSkyFlip.setPreferredSize(new Dimension(113, 21));
         add(btnSkyFlip);
 
         tglAudioOut.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/audio-card.png"))); // NOI18N
@@ -592,7 +588,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
         tglAudioOut.setToolTipText("Audio to Speakers");
         tglAudioOut.setName("tglAudioOut"); // NOI18N
         tglSkyCam.setRolloverEnabled(false);
-        tglAudioOut.setPreferredSize(new java.awt.Dimension(32, 30));
+        tglAudioOut.setPreferredSize(new Dimension(32, 30));
         add(tglAudioOut);
         
         tglRecordToFile.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-record.png"))); // NOI18N
@@ -601,7 +597,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
         tglRecordToFile.setName("tglRecordToFile"); // NOI18N
         tglRecordToFile.setRolloverEnabled(false);
         tglRecordToFile.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-stop.png"))); // NOI18N
-        tglRecordToFile.setPreferredSize(new java.awt.Dimension(32, 30));
+        tglRecordToFile.setPreferredSize(new Dimension(32, 30));
         add(tglRecordToFile);
 
         tglUDP.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-record.png"))); // NOI18N
@@ -610,14 +606,13 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
         tglUDP.setName("tglUDP"); // NOI18N
         tglUDP.setRolloverEnabled(false);
         tglUDP.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-stop.png"))); // NOI18N
-        tglUDP.setPreferredSize(new java.awt.Dimension(32, 30));
+        tglUDP.setPreferredSize(new Dimension(32, 30));
         add(tglUDP);
     }
     private void paintWSCamButtons () {
         for (VideoDevice d : VideoDevice.getInputDevices()) {
             String vdName = d.getFile().getName();
-            if (vdName.endsWith("video21")) {
-            } else {
+            if (!vdName.endsWith("video21")) {
                 JToggleButton wsCamButton = new JToggleButton();
                 Dimension dim = new Dimension(139,30);
                 wsCamButton.setPreferredSize(dim);
@@ -1000,12 +995,12 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
                 }
             }
         return null; 
-    }
-                @Override
-                protected void done(){
-                    Tools.sleep(10);
-                    waitingD.dispose();
-                }  
+        }
+        @Override
+        protected void done(){
+            Tools.sleep(10);
+            waitingD.dispose();
+        }  
     };
         worker.execute();
         waitingD.toFront();

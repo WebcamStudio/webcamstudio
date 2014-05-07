@@ -15,7 +15,7 @@ import webcamstudio.sources.effects.Block;
 
 /**
  *
- * @author pballeux
+ * @author pballeux (modified by karl)
  */
 public class BlockControl extends javax.swing.JPanel {
 

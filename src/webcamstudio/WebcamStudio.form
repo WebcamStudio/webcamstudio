@@ -518,7 +518,7 @@
             <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="18"/>
           </AuxValues>
         </Component>
-        <Component class="javax.swing.JButton" name="btnJoinStudio">
+        <Component class="javax.swing.JButton" name="btnImportStudio">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
               <Image iconType="3" name="/webcamstudio/resources/tango/chan-add.png"/>
@@ -532,14 +532,14 @@
             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[25, 25]"/>
             </Property>
-            <Property name="name" type="java.lang.String" value="btnJoinStudio" noResource="true"/>
+            <Property name="name" type="java.lang.String" value="btnImportStudio" noResource="true"/>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[28, 28]"/>
             </Property>
             <Property name="verticalTextPosition" type="int" value="3"/>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnJoinStudioActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnImportStudioActionPerformed"/>
           </Events>
         </Component>
         <Component class="javax.swing.JButton" name="btnSaveStudio">

@@ -44,7 +44,7 @@ public class VideoSourceIRC extends VideoSource {
     private MessageMonitor messageMonitor = null;
     private int charWidth = 12;
     private final java.util.Vector<VideoSourceIRCListener> ircListeners = new java.util.Vector<>();
-    private java.awt.Graphics2D buffer = null;
+    private Graphics2D buffer = null;
     private final Emotes emotes = new Emotes();
 
     public VideoSourceIRC(String address, int port, String channel, String nick) {
@@ -143,7 +143,7 @@ public class VideoSourceIRC extends VideoSource {
                     outputHeight = 240;
                 }
 
-                tempimage = new BufferedImage(outputWidth, outputHeight, java.awt.image.BufferedImage.TYPE_INT_ARGB);
+                tempimage = new BufferedImage(outputWidth, outputHeight, BufferedImage.TYPE_INT_ARGB);
 
                 buffer = tempimage.createGraphics();
                 int index = 0;

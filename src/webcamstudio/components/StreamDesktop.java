@@ -25,7 +25,6 @@ import webcamstudio.streams.SourceDVB;
 import webcamstudio.streams.SourceIPCam;
 import webcamstudio.streams.SourceImageGif;
 import webcamstudio.streams.SourceImageU;
-//import webcamstudio.streams.SourceQRCode;
 import webcamstudio.streams.SourceText;
 import webcamstudio.streams.SourceURL;
 import webcamstudio.streams.SourceWebcam;
@@ -53,9 +52,6 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
     AudioSource[] sourcesAudio;
     String distro = wsDistroWatch();
 
-/*    StreamDesktop(Stream webcam, ActionListener aThis) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }*/
     public interface Listener{
         public void selectedSource(Stream source);
     }
@@ -80,17 +76,6 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
             jMAudioSource.setVisible(false);
             panelText = p;
             s.setPanelType("PanelText");
-//        } else if (s instanceof SourceQRCode) {
-//            StreamPanelText p = new StreamPanelText(s);
-//            this.setLayout(new BorderLayout());
-//            this.add(p, BorderLayout.CENTER);
-//            this.setTitle(s.getName());
-//            this.setVisible(true);
-//            jMControls.setVisible(false);
-//            JMBackEnd.setVisible(false);
-//            jMAudioSource.setVisible(false);
-//            panelText = p;
-//            s.setPanelType("PanelText");
         } else if (s instanceof SourceDVB) {
             StreamPanelDVB p = new StreamPanelDVB(s);
             this.setLayout(new BorderLayout());
@@ -220,7 +205,7 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
                     Logger.getLogger(StreamDesktop.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 for (AudioSource audioSource : sourcesAudio){
-                    final JCheckBoxMenuItem jCBMenuItem = new javax.swing.JCheckBoxMenuItem();
+                    final JCheckBoxMenuItem jCBMenuItem = new JCheckBoxMenuItem();
                     jCBMenuItem.setText(audioSource.description);
                     jCBMenuItem.setName(audioSource.device); // NOI18N
                     jCBMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -582,8 +567,7 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
         stream = null;
         panel = null;
         webcamstudio.WebcamStudio.tabControls.removeAll();
-        webcamstudio.WebcamStudio.tabControls.repaint();        
-//        System.gc();
+        webcamstudio.WebcamStudio.tabControls.repaint();
     }//GEN-LAST:event_formInternalFrameClosing
 
     private void formFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_formFocusGained
@@ -763,7 +747,7 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
                     final int totalFrames = rate * speed;
                     for (int i = 0; i<totalFrames;i++){
                         if (runMe) {
-                            stream.setX(oldX - (i*deltaX/totalFrames));
+                            stream.setX(oldX - i*deltaX/totalFrames);
                             Tools.sleep(1000/rate);
                         } else {
                             stream.setX(oldBkX);
@@ -774,7 +758,7 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
                     deltaX = newX - oldX;
                     for (int i = 0; i<totalFrames;i++){
                         if (runMe) {
-                            stream.setX(newX - (i*deltaX/totalFrames));
+                            stream.setX(newX - i*deltaX/totalFrames);
                             Tools.sleep(1000/rate);
                         } else {
                             stream.setX(oldBkX);
@@ -819,7 +803,7 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
                     int tF = rate * speed;
                     for (int i = 0; i<totalFrames;i++){
                         if (runMe && stream.isPlaying()) {
-                            stream.setX(oldX + (i*deltaX/totalFrames));
+                            stream.setX(oldX + i*deltaX/totalFrames);
                             tF--;   
                             Tools.sleep(1000/rate);
                         } else {
@@ -833,7 +817,7 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
                     deltaX = newX - oldX;
                     for (int i = 0; i<totalFrames;i++){
                         if (runMe) {
-                            stream.setX(oldX + (i*deltaX/totalFrames));
+                            stream.setX(oldX + i*deltaX/totalFrames);
                             Tools.sleep(1000/rate);
                         } else {
                             stream.setX(oldBkX);
@@ -882,7 +866,7 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
                     int tF = rate * speed;
                     for (int i = 0; i<totalFrames;i++){
                         if (runMe) {
-                            stream.setY(oldY - (i*deltaY/totalFrames));
+                            stream.setY(oldY - i*deltaY/totalFrames);
                             tF--;
                             Tools.sleep(1000/rate);
                         } else {
@@ -894,7 +878,7 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
                     deltaY = newY - oldY;
                     for (int i = 0; i<totalFrames;i++){
                         if (runMe){
-                            stream.setY(newY - (i*deltaY/totalFrames));
+                            stream.setY(newY - i*deltaY/totalFrames);
                             Tools.sleep(1000/rate);
                         } else {
                             stream.setY(oldBkY);
@@ -939,7 +923,7 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
                     int tF = rate * speed;
                     for (int i = 0; i<totalFrames;i++){
                         if (runMe){
-                            stream.setY(oldY+(i*deltaY/totalFrames));
+                            stream.setY(oldY+i*deltaY/totalFrames);
                             tF--;
                             Tools.sleep(1000/rate);
                         } else {
@@ -953,7 +937,7 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
                     deltaY = newY - oldY;
                     for (int i = 0; i<totalFrames;i++){
                         if (runMe){
-                            stream.setY(oldY+(i*deltaY/totalFrames));
+                            stream.setY(oldY+i*deltaY/totalFrames);
                             Tools.sleep(1000/rate);
                         } else {
                             stream.setY(oldBkY);
@@ -1002,7 +986,7 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
                     int tF = rate * speed;
                     for (int i = 0; i<totalFrames;i++){
                         if (runMe){
-                            stream.setX(oldX - (i*deltaX/totalFrames));
+                            stream.setX(oldX - i*deltaX/totalFrames);
                             tF--;   
                             Tools.sleep(1000/rate);
                         } else {
@@ -1016,7 +1000,7 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
                     deltaX = newX - oldX;
                     for (int i = 0; i<totalFrames;i++){
                         if (runMe){
-                            stream.setX(oldX + (i*deltaX/totalFrames));
+                            stream.setX(oldX + i*deltaX/totalFrames);
                             Tools.sleep(1000/rate);
                         } else {
                             stream.setX(oldBkX);

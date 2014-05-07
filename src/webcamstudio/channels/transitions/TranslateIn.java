@@ -26,8 +26,8 @@ public class TranslateIn extends Transition{
         int rate = source.getRate();
         int totalFrames = rate * 1;
         for (int i = 0; i<totalFrames;i++){
-            source.setX(oldX + (i*deltaX/totalFrames));
-            source.setY(oldY+(i*deltaY/totalFrames));
+            source.setX(oldX + i*deltaX/totalFrames);
+            source.setY(oldY+i*deltaY/totalFrames);
             source.setOpacity(i*100/totalFrames);
             Tools.sleep(1000/rate);
         }

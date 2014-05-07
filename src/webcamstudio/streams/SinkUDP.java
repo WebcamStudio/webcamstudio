@@ -12,7 +12,7 @@ import webcamstudio.mixers.MasterMixer;
 
 /**
  *
- * @author patrick (modified by karl)
+ * @author karl
  */
 public class SinkUDP extends Stream {
 

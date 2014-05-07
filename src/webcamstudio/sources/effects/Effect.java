@@ -9,7 +9,7 @@ import java.awt.image.BufferedImage;
 
 /**
  *
- * @author pballeux
+ * @author pballeux (modified by karl)
  */
 public abstract class Effect {
 
@@ -63,7 +63,7 @@ public abstract class Effect {
     public abstract void loadFromStudioConfig(java.util.prefs.Preferences prefs);
     public abstract javax.swing.JPanel getControl();
     public BufferedImage cloneImage(BufferedImage src) {
-        BufferedImage tempimage = java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().createCompatibleImage(src.getWidth(), src.getHeight(), java.awt.image.BufferedImage.TRANSLUCENT);
+        BufferedImage tempimage = java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().createCompatibleImage(src.getWidth(), src.getHeight(), BufferedImage.TRANSLUCENT);
         Graphics2D tempbuffer = tempimage.createGraphics();
         tempbuffer.setRenderingHint(java.awt.RenderingHints.KEY_RENDERING,
                 java.awt.RenderingHints.VALUE_RENDER_SPEED);

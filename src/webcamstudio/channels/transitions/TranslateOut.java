@@ -27,8 +27,8 @@ public class TranslateOut extends Transition{
         int totalFrames = rate * 1;
         int o = rate;
         for (int i = 0; i<totalFrames;i++){
-            source.setX(oldX + (i*deltaX/totalFrames));
-            source.setY(oldY+(i*deltaY/totalFrames));
+            source.setX(oldX + i*deltaX/totalFrames);
+            source.setY(oldY+i*deltaY/totalFrames);
             source.setOpacity(o*100/totalFrames);
             o--;
             Tools.sleep(1000/rate);

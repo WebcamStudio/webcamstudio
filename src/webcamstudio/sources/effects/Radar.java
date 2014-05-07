@@ -28,16 +28,16 @@ public class Radar extends Effect {
             pixelsOut[i] = 0xFF000000;
         }
         for (int i = 0; i < frame && (i + lastColumn) < w; i+=2) {
-            int opacity = (i * 255 / frame);
+            int opacity = i * 255 / frame;
             for (int y = 0; y < h; y++) {
                 if ((i+lastColumn) >= 0) {
-                    int green = (0x0000FF00 & pixels[(y * w) + (i + lastColumn)]) >> 8;
+                    int green = (0x0000FF00 & pixels[y * w + i + lastColumn]) >> 8;
                     green = (green / 100) * 100;
                     if (i >= (frame-2)){
-                        pixelsOut[(y * w) + (i + lastColumn)] = 0xFF00FF00;
+                        pixelsOut[y * w + i + lastColumn] = 0xFF00FF00;
                     } else if (green > 0) {
                         green = green *opacity / 255;
-                        pixelsOut[(y * w) + (i + lastColumn)] = (green << 8) + 0xFF000000;
+                        pixelsOut[y * w + i + lastColumn] = (green << 8) + 0xFF000000;
                     } 
                 }
             }

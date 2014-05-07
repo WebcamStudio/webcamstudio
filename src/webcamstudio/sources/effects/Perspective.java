@@ -14,7 +14,7 @@ import webcamstudio.sources.effects.controls.PerspectiveControl;
 
 /**
  *
- * @author pballeux
+ * @author pballeux (modified by karl)
  */
 public class Perspective extends Effect {
 
@@ -30,7 +30,9 @@ public class Perspective extends Effect {
 
     @Override
     public void applyEffect(BufferedImage img) {
-        filter.setCorners(x1, y1, (img.getWidth()+x2), y2, (img.getWidth()+x3), (img.getHeight()+y3), x4, (img.getHeight()+y4));
+        int w = img.getWidth();
+        int h = img.getHeight();
+        filter.setCorners(x1, y1, w+x2, y2, w+x3, h+y3, x4, h+y4);
         Graphics2D buffer = img.createGraphics();
         buffer.setRenderingHint(RenderingHints.KEY_RENDERING,
                            RenderingHints.VALUE_RENDER_SPEED);
@@ -46,8 +48,8 @@ public class Perspective extends Effect {
                            RenderingHints.VALUE_DITHER_DISABLE);
         BufferedImage temp = filter.filter(img, null);
         buffer.setBackground(new Color(0, 0, 0, 0));
-        buffer.clearRect(0, 0, img.getWidth(), img.getHeight());
-        buffer.drawImage(temp, 0, 0, img.getWidth(), img.getHeight(), 0, 0, temp.getWidth(), temp.getHeight(), null);
+        buffer.clearRect(0, 0, w, h);
+        buffer.drawImage(temp, 0, 0, w, h, 0, 0, temp.getWidth(), temp.getHeight(), null);
         buffer.dispose();
     }
 

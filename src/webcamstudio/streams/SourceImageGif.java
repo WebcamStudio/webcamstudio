@@ -11,7 +11,6 @@ import java.net.URL;
 import webcamstudio.components.GifDecoder;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterFrameBuilder;
-import webcamstudio.sources.effects.Effect;
 import webcamstudio.util.Tools;
 
 /**
@@ -128,13 +127,6 @@ public class SourceImageGif extends Stream {
     public void readNext() {
         image = decoder.getFrame(index);
         frame = new Frame(uuid, image, null);
-//        for (Effect fxG : this.getEffects()) {
-//            if (frame != null) {
-//                if (fxG.needApply()){   
-//                    fxG.applyEffect(frame.getImage());
-//                }
-//            }
-//        }
         frame.setOutputFormat(x, y, width, height, opacity, volume);
         frame.setZOrder(zorder);
         nextFrame=frame;

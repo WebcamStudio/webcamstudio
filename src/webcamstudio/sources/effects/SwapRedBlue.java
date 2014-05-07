@@ -23,10 +23,10 @@ public class SwapRedBlue extends Effect {
         int r, g, b, c,a;
         for (int i = 0; i < data.length; i++) {
             c = data[i];
-            a = (c & 0xFF000000);
+            a = c & 0xFF000000;
             r = (c & 0x00FF0000) >> 16;
-            g = (c & 0x0000FF00);
-            b = (c & 0x000000FF);
+            g = c & 0x0000FF00;
+            b = c & 0x000000FF;
             data[i] = a + (b << 16) + g + r;
         }
     }

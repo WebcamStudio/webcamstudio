@@ -12,7 +12,7 @@ import webcamstudio.mixers.MasterMixer;
 
 /**
  *
- * @author patrick (modified by Karl)
+ * @author karl
  */
 public class SourceAudioSource extends Stream {
 

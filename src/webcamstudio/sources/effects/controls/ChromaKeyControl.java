@@ -187,7 +187,7 @@ public class ChromaKeyControl extends javax.swing.JPanel {
     }//GEN-LAST:event_slider2StateChanged
 
     private void btnSelectColorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSelectColorActionPerformed
-        webcamstudio.components.ColorChooser c = new ColorChooser(null, true);
+        ColorChooser c = new ColorChooser(null, true);
         c.setLocationRelativeTo(this);
         c.setVisible(true);
         if (c.getColor()!=null){

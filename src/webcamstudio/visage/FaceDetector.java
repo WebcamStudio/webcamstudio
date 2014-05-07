@@ -117,8 +117,8 @@ public class FaceDetector {
 
         for (int y = 0; y < fHeight - filter.getHeight(); y++) {
             for (int x = 0; x < fWidth - filter.getWidth(); x++) {
-                xCor = x + 1 + (filter.getWidth() / 2); //+1 : transition error in sectors calculation
-                yCor = y + 1 + (filter.getHeight() / 2);
+                xCor = x + 1 + filter.getWidth() / 2; //+1 : transition error in sectors calculation
+                yCor = y + 1 + filter.getHeight() / 2;
                 if (filter.foundFaceCandidate(x, y) &&
                         ImageProcessing.isSkinPixel(pixels[yCor * fWidth + xCor])) {
                     label = CC.findClustersLabels(xCor, yCor, fWidth);
@@ -184,7 +184,7 @@ public class FaceDetector {
         ConnectedComponents CC = new ConnectedComponents(labels, pupilsMembers);
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
-                if (binaryPixels[(y + y0) * fWidth + (x + x0)] == 1) {
+                if (binaryPixels[(y + y0) * fWidth + x + x0] == 1) {
                     label = CC.findClustersLabels(x, y, width);
                 }
             }
@@ -259,7 +259,7 @@ public class FaceDetector {
             for (int x = 0; x < 35; x++) {
                 node = new svm_node();
                 node.index = y * 35 + x + 1;
-                if ((cX >= 0) && (cX < fWidth) && (cY < fHeight) && (cY >= 0)) {
+                if (cX >= 0 && cX < fWidth && cY < fHeight && cY >= 0) {
                     node.value = grayPixels[cY * fWidth + cX] / 255d;
                 } else if (y == 0) {
                     node.value = 128d / 255d;
@@ -349,7 +349,7 @@ public class FaceDetector {
                 val = filter.findNoseBridgeCandidate(x, y);
                 if (val > max) {
                     max = val;
-                    nbcx = x + 1 + (filter.getWidth() / 2);
+                    nbcx = x + 1 + filter.getWidth() / 2;
                 }
             }
             if (max != Integer.MIN_VALUE) {
@@ -366,7 +366,7 @@ public class FaceDetector {
 
     ////////////////////////////////////////////////
     private int findNextCandidate(int i, Point candidates[]) {
-        while ((candidates[i] == null) && (i < candidates.length - 1)) {
+        while (candidates[i] == null && i < candidates.length - 1) {
             i++;
         }
         return i;
@@ -426,7 +426,7 @@ public class FaceDetector {
             cX = sX;
             cY = sY;
             for (int x = 0; x < length; x++) {
-                if ((cX >= 0) && (cX < fWidth) && (cY < fHeight)) {
+                if (cX >= 0 && cX < fWidth && cY < fHeight) {
                     ROI[y * length + x] = grayPixels[cY * fWidth + cX];
                 } else {
                     ROI[y * length + x] = ROI[(y - 1) * length + x];
@@ -510,7 +510,7 @@ public class FaceDetector {
             int max = 0, index = 0;
             for (int i = start; i <= minIndex; i++) //after finding the smallest gradiant ( nose trills ) find the largest
             {
-                if ((gradiants[i] > max) && (gradiants[i] != Integer.MAX_VALUE)) //gradiant above it ( nose tip )
+                if (gradiants[i] > max && gradiants[i] != Integer.MAX_VALUE) //gradiant above it ( nose tip )
                 {
                     max = gradiants[i];
                     index = i;

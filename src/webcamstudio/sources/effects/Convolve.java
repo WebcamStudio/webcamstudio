@@ -13,7 +13,7 @@ import javax.swing.JPanel;
 
 /**
  *
- * @author pballeux
+ * @author karl
  */
 public class Convolve extends Effect {
     private final Color color = new Color(-16711936);

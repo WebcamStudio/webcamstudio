@@ -10,12 +10,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import webcamstudio.channels.transitions.Transition;
-//import webcamstudio.mixers.MasterMixer;
 import webcamstudio.sources.effects.Effect;
 
 /**
  *
- * @author patrick
+ * @author patrick (modified by karl)
  */
 public class SourceChannel  {
 
@@ -52,21 +51,7 @@ public class SourceChannel  {
             }
             s.font = st.fontName;
             s.color = st.color;
-        } // else if (stream instanceof SourceQRCode) {
-//            SourceQRCode sQ = (SourceQRCode)stream;
-//            s.isATimer = sQ.getIsATimer();
-//            if (sQ.getIsATimer()) {
-//                s.text = "QRCode Clock Mode.";
-//                sQ.updateContent("QRCode Clock Mode.");
-//            } else {
-//                s.text = sQ.content;
-//            }
-////            s.font = sQ.fontName;
-////            s.color = sQ.color;
-//        } 
-//            else if (stream instanceof SourceDesktop) {
-//            SourceDesktop sd = (SourceDesktop) stream;
-//        }
+        }
         return s;
     }
 
@@ -92,7 +77,6 @@ public class SourceChannel  {
     private final int captureY = 0;
     public ArrayList<Transition> startTransitions = new ArrayList<>();
     public ArrayList<Transition> endTransitions = new ArrayList<>();
-//    private final MasterMixer mixer = MasterMixer.getInstance();
 
     public SourceChannel() {
     }
@@ -135,7 +119,6 @@ public class SourceChannel  {
                     if (isPlaying) {
                         if (!s.isPlaying()) {
                             s.read();
-//                            s.updateStatus();
                         }
                         if (startTransitions != null) {
                             pool = java.util.concurrent.Executors.newCachedThreadPool();
@@ -152,7 +135,6 @@ public class SourceChannel  {
                     } else {
                         if (s.isPlaying()) {
                             s.stop();
-//                            s.updateStatus();
                         }
                     }
 
@@ -179,22 +161,13 @@ public class SourceChannel  {
                     }       
                     if (s instanceof SourceText) {
                         SourceText st = (SourceText) s;
-                            st.isATimer = getIsATimer();
-                            st.isQRCode = getIsQRCode();
-                            st.content = getText();
-                            st.fontName = getFont();
-                            st.color = getColor();
-                            st.updateContent(getText());
-                    } // else if (s instanceof SourceQRCode) {
-//                        SourceQRCode sQ = (SourceQRCode)s;
-//                        sQ.isATimer = getIsATimer();
-//                        sQ.content = getText();
-//                        sQ.fontName = getFont();
-//                        sQ.color = getColor();
-//                        sQ.updateContent(getText());
-////                    } else if (s instanceof SourceDesktop) {
-////                        SourceDesktop sd = (SourceDesktop) s;
-//                    }               
+                        st.isATimer = getIsATimer();
+                        st.isQRCode = getIsQRCode();
+                        st.content = getText();
+                        st.fontName = getFont();
+                        st.color = getColor();
+                        st.updateContent(getText());
+                    }               
                     s.updateStatus();
                 }
             }

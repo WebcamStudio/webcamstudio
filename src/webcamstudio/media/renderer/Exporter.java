@@ -64,7 +64,7 @@ public class Exporter implements MasterMixer.SinkListener {
                 Logger.getLogger(Exporter.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        System.out.println("Port used is Video:" + vport+"/Audio:" + aport);
+//        System.out.println("Port used is Video:" + vport+"/Audio:" + aport);
         if (stream.hasVideo()) {
             Thread vExCapture = new Thread(new Runnable() {
 

@@ -35,7 +35,7 @@ public class ShrinkOut extends Transition {
                     source.setY(y + (int) (i * deltaH));
                     source.setWidth(w - (int) (i * deltaW * 2F));
                     source.setHeight(h - (int) (i * deltaH * 2F));
-                    source.setOpacity(100-(i*100/frames));
+                    source.setOpacity(100-i*100/frames);
                     Tools.sleep(1000/rate);
                
     
