@@ -13,7 +13,7 @@ import webcamstudio.sources.effects.controls.BlockControl;
 
 /**
  *
- * @author pballeux
+ * @author pballeux (modified by karl)
  */
 public class Block extends Effect{
     private final com.jhlabs.image.BlockFilter filter = new com.jhlabs.image.BlockFilter();

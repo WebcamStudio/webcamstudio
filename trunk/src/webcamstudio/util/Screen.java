@@ -100,8 +100,8 @@ public class Screen {
             
             p = Runtime.getRuntime().exec("avconv");
             p.waitFor();
-            //System.out.println(p.exitValue());
-            retValue = (p.exitValue() == 1);
+//            System.out.println(p.exitValue());
+            retValue = p.exitValue() == 1;
         } catch (IOException | InterruptedException ex) {
 //            System.err.println(ex.getMessage());
         } finally {
@@ -120,8 +120,8 @@ public class Screen {
             
             p = Runtime.getRuntime().exec("ffmpeg");
             p.waitFor();
-            //System.out.println(p.exitValue());
-            retValue = (p.exitValue() == 1);
+//            System.out.println(p.exitValue());
+            retValue = p.exitValue() == 1;
         } catch (IOException | InterruptedException ex) {
 //            System.err.println(ex.getMessage());
         } finally {

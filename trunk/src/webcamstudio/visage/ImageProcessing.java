@@ -80,11 +80,11 @@ public class ImageProcessing
       B = color & 0xFF;
       r = R / (R + G + B);
       g = G / (R + G + B);
-      a = r + (g / 2);
+      a = r + g / 2;
       b = (sqrt3 / 2d) * g;
       aValue = Math.round(a / 0.01d);
       bValue = Math.round(b / 0.01d);
-      return (aValue >= 49) && (aValue <= 59) && (bValue >= 24) && (bValue <= 29);
+      return aValue >= 49 && aValue <= 59 && bValue >= 24 && bValue <= 29;
   }
 
   /////////////////////////////////////////////

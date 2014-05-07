@@ -15,7 +15,7 @@ import webcamstudio.sources.effects.WaterFx;
 
 /**
  *
- * @author pballeux (modified by karl)
+ * @author karl
  */
 public class WaterFxControl extends javax.swing.JPanel {
 

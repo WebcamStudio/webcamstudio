@@ -719,7 +719,7 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         if (tglActiveStream.isSelected()) {
             this.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.green));
             if (txtChName.getText() != null) {
-            stream.setChName(txtChName.getText());
+                stream.setChName(txtChName.getText());
             }
             spinW1.setEnabled(false);
             jSlSpinCW.setEnabled(false);

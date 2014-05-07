@@ -20,7 +20,7 @@ import webcamstudio.sources.effects.controls.ShapesControl;
 
 /**
  *
- * @author pballeux
+ * @author pballeux (modified by karl)
  */
 public class Shapes extends Effect {
 
@@ -56,24 +56,6 @@ public class Shapes extends Effect {
     }
     @Override
     public void applyEffect(BufferedImage img) {
-//        System.out.println("DoOne: "+doOne);
-//        if (doOne){
-//            try { 
-//                shapeP.load(getClass().getResourceAsStream("/webcamstudio/resources/shapes/Shapes.properties"));
-//            } catch (IOException ex) {
-//                Logger.getLogger(Shapes.class.getName()).log(Level.SEVERE, null, ex);
-//            }
-//            String shapeFile = shapeP.getProperty(shapeS);
-//            System.out.println("/webcamstudio/resources/shapes/"+shapeFile);
-//            try {
-//                this.overlay = ImageIO.read(getClass().getResource("/webcamstudio/resources/shapes/"+shapeFile));
-//                this.overlay = Scalr.resize(overlay, Scalr.Mode.AUTOMATIC, width, height);
-////                System.out.println("Apply Overlay ...");
-//            } catch (IOException ex) {
-//                Logger.getLogger(Shapes.class.getName()).log(Level.SEVERE, null, ex);
-//            }
-//            doOne = false;
-//        }        
         Graphics2D buffer = img.createGraphics();
         buffer.setRenderingHint(RenderingHints.KEY_RENDERING,
                            RenderingHints.VALUE_RENDER_SPEED);
@@ -87,23 +69,14 @@ public class Shapes extends Effect {
                            RenderingHints.VALUE_COLOR_RENDER_SPEED);
         buffer.setRenderingHint(RenderingHints.KEY_DITHERING,
                            RenderingHints.VALUE_DITHER_DISABLE);
-//        if (overlay != null) {
-//            java.awt.Graphics2D buffer = img.createGraphics();
-            if (doReverseShapeMask) {
-                buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.DST_OUT, 1.0F));
-            } else {
-                buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.DST_IN, 1.0F));
-            }
-            buffer.setColor(java.awt.Color.BLACK);
-            buffer.drawImage(overlay, 0, 0, img.getWidth(), img.getHeight(), 0, 0, overlay.getWidth(), overlay.getHeight(), null);
-            buffer.dispose();
-//        }
-//        BufferedImage temp = filter.filter(img, null);
-//        buffer.setBackground(new Color(0, 0, 0, 0));
-//        buffer.clearRect(0, 0, img.getWidth(), img.getHeight());
-//        buffer.drawImage(overlay, 0, 0, null);
-//        buffer.dispose();
-
+        if (doReverseShapeMask) {
+            buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.DST_OUT, 1.0F));
+        } else {
+            buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.DST_IN, 1.0F));
+        }
+        buffer.setColor(java.awt.Color.BLACK);
+        buffer.drawImage(overlay, 0, 0, img.getWidth(), img.getHeight(), 0, 0, overlay.getWidth(), overlay.getHeight(), null);
+        buffer.dispose();
     }
     public String getShape() {
         return this.shapeS;

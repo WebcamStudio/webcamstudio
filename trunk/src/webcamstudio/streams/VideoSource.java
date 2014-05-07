@@ -40,7 +40,7 @@ import webcamstudio.util.Tools;
 
 public abstract class VideoSource implements InfoListener {
 
-    public static java.util.TreeMap<String, VideoSource> loadedSources = new TreeMap<>();
+    public static TreeMap<String, VideoSource> loadedSources = new TreeMap<>();
     private final static String userHomeDir = Tools.getUserHome();
     public static final int SCROLL_NONE = 0;
     public static final int SCROLL_TOPTOBOTTOM = 1;
@@ -64,8 +64,8 @@ public abstract class VideoSource implements InfoListener {
     protected String activeEffect = "";
     protected String uuId = java.util.UUID.randomUUID().toString();
     protected int videoEffect = 0;
-    protected java.awt.image.BufferedImage tempimage = null;
-    protected java.awt.image.BufferedImage image = null;
+    protected BufferedImage tempimage = null;
+    protected BufferedImage image = null;
     protected int[] dataInputImage = null;
     protected int[] dataOutputImage = null;
     protected int frameRate = 15;
@@ -80,8 +80,8 @@ public abstract class VideoSource implements InfoListener {
     protected int[] pixels = null;
     protected boolean stopMe = true;
     protected boolean isPlaying = false;
-    protected java.awt.Color foregroundColor = java.awt.Color.WHITE;
-    protected java.awt.Color backgroundColor = java.awt.Color.BLACK;
+    protected Color foregroundColor = Color.WHITE;
+    protected Color backgroundColor = Color.BLACK;
     protected boolean followMouseCursor = true;
     protected int fontSize = 10;
     protected InfoListener listener = null;
@@ -90,12 +90,12 @@ public abstract class VideoSource implements InfoListener {
     protected boolean isSelected = false;
     protected ColorFormat colorFormat = ColorFormat.YUV;
     protected long updateTimeLaspe = 0;
-    protected java.awt.Image shape = null;
+    protected Image shape = null;
     protected String shapeName = "";
     protected String audioSink = "autoaudiosink";
     protected boolean activityDetected = true;
     protected int activityThreshold = 0;
-    private java.awt.image.BufferedImage lastInputImage = null;
+    private BufferedImage lastInputImage = null;
     private long lastTimeStamp = 0;    //Scrolling method
     protected int scrollDirection = 0;
     protected String fontName = "Monospaced";
@@ -135,7 +135,7 @@ public abstract class VideoSource implements InfoListener {
         image = img;
     }
 
-    protected javax.swing.ImageIcon getCachedThumbnail() {
+    protected ImageIcon getCachedThumbnail() {
         ImageIcon icon = null;
         File home = new File(userHomeDir, ".webcamstudio");
         File thumbs = new File(home, "thumbs");
@@ -150,7 +150,7 @@ public abstract class VideoSource implements InfoListener {
         return icon;
     }
 
-    public javax.swing.ImageIcon getThumbnail() {
+    public ImageIcon getThumbnail() {
         BufferedImage img = new BufferedImage(32, 32, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = img.createGraphics();
         String n = name;
@@ -319,16 +319,14 @@ public abstract class VideoSource implements InfoListener {
         updateTimeLaspe = prefs.getLong("updatetimelapse", updateTimeLaspe);
         shapeName = prefs.get("shapename", shapeName);
         customShapeFileName = prefs.get("customshapefilename", customShapeFileName);
-        if (shapeName != null && shapeName.length() > 0) {
-            if (shapeName.equals("custom")) {
-                try {
-                    if (new File(customShapeFileName).exists()) {
-                        shape = javax.imageio.ImageIO.read(new File(customShapeFileName));
-                    }
-                } catch (IOException ex) {
-                    Logger.getLogger(VideoSource.class.getName()).log(Level.SEVERE, null, ex);
+        if (shapeName != null && shapeName.length() > 0 && shapeName.equals("custom")) {
+            try {
+                if (new File(customShapeFileName).exists()) {
+                    shape = javax.imageio.ImageIO.read(new File(customShapeFileName));
                 }
-            } 
+            } catch (IOException ex) { 
+                Logger.getLogger(VideoSource.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         audioSink = prefs.get("audiosink", audioSink);
         activityThreshold = prefs.getInt("activitythreshold", activityThreshold);
@@ -351,7 +349,7 @@ public abstract class VideoSource implements InfoListener {
         String[] effectIndexes;
         try {
             effectIndexes = prefs.node("Effects").childrenNames();
-            java.util.TreeMap<String, Effect> list = Effect.getEffects();
+            TreeMap<String, Effect> list = Effect.getEffects();
             for (String effectIndex : effectIndexes) {
                 Effect e = list.get(prefs.node("Effects").node(effectIndex).get("name", ""));
                 if (e != null) {
@@ -592,7 +590,7 @@ public abstract class VideoSource implements InfoListener {
         }
     }
 
-    public java.awt.image.BufferedImage getImage() {
+    public BufferedImage getImage() {
         return image;
     }
 
@@ -624,11 +622,11 @@ public abstract class VideoSource implements InfoListener {
         colorFormat = color;
     }
 
-    public void setForeground(java.awt.Color c) {
+    public void setForeground(Color c) {
         foregroundColor = c;
     }
 
-    public void setBackground(java.awt.Color c) {
+    public void setBackground(Color c) {
         backgroundColor = c;
     }
 
@@ -682,25 +680,25 @@ public abstract class VideoSource implements InfoListener {
         return isSelected;
     }
 
-    protected void applyShape(java.awt.image.BufferedImage img) {
+    protected void applyShape(BufferedImage img) {
         if (shape != null) {
-            java.awt.Graphics2D buffer = img.createGraphics();
+            Graphics2D buffer = img.createGraphics();
             if (doReverseShapeMask) {
                 buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.DST_OUT, 1.0F));
             } else {
                 buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.DST_IN, 1.0F));
             }
-            buffer.setColor(java.awt.Color.BLACK);
+            buffer.setColor(Color.BLACK);
             buffer.drawImage(shape, 0, 0, img.getWidth(), img.getHeight(), 0, 0, shape.getWidth(null), shape.getHeight(null), null);
             buffer.dispose();
         }
     }
 
-    public void setShape(java.awt.Image img) {
+    public void setShape(Image img) {
         shape = img;
     }
 
-    public java.awt.Image getShape() {
+    public Image getShape() {
         return shape;
     }
 
@@ -749,7 +747,7 @@ public abstract class VideoSource implements InfoListener {
         return scrollDirection;
     }
 
-    protected void detectActivity(java.awt.image.BufferedImage input) {
+    protected void detectActivity(BufferedImage input) {
         if (activityDetected && System.currentTimeMillis() - lastTimeStamp > 5000) {
             lastTimeStamp = System.currentTimeMillis();
         } else if (activityThreshold > 0 && System.currentTimeMillis() - lastTimeStamp > 1000) {
@@ -757,7 +755,7 @@ public abstract class VideoSource implements InfoListener {
             int h = input.getHeight();
             activityDetected = true;
             if (lastInputImage == null || w != lastInputImage.getWidth() || h != lastInputImage.getHeight()) {
-                lastInputImage = new BufferedImage(w, h, java.awt.image.BufferedImage.TYPE_INT_ARGB);
+                lastInputImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
                 lastInputImage.getGraphics().drawImage(input, 0, 0, null);
             }
 
@@ -775,14 +773,14 @@ public abstract class VideoSource implements InfoListener {
                 g1 =
                         ((c1 & 0x0000FF00) >> 8) / 16;
                 b1 =
-                        ((c1 & 0x000000FF)) / 16;
+                        (c1 & 0x000000FF) / 16;
 
                 r2 =
                         ((c2 & 0x00FF0000) >> 16) / 16;
                 g2 =
                         ((c2 & 0x0000FF00) >> 8) / 16;
                 b2 =
-                        ((c2 & 0x000000FF)) / 16;
+                        (c2 & 0x000000FF) / 16;
 
                 if (r1 != r2 || b1 != b2 || g1 != g2) {
                     nbDiffPixels++;
@@ -819,7 +817,7 @@ public abstract class VideoSource implements InfoListener {
     }
 
     public boolean hasVideoSourceListener() {
-        return (vlistener != null);
+        return vlistener != null;
     }
 
     public void fireSourceUpdated() {

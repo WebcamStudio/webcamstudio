@@ -44,8 +44,8 @@ public class V4L2Loopback extends VideoOutput{
         if (flipImage) {
             int[] buffer = new int[data.length];
             for (int y = 0; y < data.length; y += width) {
-                for (int x = (w-1); x >=0; x-=1) {
-                    buffer[y+x] = data[y+((width-1)-x)];
+                for (int x = w-1 ; x >=0 ; x-=1) {
+                    buffer[y+x] = data[y+width-1-x];
                 }
             }
             data = buffer;

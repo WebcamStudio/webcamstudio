@@ -84,7 +84,7 @@ public class SourceControlChannels extends javax.swing.JPanel {
             source.removeChannelAt(i);
             source.addChannelAt(sch,i);
         }
-        ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Stream Settings Applied to all Channels.");
+        ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, source.getName() + " Settings Applied to all Channels.");
         ResourceMonitor.getInstance().addMessage(label);
     }//GEN-LAST:event_btnApplyAllChActionPerformed
     @SuppressWarnings("deprecation")     

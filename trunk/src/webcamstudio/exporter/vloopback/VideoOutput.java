@@ -95,7 +95,7 @@ abstract public class VideoOutput{
 
     protected byte[] img2uyvy(int[] data) {
 //        int nbOfPixels = data.length;
-        byte[] yuvs = new byte[(data.length * 2)];
+        byte[] yuvs = new byte[data.length * 2];
         int index = data.length - 1;
         int yuvIndex = yuvs.length - 1;
         byte y1 = 0;

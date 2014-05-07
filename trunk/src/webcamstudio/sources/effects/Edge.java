@@ -15,7 +15,7 @@ import javax.swing.JPanel;
 
 /**
  *
- * @author pballeux
+ * @author karl 
  */
 public class Edge extends Effect {
    
@@ -31,8 +31,8 @@ public class Edge extends Effect {
         BufferedImage temp = imageIn.toBufferedImage();
         
         Graphics2D buffer = img.createGraphics();
-        buffer.setRenderingHint(java.awt.RenderingHints.KEY_INTERPOLATION, 
-                           java.awt.RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        buffer.setRenderingHint(RenderingHints.KEY_INTERPOLATION, 
+                           RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         buffer.setRenderingHint(RenderingHints.KEY_RENDERING,
                            RenderingHints.VALUE_RENDER_SPEED);
         buffer.setRenderingHint(RenderingHints.KEY_ANTIALIASING,

@@ -25,7 +25,7 @@ public class UserModeCommand extends ModeCommand
 	
 	public UserModeCommand( String prefix, String userStr, StringTokenizer tokens )
 	{
-//		System.out.println( prefix );
+//                System.out.println( prefix );
 		sender = new FullNick( prefix );
 		user = new FullNick( userStr );
 	
@@ -39,7 +39,7 @@ public class UserModeCommand extends ModeCommand
 
 		//modes = parseModes( modeTypes, tokens );
 
-//		System.out.println( modes );
+//                System.out.println( modes );
 	}
 	
 	private void makeModeTypes()

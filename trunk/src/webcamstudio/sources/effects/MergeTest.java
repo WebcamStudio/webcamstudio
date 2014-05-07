@@ -14,7 +14,7 @@ import javax.swing.JPanel;
 
 /**
  *
- * @author pballeux
+ * @author karl
  */
 public class MergeTest extends Effect {
 

@@ -13,7 +13,7 @@ import javax.swing.JPanel;
 
 /**
  *
- * @author pballeux
+ * @author karl
  */
 public class Emboss extends Effect{
     private final com.jhlabs.image.EmbossFilter filter = new com.jhlabs.image.EmbossFilter();

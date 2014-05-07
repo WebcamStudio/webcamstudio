@@ -28,7 +28,7 @@ public class ProcessExecutor {
 
     public static int getUnixPID(Process process) throws Exception //Author Martijn Courteaux Code
     {
-        System.out.println("Process_GetUnixPid: "+process.getClass().getName());
+//        System.out.println("Process_GetUnixPid: "+process.getClass().getName());
     if (process.getClass().getName().equals("java.lang.UNIXProcess")) {
         Class cl = process.getClass();
         Field field = cl.getDeclaredField("pid");
@@ -43,7 +43,7 @@ public class ProcessExecutor {
     public static void killUnixProcess(Process process) throws Exception //Modified from Martijn Courteaux Code
     {
     int pid = getUnixPID(process);
-    System.out.println("Process_Pid: "+pid);
+//    System.out.println("Process_Pid: "+pid);
     Runtime rt = Runtime.getRuntime();
     String commandPids = "ps -ef | awk '{if ($3 == "+pid+") print $2;}'";
     File fileP=new File(userHomeDir+"/.webcamstudio/"+"WSPidsBuster.sh");
@@ -84,7 +84,7 @@ public class ProcessExecutor {
     }
     Runtime.getRuntime().exec("kill " + pid).waitFor(); // andrew.silver0 mod from -9
     Runtime.getRuntime().exec("kill " + childPids).waitFor(); //andrew.silver0 mod from -9
-    System.out.println("ChildPid: "+childPids);
+//    System.out.println("ChildPid: "+childPids);
     childPids = null;
     }
 

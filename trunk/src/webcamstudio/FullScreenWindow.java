@@ -63,7 +63,6 @@ public class FullScreenWindow extends javax.swing.JFrame implements Stream.Liste
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
         stream.destroy();
         stream = null;
-//        System.gc();
     }//GEN-LAST:event_formWindowClosed
 
     /**

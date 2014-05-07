@@ -13,7 +13,7 @@ import webcamstudio.mixers.MasterMixer;
 
 /**
  *
- * @author patrick
+ * @author patrick (modified by karl)
  */
 public class SinkFile extends Stream {
 
@@ -35,7 +35,6 @@ public class SinkFile extends Stream {
         rate = MasterMixer.getInstance().getRate();
         captureWidth = MasterMixer.getInstance().getWidth();
         captureHeight = MasterMixer.getInstance().getHeight();
-//        rate = MasterMixer.getInstance().getRate();
         capture = new ProcessRenderer(this, ProcessRenderer.ACTION.OUTPUT, "file", comm);
         capture.writeCom();
     }

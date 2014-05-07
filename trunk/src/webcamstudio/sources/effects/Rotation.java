@@ -17,7 +17,7 @@ import webcamstudio.sources.effects.controls.RotationControl;
 
 /**
  *
- * @author pballeux
+ * @author karl
  */
 public class Rotation extends Effect{
 

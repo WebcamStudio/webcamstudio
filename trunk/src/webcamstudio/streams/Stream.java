@@ -13,8 +13,6 @@ import webcamstudio.channels.transitions.Transition;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterMixer;
 import webcamstudio.sources.effects.Effect;
-import webcamstudio.util.Screen;
-
 /**
  *
  * @author patrick (modified by karl)
@@ -86,7 +84,6 @@ public abstract class Stream implements Callable<Frame>{
     protected String desktopN = "0";
     protected int desktopX = 0;
     protected int desktopY = 0;
-//    protected String[] screenID = Screen.getSources();
     protected int desktopW = 0;
     protected int desktopH = 0;
     protected String desktopXid = "";

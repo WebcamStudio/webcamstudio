@@ -24,7 +24,6 @@ public class MasterChannels {
     }
     ArrayList<String> channelNames = new ArrayList<>();
     ArrayList<Stream> streams = new ArrayList<>();
-//    ArrayList<ArrayList<String>> CHOfSource = new ArrayList<>();
     int rmAddIndex = 0;
     ArrayList<SourceChannel> tempSC = null;
     
@@ -56,16 +55,7 @@ public class MasterChannels {
         channelNames.add(index, name);
         
     }
-    
-//    public void swapChannels(String ch1Name, String ch2Name){
-//        channelNames.add(index, name);
-//        for (Stream s : streams) {
-//            SourceChannel tempSC = (SourceChannel.getChannel(name, s));
-//            s.removeChannelAt(index);
-//            s.addChannelAt(tempSC, index);
-//        }
-//    }
-    
+        
     public void updateChannel(String name){
         for (Stream s : streams){
             String streamName =s.getClass().getName();
@@ -78,8 +68,7 @@ public class MasterChannels {
                     break;
                 }
             }
-            if (streamName.contains("Sink")){
-            } else {
+            if (!streamName.contains("Sink")){
                 if (sc!=null){
                     s.removeChannelAt(x);
                 }

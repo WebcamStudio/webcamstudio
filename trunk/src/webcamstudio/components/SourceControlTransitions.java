@@ -19,7 +19,7 @@ import webcamstudio.streams.Stream;
 
 /**
  *
- * @author patrick
+ * @author patrick (modified by karl)
  */
 public class SourceControlTransitions extends javax.swing.JPanel {
     Stream source = null;

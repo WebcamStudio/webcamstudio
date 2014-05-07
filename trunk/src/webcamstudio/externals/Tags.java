@@ -42,7 +42,6 @@ public enum Tags {
         MOUNT("@MOUNT"),
         PASSWORD("@PASSWORD"),
         PORT("@PORT"),
-//        IPCURL("@IPCURL"),
         PAUDIOSRC ("@PAUDIOSRC"),
         AUDIOSRC ("@AUDIOSRC"),
         KEYINT ("@KEYINT"),

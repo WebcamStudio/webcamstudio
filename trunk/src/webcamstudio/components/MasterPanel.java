@@ -25,7 +25,6 @@ import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterMixer;
 import webcamstudio.mixers.SystemPlayer;
 import webcamstudio.streams.SourceChannel;
-//import webcamstudio.streams.SourceQRCode;
 import webcamstudio.streams.SourceText;
 import webcamstudio.streams.Stream;
 import webcamstudio.util.Tools;
@@ -44,7 +43,6 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
     ArrayList<Stream> streamM = MasterChannels.getInstance().getStreams();   
     Stream stream = null;
     SourceText sTx = null;
-//    SourceQRCode sTqr = null;
     boolean lockRatio = false;
 
     /** Creates new form MasterPanel */
@@ -262,18 +260,12 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
         int oldCH;
         for (Stream oneStream : allStreams) {
             if (oneStream instanceof SourceText) {
-                    sTx = (SourceText) oneStream;
-                    oldCW = sTx.getTextCW();
-                    oldCH = sTx.getTextCH();
+                sTx = (SourceText) oneStream;
+                oldCW = sTx.getTextCW();
+                oldCH = sTx.getTextCH();
             } else {
-//                if (oneStream instanceof SourceQRCode){
-//                    sTqr = (SourceQRCode) oneStream;
-//                    oldCW = sTqr.getTextCW();
-//                    oldCH = sTqr.getTextCH();    
-//                } else {
                 oldCW = oneStream.getCaptureWidth();
                 oldCH = oneStream.getCaptureHeight();
-//                }
             }
 //            System.out.println("oldCW: "+oldCW);
 //            System.out.println("oldCH: "+oldCH);
@@ -293,20 +285,15 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
 //            System.out.println("newX: "+newX);
             int newY = (oldY * he) / oldCH;
 //            System.out.println("newY: "+newY);
-            if (oneStream instanceof SourceText) { // || oneStream instanceof SourceQRCode
+            if (oneStream instanceof SourceText) {
                 oneStream.setWidth(newW);
                 oneStream.setHeight(newH);
                 oneStream.setX(newX);
                 oneStream.setY(newY);
                 oneStream.setCaptureWidth(newW);
                 oneStream.setCaptureHeight(newH);
-//                if (oneStream instanceof SourceText) {
-                    sTx.setTextCW(wi);
-                    sTx.setTextCH(he);
-//                } else {
-//                    sTqr.setTextCW(wi);
-//                    sTqr.setTextCH(he);
-//                }
+                sTx.setTextCW(wi);
+                sTx.setTextCH(he);
                 oneStream.updateStatus();
                 for (SourceChannel ssc : oneStream.getChannels()) {
                     ssc.setWidth(newW);

@@ -29,8 +29,8 @@ public class Resize extends Transition{
         int rate = source.getRate();
         int totalFrames = rate * 1;
         for (int i = 0; i<totalFrames;i++){
-            source.setWidth(oldW + ((i*deltaW/totalFrames)));
-            source.setHeight(oldH + ((i*deltaH/totalFrames)));
+            source.setWidth(oldW + i*deltaW/totalFrames);
+            source.setHeight(oldH + i*deltaH/totalFrames);
             source.setOpacity(i*100/totalFrames);
             Tools.sleep(1000/rate);
             

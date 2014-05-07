@@ -441,7 +441,7 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
                 tglClockActionPerformed(evt);
             }
         });
-        add(tglClock, new org.netbeans.lib.awtextra.AbsoluteConstraints(65, 125, 50, 20));
+        add(tglClock, new org.netbeans.lib.awtextra.AbsoluteConstraints(62, 125, 55, 20));
 
         tglQRCode.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/qrcode.png"))); // NOI18N
         tglQRCode.setToolTipText("Switch to QRCode mode.");
@@ -453,7 +453,7 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
                 tglQRCodeActionPerformed(evt);
             }
         });
-        add(tglQRCode, new org.netbeans.lib.awtextra.AbsoluteConstraints(8, 125, 50, 20));
+        add(tglQRCode, new org.netbeans.lib.awtextra.AbsoluteConstraints(7, 125, 55, 20));
 
         getAccessibleContext().setAccessibleParent(this);
     }// </editor-fold>//GEN-END:initComponents
@@ -673,7 +673,7 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
                 time = new Timer();
                 clockIn = new clock();
                 stopClock=false;
-                System.out.println("Source Updated Starting Clock ...");
+//                System.out.println("Source Updated Starting Clock ...");
                 time.schedule(clockIn, 0);
             } else {
                 tglClock.setSelected(false);
@@ -682,7 +682,7 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
                 time.purge();
                 clockIn.cancel();
                 stopClock=true;
-                System.out.println("Source Updated Stopping Clock ...");
+//                System.out.println("Source Updated Stopping Clock ...");
             }
         } else {
             this.setBorder(BorderFactory.createEmptyBorder());

@@ -121,7 +121,6 @@ public class StreamFullCamPanel extends javax.swing.JPanel implements Stream.Lis
         } else {
             this.setBorder(BorderFactory.createEmptyBorder());
             stream.stop();
-//            System.gc();
         }
     }//GEN-LAST:event_tglActiveStreamActionPerformed
 

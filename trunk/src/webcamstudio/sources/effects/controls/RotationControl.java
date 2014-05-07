@@ -15,7 +15,7 @@ import webcamstudio.sources.effects.Rotation;
 
 /**
  *
- * @author pballeux
+ * @author pballeux (modified by karl)
  */
 public class RotationControl extends javax.swing.JPanel {
 

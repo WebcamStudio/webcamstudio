@@ -15,7 +15,7 @@ import javax.swing.JPanel;
 
 /**
  *
- * @author pballeux
+ * @author karl
  */
 public class Ghosting extends Effect {
 
@@ -36,8 +36,8 @@ public class Ghosting extends Effect {
         BufferedImage temp = previusImageIn.toBufferedImage();
 
         Graphics2D buffer = img.createGraphics();
-        buffer.setRenderingHint(java.awt.RenderingHints.KEY_INTERPOLATION, 
-                           java.awt.RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        buffer.setRenderingHint(RenderingHints.KEY_INTERPOLATION, 
+                           RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         buffer.setRenderingHint(RenderingHints.KEY_RENDERING,
                            RenderingHints.VALUE_RENDER_SPEED);
         buffer.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
@@ -66,7 +66,6 @@ public class Ghosting extends Effect {
     public JPanel getControl() {
         JPanel dummy = new JPanel();
         return dummy;
-//        return new TwirlControl(this);
     }
 
     @Override
@@ -76,34 +75,4 @@ public class Ghosting extends Effect {
     @Override
     public void loadFromStudioConfig(Preferences prefs) { 
     }
-
-    /**
-     * @return the radius
-     */
-//    public float getRadius() {
-//        return radius;
-//    }
-//
-//    /**
-//     * @param radius the radius to set
-//     */
-//    public void setRadius(float radius) {
-//        this.radius = radius;
-//    }
-
-   
-//    /**
-//     * @return the angle
-//     */
-//    public float getAngle() {
-//        return angle;
-//    }
-//
-//    /**
-//     * @param angle the angle to set
-//     */
-//    public void setAngle(float angle) {
-//        this.angle = angle;
-//    }
-
 }

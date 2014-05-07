@@ -15,7 +15,7 @@ import webcamstudio.sources.effects.Perspective;
 
 /**
  *
- * @author pballeux
+ * @author pballeux (modified by karl)
  */
 public class PerspectiveControl extends javax.swing.JPanel {
 

@@ -72,7 +72,7 @@ public class DccSendHandler extends Thread
             while( true )
             {
                 int recvd = incoming.read( buffer );
-                //System.out.println("        read: " + recvd);
+//                System.out.println("        read: " + recvd);
                 
                 if( recvd < 0 )
                 {

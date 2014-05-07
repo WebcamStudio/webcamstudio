@@ -12,7 +12,7 @@ import webcamstudio.sources.effects.controls.CartoonControl;
 
 /**
  *
- * @author pballeux
+ * @author pballeux (modified by karl)
  */
 public class Cartoon extends Effect {
 
@@ -37,7 +37,7 @@ public class Cartoon extends Effect {
             c = data[i];
             r = (c & 0x00FF0000) >> 16;
             g = (c & 0x0000FF00) >> 8;
-            b = (c & 0x000000FF);
+            b = c & 0x000000FF;
             a = (c & 0xFF000000) >> 24;
 
             delta1 = r - g;
@@ -55,7 +55,7 @@ public class Cartoon extends Effect {
             if (b < 0) {
                 b = 0;
             }
-            data[i] = ((r << 16) | (g << 8) | (b) | (a << 24));
+            data[i] = r << 16 | g << 8 | b | a << 24;
         }
         Graphics2D buffer = img.createGraphics();
         

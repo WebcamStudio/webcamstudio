@@ -25,7 +25,6 @@ import webcamstudio.exporter.vloopback.VideoDevice;
 import webcamstudio.streams.SourceImage;
 import webcamstudio.streams.SourceImageGif;
 import webcamstudio.streams.SourceImageU;
-//import webcamstudio.streams.SourceMicrophone;
 import webcamstudio.streams.SourceMovie;
 import webcamstudio.streams.SourceAudioSource;
 import webcamstudio.streams.SourceWebcam;
@@ -886,13 +885,11 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener, 
                     window.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
                     try {
                         frame.setSelected(true);
-
                         frame.setMaximum(true);
-
                     } catch (PropertyVetoException ex) {
                         Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                window.setVisible(true);
+                    window.setVisible(true);
                 }         
             }
         }

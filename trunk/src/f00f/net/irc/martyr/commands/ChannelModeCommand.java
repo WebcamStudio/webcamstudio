@@ -57,9 +57,9 @@ public class ChannelModeCommand extends ModeCommand
         this.prefix = prefix;
         this.channelName = channelName;
 
-		modes = parseModes( modeTypes, params );
+            modes = parseModes( modeTypes, params );
 
-		// System.out.println( modes );
+//            System.out.println( modes );
 	}
 
 	/**

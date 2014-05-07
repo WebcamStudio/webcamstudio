@@ -46,21 +46,25 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="btnRemove" min="-2" pref="44" max="-2" attributes="0"/>
                   </Group>
-                  <Group type="102" alignment="1" attributes="0">
+                  <Component id="CHProgressTime" alignment="0" max="32767" attributes="0"/>
+                  <Component id="jLabel4" alignment="0" max="32767" attributes="0"/>
+                  <Component id="btnStopAllStream" alignment="0" max="32767" attributes="0"/>
+                  <Group type="102" alignment="0" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="jLabel2" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="jLabel3" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="29" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="ChDuration" max="32767" attributes="0"/>
-                          <Component id="lstNextChannel" max="32767" attributes="0"/>
+                          <Component id="lstNextChannel" pref="87" max="32767" attributes="0"/>
                       </Group>
                   </Group>
-                  <Component id="CHProgressTime" alignment="0" max="32767" attributes="0"/>
-                  <Component id="jLabel4" alignment="0" pref="0" max="32767" attributes="0"/>
-                  <Component id="btnStopAllStream" alignment="0" max="32767" attributes="0"/>
-                  <Component id="btnAutoPlayList" alignment="0" max="32767" attributes="0"/>
+                  <Group type="102" attributes="0">
+                      <Component id="btnClearAllCh" min="-2" pref="28" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="1" max="-2" attributes="0"/>
+                      <Component id="btnAutoPlayList" max="32767" attributes="0"/>
+                  </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -83,9 +87,12 @@
                   <Component id="btnUp" min="-2" pref="28" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" max="-2" attributes="0"/>
-              <Component id="lstChannelsScroll" pref="175" max="32767" attributes="0"/>
+              <Component id="lstChannelsScroll" pref="194" max="32767" attributes="0"/>
               <EmptySpace min="-2" max="-2" attributes="0"/>
-              <Component id="btnAutoPlayList" min="-2" pref="28" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="btnAutoPlayList" alignment="3" min="-2" pref="28" max="-2" attributes="0"/>
+                  <Component id="btnClearAllCh" alignment="3" min="-2" pref="28" max="-2" attributes="0"/>
+              </Group>
               <EmptySpace min="-2" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jLabel2" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -140,6 +147,7 @@
             <Property name="name" type="java.lang.String" value="lstChannels" noResource="true"/>
           </Properties>
           <Events>
+            <EventHandler event="componentAdded" listener="java.awt.event.ContainerListener" parameters="java.awt.event.ContainerEvent" handler="lstChannelsComponentAdded"/>
             <EventHandler event="valueChanged" listener="javax.swing.event.ListSelectionListener" parameters="javax.swing.event.ListSelectionEvent" handler="lstChannelsValueChanged"/>
           </Events>
         </Component>
@@ -369,6 +377,19 @@
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnDownActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="btnClearAllCh">
+      <Properties>
+        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+          <Image iconType="3" name="/webcamstudio/resources/tango/button-small-clear.png"/>
+        </Property>
+        <Property name="toolTipText" type="java.lang.String" value="Remove All Channels"/>
+        <Property name="enabled" type="boolean" value="false"/>
+        <Property name="name" type="java.lang.String" value="btnClearAllCh" noResource="true"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnClearAllChActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>

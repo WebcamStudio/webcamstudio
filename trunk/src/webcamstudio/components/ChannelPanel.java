@@ -16,6 +16,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import webcamstudio.WebcamStudio;
 import webcamstudio.channels.MasterChannels;
 import webcamstudio.mixers.SystemPlayer;
@@ -55,7 +57,7 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
         btnAutoPlayList.setEnabled(true);
     }
     public interface Listener {
-        public void resetBtnStates(java.awt.event.ActionEvent evt);    
+        public void resetBtnStates(ActionEvent evt);    
     }
     static Listener listenerCP = null;
     public static void setListenerCP(Listener l) {
@@ -104,6 +106,7 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
         btnAutoPlayList = new javax.swing.JButton();
         btnUp = new javax.swing.JButton();
         btnDown = new javax.swing.JButton();
+        btnClearAllCh = new javax.swing.JButton();
 
         setPreferredSize(new java.awt.Dimension(238, 499));
 
@@ -115,6 +118,11 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
             public Object getElementAt(int i) { return strings[i]; }
         });
         lstChannels.setName("lstChannels"); // NOI18N
+        lstChannels.addContainerListener(new java.awt.event.ContainerAdapter() {
+            public void componentAdded(java.awt.event.ContainerEvent evt) {
+                lstChannelsComponentAdded(evt);
+            }
+        });
         lstChannels.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
             public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
                 lstChannelsValueChanged(evt);
@@ -259,6 +267,16 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
             }
         });
 
+        btnClearAllCh.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/button-small-clear.png"))); // NOI18N
+        btnClearAllCh.setToolTipText("Remove All Channels");
+        btnClearAllCh.setEnabled(false);
+        btnClearAllCh.setName("btnClearAllCh"); // NOI18N
+        btnClearAllCh.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnClearAllChActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -286,18 +304,21 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
                         .addComponent(btnSelect, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnRemove, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                    .addComponent(CHProgressTime, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnStopAllStream, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2)
                             .addComponent(jLabel3))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(29, 29, 29)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(ChDuration)
-                            .addComponent(lstNextChannel, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addComponent(CHProgressTime, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(btnStopAllStream, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnAutoPlayList, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(lstNextChannel, 0, 87, Short.MAX_VALUE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnClearAllCh, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(1, 1, 1)
+                        .addComponent(btnAutoPlayList, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -314,9 +335,11 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
                     .addComponent(btnDown, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnUp, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lstChannelsScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 175, Short.MAX_VALUE)
+                .addComponent(lstChannelsScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 194, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnAutoPlayList, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnAutoPlayList, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnClearAllCh, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
@@ -356,12 +379,14 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
             btnSelect.setEnabled(!inTimer);
             btnRenameCh.setEnabled(!inTimer);
             btnAdd.setEnabled(!inTimer);
+            btnClearAllCh.setEnabled(!inTimer);
             StopCHTimer.setEnabled(inTimer);
             btnUpdate.setEnabled(true);
             } else {
                 btnRemove.setEnabled(false);
                 btnSelect.setEnabled(false);
                 btnUpdate.setEnabled(false);
+                btnClearAllCh.setEnabled(false);
         }
     }//GEN-LAST:event_lstChannelsValueChanged
     @SuppressWarnings("unchecked") 
@@ -384,6 +409,7 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
             ListChannels.add(name);
             lstChannels.revalidate();
             lstNextChannel.revalidate();
+//            lstChannels.setSelectedValue(name, true);
         } else {
             if (!noDuplicateCh){
                 ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Channel "+name+" Duplicated !!!");
@@ -438,13 +464,14 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
        }
     }   
     @Override
-    public void stopChTime(java.awt.event.ActionEvent evt) {
-        RemoteStopCHTimerActionPerformed(evt);
+    public void stopChTime(ActionEvent evt) {
+        RemoteStopCHTimerActionPerformed();
     }
     
     @Override
-    public void resetBtnStates(java.awt.event.ActionEvent evt) {
+    public void resetBtnStates(ActionEvent evt) {
         btnRenameCh.setEnabled(false);
+        btnClearAllCh.setEnabled(false);
         btnUp.setEnabled(false);
         btnDown.setEnabled(false);
         btnRemove.setEnabled(false);
@@ -460,7 +487,6 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
         @Override
         public void run() {
             CHptS=null;
-//            int CHpt=0;
             int CHpTemptime = CHNextTime/1000;
             CHProgressTime.setValue(0);
             CHProgressTime.setStringPainted(true);
@@ -531,6 +557,7 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
         if (CHTimers.get(lstChannels.getSelectedIndex()) != 0) {
             inTimer=true;
             btnRenameCh.setEnabled(false);
+            btnClearAllCh.setEnabled(false);
             btnUp.setEnabled(false);
             btnDown.setEnabled(false);
             btnRemove.setEnabled(false);
@@ -570,7 +597,7 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
             CHTimers.set(ChIndex, CHTimer);
         }
     }//GEN-LAST:event_ChDurationStateChanged
-    private void RemoteStopCHTimerActionPerformed(java.awt.event.ActionEvent evt) {                                            
+    private void RemoteStopCHTimerActionPerformed() {                                            
         CHt.cancel();
         CHt.purge();
         StopCHpt=true;
@@ -579,6 +606,7 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
         btnStopAllStream.setEnabled(true);
         btnSelect.setEnabled(true);
         btnRenameCh.setEnabled(true);
+        btnClearAllCh.setEnabled(true);
         btnUp.setEnabled(true);
         btnDown.setEnabled(true);
         btnRemove.setEnabled(true);
@@ -589,7 +617,7 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
         StopCHTimer.setEnabled(inTimer);
     }                                           
     private void StopCHTimerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_StopCHTimerActionPerformed
-        RemoteStopCHTimerActionPerformed(evt);
+        RemoteStopCHTimerActionPerformed();
         ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Channel Timer Stopped.");
         ResourceMonitor.getInstance().addMessage(label);
     }//GEN-LAST:event_StopCHTimerActionPerformed
@@ -609,43 +637,41 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
     }//GEN-LAST:event_btnStopAllStreamActionPerformed
     @SuppressWarnings("unchecked")
     private void btnRenameChActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRenameChActionPerformed
-        if (lstChannels != null) {
-            if (txtName.getText().length() > 0) {
-                String rnName = txtName.getText();
-                String chName = lstChannels.getSelectedValue().toString();
-                int selectCHIndex = lstChannels.getSelectedIndex();
-                for (Stream stream : streamS){
-                    for (SourceChannel sc : stream.getChannels()) {
-                        if (sc.getName().equals(chName)){
-                            sc.setName(rnName);
-                        }
+        if (lstChannels != null && txtName.getText().length() > 0) {
+            String rnName = txtName.getText();
+            String chName = lstChannels.getSelectedValue().toString();
+            int selectCHIndex = lstChannels.getSelectedIndex();
+            for (Stream stream : streamS){
+                for (SourceChannel sc : stream.getChannels()) {
+                    if (sc.getName().equals(chName)){
+                        sc.setName(rnName);
                     }
                 }
-                int coun =  0;
-                for (String chCurNx : CHCurrNext){
-                    if (chCurNx.equals(chName)){
-                        CHCurrNext.set(coun, rnName);
-                    }
-                    coun++;
-                }
-                lstNextChannel.revalidate();
-                master.addChannelAt(rnName, selectCHIndex);
-                master.removeChannelAt(chName);
-                model.removeElement(chName);
-                aModel.removeElement(chName);
-                CHTimers.remove(selectCHIndex);
-                ListChannels.remove(chName);
-                lstChannels.revalidate();
-                model.insertElementAt(rnName, selectCHIndex);
-                aModel.insertElementAt(rnName, selectCHIndex);
-                CHTimers.add(selectCHIndex, CHTimer);
-                ListChannels.add(selectCHIndex, rnName);
-                lstChannels.revalidate();
-                lstNextChannel.revalidate();
-                btnRenameCh.setEnabled(false);
-                btnUp.setEnabled(false);
-                btnDown.setEnabled(false);
             }
+            int coun =  0;
+            for (String chCurNx : CHCurrNext){
+                if (chCurNx.equals(chName)){
+                    CHCurrNext.set(coun, rnName);
+                }
+                coun++;
+            }
+            lstNextChannel.revalidate();
+            master.addChannelAt(rnName, selectCHIndex);
+            master.removeChannelAt(chName);
+            model.removeElement(chName);
+            aModel.removeElement(chName);
+            CHTimers.remove(selectCHIndex);
+            ListChannels.remove(chName);
+            lstChannels.revalidate();
+            model.insertElementAt(rnName, selectCHIndex);
+            aModel.insertElementAt(rnName, selectCHIndex);
+            CHTimers.add(selectCHIndex, CHTimer);
+            ListChannels.add(selectCHIndex, rnName);
+            lstChannels.revalidate();
+            lstNextChannel.revalidate();
+            btnRenameCh.setEnabled(false);
+            btnUp.setEnabled(false);
+            btnDown.setEnabled(false);
         }
     }//GEN-LAST:event_btnRenameChActionPerformed
     @SuppressWarnings("unchecked")
@@ -653,7 +679,7 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
         ArrayList<Stream> allStreams = MasterChannels.getInstance().getStreams();
         for (Stream s : allStreams) {
             String sourceName = s.getName();
-            System.out.println("Source: "+sourceName);
+//            System.out.println("Source: "+sourceName);
             String shortName = "";
             if (sourceName.length() > 30) {
                 shortName = s.getName().substring(0, 30)+" ...";
@@ -721,8 +747,7 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
                 // Update Streams Channels
                 for (Stream stream : streamS){
                     String streamName =stream.getClass().getName();
-                    if (streamName.contains("Sink")){
-                    } else {
+                    if (!streamName.contains("Sink")){
                         SourceChannel tempSelSC = null;
                         SourceChannel tempNextSC = null;
                         for (SourceChannel sc : stream.getChannels()) {
@@ -777,8 +802,7 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
                 // Update Streams Channels
                 for (Stream stream : streamS){
                     String streamName =stream.getClass().getName();
-                    if (streamName.contains("Sink")){
-                    } else {
+                    if (!streamName.contains("Sink")){
                         SourceChannel tempSelSC = null;
                         SourceChannel tempNextSC = null;
                         for (SourceChannel sc : stream.getChannels()) {
@@ -860,8 +884,7 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
                 // Update Streams Channels
                 for (Stream stream : streamS){
                     String streamName =stream.getClass().getName();
-                    if (streamName.contains("Sink")){
-                    } else {
+                    if (!streamName.contains("Sink")){
                         SourceChannel tempSelSC = null;
                         SourceChannel tempPrevSC = null;
                         for (SourceChannel sc : stream.getChannels()) {
@@ -921,8 +944,7 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
                 // Update Streams Channels
                 for (Stream stream : streamS){
                     String streamName =stream.getClass().getName();
-                    if (streamName.contains("Sink")){
-                    } else {
+                    if (!streamName.contains("Sink")){
                         SourceChannel tempSelSC = null;
                         SourceChannel tempPrevSC = null;
                         for (SourceChannel sc : stream.getChannels()) {
@@ -971,6 +993,32 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
             }
         }
     }//GEN-LAST:event_btnUpActionPerformed
+
+    private void btnClearAllChActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearAllChActionPerformed
+        int result = JOptionPane.showConfirmDialog(this,"All Channels will be Deleted !!!","Attention",JOptionPane.YES_NO_CANCEL_OPTION);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            ArrayList<String> sourceChI = MasterChannels.getInstance().getChannels();
+            if (sourceChI.size()>0) {
+                do {
+                    for (int a=0; a< sourceChI.size(); a++) {
+                        String removeSc = sourceChI.get(a);
+                        MasterChannels.getInstance().removeChannel(removeSc);
+                        removeChannels(removeSc, a);
+                    }
+                } while (sourceChI.size()>0);
+                resetBtnStates(evt);
+            }
+        } else {
+            ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Delete All Channels Cancelled!");
+            ResourceMonitor.getInstance().addMessage(label);
+        }
+    }//GEN-LAST:event_btnClearAllChActionPerformed
+
+    private void lstChannelsComponentAdded(java.awt.event.ContainerEvent evt) {//GEN-FIRST:event_lstChannelsComponentAdded
+        if (lstChannels.getSelectedIndex() != -1) {
+            btnClearAllCh.setEnabled(true);
+        }
+    }//GEN-LAST:event_lstChannelsComponentAdded
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -979,6 +1027,7 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
     private javax.swing.JButton StopCHTimer;
     private javax.swing.JButton btnAdd;
     private javax.swing.JButton btnAutoPlayList;
+    private javax.swing.JButton btnClearAllCh;
     private javax.swing.JButton btnDown;
     private javax.swing.JButton btnRemove;
     private javax.swing.JButton btnRenameCh;

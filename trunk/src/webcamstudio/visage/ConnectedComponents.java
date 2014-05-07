@@ -65,7 +65,7 @@ public class ConnectedComponents
       {
         nw = clustersMembers[x-1][y-1] ;
         w = clustersMembers[x-1][y] ;
-        if( (w == 0) && (nw == 0) && (n==0) && (ne==0) )
+        if( w == 0 && nw == 0 && n==0 && ne==0 )
         {
           label++;
           clustersMembers[x][y] = label;
@@ -81,7 +81,7 @@ public class ConnectedComponents
               if( nw != w ) {
                   labels[nw] = w;
               }
-              if( (n==0) && (ne!=0) && (nw != ne) && (labels[nw] != ne) ) {
+              if( n==0 && ne!=0 && nw != ne && labels[nw] != ne ) {
                   labels[ne] = nw;
               }
             }
@@ -94,7 +94,7 @@ public class ConnectedComponents
                 }
               }
               else
-                if( (ne != 0) && (ne != w) && (labels[w] != ne) ) {
+                if( ne != 0 && ne != w && labels[w] != ne ) {
                     labels[ne] = w;
               }
             }
@@ -104,7 +104,7 @@ public class ConnectedComponents
             if (nw != 0)
             {
               clustersMembers[x][y] = nw;
-              if( (n==0) && (ne!=0) && (ne !=nw) && (labels[nw] != ne) ) {
+              if( n==0 && ne!=0 && ne !=nw && labels[nw] != ne ) {
                   labels[ne] = nw;
               }
             }
@@ -120,7 +120,7 @@ public class ConnectedComponents
       }
       else
       {
-        if( (n==0) && (ne==0) )
+        if( n==0 && ne==0 )
         {
           label++;
           clustersMembers[x][y] = label;
@@ -266,7 +266,7 @@ public class ConnectedComponents
       if( cluster != 0 )
       {
         for (int i = 0; i < finalClusters.size(); i++) {
-            clusters[i + 1] = (finalClusters.get(i));
+            clusters[i + 1] = finalClusters.get(i);
         }
         clusters[cluster + 1] = Integer.MAX_VALUE;
         int centers[][] = new int[cluster + 2][2];
@@ -306,7 +306,7 @@ public class ConnectedComponents
     if (counter > limit / 2d)
     {
       Point center = new Point();
-      center.setLocation( (centerX / counter), (centerY / counter));
+      center.setLocation( centerX / counter, centerY / counter);
       return center;
     }
     else {
@@ -338,7 +338,7 @@ public class ConnectedComponents
           centerX[index] += x;
           centerY[index] += y;
           counter[index]++;
-          pixelColor = grayPixels[ (y + y0) * fWidth + (x + x0)];
+          pixelColor = grayPixels[ (y + y0) * fWidth + x + x0];
           colors[index] += pixelColor;
           if (pixelColor < darkestPixel)
           {
@@ -360,8 +360,8 @@ public class ConnectedComponents
         ind = indecies[clusters[i]];
         cX = (int) (centerX[ind] / counter[ind]);
         cY = (int) (centerY[ind] / counter[ind]);
-        dist = Math.sqrt(Math.pow( (cX - darkestX), 2) +
-                         Math.pow( (cY - darkestY), 2));
+        dist = Math.sqrt(Math.pow( cX - darkestX, 2) +
+                         Math.pow( cY - darkestY, 2));
         ratio = clusterArea / (colors[ind] * dist); //look for the largest,darkest,and closest to the darkest pixel, cluster
         if (ratio > max)
         {

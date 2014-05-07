@@ -14,7 +14,7 @@ import webcamstudio.sources.effects.controls.NoBackgroundControl;
 
 /**
  *
- * @author pballeux
+ * @author pballeux (modified by karl)
  */
 public class NoBackground extends Effect {
 

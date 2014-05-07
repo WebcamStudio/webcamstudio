@@ -23,7 +23,7 @@ import webcamstudio.sources.effects.Effect;
 
 /**
  *
- * @author patrick
+ * @author patrick (modified by karl)
  */
 public class SourceText extends Stream {
 
@@ -227,8 +227,6 @@ public class SourceText extends Stream {
                                RenderingHints.VALUE_RENDER_SPEED);
             buffer.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                                RenderingHints.VALUE_ANTIALIAS_OFF);
-    //        buffer.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-    //                           RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
             buffer.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,
                                RenderingHints.VALUE_FRACTIONALMETRICS_OFF);
             buffer.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING,
@@ -236,24 +234,20 @@ public class SourceText extends Stream {
             buffer.setRenderingHint(RenderingHints.KEY_DITHERING,
                                RenderingHints.VALUE_DITHER_DISABLE);
 
-            Font font = new java.awt.Font(fontName, java.awt.Font.PLAIN, textHeight);
+            Font font = new Font(fontName, Font.PLAIN, textHeight);
             buffer.setFont(font);
             FontMetrics fm = buffer.getFontMetrics();
             textHeight = fm.getHeight();
             textWidth = fm.stringWidth(content);
             int fontSize = font.getSize();
             while ((textHeight > captureHeight || textWidth > captureWidth) && fontSize>1){
-                font = new java.awt.Font(fontName, java.awt.Font.PLAIN, fontSize--);
+                font = new Font(fontName, Font.PLAIN, fontSize--);
                 buffer.setFont(font);
                 fm = buffer.getFontMetrics();
                 textHeight = fm.getHeight();
                 textWidth = fm.stringWidth(content);
             }
-            buffer.setRenderingHint(java.awt.RenderingHints.KEY_TEXT_ANTIALIASING, java.awt.RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-    //        buffer.setRenderingHint(java.awt.RenderingHints.KEY_INTERPOLATION, java.awt.RenderingHints.VALUE_INTERPOLATION_BICUBIC);
-    //        buffer.setRenderingHint(java.awt.RenderingHints.KEY_RENDERING, java.awt.RenderingHints.VALUE_RENDER_QUALITY);
-    //        buffer.setRenderingHint(java.awt.RenderingHints.KEY_DITHERING, java.awt.RenderingHints.VALUE_DITHER_ENABLE);
-    //        buffer.setRenderingHint(java.awt.RenderingHints.KEY_COLOR_RENDERING, java.awt.RenderingHints.VALUE_COLOR_RENDER_QUALITY);
+            buffer.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
             frame = new Frame(captureWidth, captureHeight, rate);
             buffer.setBackground(new Color(0,0,0,0));
             buffer.clearRect(0, 0, captureWidth, captureHeight);
@@ -278,9 +272,8 @@ public class SourceText extends Stream {
 
             buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC, 1F));
             buffer.setColor(new Color(color));
-            buffer.drawString(content, (captureWidth-textWidth)/2, (captureHeight/2)+(textHeight/2)-fm.getDescent());
+            buffer.drawString(content, (captureWidth-textWidth)/2, captureHeight/2 + textHeight/2 - fm.getDescent());
             buffer.dispose();
-    //        frame.setImage(image);
             if (frame != null) {
                 frame.setImage(image);
                 frame.setOutputFormat(x, y, width, height, opacity, volume);

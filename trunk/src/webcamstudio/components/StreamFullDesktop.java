@@ -101,7 +101,6 @@ public class StreamFullDesktop extends javax.swing.JInternalFrame {
         stream.destroy();
         stream = null;
         panel = null;
-//        System.gc();
     }//GEN-LAST:event_formInternalFrameClosing
 
     private void formFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_formFocusGained

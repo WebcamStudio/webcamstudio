@@ -24,8 +24,6 @@ import webcamstudio.mixers.SystemPlayer;
  */
 public class StreamFullPanel extends javax.swing.JPanel implements MasterMixer.SinkListener {
 
-//    Stream stream = null;
-//    Viewer viewer = new Viewer();
     private SystemPlayer player = null;
     
 

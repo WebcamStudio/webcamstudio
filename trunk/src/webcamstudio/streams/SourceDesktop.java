@@ -20,7 +20,7 @@ import webcamstudio.util.Tools.OS;
 
 /**
  *
- * @author patrick
+ * @author patrick (modified by karl)
  */
 public class SourceDesktop extends Stream {
 
