@@ -248,6 +248,16 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
         mixer.setHeight(h);
         mixer.setRate((Integer) spinFPS.getValue());
         MasterMixer.getInstance().start();
+        for (Stream s : streamM){
+            String streamName =s.getClass().getName();
+            System.out.println("StreamName: "+streamName);
+            if (streamName.contains("SinkFile") || streamName.contains("SinkUDP")){
+                System.out.println("Sink New Size: "+w+"x"+h);
+                s.setWidth(w);
+                s.setHeight(h);
+                s.updateStatus();
+            }
+        }
         ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "New Mixer Settings Applied");
         ResourceMonitor.getInstance().addMessage(label);
     }//GEN-LAST:event_btnApplyActionPerformed

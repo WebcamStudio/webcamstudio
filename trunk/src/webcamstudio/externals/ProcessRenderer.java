@@ -25,6 +25,7 @@ import webcamstudio.media.renderer.ProcessExecutor;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterMixer;
 import webcamstudio.streams.SinkFile;
+import webcamstudio.streams.SinkUDP;
 import webcamstudio.streams.Stream;
 import webcamstudio.util.Tools;
 import webcamstudio.util.Tools.OS;
@@ -79,6 +80,7 @@ public class ProcessRenderer {
         String distro = wsDistroWatch();
         if ("FF".equals(bkEnd)) {
             if (action == OUTPUT){
+                System.out.println("Action Output - BackEnd FF !!!");
                 this.oPlug = "ffmpeg_output";
                 this.plugin = plugin;
             } else {
@@ -223,10 +225,16 @@ public class ProcessRenderer {
                     if (fme != null) {
                         command = command.replaceAll(Tags.VBITRATE.toString(), fme.getVbitrate());
                     }
+                    if (stream instanceof SinkFile || stream instanceof SinkUDP) {
+                        command = command.replaceAll(Tags.VBITRATE.toString(), stream.getVbitrate());
+                    }
                     break;
                 case ABITRATE:
                     if (fme != null) {
                         command = command.replaceAll(Tags.ABITRATE.toString(), fme.getAbitrate());
+                    }
+                    if (stream instanceof SinkFile || stream instanceof SinkUDP) {
+                        command = command.replaceAll(Tags.ABITRATE.toString(), stream.getAbitrate());
                     }
                     break;
                 case URL:

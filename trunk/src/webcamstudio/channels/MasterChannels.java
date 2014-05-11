@@ -32,11 +32,15 @@ public class MasterChannels {
     public void register(Stream s){
         String streamName =s.getClass().getName();
         streamName = streamName.replace("webcamstudio.streams.", "");
-        System.out.println(streamName + " registered.");
+        if (!s.getClass().toString().contains("Sink")){
+            System.out.println(streamName + " registered.");
+        }
         streams.add(s);
     }
     public void unregister(Stream s){
-        System.out.println(s.getName() + " unregistered.");
+        if (!s.getClass().toString().contains("Sink")){
+            System.out.println(s.getName() + " unregistered.");
+        }
         streams.remove(s);
     }
     public void addChannel(String name){
