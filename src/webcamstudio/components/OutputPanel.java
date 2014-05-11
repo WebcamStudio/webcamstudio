@@ -13,6 +13,7 @@ package webcamstudio.components;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+//import java.awt.Frame;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.DnDConstants;
@@ -38,15 +39,20 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
+import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+//import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
 import javax.swing.JToggleButton;
 import javax.swing.SwingWorker;
-import javax.swing.UIManager;
+//import javax.swing.UIManager;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import webcamstudio.WebcamStudio;
 import static webcamstudio.WebcamStudio.wsDistroWatch;
@@ -90,11 +96,21 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
     String virtualDevice = "webcamstudio";
     TreeMap<String, ResourceMonitorLabel> labels = new TreeMap<>();
     JFrame wDFrame;
+    FME currFME;
+    JPopupMenu fmePopup = new JPopupMenu();
+    JPopupMenu sinkFilePopup = new JPopupMenu();
+    JPopupMenu sinkUDPPopup = new JPopupMenu();
+    File f = new File(userHomeDir + "/.webcamstudio/Record To File");
+    SinkFile fileStream = new SinkFile(f);
+    SinkUDP udpStream = new SinkUDP();
     /** Creates new form OutputPanel
      * @param aFrame */
     public OutputPanel(JFrame aFrame) {
         initComponents();
         wDFrame = aFrame;
+        fmeInitPopUp();
+        sinkFileInitPopUp();
+        sinkUDPInitPopUp();
         final OutputPanel instanceSinkOP = this;
         WebcamStudio.setListenerOP(instanceSinkOP);
         ChannelPanel.setListenerCP(instanceSinkOP);
@@ -103,6 +119,16 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
             paintWSCamButtons ();
         }
         
+        fileStream.setWidth(MasterMixer.getInstance().getWidth());
+        fileStream.setHeight(MasterMixer.getInstance().getHeight());
+        fileStream.setRate(MasterMixer.getInstance().getRate());
+//        fileStream.setListener(instanceSink);
+        
+        udpStream.setWidth(MasterMixer.getInstance().getWidth());
+        udpStream.setHeight(MasterMixer.getInstance().getHeight());
+        udpStream.setRate(MasterMixer.getInstance().getRate());
+//        udpStream.setListener(instanceSink);
+            
         this.setDropTarget(new DropTarget() {
 
             @Override
@@ -168,8 +194,26 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
 
     public void loadPrefs(Preferences prefs) {
         Preferences fmePrefs = prefs.node("fme");
+        Preferences filePrefs = prefs.node("filerec");
+        Preferences udpPrefs = prefs.node("udp");
         try {
             String[] services = fmePrefs.childrenNames();
+            String[] servicesF = filePrefs.childrenNames();
+            String[] servicesU = udpPrefs.childrenNames();
+            
+            for (String s : servicesF){
+                Preferences serviceF = filePrefs.node(s);
+                fileStream.setVbitrate(serviceF.get("vbitrate", ""));
+                fileStream.setAbitrate(serviceF.get("abitrate", ""));
+            }
+            
+            for (String s : servicesU){
+                Preferences serviceU = udpPrefs.node(s);
+                udpStream.setVbitrate(serviceU.get("vbitrate", ""));
+                udpStream.setAbitrate(serviceU.get("abitrate", ""));
+                udpStream.setStandard(serviceU.get("standard", ""));
+            }
+            
             for (String s : services) {
                 Preferences service = fmePrefs.node(s);
                 String url = service.get("url", "");
@@ -185,6 +229,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
                 String password = service.get("password", "");
                 String port = service.get("port", "");
                 String keyInt = service.get("keyint", "");
+                String standard = service.get("standard", "");
                 // for compatibility before KeyInt
                 if ("".equals(keyInt)) {
                     keyInt = "125";
@@ -192,6 +237,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
                 
 //                System.out.println("Loaded KeyInt: "+keyInt+"###");
                 FME fme = new FME(url, stream, name, abitrate, vbitrate, vcodec, acodec, width, height, mount, password, port, keyInt);
+                fme.setStandard(standard);
                 fmes.put(fme.getName(), fme);
                 addButtonBroadcast(fme);
             }
@@ -203,10 +249,18 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
 
     public void savePrefs(Preferences prefs) {
         Preferences fmePrefs = prefs.node("fme");
+        Preferences filePrefs = prefs.node("filerec");
+        Preferences udpPrefs = prefs.node("udp");
         try {
             fmePrefs.removeNode();
             fmePrefs.flush();
             fmePrefs = prefs.node("fme");
+            filePrefs.removeNode();
+            filePrefs.flush();
+            filePrefs = prefs.node("filerec");
+            udpPrefs.removeNode();
+            udpPrefs.flush();
+            udpPrefs = prefs.node("udp");
         } catch (BackingStoreException ex) {
             Logger.getLogger(OutputPanel.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -225,10 +279,18 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
             service.put("password", fme.getPassword());
             service.put("port", fme.getPort());
             service.put("keyint", fme.getKeyInt());
+            service.put("standard", fme.getStandard());
         }
+        Preferences serviceF = filePrefs.node(fileStream.getName());
+        Preferences serviceU = udpPrefs.node(udpStream.getName());
+        serviceF.put("abitrate", fileStream.getAbitrate());
+        serviceF.put("vbitrate", fileStream.getVbitrate());
+        serviceU.put("abitrate", udpStream.getAbitrate());
+        serviceU.put("vbitrate", udpStream.getVbitrate());
+        serviceU.put("standard", udpStream.getStandard());
     }
 
-    private void addButtonBroadcast(FME fme) {
+    private void addButtonBroadcast(final FME fme) {
         final OutputPanel instanceSinkFME = this;
         JToggleButton button = new JToggleButton();
         Dimension d = new Dimension(139,30);
@@ -249,25 +311,28 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
                     if (fme != null){
                         fmeCount ++;
                         SinkBroadcast broadcast = new SinkBroadcast(fme);
-                        UIManager.put("OptionPane.noButtonText", "HQ");
-                        UIManager.put("OptionPane.yesButtonText", "Standard");
-                        int resultHQ = JOptionPane.showConfirmDialog(instanceSinkFME,"HQ or Standard mode?","Choose",JOptionPane.YES_NO_OPTION);
-                        switch(resultHQ){
-                            case JOptionPane.YES_OPTION:
-                                broadcast.setStandard("STD");
-                                break;
-                            case JOptionPane.NO_OPTION:
-                                broadcast.setStandard("HQ");
-                                break;
-                            case JOptionPane.CLOSED_OPTION:
-                                broadcast.setStandard("STD");
-                                break;
-                        }
-                        UIManager.put("OptionPane.noButtonText", "No");
-                        UIManager.put("OptionPane.yesButtonText", "Yes");     
+                        broadcast.setStandard(fme.getStandard());
+//                        UIManager.put("OptionPane.noButtonText", "HQ");
+//                        UIManager.put("OptionPane.yesButtonText", "Standard");
+//                        int resultHQ = JOptionPane.showConfirmDialog(instanceSinkFME,"HQ or Standard mode?","Choose",JOptionPane.YES_NO_OPTION);
+//                        switch(resultHQ){
+//                            case JOptionPane.YES_OPTION:
+//                                broadcast.setStandard("STD");
+//                                break;
+//                            case JOptionPane.NO_OPTION:
+//                                broadcast.setStandard("HQ");
+//                                break;
+//                            case JOptionPane.CLOSED_OPTION:
+//                                broadcast.setStandard("STD");
+//                                break;
+//                        }
+//                        UIManager.put("OptionPane.noButtonText", "No");
+//                        UIManager.put("OptionPane.yesButtonText", "Yes");     
                         broadcast.setRate(MasterMixer.getInstance().getRate());
                         broadcast.setWidth(MasterMixer.getInstance().getWidth());
+                        fme.setWidth(Integer.toString(MasterMixer.getInstance().getWidth()));
                         broadcast.setHeight(MasterMixer.getInstance().getHeight());
+                        fme.setHeight(Integer.toString(MasterMixer.getInstance().getHeight()));
                         broadcast.setListener(instanceSinkFME);
                         broadcast.read();
                         broadcasts.put(button.getText(), broadcast);
@@ -288,6 +353,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
                     if (broadcast != null) {
                         fmeCount --;
                         broadcast.stop();
+                        broadcast.destroy();
                         broadcasts.remove(fme.getName());
                         ResourceMonitorLabel label = labels.get(fme.getName());
                         labels.remove(fme.getName());
@@ -327,11 +393,80 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
             public void mouseMoved(MouseEvent e) {
             }
         });
-
+        button.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent evt) {
+                JToggleButton button = ((JToggleButton) evt.getSource());
+                if (!button.isSelected()) {
+                    fmeRightMousePressed(evt, fme);
+                }
+            }
+        });
         this.add(button);
         this.revalidate();
     }
-
+    
+    private void fmeRightMousePressed(java.awt.event.MouseEvent evt, FME fme) {                                      
+        if (evt.isPopupTrigger()) {
+            fmePopup.show(evt.getComponent(), evt.getX(), evt.getY());
+            currFME = fme;
+        }
+    }                                     
+    private void sinkFileRightMousePressed(java.awt.event.MouseEvent evt, SinkFile sinkfile) {
+        if (evt.isPopupTrigger()) {
+            fileStream = sinkfile;
+            sinkFilePopup.show(evt.getComponent(), evt.getX(), evt.getY());
+        }
+    }
+    
+    private void sinkUDPRightMousePressed(java.awt.event.MouseEvent evt, SinkUDP sinkUdp) {
+        if (evt.isPopupTrigger()) {
+            udpStream = sinkUdp;
+            sinkUDPPopup.show(evt.getComponent(), evt.getX(), evt.getY());
+        }
+    }
+    public void fmeInitPopUp(){
+        JMenuItem fmeSettings = new JMenuItem (new AbstractAction("FME Settings") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                FMESettings fmeSet = new FMESettings(currFME);
+                fmeSet.setLocationRelativeTo(WebcamStudio.cboAnimations);
+                fmeSet.setAlwaysOnTop(true);
+                fmeSet.setVisible(true);
+            }
+        });
+        fmeSettings.setIcon(new ImageIcon(getClass().getResource("/webcamstudio/resources/tango/working-4.png"))); // NOI18N
+        fmePopup.add(fmeSettings);
+    }
+    
+    public void sinkFileInitPopUp(){
+        JMenuItem sinkSettings = new JMenuItem (new AbstractAction("Record Settings") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SinkSettings sinkSet = new SinkSettings(fileStream, null);
+                sinkSet.setLocationRelativeTo(WebcamStudio.cboAnimations);
+                sinkSet.setAlwaysOnTop(true);
+                sinkSet.setVisible(true);
+            }
+        });
+        sinkSettings.setIcon(new ImageIcon(getClass().getResource("/webcamstudio/resources/tango/working-4.png"))); // NOI18N
+        sinkFilePopup.add(sinkSettings);
+    }
+    
+    public void sinkUDPInitPopUp(){
+        JMenuItem sinkSettings = new JMenuItem (new AbstractAction("UDP Settings") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SinkSettings sinkSet = new SinkSettings(null, udpStream);
+                sinkSet.setLocationRelativeTo(WebcamStudio.cboAnimations);
+                sinkSet.setAlwaysOnTop(true);
+                sinkSet.setVisible(true);
+            }
+        });
+        sinkSettings.setIcon(new ImageIcon(getClass().getResource("/webcamstudio/resources/tango/working-4.png"))); // NOI18N
+        sinkUDPPopup.add(sinkSettings);
+    }
+    
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -422,6 +557,15 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
                 tglRecordToFileActionPerformed(evt);
             }
         });
+        tglRecordToFile.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                JToggleButton button = ((JToggleButton) evt.getSource());
+                if (!button.isSelected()) {
+                    sinkFileRightMousePressed(evt, fileStream);
+                }
+            }
+        });
         add(tglRecordToFile);
 
         tglUDP.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-record.png"))); // NOI18N
@@ -437,29 +581,43 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
                 tglUDPActionPerformed(evt);
             }
         });
+        tglUDP.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                JToggleButton button = ((JToggleButton) evt.getSource());
+                if (!button.isSelected()) {
+                    sinkUDPRightMousePressed(evt, udpStream);
+                }
+            }
+        });
         add(tglUDP);
     }// </editor-fold>//GEN-END:initComponents
 
     private void tglRecordToFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglRecordToFileActionPerformed
         if (tglRecordToFile.isSelected()) {
             boolean overWrite = true;
-            File f;
+//            File f;
             JFileChooser chooser = new JFileChooser();
             FileNameExtensionFilter aviFilter = new FileNameExtensionFilter("AVI files (*.avi)", "avi");
             FileNameExtensionFilter mp4Filter = new FileNameExtensionFilter("MP4 files (*.mp4)", "mp4");
+            FileNameExtensionFilter flvFilter = new FileNameExtensionFilter("FLV files (*.flv)", "flv");
+            
             chooser.setFileFilter(aviFilter);
             chooser.setFileFilter(mp4Filter);
+            chooser.setFileFilter(flvFilter);
             chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
             chooser.setDialogTitle("Choose Destination File ...");
             int retval = chooser.showSaveDialog(this);
             f = chooser.getSelectedFile();
-            if (f != null) {
+            if (retval == JFileChooser.APPROVE_OPTION && f != null) {
                 if (chooser.getFileFilter().equals(aviFilter)) {
                     if(!chooser.getSelectedFile().getAbsolutePath().endsWith(".avi")){
                         f =  new File(chooser.getSelectedFile() + ".avi");
                     }
                 } else if (chooser.getFileFilter().equals(mp4Filter) && !chooser.getSelectedFile().getAbsolutePath().endsWith(".mp4")) {
                     f =  new File(chooser.getSelectedFile() + ".mp4");
+                } else if (chooser.getFileFilter().equals(flvFilter) && !chooser.getSelectedFile().getAbsolutePath().endsWith(".flv")) {
+                    f =  new File(chooser.getSelectedFile() + ".flv");
                 }
                 if(f.exists()){
                     int result = JOptionPane.showConfirmDialog(this,"File exists, overwrite?","Attention",JOptionPane.YES_NO_CANCEL_OPTION);
@@ -480,10 +638,10 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
                 }
             }
             if (retval == JFileChooser.APPROVE_OPTION && overWrite) {
-                SinkFile fileStream = new SinkFile(f);
-                fileStream.setWidth(MasterMixer.getInstance().getWidth());
-                fileStream.setHeight(MasterMixer.getInstance().getHeight());
-                fileStream.setRate(MasterMixer.getInstance().getRate());
+                fileStream.setFile(f);
+//                fileStream.setWidth(MasterMixer.getInstance().getWidth());
+//                fileStream.setHeight(MasterMixer.getInstance().getHeight());
+//                fileStream.setRate(MasterMixer.getInstance().getRate());
                 fileStream.setListener(instanceSink);
                 fileStream.read();
                 files.put("RECORD", fileStream);
@@ -513,26 +671,26 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
 
     private void tglUDPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglUDPActionPerformed
         if (tglUDP.isSelected()) {
-            SinkUDP udpStream = new SinkUDP();
-            UIManager.put("OptionPane.noButtonText", "HQ");
-            UIManager.put("OptionPane.yesButtonText", "Standard");
-            int resultHQ = JOptionPane.showConfirmDialog(this,"HQ or Standard mode?","Choose",JOptionPane.YES_NO_OPTION);
-            switch(resultHQ){
-                case JOptionPane.YES_OPTION:
-                    udpStream.setStandard("STD");
-                    break;
-                case JOptionPane.NO_OPTION:
-                    udpStream.setStandard("HQ");
-                    break;
-                case JOptionPane.CLOSED_OPTION:
-                    udpStream.setStandard("STD");
-                    break;
-            }
-            UIManager.put("OptionPane.noButtonText", "No");
-            UIManager.put("OptionPane.yesButtonText", "Yes");     
-            udpStream.setWidth(MasterMixer.getInstance().getWidth());
-            udpStream.setHeight(MasterMixer.getInstance().getHeight());
-            udpStream.setRate(MasterMixer.getInstance().getRate());
+//            SinkUDP udpStream = new SinkUDP();
+//            UIManager.put("OptionPane.noButtonText", "HQ");
+//            UIManager.put("OptionPane.yesButtonText", "Standard");
+//            int resultHQ = JOptionPane.showConfirmDialog(this,"HQ or Standard mode?","Choose",JOptionPane.YES_NO_OPTION);
+//            switch(resultHQ){
+//                case JOptionPane.YES_OPTION:
+//                    udpStream.setStandard("STD");
+//                    break;
+//                case JOptionPane.NO_OPTION:
+//                    udpStream.setStandard("HQ");
+//                    break;
+//                case JOptionPane.CLOSED_OPTION:
+//                    udpStream.setStandard("STD");
+//                    break;
+//            }
+//            UIManager.put("OptionPane.noButtonText", "No");
+//            UIManager.put("OptionPane.yesButtonText", "Yes");     
+//            udpStream.setWidth(MasterMixer.getInstance().getWidth());
+//            udpStream.setHeight(MasterMixer.getInstance().getHeight());
+//            udpStream.setRate(MasterMixer.getInstance().getRate());
             udpStream.setListener(instanceSink);
             udpStream.read();
             udpOut.put("UDPOut", udpStream);
@@ -825,7 +983,10 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
 
     @Override
     public void resetAutoPLBtnState(ActionEvent evt) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        fileStream.destroy();
+        udpStream.destroy();
+        fileStream = new SinkFile(f);
+        udpStream = new SinkUDP();
     }
     
     private static class WaitingDialogOP extends JDialog {

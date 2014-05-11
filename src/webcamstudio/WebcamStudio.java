@@ -212,7 +212,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener, Stre
                 }
             }
         });
-        
+
         this.add(ResourceMonitor.getInstance(), BorderLayout.SOUTH);
         prefs = Preferences.userNodeForPackage(this.getClass());
         panControls.add(recorder, BorderLayout.NORTH);
@@ -224,6 +224,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener, Stre
         initWebcam();
         initAudioFFMainSW();
         loadCustomSources();
+        listenerOP.resetAutoPLBtnState(null); // Corrects the UDP and File BackEnd Saved Prefs
     }
 
     private StreamDesktop getNewStreamDesktop(Stream s) {
@@ -1316,6 +1317,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener, Stre
                             listener.addLoadingChannel(chsc);               
                         }
                         Studio.chanLoad.clear();
+                        listenerOP.resetAutoPLBtnState(fEvt);
                         ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Studio is loaded!");
                         ResourceMonitor.getInstance().addMessage(label);
                         setTitle("WebcamStudio " + Version.version + " ("+file.getName()+")");
@@ -1414,6 +1416,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener, Stre
                 Tools.sleep(300);
                 desktop.removeAll();
                 desktop.repaint();
+                listenerOP.resetAutoPLBtnState(evt);
                 ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "New Studio Created.");
                 ResourceMonitor.getInstance().addMessage(label);
                 setTitle("WebcamStudio " + Version.version);
@@ -1644,6 +1647,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener, Stre
                 int result = JOptionPane.showConfirmDialog(this,"If you use ffmpeg Output under Ubuntu it may Crash WebcamStudio.","Warning !!!", JOptionPane.INFORMATION_MESSAGE, JOptionPane.YES_NO_CANCEL_OPTION);
                 if (result == JOptionPane.YES_OPTION) {
                     outFFmpeg = true;
+                    listenerOP.resetAutoPLBtnState(evt);
                     ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "FFmpeg Outputs BkEnd Activated ...");
                     ResourceMonitor.getInstance().addMessage(label);
                 } else {
@@ -1654,11 +1658,13 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener, Stre
                 }
             } else {
                 outFFmpeg = true;
+                listenerOP.resetAutoPLBtnState(evt);
                 ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "FFmpeg Outputs BkEnd Activated ...");
                 ResourceMonitor.getInstance().addMessage(label);
             }
         } else {
             outFFmpeg = false;
+            listenerOP.resetAutoPLBtnState(evt);
             ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "FFmpeg Outputs BkEnd Deactivated ...");
             ResourceMonitor.getInstance().addMessage(label);
         }

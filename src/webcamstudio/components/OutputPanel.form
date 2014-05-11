@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<Form version="1.4" maxVersion="1.7" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
+<Form version="1.5" maxVersion="1.7" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
   <Properties>
     <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
       <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
@@ -138,6 +138,7 @@
       </Events>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_DeclarationPost" type="java.lang.String" value="final OutputPanel instanceSink = this;"/>
+        <AuxValue name="JavaCodeGenerator_ListenersCodePost" type="java.lang.String" value="tglRecordToFile.addMouseListener(new java.awt.event.MouseAdapter() {&#xa;            @Override&#xa;            public void mousePressed(java.awt.event.MouseEvent evt) {&#xa;                JToggleButton button = ((JToggleButton) evt.getSource());&#xa;                if (!button.isSelected()) {&#xa;                    sinkFileRightMousePressed(evt, fileStream);&#xa;                }&#xa;            }&#xa;        });"/>
       </AuxValues>
     </Component>
     <Component class="javax.swing.JToggleButton" name="tglUDP">
@@ -164,6 +165,9 @@
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="tglUDPActionPerformed"/>
       </Events>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_ListenersCodePost" type="java.lang.String" value="tglUDP.addMouseListener(new java.awt.event.MouseAdapter() {&#xa;            @Override&#xa;            public void mousePressed(java.awt.event.MouseEvent evt) {&#xa;                JToggleButton button = ((JToggleButton) evt.getSource());&#xa;                if (!button.isSelected()) {&#xa;                    sinkUDPRightMousePressed(evt, udpStream);&#xa;                }&#xa;            }&#xa;        });"/>
+      </AuxValues>
     </Component>
   </SubComponents>
 </Form>

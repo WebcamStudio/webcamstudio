@@ -18,6 +18,7 @@ import webcamstudio.mixers.MasterMixer;
 public class SinkFile extends Stream {
 
     private ProcessRenderer capture = null;
+    
 
     public SinkFile(File f) {
         file = f;
@@ -95,5 +96,23 @@ public class SinkFile extends Stream {
     @Override
     public void play() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    public String getAbitrate() {
+        return abitrate;
+    }
+    
+    public void setAbitrate(String sAbitRate) {
+        abitrate = sAbitRate;
+    }
+    
+    /**
+     * @return the vbitrate
+     */
+    public String getVbitrate() {
+        return vbitrate;
+    }
+    
+    public void setVbitrate(String sVbitRate) {
+        vbitrate = sVbitRate;
     }
 }

@@ -107,4 +107,27 @@ public class SinkUDP extends Stream {
     public void play() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+    
+    /**
+     *
+     * @return Abitrate
+     */
+    public String getAbitrate() {
+        return abitrate;
+    }
+    
+    public void setAbitrate(String sAbitRate) {
+        abitrate = sAbitRate;
+    }
+    
+    /**
+     * @return Vbitrate
+     */
+    public String getVbitrate() {
+        return vbitrate;
+    }
+    
+    public void setVbitrate(String sVbitRate) {
+        vbitrate = sVbitRate;
+    }
 }

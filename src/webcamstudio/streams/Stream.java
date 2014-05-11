@@ -101,6 +101,8 @@ public abstract class Stream implements Callable<Frame>{
     protected boolean loaded=false;
     protected int ADelay = 0;
     protected int VDelay = 0;
+    protected String abitrate = "128";
+    protected String vbitrate = "1200";
     protected int frequencyDVB = 0;
     protected int bandwidthDVB = 0;
     protected int chDVB = 0;
@@ -595,7 +597,11 @@ public abstract class Stream implements Callable<Frame>{
     public File getFile() {
         return file;
     }
-
+    
+    public void setFile(File f) {
+        file = f;
+    }
+    
     public void setZOrder(int z) {
         zorder = z;
     }
@@ -754,6 +760,24 @@ public abstract class Stream implements Callable<Frame>{
     }
     public int getADelay () {
         return ADelay;
+    }
+    public String getAbitrate() {
+        return abitrate;
+    }
+    
+    public void setAbitrate(String sAbitRate) {
+        abitrate = sAbitRate;
+    }
+    
+    /**
+     * @return the vbitrate
+     */
+    public String getVbitrate() {
+        return vbitrate;
+    }
+    
+    public void setVbitrate(String sVbitRate) {
+        vbitrate = sVbitRate;
     }
 
     @Override

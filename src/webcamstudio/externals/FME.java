@@ -39,6 +39,7 @@ public class FME {
     private String port = "";
     private String keyInt = "";
     private final MasterMixer mixer = MasterMixer.getInstance();
+    private String standard = "STD";
     
     public FME(File xml) {
         try{
@@ -108,7 +109,11 @@ public class FME {
     public String getUrl() {
         return url;
     }
-
+    
+    public void setUrl(String sUrl) {
+        this.url = sUrl;
+    }
+    
     /**
      * @return the name
      */
@@ -116,20 +121,36 @@ public class FME {
         return name;
     }
 
+    public void setStandard(String gStandard) {
+        standard = gStandard;
+    }
+    
+    public String getStandard() {
+        return standard;
+    }
+    
     /**
      * @return the abitrate
      */
     public String getAbitrate() {
         return abitrate;
     }
-
+    
+    public void setAbitrate(String sAbitRate) {
+        abitrate = sAbitRate;
+    }
+    
     /**
      * @return the vbitrate
      */
     public String getVbitrate() {
         return vbitrate;
     }
-
+    
+    public void setVbitrate(String sVbitRate) {
+        vbitrate = sVbitRate;
+    }
+    
     /**
      * @return the vcodec
      */
@@ -151,6 +172,10 @@ public class FME {
         return width;
     }
 
+    public void setWidth(String sW) {
+        width = sW;
+    }
+    
     /**
      * @return the height
      */
@@ -158,25 +183,53 @@ public class FME {
         return height;
     }
 
+    public void setHeight(String sH) {
+        height = sH;
+    }
+    
     /**
      * @return the stream
      */
     public String getStream() {
         return stream;
     }
+    
+    public void setStream(String sStr) {
+        stream = sStr;
+    }
+    
     /**
      * @return
      */
     public String getMount() {
         return mount;
     }
+    
+    public void setMount(String sMount) {
+        mount = sMount;
+    }
+    
     public String getPassword() {
         return password;
     }
+    
+    public void setPassword(String sPsw) {
+        password = sPsw;
+    }
+    
     public String getPort() {
         return port;
     }
+    
+    public void setPort(String sPort) {
+        port = sPort;
+    }
+    
     public String getKeyInt() {
         return keyInt;
+    }
+    
+    public void setKeyInt(String sKeyI) {
+        keyInt = sKeyI;
     }
 }
