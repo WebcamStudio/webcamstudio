@@ -15,6 +15,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import static webcamstudio.WebcamStudio.audioFreq;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.WSImage;
 import webcamstudio.streams.Stream;
@@ -48,7 +49,7 @@ public class Capturer {
         stream = s;
         frame = new Frame(stream.getCaptureWidth(), stream.getCaptureHeight(), stream.getRate());
         image = new WSImage(stream.getCaptureWidth(), stream.getCaptureHeight(), BufferedImage.TYPE_INT_RGB);
-        audio = new byte[(webcamstudio.WebcamStudio.audioFreq * 2 * 2) / stream.getRate()];
+        audio = new byte[(audioFreq * 2 * 2) / stream.getRate()];
         frame.setID(stream.getID());
         if (stream.hasAudio()) {
             try {

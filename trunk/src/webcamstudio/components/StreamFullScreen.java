@@ -18,9 +18,9 @@ import webcamstudio.streams.Stream;
  * @author patrick (modified by karl)
  */
 public class StreamFullScreen extends javax.swing.JInternalFrame {
-    StreamFullCamPanel panel = null;
-    StreamPanelDVB panelDVB = null;
-    StreamPanelURL panelURL = null;
+//    StreamFullCamPanel panel = null;
+//    StreamPanelDVB panelDVB = null;
+//    StreamPanelURL panelURL = null;
     
     /** Creates new form StreamFullDesktop
      * @param viewer */
@@ -50,37 +50,9 @@ public class StreamFullScreen extends javax.swing.JInternalFrame {
         setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/user-desktop.png"))); // NOI18N
         setMaximumSize(new java.awt.Dimension(1280, 1024));
         setVisible(true);
-        addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
-            public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
-            }
-            public void internalFrameClosed(javax.swing.event.InternalFrameEvent evt) {
-            }
-            public void internalFrameClosing(javax.swing.event.InternalFrameEvent evt) {
-                formInternalFrameClosing(evt);
-            }
-            public void internalFrameDeactivated(javax.swing.event.InternalFrameEvent evt) {
-            }
-            public void internalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {
-            }
-            public void internalFrameIconified(javax.swing.event.InternalFrameEvent evt) {
-                formInternalFrameIconified(evt);
-            }
-            public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
-            }
-        });
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void formInternalFrameIconified(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameIconified
-       if (panel!=null){
-        this.setFrameIcon(panel.getIcon());
-       }
-    }//GEN-LAST:event_formInternalFrameIconified
-
-    private void formInternalFrameClosing(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameClosing
-        panel = null;
-    }//GEN-LAST:event_formInternalFrameClosing
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables

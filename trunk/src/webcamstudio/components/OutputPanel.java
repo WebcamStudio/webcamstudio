@@ -13,7 +13,6 @@ package webcamstudio.components;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-//import java.awt.Frame;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.DnDConstants;
@@ -42,7 +41,6 @@ import java.util.prefs.Preferences;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
-//import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -52,7 +50,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JToggleButton;
 import javax.swing.SwingWorker;
-//import javax.swing.UIManager;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import webcamstudio.WebcamStudio;
 import static webcamstudio.WebcamStudio.wsDistroWatch;
@@ -381,7 +378,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
                         if (broadcast != null) {
                             MasterChannels.getInstance().unregister(broadcast);
                         }
-//                        FME fme = fmes.remove(button.getText());
+                        fmes.remove(button.getText());
 //                        ResourceMonitorLabel label = labels.remove(fme.getName());
                         remove(button);
                         revalidate();

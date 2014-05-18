@@ -16,6 +16,7 @@ import java.net.URL;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import static webcamstudio.WebcamStudio.audioFreq;
 import static webcamstudio.WebcamStudio.outFFmpeg;
 import static webcamstudio.WebcamStudio.wsDistroWatch;
 import static webcamstudio.externals.ProcessRenderer.ACTION.OUTPUT;
@@ -63,7 +64,7 @@ public class ProcessRenderer {
     String audioPulseInput = "";
     int videoPort = 0;
     int audioPort = 0;
-    int frequency = webcamstudio.WebcamStudio.audioFreq;
+    int frequency = audioFreq;
     int channels = 2;
     int bitSize = 16;
     Stream stream;
@@ -80,7 +81,7 @@ public class ProcessRenderer {
         String distro = wsDistroWatch();
         if ("FF".equals(bkEnd)) {
             if (action == OUTPUT){
-                System.out.println("Action Output - BackEnd FF !!!");
+//                System.out.println("Action Output - BackEnd FF !!!");
                 this.oPlug = "ffmpeg_output";
                 this.plugin = plugin;
             } else {
@@ -97,11 +98,12 @@ public class ProcessRenderer {
                     this.plugin = plugin;
                 } else if ("AV".equals(bkEnd) && plugin.equals("audiosource")) {
                     this.plugin = "av_" + plugin;
-                } else if ("AV".equals(bkEnd)) {
+                } else { //if ("AV".equals(bkEnd))
                     this.plugin = plugin;
-                } else {
-                    this.plugin = "ffmpeg_" + plugin; // to keep GS to 0.10 Outside Ubuntu
-                }
+                } 
+//                else {
+////                    this.plugin = "ffmpeg_" + plugin; // to keep GS to 0.10 Outside Ubuntu
+//                }
             }
         }
 //        System.out.println("OPlugin:"+oPlug);
@@ -186,6 +188,12 @@ public class ProcessRenderer {
 
     private String setParameters(String cmd) {
         String command = cmd;
+        String fmeName = null;
+        String fmeURL = null;
+        if (fme != null) {
+            fmeName = fme.getName();
+            fmeURL = fme.getUrl();
+        }
         for (Tags tag : Tags.values()) {
             switch (tag) {
                 case DESKTOPN:
@@ -239,15 +247,15 @@ public class ProcessRenderer {
                     break;
                 case URL:
                     if (fme != null) {
-                switch (fme.getName().toLowerCase()) {
+                switch (fmeName.toLowerCase()) {
                     case "red5":
-                        command = command.replaceAll(Tags.URL.toString(), "" + fme.getUrl() + "/" + fme.getStream());
+                        command = command.replaceAll(Tags.URL.toString(), "" + fmeURL + "/" + fme.getStream());
                         break;
                     case "icecast":
-                        command = command.replaceAll(Tags.URL.toString(), "" + fme.getUrl());
+                        command = command.replaceAll(Tags.URL.toString(), "" + fmeURL);
                         break;
                     default:
-                        command = command.replaceAll(Tags.URL.toString(), "\""+fme.getUrl()+"/"+fme.getStream()+" live=1 flashver=FME/2.520(compatible;20FMSc201.0)"+"\""); // +" live=1 flashver=FME/2.520(compatible;20FMSc201.0)"
+                        command = command.replaceAll(Tags.URL.toString(), "" + fmeURL + "/" + fme.getStream()); // "\""+fme.getUrl()+"/"+fme.getStream()+" live=1 flashver=FME/2.520(compatible;20FMSc201.0)"+"\""
                         break;
                 }
                     } else if (stream.getURL() != null) {
@@ -255,11 +263,11 @@ public class ProcessRenderer {
                     }
                     break;
                 case MOUNT:
-                    if (fme != null && fme.getName().toLowerCase().equals("icecast")) {
+                    if (fme != null && fmeName.toLowerCase().equals("icecast")) {
                         command = command.replaceAll(Tags.MOUNT.toString(), "" + fme.getMount());
                     }        
                 case PASSWORD:
-                    if (fme != null && fme.getName().toLowerCase().equals("icecast")) {
+                    if (fme != null && fmeName.toLowerCase().equals("icecast")) {
                         command = command.replaceAll(Tags.PASSWORD.toString(), "" + fme.getPassword());
                     }
                 case KEYINT:
@@ -269,7 +277,7 @@ public class ProcessRenderer {
                         command = command.replaceAll(Tags.KEYINT.toString(), "" + Integer.toString(5*mixer.getRate()));
                     }
                 case PORT:
-                    if (fme != null && fme.getName().toLowerCase().equals("icecast")) {
+                    if (fme != null && fmeName.toLowerCase().equals("icecast")) {
                         command = command.replaceAll(Tags.PORT.toString(), "" + fme.getPort());
                     }        
                 case APORT:
@@ -485,16 +493,24 @@ public class ProcessRenderer {
                 } else if (plugins.containsKey("video") && stream.isStillPicture()) {
                     commandVideo = plugins.getProperty("videoPic").replaceAll("  ", " "); //Making sure there is no double spaces
                 } else if (plugins.containsKey("video") && stream.isRTSP()) {
-                    if (!"".equals(stream.getGSEffect())) {
-                        commandVideo = plugins.getProperty("RTSPvideoFX").replaceAll("  ", " "); //Making sure there is no double spaces
+                    if (stream.getComm().equals("GS")) {
+                        if (!"".equals(stream.getGSEffect())) {
+                            commandVideo = plugins.getProperty("RTSPvideoFX").replaceAll("  ", " "); //Making sure there is no double spaces
+                        } else {
+                            commandVideo = plugins.getProperty("GSRTSPvideo").replaceAll("  ", " "); //Making sure there is no double spaces
+                        }
                     } else {
-                        commandVideo = plugins.getProperty("RTSPvideo").replaceAll("  ", " "); //Making sure there is no double spaces
+                        commandVideo = plugins.getProperty("AVRTSPvideo").replaceAll("  ", " ");
                     }
                 } else if (plugins.containsKey("video") && stream.isRTMP()) {
-                    if (!"".equals(stream.getGSEffect())) {
-                        commandVideo = plugins.getProperty("RTMPvideoFX").replaceAll("  ", " "); //Making sure there is no double spaces
+                    if (stream.getComm().equals("GS")) {
+                        if (!"".equals(stream.getGSEffect())) {
+                            commandVideo = plugins.getProperty("RTMPvideoFX").replaceAll("  ", " "); //Making sure there is no double spaces
+                        } else {
+                            commandVideo = plugins.getProperty("GSRTMPvideo").replaceAll("  ", " "); //Making sure there is no double spaces
+                        }
                     } else {
-                        commandVideo = plugins.getProperty("RTMPvideo").replaceAll("  ", " "); //Making sure there is no double spaces
+                        commandVideo = plugins.getProperty("AVRTMPvideo").replaceAll("  ", " ");
                     }
                 } else if (plugins.containsKey("video")) {
                     if (stream.getWebURL().toLowerCase().startsWith("udp")) {
@@ -551,9 +567,17 @@ public class ProcessRenderer {
                     if (stream.getWebURL().toLowerCase().startsWith("udp")) {
                         commandAudio = plugins.getProperty("GSaudioUDP").replaceAll("  ", " "); //Making sure there is no double spaces
                     } else if (stream.isRTSP()) {
-                        commandAudio = plugins.getProperty("RTSPaudio").replaceAll("  ", " "); //Making sure there is no double spaces
+                        if (stream.getComm().equals("GS")) {
+                            commandAudio = plugins.getProperty("GSRTSPaudio").replaceAll("  ", " "); //Making sure there is no double spaces
+                        } else {
+                            commandAudio = plugins.getProperty("AVRTSPaudio").replaceAll("  ", " ");
+                        }
                     } else if (stream.isRTMP()) {
-                        commandAudio = plugins.getProperty("RTMPaudio").replaceAll("  ", " "); //Making sure there is no double spaces
+                        if (stream.getComm().equals("GS")) {
+                            commandAudio = plugins.getProperty("GSRTMPaudio").replaceAll("  ", " "); //Making sure there is no double spaces
+                        } else {
+                            commandAudio = plugins.getProperty("AVRTMPaudio").replaceAll("  ", " ");
+                        }
                     } else {
                         if ("AV".equals(stream.getComm())){
                             commandAudio = plugins.getProperty("AVaudio").replaceAll("  ", " "); //Making sure there is no double spaces

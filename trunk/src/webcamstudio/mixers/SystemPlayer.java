@@ -5,8 +5,12 @@
 package webcamstudio.mixers;
 
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
+import static webcamstudio.WebcamStudio.audioFreq;
 import webcamstudio.components.Viewer;
 import webcamstudio.util.Tools;
 
@@ -28,9 +32,10 @@ public class SystemPlayer implements Runnable {
     public boolean stopMePub = stopMe;
     private SourceDataLine source;
     private ExecutorService executor = null;
+    private ArrayList<byte[]> buffer = new ArrayList<byte[]>();
     private FrameBuffer frames = null;
     private Viewer viewer = null;
-    private int aFreq = webcamstudio.WebcamStudio.audioFreq;
+    private int aFreq = audioFreq;
 
     private SystemPlayer(Viewer viewer) {
         this.viewer = viewer;
@@ -43,9 +48,20 @@ public class SystemPlayer implements Runnable {
         int lAR = MasterMixer.getInstance().getAudioLevelRight();
         viewer.setAudioLevel(lAL, lAR);
         viewer.repaint();
-//        if (source != null) {
-//            frames.push(frame);
-//        }
+        if (source != null) {
+            frames.push(frame);
+        }
+    }
+
+    public void play() throws LineUnavailableException {
+        frames = new FrameBuffer(MasterMixer.getInstance().getWidth(), MasterMixer.getInstance().getHeight(), MasterMixer.getInstance().getRate());
+        AudioFormat format = new AudioFormat(audioFreq, 16, 2, true, true);
+        source = javax.sound.sampled.AudioSystem.getSourceDataLine(format);
+        source.open();
+        source.start();
+        executor = java.util.concurrent.Executors.newCachedThreadPool();
+        executor.submit(this);
+        executor.shutdown();
     }
 
     @Override

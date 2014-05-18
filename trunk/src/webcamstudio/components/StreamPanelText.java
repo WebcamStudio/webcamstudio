@@ -21,7 +21,6 @@ import java.util.TimerTask;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
-//import webcamstudio.streams.SourceQRCode;
 import webcamstudio.streams.SourceText;
 import webcamstudio.streams.Stream;
 import webcamstudio.util.Tools;
@@ -35,11 +34,9 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
 
     Stream stream = null;
     SourceText sTx = null;
-//    SourceQRCode sTqr = null;
     boolean stopClock = false;
     private Timer time = new Timer();
     private TimerTask clockIn = new clock();
-//    private final MasterMixer mixer = MasterMixer.getInstance();
     private int cW = 0;
     private int cH = 0;
 
@@ -59,17 +56,9 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
         cboFonts.setModel(model);
         
         this.stream = stream;
-//        if (stream instanceof SourceText) {
-            sTx = (SourceText) stream;
-            cW = sTx.getTextCW();
-    //        System.out.println("Stream CW: "+cW);
-            cH = sTx.getTextCW();
-    //        System.out.println("Stream CH: "+cH);
-//        } else {
-//            sTqr = (SourceQRCode) stream;
-//            cW = sTqr.getTextCW();
-//            cH = sTqr.getTextCH();
-//        }
+        sTx = (SourceText) stream;
+        cW = sTx.getTextCW();
+        cH = sTx.getTextCW();
         spinX.setValue(stream.getX());
         jSlSpinX.setValue(stream.getX());
         spinY.setValue(stream.getY());
@@ -718,13 +707,8 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
         jSlSpinW.setValue(stream.getWidth());
         spinH.setValue(stream.getHeight());
         jSlSpinH.setValue(stream.getHeight());
-//        if (stream instanceof SourceText){
-            cW = sTx.getTextCW();
-            cH = sTx.getTextCH();
-//        } else {
-//            cW = sTqr.getTextCW();
-//            cH = sTqr.getTextCH();
-//        }
+        cW = sTx.getTextCW();
+        cH = sTx.getTextCH();
         cboFonts.setSelectedItem(this.stream.getFont());
         txtHexColor.setText(Integer.toHexString(this.stream.getColor()));
         spinZOrder.setValue(stream.getZOrder());
@@ -733,18 +717,6 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
         tglActiveStream.setSelected(stream.isPlaying());
         tglClock.setEnabled(!stream.isPlaying());
         tglQRCode.setEnabled(!stream.isPlaying());
-//        if (stream.isPlaying()) {
-//            stopClock=false;
-//        } else {
-//            if (stream.getIsATimer()){
-//                time.cancel();
-//                time.purge();
-//                clockIn.cancel();
-//                stopClock=true;
-////                tglClock.setSelected(false);
-////                stream.setIsATimer(false);
-//            }
-//        }
     }
 
     @Override
