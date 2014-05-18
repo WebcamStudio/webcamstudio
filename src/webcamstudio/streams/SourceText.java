@@ -184,11 +184,12 @@ public class SourceText extends Stream {
 
     @Override
     public void updateContent(String content) {
+        boolean isTimer = this.getIsATimer();
+        Color bkgColor = new Color(bgColor);
+        this.content = content;
         if (this.getIsQRCode()) {
-            if (this.getIsATimer()){
+            if (isTimer){
                 this.content = "QRCode Clock Mode.";
-            } else {
-                this.content = content;
             }
             captureWidth = width;
             captureHeight = height;
@@ -211,10 +212,8 @@ public class SourceText extends Stream {
                 }
             }
         } else {
-            if (this.getIsATimer()){
+            if (isTimer){
                 this.content = "Text Clock Mode.";
-            } else {
-                this.content = content;
             }
             captureWidth = width;
             captureHeight = height;
@@ -233,6 +232,8 @@ public class SourceText extends Stream {
                                RenderingHints.VALUE_COLOR_RENDER_SPEED);
             buffer.setRenderingHint(RenderingHints.KEY_DITHERING,
                                RenderingHints.VALUE_DITHER_DISABLE);
+            buffer.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                               RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
             Font font = new Font(fontName, Font.PLAIN, textHeight);
             buffer.setFont(font);
@@ -246,27 +247,25 @@ public class SourceText extends Stream {
                 fm = buffer.getFontMetrics();
                 textHeight = fm.getHeight();
                 textWidth = fm.stringWidth(content);
-            }
-            buffer.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+            }        
             frame = new Frame(captureWidth, captureHeight, rate);
             buffer.setBackground(new Color(0,0,0,0));
             buffer.clearRect(0, 0, captureWidth, captureHeight);
             switch (shape) {
                 case RECTANGLE:
                     buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC, bgOpacity));
-                    buffer.setColor(new Color(bgColor));
+                    buffer.setColor(bkgColor);
                     buffer.fill3DRect(0, 0, captureWidth, captureHeight,true);
                     break;
                 case OVAL:
                     buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC, bgOpacity));
-                    buffer.setColor(new Color(bgColor));
+                    buffer.setColor(bkgColor);
                     buffer.fillOval(0, 0, captureWidth, captureHeight);
                     break;
                 case ROUNDRECT:
                     buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC, bgOpacity));
-                    buffer.setColor(new Color(bgColor));
+                    buffer.setColor(bkgColor);
                     buffer.fillRoundRect(0, 0, captureWidth, captureHeight,captureWidth/5,captureHeight/5);
-
                     break;
             }
 

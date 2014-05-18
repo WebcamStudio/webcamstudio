@@ -5,6 +5,7 @@
 package webcamstudio.mixers;
 
 import java.util.ArrayList;
+import static webcamstudio.WebcamStudio.audioFreq;
 import webcamstudio.util.Tools;
 
 /**
@@ -16,7 +17,7 @@ public class AudioBuffer {
     private final ArrayList<byte[]> buffer = new ArrayList<>();
     private int bufferSize = MasterMixer.BUFFER_SIZE;
     private boolean abort = false;
-    private int aFreq = webcamstudio.WebcamStudio.audioFreq;
+    private int aFreq = audioFreq;
     int currentIndex = 0;
     long framePushed = 0;
     long framePopped = 0;

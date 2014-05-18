@@ -13,15 +13,9 @@ package webcamstudio.components;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
-import java.beans.PropertyVetoException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.SpinnerNumberModel;
-import webcamstudio.FullScreenWindow;
-import webcamstudio.WebcamStudio;
-import webcamstudio.exporter.vloopback.VideoDevice;
 import webcamstudio.streams.SourceImage;
 import webcamstudio.streams.SourceImageGif;
 import webcamstudio.streams.SourceImageU;
@@ -29,7 +23,6 @@ import webcamstudio.streams.SourceMovie;
 import webcamstudio.streams.SourceAudioSource;
 import webcamstudio.streams.SourceWebcam;
 import webcamstudio.streams.Stream;
-import webcamstudio.util.Tools;
 
 
 
@@ -37,7 +30,7 @@ import webcamstudio.util.Tools;
  *
  * @author patrick (modified by karl)
  */
-public class StreamPanel extends javax.swing.JPanel implements Stream.Listener, StreamFullDesktop.Listener{
+public class StreamPanel extends javax.swing.JPanel implements Stream.Listener {
 
     Stream stream = null;
     Viewer viewer = new Viewer();
@@ -111,25 +104,20 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener, 
             jSlSpinO.setEnabled(false);
         }        
         if (stream instanceof SourceWebcam) { 
-            btnFullCam.setVisible(true);
             tglAudio.setVisible(false);
             tglPause.setVisible(false);
             this.add(tglActiveStream, new org.netbeans.lib.awtextra.AbsoluteConstraints(7, 120, 110, 20));
         } else if (stream instanceof SourceAudioSource) {
-            btnFullCam.setVisible(false);
             tglAudio.setVisible(true);
             tglPause.setVisible(false);
             this.add(tglActiveStream, new org.netbeans.lib.awtextra.AbsoluteConstraints(7, 120, 110, 20));
         } else if (stream instanceof SourceMovie) {
-            btnFullCam.setVisible(false);
             tglAudio.setVisible(true);
         } else if (stream instanceof SourceImage || stream instanceof SourceImageU || stream instanceof SourceImageGif){
-            btnFullCam.setVisible(false);
             tglAudio.setVisible(false);
             tglPause.setVisible(false);
             this.add(tglActiveStream, new org.netbeans.lib.awtextra.AbsoluteConstraints(7, 120, 110, 20));
         } else {
-            btnFullCam.setVisible(false);
             tglAudio.setVisible(false);
         }
     }
@@ -195,7 +183,6 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener, 
             jSlSpinAD.setEnabled(false);
             spinSeek.setEnabled(false);
             jSlSpinSeek.setEnabled(false);
-            btnFullCam.setEnabled(false);
             tglAudio.setEnabled(false);
             spinVolume.setEnabled(stream.hasAudio());
             jSlSpinV.setEnabled(stream.hasAudio());
@@ -212,7 +199,6 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener, 
             jSlSpinAD.setEnabled(stream.hasAudio());
             spinSeek.setEnabled(stream.needSeekCTRL());
             jSlSpinSeek.setEnabled(stream.needSeekCTRL());
-            btnFullCam.setEnabled(true);
             tglAudio.setEnabled(true);
             spinVolume.setEnabled(stream.hasAudio());
             jSlSpinV.setEnabled(stream.hasAudio());
@@ -275,7 +261,6 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener, 
         jSeparator3 = new javax.swing.JSeparator();
         jSeparator4 = new javax.swing.JSeparator();
         jSeparator5 = new javax.swing.JSeparator();
-        btnFullCam = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         tglPause = new javax.swing.JToggleButton();
 
@@ -677,16 +662,6 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener, 
         jSeparator5.setName("jSeparator5"); // NOI18N
         add(jSeparator5, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 141, 10, 140));
 
-        btnFullCam.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/view-fullscreen.png"))); // NOI18N
-        btnFullCam.setToolTipText("Full Screen Webcam Preview");
-        btnFullCam.setName("btnFullCam"); // NOI18N
-        btnFullCam.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnFullCamActionPerformed(evt);
-            }
-        });
-        add(btnFullCam, new org.netbeans.lib.awtextra.AbsoluteConstraints(249, 7, 30, 20));
-
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/splash100.png"))); // NOI18N
         jLabel2.setName("jLabel2"); // NOI18N
         add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(143, 14, 120, 110));
@@ -719,7 +694,6 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener, 
             jSlSpinAD.setEnabled(false);
             spinSeek.setEnabled(false);
             jSlSpinSeek.setEnabled(false);
-            btnFullCam.setEnabled(false);
             tglAudio.setEnabled(false);
             tglPause.setEnabled(true);
             stream.read();
@@ -735,7 +709,6 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener, 
             jSlSpinAD.setEnabled(stream.hasAudio());
             spinSeek.setEnabled(stream.needSeekCTRL());
             jSlSpinSeek.setEnabled(stream.needSeekCTRL());
-            btnFullCam.setEnabled(true);
             tglAudio.setEnabled(true);
             tglPause.setSelected(false);
             tglPause.setEnabled(false);
@@ -873,28 +846,6 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener, 
         spinZOrder.setValue(jSlSpinZOrder.getValue());      
     }//GEN-LAST:event_jSlSpinZOrderStateChanged
 
-    private void btnFullCamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFullCamActionPerformed
-        final String wCam = stream.getName();
-        if (Tools.getOS() == Tools.OS.LINUX) {
-            for (VideoDevice d : VideoDevice.getOutputDevices()) {
-                if (d.getName().equals(wCam)){
-                    Stream webcam = new SourceWebcam(d.getFile());
-                    webcam.setName(d.getName());
-                    StreamFullDesktop frame = new StreamFullDesktop(webcam, this);
-                    FullScreenWindow window = new FullScreenWindow(webcam, this);
-                    window.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
-                    try {
-                        frame.setSelected(true);
-                        frame.setMaximum(true);
-                    } catch (PropertyVetoException ex) {
-                        Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    window.setVisible(true);
-                }         
-            }
-        }
-    }//GEN-LAST:event_btnFullCamActionPerformed
-
     private void tglAudioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglAudioActionPerformed
         if (tglAudio.isSelected()){
             stream.setHasAudio(false);
@@ -915,7 +866,6 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener, 
     }//GEN-LAST:event_tglPauseActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnFullCam;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
@@ -970,9 +920,5 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener, 
         viewer.setImage(image);
         viewer.setAudioLevel(stream.getAudioLevelLeft(), stream.getAudioLevelRight());
         viewer.repaint();
-    }
-
-    @Override
-    public void selectedSource(Stream source) {
     }
 }

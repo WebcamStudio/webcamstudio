@@ -31,51 +31,51 @@ public class SourceControls {
         c = new SourceControlTransitions(source);
         comps.add(c);
         d = new SourceControlChannels(source);
-        d.setName("CH Options");
+        d.setName("CH Opt");
         comps.add(d);
         if (source instanceof SourceDesktop) {
             c = new SourceControlDesktop((SourceDesktop) source);
             comps.add(c);
             c = new SourceControlEffects(source);
-            c.setName("Effects");
+            c.setName("FX");
             comps.add(c);
             c = new SourceControlGSEffects(source);
-            c.setName("GS Fx");
+            c.setName("GS FX");
             comps.add(c);
         } else if (source instanceof SourceMovie) {
             c = new SourceControlEffects(source);
-            c.setName("Effects");
+            c.setName("FX");
             comps.add(c);
             c = new SourceControlGSEffects(source);
-            c.setName("GS Fx");
+            c.setName("GS FX");
             comps.add(c);
         } else if (source instanceof SourceMusic) {
             c = new SourceControlEffects(source);
-            c.setName("Effects");
+            c.setName("FX");
             comps.add(c);
             c = new SourceControlGSEffects(source);
-            c.setName("GS Fx");
+            c.setName("GS FX");
             comps.add(c);
         } else if (source instanceof SourceImageU) {
             c = new SourceControlEffects(source);
-            c.setName("Effects");
+            c.setName("FX");
             comps.add(c);
             c = new SourceControlGSEffects(source);
-            c.setName("GS Fx");
+            c.setName("GS FX");
             comps.add(c);
         } else if (source instanceof SourceDVB) {
             c = new SourceControlEffects(source);
-            c.setName("Effects");
+            c.setName("FX");
             comps.add(c);
             c = new SourceControlGSEffects(source);
-            c.setName("GS Fx");
+            c.setName("GS FX");
             comps.add(c);
         } else if (source instanceof SourceURL) {
             c = new SourceControlEffects(source);
-            c.setName("Effects");
+            c.setName("FX");
             comps.add(c);
             c = new SourceControlGSEffects(source);
-            c.setName("GS Fx");
+            c.setName("GS FX");
             comps.add(c);
 //        } else if (source instanceof SourceIPCam) {
 //            c = new SourceControlEffects(source);
@@ -83,23 +83,23 @@ public class SourceControls {
 //            comps.add(c);
         } else if (source instanceof SourceWebcam) {
             c = new SourceControlEffects(source);
-            c.setName("Effects");
+            c.setName("FX");
             comps.add(c);
             c = new SourceControlGSEffects(source);
-            c.setName("GS Fx");
+            c.setName("GS FX");
             comps.add(c);
         } else if (source instanceof SourceAudioSource) {
             c = new SourceControlEffects(source);
-            c.setName("Effects");
+            c.setName("FX");
             comps.add(c);
             c = new SourceControlGSEffects(source);
-            c.setName("GS Fx");
+            c.setName("GS FX");
             comps.add(c);
         } else if (source instanceof SourceText) {
             c = new SourceControlsText((SourceText) source);
             comps.add(c);
             c = new SourceControlEffects(source);
-            c.setName("Effects");
+            c.setName("FX");
             comps.add(c);
 //            c = new SourceControlGSEffects(source);
 //            c.setName("GS Effects");
@@ -107,7 +107,7 @@ public class SourceControls {
 //        } else if (source instanceof SourceMusic) {           
         } else if (source instanceof SourceImage) {
             c = new SourceControlEffects(source);
-            c.setName("Effects");
+            c.setName("FX");
             comps.add(c);
 //            c = new SourceControlGSEffects(source);
 //            c.setName("GS Effects");

@@ -65,7 +65,6 @@ import webcamstudio.components.ResourceMonitor;
 import webcamstudio.components.ResourceMonitorLabel;
 import webcamstudio.components.SourceControls;
 import webcamstudio.components.StreamDesktop;
-import webcamstudio.components.StreamFullDesktop;
 import webcamstudio.components.VideoDeviceInfo;
 import webcamstudio.exporter.vloopback.VideoDevice;
 import webcamstudio.externals.ProcessRenderer;
@@ -93,7 +92,7 @@ import webcamstudio.util.Tools.OS;
  *
  * @author patrick (modified by karl)
  */
-public class WebcamStudio extends JFrame implements StreamDesktop.Listener, StreamFullDesktop.Listener {
+public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
 
     public static Preferences prefs = null;
     public static Properties animations = new Properties();
@@ -1211,7 +1210,13 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener, Stre
         final java.awt.event.ActionEvent fEvt = evt;
         ArrayList<Stream> streamzI = MasterChannels.getInstance().getStreams();
         ArrayList<String> sourceChI = MasterChannels.getInstance().getChannels();
-        if (streamzI.size()>0 || sourceChI.size()>0) {
+        int sinkStream = 0;
+        for (Stream s : streamzI) {
+            if (s.getClass().toString().contains("Sink")) {
+                sinkStream ++;
+            }
+        }
+        if (streamzI.size() - sinkStream > 0 || sourceChI.size() > 0) {
             Object[] options = {"OK"};
                 JOptionPane.showOptionDialog(this,
                        "Current Studio will be closed !!!","Attention",
@@ -1371,8 +1376,14 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener, Stre
     private void btnNewStudioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewStudioActionPerformed
         boolean doNew = true;
         ArrayList<Stream> streamzI = MasterChannels.getInstance().getStreams();
+        int sinkStream = 0;
+        for (Stream s : streamzI) {
+            if (s.getClass().toString().contains("Sink")) {
+                sinkStream ++;
+            }
+        }
         ArrayList<String> sourceChI = MasterChannels.getInstance().getChannels();
-        if (streamzI.size()>0 || sourceChI.size()>0) {
+        if (streamzI.size() - sinkStream > 0 || sourceChI.size() > 0) {
             int result = JOptionPane.showConfirmDialog(this,"Current Studio will be closed !!!","Attention",JOptionPane.YES_NO_CANCEL_OPTION);
             switch(result){
                 case JOptionPane.YES_OPTION:
@@ -1388,44 +1399,44 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener, Stre
                     doNew = false;
                     break;
             }
-            if (doNew) {            
-                SystemPlayer.getInstance(null).stop();
-                MasterChannels.getInstance().stopAllStream();
-                for (Stream s : MasterChannels.getInstance().getStreams()){
-                    s.updateStatus();
-                }
-                ArrayList<Stream> streamz = MasterChannels.getInstance().getStreams();
-                ArrayList<String> sourceCh = MasterChannels.getInstance().getChannels();
-                do {          
-                    for (int l=0; l< streamz.size(); l++) {
-                        Stream removeS = streamz.get(l);
-                        removeS.destroy();
-                        removeS = null;
-                    }
-                    for (int a=0; a< sourceCh.size(); a++) {
-                        String removeSc = sourceCh.get(a);
-                        MasterChannels.getInstance().removeChannel(removeSc);
-                        listener.removeChannels(removeSc, a);
-                    }
-                } while (streamz.size()>0 || sourceCh.size()>0);
-                listener.stopChTime(evt);
-                listener.resetBtnStates(evt);
-                listenerOP.resetBtnStates(evt);
-                tabControls.removeAll();
-                tabControls.repaint();
-                Tools.sleep(300);
-                desktop.removeAll();
-                desktop.repaint();
-                listenerOP.resetAutoPLBtnState(evt);
-                ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "New Studio Created.");
-                ResourceMonitor.getInstance().addMessage(label);
-                setTitle("WebcamStudio " + Version.version);
-            } else {
-                ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "New Studio Action Cancelled.");
-                ResourceMonitor.getInstance().addMessage(label);    
-            }
-            System.gc();
         }
+        if (doNew) {            
+            SystemPlayer.getInstance(null).stop();
+            MasterChannels.getInstance().stopAllStream();
+            for (Stream s : MasterChannels.getInstance().getStreams()){
+                s.updateStatus();
+            }
+            ArrayList<Stream> streamz = MasterChannels.getInstance().getStreams();
+            ArrayList<String> sourceCh = MasterChannels.getInstance().getChannels();
+            do {          
+                for (int l=0; l< streamz.size(); l++) {
+                    Stream removeS = streamz.get(l);
+                    removeS.destroy();
+                    removeS = null;
+                }
+                for (int a=0; a< sourceCh.size(); a++) {
+                    String removeSc = sourceCh.get(a);
+                    MasterChannels.getInstance().removeChannel(removeSc);
+                    listener.removeChannels(removeSc, a);
+                }
+            } while (streamz.size()>0 || sourceCh.size()>0);
+            listener.stopChTime(evt);
+            listener.resetBtnStates(evt);
+            listenerOP.resetBtnStates(evt);
+            tabControls.removeAll();
+            tabControls.repaint();
+            Tools.sleep(300);
+            desktop.removeAll();
+            desktop.repaint();
+            listenerOP.resetAutoPLBtnState(evt);
+            ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "New Studio Created.");
+            ResourceMonitor.getInstance().addMessage(label);
+            setTitle("WebcamStudio " + Version.version);
+        } else {
+            ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "New Studio Action Cancelled.");
+            ResourceMonitor.getInstance().addMessage(label);    
+        }
+        System.gc();
     }//GEN-LAST:event_btnNewStudioActionPerformed
 
     private void btnAddDVBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddDVBActionPerformed
@@ -1696,10 +1707,10 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener, Stre
                     if (dir != null) {
                         lastFolder = dir.getAbsoluteFile();
                         contents = dir.listFiles();
-                        for ( File f : contents) {
-                            String fileName = f.getName();
+//                        for ( File f : contents) {
+//                            String fileName = f.getName();
 //                            System.out.println("Name: " + fileName);
-                        }
+//                        }
                     }
                     if (dir != null) {
                         for ( File file : contents) {

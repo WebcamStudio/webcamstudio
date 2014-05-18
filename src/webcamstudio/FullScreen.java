@@ -5,7 +5,6 @@
 package webcamstudio;
 
 import javax.swing.ImageIcon;
-import webcamstudio.components.StreamFullDesktop;
 import webcamstudio.streams.Stream;
 
 /**
@@ -14,7 +13,6 @@ import webcamstudio.streams.Stream;
  */
 public class FullScreen extends javax.swing.JFrame {
     Stream stream = null;
-    StreamFullDesktop.Listener listener = null;
     public interface Listener {
         public void resetViewer(java.awt.event.ActionEvent evt);    
     }
