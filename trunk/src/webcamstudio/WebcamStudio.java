@@ -70,6 +70,9 @@ import webcamstudio.exporter.vloopback.VideoDevice;
 import webcamstudio.externals.ProcessRenderer;
 import webcamstudio.mixers.MasterMixer;
 import webcamstudio.mixers.SystemPlayer;
+import webcamstudio.remote.Listener;
+import webcamstudio.remote.WebRemote;
+import webcamstudio.streams.SourceAudioSource;
 import webcamstudio.streams.SourceChannel;
 import webcamstudio.streams.SourceCustom;
 import webcamstudio.streams.SourceDVB;
@@ -78,7 +81,6 @@ import webcamstudio.streams.SourceIPCam;
 import webcamstudio.streams.SourceImageGif;
 import webcamstudio.streams.SourceMovie;
 import webcamstudio.streams.SourceMusic;
-import webcamstudio.streams.SourceAudioSource;
 import webcamstudio.streams.SourceText;
 import webcamstudio.streams.SourceURL;
 import webcamstudio.streams.SourceWebcam;
@@ -109,16 +111,22 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
         public void stopChTime(java.awt.event.ActionEvent evt);
         public void resetBtnStates(java.awt.event.ActionEvent evt);
         public void resetAutoPLBtnState(java.awt.event.ActionEvent evt);
+        public void resetSinks(java.awt.event.ActionEvent evt);
         public void addLoadingChannel(String name);
         public void removeChannels(String removeSc, int a);
     }
-    static Listener listener = null;
-    public static void setListener(Listener l) {
-        listener = l;
+    static Listener listenerCP = null;
+    public static void setListenerCP(Listener l) {
+        listenerCP = l;
     }
     static Listener listenerOP = null;
     public static void setListenerOP(Listener l) {
         listenerOP = l;
+    }
+    
+    static Listener listenerMP = null;
+    public static void setListenerMP(Listener l) {
+        listenerMP = l;
     }
     
     /**
@@ -223,7 +231,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
         initWebcam();
         initAudioFFMainSW();
         loadCustomSources();
-        listenerOP.resetAutoPLBtnState(null); // Corrects the UDP and File BackEnd Saved Prefs
+        listenerOP.resetSinks(null); // Corrects the UDP and File BackEnd Saved Prefs
     }
 
     private StreamDesktop getNewStreamDesktop(Stream s) {
@@ -464,7 +472,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
         });
         toolbar.add(btnAddDVB);
 
-        btnAddURL.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/rss.png"))); // NOI18N
+        btnAddURL.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/url5.png"))); // NOI18N
         btnAddURL.setToolTipText("Add URL Stream");
         btnAddURL.setFocusable(false);
         btnAddURL.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -1064,7 +1072,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
                             Tools.sleep(100);
                             MasterChannels.getInstance().stopAllStream();
                             Tools.sleep(100);
-                            listener.stopChTime(sEvt);
+                            listenerCP.stopChTime(sEvt);
                             for (Stream s : MasterChannels.getInstance().getStreams()){
                                 s.updateStatus();
                             }
@@ -1260,13 +1268,13 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
                                 String removeSc = sourceCh.get(a);
                                 MasterChannels.getInstance().removeChannel(removeSc);
                                 Tools.sleep(20);
-                                listener.removeChannels(removeSc, a);
+                                listenerCP.removeChannels(removeSc, a);
                             }
                         } while (streamz.size()>0 || sourceCh.size()>0);
                         SystemPlayer.getInstance(null).stop();
                         MasterChannels.getInstance().stopAllStream();
-                        listener.stopChTime(fEvt);
-                        listener.resetBtnStates(fEvt);
+                        listenerCP.stopChTime(fEvt);
+                        listenerCP.resetBtnStates(fEvt);
                         listenerOP.resetBtnStates(fEvt);
                         tabControls.removeAll();
                         tabControls.repaint();
@@ -1319,10 +1327,10 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
 // loading studio channels
                         for (String chsc : MasterChannels.getInstance().getChannels()) {
                             Tools.sleep(10);
-                            listener.addLoadingChannel(chsc);               
+                            listenerCP.addLoadingChannel(chsc);               
                         }
                         Studio.chanLoad.clear();
-                        listenerOP.resetAutoPLBtnState(fEvt);
+                        listenerOP.resetSinks(fEvt);
                         ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Studio is loaded!");
                         ResourceMonitor.getInstance().addMessage(label);
                         setTitle("WebcamStudio " + Version.version + " ("+file.getName()+")");
@@ -1417,18 +1425,18 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
                 for (int a=0; a< sourceCh.size(); a++) {
                     String removeSc = sourceCh.get(a);
                     MasterChannels.getInstance().removeChannel(removeSc);
-                    listener.removeChannels(removeSc, a);
+                    listenerCP.removeChannels(removeSc, a);
                 }
             } while (streamz.size()>0 || sourceCh.size()>0);
-            listener.stopChTime(evt);
-            listener.resetBtnStates(evt);
+            listenerCP.stopChTime(evt);
+            listenerCP.resetBtnStates(evt);
             listenerOP.resetBtnStates(evt);
+            listenerOP.resetSinks(evt);
             tabControls.removeAll();
             tabControls.repaint();
             Tools.sleep(300);
             desktop.removeAll();
             desktop.repaint();
-            listenerOP.resetAutoPLBtnState(evt);
             ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "New Studio Created.");
             ResourceMonitor.getInstance().addMessage(label);
             setTitle("WebcamStudio " + Version.version);
@@ -1562,7 +1570,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
                                     ArrayList<String> allChan = new ArrayList<>();
                                     for (String scn : MasterChannels.getInstance().getChannels()){
                                         allChan.add(scn);
-                                        System.out.println("Current Studio Ch: "+scn+" added.");
+//                                        System.out.println("Current Studio Ch: "+scn+" added.");
                                     } 
                                     for (String sc : allChan){
                                         s.addChannel(SourceChannel.getChannel(sc, s));
@@ -1585,7 +1593,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
                                 ArrayList<String> allChan = new ArrayList<>();
                                 for (String scn : MasterChannels.getInstance().getChannels()){
                                     allChan.add(scn);
-                                    System.out.println("Current Studio Ch: "+scn+" added.");
+//                                    System.out.println("Current Studio Ch: "+scn+" added.");
                                 } 
                                 for (String sc : allChan){
                                     text.addChannel(SourceChannel.getChannel(sc, text));
@@ -1607,7 +1615,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
                         chNameL.clear();
                         chNameL.addAll(hs);
                         for (String chsct : chNameL) {
-                                listener.addLoadingChannel(chsct);
+                                listenerCP.addLoadingChannel(chsct);
                                 master.insertStudio(chsct);
                         }
                         Studio.chanLoad.clear();  
@@ -1658,7 +1666,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
                 int result = JOptionPane.showConfirmDialog(this,"If you use ffmpeg Output under Ubuntu it may Crash WebcamStudio.","Warning !!!", JOptionPane.INFORMATION_MESSAGE, JOptionPane.YES_NO_CANCEL_OPTION);
                 if (result == JOptionPane.YES_OPTION) {
                     outFFmpeg = true;
-                    listenerOP.resetAutoPLBtnState(evt);
+                    listenerOP.resetSinks(evt);
                     ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "FFmpeg Outputs BkEnd Activated ...");
                     ResourceMonitor.getInstance().addMessage(label);
                 } else {
@@ -1669,13 +1677,13 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
                 }
             } else {
                 outFFmpeg = true;
-                listenerOP.resetAutoPLBtnState(evt);
+                listenerOP.resetSinks(evt);
                 ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "FFmpeg Outputs BkEnd Activated ...");
                 ResourceMonitor.getInstance().addMessage(label);
             }
         } else {
             outFFmpeg = false;
-            listenerOP.resetAutoPLBtnState(evt);
+            listenerOP.resetSinks(evt);
             ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "FFmpeg Outputs BkEnd Deactivated ...");
             ResourceMonitor.getInstance().addMessage(label);
         }
@@ -1700,8 +1708,15 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
                 protected Void doInBackground() throws InterruptedException {
                     boolean noStreams = false;
                     ArrayList<Stream> allStreams = MasterChannels.getInstance().getStreams();
-                    if (allStreams.isEmpty()){
-                        noStreams = true;
+                    
+                    for (Stream str : allStreams) {
+//                        System.out.println("NoStreams Check: "+str.getClass().toString());
+                        if (!str.getClass().toString().contains("Sink")) {
+                            noStreams = false;
+                            break;
+                        } else {
+                            noStreams = true;
+                        }
                     }
                     File[] contents = null;
                     if (dir != null) {
@@ -1721,9 +1736,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
                                 }
                                 StreamDesktop frame = new StreamDesktop(s, WebcamStudio.this);
                                 desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
-                                if (noStreams) { 
-                                    listener.resetAutoPLBtnState(fEvt);
-                                }
+                                
                             }
                         }
                         ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Media Folder Imported!");
@@ -1731,6 +1744,9 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
                     } else {
                         ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "No Directory Selected!");
                         ResourceMonitor.getInstance().addMessage(label);
+                    }
+                    if (noStreams) { 
+                        listenerCP.resetAutoPLBtnState(fEvt);
                     }
                 return null;
                 }  

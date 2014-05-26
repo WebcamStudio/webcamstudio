@@ -160,6 +160,16 @@ public class MasterChannels {
         }
     }
     
+    public void stopOnlyStream(){
+        for (Stream s : streams){
+            String streamName =s.getClass().getName();
+            if (!streamName.contains("Sink")){
+                Tools.sleep(30);
+                s.stop();
+            }
+        }
+    }
+    
     public ArrayList<Stream> getStreams(){
         return streams;
     }

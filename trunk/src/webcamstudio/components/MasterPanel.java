@@ -34,7 +34,7 @@ import webcamstudio.util.Tools;
  *
  * @author patrick (modified by karl)
  */
-public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkListener, FullScreen.Listener {
+public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkListener, FullScreen.Listener, ChannelPanel.Listener {
 
     protected Viewer viewer = new Viewer();
     private SystemPlayer player = null;
@@ -45,6 +45,13 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
     Stream stream = null;
     SourceText sTx = null;
     boolean lockRatio = false;
+//    public interface ListenerMP {
+//        public void resetCHTimerState(ActionEvent evt);
+//    }
+//    static ListenerMP listenerCPanel = null;
+//    public static void setListenerCPanel(ListenerMP l) {
+//        listenerCPanel = l;
+//    }
 
     /** Creates new form MasterPanel */
     public MasterPanel() {
@@ -61,6 +68,7 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
         panChannels.add(new ChannelPanel(), BorderLayout.CENTER);
         final MasterPanel instanceSinkMP = this;
         FullScreen.setListenerFS(instanceSinkMP);
+        ChannelPanel.setListenerCPMPanel(instanceSinkMP);
     }
 
     /** This method is called from within the constructor to
@@ -267,14 +275,15 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
         MasterMixer.getInstance().start();
         for (Stream s : streamM){
             String streamName =s.getClass().getName();
-            System.out.println("StreamName: "+streamName);
+//            System.out.println("StreamName: "+streamName);
             if (streamName.contains("SinkFile") || streamName.contains("SinkUDP")){
-                System.out.println("Sink New Size: "+w+"x"+h);
+//                System.out.println("Sink New Size: "+w+"x"+h);
                 s.setWidth(w);
                 s.setHeight(h);
                 s.updateStatus();
             }
         }
+//        ChannelPanel.btnStopOnlyStream.doClick();
         ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "New Mixer Settings Applied");
         ResourceMonitor.getInstance().addMessage(label);
     }//GEN-LAST:event_btnApplyActionPerformed
@@ -428,5 +437,26 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
     @Override
     public void newFrame(Frame frame) {
         player.addFrame(frame);
+    }
+    
+    @Override
+    public void requestReset() {
+//        System.out.println("Apply buttton pressed ...");
+        btnApply.doClick();
+    }
+    
+    @Override
+    public void resetButtonsStates(ActionEvent evt) {
+        // nothing here
+    }
+
+    @Override
+    public void requestStart() {
+        // nothing here
+    }
+
+    @Override
+    public void requestStop() {
+        // nothing here
     }
 }

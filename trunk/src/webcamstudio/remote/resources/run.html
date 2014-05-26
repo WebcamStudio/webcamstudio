@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<!--
+Copyright (C) 2014 patrick
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<html>
+    <head>
+        <title>WebcamStudio Remote</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            H1,H2 {
+                color: #fff;
+                text-align: center;
+            }
+        </style>
+    </head>
+    <body bgcolor="#21610B">
+        <script>
+            history.replaceState("loginURL", "WebcamStudio Remote", "/run");
+        </script>
+        <H1>WebcamStudio Remote</H1>
+        <h2>>> Currently Playing <<</h2>
+        <form action="stop">
+            <center><input type=submit value="Stop Playing"></center>
+        </form>
+        <br>
+<!--        <form action="reset">
+            <center><input type=submit value="Reset"></center>
+        </form>
+        <br>
+-->
+        <form action="logout">
+            <center><input type=submit value="Logout"></center>
+        </form>
+    </body>
+</html>

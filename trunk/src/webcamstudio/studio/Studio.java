@@ -181,7 +181,7 @@ public class Studio {
         for (Stream s : streams) {
             String clazzSink = s.getClass().getCanonicalName();
             if (clazzSink.contains("Sink")){
-                System.out.println("Skipping Sink: "+clazzSink);
+//                System.out.println("Skipping Sink: "+clazzSink);
             } else {
                 System.out.println("Saving Stream: "+s.getName());
                 xml.writeStartElement(ELEMENT_SOURCE);

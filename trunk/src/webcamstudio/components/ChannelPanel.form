@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <Form version="1.5" maxVersion="1.7" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
-  <Properties>
-    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-      <Dimension value="[238, 499]"/>
-    </Property>
-  </Properties>
   <AuxValues>
     <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="true"/>
@@ -22,7 +17,7 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" attributes="0">
-              <EmptySpace max="-2" attributes="0"/>
+              <EmptySpace min="-2" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="StopCHTimer" max="32767" attributes="0"/>
                   <Group type="102" alignment="1" attributes="0">
@@ -48,7 +43,6 @@
                   </Group>
                   <Component id="CHProgressTime" alignment="0" max="32767" attributes="0"/>
                   <Component id="jLabel4" alignment="0" max="32767" attributes="0"/>
-                  <Component id="btnStopAllStream" alignment="0" max="32767" attributes="0"/>
                   <Group type="102" alignment="0" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="jLabel2" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -57,16 +51,23 @@
                       <EmptySpace min="-2" pref="29" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="ChDuration" max="32767" attributes="0"/>
-                          <Component id="lstNextChannel" pref="87" max="32767" attributes="0"/>
+                          <Component id="lstNextChannel" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                   <Group type="102" attributes="0">
                       <Component id="btnClearAllCh" min="-2" pref="28" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="1" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" max="-2" attributes="0"/>
                       <Component id="btnAutoPlayList" max="32767" attributes="0"/>
+                      <EmptySpace min="-2" max="-2" attributes="0"/>
+                      <Component id="tglRemote" min="-2" pref="28" max="-2" attributes="0"/>
+                  </Group>
+                  <Group type="102" alignment="0" attributes="0">
+                      <Component id="btnStopAllStream" max="32767" attributes="0"/>
+                      <EmptySpace min="-2" max="-2" attributes="0"/>
+                      <Component id="btnStopOnlyStream" max="32767" attributes="0"/>
                   </Group>
               </Group>
-              <EmptySpace max="-2" attributes="0"/>
+              <EmptySpace min="-2" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -87,13 +88,16 @@
                   <Component id="btnUp" min="-2" pref="28" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" max="-2" attributes="0"/>
-              <Component id="lstChannelsScroll" pref="194" max="32767" attributes="0"/>
-              <EmptySpace min="-2" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="btnAutoPlayList" alignment="3" min="-2" pref="28" max="-2" attributes="0"/>
-                  <Component id="btnClearAllCh" alignment="3" min="-2" pref="28" max="-2" attributes="0"/>
+              <Component id="lstChannelsScroll" pref="192" max="32767" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="1" attributes="0">
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="btnAutoPlayList" alignment="3" min="-2" pref="28" max="-2" attributes="0"/>
+                      <Component id="btnClearAllCh" alignment="3" min="-2" pref="28" max="-2" attributes="0"/>
+                  </Group>
+                  <Component id="tglRemote" min="-2" pref="28" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jLabel2" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="lstNextChannel" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -101,14 +105,17 @@
               <EmptySpace min="-2" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jLabel3" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="ChDuration" alignment="3" max="32767" attributes="0"/>
+                  <Component id="ChDuration" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" max="-2" attributes="0"/>
               <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" max="-2" attributes="0"/>
               <Component id="CHProgressTime" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" max="-2" attributes="0"/>
-              <Component id="btnStopAllStream" min="-2" pref="28" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="btnStopAllStream" alignment="3" min="-2" pref="28" max="-2" attributes="0"/>
+                  <Component id="btnStopOnlyStream" alignment="3" min="-2" pref="28" max="-2" attributes="0"/>
+              </Group>
               <EmptySpace min="-2" max="-2" attributes="0"/>
               <Component id="StopCHTimer" min="-2" pref="28" max="-2" attributes="0"/>
               <EmptySpace min="-2" max="-2" attributes="0"/>
@@ -313,9 +320,13 @@
     </Component>
     <Component class="javax.swing.JButton" name="btnStopAllStream">
       <Properties>
+        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+          <Image iconType="3" name="/webcamstudio/resources/tango/media-playback-stop-bk.png"/>
+        </Property>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
           <ResourceString bundle="webcamstudio/Languages.properties" key="STOP_ALL" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
         </Property>
+        <Property name="toolTipText" type="java.lang.String" value="Stop All"/>
         <Property name="name" type="java.lang.String" value="btnStopAllStream" noResource="true"/>
       </Properties>
       <AccessibilityProperties>
@@ -344,7 +355,7 @@
     </Component>
     <Component class="javax.swing.JButton" name="btnAutoPlayList">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Automatic Play-List"/>
+        <Property name="text" type="java.lang.String" value="Auto Play-List"/>
         <Property name="toolTipText" type="java.lang.String" value="Do an Automatic PlayList. Works Only with &quot;Load Media Folder&quot;."/>
         <Property name="enabled" type="boolean" value="false"/>
         <Property name="name" type="java.lang.String" value="btnAutoPlayList" noResource="true"/>
@@ -391,6 +402,58 @@
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnClearAllChActionPerformed"/>
       </Events>
+    </Component>
+    <Component class="javax.swing.JToggleButton" name="tglRemote">
+      <Properties>
+        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+          <Image iconType="3" name="/webcamstudio/resources/tango/rss.png"/>
+        </Property>
+        <Property name="toolTipText" type="java.lang.String" value="Remote Control"/>
+        <Property name="enabled" type="boolean" value="false"/>
+        <Property name="focusable" type="boolean" value="false"/>
+        <Property name="horizontalTextPosition" type="int" value="0"/>
+        <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[29, 28]"/>
+        </Property>
+        <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[25, 25]"/>
+        </Property>
+        <Property name="name" type="java.lang.String" value="tglRemote" noResource="true"/>
+        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[28, 29]"/>
+        </Property>
+        <Property name="rolloverIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+          <Image iconType="3" name="/webcamstudio/resources/tango/rss.png"/>
+        </Property>
+        <Property name="selectedIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+          <Image iconType="3" name="/webcamstudio/resources/tango/rss_selected.png"/>
+        </Property>
+        <Property name="verticalTextPosition" type="int" value="3"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="tglRemoteActionPerformed"/>
+      </Events>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_ListenersCodePost" type="java.lang.String" value="tglRemote.addMouseListener(new java.awt.event.MouseAdapter() {&#xa;            @Override&#xa;            public void mousePressed(java.awt.event.MouseEvent evt) {&#xa;                JToggleButton button = ((JToggleButton) evt.getSource());&#xa;                if (!button.isSelected()) {&#xa;                    remoteRightMousePressed(evt);&#xa;                }&#xa;            }&#xa;        });"/>
+      </AuxValues>
+    </Component>
+    <Component class="javax.swing.JButton" name="btnStopOnlyStream">
+      <Properties>
+        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+          <Image iconType="3" name="/webcamstudio/resources/tango/media-playback-stop-bk.png"/>
+        </Property>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="webcamstudio/Languages.properties" key="STREAMS" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+        </Property>
+        <Property name="toolTipText" type="java.lang.String" value="Stop Only Streams"/>
+        <Property name="name" type="java.lang.String" value="btnStopOnlyStream" noResource="true"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnStopOnlyStreamActionPerformed"/>
+      </Events>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
+      </AuxValues>
     </Component>
   </SubComponents>
 </Form>

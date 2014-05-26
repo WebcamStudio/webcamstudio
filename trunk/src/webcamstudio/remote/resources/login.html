@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<!--
+Copyright (C) 2014 patrick
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html">
+    <head>
+        <title> WebcamStudio Remote Login </title>
+        <style>
+            H1,H2 {
+                color: #fff;
+                text-align: center;
+            }
+        </style>
+    </head>
+    <body bgcolor="#0B614B">
+        <script>
+            history.replaceState("loginURL", "WebcamStudio Remote Login", "/login");
+        </script>
+        <h2>WebcamStudio Remote Login</h2>
+        <form name="loginForm" action="j_security_check"><center>
+                <p><font color="white"><strong>User: </strong></font></p>
+                <p><input type="text" name="j_username" size="25"/></p>
+                <p><font color="white"><strong>Password: </strong></font></p>
+                <p><input type="password" size="15" name="j_password"/></p>
+            <p>
+                <input type="submit" value="Submit"/>
+                <input type="reset" value="Reset"/></p>
+            </center></form>       
+    </body>
+</html>
