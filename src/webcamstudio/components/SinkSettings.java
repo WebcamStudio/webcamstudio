@@ -517,7 +517,7 @@ public class SinkSettings extends javax.swing.JFrame implements Stream.Listener 
 
     @Override
     public void sourceUpdated(Stream stream) {
-        System.out.println("New Size: "+stream.getWidth()+" x "+stream.getHeight());
+//        System.out.println("New Size: "+stream.getWidth()+" x "+stream.getHeight());
         spinOutW.setValue(stream.getWidth());
         spinOutH.setValue(stream.getHeight());
     }

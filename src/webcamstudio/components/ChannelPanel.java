@@ -14,13 +14,21 @@ import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.prefs.Preferences;
+import javax.swing.AbstractAction;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
+import javax.swing.JToggleButton;
 import webcamstudio.WebcamStudio;
 import webcamstudio.channels.MasterChannels;
 import webcamstudio.mixers.SystemPlayer;
+import webcamstudio.remote.Listener;
+import webcamstudio.remote.WebRemote;
 import webcamstudio.streams.SourceChannel;
 import webcamstudio.streams.Stream;
 import webcamstudio.studio.Studio;
@@ -33,14 +41,15 @@ import webcamstudio.util.Tools;
  *
  * @author patrick (modified by karl)
  */
-public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Listener, Studio.Listener {
-
+public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Listener, Studio.Listener, Listener {
+    
     MasterChannels master = MasterChannels.getInstance();
-    private DefaultListModel model = new DefaultListModel();
-    private DefaultComboBoxModel aModel = new DefaultComboBoxModel();
-    private ArrayList<String> CHCurrNext = new ArrayList<>();
-    private ArrayList<Integer> CHTimers = new ArrayList<>();
-    private ArrayList<String> ListChannels = new ArrayList<>();
+    private final DefaultListModel model = new DefaultListModel();
+    private final DefaultComboBoxModel aModel = new DefaultComboBoxModel();
+    private final ArrayList<String> CHCurrNext = new ArrayList<>();
+    private final ArrayList<Integer> CHTimers = new ArrayList<>();
+    private final ArrayList<String> ListChannels = new ArrayList<>();
+    private final WebRemote remote;
     ArrayList<Stream> streamS = MasterChannels.getInstance().getStreams();
     String selectChannel=null;   
     int CHon =0;
@@ -51,17 +60,81 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
     String CHptS= null;
     private Boolean StopCHpt=false;
     boolean inTimer=false;
-
+    JPopupMenu remotePopup = new JPopupMenu();
+    private static String remUser = "webcamstudio";
+    private static String remPsw = "webcamstudio";
+    private static int remPort = 8000;
+    Preferences preferences = Preferences.userNodeForPackage(this.getClass());
+    
     @Override
     public void resetAutoPLBtnState(ActionEvent evt) {
+//        System.out.println("CP AutoPL");
         btnAutoPlayList.setEnabled(true);
     }
-    public interface Listener {
-        public void resetBtnStates(ActionEvent evt);    
+
+    @Override
+    public void requestStart() {
+        btnSelect.doClick();
+        listenerCPOP.requestStart();
     }
-    static Listener listenerCP = null;
-    public static void setListenerCP(Listener l) {
-        listenerCP = l;
+
+    @Override
+    public void requestStop() {
+        btnStopOnlyStream.doClick();
+        listenerCPOP.requestStop();
+    }
+
+    @Override
+    public void listening(String localURL) {
+        
+    }
+
+    @Override
+    public void requestReset() {
+        listenerCPMP.requestReset();
+        listenerCPOP.requestReset();
+    }
+
+    @Override
+    public void resetSinks(ActionEvent evt) {
+        // nothing here ...
+    }
+
+    @Override
+    public String requestlogin(String login) {
+        String res = "";
+        String [] loginSplit = login.split("\\?");
+        String userPsw = loginSplit[1].replace("j_username=", "");
+        userPsw = userPsw.replace("j_password=", "");
+        userPsw = userPsw.replace(" HTTP/1.1", "");
+//        System.out.println("userPsw: "+userPsw);
+        if (!userPsw.equals("&")) {
+            String [] userPswSplit = userPsw.split("&");
+            if (!userPsw.equals("&")) 
+            if (userPswSplit[0].equals(remUser) && userPswSplit[1].equals(remPsw)) {
+                res = "/run";            
+            } else {
+                res = "/error";
+            }
+        } else {
+            res = "/login";
+        }
+        return res;
+    }
+
+    public interface Listener {
+        public void resetButtonsStates(ActionEvent evt);
+        public void requestReset();
+        public void requestStop();
+        public void requestStart();
+    }
+    static Listener listenerCPOP = null;
+    public static void setListenerCPOPanel(Listener l) {
+        listenerCPOP = l;
+    }
+    static Listener listenerCPMP = null;
+    public static void setListenerCPMPanel(Listener l) {
+        listenerCPMP = l;
     }
     
     /**
@@ -70,11 +143,51 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
     @SuppressWarnings("unchecked") 
     public ChannelPanel() {
         initComponents();
+        remoteInitPopUp();
         final ChannelPanel instanceChPnl = this;
         lstChannels.setModel(model);
         lstNextChannel.setModel(aModel);
-        WebcamStudio.setListener(instanceChPnl);
+        WebcamStudio.setListenerCP(instanceChPnl);
         Studio.setListener(this);
+        remote = new WebRemote(this);
+        loadPrefs();
+        
+    }
+    
+    private void loadPrefs() {
+        remUser = preferences.get("remoteuser", "webcamstudio");
+        remPsw = preferences.get("remotepsw", "webcamstudio");
+        remPort = preferences.getInt("remoteport", 8000);
+        remote.setPort(remPort);
+    }
+    
+    public void savePrefs() {
+        preferences.put("remoteuser", remUser);
+        preferences.put("remotepsw", remPsw);
+        preferences.putInt("remoteport", remPort);
+    }
+    public static void setRemPsw (String psw) {
+        remPsw = psw;
+    }
+    
+    public static String getRemPsw () {
+        return remPsw;
+    }  
+    
+    public static void setRemUsr (String usr) {
+        remUser = usr;
+    }
+    
+    public static String getRemUsr () {
+        return remUser;
+    }
+    
+    public static void setRemPort (int port) {
+        remPort = port;
+    }
+    
+    public static int getRemPort () {
+        return remPort;
     }
 
     /**
@@ -107,8 +220,8 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
         btnUp = new javax.swing.JButton();
         btnDown = new javax.swing.JButton();
         btnClearAllCh = new javax.swing.JButton();
-
-        setPreferredSize(new java.awt.Dimension(238, 499));
+        tglRemote = new javax.swing.JToggleButton();
+        btnStopOnlyStream = new javax.swing.JButton();
 
         lstChannelsScroll.setName("lstChannelsScroll"); // NOI18N
 
@@ -219,7 +332,9 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
 
         CHProgressTime.setName("CHProgressTime"); // NOI18N
 
+        btnStopAllStream.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-stop-bk.png"))); // NOI18N
         btnStopAllStream.setText(bundle.getString("STOP_ALL")); // NOI18N
+        btnStopAllStream.setToolTipText("Stop All");
         btnStopAllStream.setName("btnStopAllStream"); // NOI18N
         btnStopAllStream.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -237,7 +352,7 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
             }
         });
 
-        btnAutoPlayList.setText("Automatic Play-List");
+        btnAutoPlayList.setText("Auto Play-List");
         btnAutoPlayList.setToolTipText("Do an Automatic PlayList. Works Only with \"Load Media Folder\".");
         btnAutoPlayList.setEnabled(false);
         btnAutoPlayList.setName("btnAutoPlayList"); // NOI18N
@@ -277,6 +392,43 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
             }
         });
 
+        tglRemote.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/rss.png"))); // NOI18N
+        tglRemote.setToolTipText("Remote Control");
+        tglRemote.setEnabled(false);
+        tglRemote.setFocusable(false);
+        tglRemote.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        tglRemote.setMaximumSize(new java.awt.Dimension(29, 28));
+        tglRemote.setMinimumSize(new java.awt.Dimension(25, 25));
+        tglRemote.setName("tglRemote"); // NOI18N
+        tglRemote.setPreferredSize(new java.awt.Dimension(28, 29));
+        tglRemote.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/rss.png"))); // NOI18N
+        tglRemote.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/rss_selected.png"))); // NOI18N
+        tglRemote.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        tglRemote.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tglRemoteActionPerformed(evt);
+            }
+        });
+        tglRemote.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                JToggleButton button = ((JToggleButton) evt.getSource());
+                if (!button.isSelected()) {
+                    remoteRightMousePressed(evt);
+                }
+            }
+        });
+
+        btnStopOnlyStream.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-stop-bk.png"))); // NOI18N
+        btnStopOnlyStream.setText(bundle.getString("STREAMS")); // NOI18N
+        btnStopOnlyStream.setToolTipText("Stop Only Streams");
+        btnStopOnlyStream.setName("btnStopOnlyStream"); // NOI18N
+        btnStopOnlyStream.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnStopOnlyStreamActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -306,7 +458,6 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
                         .addComponent(btnRemove, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(CHProgressTime, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnStopAllStream, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2)
@@ -314,11 +465,17 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
                         .addGap(29, 29, 29)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(ChDuration)
-                            .addComponent(lstNextChannel, 0, 87, Short.MAX_VALUE)))
+                            .addComponent(lstNextChannel, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnClearAllCh, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(1, 1, 1)
-                        .addComponent(btnAutoPlayList, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnAutoPlayList, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(tglRemote, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnStopAllStream, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnStopOnlyStream, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -335,11 +492,13 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
                     .addComponent(btnDown, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnUp, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lstChannelsScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 194, Short.MAX_VALUE)
+                .addComponent(lstChannelsScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 192, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnAutoPlayList, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnClearAllCh, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btnAutoPlayList, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnClearAllCh, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(tglRemote, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
@@ -347,13 +506,15 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(ChDuration))
+                    .addComponent(ChDuration, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel4)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(CHProgressTime, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnStopAllStream, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnStopAllStream, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnStopOnlyStream, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(StopCHTimer, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -426,6 +587,7 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
         aModel.removeElement(name);
         CHCurrNext.remove(name);
         CHTimers.remove(SelectCHIndex);
+        ChDuration.setValue(0);
         ListChannels.remove(name);
         lstChannels.revalidate();
         lstNextChannel.revalidate();
@@ -444,6 +606,27 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
     public ArrayList<Integer> getCHTimers () {
         return CHTimers;
     }   
+    
+    private void remoteInitPopUp(){
+        JMenuItem remoteSettings = new JMenuItem (new AbstractAction("Remote Settings") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                savePrefs();
+                RemoteSettings remoteSet = new RemoteSettings();
+                remoteSet.setLocationRelativeTo(WebcamStudio.cboAnimations);
+                remoteSet.setAlwaysOnTop(true);
+                remoteSet.setVisible(true);
+            }
+        });
+        remoteSettings.setIcon(new ImageIcon(getClass().getResource("/webcamstudio/resources/tango/working-4.png"))); // NOI18N
+        remotePopup.add(remoteSettings);
+    }
+    
+    private void remoteRightMousePressed(java.awt.event.MouseEvent evt) {                                      
+        if (evt.isPopupTrigger()) {
+            remotePopup.show(evt.getComponent(), evt.getX(), evt.getY());
+        }
+    }     
     
     @Override
     public void removeChannels(String removeSc, int a) {
@@ -465,6 +648,7 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
     }   
     @Override
     public void stopChTime(ActionEvent evt) {
+//        System.out.println("**** stopChTime ListenerCP ****");
         RemoteStopCHTimerActionPerformed();
     }
     
@@ -481,6 +665,7 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
         CHTimers.clear();
         StopCHTimer.setEnabled(false);
         ChDuration.setValue(0);
+//        System.out.println("**** resetBtnStates ListenerCP ****");
     }
 
     class UpdateCHtUITask extends TimerTask {
@@ -536,6 +721,7 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
                 lstChannels.setEnabled(true);
                 ChDuration.setEnabled(true);
                 btnStopAllStream.setEnabled(true);
+                btnStopOnlyStream.setEnabled(true);
                 btnSelect.setEnabled(true);
                 btnRenameCh.setEnabled(true);
                 btnUp.setEnabled(true);
@@ -551,8 +737,10 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
     }    
     
     private void btnSelectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSelectActionPerformed
+        savePrefs();
         String name = lstChannels.getSelectedValue().toString();
         System.out.println("Apply Select: "+name);
+        tglRemote.setEnabled(true);
         master.selectChannel(name);
         if (CHTimers.get(lstChannels.getSelectedIndex()) != 0) {
             inTimer=true;
@@ -604,6 +792,7 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
         lstChannels.setEnabled(true);
         ChDuration.setEnabled(true);
         btnStopAllStream.setEnabled(true);
+        btnStopOnlyStream.setEnabled(true);
         btnSelect.setEnabled(true);
         btnRenameCh.setEnabled(true);
         btnClearAllCh.setEnabled(true);
@@ -615,7 +804,18 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
         CHProgressTime.setValue(0);
         CHProgressTime.setString("0");
         StopCHTimer.setEnabled(inTimer);
-    }                                           
+    } 
+    
+    public void RemoteStopCHTimerOnlyActionPerformed() {                                            
+        CHt.cancel();
+        CHt.purge();
+        StopCHpt=true;
+        inTimer=false;
+        CHProgressTime.setValue(0);
+        CHProgressTime.setString("0");
+        StopCHTimer.setEnabled(inTimer);
+    }
+    
     private void StopCHTimerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_StopCHTimerActionPerformed
         RemoteStopCHTimerActionPerformed();
         ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Channel Timer Stopped.");
@@ -630,7 +830,8 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
             s.updateStatus();
         }
         Tools.sleep(30);
-        listenerCP.resetBtnStates(evt);
+        listenerCPOP.resetButtonsStates(evt);
+        tglRemote.setEnabled(false);
         ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "All Stopped.");
         ResourceMonitor.getInstance().addMessage(label);
         System.gc();
@@ -678,48 +879,52 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
     private void btnAutoPlayListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAutoPlayListActionPerformed
         ArrayList<Stream> allStreams = MasterChannels.getInstance().getStreams();
         for (Stream s : allStreams) {
-            String sourceName = s.getName();
-//            System.out.println("Source: "+sourceName);
-            String shortName = "";
-            if (sourceName.length() > 30) {
-                shortName = s.getName().substring(0, 30)+" ...";
-            } else {
-                shortName = sourceName;
-            }
-            if (shortName.length() > 0) {
-                s.setIsPlaying(true);
-                master.addChannel(shortName);
-                model.addElement(shortName);
-                aModel.addElement(shortName);
-                CHCurrNext.add(shortName);
-                CHTimers.add(CHTimer);
-                ListChannels.add(shortName);
-                lstChannels.revalidate();
-                lstNextChannel.revalidate();
-                s.setIsPlaying(false);
+            if (!s.getClass().toString().contains("Sink")) {
+                String sourceName = s.getName();
+    //            System.out.println("Source: "+sourceName);
+                String shortName = "";
+                if (sourceName.length() > 30) {
+                    shortName = s.getName().substring(0, 30)+" ...";
+                } else {
+                    shortName = sourceName;
+                }
+                if (shortName.length() > 0) {
+                    s.setIsPlaying(true);
+                    master.addChannel(shortName);
+                    model.addElement(shortName);
+                    aModel.addElement(shortName);
+                    CHCurrNext.add(shortName);
+                    CHTimers.add(CHTimer);
+                    ListChannels.add(shortName);
+                    lstChannels.revalidate();
+                    lstNextChannel.revalidate();
+                    s.setIsPlaying(false);
+                }
             }
         }
         int index = 0;
         int lastItemIndex = ListChannels.size()-1;
 //        System.out.println("LastItemIndex: " + lastItemIndex);
         for (Stream s : allStreams) {
-            if (!"N/A".equals(s.getStreamTime())) {
-                String sPrepTime = s.getStreamTime().replaceAll("s", "");
-                int sDuration = Integer.parseInt(sPrepTime);
-                CHTimer = sDuration * 1000;
-                CHTimers.set(index, CHTimer);
-            } else {
-                CHTimers.set(index, 0);
+            if (!s.getClass().toString().contains("Sink")) {
+                if (!"N/A".equals(s.getStreamTime())) {
+                    String sPrepTime = s.getStreamTime().replaceAll("s", "");
+                    int sDuration = Integer.parseInt(sPrepTime);
+                    CHTimer = sDuration * 1000;
+                    CHTimers.set(index, CHTimer);
+                } else {
+                    CHTimers.set(index, 0);
+                }
+                if (index < lastItemIndex) {
+                    String nextChannel = ListChannels.get(index+1);
+                    CHCurrNext.set(index, nextChannel);
+                } else {
+                    String nextChannel = ListChannels.get(0);
+                    CHCurrNext.set(index, nextChannel);
+                }
+    //            System.out.println("Name: "+s.getName()+" Duration: "+CHTimer);
+                index++;
             }
-            if (index < lastItemIndex) {
-                String nextChannel = ListChannels.get(index+1);
-                CHCurrNext.set(index, nextChannel);
-            } else {
-                String nextChannel = ListChannels.get(0);
-                CHCurrNext.set(index, nextChannel);
-            }
-//            System.out.println("Name: "+s.getName()+" Duration: "+CHTimer);
-            index++;
         }
         btnAutoPlayList.setEnabled(false);
     }//GEN-LAST:event_btnAutoPlayListActionPerformed
@@ -1019,6 +1224,32 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
             btnClearAllCh.setEnabled(true);
         }
     }//GEN-LAST:event_lstChannelsComponentAdded
+
+    private void tglRemoteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglRemoteActionPerformed
+        if (tglRemote.isSelected()) {
+            remote.setPort(remPort);
+            remote.start();
+        } else {
+            remote.stop();
+        }
+    }//GEN-LAST:event_tglRemoteActionPerformed
+
+    private void btnStopOnlyStreamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStopOnlyStreamActionPerformed
+        MasterChannels.getInstance().stopOnlyStream();
+        for (Stream s : streamS){
+            s.updateStatus();
+        }
+        Tools.sleep(30);
+        if (inTimer){
+            RemoteStopCHTimerActionPerformed();
+        } else {
+            RemoteStopCHTimerOnlyActionPerformed();
+        }
+        tglRemote.setEnabled(false);
+        ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Streams Stopped.");
+        ResourceMonitor.getInstance().addMessage(label);
+        System.gc();
+    }//GEN-LAST:event_btnStopOnlyStreamActionPerformed
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -1033,6 +1264,7 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
     private javax.swing.JButton btnRenameCh;
     private javax.swing.JButton btnSelect;
     private javax.swing.JButton btnStopAllStream;
+    public static javax.swing.JButton btnStopOnlyStream;
     private javax.swing.JButton btnUp;
     private javax.swing.JButton btnUpdate;
     private javax.swing.JLabel jLabel1;
@@ -1042,6 +1274,7 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
     private javax.swing.JList lstChannels;
     private javax.swing.JScrollPane lstChannelsScroll;
     private javax.swing.JComboBox lstNextChannel;
+    private javax.swing.JToggleButton tglRemote;
     private javax.swing.JTextField txtName;
     // End of variables declaration//GEN-END:variables
     

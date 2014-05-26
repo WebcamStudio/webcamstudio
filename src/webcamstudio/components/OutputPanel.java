@@ -31,6 +31,7 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.TreeMap;
@@ -77,6 +78,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
 
     TreeMap<String, SinkFile> files = new TreeMap<>();
     TreeMap<String, SinkBroadcast> broadcasts = new TreeMap<>();
+    ArrayList<String> broadcastsOut = new ArrayList<>();
     TreeMap<String, SinkLinuxDevice> devices = new TreeMap<>();
     TreeMap<String, SinkUDP> udpOut = new TreeMap<>();
     TreeMap<String, SinkAudio> audioOut = new TreeMap<>();
@@ -100,6 +102,12 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
     File f = new File(userHomeDir + "/.webcamstudio/Record To File");
     SinkFile fileStream = new SinkFile(f);
     SinkUDP udpStream = new SinkUDP();
+    private boolean audioOutState = false;
+    private boolean udpOutState = false;
+    private boolean audioOutSwitch = false;
+    private boolean udpOutSwitch = false;
+    private boolean fmeOutState = false;
+    private boolean fmeOutSwitch = false;
     /** Creates new form OutputPanel
      * @param aFrame */
     public OutputPanel(JFrame aFrame) {
@@ -110,7 +118,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
         sinkUDPInitPopUp();
         final OutputPanel instanceSinkOP = this;
         WebcamStudio.setListenerOP(instanceSinkOP);
-        ChannelPanel.setListenerCP(instanceSinkOP);
+        ChannelPanel.setListenerCPOPanel(instanceSinkOP);
         Exporter.setListenerEx(instanceSinkOP);
         if (Tools.getOS() == OS.LINUX) {
             paintWSCamButtons ();
@@ -286,7 +294,17 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
         serviceU.put("vbitrate", udpStream.getVbitrate());
         serviceU.put("standard", udpStream.getStandard());
     }
-
+    
+    private String checkDoubleBroad(String s) {
+        String res = s;
+        for (String broName : broadcastsOut) {
+            if (s.equals(broName)){
+                res = "";
+            }
+        }
+        return res;
+    }
+    
     private void addButtonBroadcast(final FME fme) {
         final OutputPanel instanceSinkFME = this;
         JToggleButton button = new JToggleButton();
@@ -306,25 +324,14 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
                 FME fme = fmes.get(button.getText());
                 if (button.isSelected()) {                    
                     if (fme != null){
+                        fmeOutState = true;
+                        String cleanBroad = checkDoubleBroad(button.getText());
+                        if (cleanBroad != "") {
+                            broadcastsOut.add(cleanBroad);
+                        }
                         fmeCount ++;
                         SinkBroadcast broadcast = new SinkBroadcast(fme);
-                        broadcast.setStandard(fme.getStandard());
-//                        UIManager.put("OptionPane.noButtonText", "HQ");
-//                        UIManager.put("OptionPane.yesButtonText", "Standard");
-//                        int resultHQ = JOptionPane.showConfirmDialog(instanceSinkFME,"HQ or Standard mode?","Choose",JOptionPane.YES_NO_OPTION);
-//                        switch(resultHQ){
-//                            case JOptionPane.YES_OPTION:
-//                                broadcast.setStandard("STD");
-//                                break;
-//                            case JOptionPane.NO_OPTION:
-//                                broadcast.setStandard("HQ");
-//                                break;
-//                            case JOptionPane.CLOSED_OPTION:
-//                                broadcast.setStandard("STD");
-//                                break;
-//                        }
-//                        UIManager.put("OptionPane.noButtonText", "No");
-//                        UIManager.put("OptionPane.yesButtonText", "Yes");     
+                        broadcast.setStandard(fme.getStandard()); 
                         broadcast.setRate(MasterMixer.getInstance().getRate());
                         broadcast.setWidth(MasterMixer.getInstance().getWidth());
                         fme.setWidth(Integer.toString(MasterMixer.getInstance().getWidth()));
@@ -346,6 +353,12 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
                     }
 //                    System.out.println("FMECount = "+fmeCount);
                 } else {
+                    if (fmeCount > 0) {
+                        fmeOutState = true;
+                    } else {
+                        fmeOutState = false;
+                    }
+                    broadcastsOut.remove(button.getText());
                     SinkBroadcast broadcast = broadcasts.get(button.getText());
                     if (broadcast != null) {
                         fmeCount --;
@@ -422,7 +435,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
             sinkUDPPopup.show(evt.getComponent(), evt.getX(), evt.getY());
         }
     }
-    public void fmeInitPopUp(){
+    private void fmeInitPopUp(){
         JMenuItem fmeSettings = new JMenuItem (new AbstractAction("FME Settings") {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -436,7 +449,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
         fmePopup.add(fmeSettings);
     }
     
-    public void sinkFileInitPopUp(){
+    private void sinkFileInitPopUp(){
         JMenuItem sinkSettings = new JMenuItem (new AbstractAction("Record Settings") {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -450,7 +463,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
         sinkFilePopup.add(sinkSettings);
     }
     
-    public void sinkUDPInitPopUp(){
+    private void sinkUDPInitPopUp(){
         JMenuItem sinkSettings = new JMenuItem (new AbstractAction("UDP Settings") {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -668,26 +681,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
 
     private void tglUDPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglUDPActionPerformed
         if (tglUDP.isSelected()) {
-//            SinkUDP udpStream = new SinkUDP();
-//            UIManager.put("OptionPane.noButtonText", "HQ");
-//            UIManager.put("OptionPane.yesButtonText", "Standard");
-//            int resultHQ = JOptionPane.showConfirmDialog(this,"HQ or Standard mode?","Choose",JOptionPane.YES_NO_OPTION);
-//            switch(resultHQ){
-//                case JOptionPane.YES_OPTION:
-//                    udpStream.setStandard("STD");
-//                    break;
-//                case JOptionPane.NO_OPTION:
-//                    udpStream.setStandard("HQ");
-//                    break;
-//                case JOptionPane.CLOSED_OPTION:
-//                    udpStream.setStandard("STD");
-//                    break;
-//            }
-//            UIManager.put("OptionPane.noButtonText", "No");
-//            UIManager.put("OptionPane.yesButtonText", "Yes");     
-//            udpStream.setWidth(MasterMixer.getInstance().getWidth());
-//            udpStream.setHeight(MasterMixer.getInstance().getHeight());
-//            udpStream.setRate(MasterMixer.getInstance().getRate());
+            udpOutState = true;
             udpStream.setListener(instanceSink);
             udpStream.read();
             udpOut.put("UDPOut", udpStream);
@@ -695,6 +689,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
             labels.put("UDPOut", label);
             ResourceMonitor.getInstance().addMessage(label);
         } else {
+            udpOutState = false;
             SinkUDP udpStream = udpOut.get("UDPOut");
             if (udpStream != null) {
                 udpStream.stop();
@@ -979,11 +974,83 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
     }
 
     @Override
-    public void resetAutoPLBtnState(ActionEvent evt) {
+    public void resetSinks(ActionEvent evt) {
+//        System.out.println("OP AutoPL");
         fileStream.destroy();
         udpStream.destroy();
         fileStream = new SinkFile(f);
         udpStream = new SinkUDP();
+    }
+
+    @Override
+    public void requestReset() {
+        if (audioOutState) {
+            audioOutSwitch = true;
+        } else {
+            audioOutSwitch = false;
+        }
+        if (udpOutState) {
+            udpOutSwitch = true;
+        } else {
+            udpOutSwitch = false;
+        }
+        if (fmeOutState) {
+            fmeOutSwitch = true;
+        } else {
+            fmeOutSwitch = false;
+        }
+        
+    }
+
+    @Override
+    public void requestStart() {
+//        System.out.println("AudioOutSwitch "+ audioOutSwitch);
+        String[] currentBroadcasts = new String[broadcastsOut.size()];
+        currentBroadcasts = broadcastsOut.toArray(currentBroadcasts);
+        if (audioOutSwitch){
+            tglAudioOut.doClick();
+        }
+        if (udpOutSwitch){
+            tglUDP.doClick();
+        }
+        if (fmeOutSwitch){
+            for (String bro : currentBroadcasts) {
+                for (Component c : this.getComponents()) {
+                    if (c instanceof JToggleButton) {
+                        JToggleButton b = (JToggleButton) c;
+                        if (b.getText().equals(bro)) {
+                            b.doClick();
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    public void requestStop() {
+        audioOutSwitch = false;
+        udpOutSwitch = false;
+        fmeOutSwitch = false;
+    }
+
+    @Override
+    public void resetAutoPLBtnState(ActionEvent evt) {
+        // Nothing Here
+    }
+
+    @Override
+    public void resetBtnStates(ActionEvent evt) {
+        tglSkyCam.setEnabled(true);
+        camCount = 0;
+        fmeCount = 0;
+        broadcastsOut.clear();
+        iSkyCamFree = true;
+        if (processSkyVideo != null){
+            processSkyVideo.destroy();
+//            System.out.println("WS Skype Camera Stopped ...");
+            
+        }
     }
     
     private static class WaitingDialogOP extends JDialog {
@@ -1179,6 +1246,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
 
     private void tglAudioOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglAudioOutActionPerformed
         if (tglAudioOut.isSelected()) {
+            audioOutState = true;
             SinkAudio audioStream = new SinkAudio();
             audioStream.setListener(instanceSink);
             audioStream.read();
@@ -1187,6 +1255,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
             labels.put("AudioOut", label);
             ResourceMonitor.getInstance().addMessage(label);
         } else {
+            audioOutState = false;
             SinkAudio audioStream = audioOut.get("AudioOut");
             if (audioStream != null) {
                 audioStream.stop();
@@ -1228,7 +1297,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
                     }
                 }
             }
-                    }  else if (stream instanceof SinkLinuxDevice) {
+        }  else if (stream instanceof SinkLinuxDevice) {
             String name = stream.getName();
             for (Component c : this.getComponents()) {
                 if (c instanceof JToggleButton) {
@@ -1238,9 +1307,8 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
                     }
                 }
             }
-            
-                    } 
-                }
+        } 
+    }
 
     @Override
     public void updatePreview(BufferedImage image) {
@@ -1253,14 +1321,15 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
     }
 
     @Override
-    public void resetBtnStates(ActionEvent evt) {
+    public void resetButtonsStates(ActionEvent evt) {
         tglSkyCam.setEnabled(true);
         camCount = 0;
         fmeCount = 0;
+        broadcastsOut.clear();
         iSkyCamFree = true;
         if (processSkyVideo != null){
             processSkyVideo.destroy();
-//            System.out.println("WS Skype Camera Stopped ...");   
+//            System.out.println("WS Skype Camera Stopped ...");
         }
                          
     }
