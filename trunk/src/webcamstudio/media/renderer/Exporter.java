@@ -48,10 +48,11 @@ public class Exporter implements MasterMixer.SinkListener {
         this.stream = s;
         imageBuffer = new ImageBuffer(MasterMixer.getInstance().getWidth(),MasterMixer.getInstance().getHeight());
         audioBuffer = new AudioBuffer(MasterMixer.getInstance().getRate());
-        if (stream.hasVideo()) {
+        if (!stream.isOnlyAudio()) { // stream.hasVideo()
             try {
                 videoServer = new ServerSocket(0);
                 vport = videoServer.getLocalPort();
+                videoServer.setReceiveBufferSize(65536);
             } catch (IOException ex) {
                 Logger.getLogger(Exporter.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -60,20 +61,22 @@ public class Exporter implements MasterMixer.SinkListener {
             try {
                 audioServer = new ServerSocket(0);
                 aport = audioServer.getLocalPort();
+                audioServer.setReceiveBufferSize(65536);
             } catch (IOException ex) {
                 Logger.getLogger(Exporter.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
 //        System.out.println("Port used is Video:" + vport+"/Audio:" + aport);
-        if (stream.hasVideo()) {
+        if (!stream.isOnlyAudio()) { // stream.hasVideo()
             Thread vExCapture = new Thread(new Runnable() {
 
                 @Override
                 public void run() {
                     try {
                         vConnection = videoServer.accept();
+                        vConnection.setSendBufferSize(65536);
                         System.out.println("Video output accepted");
-                        videoOutput = new BufferedOutputStream(vConnection.getOutputStream(), 4096);
+                        videoOutput = new BufferedOutputStream(vConnection.getOutputStream(), 8192);
                         imageBuffer.clear();
                         while (!cancel) {
                             byte[] videoData = imageBuffer.pop().getBytes();
@@ -108,8 +111,9 @@ public class Exporter implements MasterMixer.SinkListener {
                 public void run() {
                     try {                    
                         aConnection = audioServer.accept();
+                        aConnection.setSendBufferSize(65536);
                         System.out.println("Audio output accepted");
-                        audioOutput = new BufferedOutputStream(aConnection.getOutputStream(), 4096);
+                        audioOutput = new BufferedOutputStream(aConnection.getOutputStream(), 8192);
                         audioBuffer.clear();
                         while (!cancel) {
                             byte[] audioData = audioBuffer.pop();

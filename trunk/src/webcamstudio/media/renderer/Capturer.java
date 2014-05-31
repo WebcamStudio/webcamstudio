@@ -55,6 +55,7 @@ public class Capturer {
             try {
                 audioServer = new ServerSocket(0);
                 aport = audioServer.getLocalPort();
+                audioServer.setReceiveBufferSize(65536);
             } catch (IOException ex) {
                 Logger.getLogger(Capturer.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -63,6 +64,7 @@ public class Capturer {
             try {
                 videoServer = new ServerSocket(0);
                 vport = videoServer.getLocalPort();
+                videoServer.setReceiveBufferSize(65536);
             } catch (IOException ex) {
                 Logger.getLogger(Capturer.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -76,10 +78,11 @@ public class Capturer {
                 public void run() {
 
                     try {
-                        Socket connection = videoServer.accept();  
+                        Socket connection = videoServer.accept();
+                        connection.setSendBufferSize(65536);
                         System.out.println(stream.getName() + " Video accepted...");
                         if (stream.hasFakeVideo()) {
-                            fakeVideoIn = new DataInputStream(new BufferedInputStream(connection.getInputStream(), 4096));
+                            fakeVideoIn = new DataInputStream(new BufferedInputStream(connection.getInputStream(), 8192));
                         }
                         do {
                             Tools.sleep(20);
@@ -95,12 +98,12 @@ public class Capturer {
                             } else if (stream.getName().contains("Desktop")) {
                                 noVideoPres=false;
                                 Tools.sleep(stream.getVDelay());
-                                videoIn = new DataInputStream(connection.getInputStream());
+                                videoIn = new DataInputStream(new BufferedInputStream(connection.getInputStream(), 8192));
                                 System.out.println("Start Video ...");
                             } else if (stream.getClass().getName().contains("SourceWebcam")) { //hasaudio ||
                                 noVideoPres=false;
                                 Tools.sleep(stream.getVDelay());
-                                videoIn = new DataInputStream(new BufferedInputStream(connection.getInputStream(), 4096));
+                                videoIn = new DataInputStream(new BufferedInputStream(connection.getInputStream(), 8192));
                                 System.out.println("Start Video ...");
                             } else if (!stream.hasAudio()) {
                                 noVideoPres=false;
@@ -126,9 +129,10 @@ public class Capturer {
                 public void run() {
                     try {                    
                         Socket connection = audioServer.accept();
+                        connection.setSendBufferSize(65536);
                         System.out.println(stream.getName() + " Audio accepted...");
                         if (stream.hasFakeAudio()) {
-                            fakeAudioIn = new DataInputStream(new BufferedInputStream(connection.getInputStream(), 4096));
+                            fakeAudioIn = new DataInputStream(new BufferedInputStream(connection.getInputStream(), 8192));
                         }
                         do {
                             Tools.sleep(20);
@@ -144,7 +148,7 @@ public class Capturer {
                           } else if (stream.getName().endsWith(".mp3") || !stream.hasVideo() ) {
                                 noAudioPres = false;
                                 Tools.sleep(stream.getADelay());
-                                audioIn = new DataInputStream(new BufferedInputStream(connection.getInputStream(), 4096));
+                                audioIn = new DataInputStream(new BufferedInputStream(connection.getInputStream(), 8192));
                                 System.out.println("Start Audio ...");  
                           } 
                         }  while (noAudioPres);

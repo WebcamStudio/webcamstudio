@@ -68,7 +68,6 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
     
     @Override
     public void resetAutoPLBtnState(ActionEvent evt) {
-//        System.out.println("CP AutoPL");
         btnAutoPlayList.setEnabled(true);
     }
 
@@ -112,7 +111,19 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
             String [] userPswSplit = userPsw.split("&");
             if (!userPsw.equals("&")) 
             if (userPswSplit[0].equals(remUser) && userPswSplit[1].equals(remPsw)) {
-                res = "/run";            
+                boolean play = false;
+                for (Stream stream : streamS) {
+                    if (!stream.getClass().toString().contains("Sink")) {
+                        if (stream.isPlaying()){
+                            play = true;
+                        }
+                    }
+                }
+                if (play) {
+                    res = "/run";
+                } else {
+                    res = "/stop";
+                }
             } else {
                 res = "/error";
             }
@@ -316,10 +327,11 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
         jLabel3.setText(bundle.getString("DURATION")); // NOI18N
         jLabel3.setName("jLabel3"); // NOI18N
 
+        StopCHTimer.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-stop-bk.png"))); // NOI18N
         StopCHTimer.setText(bundle.getString("STOP_CHANNEL_TIMER")); // NOI18N
+        StopCHTimer.setToolTipText("Stop Timer Only");
         StopCHTimer.setEnabled(false);
         StopCHTimer.setName("StopCHTimer"); // NOI18N
-        StopCHTimer.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
         StopCHTimer.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 StopCHTimerActionPerformed(evt);
@@ -393,7 +405,7 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
         });
 
         tglRemote.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/rss.png"))); // NOI18N
-        tglRemote.setToolTipText("Remote Control");
+        tglRemote.setToolTipText("Remote Control (Beta) - Right Click for Settings");
         tglRemote.setEnabled(false);
         tglRemote.setFocusable(false);
         tglRemote.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -421,7 +433,7 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
 
         btnStopOnlyStream.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-stop-bk.png"))); // NOI18N
         btnStopOnlyStream.setText(bundle.getString("STREAMS")); // NOI18N
-        btnStopOnlyStream.setToolTipText("Stop Only Streams");
+        btnStopOnlyStream.setToolTipText("Stop Streams Only");
         btnStopOnlyStream.setName("btnStopOnlyStream"); // NOI18N
         btnStopOnlyStream.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -492,7 +504,7 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
                     .addComponent(btnDown, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnUp, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lstChannelsScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 192, Short.MAX_VALUE)
+                .addComponent(lstChannelsScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -512,11 +524,11 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(CHProgressTime, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(StopCHTimer, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnStopAllStream, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnStopOnlyStream, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(StopCHTimer, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnRemove, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -648,7 +660,6 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
     }   
     @Override
     public void stopChTime(ActionEvent evt) {
-//        System.out.println("**** stopChTime ListenerCP ****");
         RemoteStopCHTimerActionPerformed();
     }
     
@@ -665,7 +676,6 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
         CHTimers.clear();
         StopCHTimer.setEnabled(false);
         ChDuration.setValue(0);
-//        System.out.println("**** resetBtnStates ListenerCP ****");
     }
 
     class UpdateCHtUITask extends TimerTask {
@@ -1264,7 +1274,7 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
     private javax.swing.JButton btnRenameCh;
     private javax.swing.JButton btnSelect;
     private javax.swing.JButton btnStopAllStream;
-    public static javax.swing.JButton btnStopOnlyStream;
+    private javax.swing.JButton btnStopOnlyStream;
     private javax.swing.JButton btnUp;
     private javax.swing.JButton btnUpdate;
     private javax.swing.JLabel jLabel1;

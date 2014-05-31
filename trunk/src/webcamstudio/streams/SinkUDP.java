@@ -18,6 +18,8 @@ public class SinkUDP extends Stream {
 
     private ProcessRenderer capture = null;
     private String standard = "STD";
+    protected String abitrate = "128";
+    protected String vbitrate = "1200";
 
     public SinkUDP() {
         name = "UDP";

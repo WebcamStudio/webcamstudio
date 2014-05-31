@@ -80,6 +80,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
     TreeMap<String, SinkBroadcast> broadcasts = new TreeMap<>();
     ArrayList<String> broadcastsOut = new ArrayList<>();
     TreeMap<String, SinkLinuxDevice> devices = new TreeMap<>();
+    ArrayList<String> devicesOut = new ArrayList<>();
     TreeMap<String, SinkUDP> udpOut = new TreeMap<>();
     TreeMap<String, SinkAudio> audioOut = new TreeMap<>();
     TreeMap<String, FME> fmes = new TreeMap<>();
@@ -99,19 +100,52 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
     JPopupMenu fmePopup = new JPopupMenu();
     JPopupMenu sinkFilePopup = new JPopupMenu();
     JPopupMenu sinkUDPPopup = new JPopupMenu();
-    File f = new File(userHomeDir + "/.webcamstudio/Record To File");
-    SinkFile fileStream = new SinkFile(f);
-    SinkUDP udpStream = new SinkUDP();
+    File f;
+    SinkFile fileStream;
+    SinkFile keepFileStream;
+    SinkUDP udpStream;
+    SinkUDP keepUDPStream;
     private boolean audioOutState = false;
     private boolean udpOutState = false;
     private boolean audioOutSwitch = false;
     private boolean udpOutSwitch = false;
     private boolean fmeOutState = false;
     private boolean fmeOutSwitch = false;
+    private boolean camOutState = false;
+    private boolean camOutSwitch = false;
+    
     /** Creates new form OutputPanel
      * @param aFrame */
     public OutputPanel(JFrame aFrame) {
         initComponents();
+        this.f = new File(userHomeDir + "/.webcamstudio/Record To File");
+        this.udpStream = new SinkUDP();
+        this.fileStream = new SinkFile(f);
+        keepFileStream = fileStream;
+        keepUDPStream = udpStream;
+        
+        tglRecordToFile.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                fileStream = keepFileStream;
+                JToggleButton button = ((JToggleButton) evt.getSource());
+                if (!button.isSelected()) {
+                    sinkFileRightMousePressed(evt); // , fileStream
+                }
+            }
+        });
+        
+        tglUDP.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                udpStream = keepUDPStream;
+                JToggleButton button = ((JToggleButton) evt.getSource());
+                if (!button.isSelected()) {
+                    sinkUDPRightMousePressed(evt);
+                }
+            }
+        });
+        
         wDFrame = aFrame;
         fmeInitPopUp();
         sinkFileInitPopUp();
@@ -127,12 +161,10 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
         fileStream.setWidth(MasterMixer.getInstance().getWidth());
         fileStream.setHeight(MasterMixer.getInstance().getHeight());
         fileStream.setRate(MasterMixer.getInstance().getRate());
-//        fileStream.setListener(instanceSink);
         
         udpStream.setWidth(MasterMixer.getInstance().getWidth());
         udpStream.setHeight(MasterMixer.getInstance().getHeight());
         udpStream.setRate(MasterMixer.getInstance().getRate());
-//        udpStream.setListener(instanceSink);
             
         this.setDropTarget(new DropTarget() {
 
@@ -203,8 +235,14 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
         Preferences udpPrefs = prefs.node("udp");
         try {
             String[] services = fmePrefs.childrenNames();
+            for (String service : services){
+            }
             String[] servicesF = filePrefs.childrenNames();
+            for (String service : servicesF){
+            }
             String[] servicesU = udpPrefs.childrenNames();
+            for (String service : servicesU){
+            }
             
             for (String s : servicesF){
                 Preferences serviceF = filePrefs.node(s);
@@ -286,8 +324,8 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
             service.put("keyint", fme.getKeyInt());
             service.put("standard", fme.getStandard());
         }
-        Preferences serviceF = filePrefs.node(fileStream.getName());
-        Preferences serviceU = udpPrefs.node(udpStream.getName());
+        Preferences serviceF = filePrefs.node("frecordset");
+        Preferences serviceU = udpPrefs.node("uoutset");
         serviceF.put("abitrate", fileStream.getAbitrate());
         serviceF.put("vbitrate", fileStream.getVbitrate());
         serviceU.put("abitrate", udpStream.getAbitrate());
@@ -305,17 +343,27 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
         return res;
     }
     
+    private String checkDoubleCam(String s) {
+        String res = s;
+        for (String camName : devicesOut) {
+            if (s.equals(camName)){
+                res = "";
+            }
+        }
+        return res;
+    }
+    
     private void addButtonBroadcast(final FME fme) {
         final OutputPanel instanceSinkFME = this;
         JToggleButton button = new JToggleButton();
-        Dimension d = new Dimension(139,30);
+        Dimension d = new Dimension(139,28);
         button.setPreferredSize(d);
         button.setText(fme.getName());
         button.setActionCommand(fme.getUrl()+"/"+fme.getStream());
         button.setIcon(tglRecordToFile.getIcon());
         button.setSelectedIcon(tglRecordToFile.getSelectedIcon());
         button.setRolloverEnabled(false);
-        button.setToolTipText("Drag to the right to remove...");
+        button.setToolTipText("Drag to the right to Remove... - Right Click for Settings");
         button.addActionListener(new java.awt.event.ActionListener() {
 
             @Override
@@ -351,7 +399,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
                             tglSkyCam.setEnabled(true);
                         }                        
                     }
-//                    System.out.println("FMECount = "+fmeCount);
+                    System.out.println("StartFMECount = "+fmeCount);
                 } else {
                     if (fmeCount > 0) {
                         fmeOutState = true;
@@ -367,7 +415,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
                         broadcasts.remove(fme.getName());
                         ResourceMonitorLabel label = labels.get(fme.getName());
                         labels.remove(fme.getName());
-//                        System.out.println("FMECount = "+fmeCount);
+                        System.out.println("StopFMECount = "+fmeCount);
                         if (fmeCount == 0 && camCount == 0) {
                             tglSkyCam.setEnabled(true);
                         }                        
@@ -421,20 +469,20 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
             fmePopup.show(evt.getComponent(), evt.getX(), evt.getY());
             currFME = fme;
         }
-    }                                     
-    private void sinkFileRightMousePressed(java.awt.event.MouseEvent evt, SinkFile sinkfile) {
+    }
+    
+    private void sinkFileRightMousePressed(java.awt.event.MouseEvent evt) { // , SinkFile sinkfile
         if (evt.isPopupTrigger()) {
-            fileStream = sinkfile;
             sinkFilePopup.show(evt.getComponent(), evt.getX(), evt.getY());
         }
     }
     
-    private void sinkUDPRightMousePressed(java.awt.event.MouseEvent evt, SinkUDP sinkUdp) {
+    private void sinkUDPRightMousePressed(java.awt.event.MouseEvent evt) {
         if (evt.isPopupTrigger()) {
-            udpStream = sinkUdp;
             sinkUDPPopup.show(evt.getComponent(), evt.getX(), evt.getY());
         }
     }
+    
     private void fmeInitPopUp(){
         JMenuItem fmeSettings = new JMenuItem (new AbstractAction("FME Settings") {
             @Override
@@ -503,7 +551,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
         tglSkyCam.setToolTipText("Activate Skype/Flash Cam Compatibility");
         tglSkyCam.setMinimumSize(new java.awt.Dimension(139, 21));
         tglSkyCam.setName("tglSkyCam"); // NOI18N
-        tglSkyCam.setPreferredSize(new java.awt.Dimension(139, 30));
+        tglSkyCam.setPreferredSize(new java.awt.Dimension(139, 28));
         tglSkyCam.setRolloverEnabled(false);
         tglSkyCam.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/camera-video-on.png")));
         tglSkyCam.addActionListener(new java.awt.event.ActionListener() {
@@ -545,7 +593,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
         tglAudioOut.setToolTipText("WebcamStudio Master Audio Output");
         tglAudioOut.setMinimumSize(new java.awt.Dimension(135, 21));
         tglAudioOut.setName("tglAudioOut"); // NOI18N
-        tglAudioOut.setPreferredSize(new java.awt.Dimension(32, 30));
+        tglAudioOut.setPreferredSize(new java.awt.Dimension(32, 28));
         tglAudioOut.setRolloverEnabled(false);
         tglAudioOut.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -556,10 +604,10 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
 
         tglRecordToFile.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-record.png"))); // NOI18N
         tglRecordToFile.setText(bundle.getString("RECORD")); // NOI18N
-        tglRecordToFile.setToolTipText("Save to FIle.");
+        tglRecordToFile.setToolTipText("Save to FIle - Right Click for Settings");
         tglRecordToFile.setMinimumSize(new java.awt.Dimension(87, 21));
         tglRecordToFile.setName("tglRecordToFile"); // NOI18N
-        tglRecordToFile.setPreferredSize(new java.awt.Dimension(87, 30));
+        tglRecordToFile.setPreferredSize(new java.awt.Dimension(87, 28));
         tglRecordToFile.setRolloverEnabled(false);
         tglRecordToFile.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-stop.png"))); // NOI18N
         tglRecordToFile.addActionListener(new java.awt.event.ActionListener() {
@@ -567,37 +615,19 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
                 tglRecordToFileActionPerformed(evt);
             }
         });
-        tglRecordToFile.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                JToggleButton button = ((JToggleButton) evt.getSource());
-                if (!button.isSelected()) {
-                    sinkFileRightMousePressed(evt, fileStream);
-                }
-            }
-        });
         add(tglRecordToFile);
 
         tglUDP.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-record.png"))); // NOI18N
         tglUDP.setText(bundle.getString("UDP_MPEG_OUT")); // NOI18N
-        tglUDP.setToolTipText("Stream to udp://@127.0.0.1:7000");
+        tglUDP.setToolTipText("Stream to udp://@127.0.0.1:7000 - Right Click for Settings");
         tglUDP.setMinimumSize(new java.awt.Dimension(237, 21));
         tglUDP.setName("tglUDP"); // NOI18N
-        tglUDP.setPreferredSize(new java.awt.Dimension(237, 30));
+        tglUDP.setPreferredSize(new java.awt.Dimension(237, 28));
         tglUDP.setRolloverEnabled(false);
         tglUDP.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-stop.png"))); // NOI18N
         tglUDP.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 tglUDPActionPerformed(evt);
-            }
-        });
-        tglUDP.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                JToggleButton button = ((JToggleButton) evt.getSource());
-                if (!button.isSelected()) {
-                    sinkUDPRightMousePressed(evt, udpStream);
-                }
             }
         });
         add(tglUDP);
@@ -649,9 +679,6 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
             }
             if (retval == JFileChooser.APPROVE_OPTION && overWrite) {
                 fileStream.setFile(f);
-//                fileStream.setWidth(MasterMixer.getInstance().getWidth());
-//                fileStream.setHeight(MasterMixer.getInstance().getHeight());
-//                fileStream.setRate(MasterMixer.getInstance().getRate());
                 fileStream.setListener(instanceSink);
                 fileStream.read();
                 files.put("RECORD", fileStream);
@@ -716,7 +743,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
         tglSkyCam.setName("tglSkyCam"); // NOI18N
         tglSkyCam.setRolloverEnabled(false);
         tglSkyCam.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/camera-video-on.png"))); // NOI18N
-        tglSkyCam.setPreferredSize(new Dimension(32, 30));
+        tglSkyCam.setPreferredSize(new Dimension(32, 28));
         add(tglSkyCam);
         
         jcbV4l2loopback.setText("V4l2loopback");
@@ -738,33 +765,33 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
         tglAudioOut.setToolTipText("Audio to Speakers");
         tglAudioOut.setName("tglAudioOut"); // NOI18N
         tglSkyCam.setRolloverEnabled(false);
-        tglAudioOut.setPreferredSize(new Dimension(32, 30));
+        tglAudioOut.setPreferredSize(new Dimension(32, 28));
         add(tglAudioOut);
         
         tglRecordToFile.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-record.png"))); // NOI18N
         tglRecordToFile.setText(bundle.getString("RECORD")); // NOI18N
-        tglRecordToFile.setToolTipText("Save to FIle.");
+        tglRecordToFile.setToolTipText("Save to File - Right Click for Settings");
         tglRecordToFile.setName("tglRecordToFile"); // NOI18N
         tglRecordToFile.setRolloverEnabled(false);
         tglRecordToFile.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-stop.png"))); // NOI18N
-        tglRecordToFile.setPreferredSize(new Dimension(32, 30));
+        tglRecordToFile.setPreferredSize(new Dimension(32, 28));
         add(tglRecordToFile);
 
         tglUDP.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-record.png"))); // NOI18N
         tglUDP.setText(bundle.getString("UDP_MPEG_OUT")); // NOI18N
-        tglUDP.setToolTipText("Stream to udp://@127.0.0.1:7000");
+        tglUDP.setToolTipText("Stream to udp://@127.0.0.1:7000 - Right Click for Settings");
         tglUDP.setName("tglUDP"); // NOI18N
         tglUDP.setRolloverEnabled(false);
         tglUDP.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-stop.png"))); // NOI18N
-        tglUDP.setPreferredSize(new Dimension(32, 30));
+        tglUDP.setPreferredSize(new Dimension(32, 28));
         add(tglUDP);
     }
     private void paintWSCamButtons () {
-        for (VideoDevice d : VideoDevice.getInputDevices()) {
+        for (final VideoDevice d : VideoDevice.getInputDevices()) {
             String vdName = d.getFile().getName();
             if (!vdName.endsWith("video21")) {
                 JToggleButton wsCamButton = new JToggleButton();
-                Dimension dim = new Dimension(139,30);
+                Dimension dim = new Dimension(139,28);
                 wsCamButton.setPreferredSize(dim);
                 wsCamButton.setText(d.getName());
                 wsCamButton.setActionCommand(d.getFile().getAbsolutePath());
@@ -778,6 +805,11 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
                         JToggleButton button = ((JToggleButton) evt.getSource());
                         
                         if (button.isSelected()) {
+                            camOutState = true;
+                            String cleanCam = checkDoubleCam(button.getText());
+                            if (cleanCam != "") {
+                                devicesOut.add(d.getName());
+                            }
                             camCount ++;
                             SinkLinuxDevice stream = new SinkLinuxDevice(new File(device), button.getText());
                             stream.setRate(MasterMixer.getInstance().getRate());
@@ -790,8 +822,14 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
                             labels.put(button.getText(), label);
                             ResourceMonitor.getInstance().addMessage(label);
                             tglSkyCam.setEnabled(false);
-//                            System.out.println("CamCount = "+camCount);
+                            System.out.println("StartCamCount = "+camCount);
                         } else {
+                            if (camCount > 0) {
+                                camOutState = true;
+                            } else {
+                                camOutState = false;
+                            }
+                            devicesOut.remove(d.getName());
                             SinkLinuxDevice stream = devices.get(button.getText());
                             if (stream != null) {
                                 camCount --;
@@ -800,7 +838,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
 //                                System.out.println("WS Camera Stopped ...");
                                 ResourceMonitorLabel label = labels.remove(button.getText());
                                 ResourceMonitor.getInstance().removeMessage(label);
-//                                System.out.println("CamCount = "+camCount);
+                                System.out.println("StopCamCount = "+camCount);
                                 if (camCount == 0 && fmeCount == 0) {
                                     tglSkyCam.setEnabled(true);
                                 }
@@ -996,8 +1034,15 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
         }
         if (fmeOutState) {
             fmeOutSwitch = true;
+            fmeCount = 0;
         } else {
             fmeOutSwitch = false;
+        }
+        if (camOutState) {
+            camOutSwitch = true;
+            camCount = 0;
+        } else {
+            camOutSwitch = false;
         }
         
     }
@@ -1007,6 +1052,8 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
 //        System.out.println("AudioOutSwitch "+ audioOutSwitch);
         String[] currentBroadcasts = new String[broadcastsOut.size()];
         currentBroadcasts = broadcastsOut.toArray(currentBroadcasts);
+        String[] currentDevices = new String[devicesOut.size()];
+        currentDevices = devicesOut.toArray(currentDevices);
         if (audioOutSwitch){
             tglAudioOut.doClick();
         }
@@ -1025,6 +1072,18 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
                 }
             }
         }
+        if (camOutSwitch){
+            for (String cam : currentDevices) {
+                for (Component c : this.getComponents()) {
+                    if (c instanceof JToggleButton) {
+                        JToggleButton b = (JToggleButton) c;
+                        if (b.getText().equals(cam)) {
+                            b.doClick();
+                        }
+                    }
+                }
+            }
+        }
     }
 
     @Override
@@ -1032,6 +1091,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
         audioOutSwitch = false;
         udpOutSwitch = false;
         fmeOutSwitch = false;
+        camOutSwitch = false;
     }
 
     @Override
@@ -1045,6 +1105,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
         camCount = 0;
         fmeCount = 0;
         broadcastsOut.clear();
+        devicesOut.clear();
         iSkyCamFree = true;
         if (processSkyVideo != null){
             processSkyVideo.destroy();
@@ -1323,6 +1384,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
     @Override
     public void resetButtonsStates(ActionEvent evt) {
         tglSkyCam.setEnabled(true);
+        btnSkyFlip.setEnabled(tglSkyCam.isSelected());
         camCount = 0;
         fmeCount = 0;
         broadcastsOut.clear();

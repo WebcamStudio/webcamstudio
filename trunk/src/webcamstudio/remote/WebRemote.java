@@ -96,7 +96,7 @@ public class WebRemote implements Runnable {
                 Socket connection = null;
                 try {
                     // wait for request
-                    System.out.println("WebcamStudio Remote accepting connections on port " + port);
+//                    System.out.println("WebcamStudio Remote accepting connections on port " + port);
                     listener.listening("http://" + InetAddress.getLocalHost().getHostName() + ".local:" + port);
                     ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis() + 10000, "WebcamStudio Remote listening on port: " + WebRemote.getPort());
                     ResourceMonitor.getInstance().addMessage(label);
@@ -150,27 +150,8 @@ public class WebRemote implements Runnable {
                                 auth = false;    
                             } else if (req.contains("/j_security_check")){
                                 System.out.println("Requesting Remote Login...");
-//                                System.out.println(request);
-//                                String [] loginSplit = request.split("\\?");
-//                                String userPsw = loginSplit[1].replace("j_username=", "");
-//                                userPsw = userPsw.replace("j_password=", "");
-//                                userPsw = userPsw.replace(" HTTP/1.1", "");
-//                                System.out.println("userPsw: "+userPsw);
-//                                if (!userPsw.equals("&")) {
-//                                    String [] userPswSplit = userPsw.split("&");
-//                                    if (!userPsw.equals("&")) 
-//                                    if (userPswSplit[0].equals("Carlo") && userPswSplit[1].equals("Sbrasa")) {
-//                                        req = "/run";
-//                                        auth = true;
-//                                    } else {
-//                                        req = "/error";
-//                                        auth = false;
-//                                    }
-//                                } else {
-//                                    req = "/login";
-//                                }
                                 req = listener.requestlogin(request);
-                                if (req.equals("/run")) {
+                                if (req.equals("/run") || req.equals("/stop")) {
                                     auth = true;
                                 } else {
                                     auth = false;
@@ -227,8 +208,8 @@ public class WebRemote implements Runnable {
     }
 
     private void log(Socket connection, String msg) {
-        System.err.println(new Date() + " [" + connection.getInetAddress().getHostAddress()
-                + ":" + connection.getPort() + "] " + msg);
+//        System.err.println(new Date() + " [" + connection.getInetAddress().getHostAddress()
+//                + ":" + connection.getPort() + "] " + msg);
     }
 
     private void errorReport(PrintStream pout, Socket connection,
