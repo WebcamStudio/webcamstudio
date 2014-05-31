@@ -18,21 +18,18 @@ public class SinkUDP extends Stream {
 
     private ProcessRenderer capture = null;
     private String standard = "STD";
-    protected String abitrate = "128";
-    protected String vbitrate = "1200";
 
     public SinkUDP() {
         name = "UDP";
+    }
+
+    @Override
+    public void read() {
         if (outFFmpeg){
             this.setComm("FF");
         } else {
             this.setComm("AV");
         }
-
-    }
-
-    @Override
-    public void read() {
         rate = MasterMixer.getInstance().getRate();
         captureWidth = MasterMixer.getInstance().getWidth();
         captureHeight = MasterMixer.getInstance().getHeight();
@@ -108,28 +105,5 @@ public class SinkUDP extends Stream {
     @Override
     public void play() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
-    /**
-     *
-     * @return Abitrate
-     */
-    public String getAbitrate() {
-        return abitrate;
-    }
-    
-    public void setAbitrate(String sAbitRate) {
-        abitrate = sAbitRate;
-    }
-    
-    /**
-     * @return Vbitrate
-     */
-    public String getVbitrate() {
-        return vbitrate;
-    }
-    
-    public void setVbitrate(String sVbitRate) {
-        vbitrate = sVbitRate;
     }
 }

@@ -25,16 +25,15 @@ public class SinkFile extends Stream {
     public SinkFile(File f) {
         file = f;
         name = f.getName();
+    }
+
+    @Override
+    public void read() {
         if (outFFmpeg){
             this.setComm("FF");
         } else {
             this.setComm("AV");
         }
-
-    }
-
-    @Override
-    public void read() {
         rate = MasterMixer.getInstance().getRate();
         captureWidth = MasterMixer.getInstance().getWidth();
         captureHeight = MasterMixer.getInstance().getHeight();
@@ -99,24 +98,4 @@ public class SinkFile extends Stream {
     public void play() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-//    public String getAbitrate() {
-//        return abitrate;
-//    }
-//    
-//    public void setAbitrate(String sAbitRate) {
-//        abitrate = sAbitRate;
-//    }
-//    
-//    /**
-//     * @return the vbitrate
-//     */
-//    public String getVbitrate() {
-//        System.out.println("FileSink VB get: "+vbitrate);
-//        return vbitrate;
-//    }
-//    
-//    public void setVbitrate(String sVbitRate) {
-//        vbitrate = sVbitRate;
-//        System.out.println("FileSink VB setted to: "+vbitrate);
-//    }
 }
