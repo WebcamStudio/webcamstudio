@@ -52,7 +52,6 @@ public class Exporter implements MasterMixer.SinkListener {
             try {
                 videoServer = new ServerSocket(0);
                 vport = videoServer.getLocalPort();
-                videoServer.setReceiveBufferSize(65536);
             } catch (IOException ex) {
                 Logger.getLogger(Exporter.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -61,7 +60,6 @@ public class Exporter implements MasterMixer.SinkListener {
             try {
                 audioServer = new ServerSocket(0);
                 aport = audioServer.getLocalPort();
-                audioServer.setReceiveBufferSize(65536);
             } catch (IOException ex) {
                 Logger.getLogger(Exporter.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -74,9 +72,8 @@ public class Exporter implements MasterMixer.SinkListener {
                 public void run() {
                     try {
                         vConnection = videoServer.accept();
-                        vConnection.setSendBufferSize(65536);
                         System.out.println("Video output accepted");
-                        videoOutput = new BufferedOutputStream(vConnection.getOutputStream(), 8192);
+                        videoOutput = new BufferedOutputStream(vConnection.getOutputStream(), 4096);
                         imageBuffer.clear();
                         while (!cancel) {
                             byte[] videoData = imageBuffer.pop().getBytes();
@@ -111,9 +108,8 @@ public class Exporter implements MasterMixer.SinkListener {
                 public void run() {
                     try {                    
                         aConnection = audioServer.accept();
-                        aConnection.setSendBufferSize(65536);
                         System.out.println("Audio output accepted");
-                        audioOutput = new BufferedOutputStream(aConnection.getOutputStream(), 8192);
+                        audioOutput = new BufferedOutputStream(aConnection.getOutputStream(), 4096);
                         audioBuffer.clear();
                         while (!cancel) {
                             byte[] audioData = audioBuffer.pop();

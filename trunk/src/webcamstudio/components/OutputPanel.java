@@ -118,9 +118,9 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
      * @param aFrame */
     public OutputPanel(JFrame aFrame) {
         initComponents();
-        this.f = new File(userHomeDir + "/.webcamstudio/Record To File");
-        this.udpStream = new SinkUDP();
-        this.fileStream = new SinkFile(f);
+        f = new File(userHomeDir + "/.webcamstudio/Record To File");
+        udpStream = new SinkUDP();
+        fileStream = new SinkFile(f);
         keepFileStream = fileStream;
         keepUDPStream = udpStream;
         
@@ -165,7 +165,8 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
         udpStream.setWidth(MasterMixer.getInstance().getWidth());
         udpStream.setHeight(MasterMixer.getInstance().getHeight());
         udpStream.setRate(MasterMixer.getInstance().getRate());
-            
+//        udpStream = keepUDPStream;
+//        System.out.println("Initial udpStream: "+keepUDPStream);    
         this.setDropTarget(new DropTarget() {
 
             @Override
@@ -234,16 +235,10 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
         Preferences filePrefs = prefs.node("filerec");
         Preferences udpPrefs = prefs.node("udp");
         try {
-            String[] services = fmePrefs.childrenNames();
-            for (String service : services){
-            }
-            String[] servicesF = filePrefs.childrenNames();
-            for (String service : servicesF){
-            }
+            String[] services = fmePrefs.childrenNames();          
+            String[] servicesF = filePrefs.childrenNames();           
             String[] servicesU = udpPrefs.childrenNames();
-            for (String service : servicesU){
-            }
-            
+                      
             for (String s : servicesF){
                 Preferences serviceF = filePrefs.node(s);
                 fileStream.setVbitrate(serviceF.get("vbitrate", ""));
@@ -399,7 +394,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
                             tglSkyCam.setEnabled(true);
                         }                        
                     }
-                    System.out.println("StartFMECount = "+fmeCount);
+//                    System.out.println("StartFMECount = "+fmeCount);
                 } else {
                     if (fmeCount > 0) {
                         fmeOutState = true;
@@ -415,7 +410,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
                         broadcasts.remove(fme.getName());
                         ResourceMonitorLabel label = labels.get(fme.getName());
                         labels.remove(fme.getName());
-                        System.out.println("StopFMECount = "+fmeCount);
+//                        System.out.println("StopFMECount = "+fmeCount);
                         if (fmeCount == 0 && camCount == 0) {
                             tglSkyCam.setEnabled(true);
                         }                        
@@ -822,7 +817,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
                             labels.put(button.getText(), label);
                             ResourceMonitor.getInstance().addMessage(label);
                             tglSkyCam.setEnabled(false);
-                            System.out.println("StartCamCount = "+camCount);
+//                            System.out.println("StartCamCount = "+camCount);
                         } else {
                             if (camCount > 0) {
                                 camOutState = true;
@@ -838,7 +833,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
 //                                System.out.println("WS Camera Stopped ...");
                                 ResourceMonitorLabel label = labels.remove(button.getText());
                                 ResourceMonitor.getInstance().removeMessage(label);
-                                System.out.println("StopCamCount = "+camCount);
+//                                System.out.println("StopCamCount = "+camCount);
                                 if (camCount == 0 && fmeCount == 0) {
                                     tglSkyCam.setEnabled(true);
                                 }

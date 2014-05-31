@@ -296,7 +296,6 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
         } else {
             cboAudioHz.setSelectedItem("44100Hz");
         }
-//        System.out.println("Outffmpeg: "+outFFmpeg);
         boolean ffmpeg = Screen.ffmpegDetected();
         boolean avconv = Screen.avconvDetected();
         if (ffmpeg && !avconv){
@@ -311,6 +310,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
             outFFmpeg = false;
             tglFFmpeg.setEnabled(false);
         }
+//        System.out.println("Outffmpeg: "+outFFmpeg);
     }
 
     private void loadPrefs() {
