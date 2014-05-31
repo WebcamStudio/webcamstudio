@@ -713,6 +713,7 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener {
             tglPause.setSelected(false);
             tglPause.setEnabled(false);
             stream.stop();
+            stream.setVolume(volume);
         }
     }//GEN-LAST:event_tglActiveStreamActionPerformed
 

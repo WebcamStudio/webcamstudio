@@ -57,6 +57,7 @@ public class RemoteSettings extends javax.swing.JFrame {
         jLabel12.setText("jLabel12");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Remote Control Settings");
 
         lblRemPort.setText("Remote Port:");
 

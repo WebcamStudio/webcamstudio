@@ -70,8 +70,6 @@ import webcamstudio.exporter.vloopback.VideoDevice;
 import webcamstudio.externals.ProcessRenderer;
 import webcamstudio.mixers.MasterMixer;
 import webcamstudio.mixers.SystemPlayer;
-import webcamstudio.remote.Listener;
-import webcamstudio.remote.WebRemote;
 import webcamstudio.streams.SourceAudioSource;
 import webcamstudio.streams.SourceChannel;
 import webcamstudio.streams.SourceCustom;
@@ -124,10 +122,10 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
         listenerOP = l;
     }
     
-    static Listener listenerMP = null;
-    public static void setListenerMP(Listener l) {
-        listenerMP = l;
-    }
+//    static Listener listenerMP = null;
+//    public static void setListenerMP(Listener l) {
+//        listenerMP = l;
+//    }
     
     /**
      * Creates new form WebcamStudio

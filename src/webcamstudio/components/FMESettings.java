@@ -129,6 +129,7 @@ public class FMESettings extends javax.swing.JFrame implements Stream.Listener {
         jLabel12.setText("jLabel12");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("FME Settings");
 
         lblEncode.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
         lblEncode.setText("Encode:");

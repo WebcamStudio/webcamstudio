@@ -18,8 +18,8 @@ import webcamstudio.streams.Stream;
  * @author karl
  */
 public class SinkSettings extends javax.swing.JFrame implements Stream.Listener {
-    SinkFile thisSinkFile;
-    SinkUDP thisSinkUDP;
+    SinkFile thisSinkFile = null;
+    SinkUDP thisSinkUDP = null;
     /**
      * Creates new form FMESettings
      * @param sFile
@@ -38,6 +38,7 @@ public class SinkSettings extends javax.swing.JFrame implements Stream.Listener 
             thisSinkFile = sFile;
             thisSinkUDP = null;
             lblName.setText(thisSinkFile.getName());
+            this.setTitle(thisSinkFile.getName() + " Settings");
     //        textURL.setText(thisSinkFile.getUrl());
     //        if (thisSinkFile.getStream().equals("")) {
     //            textStream.setText("");
@@ -97,6 +98,7 @@ public class SinkSettings extends javax.swing.JFrame implements Stream.Listener 
             thisSinkUDP = udp;
             thisSinkFile = null;
             lblName.setText(thisSinkUDP.getName());
+            this.setTitle(thisSinkUDP.getName() + " Settings");
             if (thisSinkUDP.getVbitrate().equals("")) {
                 spinVideoRate.setValue(0);
                 spinVideoRate.setEnabled(false);
@@ -165,6 +167,7 @@ public class SinkSettings extends javax.swing.JFrame implements Stream.Listener 
         jLabel12.setText("jLabel12");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Sink Settings");
 
         lblEncode.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
         lblEncode.setText("Encode:");

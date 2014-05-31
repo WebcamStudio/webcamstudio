@@ -18,6 +18,8 @@ import webcamstudio.mixers.MasterMixer;
 public class SinkFile extends Stream {
 
     private ProcessRenderer capture = null;
+//    protected String abitrate = "128";
+//    protected String vbitrate = "1200";
     
 
     public SinkFile(File f) {
@@ -97,22 +99,24 @@ public class SinkFile extends Stream {
     public void play() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    public String getAbitrate() {
-        return abitrate;
-    }
-    
-    public void setAbitrate(String sAbitRate) {
-        abitrate = sAbitRate;
-    }
-    
-    /**
-     * @return the vbitrate
-     */
-    public String getVbitrate() {
-        return vbitrate;
-    }
-    
-    public void setVbitrate(String sVbitRate) {
-        vbitrate = sVbitRate;
-    }
+//    public String getAbitrate() {
+//        return abitrate;
+//    }
+//    
+//    public void setAbitrate(String sAbitRate) {
+//        abitrate = sAbitRate;
+//    }
+//    
+//    /**
+//     * @return the vbitrate
+//     */
+//    public String getVbitrate() {
+//        System.out.println("FileSink VB get: "+vbitrate);
+//        return vbitrate;
+//    }
+//    
+//    public void setVbitrate(String sVbitRate) {
+//        vbitrate = sVbitRate;
+//        System.out.println("FileSink VB setted to: "+vbitrate);
+//    }
 }
