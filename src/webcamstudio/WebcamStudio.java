@@ -229,7 +229,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
         initWebcam();
         initAudioFFMainSW();
         loadCustomSources();
-        listenerOP.resetSinks(null); // Corrects the UDP and File BackEnd Saved Prefs
+//        listenerOP.resetSinks(null); // Corrects the UDP and File BackEnd Saved Prefs
     }
 
     private StreamDesktop getNewStreamDesktop(Stream s) {
@@ -1384,6 +1384,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
         ArrayList<Stream> streamzI = MasterChannels.getInstance().getStreams();
         int sinkStream = 0;
         for (Stream s : streamzI) {
+//            System.out.println("Stream: "+s);
             if (s.getClass().toString().contains("Sink")) {
                 sinkStream ++;
             }

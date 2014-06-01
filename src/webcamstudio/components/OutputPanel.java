@@ -102,9 +102,9 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
     JPopupMenu sinkUDPPopup = new JPopupMenu();
     File f;
     SinkFile fileStream;
-    SinkFile keepFileStream;
+//    SinkFile keepFileStream;
     SinkUDP udpStream;
-    SinkUDP keepUDPStream;
+//    SinkUDP keepUDPStream;
     private boolean audioOutState = false;
     private boolean udpOutState = false;
     private boolean audioOutSwitch = false;
@@ -121,13 +121,14 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
         f = new File(userHomeDir + "/.webcamstudio/Record To File");
         udpStream = new SinkUDP();
         fileStream = new SinkFile(f);
-        keepFileStream = fileStream;
-        keepUDPStream = udpStream;
+//        keepFileStream = fileStream;
+//        keepUDPStream = udpStream;
         
         tglRecordToFile.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mousePressed(java.awt.event.MouseEvent evt) {
-                fileStream = keepFileStream;
+//                fileStream.setListener(instanceSink);
+//                fileStream = keepFileStream;
                 JToggleButton button = ((JToggleButton) evt.getSource());
                 if (!button.isSelected()) {
                     sinkFileRightMousePressed(evt); // , fileStream
@@ -138,7 +139,8 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
         tglUDP.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mousePressed(java.awt.event.MouseEvent evt) {
-                udpStream = keepUDPStream;
+//                udpStream.setListener(instanceSink);
+//                udpStream = keepUDPStream;
                 JToggleButton button = ((JToggleButton) evt.getSource());
                 if (!button.isSelected()) {
                     sinkUDPRightMousePressed(evt);
@@ -371,6 +373,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
                         String cleanBroad = checkDoubleBroad(button.getText());
                         if (cleanBroad != "") {
                             broadcastsOut.add(cleanBroad);
+//                            System.out.println("broadcastsOut: "+broadcastsOut);
                         }
                         fmeCount ++;
                         SinkBroadcast broadcast = new SinkBroadcast(fme);
@@ -1027,6 +1030,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
         } else {
             udpOutSwitch = false;
         }
+//        System.out.println("fmeOutState: "+fmeOutState);
         if (fmeOutState) {
             fmeOutSwitch = true;
             fmeCount = 0;
@@ -1380,9 +1384,11 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
     public void resetButtonsStates(ActionEvent evt) {
         tglSkyCam.setEnabled(true);
         btnSkyFlip.setEnabled(tglSkyCam.isSelected());
+//        keepFileStream.stop();
+//        keepUDPStream.stop();
         camCount = 0;
         fmeCount = 0;
-        broadcastsOut.clear();
+//        broadcastsOut.clear();
         iSkyCamFree = true;
         if (processSkyVideo != null){
             processSkyVideo.destroy();

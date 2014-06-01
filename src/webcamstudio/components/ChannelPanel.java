@@ -1247,8 +1247,10 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
     private void btnStopOnlyStreamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStopOnlyStreamActionPerformed
         MasterChannels.getInstance().stopOnlyStream();
         for (Stream s : streamS){
-            s.updateStatus();
-        }
+//            if (!s.getClass().toString().contains("Sink")) {
+                s.updateStatus();
+            }
+//        }
         Tools.sleep(30);
         if (inTimer){
             RemoteStopCHTimerActionPerformed();
