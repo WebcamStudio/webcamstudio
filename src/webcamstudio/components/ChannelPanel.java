@@ -555,11 +555,13 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
             btnClearAllCh.setEnabled(!inTimer);
             StopCHTimer.setEnabled(inTimer);
             btnUpdate.setEnabled(true);
+            tglRemote.setEnabled(true);
             } else {
                 btnRemove.setEnabled(false);
                 btnSelect.setEnabled(false);
                 btnUpdate.setEnabled(false);
                 btnClearAllCh.setEnabled(false);
+                tglRemote.setEnabled(false);
         }
     }//GEN-LAST:event_lstChannelsValueChanged
     @SuppressWarnings("unchecked") 
@@ -841,7 +843,7 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
         }
         Tools.sleep(30);
         listenerCPOP.resetButtonsStates(evt);
-        tglRemote.setEnabled(false);
+//        tglRemote.setEnabled(false);
         ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "All Stopped.");
         ResourceMonitor.getInstance().addMessage(label);
         System.gc();
@@ -1257,7 +1259,7 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
         } else {
             RemoteStopCHTimerOnlyActionPerformed();
         }
-        tglRemote.setEnabled(false);
+//        tglRemote.setEnabled(false);
         ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Streams Stopped.");
         ResourceMonitor.getInstance().addMessage(label);
         System.gc();

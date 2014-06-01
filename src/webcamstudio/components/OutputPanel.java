@@ -1016,6 +1016,27 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
         udpStream.destroy();
         fileStream = new SinkFile(f);
         udpStream = new SinkUDP();
+        Preferences filePrefs = WebcamStudio.prefs.node("filerec");
+        Preferences udpPrefs = WebcamStudio.prefs.node("udp");
+        try {
+            String[] servicesF = filePrefs.childrenNames();           
+            String[] servicesU = udpPrefs.childrenNames();
+                      
+            for (String s : servicesF){
+                Preferences serviceF = filePrefs.node(s);
+                fileStream.setVbitrate(serviceF.get("vbitrate", ""));
+                fileStream.setAbitrate(serviceF.get("abitrate", ""));
+            }
+            
+            for (String s : servicesU){
+                Preferences serviceU = udpPrefs.node(s);
+                udpStream.setVbitrate(serviceU.get("vbitrate", ""));
+                udpStream.setAbitrate(serviceU.get("abitrate", ""));
+//                udpStream.setStandard(serviceU.get("standard", ""));
+            }
+        } catch (BackingStoreException ex) {
+            Logger.getLogger(OutputPanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @Override
