@@ -155,6 +155,7 @@ public class MasterChannels {
     
     public void stopAllStream(){
         for (Stream s : streams){
+//            System.out.println("Stream stopped: "+s);
             Tools.sleep(30);
             s.stop();
         }
