@@ -8,6 +8,12 @@ package webcamstudio.components;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
+import webcamstudio.WebcamStudio;
+import webcamstudio.externals.FME;
 //import webcamstudio.externals.FME;
 import webcamstudio.streams.SinkFile;
 import webcamstudio.streams.SinkUDP;
@@ -437,6 +443,32 @@ public class SinkSettings extends javax.swing.JFrame implements Stream.Listener 
             } else {
                 thisSinkUDP.setAbitrate(Integer.toString(spinAudioRate.getValue().hashCode()));
             }
+        }
+        if (thisSinkFile != null) {
+            Preferences filePrefs = WebcamStudio.prefs.node("filerec");
+            try {
+                filePrefs.removeNode();
+                filePrefs.flush();
+                filePrefs = WebcamStudio.prefs.node("filerec");
+            } catch (BackingStoreException ex) {
+                Logger.getLogger(OutputPanel.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            Preferences serviceF = filePrefs.node("frecordset");
+            serviceF.put("abitrate", thisSinkFile.getAbitrate());
+            serviceF.put("vbitrate", thisSinkFile.getVbitrate());
+        } else {
+            Preferences udpPrefs = WebcamStudio.prefs.node("udp");
+            try {
+                udpPrefs.removeNode();
+                udpPrefs.flush();
+                udpPrefs = WebcamStudio.prefs.node("udp");
+            } catch (BackingStoreException ex) {
+                Logger.getLogger(OutputPanel.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            Preferences serviceU = udpPrefs.node("uoutset");
+            serviceU.put("abitrate", thisSinkUDP.getAbitrate());
+            serviceU.put("vbitrate", thisSinkUDP.getVbitrate());
+            serviceU.put("standard", thisSinkUDP.getStandard());
         }
         this.dispose();
     }//GEN-LAST:event_btnOKActionPerformed
