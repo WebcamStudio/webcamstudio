@@ -584,7 +584,7 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
             ListChannels.add(name);
             lstChannels.revalidate();
             lstNextChannel.revalidate();
-//            lstChannels.setSelectedValue(name, true);
+            lstChannels.setSelectedValue(name, true);
         } else {
             if (!noDuplicateCh){
                 ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Channel "+name+" Duplicated !!!");
@@ -843,7 +843,6 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
         }
         Tools.sleep(30);
         listenerCPOP.resetButtonsStates(evt);
-//        tglRemote.setEnabled(false);
         ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "All Stopped.");
         ResourceMonitor.getInstance().addMessage(label);
         System.gc();
@@ -1249,17 +1248,14 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
     private void btnStopOnlyStreamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStopOnlyStreamActionPerformed
         MasterChannels.getInstance().stopOnlyStream();
         for (Stream s : streamS){
-//            if (!s.getClass().toString().contains("Sink")) {
                 s.updateStatus();
             }
-//        }
         Tools.sleep(30);
         if (inTimer){
             RemoteStopCHTimerActionPerformed();
         } else {
             RemoteStopCHTimerOnlyActionPerformed();
         }
-//        tglRemote.setEnabled(false);
         ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Streams Stopped.");
         ResourceMonitor.getInstance().addMessage(label);
         System.gc();

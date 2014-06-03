@@ -1659,27 +1659,27 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
     }//GEN-LAST:event_btnAddIPCamActionPerformed
 
     private void tglFFmpegActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglFFmpegActionPerformed
-        String distro = wsDistroWatch();
+//        String distro = wsDistroWatch();
         if (tglFFmpeg.isSelected()){
-            if (distro.toLowerCase().equals("ubuntu")){
-                int result = JOptionPane.showConfirmDialog(this,"If you use ffmpeg Output under Ubuntu it may Crash WebcamStudio.","Warning !!!", JOptionPane.INFORMATION_MESSAGE, JOptionPane.YES_NO_CANCEL_OPTION);
-                if (result == JOptionPane.YES_OPTION) {
-                    outFFmpeg = true;
-                    listenerOP.resetSinks(evt);
-                    ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "FFmpeg Outputs BkEnd Activated ...");
-                    ResourceMonitor.getInstance().addMessage(label);
-                } else {
-                    outFFmpeg = false;
-                    ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "FFmpeg Outputs BkEnd Deactivated ...");
-                    ResourceMonitor.getInstance().addMessage(label);
-                    tglFFmpeg.setSelected(false);
-                }
-            } else {
+//            if (distro.toLowerCase().equals("ubuntu")){
+//                int result = JOptionPane.showConfirmDialog(this,"If you use ffmpeg Output under Ubuntu it may Crash WebcamStudio.","Warning !!!", JOptionPane.INFORMATION_MESSAGE, JOptionPane.YES_NO_CANCEL_OPTION);
+//                if (result == JOptionPane.YES_OPTION) {
+//                    outFFmpeg = true;
+//                    listenerOP.resetSinks(evt);
+//                    ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "FFmpeg Outputs BkEnd Activated ...");
+//                    ResourceMonitor.getInstance().addMessage(label);
+//                } else {
+//                    outFFmpeg = false;
+//                    ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "FFmpeg Outputs BkEnd Deactivated ...");
+//                    ResourceMonitor.getInstance().addMessage(label);
+//                    tglFFmpeg.setSelected(false);
+//                }
+//            } else {
                 outFFmpeg = true;
                 listenerOP.resetSinks(evt);
                 ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "FFmpeg Outputs BkEnd Activated ...");
                 ResourceMonitor.getInstance().addMessage(label);
-            }
+//            }
         } else {
             outFFmpeg = false;
             listenerOP.resetSinks(evt);

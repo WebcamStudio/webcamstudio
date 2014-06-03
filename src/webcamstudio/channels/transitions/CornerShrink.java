@@ -11,17 +11,17 @@ import webcamstudio.util.Tools;
  *
  * @author patrick (modified by karl)
  */
-public class Resize extends Transition{
+public class CornerShrink extends Transition{
 
-    public Resize(Stream source){
+    public CornerShrink(Stream source){
         super(source);
     }
     @Override
     protected void execute() {
         int oldW = 0;
         int oldH = 0;
-        
-        
+        int x = channel.getX();
+        int y = channel.getY();        
         int newW = channel.getWidth();
         int newH = channel.getHeight();
         int deltaW = newW - oldW;
@@ -29,12 +29,18 @@ public class Resize extends Transition{
         int rate = source.getRate();
         int totalFrames = rate * 1;
         for (int i = 0; i<totalFrames;i++){
-            source.setWidth(oldW + i*deltaW/totalFrames);
-            source.setHeight(oldH + i*deltaH/totalFrames);
-            source.setOpacity(i*100/totalFrames);
+            source.setWidth(newW - i*deltaW/totalFrames);
+            source.setX(x + i*deltaW/totalFrames);
+            source.setHeight(newH - i*deltaH/totalFrames);
+            source.setY(y + i*deltaH/totalFrames);
+            source.setOpacity(100 - i*100/totalFrames);
             Tools.sleep(1000/rate);
-            
         }
+        source.setX(x);
+        source.setY(y);
+        source.setWidth(newW);
+        source.setHeight(newH);
+        source.setOpacity(100);
     }
     
 }

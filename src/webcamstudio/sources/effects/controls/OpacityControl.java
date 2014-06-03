@@ -40,6 +40,8 @@ public class OpacityControl extends javax.swing.JPanel {
         label = new javax.swing.JLabel();
         slider = new javax.swing.JSlider();
 
+        setPreferredSize(new java.awt.Dimension(250, 44));
+
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("webcamstudio/Languages"); // NOI18N
         label.setText(bundle.getString("OPACITY")); // NOI18N
         label.setName("label"); // NOI18N
@@ -64,7 +66,7 @@ public class OpacityControl extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(label)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(slider, javax.swing.GroupLayout.DEFAULT_SIZE, 309, Short.MAX_VALUE)
+                .addComponent(slider, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -74,7 +76,7 @@ public class OpacityControl extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(slider, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(label))
-                .addContainerGap(33, Short.MAX_VALUE))
+                .addGap(6, 6, 6))
         );
     }// </editor-fold>//GEN-END:initComponents
 

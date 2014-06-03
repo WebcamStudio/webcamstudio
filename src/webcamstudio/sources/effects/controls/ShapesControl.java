@@ -63,7 +63,7 @@ public class ShapesControl extends javax.swing.JPanel {
         lblfaces = new javax.swing.JLabel();
         tglReverse = new javax.swing.JToggleButton();
 
-        setPreferredSize(new java.awt.Dimension(300, 107));
+        setPreferredSize(new java.awt.Dimension(250, 98));
 
         cboShapes.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         cboShapes.setName("cboShapes"); // NOI18N
@@ -73,7 +73,8 @@ public class ShapesControl extends javax.swing.JPanel {
             }
         });
 
-        lblfaces.setText("Overlays:");
+        lblfaces.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblfaces.setText("Overlays");
         lblfaces.setName("lblfaces"); // NOI18N
 
         tglReverse.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/view-refresh.png"))); // NOI18N
@@ -92,11 +93,11 @@ public class ShapesControl extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(cboShapes, 0, 163, Short.MAX_VALUE)
-                    .addComponent(lblfaces, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblfaces, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(cboShapes, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(tglReverse, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(221, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -107,7 +108,7 @@ public class ShapesControl extends javax.swing.JPanel {
                 .addComponent(cboShapes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(tglReverse, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(15, Short.MAX_VALUE))
+                .addGap(6, 6, 6))
         );
     }// </editor-fold>//GEN-END:initComponents
 

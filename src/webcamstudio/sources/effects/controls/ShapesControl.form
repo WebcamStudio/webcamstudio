@@ -3,7 +3,7 @@
 <Form version="1.5" maxVersion="1.7" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
   <Properties>
     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-      <Dimension value="[300, 107]"/>
+      <Dimension value="[250, 98]"/>
     </Property>
   </Properties>
   <AuxValues>
@@ -21,14 +21,14 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" attributes="0">
+          <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                  <Component id="cboShapes" pref="163" max="32767" attributes="0"/>
-                  <Component id="lblfaces" alignment="0" min="-2" pref="107" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="lblfaces" max="32767" attributes="0"/>
+                  <Component id="cboShapes" max="32767" attributes="0"/>
                   <Component id="tglReverse" alignment="0" max="32767" attributes="0"/>
               </Group>
-              <EmptySpace pref="221" max="32767" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -41,7 +41,7 @@
               <Component id="cboShapes" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="tglReverse" min="-2" pref="28" max="-2" attributes="0"/>
-              <EmptySpace pref="15" max="32767" attributes="0"/>
+              <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -65,7 +65,8 @@
     </Component>
     <Component class="javax.swing.JLabel" name="lblfaces">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Overlays:"/>
+        <Property name="horizontalAlignment" type="int" value="0"/>
+        <Property name="text" type="java.lang.String" value="Overlays"/>
         <Property name="name" type="java.lang.String" value="lblfaces" noResource="true"/>
       </Properties>
     </Component>

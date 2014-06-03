@@ -13,8 +13,6 @@ import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import webcamstudio.WebcamStudio;
-import webcamstudio.externals.FME;
-//import webcamstudio.externals.FME;
 import webcamstudio.streams.SinkFile;
 import webcamstudio.streams.SinkUDP;
 import webcamstudio.streams.Stream;
@@ -29,6 +27,7 @@ public class SinkSettings extends javax.swing.JFrame implements Stream.Listener 
     /**
      * Creates new form FMESettings
      * @param sFile
+     * @param udp
      */
     public SinkSettings(SinkFile sFile, SinkUDP udp) {
         initComponents();
