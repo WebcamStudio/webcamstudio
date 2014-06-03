@@ -28,11 +28,26 @@ public abstract class Transition implements Runnable{
             case "TranslateOut":
                 t = new TranslateOut(source);
                 break;
-            case "Resize":
-                t= new Resize(source);
+            case "CornerResize":
+                t= new CornerResize(source);
+                break;
+            case "CornerShrink":
+                t= new CornerShrink(source);
+                break;    
+            case "ResizeIn":
+                t= new ResizeIn(source);
                 break;
             case "RevealLeft":
                 t = new RevealLeft(source);
+                break;
+            case "RevealRight":
+                t = new RevealRight(source);
+                break;
+            case "HideRight":
+                t = new HideRight(source);
+                break;
+            case "HideLeft":
+                t = new HideLeft(source);
                 break;
             case "ShrinkOut":
                 t = new ShrinkOut(source);
@@ -48,12 +63,12 @@ public abstract class Transition implements Runnable{
     }
 
     public static String[] getStartTransitions() {
-        String[] ts = {"FadeIn","AudioFadeIn","TranslateIn","Resize","RevealLeft"};
+        String[] ts = {"FadeIn","AudioFadeIn","TranslateIn","CornerResize","ResizeIn","RevealLeft","RevealRight"};
         return ts;
     }
 
     public static String[] getEndTransitions() {
-        String[] ts = {"FadeOut","AudioFadeOut","TranslateOut","ShrinkOut"};
+        String[] ts = {"FadeOut","AudioFadeOut","TranslateOut","CornerShrink","ShrinkOut","HideLeft","HideRight"};
         return ts;
     }
 

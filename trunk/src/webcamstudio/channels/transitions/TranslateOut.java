@@ -17,8 +17,8 @@ public class TranslateOut extends Transition{
     }
     @Override
     protected void execute() {
-        int oldX = -source.getX();
-        int oldY = -source.getY();
+        int oldX = source.getX();
+        int oldY = source.getY();
         int newX = source.getCaptureWidth();
         int newY = source.getCaptureHeight();
         int deltaX = newX - oldX;

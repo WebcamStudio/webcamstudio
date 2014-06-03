@@ -64,10 +64,11 @@ public class MasterChannels {
         for (Stream s : streams){
             String streamName =s.getClass().getName();
             SourceChannel sc = null;
+            ArrayList<SourceChannel> sourceCh =s.getChannels();
             int x = 0;
-            for (int i=0; i < s.getChannels().size(); i++){
-                if (s.getChannels().get(i).getName().equals(name)){
-                    sc=s.getChannels().get(i);
+            for (int i=0; i < sourceCh.size(); i++){
+                if (sourceCh.get(i).getName().equals(name)){
+                    sc=sourceCh.get(i);
                     x = i;
                     break;
                 }

@@ -11,9 +11,9 @@ import webcamstudio.util.Tools;
  *
  * @author patrick
  */
-public class RevealLeft extends Transition{
+public class RevealRight extends Transition{
 
-    public RevealLeft(Stream source){
+    public RevealRight(Stream source){
         super(source);
     }
     @Override
@@ -21,13 +21,14 @@ public class RevealLeft extends Transition{
         
         int newW = channel.getWidth();
         int rate = source.getRate();
+        int x = source.getX();
         int frames = rate * 1;
         for (int i = 0;i<frames;i++){
             source.setWidth(i*newW/frames);
+            source.setX(newW - i*newW/frames);
             source.setOpacity(i*100/frames);
             Tools.sleep(1000/rate);
         }
         source.setWidth(newW);
     }
-    
 }

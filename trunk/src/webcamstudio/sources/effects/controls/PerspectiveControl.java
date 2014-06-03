@@ -54,9 +54,9 @@ public class PerspectiveControl extends javax.swing.JPanel {
         jSlX3Right = new javax.swing.JSlider();
         jSeparator1 = new javax.swing.JSeparator();
 
-        setMinimumSize(new java.awt.Dimension(250, 0));
+        setMinimumSize(new java.awt.Dimension(0, 0));
         setName(""); // NOI18N
-        setPreferredSize(new java.awt.Dimension(306, 154));
+        setPreferredSize(new java.awt.Dimension(250, 119));
 
         label.setFont(new java.awt.Font("Ubuntu", 0, 14)); // NOI18N
         label.setText("X Left ");
@@ -171,7 +171,7 @@ public class PerspectiveControl extends javax.swing.JPanel {
                         .addComponent(jSpinX1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jSpinX3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 6, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -220,7 +220,7 @@ public class PerspectiveControl extends javax.swing.JPanel {
                                         .addComponent(jLabel6)))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jSlX3Right, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap(41, Short.MAX_VALUE))
+                .addGap(6, 6, 6))
         );
     }// </editor-fold>//GEN-END:initComponents
 

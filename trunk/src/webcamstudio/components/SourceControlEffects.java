@@ -57,6 +57,7 @@ public class SourceControlEffects extends javax.swing.JPanel {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         lstEffects = new javax.swing.JList();
+        jScrollPane2 = new javax.swing.JScrollPane();
         panSettings = new javax.swing.JPanel();
         cboEffects = new javax.swing.JComboBox();
         btnAddEffect = new javax.swing.JButton();
@@ -64,7 +65,6 @@ public class SourceControlEffects extends javax.swing.JPanel {
         btnMoveUp = new javax.swing.JButton();
         btnMoveDown = new javax.swing.JButton();
 
-        setMinimumSize(new java.awt.Dimension(300, 50));
         setPreferredSize(new java.awt.Dimension(395, 200));
 
         lstEffects.setModel(new javax.swing.AbstractListModel() {
@@ -72,8 +72,6 @@ public class SourceControlEffects extends javax.swing.JPanel {
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
-        lstEffects.setMinimumSize(new java.awt.Dimension(55, 50));
-        lstEffects.setPreferredSize(new java.awt.Dimension(55, 100));
         lstEffects.setVisibleRowCount(4);
         lstEffects.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
             public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
@@ -82,13 +80,18 @@ public class SourceControlEffects extends javax.swing.JPanel {
         });
         jScrollPane1.setViewportView(lstEffects);
 
+        jScrollPane2.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("webcamstudio/Languages"); // NOI18N
         panSettings.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("SETTINGS"))); // NOI18N
         panSettings.setLayout(new java.awt.BorderLayout());
+        jScrollPane2.setViewportView(panSettings);
+        panSettings.getAccessibleContext().setAccessibleName(bundle.getString("SETTINGS")); // NOI18N
 
         cboEffects.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         btnAddEffect.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/list-add.png"))); // NOI18N
+        btnAddEffect.setToolTipText("Add Effect");
         btnAddEffect.setAlignmentY(0.0F);
         btnAddEffect.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -97,6 +100,7 @@ public class SourceControlEffects extends javax.swing.JPanel {
         });
 
         btnDeleteEffect.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/list-remove.png"))); // NOI18N
+        btnDeleteEffect.setToolTipText("Remove Effect");
         btnDeleteEffect.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnDeleteEffectActionPerformed(evt);
@@ -104,6 +108,7 @@ public class SourceControlEffects extends javax.swing.JPanel {
         });
 
         btnMoveUp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/go-up.png"))); // NOI18N
+        btnMoveUp.setToolTipText("Move Effect Up");
         btnMoveUp.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnMoveUpActionPerformed(evt);
@@ -111,6 +116,7 @@ public class SourceControlEffects extends javax.swing.JPanel {
         });
 
         btnMoveDown.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/go-down.png"))); // NOI18N
+        btnMoveDown.setToolTipText("Move Effect Down");
         btnMoveDown.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnMoveDownActionPerformed(evt);
@@ -124,47 +130,44 @@ public class SourceControlEffects extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(panSettings, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1)
+                    .addComponent(cboEffects, 0, 371, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 333, Short.MAX_VALUE)
+                        .addComponent(btnAddEffect, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(btnAddEffect)
-                                .addComponent(btnDeleteEffect)
-                                .addComponent(btnMoveDown, javax.swing.GroupLayout.Alignment.TRAILING))
-                            .addComponent(btnMoveUp, javax.swing.GroupLayout.Alignment.TRAILING)))
-                    .addComponent(cboEffects, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(btnDeleteEffect, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnMoveUp, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnMoveDown, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jScrollPane2))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(cboEffects, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(cboEffects, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnAddEffect, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnDeleteEffect, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnMoveUp, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnMoveDown, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(1, 1, 1)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(btnAddEffect, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnDeleteEffect, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnMoveUp, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnMoveDown, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(panSettings, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(6, 6, 6))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE)
+                .addGap(26, 26, 26))
         );
-
-        panSettings.getAccessibleContext().setAccessibleName(bundle.getString("SETTINGS")); // NOI18N
     }// </editor-fold>//GEN-END:initComponents
     @SuppressWarnings("unchecked") 
     private void btnAddEffectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddEffectActionPerformed
         listModel.addElement(cboEffects.getSelectedItem());
         stream.addEffect((Effect) cboEffects.getSelectedItem());
         lstEffects.revalidate();
+        lstEffects.setSelectedValue(cboEffects.getSelectedItem(), true);
     }//GEN-LAST:event_btnAddEffectActionPerformed
 
     private void lstEffectsValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_lstEffectsValueChanged
@@ -229,6 +232,7 @@ public class SourceControlEffects extends javax.swing.JPanel {
     private javax.swing.JButton btnMoveUp;
     private javax.swing.JComboBox cboEffects;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JList lstEffects;
     private javax.swing.JPanel panSettings;
     // End of variables declaration//GEN-END:variables

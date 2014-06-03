@@ -40,6 +40,8 @@ public class MosaicControl extends javax.swing.JPanel {
         lblSplitBox = new javax.swing.JLabel();
         slideSplitBox = new javax.swing.JSlider();
 
+        setPreferredSize(new java.awt.Dimension(250, 44));
+
         lblSplitBox.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("webcamstudio/Languages"); // NOI18N
         lblSplitBox.setText(bundle.getString("MOSAICSPLITBOX")); // NOI18N
@@ -66,7 +68,7 @@ public class MosaicControl extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(lblSplitBox)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(slideSplitBox, javax.swing.GroupLayout.DEFAULT_SIZE, 194, Short.MAX_VALUE)
+                .addComponent(slideSplitBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -76,7 +78,7 @@ public class MosaicControl extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lblSplitBox)
                     .addComponent(slideSplitBox, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(36, Short.MAX_VALUE))
+                .addGap(6, 6, 6))
         );
     }// </editor-fold>//GEN-END:initComponents
 
