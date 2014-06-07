@@ -64,7 +64,7 @@ public class NoBackgroundControl extends javax.swing.JPanel {
         });
 
         lblPreview.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lblPreview.setText(" ");
+        lblPreview.setToolTipText("");
         lblPreview.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         lblPreview.setName("lblPreview"); // NOI18N
 
@@ -157,10 +157,12 @@ public class NoBackgroundControl extends javax.swing.JPanel {
             Logger.getLogger(NoBackgroundControl.class.getName()).log(Level.SEVERE, null, ex);
         }
         BufferedImage img = effect.getLastImage();
+        if (img != null){
         effect.setBackgroundImage(img);
-        lblPreview.setIcon(new ImageIcon(img.getScaledInstance(111, 59, BufferedImage.SCALE_FAST)));
+        lblPreview.setIcon(new ImageIcon(img.getScaledInstance(100, 59, BufferedImage.SCALE_FAST)));
         
         lblPreview.repaint();
+        }
 
     }//GEN-LAST:event_btnSnapShotActionPerformed
 

@@ -23,7 +23,7 @@ public class RevealLeft extends Transition{
         int rate = source.getRate();
         int frames = rate * 1;
         for (int i = 0;i<frames;i++){
-            source.setWidth(i*newW/frames);
+            source.setWidth(i*newW/frames+1);
             source.setOpacity(i*100/frames);
             Tools.sleep(1000/rate);
         }

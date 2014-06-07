@@ -47,14 +47,6 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
     SourceText sTx = null;
     boolean lockRatio = false;
     
-//    public interface ListenerMP {
-//        public void resetCHTimerState(ActionEvent evt);
-//    }
-//    static ListenerMP listenerCPanel = null;
-//    public static void setListenerCPanel(ListenerMP l) {
-//        listenerCPanel = l;
-//    }
-
     /** Creates new form MasterPanel */
     public MasterPanel() {
         initComponents();
@@ -176,7 +168,6 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
             }
         });
 
-        tglLockRatio.setFont(new java.awt.Font("Ubuntu", 0, 14)); // NOI18N
         tglLockRatio.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/LockButton.png"))); // NOI18N
         tglLockRatio.setText("Aspect Ratio");
         tglLockRatio.setToolTipText("Lock Mixer Aspect Ratio");
@@ -188,7 +179,7 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
         });
 
         tglSound.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/audio-card.png"))); // NOI18N
-        tglSound.setToolTipText("Java Sound AudioSystem Out");
+        tglSound.setToolTipText("Java Sound AudioSystem Out (Unstable)");
         tglSound.setName("tglSound"); // NOI18N
         tglSound.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -295,7 +286,6 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
             }
         }
         listenerCPOP.resetButtonsStates(evt);
-//        ChannelPanel.btnStopOnlyStream.doClick();
         ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "New Mixer Settings Applied");
         ResourceMonitor.getInstance().addMessage(label);
     }//GEN-LAST:event_btnApplyActionPerformed
@@ -388,6 +378,7 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
         } catch (PropertyVetoException ex) {
             Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
         }
+        window.setLocationRelativeTo(WebcamStudio.cboAnimations);
         window.setAlwaysOnTop(true);
         window.setVisible(true);
     }//GEN-LAST:event_btnFullScreenActionPerformed

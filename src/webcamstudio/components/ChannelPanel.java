@@ -212,7 +212,7 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
 
         lstChannelsScroll = new javax.swing.JScrollPane();
         lstChannels = new javax.swing.JList();
-        jLabel1 = new javax.swing.JLabel();
+        lblChName = new javax.swing.JLabel();
         txtName = new javax.swing.JTextField();
         btnAdd = new javax.swing.JButton();
         btnRemove = new javax.swing.JButton();
@@ -254,10 +254,10 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
         });
         lstChannelsScroll.setViewportView(lstChannels);
 
-        jLabel1.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
+        lblChName.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("webcamstudio/Languages"); // NOI18N
-        jLabel1.setText(bundle.getString("Name")); // NOI18N
-        jLabel1.setName("jLabel1"); // NOI18N
+        lblChName.setText(bundle.getString("Name")); // NOI18N
+        lblChName.setName("lblChName"); // NOI18N
 
         txtName.setName("txtName"); // NOI18N
 
@@ -450,7 +450,7 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(StopCHTimer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jLabel1)
+                        .addComponent(lblChName)
                         .addGap(1, 1, 1)
                         .addComponent(txtName)
                         .addGap(1, 1, 1)
@@ -500,7 +500,7 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
                         .addComponent(btnRenameCh, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel1))
+                        .addComponent(lblChName))
                     .addComponent(btnDown, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnUp, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -797,6 +797,7 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
             CHTimers.set(ChIndex, CHTimer);
         }
     }//GEN-LAST:event_ChDurationStateChanged
+    
     private void RemoteStopCHTimerActionPerformed() {                                            
         CHt.cancel();
         CHt.purge();
@@ -1277,10 +1278,10 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
     private javax.swing.JButton btnStopOnlyStream;
     private javax.swing.JButton btnUp;
     private javax.swing.JButton btnUpdate;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel lblChName;
     private javax.swing.JList lstChannels;
     private javax.swing.JScrollPane lstChannelsScroll;
     private javax.swing.JComboBox lstNextChannel;

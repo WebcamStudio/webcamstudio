@@ -33,17 +33,15 @@ public class ResizeIn extends Transition {
                 
                     source.setX(x - (int) (i * deltaW));
                     source.setY(y - (int) (i * deltaH));
-                    source.setWidth(0 + (int) (i * deltaW * 2F));
-                    source.setHeight(0 + (int) (i * deltaH * 2F));
+                    source.setWidth((int) (i * deltaW * 2F)+1);
+                    source.setHeight((int) (i * deltaH * 2F)+1);
                     source.setOpacity(i*100/frames);
                     Tools.sleep(1000/rate);
-               
-    
             }
             source.setX(channel.getX());
             source.setY(channel.getY());
-            source.setWidth(channel.getWidth());
-            source.setHeight(channel.getHeight());
+            source.setWidth(w);
+            source.setHeight(h);
             source.setOpacity(100);
     }
 }

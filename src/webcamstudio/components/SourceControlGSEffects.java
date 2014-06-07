@@ -72,7 +72,7 @@ public class SourceControlGSEffects extends javax.swing.JPanel {
         jLabel2 = new javax.swing.JLabel();
 
         setMinimumSize(new java.awt.Dimension(300, 50));
-        setPreferredSize(new java.awt.Dimension(395, 200));
+        setPreferredSize(new java.awt.Dimension(395, 161));
 
         cboGSEffects.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
@@ -118,7 +118,6 @@ public class SourceControlGSEffects extends javax.swing.JPanel {
                             .addComponent(btnSetGSEffect)
                             .addComponent(btnUnsetGSEffect)))
                     .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel2)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
@@ -138,7 +137,7 @@ public class SourceControlGSEffects extends javax.swing.JPanel {
                     .addComponent(lblGSEffect, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel2)
-                .addContainerGap(52, Short.MAX_VALUE))
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     @SuppressWarnings("unchecked") 

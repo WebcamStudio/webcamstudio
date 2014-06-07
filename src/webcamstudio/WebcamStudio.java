@@ -520,7 +520,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
         toolbar.add(btnAddDesktop);
 
         btnAddText.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/accessories-text-editor.png"))); // NOI18N
-        btnAddText.setToolTipText(bundle.getString("TEXT")); // NOI18N
+        btnAddText.setToolTipText("Text/QRCode");
         btnAddText.setFocusable(false);
         btnAddText.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnAddText.setMaximumSize(new java.awt.Dimension(29, 28));
@@ -914,7 +914,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
  
     private void btnAddTextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddTextActionPerformed
         SourceText streamTXT;
-        streamTXT = new SourceText("WebcamStudio");
+        streamTXT = new SourceText("");
         ArrayList<String> allChan = new ArrayList<>();
         for (String scn : MasterChannels.getInstance().getChannels()){
             allChan.add(scn); 
@@ -1350,7 +1350,8 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
     }//GEN-LAST:event_btnLoadStudioActionPerformed
 
     private void WCSAboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_WCSAboutActionPerformed
-        About TAbout = new About(about, true); 
+        About TAbout = new About(about, true);
+        TAbout.setLocationRelativeTo(WebcamStudio.cboAnimations);
         TAbout.setVisible(true);
     }//GEN-LAST:event_WCSAboutActionPerformed
 
@@ -1485,7 +1486,8 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
     }//GEN-LAST:event_btnAddURLActionPerformed
 
     private void btnVideoDevInfoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVideoDevInfoActionPerformed
-        VideoDeviceInfo vDevsI = new VideoDeviceInfo(vDevInfo, true); 
+        VideoDeviceInfo vDevsI = new VideoDeviceInfo(vDevInfo, true);
+        vDevsI.setLocationRelativeTo(WebcamStudio.cboAnimations);
         vDevsI.setVisible(true);
     }//GEN-LAST:event_btnVideoDevInfoActionPerformed
 
