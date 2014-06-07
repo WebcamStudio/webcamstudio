@@ -24,8 +24,8 @@ public class RevealRight extends Transition{
         int x = source.getX();
         int frames = rate * 1;
         for (int i = 0;i<frames;i++){
-            source.setWidth(i*newW/frames);
-            source.setX(newW - i*newW/frames);
+            source.setWidth(i*newW/frames+1);
+            source.setX(x + (newW - i*newW/frames));
             source.setOpacity(i*100/frames);
             Tools.sleep(1000/rate);
         }

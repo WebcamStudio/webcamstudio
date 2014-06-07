@@ -114,7 +114,7 @@ public class SourceChannel  {
                             pool.awaitTermination(10, TimeUnit.SECONDS);
                         } catch (InterruptedException ex) {
                             Logger.getLogger(SourceChannel.class.getName()).log(Level.SEVERE, null, ex);
-                        }
+                    }
                     }
                     if (isPlaying) {
                         if (!s.isPlaying()) {

@@ -357,11 +357,17 @@ public class Studio {
                 } if (subSTrans.get(op).endsWith("TranslateIn")){
                     Transition t = Transition.getInstance(stream, "TranslateIn");
                     scs.startTransitions.add(t);
-                } if (subSTrans.get(op).endsWith("Resize")){
-                    Transition t = Transition.getInstance(stream, "Resize");
+                } if (subSTrans.get(op).endsWith("ResizeIn")){
+                    Transition t = Transition.getInstance(stream, "ResizeIn");
                     scs.startTransitions.add(t);
                 } if (subSTrans.get(op).endsWith("RevealLeft")){
                     Transition t = Transition.getInstance(stream, "RevealLeft");
+                    scs.startTransitions.add(t);
+                } if (subSTrans.get(op).endsWith("CornerResize")){
+                    Transition t = Transition.getInstance(stream, "CornerResize");
+                    scs.startTransitions.add(t);
+                } if (subSTrans.get(op).endsWith("RevealRight")){
+                    Transition t = Transition.getInstance(stream, "RevealRight");
                     scs.startTransitions.add(t);
                 }
             }
@@ -377,6 +383,15 @@ public class Studio {
                     scs.endTransitions.add(t);
                 } if (subETrans.get(op).endsWith("ShrinkOut")){
                     Transition t = Transition.getInstance(stream, "ShrinkOut");
+                    scs.endTransitions.add(t);
+                } if (subETrans.get(op).endsWith("HideLeft")){
+                    Transition t = Transition.getInstance(stream, "HideLeft");
+                    scs.endTransitions.add(t);
+                } if (subETrans.get(op).endsWith("HideRight")){
+                    Transition t = Transition.getInstance(stream, "HideRight");
+                    scs.endTransitions.add(t);
+                } if (subETrans.get(op).endsWith("CornerShrink")){
+                    Transition t = Transition.getInstance(stream, "CornerShrink");
                     scs.endTransitions.add(t);
                 }
             }
@@ -782,6 +797,7 @@ public class Studio {
                     text.setFont(fontName);
                     text.setLoaded(true);
                     int op=0;
+//                    loadTransitions(SCL, text, subSTrans, subETrans, SubChNames);
                     for (SourceChannel scs : SCL) {
                         scs.setName(SubChNames.get(op));
                         scs.setText(SubText.get(op));
@@ -796,11 +812,17 @@ public class Studio {
                             } if (subSTrans.get(op).endsWith("TranslateIn")){
                                 Transition t = Transition.getInstance(text, "TranslateIn");
                                 scs.startTransitions.add(t);
-                            } if (subSTrans.get(op).endsWith("Resize")){
-                                Transition t = Transition.getInstance(text, "Resize");
-                                scs.startTransitions.add(t);
                             } if (subSTrans.get(op).endsWith("RevealLeft")){
                                 Transition t = Transition.getInstance(text, "RevealLeft");
+                                scs.startTransitions.add(t);
+                            } if (subSTrans.get(op).endsWith("ResizeIn")){
+                                Transition t = Transition.getInstance(stream, "ResizeIn");
+                                scs.startTransitions.add(t);
+                            } if (subSTrans.get(op).endsWith("CornerResize")){
+                                Transition t = Transition.getInstance(stream, "CornerResize");
+                                scs.startTransitions.add(t);
+                            } if (subSTrans.get(op).endsWith("RevealRight")){
+                                Transition t = Transition.getInstance(stream, "RevealRight");
                                 scs.startTransitions.add(t);
                             }
                         }
@@ -816,6 +838,15 @@ public class Studio {
                                 scs.endTransitions.add(t);
                             } if (subETrans.get(op).endsWith("ShrinkOut")){
                                 Transition t = Transition.getInstance(text, "ShrinkOut");
+                                scs.endTransitions.add(t);
+                            } if (subETrans.get(op).endsWith("HideLeft")){
+                                Transition t = Transition.getInstance(stream, "HideLeft");
+                                scs.endTransitions.add(t);
+                            } if (subETrans.get(op).endsWith("HideRight")){
+                                Transition t = Transition.getInstance(stream, "HideRight");
+                                scs.endTransitions.add(t);
+                            } if (subETrans.get(op).endsWith("CornerShrink")){
+                                Transition t = Transition.getInstance(stream, "CornerShrink");
                                 scs.endTransitions.add(t);
                             }
                         }

@@ -450,7 +450,6 @@ public class ProcessRenderer {
                 } else {
                     processAudio = null;
                 }
-
             }
         }).start();
     }
@@ -620,8 +619,8 @@ public class ProcessRenderer {
                     Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 try {
-                Process pV = rt.exec("chmod a+x "+userHomeDir+"/.webcamstudio/WSFromUrlVideo" + iD + ".sh");
-                Process pA = rt.exec("chmod a+x "+userHomeDir+"/.webcamstudio/WSFromUrlAudio" + iD + ".sh");
+                rt.exec("chmod a+x "+userHomeDir+"/.webcamstudio/WSFromUrlVideo" + iD + ".sh");
+                rt.exec("chmod a+x "+userHomeDir+"/.webcamstudio/WSFromUrlAudio" + iD + ".sh");
                 }   catch (IOException ex) {
                 Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
                 }   

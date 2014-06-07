@@ -22,11 +22,10 @@ public class HideRight extends Transition{
         int newW = channel.getWidth();
         int rate = source.getRate();
         int x = source.getX();
-        int y = source.getY();
         int frames = rate * 1;
         for (int i = 0;i<frames;i++){
             source.setWidth(newW - i*newW/frames);
-            source.setX(i*newW/frames);
+            source.setX(x + i*newW/frames);
             source.setOpacity(100-i*100/frames);
             Tools.sleep(1000/rate);
         }

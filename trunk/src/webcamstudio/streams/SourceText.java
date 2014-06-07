@@ -352,7 +352,6 @@ public class SourceText extends Stream {
     }
 
     public enum Shape {
-
         NONE, RECTANGLE, ROUNDRECT, OVAL
     }
 }
