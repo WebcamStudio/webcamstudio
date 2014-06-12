@@ -343,10 +343,14 @@ public class Studio {
             }
         }
     }
-    private static void loadTransitions(ArrayList<SourceChannel> SCL, Stream stream, ArrayList<String> subSTrans, ArrayList<String> subETrans, ArrayList<String> SubChNames) {
+    private static void loadTransitions(ArrayList<SourceChannel> SCL, Stream stream, ArrayList<String> subSTrans, ArrayList<String> subETrans, ArrayList<String> SubChNames, ArrayList<String> SubText, ArrayList<String> SubFont) {
         int op=0;
         for (SourceChannel scs : SCL) {
             scs.setName(SubChNames.get(op));
+            if (SubText != null) {
+                scs.setText(SubText.get(op));
+                scs.setFont(SubFont.get(op));
+            }
             if (!subSTrans.isEmpty() && subSTrans.get(op) != null){
                 if (subSTrans.get(op).endsWith("FadeIn")){
                     Transition t = Transition.getInstance(stream, "FadeIn");
@@ -743,7 +747,7 @@ public class Studio {
                         }
                     }
                     stream.setLoaded(true);
-                    loadTransitions(SCL, stream, subSTrans, subETrans, SubChNames);
+                    loadTransitions(SCL, stream, subSTrans, subETrans, SubChNames, null, null);
                     stream.setName(sName);
                     fXL.clear();
                 } else if (clazz.toLowerCase().endsWith("sourcedesktop")) {
@@ -763,7 +767,7 @@ public class Studio {
                         stream.addEffect(fx);
                     }
                     stream.setLoaded(true);
-                    loadTransitions(SCL, stream, subSTrans, subETrans, SubChNames);
+                    loadTransitions(SCL, stream, subSTrans, subETrans, SubChNames, null, null);
                 } else if (clazz.toLowerCase().endsWith("sourcetext")) {
                     text = new SourceText(ObjText);
                     LText.add(text);
@@ -796,63 +800,64 @@ public class Studio {
                     }
                     text.setFont(fontName);
                     text.setLoaded(true);
-                    int op=0;
-//                    loadTransitions(SCL, text, subSTrans, subETrans, SubChNames);
-                    for (SourceChannel scs : SCL) {
-                        scs.setName(SubChNames.get(op));
-                        scs.setText(SubText.get(op));
-                        scs.setFont(SubFont.get(op));
-                        if (!subSTrans.isEmpty() && subSTrans.get(op) != null){
-                            if (subSTrans.get(op).endsWith("FadeIn")){
-                                Transition t = Transition.getInstance(text, "FadeIn");
-                                scs.startTransitions.add(t);
-                            } if (subSTrans.get(op).endsWith("AudioFadeIn")){
-                                Transition t = Transition.getInstance(text, "AudioFadeIn");
-                                scs.startTransitions.add(t);
-                            } if (subSTrans.get(op).endsWith("TranslateIn")){
-                                Transition t = Transition.getInstance(text, "TranslateIn");
-                                scs.startTransitions.add(t);
-                            } if (subSTrans.get(op).endsWith("RevealLeft")){
-                                Transition t = Transition.getInstance(text, "RevealLeft");
-                                scs.startTransitions.add(t);
-                            } if (subSTrans.get(op).endsWith("ResizeIn")){
-                                Transition t = Transition.getInstance(stream, "ResizeIn");
-                                scs.startTransitions.add(t);
-                            } if (subSTrans.get(op).endsWith("CornerResize")){
-                                Transition t = Transition.getInstance(stream, "CornerResize");
-                                scs.startTransitions.add(t);
-                            } if (subSTrans.get(op).endsWith("RevealRight")){
-                                Transition t = Transition.getInstance(stream, "RevealRight");
-                                scs.startTransitions.add(t);
-                            }
-                        }
-                        if (!subETrans.isEmpty() && subETrans.get(op) != null){
-                            if (subETrans.get(op).endsWith("FadeOut")){
-                                Transition t = Transition.getInstance(text, "FadeOut");
-                                scs.endTransitions.add(t);
-                            } if (subETrans.get(op).endsWith("TranslateOut")){
-                                Transition t = Transition.getInstance(text, "TranslateOut");
-                                scs.endTransitions.add(t);
-                            } if (subETrans.get(op).endsWith("AudioFadeOut")){
-                                Transition t = Transition.getInstance(text, "AudioFadeOut");
-                                scs.endTransitions.add(t);
-                            } if (subETrans.get(op).endsWith("ShrinkOut")){
-                                Transition t = Transition.getInstance(text, "ShrinkOut");
-                                scs.endTransitions.add(t);
-                            } if (subETrans.get(op).endsWith("HideLeft")){
-                                Transition t = Transition.getInstance(stream, "HideLeft");
-                                scs.endTransitions.add(t);
-                            } if (subETrans.get(op).endsWith("HideRight")){
-                                Transition t = Transition.getInstance(stream, "HideRight");
-                                scs.endTransitions.add(t);
-                            } if (subETrans.get(op).endsWith("CornerShrink")){
-                                Transition t = Transition.getInstance(stream, "CornerShrink");
-                                scs.endTransitions.add(t);
-                            }
-                        }
-                        text.addChannel(scs);                    
-                        op+=1;
-                    }
+//                    int op=0;
+                    loadTransitions(SCL, text, subSTrans, subETrans, SubChNames, SubText, SubFont);
+//                    for (SourceChannel scs : SCL) {
+//                        scs.setName(SubChNames.get(op));
+//                        scs.setText(SubText.get(op));
+//                        scs.setFont(SubFont.get(op));
+//                        if (!subSTrans.isEmpty() && subSTrans.get(op) != null){
+//                            if (subSTrans.get(op).endsWith("FadeIn")){
+//                                Transition t = Transition.getInstance(text, "FadeIn");
+//                                scs.startTransitions.add(t);
+//                            } if (subSTrans.get(op).endsWith("AudioFadeIn")){
+//                                Transition t = Transition.getInstance(text, "AudioFadeIn");
+//                                scs.startTransitions.add(t);
+//                            } if (subSTrans.get(op).endsWith("TranslateIn")){
+//                                Transition t = Transition.getInstance(text, "TranslateIn");
+//                                scs.startTransitions.add(t);
+//                            } if (subSTrans.get(op).endsWith("RevealLeft")){
+//                                Transition t = Transition.getInstance(text, "RevealLeft");
+//                                scs.startTransitions.add(t);
+//                            } if (subSTrans.get(op).endsWith("ResizeIn")){
+//                                Transition t = Transition.getInstance(stream, "ResizeIn");
+//                                scs.startTransitions.add(t);
+//                            } if (subSTrans.get(op).endsWith("CornerResize")){
+//                                Transition t = Transition.getInstance(stream, "CornerResize");
+//                                scs.startTransitions.add(t);
+//                            } if (subSTrans.get(op).endsWith("RevealRight")){
+//                                Transition t = Transition.getInstance(stream, "RevealRight");
+//                                scs.startTransitions.add(t);
+//                            }
+//                        }
+//                        if (!subETrans.isEmpty() && subETrans.get(op) != null){
+//                            if (subETrans.get(op).endsWith("FadeOut")){
+//                                Transition t = Transition.getInstance(text, "FadeOut");
+//                                scs.endTransitions.add(t);
+//                            } if (subETrans.get(op).endsWith("TranslateOut")){
+//                                Transition t = Transition.getInstance(text, "TranslateOut");
+//                                scs.endTransitions.add(t);
+//                            } if (subETrans.get(op).endsWith("AudioFadeOut")){
+//                                Transition t = Transition.getInstance(text, "AudioFadeOut");
+//                                scs.endTransitions.add(t);
+//                            } if (subETrans.get(op).endsWith("ShrinkOut")){
+//                                Transition t = Transition.getInstance(text, "ShrinkOut");
+//                                scs.endTransitions.add(t);
+//                            } if (subETrans.get(op).endsWith("HideLeft")){
+//                                Transition t = Transition.getInstance(stream, "HideLeft");
+//                                scs.endTransitions.add(t);
+//                            } if (subETrans.get(op).endsWith("HideRight")){
+//                                Transition t = Transition.getInstance(stream, "HideRight");
+//                                scs.endTransitions.add(t);
+//                            } if (subETrans.get(op).endsWith("CornerShrink")){
+//                                Transition t = Transition.getInstance(stream, "CornerShrink");
+//                                scs.endTransitions.add(t);
+//                            }
+//                        }
+//                        text.addChannel(scs);
+////                        System.out.println("Channel Studio Loaded: "+scs.getClass());
+//                        op+=1;
+//                    }
                     SCL.clear();
                     SubChNames.clear();
                     subSTrans.clear();
@@ -870,7 +875,7 @@ public class Studio {
                         }
                         stream.addEffect(fx);
                     }
-                    loadTransitions(SCL, stream, subSTrans, subETrans, SubChNames);
+                    loadTransitions(SCL, stream, subSTrans, subETrans, SubChNames, null, null);
                 } else if (clazz.toLowerCase().endsWith("sourceurl")) {
                     stream = new SourceURL();
                     stream.setWebURL(webUrl);
@@ -886,7 +891,7 @@ public class Studio {
                         }
                         stream.addEffect(fx);
                     }
-                    loadTransitions(SCL, stream, subSTrans, subETrans, SubChNames);
+                    loadTransitions(SCL, stream, subSTrans, subETrans, SubChNames, null, null);
                 } else if (clazz.toLowerCase().endsWith("sourceipcam")) {
                     stream = new SourceIPCam();
                     stream.setWebURL(webUrl);
@@ -907,7 +912,7 @@ public class Studio {
                         }
                         stream.addEffect(fx);
                     }
-                    loadTransitions(SCL, stream, subSTrans, subETrans, SubChNames);
+                    loadTransitions(SCL, stream, subSTrans, subETrans, SubChNames, null, null);
                 } else if (clazz.toLowerCase().endsWith("sourceaudiosource")) {
                     stream = new SourceAudioSource();
                     extstream.add(stream);
@@ -917,7 +922,7 @@ public class Studio {
                     stream.setComm(comm);
                     stream.setAudioSource(streamAudioSrc);
                     stream.setLoaded(true);
-                    loadTransitions(SCL, stream, subSTrans, subETrans, SubChNames);
+                    loadTransitions(SCL, stream, subSTrans, subETrans, SubChNames, null, null);
                 } else if (clazz.toLowerCase().endsWith("sourceimagegif")) {
                     for (int an=0;an < webcamstudio.WebcamStudio.cboAnimations.getItemCount(); an++){
                         for (String aKey : sNames){
@@ -929,7 +934,7 @@ public class Studio {
                                 extstreamBis.add(stream);
                                 ImgMovMus.add("ImageGif");
                                 readObject(stream, source);  
-                                loadTransitions(SCL, stream, subSTrans, subETrans, SubChNames);
+                                loadTransitions(SCL, stream, subSTrans, subETrans, SubChNames, null, null);
                             }
                         }                   
                     }

@@ -850,8 +850,10 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener {
     private void tglAudioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglAudioActionPerformed
         if (tglAudio.isSelected()){
             stream.setHasAudio(false);
+            stream.setOnlyVideo(true);
         } else {
             stream.setHasAudio(true);
+            stream.setOnlyVideo(false);
         }
     }//GEN-LAST:event_tglAudioActionPerformed
 

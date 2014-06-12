@@ -5,6 +5,7 @@
 package webcamstudio.media.renderer;
 
 import java.io.BufferedOutputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -32,8 +33,8 @@ public class Exporter implements MasterMixer.SinkListener {
     private boolean cancel = false;
     private ServerSocket videoServer = null;
     private ServerSocket audioServer = null;
-    private BufferedOutputStream videoOutput;    
-    private BufferedOutputStream audioOutput;
+    private DataOutputStream videoOutput;    
+    private DataOutputStream audioOutput;
     private int aport = 0;
     private int vport = 0;
     private ImageBuffer imageBuffer = null;
@@ -73,7 +74,7 @@ public class Exporter implements MasterMixer.SinkListener {
                     try {
                         vConnection = videoServer.accept();
                         System.out.println("Video output accepted");
-                        videoOutput = new BufferedOutputStream(vConnection.getOutputStream(), 4096);
+                        videoOutput = new DataOutputStream(new BufferedOutputStream(vConnection.getOutputStream(), 4096));
                         imageBuffer.clear();
                         while (!cancel) {
                             byte[] videoData = imageBuffer.pop().getBytes();
@@ -109,7 +110,7 @@ public class Exporter implements MasterMixer.SinkListener {
                     try {                    
                         aConnection = audioServer.accept();
                         System.out.println("Audio output accepted");
-                        audioOutput = new BufferedOutputStream(aConnection.getOutputStream(), 4096);
+                        audioOutput = new DataOutputStream(new BufferedOutputStream(aConnection.getOutputStream(), 4096));
                         audioBuffer.clear();
                         while (!cancel) {
                             byte[] audioData = audioBuffer.pop();

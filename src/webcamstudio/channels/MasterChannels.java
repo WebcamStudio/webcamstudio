@@ -6,6 +6,7 @@ package webcamstudio.channels;
 
 import java.util.ArrayList;
 import webcamstudio.streams.SourceChannel;
+import webcamstudio.streams.SourceText;
 import webcamstudio.streams.Stream;
 import webcamstudio.util.Tools;
 
@@ -47,6 +48,35 @@ public class MasterChannels {
         channelNames.add(name);
         for (Stream s : streams){
             s.addChannel(SourceChannel.getChannel(name, s));
+        }
+    }
+    
+    public void addChTransitions(String name){
+        for (Stream s : streams){
+            for (SourceChannel sc : s.getChannels()) {
+                if (!sc.getName().equals(name)) {
+//                    System.out.println("Adding to channel: "+sc.getName());
+                    sc.startTransitions.clear();
+                    sc.startTransitions.addAll(s.getStartTransitions());
+                    sc.endTransitions.clear();
+                    sc.endTransitions.addAll(s.getEndTransitions());
+                }
+            }
+        }
+    }
+    
+    public void addFontsText(String name){
+        for (Stream s : streams){
+            if (s instanceof SourceText) {
+                SourceText sT = (SourceText) s;
+                for (SourceChannel sc : sT.getChannels()) {
+                    if (!sc.getName().equals(name)) {
+//                        System.out.println("Adding to channel: "+sc.getName());
+                        sc.setText(sT.getContent());
+                        sc.setFont(sT.getFont());
+                    }
+                }
+            }
         }
     }
     
