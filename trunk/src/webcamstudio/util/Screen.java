@@ -41,6 +41,7 @@ public class Screen {
     }
     
     public static int getWidth(String id){
+        System.out.println("Screen: "+id);
         GraphicsEnvironment g = GraphicsEnvironment.getLocalGraphicsEnvironment();
         GraphicsDevice[] devices = g.getScreenDevices();
 

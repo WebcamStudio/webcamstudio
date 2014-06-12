@@ -11,6 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import webcamstudio.channels.transitions.Transition;
 import webcamstudio.sources.effects.Effect;
+import webcamstudio.util.Tools;
 
 /**
  *
@@ -21,9 +22,13 @@ public class SourceChannel  {
     public static SourceChannel getChannel(String channelName, Stream stream) {
         SourceChannel s = new SourceChannel();
         s.x = stream.x;
+//        System.out.println("Channel X: "+s.x);
         s.y = stream.y;
+//        System.out.println("Channel Y: "+s.y);
         s.width = stream.width;
+//        System.out.println("Channel Width: "+s.width);
         s.height = stream.height;
+//        System.out.println("Channel Height: "+s.height);
         s.opacity = stream.opacity;
         s.effects.addAll(stream.effects);
         s.startTransitions.addAll(stream.startTransitions);
@@ -36,6 +41,8 @@ public class SourceChannel  {
         s.capWidth = stream.captureWidth;
         if (stream instanceof SourceText) {
             SourceText st = (SourceText) stream;
+            s.capHeight = st.getTextCW();
+            s.capWidth = st.getTextCH();
             s.isATimer = st.getIsATimer();
             s.isQRCode = st.getIsQRCode();
             if (st.getIsATimer()) {
@@ -52,6 +59,9 @@ public class SourceChannel  {
             s.font = st.fontName;
             s.color = st.color;
         }
+//        System.out.println("Channel CapWidth: "+s.capWidth);
+//        System.out.println("Channel CapHeight: "+s.capHeight);
+
         return s;
     }
 
@@ -107,6 +117,7 @@ public class SourceChannel  {
                     ExecutorService pool = java.util.concurrent.Executors.newCachedThreadPool();
                     if (endTransitions != null) {
                         for (Transition t : s.endTransitions) {
+//                            System.out.println("End Transition: "+t.getClass().getName());
                             pool.submit(t.run(instance));
                         }
                         pool.shutdown();
@@ -118,11 +129,13 @@ public class SourceChannel  {
                     }
                     if (isPlaying) {
                         if (!s.isPlaying()) {
+                            Tools.sleep(10);
                             s.read();
                         }
                         if (startTransitions != null) {
                             pool = java.util.concurrent.Executors.newCachedThreadPool();
                             for (Transition t : instance.startTransitions) {
+//                                System.out.println("Start Transition: "+t.getClass().getName());
                                 pool.submit(t.run(instance));
                             }
                             pool.shutdown();

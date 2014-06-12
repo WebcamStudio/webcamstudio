@@ -577,6 +577,8 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
         
         if (name.length() > 0 && noDuplicateCh) {
             master.addChannel(name);
+            master.addChTransitions(name);
+            master.addFontsText(name);
             model.addElement(name);
             aModel.addElement(name);
             CHCurrNext.add(name);

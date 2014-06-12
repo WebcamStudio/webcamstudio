@@ -18,14 +18,12 @@ public class CornerShrink extends Transition{
     }
     @Override
     protected void execute() {
-        int oldW = 0;
-        int oldH = 0;
         int x = channel.getX();
         int y = channel.getY();        
         int newW = channel.getWidth();
         int newH = channel.getHeight();
-        int deltaW = newW - oldW;
-        int deltaH = newH - oldH;
+        int deltaW = newW;
+        int deltaH = newH;
         int rate = source.getRate();
         int totalFrames = rate * 1;
         for (int i = 0; i<totalFrames;i++){

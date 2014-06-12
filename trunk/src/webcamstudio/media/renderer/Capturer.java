@@ -88,10 +88,10 @@ public class Capturer {
 //                                System.out.println("Audio still not avaiable ...");
                                 if (fakeAudioIn.available() != 0) {
                                     noVideoPres=false;
-                                    Tools.sleep(stream.getVDelay());
-                                    videoIn = fakeVideoIn;
                                     aPauseFlag = false;
                                     vPauseFlag = false;
+                                    Tools.sleep(stream.getVDelay());
+                                    videoIn = fakeVideoIn;
 //                                    System.out.println("Audio avaiable !!!");
                                     System.out.println("Start Video ...");
                                 }
@@ -99,20 +99,20 @@ public class Capturer {
                                 noVideoPres=false;
                                 Tools.sleep(stream.getVDelay());
                                 videoIn = new DataInputStream(new BufferedInputStream(connection.getInputStream(), 4096));
-                                vPauseFlag = false;
+//                                vPauseFlag = false;
                                 System.out.println("Start Video ...");
                             } else if (stream.getClass().getName().contains("SourceWebcam")) { //hasaudio ||
                                 noVideoPres=false;
+                                vPauseFlag = false;
                                 Tools.sleep(stream.getVDelay());
                                 videoIn = new DataInputStream(new BufferedInputStream(connection.getInputStream(), 4096));
-                                vPauseFlag = false;
                                 System.out.println("Start Video ...");
                             } else if (!stream.hasAudio()) {
                                 noVideoPres=false;
-                                Tools.sleep(stream.getVDelay());
-                                videoIn = fakeVideoIn;
                                 aPauseFlag = false;
                                 vPauseFlag = false;
+                                Tools.sleep(stream.getVDelay());
+                                videoIn = fakeVideoIn;
                                 System.out.println("Start Video Au...");
                             }
                         } while (noVideoPres);
@@ -144,18 +144,18 @@ public class Capturer {
 //                                System.out.println("Video still not avaiable ...");
                                 if (fakeVideoIn.available() != 0) {
                                     noAudioPres = false;
+                                    vPauseFlag = false;
                                     Tools.sleep(stream.getADelay());
                                     audioIn = fakeAudioIn;
-                                    vPauseFlag = false;
 //                                    System.out.println("Video avaiable !!!");
                                     System.out.println("Start Audio ...");
                                 }
                           } else if (stream.getName().endsWith(".mp3") || !stream.hasVideo() ) {
-                              noAudioPres = false;
-                                Tools.sleep(stream.getADelay());
-                                audioIn = new DataInputStream(new BufferedInputStream(connection.getInputStream(), 4096));
+                                noAudioPres = false;
                                 vPauseFlag = false;
                                 aPauseFlag = false;
+                                Tools.sleep(stream.getADelay());
+                                audioIn = new DataInputStream(new BufferedInputStream(connection.getInputStream(), 4096));
                                 System.out.println("Start Audio ...");  
                           } 
                         }  while (noAudioPres);

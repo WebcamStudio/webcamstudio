@@ -68,8 +68,8 @@ public abstract class Transition implements Runnable{
     }
 
     public static String[] getEndTransitions() {
-        String[] ts = {"FadeOut","AudioFadeOut","TranslateOut","CornerShrink","ShrinkOut","HideLeft","HideRight"};
-        return ts;
+        String[] te = {"FadeOut","AudioFadeOut","TranslateOut","CornerShrink","ShrinkOut","HideLeft","HideRight"};
+        return te;
     }
 
     Stream source= null;

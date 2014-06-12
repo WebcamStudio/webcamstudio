@@ -5,7 +5,7 @@
 package webcamstudio.streams;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
+//import java.io.File;
 import webcamstudio.externals.ProcessRenderer;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterFrameBuilder;
@@ -18,7 +18,7 @@ import webcamstudio.util.Tools;
  * @author karl
  */
 public class SourceURL extends Stream {
-    private static final String userHomeDir = Tools.getUserHome();
+//    private static final String userHomeDir = Tools.getUserHome();
 
     ProcessRenderer capture = null;
     BufferedImage lastPreview = null;
@@ -37,7 +37,7 @@ public class SourceURL extends Stream {
         lastPreview = new BufferedImage(captureWidth,captureHeight,BufferedImage.TYPE_INT_ARGB);
         MasterFrameBuilder.register(this);
         capture = new ProcessRenderer(this, ProcessRenderer.ACTION.CAPTURE, "url", comm);
-        capture.readCom();           
+        capture.readCom();
     }
     
     @Override
@@ -52,12 +52,6 @@ public class SourceURL extends Stream {
         if (capture != null) {
             capture.stop();
             capture = null;
-            File directory = new File(userHomeDir+"/.webcamstudio");
-            for(File f: directory.listFiles()) {
-                if(f.getName().startsWith("WSFrom")) {
-                    f.delete();
-                }
-            }
         }
         if (this.getBackFF()){
             this.setComm("FF");
