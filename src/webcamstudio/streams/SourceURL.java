@@ -11,7 +11,6 @@ import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterFrameBuilder;
 import webcamstudio.mixers.MasterMixer;
 import webcamstudio.sources.effects.Effect;
-import webcamstudio.util.Tools;
 
 /**
  *

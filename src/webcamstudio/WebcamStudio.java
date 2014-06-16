@@ -29,6 +29,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.Reader;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -96,6 +97,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
 
     public static Preferences prefs = null;
     public static Properties animations = new Properties();
+    public static Properties facesW = new Properties();
     public static boolean outFFmpeg = false;
     private final static String userHomeDir = Tools.getUserHome();
     OutputPanel recorder = new OutputPanel(this);
@@ -105,6 +107,44 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
     public static int audioFreq = 22050;
     ArrayList<Stream> streamS = MasterChannels.getInstance().getStreams();
     private File lastFolder = null;
+    @SuppressWarnings("unchecked") 
+    private void initFaceDetection() throws IOException {
+        File dir = new File(System.getProperty("user.home"), ".webcamstudio/faces");
+        if (!dir.exists()) {
+            dir.mkdir();
+        }
+        facesW.load(getClass().getResourceAsStream("/webcamstudio/resources/faces/Faces.properties"));
+        ArrayList faceNames = new ArrayList();
+        String faceL = null;
+        for (Object o : facesW.keySet()) {
+            faceNames.add(o); 
+        }
+        for (int i=0 ; i < faceNames.size(); i++){ 
+            faceL = faceNames.get(i).toString();
+//            System.out.println(faceL);
+            File destination = new File(System.getProperty("user.home")+"/.webcamstudio/faces/"+faceL+".png");
+            InputStream is = getClass().getResourceAsStream("/webcamstudio/resources/faces/"+faceL+".png");
+            OutputStream os = new FileOutputStream(destination);
+            byte[] buffer = new byte[4096];
+            int length;
+            while ((length = is.read(buffer)) > 0) {
+                os.write(buffer, 0, length);
+            }
+            os.close();
+            is.close();
+        }        
+        faceNames.clear();
+        File destination = new File(System.getProperty("user.home")+"/.webcamstudio/faces/haarcascade_frontalface_alt.xml");
+        InputStream is = getClass().getResourceAsStream("/webcamstudio/resources/haarcascade_frontalface_alt.xml");
+        OutputStream os = new FileOutputStream(destination);
+        byte[] buffer = new byte[4096];
+        int length;
+        while ((length = is.read(buffer)) > 0) {
+            os.write(buffer, 0, length);
+        }
+        os.close();
+        is.close();
+    }
     public interface Listener {
         public void stopChTime(java.awt.event.ActionEvent evt);
         public void resetBtnStates(java.awt.event.ActionEvent evt);
@@ -121,17 +161,12 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
     public static void setListenerOP(Listener l) {
         listenerOP = l;
     }
-    
-//    static Listener listenerMP = null;
-//    public static void setListenerMP(Listener l) {
-//        listenerMP = l;
-//    }
-    
+
     /**
      * Creates new form WebcamStudio
      */
     
-    public WebcamStudio() {
+    public WebcamStudio() throws IOException {
         
         initComponents();
         setTitle("WebcamStudio " + Version.version);
@@ -226,6 +261,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
         MasterMixer.getInstance().start();
         this.add(new MasterPanel(), BorderLayout.WEST);
         initAnimations();
+        initFaceDetection();
         initWebcam();
         initAudioFFMainSW();
         loadCustomSources();
@@ -1809,7 +1845,11 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
 
             @Override
             public void run() {            
-                new WebcamStudio().setVisible(true);
+                try {
+                    new WebcamStudio().setVisible(true);
+                } catch (IOException ex) {
+                    Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }

@@ -800,64 +800,7 @@ public class Studio {
                     }
                     text.setFont(fontName);
                     text.setLoaded(true);
-//                    int op=0;
                     loadTransitions(SCL, text, subSTrans, subETrans, SubChNames, SubText, SubFont);
-//                    for (SourceChannel scs : SCL) {
-//                        scs.setName(SubChNames.get(op));
-//                        scs.setText(SubText.get(op));
-//                        scs.setFont(SubFont.get(op));
-//                        if (!subSTrans.isEmpty() && subSTrans.get(op) != null){
-//                            if (subSTrans.get(op).endsWith("FadeIn")){
-//                                Transition t = Transition.getInstance(text, "FadeIn");
-//                                scs.startTransitions.add(t);
-//                            } if (subSTrans.get(op).endsWith("AudioFadeIn")){
-//                                Transition t = Transition.getInstance(text, "AudioFadeIn");
-//                                scs.startTransitions.add(t);
-//                            } if (subSTrans.get(op).endsWith("TranslateIn")){
-//                                Transition t = Transition.getInstance(text, "TranslateIn");
-//                                scs.startTransitions.add(t);
-//                            } if (subSTrans.get(op).endsWith("RevealLeft")){
-//                                Transition t = Transition.getInstance(text, "RevealLeft");
-//                                scs.startTransitions.add(t);
-//                            } if (subSTrans.get(op).endsWith("ResizeIn")){
-//                                Transition t = Transition.getInstance(stream, "ResizeIn");
-//                                scs.startTransitions.add(t);
-//                            } if (subSTrans.get(op).endsWith("CornerResize")){
-//                                Transition t = Transition.getInstance(stream, "CornerResize");
-//                                scs.startTransitions.add(t);
-//                            } if (subSTrans.get(op).endsWith("RevealRight")){
-//                                Transition t = Transition.getInstance(stream, "RevealRight");
-//                                scs.startTransitions.add(t);
-//                            }
-//                        }
-//                        if (!subETrans.isEmpty() && subETrans.get(op) != null){
-//                            if (subETrans.get(op).endsWith("FadeOut")){
-//                                Transition t = Transition.getInstance(text, "FadeOut");
-//                                scs.endTransitions.add(t);
-//                            } if (subETrans.get(op).endsWith("TranslateOut")){
-//                                Transition t = Transition.getInstance(text, "TranslateOut");
-//                                scs.endTransitions.add(t);
-//                            } if (subETrans.get(op).endsWith("AudioFadeOut")){
-//                                Transition t = Transition.getInstance(text, "AudioFadeOut");
-//                                scs.endTransitions.add(t);
-//                            } if (subETrans.get(op).endsWith("ShrinkOut")){
-//                                Transition t = Transition.getInstance(text, "ShrinkOut");
-//                                scs.endTransitions.add(t);
-//                            } if (subETrans.get(op).endsWith("HideLeft")){
-//                                Transition t = Transition.getInstance(stream, "HideLeft");
-//                                scs.endTransitions.add(t);
-//                            } if (subETrans.get(op).endsWith("HideRight")){
-//                                Transition t = Transition.getInstance(stream, "HideRight");
-//                                scs.endTransitions.add(t);
-//                            } if (subETrans.get(op).endsWith("CornerShrink")){
-//                                Transition t = Transition.getInstance(stream, "CornerShrink");
-//                                scs.endTransitions.add(t);
-//                            }
-//                        }
-//                        text.addChannel(scs);
-////                        System.out.println("Channel Studio Loaded: "+scs.getClass());
-//                        op+=1;
-//                    }
                     SCL.clear();
                     SubChNames.clear();
                     subSTrans.clear();

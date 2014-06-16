@@ -50,6 +50,7 @@ public abstract class Effect {
 //        retValue.put(MergeTest.class.getSimpleName(), new MergeTest());
         retValue.put(ComboGhost.class.getSimpleName(), new ComboGhost());
         retValue.put(WaterFx.class.getSimpleName(), new WaterFx());
+        retValue.put(FaceDetectorAlpha.class.getSimpleName(), new FaceDetectorAlpha());
         retValue.put(Ghosting.class.getSimpleName(), new Ghosting());
         return retValue;
     }
