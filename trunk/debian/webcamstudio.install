@@ -12,5 +12,9 @@ libraries/mail.jar usr/lib/webcamstudio/lib
 libraries/zxing*.jar usr/lib/webcamstudio/lib
 libraries/imgscalr-lib-*.jar usr/lib/webcamstudio/lib
 libraries/Catalano.*.jar usr/lib/webcamstudio/lib
+libraries/javacpp.jar usr/lib/webcamstudio/lib
+libraries/javacv.jar usr/lib/webcamstudio/lib
+libraries/opencv.jar usr/lib/webcamstudio/lib
+libraries/ffmpeg.jar usr/lib/webcamstudio/lib
 
 src/webcamstudio/resources/start.gif usr/lib/webcamstudio
