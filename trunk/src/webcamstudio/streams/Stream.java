@@ -538,6 +538,7 @@ public abstract class Stream implements Callable<Frame>{
 
     public synchronized void removeEffect(Effect e) {
         effects.remove(e);
+        e.clearEffect(e);
     }
 
     public synchronized void applyEffects(BufferedImage img) {

@@ -59,7 +59,7 @@ public class FaceDetectorControl extends javax.swing.JPanel {
         cboFaces = new javax.swing.JComboBox();
         lblfaces = new javax.swing.JLabel();
 
-        setPreferredSize(new java.awt.Dimension(396, 107));
+        setPreferredSize(new java.awt.Dimension(187, 70));
 
         cboFaces.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         cboFaces.setName("cboFaces"); // NOI18N
@@ -80,8 +80,8 @@ public class FaceDetectorControl extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(cboFaces, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblfaces, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(228, Short.MAX_VALUE))
+                    .addComponent(lblfaces))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -90,12 +90,16 @@ public class FaceDetectorControl extends javax.swing.JPanel {
                 .addComponent(lblfaces)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(cboFaces, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(45, Short.MAX_VALUE))
+                .addGap(6, 6, 6))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void cboFacesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboFacesActionPerformed
-        effect.setFace(cboFaces.getSelectedItem().toString());
+        try {
+            effect.setFace(cboFaces.getSelectedItem().toString());
+        } catch (IOException ex) {
+            Logger.getLogger(FaceDetectorControl.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_cboFacesActionPerformed
 
 
