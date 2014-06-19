@@ -82,19 +82,26 @@ public abstract class Effect {
         tempbuffer.dispose();
         return tempimage;
     }
+    
     public String getName(){
         return getClass().getSimpleName();
     }
+    
     @Override
     public String toString(){
         return getClass().getSimpleName();
     }
+    
     public void setShape(String shapeImg){
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     public void setDoOne(boolean b) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    public void clearEffect(Effect e) {
+        e = null;
     }
 
     }

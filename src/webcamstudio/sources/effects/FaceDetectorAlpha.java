@@ -9,6 +9,7 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
@@ -21,6 +22,8 @@ import org.bytedeco.javacpp.opencv_core.CvMemStorage;
 import org.bytedeco.javacpp.opencv_core.CvRect;
 import org.bytedeco.javacpp.opencv_core.CvSeq;
 import org.bytedeco.javacpp.opencv_core.IplImage;
+import org.bytedeco.javacpp.opencv_core.Mat;
+import org.bytedeco.javacpp.opencv_core.Rect;
 import static org.bytedeco.javacpp.opencv_imgproc.*;
 import org.bytedeco.javacpp.opencv_objdetect;
 import static org.bytedeco.javacpp.opencv_objdetect.CV_HAAR_DO_CANNY_PRUNING;
@@ -35,15 +38,23 @@ import webcamstudio.sources.effects.controls.FaceDetectorControl;
  */
 public class FaceDetectorAlpha extends Effect {
     String maskImg;
+    BufferedImage sourceMask;
     String classifierName;
     File file;
+    int w = 320;
+    int h = 240;
     opencv_objdetect.CvHaarClassifierCascade classifier;
-//    private final CascadeClassifier faceDetector = new CascadeClassifier(System.getProperty("user.home")+"/.webcamstudio/faces/lbpcascade_frontalface.xml"); 
+    CascadeClassifier faceDetector = new CascadeClassifier(System.getProperty("user.home")+"/.webcamstudio/faces/lbpcascade_frontalface.xml"); 
 
     public FaceDetectorAlpha() {
-        this.file = new File (System.getProperty("user.home")+"/.webcamstudio/faces/haarcascade_frontalface_alt.xml");
+        this.file = new File (System.getProperty("user.home")+"/.webcamstudio/faces/haarcascade_frontalface_alt2.xml");
         this.maskImg = (System.getProperty("user.home")+"/.webcamstudio/faces/Alien.png");
-        
+        File sImg = new File(maskImg);
+        try {
+            sourceMask = ImageIO.read(sImg);
+        } catch (IOException ex) {
+            Logger.getLogger(FaceDetectorAlpha.class.getName()).log(Level.SEVERE, null, ex);
+        }
         classifierName = file.getAbsolutePath();
         Loader.load(opencv_objdetect.class);
         this.classifier = new opencv_objdetect.CvHaarClassifierCascade(cvLoad(classifierName));
@@ -57,17 +68,21 @@ public class FaceDetectorAlpha extends Effect {
         
    @Override
     public void applyEffect(BufferedImage img) {
-        int w = img.getWidth();
-        int h = img.getHeight();
+        w = img.getWidth();
+        h = img.getHeight();
+//        Mat dst = new Mat();
         IplImage src = IplImage.createFrom(img);
         BufferedImage temp = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
         
         try {
-            temp = detect(src);
+            temp = detect2(src);
         } catch (Exception ex) {
             Logger.getLogger(FaceDetectorAlpha.class.getName()).log(Level.SEVERE, null, ex);
         }
         
+//        dst = detect2(src);
+//        BufferedImage temp = dst.getBufferedImage();
+               
         Graphics2D buffer = img.createGraphics();
         buffer.setRenderingHint(java.awt.RenderingHints.KEY_INTERPOLATION, 
                            java.awt.RenderingHints.VALUE_INTERPOLATION_BILINEAR);
@@ -94,12 +109,10 @@ public class FaceDetectorAlpha extends Effect {
         int width  = grabbedImage.width();
         int height = grabbedImage.height();
         BufferedImage gImageBI = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-        int scaleWidth = 80;
-        int scaleHeight = 60;
+        int scaleWidth = 100;
+        int scaleHeight = 75;
         IplImage grayImage    = IplImage.create(width, height, IPL_DEPTH_8U, 1);
         IplImage scaledGrayImg    = cvCreateImage ( cvSize(scaleWidth , scaleHeight), grayImage.depth(), grayImage.nChannels() );
-        File sImg = new File(maskImg);
-        BufferedImage sourceMask = ImageIO.read(sImg);
         CvMemStorage storage = CvMemStorage.create();
 //        CvMat randomR = CvMat.create(3, 3), randomAxis = CvMat.create(3, 1);
 //        // We can easily and efficiently access the elements of CvMat objects
@@ -120,6 +133,10 @@ public class FaceDetectorAlpha extends Effect {
             CvRect r = new CvRect(cvGetSeqElem(faces, i));
             int w = r.width()*width/scaleWidth, h = r.height()*height/scaleHeight, x = r.x()*width/scaleWidth, y = r.y()*height/scaleHeight;
 //            cvRectangle(grabbedImage, cvPoint(x, y), cvPoint(x+w, y+h), CvScalar.RED, 5, CV_AA, 0);
+//            hatPoints.position(0).x(x-w/10)   .y(y-h/10);
+//            hatPoints.position(1).x(x+w*11/10).y(y-h/10);
+//            hatPoints.position(2).x(x+w/2)    .y(y-h/2);
+//            cvFillConvexPoly(grabbedImage, hatPoints.position(0), 3, CvScalar.GREEN, CV_AA, 0);
             gImageBI = grabbedImage.getBufferedImage();
             Double ww = w*1.4;
             Double hh = h*1.9;
@@ -127,14 +144,22 @@ public class FaceDetectorAlpha extends Effect {
             Double yy = y - h*0.3;
             BufferedImage sSMask = Scalr.resize(sourceMask, Scalr.Mode.AUTOMATIC, ww.intValue(), hh.intValue() );
             Graphics2D buffer = gImageBI.createGraphics();
-            
+            buffer.setRenderingHint(java.awt.RenderingHints.KEY_INTERPOLATION, 
+                               RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+            buffer.setRenderingHint(RenderingHints.KEY_RENDERING,
+                               RenderingHints.VALUE_RENDER_SPEED);
+            buffer.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                               RenderingHints.VALUE_ANTIALIAS_OFF);
+            buffer.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                               RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
+            buffer.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,
+                               RenderingHints.VALUE_FRACTIONALMETRICS_OFF);
+            buffer.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING,
+                               RenderingHints.VALUE_COLOR_RENDER_SPEED);
+            buffer.setRenderingHint(RenderingHints.KEY_DITHERING,
+                               RenderingHints.VALUE_DITHER_DISABLE);
             buffer.drawImage(sSMask, xx.intValue(), yy.intValue(), null);
             buffer.dispose();
-// To access or pass as argument the elements of a native array, call position() before.
-//            hatPoints.position(0).x(x-w/10)   .y(y-h/10);
-//            hatPoints.position(1).x(x+w*11/10).y(y-h/10);
-//            hatPoints.position(2).x(x+w/2)    .y(y-h/2);
-//            cvFillConvexPoly(grabbedImage, hatPoints.position(0), 3, CvScalar.GREEN, CV_AA, 0);
         }
 //        cvThreshold(grayImage, grayImage, 64, 255, CV_THRESH_BINARY);
 //        CvSeq contour = new CvSeq(null);
@@ -153,67 +178,50 @@ public class FaceDetectorAlpha extends Effect {
         return gImageBI;
     }
     
-//    public Mat detect(Mat sourceImg){
-////        return null;
-//        Mat scaleImg = new Mat();  
-//        Mat greyImg = new Mat();
-//        Mat sourceMask = opencv_highgui.imread(maskImg, -1); // CV_LOAD_IMAGE_UNCHANGED
-//        Mat alphaImg = new Mat();
-//        int scaleWidth = 160;
-//        int scaleHeight = 120;
-//        
-//        opencv_core.Rect faces = new opencv_core.Rect();    
-//        opencv_imgproc.resize(sourceImg, scaleImg, new Size(scaleWidth,scaleHeight), 0, 0, 1);
-//        opencv_imgproc.cvtColor( sourceImg, sourceImg, opencv_imgproc.COLOR_BGR2BGRA);
-//        opencv_imgproc.cvtColor( scaleImg, greyImg, opencv_imgproc.COLOR_BGR2GRAY);
-//        opencv_imgproc.cvtColor( sourceMask, sourceMask, opencv_imgproc.COLOR_BGRA2RGBA);
-//        equalizeHist(greyImg, greyImg);
-//        faceDetector.detectMultiScale(greyImg, faces, 1.2, 3,0, new Size(0,0), new Size(85,85));  //, 1.1, 3,0, new Size(10,10), new Size(90,70));
-////        System.out.println(String.format("Detected %s faces", faces.toArray().length));  
-//        Rect[] facesArray = faces.toArray();
-//        for (Rect faceRect : facesArray) {
-//            double h_temp =faceRect.height;    // storing original height
-//            double w_temp =faceRect.width;   
-//            double yy = faceRect.y - h_temp*0.2; //y is reduced by 0.2*h
-//            double xx = faceRect.x - w_temp*0.1; //x is reduced by 0.1*h
-//            double hh = h_temp*1.4;             // height is increases
-//            double ww = w_temp*1.2; //*1.1;             // width is increases
-//            double maxX = (xx + ww);
-//            double maxY = (yy + hh);
-////            System.out.println("maxX, maxY Value = "+maxX+","+maxY);
-////            System.out.println("Mat Max Size = "+matCols+"x"+matRows);
-//            if (xx > 0 && yy > 0) {
-//                if (maxY < scaleHeight && maxX < scaleWidth) {
-//                    double pX = (xx*w)/scaleWidth;
-//                    double pY = (yy*h)/scaleHeight;
-//                    double pW = (ww*w)/scaleWidth;
-//                    double pH = (hh*h)/scaleHeight;
-//                    Point p1 = new Point(pX, pY);
-//                    Point p2 = new Point(pX + pW, pY + pH);
-//                    
-//                    //            Point p1 = new Point((facesArray1.x*w)/scaleWidth, (facesArray1.y*h)/scaleHeight);
-//                    //            Point p2 = new Point((facesArray1.x*w)/scaleWidth + (facesArray1.width*w)/scaleWidth, (facesArray1.y*h)/scaleHeight + (facesArray1.height*h)/scaleHeight);
-//                    
-//                    //            // draw the rectangle
-//                    //            Core.rectangle(mRgba, p1, p2, sColor, 3);
-//                    
-//                    Rect roi = new Rect(p1,p2);
-//                    
-//                    //            System.out.println("X,Y Value = "+xx+","+yy);
-//                    //            System.out.println("roi Size = "+roi.size());
-//                    
-//                    //            if (roi.size().area() > 0) {
-//                    //            if (roi.size().area() > 0) {
-//                    opencv_imgproc.resize(sourceMask, sourceMask, roi.size());
-//                    opencv_core.extractChannel(sourceMask,alphaImg,3);
-//                    //                Core.addWeighted( mask, 0.5, mRgba.submat(roi), 0.5, 0, mRgba.submat(roi));
-//                    sourceMask.copyTo(sourceImg.submat(roi),alphaImg);
-//                }
-//            }
-//        }  
-//        opencv_imgproc.cvtColor( sourceImg, sourceImg, opencv_imgproc.COLOR_BGR2RGB);
-//        return sourceImg;  
-//    }  
+    public BufferedImage detect2(IplImage sourceImg){
+        int width  = sourceImg.width();
+        int height = sourceImg.height();
+        BufferedImage gImageBI; // = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        int scaleWidth = 160;
+        int scaleHeight = 120;
+        IplImage grayImage    = IplImage.create(width, height, IPL_DEPTH_8U, 1);
+        cvCvtColor( sourceImg, grayImage, CV_BGR2GRAY );
+        IplImage scaledGrayImg    = cvCreateImage ( cvSize(scaleWidth , scaleHeight), IPL_DEPTH_8U, 1 );
+        cvCvtColor(sourceImg, grayImage, CV_BGR2GRAY);
+        cvResize( grayImage, scaledGrayImg );
+        Mat grayImageMat = new Mat(scaledGrayImg);
+        equalizeHist(grayImageMat, grayImageMat);
+        Rect faces = new Rect();
+//        for (Rect faces : detectedFaces)
+//        faceDetector.detectMultiScale(grayImageMat, faces, 1.2, 3,0, new Size(0,0), new Size(85,85));  //, 1.1, 3,0, new Size(10,10), new Size(90,70));
+        faceDetector.detectMultiScale(grayImageMat, faces);  //, 1.1, 3,0, new Size(10,10), new Size(90,70));
+        int w = faces.width()*width/scaleWidth, h = faces.height()*height/scaleHeight, x = faces.x()*width/scaleWidth, y = faces.y()*height/scaleHeight;
+        gImageBI = sourceImg.getBufferedImage();
+        Double ww = w*1.2;
+        Double hh = h*2.9;
+        Double xx = x - w*0.1;
+        Double yy = y - h*0.2;
+        BufferedImage sSMask = Scalr.resize(sourceMask, Scalr.Mode.AUTOMATIC, ww.intValue(), hh.intValue() );
+        Graphics2D buffer = gImageBI.createGraphics();
+        buffer.setRenderingHint(java.awt.RenderingHints.KEY_INTERPOLATION, 
+                           java.awt.RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        buffer.setRenderingHint(RenderingHints.KEY_RENDERING,
+                           RenderingHints.VALUE_RENDER_SPEED);
+        buffer.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                           RenderingHints.VALUE_ANTIALIAS_OFF);
+        buffer.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                           RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
+        buffer.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,
+                           RenderingHints.VALUE_FRACTIONALMETRICS_OFF);
+        buffer.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING,
+                           RenderingHints.VALUE_COLOR_RENDER_SPEED);
+        buffer.setRenderingHint(RenderingHints.KEY_DITHERING,
+                           RenderingHints.VALUE_DITHER_DISABLE);
+        buffer.drawImage(sSMask, xx.intValue(), yy.intValue(), null);
+        buffer.dispose();
+//    }
+        return gImageBI;
+    }  
 
     @Override
     public JPanel getControl() {
@@ -226,8 +234,11 @@ public class FaceDetectorAlpha extends Effect {
     public String getFace() {
         return maskImg;
     }
-    public void setFace(String faceS){
+    public void setFace(String faceS) throws IOException{
         maskImg = (System.getProperty("user.home")+"/.webcamstudio/faces/"+faceS+".png");
+        File sImg = new File(maskImg);
+        sourceMask = ImageIO.read(sImg);
+        sImg = null;
     }
     @Override
     public void applyStudioConfig(Preferences prefs) {

@@ -134,13 +134,23 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
             is.close();
         }        
         faceNames.clear();
-        File destination = new File(System.getProperty("user.home")+"/.webcamstudio/faces/haarcascade_frontalface_alt.xml");
-        InputStream is = getClass().getResourceAsStream("/webcamstudio/resources/haarcascade_frontalface_alt.xml");
+        File destination = new File(System.getProperty("user.home")+"/.webcamstudio/faces/haarcascade_frontalface_alt2.xml");
+        InputStream is = getClass().getResourceAsStream("/webcamstudio/resources/haarcascade_frontalface_alt2.xml");
         OutputStream os = new FileOutputStream(destination);
         byte[] buffer = new byte[4096];
         int length;
         while ((length = is.read(buffer)) > 0) {
             os.write(buffer, 0, length);
+        }
+        os.close();
+        is.close();
+        destination = new File(System.getProperty("user.home")+"/.webcamstudio/faces/lbpcascade_frontalface.xml");
+        is = getClass().getResourceAsStream("/webcamstudio/resources/lbpcascade_frontalface.xml");
+        os = new FileOutputStream(destination);
+        buffer = new byte[4096];
+        int length2;
+        while ((length2 = is.read(buffer)) > 0) {
+            os.write(buffer, 0, length2);
         }
         os.close();
         is.close();
