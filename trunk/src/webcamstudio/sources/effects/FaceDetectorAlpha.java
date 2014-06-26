@@ -43,6 +43,10 @@ public class FaceDetectorAlpha extends Effect {
     File file;
     int w = 320;
     int h = 240;
+    double wFactor = 1.2;
+    double hFactor = 2.9;
+    double xFactor = 0.1;
+    double yFactor = 0.2;
     opencv_objdetect.CvHaarClassifierCascade classifier;
     CascadeClassifier faceDetector = new CascadeClassifier(System.getProperty("user.home")+"/.webcamstudio/faces/lbpcascade_frontalface.xml"); 
 
@@ -197,10 +201,10 @@ public class FaceDetectorAlpha extends Effect {
         faceDetector.detectMultiScale(grayImageMat, faces);  //, 1.1, 3,0, new Size(10,10), new Size(90,70));
         int w = faces.width()*width/scaleWidth, h = faces.height()*height/scaleHeight, x = faces.x()*width/scaleWidth, y = faces.y()*height/scaleHeight;
         gImageBI = sourceImg.getBufferedImage();
-        Double ww = w*1.2;
-        Double hh = h*2.9;
-        Double xx = x - w*0.1;
-        Double yy = y - h*0.2;
+        Double ww = w*wFactor;
+        Double hh = h*hFactor;
+        Double xx = x - w*xFactor;
+        Double yy = y - h*yFactor;
         BufferedImage sSMask = Scalr.resize(sourceMask, Scalr.Mode.AUTOMATIC, ww.intValue(), hh.intValue() );
         Graphics2D buffer = gImageBI.createGraphics();
         buffer.setRenderingHint(java.awt.RenderingHints.KEY_INTERPOLATION, 
@@ -248,5 +252,37 @@ public class FaceDetectorAlpha extends Effect {
     @Override
     public void loadFromStudioConfig(Preferences prefs) {
         
+    }
+    
+    public void setHFactor (double hFact){
+        hFactor = hFact;
+    }
+    
+    public double getHFactor (){
+        return hFactor;
+    }
+    
+    public void setWFactor (double wFact){
+        wFactor = wFact;
+    }
+    
+    public double getWFactor (){
+        return wFactor;
+    }
+    
+    public void setXFactor (double xFact){
+        xFactor = xFact;
+    }
+    
+    public double getXFactor (){
+        return xFactor;
+    }
+    
+    public void setYFactor (double yFact){
+        yFactor = yFact;   
+    }
+    
+    public double getYFactor (){
+        return yFactor;
     }
 }

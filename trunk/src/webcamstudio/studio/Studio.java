@@ -75,6 +75,7 @@ import webcamstudio.sources.effects.Weave;
 import webcamstudio.sources.effects.ZoomZoom;
 import webcamstudio.streams.SourceAudioSource;
 import webcamstudio.streams.SourceChannel;
+import webcamstudio.streams.SourceDV;
 import webcamstudio.streams.SourceDVB;
 import webcamstudio.streams.SourceDesktop;
 import webcamstudio.streams.SourceIPCam;
@@ -811,6 +812,19 @@ public class Studio {
                     extstream.add(stream); 
                     extstreamBis.add(stream);
                     ImgMovMus.add("DVB-T");
+                    readObject(stream, source);
+                    for (Effect fx : fXL) {
+                        if (fx.getName().endsWith("Shapes")){
+                            fx.setDoOne(true);
+                        }
+                        stream.addEffect(fx);
+                    }
+                    loadTransitions(SCL, stream, subSTrans, subETrans, SubChNames, null, null);
+                } else if (clazz.toLowerCase().endsWith("sourcedv")) {
+                    stream = new SourceDV();
+                    extstream.add(stream); 
+                    extstreamBis.add(stream);
+                    ImgMovMus.add("DV");
                     readObject(stream, source);
                     for (Effect fx : fXL) {
                         if (fx.getName().endsWith("Shapes")){

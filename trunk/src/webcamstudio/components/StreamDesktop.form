@@ -196,7 +196,16 @@
             <Property name="name" type="java.lang.String" value="jMAudioSource" noResource="true"/>
           </Properties>
         </Menu>
-        <Menu class="javax.swing.JMenu" name="JMBackEnd">
+        <Menu class="javax.swing.JMenu" name="jMFireDevice">
+          <Properties>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/webcamstudio/resources/tango/firewire_small.png"/>
+            </Property>
+            <Property name="toolTipText" type="java.lang.String" value="FireWire Devices"/>
+            <Property name="name" type="java.lang.String" value="jMFireDevice" noResource="true"/>
+          </Properties>
+        </Menu>
+        <Menu class="javax.swing.JMenu" name="jMBackEnd">
           <Properties>
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="1" green="7" red="4a" type="rgb"/>
@@ -209,7 +218,7 @@
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Ubuntu" size="12" style="0"/>
             </Property>
-            <Property name="name" type="java.lang.String" value="JMBackEnd" noResource="true"/>
+            <Property name="name" type="java.lang.String" value="jMBackEnd" noResource="true"/>
           </Properties>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_LayoutCodePost" type="java.lang.String" value="jMBOptions.add(Box.createHorizontalGlue());"/>
