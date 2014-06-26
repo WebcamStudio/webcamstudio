@@ -128,6 +128,7 @@ public abstract class Stream implements Callable<Frame>{
     protected String panelType = "Panel";
     protected String streamTime = "N/A";
     protected String audioSource = "";
+    protected String guid = "";
 
     protected Stream() {
         MasterChannels.getInstance().register(this);
@@ -448,6 +449,12 @@ public abstract class Stream implements Callable<Frame>{
     }
     public String getAudioSource(){
         return audioSource;
+    }
+    public void setGuid(String sGid) {
+        guid = sGid;
+    }
+    public String getGuid(){
+        return guid;
     }
     public boolean needSeekCTRL(){
         needSeekCTRL = needSeek();

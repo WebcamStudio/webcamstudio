@@ -74,6 +74,7 @@ import webcamstudio.mixers.SystemPlayer;
 import webcamstudio.streams.SourceAudioSource;
 import webcamstudio.streams.SourceChannel;
 import webcamstudio.streams.SourceCustom;
+import webcamstudio.streams.SourceDV;
 import webcamstudio.streams.SourceDVB;
 import webcamstudio.streams.SourceDesktop;
 import webcamstudio.streams.SourceIPCam;
@@ -417,6 +418,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
         btnAddDVB = new javax.swing.JButton();
         btnAddURL = new javax.swing.JButton();
         btnAddIPCam = new javax.swing.JButton();
+        btnAddDVCam = new javax.swing.JButton();
         btnAddDesktop = new javax.swing.JButton();
         btnAddText = new javax.swing.JButton();
         btnAddAudioSrc = new javax.swing.JButton();
@@ -546,6 +548,22 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
             }
         });
         toolbar.add(btnAddIPCam);
+
+        btnAddDVCam.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/Firewire.png"))); // NOI18N
+        btnAddDVCam.setToolTipText("Add DVCam Stream");
+        btnAddDVCam.setFocusable(false);
+        btnAddDVCam.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnAddDVCam.setMaximumSize(new java.awt.Dimension(29, 28));
+        btnAddDVCam.setMinimumSize(new java.awt.Dimension(25, 25));
+        btnAddDVCam.setName("btnAddDVCam"); // NOI18N
+        btnAddDVCam.setPreferredSize(new java.awt.Dimension(28, 28));
+        btnAddDVCam.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnAddDVCam.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddDVCamActionPerformed(evt);
+            }
+        });
+        toolbar.add(btnAddDVCam);
 
         btnAddDesktop.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/user-desktop.png"))); // NOI18N
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("webcamstudio/Languages"); // NOI18N
@@ -1814,6 +1832,25 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
         }
         
     }//GEN-LAST:event_btnAddFolderActionPerformed
+
+    private void btnAddDVCamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddDVCamActionPerformed
+        SourceDV streamDV;
+        streamDV = new SourceDV();
+        ArrayList<String> allChan = new ArrayList<>();
+        for (String scn : MasterChannels.getInstance().getChannels()){
+            allChan.add(scn); 
+        } 
+        for (String sc : allChan){
+            streamDV.addChannel(SourceChannel.getChannel(sc, streamDV));
+        }
+        StreamDesktop frame = new StreamDesktop(streamDV, this);
+        desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        try {
+            frame.setSelected(true);
+        } catch (PropertyVetoException ex) {
+            Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnAddDVCamActionPerformed
     /**
      * @param args the command line arguments
      */
@@ -1827,6 +1864,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
             dir.mkdir();
         }
         System.out.println("Welcome to WebcamStudio "+Version.version + " build "+ new Version().getBuild()+" ...");
+        
         /*
          * Set the Nimbus look and feel
          */
@@ -1868,6 +1906,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
     private javax.swing.JButton btnAddAnimation;
     private javax.swing.JButton btnAddAudioSrc;
     private javax.swing.JButton btnAddDVB;
+    private javax.swing.JButton btnAddDVCam;
     private javax.swing.JButton btnAddDesktop;
     private javax.swing.JButton btnAddFile;
     private javax.swing.JButton btnAddFolder;

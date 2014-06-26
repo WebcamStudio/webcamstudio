@@ -58,8 +58,14 @@ public class FaceDetectorControl extends javax.swing.JPanel {
 
         cboFaces = new javax.swing.JComboBox();
         lblfaces = new javax.swing.JLabel();
+        btnLeft = new javax.swing.JButton();
+        btnRight = new javax.swing.JButton();
+        btnEnlarge = new javax.swing.JButton();
+        btnShrink = new javax.swing.JButton();
+        btnUp = new javax.swing.JButton();
+        btnDown = new javax.swing.JButton();
 
-        setPreferredSize(new java.awt.Dimension(187, 70));
+        setPreferredSize(new java.awt.Dimension(206, 114));
 
         cboFaces.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         cboFaces.setName("cboFaces"); // NOI18N
@@ -72,6 +78,60 @@ public class FaceDetectorControl extends javax.swing.JPanel {
         lblfaces.setText("Overlays:");
         lblfaces.setName("lblfaces"); // NOI18N
 
+        btnLeft.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/go-previous.png"))); // NOI18N
+        btnLeft.setToolTipText("Move Face Left");
+        btnLeft.setName("btnLeft"); // NOI18N
+        btnLeft.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLeftActionPerformed(evt);
+            }
+        });
+
+        btnRight.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/go-next.png"))); // NOI18N
+        btnRight.setToolTipText("Move Face Right");
+        btnRight.setName("btnRight"); // NOI18N
+        btnRight.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRightActionPerformed(evt);
+            }
+        });
+
+        btnEnlarge.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/view-fullscreen.png"))); // NOI18N
+        btnEnlarge.setToolTipText("Enlarge Face");
+        btnEnlarge.setName("btnEnlarge"); // NOI18N
+        btnEnlarge.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEnlargeActionPerformed(evt);
+            }
+        });
+
+        btnShrink.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/view-shrink.png"))); // NOI18N
+        btnShrink.setToolTipText("Shrink Face");
+        btnShrink.setName("btnShrink"); // NOI18N
+        btnShrink.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnShrinkActionPerformed(evt);
+            }
+        });
+
+        btnUp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/go-up.png"))); // NOI18N
+        btnUp.setToolTipText("Move Face Up");
+        btnUp.setName("btnUp"); // NOI18N
+        btnUp.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUpActionPerformed(evt);
+            }
+        });
+
+        btnDown.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/go-down.png"))); // NOI18N
+        btnDown.setToolTipText("Move Face Down");
+        btnDown.setName("btnDown"); // NOI18N
+        btnDown.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDownActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -79,17 +139,46 @@ public class FaceDetectorControl extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(cboFaces, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblfaces))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(lblfaces)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cboFaces, 0, 106, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(btnEnlarge)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnUp))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(btnLeft)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnDown)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnRight)
+                            .addComponent(btnShrink))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(lblfaces)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblfaces)
+                    .addComponent(cboFaces, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cboFaces, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnEnlarge, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnShrink, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnUp, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnDown, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnLeft, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnRight, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(6, 6, 6))
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -102,8 +191,40 @@ public class FaceDetectorControl extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_cboFacesActionPerformed
 
+    private void btnLeftActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLeftActionPerformed
+        effect.setXFactor(effect.getXFactor()+0.05);
+    }//GEN-LAST:event_btnLeftActionPerformed
+
+    private void btnUpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpActionPerformed
+        effect.setYFactor(effect.getYFactor()+0.05);
+    }//GEN-LAST:event_btnUpActionPerformed
+
+    private void btnRightActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRightActionPerformed
+        effect.setXFactor(effect.getXFactor()-0.05);
+    }//GEN-LAST:event_btnRightActionPerformed
+
+    private void btnDownActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDownActionPerformed
+        effect.setYFactor(effect.getYFactor()-0.05);
+    }//GEN-LAST:event_btnDownActionPerformed
+
+    private void btnEnlargeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEnlargeActionPerformed
+        effect.setWFactor(effect.getWFactor()+0.1);
+        effect.setHFactor(effect.getHFactor()+0.1);
+    }//GEN-LAST:event_btnEnlargeActionPerformed
+
+    private void btnShrinkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShrinkActionPerformed
+        effect.setWFactor(effect.getWFactor()-0.1);
+        effect.setHFactor(effect.getHFactor()-0.1);
+    }//GEN-LAST:event_btnShrinkActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnDown;
+    private javax.swing.JButton btnEnlarge;
+    private javax.swing.JButton btnLeft;
+    private javax.swing.JButton btnRight;
+    private javax.swing.JButton btnShrink;
+    private javax.swing.JButton btnUp;
     private javax.swing.JComboBox cboFaces;
     private javax.swing.JLabel lblfaces;
     // End of variables declaration//GEN-END:variables

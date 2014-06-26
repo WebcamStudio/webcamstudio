@@ -6,6 +6,7 @@ package webcamstudio.components;
 
 import java.awt.Component;
 import java.util.ArrayList;
+import webcamstudio.streams.SourceDV;
 import webcamstudio.streams.SourceDVB;
 import webcamstudio.streams.SourceDesktop;
 import webcamstudio.streams.SourceImage;
@@ -64,6 +65,13 @@ public class SourceControls {
             c.setName("GS FX");
             comps.add(c);
         } else if (source instanceof SourceDVB) {
+            c = new SourceControlEffects(source);
+            c.setName("FX");
+            comps.add(c);
+            c = new SourceControlGSEffects(source);
+            c.setName("GS FX");
+            comps.add(c);
+        } else if (source instanceof SourceDV) {
             c = new SourceControlEffects(source);
             c.setName("FX");
             comps.add(c);

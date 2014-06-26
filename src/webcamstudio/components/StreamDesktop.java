@@ -21,6 +21,7 @@ import javax.swing.JCheckBoxMenuItem;
 import static webcamstudio.WebcamStudio.wsDistroWatch;
 import webcamstudio.mixers.MasterMixer;
 import webcamstudio.streams.SourceAudioSource;
+import webcamstudio.streams.SourceDV;
 import webcamstudio.streams.SourceDVB;
 import webcamstudio.streams.SourceIPCam;
 import webcamstudio.streams.SourceImageGif;
@@ -30,6 +31,8 @@ import webcamstudio.streams.SourceURL;
 import webcamstudio.streams.SourceWebcam;
 import webcamstudio.streams.Stream;
 import webcamstudio.util.AudioSource;
+import webcamstudio.util.FindFires;
+import webcamstudio.util.FireDevices;
 import webcamstudio.util.PaCTL;
 import webcamstudio.util.Screen;
 import webcamstudio.util.Tools;
@@ -50,6 +53,7 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
     private boolean runMe = true;
     private int speed = 5; // - is faster + is slower
     AudioSource[] sourcesAudio;
+    FireDevices[] fireDevices;
     String distro = wsDistroWatch();
 
     public interface Listener{
@@ -72,8 +76,9 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
             this.setTitle(s.getName());
             this.setVisible(true);
             jMControls.setVisible(false);
-            JMBackEnd.setVisible(false);
+            jMBackEnd.setVisible(false);
             jMAudioSource.setVisible(false);
+            jMFireDevice.setVisible(false);
             panelText = p;
             s.setPanelType("PanelText");
         } else if (s instanceof SourceDVB) {
@@ -82,12 +87,61 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
             this.add(p, BorderLayout.CENTER);
             this.setTitle(s.getName());
             this.setVisible(true);
-            JMBackEnd.setVisible(false);
+            jMBackEnd.setVisible(false);
             jMIPCBrand.setVisible(false);
             jMAudioSource.setVisible(false);
+            jMFireDevice.setVisible(false);
             stream.setComm("GS");
             panelDVB = p;
             s.setPanelType("PanelDVB");
+        } else if (s instanceof SourceDV) {
+            final ArrayList<JCheckBoxMenuItem> aSMenuItem = new ArrayList<>();
+            try {
+                fireDevices = FindFires.getSources();
+            } catch (IOException ex) {
+                Logger.getLogger(StreamDesktop.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            for (FireDevices fireDevice : fireDevices){
+                final JCheckBoxMenuItem jCBMenuItem = new JCheckBoxMenuItem();
+                jCBMenuItem.setText(fireDevice.description);
+                jCBMenuItem.setName(fireDevice.guid); // NOI18N
+                jCBMenuItem.addActionListener(new java.awt.event.ActionListener() {
+                    @Override
+                    public void actionPerformed(java.awt.event.ActionEvent evt) {
+                        s.setGuid(jCBMenuItem.getName());
+                        for (JCheckBoxMenuItem jCb : aSMenuItem) {
+                            if (!jCb.getName().equals(s.getGuid())) {
+                                jCb.setSelected(false);
+                            }
+                        }
+                    }
+                });
+                jMFireDevice.add(jCBMenuItem);
+                aSMenuItem.add(jCBMenuItem);
+                if (s.getLoaded()){
+                    for (JCheckBoxMenuItem jCb : aSMenuItem) {
+                        if (jCb.getName().equals(s.getAudioSource())) {
+                            jCb.setSelected(true);
+                        }
+                    }
+                } else {
+                    JCheckBoxMenuItem initJCb = aSMenuItem.get(0);
+                    initJCb.setSelected(true);
+                    s.setGuid(initJCb.getName());
+                }
+            }
+            StreamPanel p = new StreamPanel(s);
+            this.setLayout(new BorderLayout());
+            this.add(p, BorderLayout.CENTER);
+            this.setTitle(s.getName());
+            this.setVisible(true);
+            jMBackEnd.setVisible(false);
+            jMIPCBrand.setVisible(false);
+            jMAudioSource.setVisible(false);
+            jMFireDevice.setVisible(false);
+            stream.setComm("GS");
+            panel = p;
+            s.setPanelType("Panel");
         } else if (s instanceof SourceURL) {
             StreamPanelURL p = new StreamPanelURL(s);
             this.setLayout(new BorderLayout());
@@ -129,12 +183,13 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
                     jCBFFmpeg.setSelected(true);
                 }
             }
-            JMBackEnd.setEnabled(true);
+            jMBackEnd.setEnabled(true);
             panelURL = p;
             s.setPanelType("PanelURL");
             jCBShowSliders.setVisible(false);
             jMIPCBrand.setVisible(false);
             jMAudioSource.setVisible(false);
+            jMFireDevice.setVisible(false);            
         } else if (s instanceof SourceIPCam) {
             StreamPanelIPCam p = new StreamPanelIPCam(s);
             this.setLayout(new BorderLayout());
@@ -192,11 +247,12 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
                     stream.setPtzBrand("foscam");
                     jCBoxAxisPtz.setSelected(false);
             }
-            JMBackEnd.setEnabled(true);
+            jMBackEnd.setEnabled(true);
             panelIPCam = p;
             s.setPanelType("PanelIPCam");
             jCBShowSliders.setVisible(false);
             jMAudioSource.setVisible(false);
+            jMFireDevice.setVisible(false);
         } else {
             
             if (s instanceof SourceAudioSource) {
@@ -236,7 +292,7 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
                     }
                 }
             }
-        
+            
             StreamPanel p = new StreamPanel(s);
             this.setLayout(new BorderLayout());
             this.add(p, BorderLayout.CENTER);
@@ -297,12 +353,13 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
                 }
             }
             if (stream instanceof SourceImageGif){
-                JMBackEnd.setVisible(false);
+                jMBackEnd.setVisible(false);
             }
             panel = p;
             s.setPanelType("Panel");
             jCBMoreOptions.setEnabled(true);
             jMIPCBrand.setVisible(false);
+            jMFireDevice.setVisible(false);
             if (s instanceof SourceAudioSource) {
                 jMAudioSource.setVisible(true);
             } else {
@@ -340,7 +397,8 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
         jCBBouncingRight = new javax.swing.JCheckBoxMenuItem();
         jMRefresh = new javax.swing.JMenu();
         jMAudioSource = new javax.swing.JMenu();
-        JMBackEnd = new javax.swing.JMenu();
+        jMFireDevice = new javax.swing.JMenu();
+        jMBackEnd = new javax.swing.JMenu();
         jCBGStreamer = new javax.swing.JCheckBoxMenuItem();
         jCBAVConv = new javax.swing.JCheckBoxMenuItem();
         jCBFFmpeg = new javax.swing.JCheckBoxMenuItem();
@@ -514,12 +572,17 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
         jMAudioSource.setName("jMAudioSource"); // NOI18N
         jMBOptions.add(jMAudioSource);
 
-        JMBackEnd.setForeground(new java.awt.Color(74, 7, 1));
-        JMBackEnd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/bkend-switch5-button-small.png"))); // NOI18N
-        JMBackEnd.setToolTipText("Back-End Switch");
-        JMBackEnd.setBorderPainted(true);
-        JMBackEnd.setFont(new java.awt.Font("Ubuntu", 0, 12)); // NOI18N
-        JMBackEnd.setName("JMBackEnd"); // NOI18N
+        jMFireDevice.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/firewire_small.png"))); // NOI18N
+        jMFireDevice.setToolTipText("FireWire Devices");
+        jMFireDevice.setName("jMFireDevice"); // NOI18N
+        jMBOptions.add(jMFireDevice);
+
+        jMBackEnd.setForeground(new java.awt.Color(74, 7, 1));
+        jMBackEnd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/bkend-switch5-button-small.png"))); // NOI18N
+        jMBackEnd.setToolTipText("Back-End Switch");
+        jMBackEnd.setBorderPainted(true);
+        jMBackEnd.setFont(new java.awt.Font("Ubuntu", 0, 12)); // NOI18N
+        jMBackEnd.setName("jMBackEnd"); // NOI18N
 
         jCBGStreamer.setText("GStreamer");
         jCBGStreamer.setName("jCBGStreamer"); // NOI18N
@@ -529,7 +592,7 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
                 jCBGStreamerActionPerformed(evt);
             }
         });
-        JMBackEnd.add(jCBGStreamer);
+        jMBackEnd.add(jCBGStreamer);
 
         jCBAVConv.setText("AVConv");
         jCBAVConv.setName("jCBAVConv"); // NOI18N
@@ -539,7 +602,7 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
                 jCBAVConvActionPerformed(evt);
             }
         });
-        JMBackEnd.add(jCBAVConv);
+        jMBackEnd.add(jCBAVConv);
 
         jCBFFmpeg.setText("FFmpeg");
         jCBFFmpeg.setName("jCBFFmpeg"); // NOI18N
@@ -548,11 +611,11 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
                 jCBFFmpegActionPerformed(evt);
             }
         });
-        JMBackEnd.add(jCBFFmpeg);
+        jMBackEnd.add(jCBFFmpeg);
 
         jMBOptions.add(Box.createHorizontalGlue());
 
-        jMBOptions.add(JMBackEnd);
+        jMBOptions.add(jMBackEnd);
 
         setJMenuBar(jMBOptions);
         jMBOptions.getAccessibleContext().setAccessibleParent(this);
@@ -1076,7 +1139,6 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jMRefreshMouseClicked
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JMenu JMBackEnd;
     private javax.swing.JCheckBoxMenuItem jCBAVConv;
     private javax.swing.JCheckBoxMenuItem jCBBottomToTop;
     private javax.swing.JCheckBoxMenuItem jCBBouncingRight;
@@ -1092,7 +1154,9 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
     private javax.swing.JCheckBoxMenuItem jCBoxWansCamPtz;
     private javax.swing.JMenu jMAudioSource;
     private javax.swing.JMenuBar jMBOptions;
+    private javax.swing.JMenu jMBackEnd;
     private javax.swing.JMenu jMControls;
+    private javax.swing.JMenu jMFireDevice;
     private javax.swing.JMenu jMIPCBrand;
     private javax.swing.JMenu jMRefresh;
     private javax.swing.JMenu jMScroll;
