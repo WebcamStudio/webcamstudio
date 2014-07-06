@@ -95,8 +95,8 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
     }
 
     @Override
-    public void resetSinks(ActionEvent evt) {
-        // nothing here ...
+    public void resetSinks(ActionEvent evt) { // used resetSinks to AutoPlay from command line.
+        btnSelect.doClick();
     }
 
     @Override
@@ -131,6 +131,11 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
             res = "/login";
         }
         return res;
+    }
+
+    @Override
+    public void setRemoteOn() {
+        tglRemote.doClick();
     }
 
     public interface Listener {
@@ -578,7 +583,7 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
         if (name.length() > 0 && noDuplicateCh) {
             master.addChannel(name);
             master.addChTransitions(name);
-            master.addFontsText(name);
+//            master.addFontsText(name);
             model.addElement(name);
             aModel.addElement(name);
             CHCurrNext.add(name);
@@ -661,6 +666,7 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
             ListChannels.add(name);
             lstChannels.revalidate();
        }
+        lstChannels.setSelectedValue(ListChannels.get(0), true);
     }   
     @Override
     public void stopChTime(ActionEvent evt) {
@@ -780,6 +786,7 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
         String name = lstChannels.getSelectedValue().toString();
         master.updateChannel(name);
+        master.addChTransitions(name);
         ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Channel "+name+" Updated");
         ResourceMonitor.getInstance().addMessage(label);
     }//GEN-LAST:event_btnUpdateActionPerformed

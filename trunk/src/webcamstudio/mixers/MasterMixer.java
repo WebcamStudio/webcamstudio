@@ -58,7 +58,6 @@ public class MasterMixer {
         listeners.add(l);
     }
 
-    
     public synchronized void unregister(SinkListener l){
         listeners.remove(l);
     }
