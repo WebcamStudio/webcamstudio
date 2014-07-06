@@ -1114,6 +1114,11 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
             processSkyVideo.destroy();      
         }
     }
+
+    @Override
+    public void setRemoteOn() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
     private static class WaitingDialogOP extends JDialog {
         private final JLabel workingLabelOP = new JLabel();
@@ -1389,8 +1394,15 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
     }
 
     @Override
-    public void addLoadingChannel(String name) {
-     
+    public void addLoadingChannel(String name) { // used addLoadingChannel to activate Output from command line.
+        for (Component c : this.getComponents()) {
+            if (c instanceof JToggleButton) {
+                JToggleButton b = (JToggleButton) c;
+                if (b.getText().contains(name)) {
+                    b.doClick();
+                }
+            }
+        }
     }
 
     @Override

@@ -64,6 +64,8 @@ public class ProcessRenderer {
     String audioPulseInput = "";
     int videoPort = 0;
     int audioPort = 0;
+//    int videoSPort = 0;
+//    int audioSPort = 0;
     int frequency = audioFreq;
     int channels = 2;
     int bitSize = 16;
@@ -653,8 +655,16 @@ public class ProcessRenderer {
                 }
                 stopped = false;
                 stopMe = false;
+//                int Min = 1050;
+//                int Max = 15000;
+//                videoPort = Min + (int)(Math.random() * ((Max - Min) + 1));
+//                audioPort = Min + (int)(Math.random() * ((Max - Min) + 1));
+//                System.out.println("VPort="+videoPort);
+//                System.out.println("APort="+audioPort);
                 videoPort = exporter.getVideoPort();
                 audioPort = exporter.getAudioPort();
+//                videoSPort = exporter.getSVideoPort();
+//                audioSPort = exporter.getSAudioPort();
 //                System.out.println("plugin: "+plugin);
                 String command = plugins.getProperty(plugin).replaceAll("  ", " "); //Making sure there is no double spaces
                 command = setParameters(command);

@@ -794,6 +794,7 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
             }
             if (tglAudio.isSelected()) {
                 stream.setHasAudio(false);
+                stream.setFakeAudio(false);
             } else {
                 stream.setHasVideo(true);
                 stream.setHasAudio(true);

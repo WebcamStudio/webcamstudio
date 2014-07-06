@@ -67,7 +67,7 @@ public class SourceWebcam extends Stream {
     }
     @Override
     public boolean hasFakeVideo(){
-        return true;
+        return false;
     }
     @Override
     public boolean hasFakeAudio(){
