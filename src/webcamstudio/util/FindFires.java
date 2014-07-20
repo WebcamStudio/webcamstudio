@@ -81,29 +81,31 @@ public class FindFires {
         String line = "";
         while ((line = buf.readLine()) != null){
             String l = line.trim();
-            System.out.println("FW Line: "+l);
-            if (l.contains("model_name") && !l.contains(".") && !l.contains("fw0")){
+            System.out.println(l);
+            if (l.contains("model_name") && !l.contains(".") && !l.contains("fw0")){ //
                 
                 l = l.replace("/sys/bus/firewire/devices/", "");
                 l = l.replace("/model_name", "");
                 String[] lA = l.split(":");
                 l = l.replaceAll(" ", "");
-                System.out.println(lA);
+//                System.out.println(lA);
                 fwDevice.add(lA[0]);
                 fwName.add(lA[1]);
+//                System.out.println("Name: "+lA[1]);
 //                line = reader.readLine();
 //                l = line.trim().split(":")[1];
                 
                 
             }
-            if(l.contains("guid") && !l.contains(".") && !l.contains("fw0")){
+            if(l.contains("guid") && !l.contains(".") && !l.contains("fw0")){ // 
                 l = l.replace("/sys/bus/firewire/devices/", "");
                 l = l.replace("/guid", "");
                 String[] lA = l.split(":");
                 l = l.replaceAll(" ", "");
-                System.out.println(lA);
+//                System.out.println(lA);
                 fwGDevice.add(lA[0]);
                 fwGuid.add(lA[1]);
+//                System.out.println("Guid: "+lA[1]);
 //                line = reader.readLine();
 //                l = line.trim().split(":")[1];
             }
@@ -113,12 +115,15 @@ public class FindFires {
 //        isr.close();
 //        reader.close();
         p.destroy();
-        FireDevices s = new FireDevices();
+        
         for (int i=0 ; i< fwDevice.size() ; i++){
+            FireDevices fw = new FireDevices();
             if (fwDevice.get(i).equals(fwGDevice.get(i))){
-                s.description = fwName.get(i);
-                s.guid = fwGuid.get(i);
-                list.add(s);
+                fw.description = fwName.get(i);
+                fw.guid = fwGuid.get(i);
+//                System.out.println("Name: "+fwName.get(i));
+//                System.out.println("Guid: "+fwGuid.get(i));
+                list.add(fw);
             }
         }
 //        list.add(s);

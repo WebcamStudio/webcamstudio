@@ -474,7 +474,7 @@ public abstract class Stream implements Callable<Frame>{
         hasFakeVideo=hasIt;
     }
     public void setFakeAudio(boolean hasIt) {
-        hasFakeVideo=hasIt;
+        hasFakeAudio=hasIt;
     }
     public void setAudio(boolean hasIt){
         hasAudio = hasIt;

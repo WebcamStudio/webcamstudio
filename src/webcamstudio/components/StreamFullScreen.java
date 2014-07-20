@@ -18,9 +18,6 @@ import webcamstudio.streams.Stream;
  * @author patrick (modified by karl)
  */
 public class StreamFullScreen extends javax.swing.JInternalFrame {
-//    StreamFullCamPanel panel = null;
-//    StreamPanelDVB panelDVB = null;
-//    StreamPanelURL panelURL = null;
     
     /** Creates new form StreamFullDesktop
      * @param viewer */

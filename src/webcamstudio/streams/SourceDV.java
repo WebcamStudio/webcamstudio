@@ -34,7 +34,7 @@ public class SourceDV extends Stream {
     public void read() {      
         MasterFrameBuilder.register(this);
         capture = new ProcessRenderer(this, ProcessRenderer.ACTION.CAPTURE, "DV", comm);
-        capture.read();
+        capture.readCustom();
         lastPreview = new BufferedImage(captureWidth,captureHeight,BufferedImage.TYPE_INT_ARGB);
         isPlaying = true;
     }

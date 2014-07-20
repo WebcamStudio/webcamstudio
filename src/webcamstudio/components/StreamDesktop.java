@@ -21,6 +21,7 @@ import javax.swing.JCheckBoxMenuItem;
 import static webcamstudio.WebcamStudio.wsDistroWatch;
 import webcamstudio.mixers.MasterMixer;
 import webcamstudio.streams.SourceAudioSource;
+import webcamstudio.streams.SourceCustom;
 import webcamstudio.streams.SourceDV;
 import webcamstudio.streams.SourceDVB;
 import webcamstudio.streams.SourceIPCam;
@@ -104,7 +105,9 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
             for (FireDevices fireDevice : fireDevices){
                 final JCheckBoxMenuItem jCBMenuItem = new JCheckBoxMenuItem();
                 jCBMenuItem.setText(fireDevice.description);
-                jCBMenuItem.setName(fireDevice.guid); // NOI18N
+                jCBMenuItem.setName(fireDevice.guid);
+//                System.out.println("Desktop Name: "+fireDevice.description);
+//                System.out.println("Desktop Guid: "+fireDevice.guid);
                 jCBMenuItem.addActionListener(new java.awt.event.ActionListener() {
                     @Override
                     public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -120,7 +123,7 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
                 aSMenuItem.add(jCBMenuItem);
                 if (s.getLoaded()){
                     for (JCheckBoxMenuItem jCb : aSMenuItem) {
-                        if (jCb.getName().equals(s.getAudioSource())) {
+                        if (jCb.getName().equals(s.getGuid())) {
                             jCb.setSelected(true);
                         }
                     }
@@ -138,7 +141,7 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
             jMBackEnd.setVisible(false);
             jMIPCBrand.setVisible(false);
             jMAudioSource.setVisible(false);
-            jMFireDevice.setVisible(false);
+            jMFireDevice.setVisible(true);
             stream.setComm("GS");
             panel = p;
             s.setPanelType("Panel");
@@ -364,6 +367,9 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
                 jMAudioSource.setVisible(true);
             } else {
                 jMAudioSource.setVisible(false);
+            }
+            if (s instanceof SourceCustom) {
+                jMBackEnd.setVisible(false);
             }
         }
         this.setVisible(true);

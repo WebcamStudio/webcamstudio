@@ -34,7 +34,7 @@ public class SourceCustom extends Stream {
         rate = MasterMixer.getInstance().getRate();
         MasterFrameBuilder.register(this);
         capture = new ProcessRenderer(this, ProcessRenderer.ACTION.CAPTURE, "custom", comm);
-        capture.read();
+        capture.readCustom();
     }
 
     @Override
@@ -72,7 +72,42 @@ public class SourceCustom extends Stream {
     public Frame getFrame() {
         return nextFrame;
     }
-
+    
+//    @Override
+//    public void setFakeVideo(boolean hasIt) {
+//        this.hasFakeVideo=hasIt;
+//    }
+//    
+////    @Override
+//    public void setFakeAudio(boolean hasIt) {
+//        this.hasFakeVideo=hasIt;
+//    }
+//    
+//    @Override
+//    public boolean hasFakeVideo(){
+//        return this.hasFakeVideo;
+//    }
+//    @Override
+//    public boolean hasFakeAudio(){
+//        return this.hasFakeAudio;
+//    }
+//    @Override
+//    public boolean hasVideo() {
+//        return hasVideo;
+//    }
+//    @Override
+//    public boolean hasAudio() {
+//        return hasAudio;
+//    }
+//    @Override
+//    public void setHasAudio(boolean setHasAudio) {
+//        hasAudio = setHasAudio;
+//    }
+//    @Override
+//    public void setHasVideo(boolean setHasVideo) {
+//        hasVideo = setHasVideo;
+//    }
+//    
     @Override
     public void readNext() {
         if (capture != null) {

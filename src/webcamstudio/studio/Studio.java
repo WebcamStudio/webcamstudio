@@ -582,6 +582,7 @@ public class Studio {
                 String streamTime = null;
                 String streamAudioSrc = null;
                 String strShapez = null;
+                String guid = null;
                 
                 String chNameDvb = null;
                 ArrayList<String> SubChNames = new ArrayList<>();
@@ -622,6 +623,9 @@ public class Studio {
                     }
                     if (child.getNodeName().equals("webURL")) {
                         webUrl = child.getTextContent();
+                    }
+                    if (child.getNodeName().equals("guid")) {
+                        guid = child.getTextContent();
                     }
                     if (child.getNodeName().equals("ptzBrand")) {
                         pBrand = child.getTextContent();
@@ -826,12 +830,14 @@ public class Studio {
                     extstreamBis.add(stream);
                     ImgMovMus.add("DV");
                     readObject(stream, source);
+                    stream.setGuid(guid);
                     for (Effect fx : fXL) {
                         if (fx.getName().endsWith("Shapes")){
                             fx.setDoOne(true);
                         }
                         stream.addEffect(fx);
                     }
+                    stream.setLoaded(true);
                     loadTransitions(SCL, stream, subSTrans, subETrans, SubChNames, null, null);
                 } else if (clazz.toLowerCase().endsWith("sourceurl")) {
                     stream = new SourceURL();
