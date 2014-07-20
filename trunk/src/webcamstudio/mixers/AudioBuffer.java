@@ -79,7 +79,7 @@ public class AudioBuffer {
     public byte[] pop() {
         while (!abort && framePopped >= framePushed) {
 //            framePopped++;
-//            System.out.println("Beep Poppeed.");
+//            System.out.println("Beep Pop.");
 //            return Beep();
             Tools.sleep(30);
         }

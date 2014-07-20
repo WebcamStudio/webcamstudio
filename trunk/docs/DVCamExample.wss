@@ -23,7 +23,9 @@
 # The symbol "#" before the line will tell WS to ignore that line ...
 # Uncomment the key "video/audio" to specify if the source will use two separate command for video and audio or if the source is an only audio or an only video stream. For example a only audio stream will have key "audio" uncommented equals to the avconv/ffmpeg/gstreamer/dvgrab command and the key "video" commented. A stream that will only use one command for A/V will have the key "video" containing the entire A/V command uncommanted and the key "audio=" with "avconv -v 0" (null command) uncommented.
 
-video=avconv -an -f video4linux2 -s @CWIDTHx@CHEIGHT -r @RATE -i /dev/video1 -f rawvideo -pix_fmt rgb24 -s @CWIDTHx@CHEIGHT -r @RATE tcp://127.0.0.1:@VPORT
+video=dvgrab --buffers 1 --format raw - | ffmpeg -loglevel panic -f dv -i - -s @CWIDTHx@CHEIGHT -f rawvideo -vcodec rawvideo -pix_fmt rgb24 -r @RATE tcp://127.0.0.1:@VPORT -ar @FREQ -ac @CHANNELS -f s@BITSIZEbe tcp://127.0.0.1:@APORT
 
-#audio=avconv -v 0
+#video=dvgrab --buffers 1 --format raw - | gst-launch-1.0 fdsrc fd=0 ! queue max-size-buffers=0 max-size-time=0 ! dvdemux name=d ! queue max-size-buffers=0 max-size-time=0 ! dvdec ! deinterlace method=linear ! videoconvert ! videoscale ! videorate ! video/x-raw, format=RGB, width=@CWIDTH, height=@CHEIGHT, framerate=@RATE/1 ! videoconvert ! tcpclientsink host=127.0.0.1 port=@VPORT sync=false d. ! queue max-size-buffers=0 max-size-time=0 ! audioresample ! audioconvert ! audio/x-raw, format=S16BE, channels=2, rate=@FREQ ! audioconvert ! tcpclientsink host=127.0.0.1 port=@APORT sync=false
+
+audio=avconv -v 0
 

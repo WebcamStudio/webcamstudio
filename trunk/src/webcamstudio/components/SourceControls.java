@@ -75,9 +75,9 @@ public class SourceControls {
             c = new SourceControlEffects(source);
             c.setName("FX");
             comps.add(c);
-            c = new SourceControlGSEffects(source);
-            c.setName("GS FX");
-            comps.add(c);
+//            c = new SourceControlGSEffects(source);
+//            c.setName("GS FX");
+//            comps.add(c);
         } else if (source instanceof SourceURL) {
             c = new SourceControlEffects(source);
             c.setName("FX");

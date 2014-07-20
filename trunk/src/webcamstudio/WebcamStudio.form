@@ -773,12 +773,33 @@
             <Property name="opaque" type="boolean" value="true"/>
           </Properties>
         </Component>
+        <Component class="javax.swing.JLabel" name="lblFFmpeg3">
+          <Properties>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Ubuntu Condensed" size="14" style="0"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="OUT BackEnd:"/>
+            <Property name="name" type="java.lang.String" value="lblFFmpeg3" noResource="true"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JToolBar$Separator" name="jSeparator13">
+          <Properties>
+            <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
+              <Color id="Default Cursor"/>
+            </Property>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Ubuntu" size="15" style="1"/>
+            </Property>
+            <Property name="name" type="java.lang.String" value="jSeparator13" noResource="true"/>
+            <Property name="opaque" type="boolean" value="true"/>
+          </Properties>
+        </Component>
         <Component class="javax.swing.JToggleButton" name="tglFFmpeg">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
               <Image iconType="3" name="/webcamstudio/resources/tango/FFmpeg.png"/>
             </Property>
-            <Property name="toolTipText" type="java.lang.String" value="Use FFmpeg instead of AVconv for WS Outputs Commands"/>
+            <Property name="toolTipText" type="java.lang.String" value="Use FFmpeg for WS Outputs"/>
             <Property name="focusable" type="boolean" value="false"/>
             <Property name="horizontalTextPosition" type="int" value="0"/>
             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
@@ -812,7 +833,7 @@
             <Property name="name" type="java.lang.String" value="lblFFmpeg" noResource="true"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JToolBar$Separator" name="jSeparator8">
+        <Component class="javax.swing.JToolBar$Separator" name="jSeparator12">
           <Properties>
             <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
               <Color id="Default Cursor"/>
@@ -820,7 +841,109 @@
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Ubuntu" size="15" style="1"/>
             </Property>
-            <Property name="name" type="java.lang.String" value="jSeparator8" noResource="true"/>
+            <Property name="name" type="java.lang.String" value="jSeparator12" noResource="true"/>
+            <Property name="opaque" type="boolean" value="true"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JToggleButton" name="tglAVconv">
+          <Properties>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/webcamstudio/resources/tango/FFmpeg.png"/>
+            </Property>
+            <Property name="toolTipText" type="java.lang.String" value="Use AVconv for WS Outputs"/>
+            <Property name="focusable" type="boolean" value="false"/>
+            <Property name="horizontalTextPosition" type="int" value="0"/>
+            <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[29, 28]"/>
+            </Property>
+            <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[25, 25]"/>
+            </Property>
+            <Property name="name" type="java.lang.String" value="tglAVconv" noResource="true"/>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[28, 29]"/>
+            </Property>
+            <Property name="rolloverIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/webcamstudio/resources/tango/FFmpeg.png"/>
+            </Property>
+            <Property name="selectedIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/webcamstudio/resources/tango/FFmpegSelected.png"/>
+            </Property>
+            <Property name="verticalTextPosition" type="int" value="3"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="tglAVconvActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JLabel" name="lblAVconv">
+          <Properties>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Ubuntu Condensed" size="12" style="0"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="AVConv"/>
+            <Property name="name" type="java.lang.String" value="lblAVconv" noResource="true"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JToolBar$Separator" name="jSeparator11">
+          <Properties>
+            <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
+              <Color id="Default Cursor"/>
+            </Property>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Ubuntu" size="15" style="1"/>
+            </Property>
+            <Property name="name" type="java.lang.String" value="jSeparator11" noResource="true"/>
+            <Property name="opaque" type="boolean" value="true"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JToggleButton" name="tglGst">
+          <Properties>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/webcamstudio/resources/tango/gstreamer.png"/>
+            </Property>
+            <Property name="toolTipText" type="java.lang.String" value="Use GStreamer for WS Outputs"/>
+            <Property name="focusable" type="boolean" value="false"/>
+            <Property name="horizontalTextPosition" type="int" value="0"/>
+            <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[29, 28]"/>
+            </Property>
+            <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[25, 25]"/>
+            </Property>
+            <Property name="name" type="java.lang.String" value="tglGst" noResource="true"/>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[28, 29]"/>
+            </Property>
+            <Property name="rolloverIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/webcamstudio/resources/tango/gstreamer.png"/>
+            </Property>
+            <Property name="selectedIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/webcamstudio/resources/tango/gstreamerSelected.png"/>
+            </Property>
+            <Property name="verticalTextPosition" type="int" value="3"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="tglGstActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JLabel" name="lblGst">
+          <Properties>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Ubuntu Condensed" size="12" style="0"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="GStreamer"/>
+            <Property name="name" type="java.lang.String" value="lblGst" noResource="true"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JToolBar$Separator" name="jSeparator10">
+          <Properties>
+            <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
+              <Color id="Default Cursor"/>
+            </Property>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Ubuntu" size="15" style="1"/>
+            </Property>
+            <Property name="name" type="java.lang.String" value="jSeparator10" noResource="true"/>
             <Property name="opaque" type="boolean" value="true"/>
           </Properties>
         </Component>

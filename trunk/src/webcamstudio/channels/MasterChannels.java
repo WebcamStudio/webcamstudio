@@ -65,20 +65,20 @@ public class MasterChannels {
         }
     }
     
-    public void addFontsText(String name){
-        for (Stream s : streams){
-            if (s instanceof SourceText) {
-                SourceText sT = (SourceText) s;
-                for (SourceChannel sc : sT.getChannels()) {
-                    if (!sc.getName().equals(name)) {
-//                        System.out.println("Adding to channel: "+sc.getName());
-                        sc.setText(sT.getContent());
-                        sc.setFont(sT.getFont());
-                    }
-                }
-            }
-        }
-    }
+//    public void addFontsText(String name){
+//        for (Stream s : streams){
+//            if (s instanceof SourceText) {
+//                SourceText sT = (SourceText) s;
+//                for (SourceChannel sc : sT.getChannels()) {
+//                    if (!sc.getName().equals(name)) {
+////                        System.out.println("Adding to channel: "+sc.getName());
+//                        sc.setText(sT.getContent());
+//                        sc.setFont(sT.getFont());
+//                    }
+//                }
+//            }
+//        }
+//    }
     
     public void addToChannels(String name){
         channelNames.add(name);

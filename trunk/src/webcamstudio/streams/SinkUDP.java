@@ -5,7 +5,7 @@
 package webcamstudio.streams;
 
 import java.awt.image.BufferedImage;
-import static webcamstudio.WebcamStudio.outFFmpeg;
+import static webcamstudio.WebcamStudio.outFMEbe;
 import webcamstudio.externals.ProcessRenderer;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterMixer;
@@ -25,10 +25,12 @@ public class SinkUDP extends Stream {
 
     @Override
     public void read() {
-        if (outFFmpeg){
+        if (outFMEbe == 0){
             this.setComm("FF");
-        } else {
+        } else if (outFMEbe == 1) {
             this.setComm("AV");
+        } else if (outFMEbe == 2) {
+            this.setComm("GS");
         }
         rate = MasterMixer.getInstance().getRate();
         captureWidth = MasterMixer.getInstance().getWidth();

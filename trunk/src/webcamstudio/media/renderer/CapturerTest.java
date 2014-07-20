@@ -25,7 +25,7 @@ import webcamstudio.util.Tools;
  *
  * @author patrick (modified by karl)
  */
-public class Capturer {
+public class CapturerTest {
 
     private int vport = 0;
     private int aport = 0;
@@ -38,19 +38,22 @@ public class Capturer {
     private Frame frame = null;
     private DataInputStream videoIn = null;
     private DataInputStream audioIn = null;
-    private DataInputStream fakeVideoIn = null;
-    private DataInputStream fakeAudioIn = null;
     private boolean noVideoPres = true;
     private boolean noAudioPres = true;
     private boolean vPauseFlag = false;
     private boolean aPauseFlag = false;
-
-    public Capturer(Stream s) {
+    private boolean noAVSynch = true;
+    
+    public CapturerTest(Stream s) {
         stream = s;
         frame = new Frame(stream.getCaptureWidth(), stream.getCaptureHeight(), stream.getRate());
         image = new WSImage(stream.getCaptureWidth(), stream.getCaptureHeight(), BufferedImage.TYPE_INT_RGB);
         audio = new byte[(audioFreq * 2 * 2) / stream.getRate()];
         frame.setID(stream.getID());
+        Thread vCapture = null;
+        Thread aCapture = null;
+        Thread synchAV = null;
+        
         if (stream.hasAudio()) {
             try {
                 audioServer = new ServerSocket(0);
@@ -59,7 +62,7 @@ public class Capturer {
                 Logger.getLogger(Capturer.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        if (!stream.isOnlyAudio()) {
+        if (!stream.isOnlyAudio()) { // stream.hasVideo() ||
             try {
                 videoServer = new ServerSocket(0);
                 vport = videoServer.getLocalPort();
@@ -67,87 +70,96 @@ public class Capturer {
                 Logger.getLogger(Capturer.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+
+        synchAV = new Thread(new Runnable() {
+            @Override
+                public void run() {
+                    do {
+                        Tools.sleep(20);
+                        if (stream.hasAudio() && stream.hasVideo()) {
+                            if (!noVideoPres && !noAudioPres) {
+                                vPauseFlag = false;
+                                aPauseFlag = false;
+                                noAVSynch = false;
+                            }
+                        } else {
+                            if (!noVideoPres || !noAudioPres) {
+                                vPauseFlag = false;
+                                aPauseFlag = false;
+                                noAVSynch = false;
+                            }
+                        }
+                    } while (noAVSynch);
+                }
+        });
+        
         if (!stream.isOnlyAudio()) {
-            Thread vCapture = new Thread(new Runnable() {
+            vCapture = new Thread(new Runnable() {
 
                 @Override
                 public void run() {
-
                     try {
                         Socket connection = videoServer.accept();
                         System.out.println(stream.getName() + " Video accepted...");
-                        if (stream.hasFakeVideo()) {
-                            fakeVideoIn = new DataInputStream(new BufferedInputStream(connection.getInputStream(), 4096));
-                        }
-                        do {
+                        videoIn = new DataInputStream(new BufferedInputStream(connection.getInputStream(), 4096));
+                        int imageT = 0;
+                        while (imageT == 0) {
                             Tools.sleep(20);
-                            if (fakeAudioIn != null) {
-                                if (fakeAudioIn.available() != 0) {
-                                    noVideoPres=false;
-                                    Tools.sleep(stream.getVDelay());
-                                    videoIn = fakeVideoIn;
-                                    System.out.println("Start Video ...");
-                                }
-                            } else if (stream.getName().contains("Desktop")) {
-                                noVideoPres=false;
-                                Tools.sleep(stream.getVDelay());
-                                videoIn = new DataInputStream(new BufferedInputStream(connection.getInputStream(), 4096));
-                                System.out.println("Start Video ...");
-                            } else if (stream.getClass().getName().contains("SourceWebcam")) {
-                                noVideoPres=false;
-                                Tools.sleep(stream.getVDelay());
-                                videoIn = new DataInputStream(new BufferedInputStream(connection.getInputStream(), 4096));
-                                System.out.println("Start Video ...");
-                            } else if (!stream.hasAudio()) {
-                                noVideoPres=false;
-                                Tools.sleep(stream.getVDelay());
-                                videoIn = fakeVideoIn;
-                                System.out.println("Start Video ...");
-                            }
-                        } while (noVideoPres);
-
+//                            System.out.println("Video Not Available ...");
+                            if (videoIn != null)
+                                imageT = videoIn.available();
+                        }
+                        Tools.sleep(stream.getADelay());
+                        vPauseFlag = true;
+                        noVideoPres = false;
+                        System.out.println("Start Video ...");
+//                        imageT = null;
                     } catch (IOException ex) {
                         Logger.getLogger(Capturer.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 } 
             });
-            vCapture.setPriority(Thread.MIN_PRIORITY);
-            vCapture.start();
         }
+         
         if (stream.hasAudio()) {
-            Thread aCapture = new Thread(new Runnable() {
+            aCapture = new Thread(new Runnable() {
 
                 @Override
                 public void run() {
                     try {                    
                         Socket connection = audioServer.accept();
                         System.out.println(stream.getName() + " Audio accepted...");
-                        if (stream.hasFakeAudio()) {
-                            fakeAudioIn = new DataInputStream(new BufferedInputStream(connection.getInputStream(), 4096));
-                        }
-                        do {
+                        audioIn = new DataInputStream(new BufferedInputStream(connection.getInputStream(), 4096));
+                        int audioT = 0;
+                        while (audioT == 0) {
                             Tools.sleep(20);
-                            if (fakeVideoIn != null)  {
-                                if (fakeVideoIn.available() != 0) {
-                                    noAudioPres = false; 
-                                    Tools.sleep(stream.getADelay());
-                                    audioIn = fakeAudioIn;
-                                    System.out.println("Start Audio ...");
-                                }
-                            } else if (stream.getName().endsWith(".mp3") || !stream.hasVideo() ) {
-                                noAudioPres = false;
-                                Tools.sleep(stream.getADelay());
-                                audioIn = new DataInputStream(new BufferedInputStream(connection.getInputStream(), 4096));
-                                System.out.println("Start Audio ...");  
-                            } 
-                        }   while (noAudioPres);
+//                            System.out.println("Audio Not Available ...");
+                            if (audioIn != null)
+                                audioT = audioIn.available();
+                        }
+                        Tools.sleep(stream.getVDelay());
+                        aPauseFlag = true;
+                        noAudioPres = false;
+                        System.out.println("Start Audio ...");
+//                        audioT = null;
                     } catch (IOException ex) {
                         Logger.getLogger(Capturer.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
-            }); 
+            });
+        }
+        
+        synchAV.setPriority(Thread.MIN_PRIORITY);
+        synchAV.start();
+        
+        if (stream.hasAudio()) {
             aCapture.setPriority(Thread.MIN_PRIORITY);
             aCapture.start();
+        }
+        
+        if (!stream.isOnlyAudio()) {
+            vCapture.setPriority(Thread.MIN_PRIORITY);
+            vCapture.start();
         }
     }
     
@@ -157,14 +169,14 @@ public class Capturer {
         if (videoServer != null) {
             videoServer.close();
             videoServer = null;
+            videoIn.close();
             videoIn = null;
-            fakeVideoIn = null;
         }
         if (audioServer != null) {
             audioServer.close();
             audioServer = null;
+            audioIn.close();
             audioIn = null;
-            fakeAudioIn = null;
         }
         } catch (IOException ex) {
             Logger.getLogger(Capturer.class.getName()).log(Level.SEVERE, null, ex);
@@ -247,7 +259,7 @@ public class Capturer {
         } catch (IOException ioe) {
             stream.stop();
             stream.updateStatus();
-//            Logger.getLogger(Capturer.class.getName()).log(Level.SEVERE, null, ioe);
+            Logger.getLogger(Capturer.class.getName()).log(Level.SEVERE, null, ioe);
         }
         return frame;
     }    
