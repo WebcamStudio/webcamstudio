@@ -59,7 +59,7 @@ public class ImageBuffer {
     }
     public WSImage pop(){
         while(!abort && framePopped >= framePushed){
-            Tools.sleep(30);
+            Tools.sleep(10);
         }
         framePopped++;
         return buffer.get(currentIndex);

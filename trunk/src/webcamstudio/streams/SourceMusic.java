@@ -45,14 +45,25 @@ public class SourceMusic extends Stream {
     
     @Override
     public void stop() {
-        isPlaying = false;
-        MasterFrameBuilder.unregister(this);
-        if (capture != null) {
-            capture.stop();
-            capture = null;
-        }
-        if (this.getBackFF()){
-            this.setComm("FF");
+        if (loop){
+            if (capture != null) {
+                capture.stop();
+                capture = null;
+            }
+            if (this.getBackFF()){
+                this.setComm("FF");
+            }
+            this.read();
+        } else {
+            isPlaying = false;
+            MasterFrameBuilder.unregister(this);
+            if (capture != null) {
+                capture.stop();
+                capture = null;
+            }
+            if (this.getBackFF()){
+                this.setComm("FF");
+            }
         }
 
     }

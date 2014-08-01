@@ -25,8 +25,11 @@ import webcamstudio.streams.SourceCustom;
 import webcamstudio.streams.SourceDV;
 import webcamstudio.streams.SourceDVB;
 import webcamstudio.streams.SourceIPCam;
+import webcamstudio.streams.SourceImage;
 import webcamstudio.streams.SourceImageGif;
 import webcamstudio.streams.SourceImageU;
+import webcamstudio.streams.SourceMovie;
+import webcamstudio.streams.SourceMusic;
 import webcamstudio.streams.SourceText;
 import webcamstudio.streams.SourceURL;
 import webcamstudio.streams.SourceWebcam;
@@ -80,6 +83,7 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
             jMBackEnd.setVisible(false);
             jMAudioSource.setVisible(false);
             jMFireDevice.setVisible(false);
+            jMLoop.setVisible(false);
             panelText = p;
             s.setPanelType("PanelText");
         } else if (s instanceof SourceDVB) {
@@ -92,6 +96,7 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
             jMIPCBrand.setVisible(false);
             jMAudioSource.setVisible(false);
             jMFireDevice.setVisible(false);
+            jMLoop.setVisible(false);
             stream.setComm("GS");
             panelDVB = p;
             s.setPanelType("PanelDVB");
@@ -142,6 +147,7 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
             jMIPCBrand.setVisible(false);
             jMAudioSource.setVisible(false);
             jMFireDevice.setVisible(true);
+            jMLoop.setVisible(false);
             stream.setComm("GS");
             panel = p;
             s.setPanelType("Panel");
@@ -192,7 +198,9 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
             jCBShowSliders.setVisible(false);
             jMIPCBrand.setVisible(false);
             jMAudioSource.setVisible(false);
-            jMFireDevice.setVisible(false);            
+            jMFireDevice.setVisible(false);
+            jMLoop.setVisible(true);
+            jCBLoop.setSelected(s.getLoop());
         } else if (s instanceof SourceIPCam) {
             StreamPanelIPCam p = new StreamPanelIPCam(s);
             this.setLayout(new BorderLayout());
@@ -250,12 +258,13 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
                     stream.setPtzBrand("foscam");
                     jCBoxAxisPtz.setSelected(false);
             }
-            jMBackEnd.setEnabled(true);
+            jMBackEnd.setVisible(false);
             panelIPCam = p;
             s.setPanelType("PanelIPCam");
             jCBShowSliders.setVisible(false);
             jMAudioSource.setVisible(false);
             jMFireDevice.setVisible(false);
+            jMLoop.setVisible(false);
         } else {
             
             if (s instanceof SourceAudioSource) {
@@ -335,7 +344,7 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
                         break;
                 }
             } else {
-                if (stream instanceof SourceWebcam || stream instanceof SourceAudioSource ||stream instanceof SourceImageU) {
+                if (stream instanceof SourceWebcam || stream instanceof SourceAudioSource ||stream instanceof SourceImageU ||stream instanceof SourceImage) {
                     jCBGStreamer.setSelected(true);
                     stream.setComm("GS");
                     jCBAVConv.setSelected(false);
@@ -354,9 +363,11 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
                         jCBFFmpeg.setSelected(true);
                     }
                 }
+                jMLoop.setVisible(false);
             }
             if (stream instanceof SourceImageGif){
                 jMBackEnd.setVisible(false);
+                jMLoop.setVisible(false);
             }
             panel = p;
             s.setPanelType("Panel");
@@ -365,11 +376,16 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
             jMFireDevice.setVisible(false);
             if (s instanceof SourceAudioSource) {
                 jMAudioSource.setVisible(true);
+                jMLoop.setVisible(false);
             } else {
                 jMAudioSource.setVisible(false);
             }
             if (s instanceof SourceCustom) {
                 jMBackEnd.setVisible(false);
+            }
+            if (s instanceof SourceMovie || s instanceof SourceMusic) {
+                jMLoop.setVisible(true);
+                jCBLoop.setSelected(s.getLoop());
             }
         }
         this.setVisible(true);
@@ -401,6 +417,8 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
         jCBBottomToTop = new javax.swing.JCheckBoxMenuItem();
         jCBTopToBottom = new javax.swing.JCheckBoxMenuItem();
         jCBBouncingRight = new javax.swing.JCheckBoxMenuItem();
+        jMLoop = new javax.swing.JMenu();
+        jCBLoop = new javax.swing.JCheckBoxMenuItem();
         jMRefresh = new javax.swing.JMenu();
         jMAudioSource = new javax.swing.JMenu();
         jMFireDevice = new javax.swing.JMenu();
@@ -561,6 +579,21 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
 
         jMBOptions.add(jMScroll);
 
+        jMLoop.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/loop4-small.png"))); // NOI18N
+        jMLoop.setToolTipText("Loop Source");
+        jMLoop.setName("jMLoop"); // NOI18N
+
+        jCBLoop.setText("On");
+        jCBLoop.setName("jCBLoop"); // NOI18N
+        jCBLoop.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCBLoopActionPerformed(evt);
+            }
+        });
+        jMLoop.add(jCBLoop);
+
+        jMBOptions.add(jMLoop);
+
         jMRefresh.setForeground(new java.awt.Color(1, 188, 3));
         jMRefresh.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/view-refresh-small.png"))); // NOI18N
         jMRefresh.setToolTipText("Refresh Properties");
@@ -636,6 +669,7 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_formInternalFrameIconified
 
     private void formInternalFrameClosing(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameClosing
+        stream.setLoop(false);
         stream.destroy();
         stream = null;
         panel = null;
@@ -1144,6 +1178,14 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_jMRefreshMouseClicked
 
+    private void jCBLoopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCBLoopActionPerformed
+        if (jCBLoop.isSelected()){
+            stream.setLoop(true);
+        } else {
+            stream.setLoop(false);
+        }
+    }//GEN-LAST:event_jCBLoopActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBoxMenuItem jCBAVConv;
     private javax.swing.JCheckBoxMenuItem jCBBottomToTop;
@@ -1151,6 +1193,7 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
     private javax.swing.JCheckBoxMenuItem jCBFFmpeg;
     private javax.swing.JCheckBoxMenuItem jCBGStreamer;
     private javax.swing.JCheckBoxMenuItem jCBLeftToRight;
+    private javax.swing.JCheckBoxMenuItem jCBLoop;
     private javax.swing.JCheckBoxMenuItem jCBMoreOptions;
     private javax.swing.JCheckBoxMenuItem jCBRightToLeft;
     private javax.swing.JCheckBoxMenuItem jCBShowSliders;
@@ -1164,6 +1207,7 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
     private javax.swing.JMenu jMControls;
     private javax.swing.JMenu jMFireDevice;
     private javax.swing.JMenu jMIPCBrand;
+    private javax.swing.JMenu jMLoop;
     private javax.swing.JMenu jMRefresh;
     private javax.swing.JMenu jMScroll;
     // End of variables declaration//GEN-END:variables

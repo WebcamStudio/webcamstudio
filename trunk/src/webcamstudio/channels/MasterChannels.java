@@ -6,7 +6,6 @@ package webcamstudio.channels;
 
 import java.util.ArrayList;
 import webcamstudio.streams.SourceChannel;
-import webcamstudio.streams.SourceText;
 import webcamstudio.streams.Stream;
 import webcamstudio.util.Tools;
 
@@ -187,8 +186,15 @@ public class MasterChannels {
     public void stopAllStream(){
         for (Stream s : streams){
 //            System.out.println("Stream stopped: "+s);
-            Tools.sleep(30);
-            s.stop();
+            if (s.getLoop()) {
+                s.setLoop(false);
+                Tools.sleep(30);
+                s.stop();
+                s.setLoop(true);
+            } else {
+                Tools.sleep(30);
+                s.stop();
+            }
         }
     }
     
@@ -196,8 +202,15 @@ public class MasterChannels {
         for (Stream s : streams){
             String streamName =s.getClass().getName();
             if (!streamName.contains("Sink")){
-                Tools.sleep(30);
-                s.stop();
+                if (s.getLoop()) {
+                    s.setLoop(false);
+                    Tools.sleep(30);
+                    s.stop();
+                    s.setLoop(true);
+                } else {
+                    Tools.sleep(30);
+                    s.stop();
+                }
             }
         }
     }

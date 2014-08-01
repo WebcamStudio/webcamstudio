@@ -105,10 +105,7 @@ public class ProcessRenderer {
                     this.plugin = "av_" + plugin;
                 } else { //if ("AV".equals(bkEnd))
                     this.plugin = plugin;
-                } 
-//                else {
-////                    this.plugin = "ffmpeg_" + plugin; // to keep GS to 0.10 Outside Ubuntu
-//                }
+                }
             }
         }
 //        System.out.println("OPlugin:"+oPlug);
@@ -385,11 +382,7 @@ public class ProcessRenderer {
         new Thread(new Runnable() {
 
             @Override
-            public void run() {  
-//                stream.setVideo(stream.hasVideo());
-//                stream.setFakeVideo(plugins.containsKey("fakeVideo"));
-//                stream.setFakeAudio(plugins.containsKey("fakeAudio"));
-//                stream.setAudio(stream.hasAudio());
+            public void run() {
                 capture = new Capturer(stream);
                 String cmdVideo = "";
                 String cmdAudio = "";
@@ -465,7 +458,6 @@ public class ProcessRenderer {
     }
         
     public void readCom() {
-//        final Runtime rt = Runtime.getRuntime();
         stopped = false;
         stopMe = false;
         final String iD = stream.getID().substring(0, 4);
@@ -473,18 +465,12 @@ public class ProcessRenderer {
 
             @Override
             public void run() {
+                
                 if (stream.isIPCam()){
                     stream.setVideo(true);
-//                } else if (stream.hasVideo()) {
-//                    stream.setVideo(plugins.containsKey("video"));
                 }
-//                stream.setFakeVideo(plugins.containsKey("fakeVideo"));
-//                stream.setFakeAudio(plugins.containsKey("fakeAudio"));
                 capture = new Capturer(stream);
-                
-//                if (stream.hasVideo()) {
-//                    videoPort = capture.getVideoPort();
-//                } else 
+
                 if (stream.isOnlyAudio()) {
                     processVideo = null;
                 } else {
@@ -747,17 +733,8 @@ public class ProcessRenderer {
                 }
                 stopped = false;
                 stopMe = false;
-//                int Min = 1050;
-//                int Max = 15000;
-//                videoPort = Min + (int)(Math.random() * ((Max - Min) + 1));
-//                audioPort = Min + (int)(Math.random() * ((Max - Min) + 1));
-//                System.out.println("VPort="+videoPort);
-//                System.out.println("APort="+audioPort);
                 videoPort = exporter.getVideoPort();
                 audioPort = exporter.getAudioPort();
-//                videoSPort = exporter.getSVideoPort();
-//                audioSPort = exporter.getSAudioPort();
-//                System.out.println("plugin: "+plugin);
                 String command = plugins.getProperty(plugin).replaceAll("  ", " "); //Making sure there is no double spaces
                 command = setParameters(command);
                 System.out.println("Command Out: "+command);
@@ -858,10 +835,6 @@ public class ProcessRenderer {
             exporter = null;
         }
         if (processVideo != null) {
-//            if (stream instanceof SinkFile) {
-//                System.out.println("Delay for SinkFile ...");
-//                Tools.sleep(1700);
-//            }
             processVideo.destroy();
             processVideo = null;
             System.out.println(stream.getName()+" Video Cleared ...");

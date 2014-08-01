@@ -18,8 +18,6 @@ public class AudioBuffer {
     private int bufferSize = MasterMixer.BUFFER_SIZE;
     private boolean abort = false;
     private int aFreq = audioFreq;
-    byte[] beep;
-    int beepMillisec = 250;
     int currentIndex = 0;
     long framePushed = 0;
     long framePopped = 0;
@@ -29,16 +27,6 @@ public class AudioBuffer {
             buffer.add(new byte[(aFreq * 2 * 2) / rate]);
         }
     }
-    
-    public byte[] Beep() {
-        beep = new byte[beepMillisec*44]; // 44 is samples per msec
-      double omega = 2 * Math.PI / 100; // 100 is samples per tone cycle
-      for(int i=0; i<beep.length; i++) {
-         beep[i] = (byte)(80 * Math.sin(omega*i)); // 80 is amplitude, < 128
-      }
-      return beep;
-    }
-    
     public AudioBuffer(int rate,int bufferSize) {
         this.bufferSize=bufferSize;
         for (int i = 0; i < bufferSize; i++) {
@@ -48,12 +36,6 @@ public class AudioBuffer {
 
     public void push(byte[] data) {
         while (!abort && (framePushed - framePopped) >= bufferSize) {
-//            currentIndex++;
-//            currentIndex %= bufferSize;
-//            byte[] d = Beep();
-//            System.arraycopy(data, 0, d, 0, d.length);
-//            framePushed++;
-//            System.out.println("Beep Pushed.");
             Tools.sleep(30);
         }
         currentIndex++;
@@ -70,21 +52,15 @@ public class AudioBuffer {
     }    
     public byte[] getAudioToUpdate(){
         while (!abort && (framePushed - framePopped) >= bufferSize) {
-            System.out.println("AudioUpdate Sleep.");
             Tools.sleep(30);
         }
-        System.out.println("AudioUpdate.");
         return buffer.get((currentIndex+1)%bufferSize);
     }
     public byte[] pop() {
         while (!abort && framePopped >= framePushed) {
-//            framePopped++;
-//            System.out.println("Beep Pop.");
-//            return Beep();
-            Tools.sleep(30);
+            Tools.sleep(10);
         }
         framePopped++;
-//        System.out.println("Buffer Poppeed.");
         return buffer.get(currentIndex);
     }
 

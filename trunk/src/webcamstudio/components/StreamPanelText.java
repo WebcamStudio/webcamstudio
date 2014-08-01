@@ -39,6 +39,9 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
     private TimerTask clockIn = new clock();
     private int cW = 0;
     private int cH = 0;
+    boolean lockRatio = false;
+    int oldW ;
+    int oldH ;
 
     /** Creates new form StreamPanel
      * @param stream */
@@ -46,6 +49,9 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
     public StreamPanelText(Stream stream) {
 
         initComponents();
+        
+        oldW = stream.getWidth();
+        oldH = stream.getHeight();
         
         DefaultComboBoxModel model = new DefaultComboBoxModel();
         GraphicsEnvironment e = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -166,6 +172,8 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
         jSeparator3 = new javax.swing.JSeparator();
         tglClock = new javax.swing.JToggleButton();
         tglQRCode = new javax.swing.JToggleButton();
+        jCheckBox1 = new javax.swing.JCheckBox();
+        jSeparator8 = new javax.swing.JSeparator();
 
         setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
         setFocusTraversalPolicyProvider(true);
@@ -180,7 +188,7 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
                 spinXStateChanged(evt);
             }
         });
-        add(spinX, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 180, 50, -1));
+        add(spinX, new org.netbeans.lib.awtextra.AbsoluteConstraints(68, 160, 50, -1));
 
         spinY.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         spinY.setName("spinY"); // NOI18N
@@ -189,7 +197,7 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
                 spinYStateChanged(evt);
             }
         });
-        add(spinY, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 200, 50, -1));
+        add(spinY, new org.netbeans.lib.awtextra.AbsoluteConstraints(68, 180, 50, -1));
 
         spinW.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         spinW.setName("spinW"); // NOI18N
@@ -198,7 +206,7 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
                 spinWStateChanged(evt);
             }
         });
-        add(spinW, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 220, 50, -1));
+        add(spinW, new org.netbeans.lib.awtextra.AbsoluteConstraints(68, 200, 50, -1));
 
         spinH.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         spinH.setName("spinH"); // NOI18N
@@ -207,7 +215,7 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
                 spinHStateChanged(evt);
             }
         });
-        add(spinH, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 240, 50, -1));
+        add(spinH, new org.netbeans.lib.awtextra.AbsoluteConstraints(68, 220, 50, -1));
 
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("webcamstudio/Languages"); // NOI18N
         labelFont.setText(bundle.getString("FONT")); // NOI18N
@@ -231,7 +239,7 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
                 txtContentFocusLost(evt);
             }
         });
-        add(txtContent, new org.netbeans.lib.awtextra.AbsoluteConstraints(7, 152, 272, -1));
+        add(txtContent, new org.netbeans.lib.awtextra.AbsoluteConstraints(7, 133, 272, -1));
 
         cboFonts.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         cboFonts.setName("cboFonts"); // NOI18N
@@ -281,49 +289,49 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
                 tglActiveStreamActionPerformed(evt);
             }
         });
-        add(tglActiveStream, new org.netbeans.lib.awtextra.AbsoluteConstraints(7, 100, 110, 20));
+        add(tglActiveStream, new org.netbeans.lib.awtextra.AbsoluteConstraints(7, 83, 110, 20));
 
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/splash100.png"))); // NOI18N
         jLabel3.setName("jLabel3"); // NOI18N
-        add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(143, 14, 120, 110));
+        add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(144, 1, 120, 110));
 
         jSeparator4.setOrientation(javax.swing.SwingConstants.VERTICAL);
         jSeparator4.setName("jSeparator4"); // NOI18N
-        add(jSeparator4, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 7, 10, 126));
+        add(jSeparator4, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 7, 10, 106));
 
         jSeparator7.setName("jSeparator7"); // NOI18N
         jSeparator7.setPreferredSize(new java.awt.Dimension(48, 10));
-        add(jSeparator7, new org.netbeans.lib.awtextra.AbsoluteConstraints(126, 135, 150, 10));
+        add(jSeparator7, new org.netbeans.lib.awtextra.AbsoluteConstraints(126, 115, 150, 10));
 
         labelText.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         labelText.setText(bundle.getString("ENTER_TEXT")); // NOI18N
         labelText.setToolTipText("");
         labelText.setName("labelText"); // NOI18N
-        add(labelText, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 142, 70, -1));
+        add(labelText, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 123, 70, -1));
 
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/FontCC.png"))); // NOI18N
         jLabel2.setName("jLabel2"); // NOI18N
-        add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(12, 23, -1, -1));
+        add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(11, 8, -1, -1));
 
         labelX1.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         labelX1.setText(bundle.getString("X")); // NOI18N
         labelX1.setName("labelX1"); // NOI18N
-        add(labelX1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 190, 10, 10));
+        add(labelX1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 170, 10, 10));
 
         labelY1.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         labelY1.setText(bundle.getString("Y")); // NOI18N
         labelY1.setName("labelY1"); // NOI18N
-        add(labelY1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 210, 10, -1));
+        add(labelY1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 190, 10, -1));
 
         labelW1.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         labelW1.setText(bundle.getString("WIDTH")); // NOI18N
         labelW1.setName("labelW1"); // NOI18N
-        add(labelW1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 230, 52, -1));
+        add(labelW1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 210, 52, -1));
 
         labelH1.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         labelH1.setText(bundle.getString("HEIGHT")); // NOI18N
         labelH1.setName("labelH1"); // NOI18N
-        add(labelH1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 250, 40, -1));
+        add(labelH1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 230, 40, -1));
 
         jSlSpinX.setMajorTickSpacing(10);
         jSlSpinX.setMaximum(1920);
@@ -338,7 +346,7 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
                 jSlSpinXStateChanged(evt);
             }
         });
-        add(jSlSpinX, new org.netbeans.lib.awtextra.AbsoluteConstraints(127, 180, 150, 20));
+        add(jSlSpinX, new org.netbeans.lib.awtextra.AbsoluteConstraints(127, 160, 150, 20));
 
         jSlSpinY.setMajorTickSpacing(10);
         jSlSpinY.setMaximum(1080);
@@ -353,7 +361,7 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
                 jSlSpinYStateChanged(evt);
             }
         });
-        add(jSlSpinY, new org.netbeans.lib.awtextra.AbsoluteConstraints(127, 200, 150, 20));
+        add(jSlSpinY, new org.netbeans.lib.awtextra.AbsoluteConstraints(127, 180, 150, 20));
 
         jSlSpinW.setMaximum(1920);
         jSlSpinW.setMinimum(1);
@@ -365,7 +373,7 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
                 jSlSpinWStateChanged(evt);
             }
         });
-        add(jSlSpinW, new org.netbeans.lib.awtextra.AbsoluteConstraints(127, 220, 150, 20));
+        add(jSlSpinW, new org.netbeans.lib.awtextra.AbsoluteConstraints(127, 200, 150, 20));
 
         jSlSpinH.setMaximum(1080);
         jSlSpinH.setMinimum(1);
@@ -377,11 +385,11 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
                 jSlSpinHStateChanged(evt);
             }
         });
-        add(jSlSpinH, new org.netbeans.lib.awtextra.AbsoluteConstraints(127, 240, 150, 20));
+        add(jSlSpinH, new org.netbeans.lib.awtextra.AbsoluteConstraints(127, 220, 150, 20));
 
         jSeparator5.setOrientation(javax.swing.SwingConstants.VERTICAL);
         jSeparator5.setName("jSeparator5"); // NOI18N
-        add(jSeparator5, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 180, 10, 110));
+        add(jSeparator5, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 160, 10, 129));
 
         spinZOrder.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         spinZOrder.setName("spinZOrder"); // NOI18N
@@ -390,7 +398,7 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
                 spinZOrderStateChanged(evt);
             }
         });
-        add(spinZOrder, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 260, 50, -1));
+        add(spinZOrder, new org.netbeans.lib.awtextra.AbsoluteConstraints(68, 260, 50, -1));
 
         labelZ1.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         labelZ1.setText(bundle.getString("LAYER")); // NOI18N
@@ -430,7 +438,7 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
                 tglClockActionPerformed(evt);
             }
         });
-        add(tglClock, new org.netbeans.lib.awtextra.AbsoluteConstraints(62, 125, 55, 20));
+        add(tglClock, new org.netbeans.lib.awtextra.AbsoluteConstraints(62, 106, 55, 20));
 
         tglQRCode.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/qrcode.png"))); // NOI18N
         tglQRCode.setToolTipText("Switch to QRCode mode.");
@@ -442,7 +450,25 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
                 tglQRCodeActionPerformed(evt);
             }
         });
-        add(tglQRCode, new org.netbeans.lib.awtextra.AbsoluteConstraints(7, 125, 55, 20));
+        add(tglQRCode, new org.netbeans.lib.awtextra.AbsoluteConstraints(7, 106, 55, 20));
+
+        jCheckBox1.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
+        jCheckBox1.setText("Lock A/R ");
+        jCheckBox1.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        jCheckBox1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/LockButton-open_small.png"))); // NOI18N
+        jCheckBox1.setName("jCheckBox1"); // NOI18N
+        jCheckBox1.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/LockButton-open_small.png"))); // NOI18N
+        jCheckBox1.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/LockButton-close_small.png"))); // NOI18N
+        jCheckBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBox1ActionPerformed(evt);
+            }
+        });
+        add(jCheckBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(61, 241, -1, -1));
+
+        jSeparator8.setName("jSeparator8"); // NOI18N
+        jSeparator8.setPreferredSize(new java.awt.Dimension(48, 10));
+        add(jSeparator8, new org.netbeans.lib.awtextra.AbsoluteConstraints(126, 249, 150, 10));
 
         getAccessibleContext().setAccessibleParent(this);
     }// </editor-fold>//GEN-END:initComponents
@@ -537,8 +563,16 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
     }//GEN-LAST:event_spinYStateChanged
 
     private void spinWStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinWStateChanged
-        stream.setWidth((Integer)spinW.getValue());
-        jSlSpinW.setValue((Integer)spinW.getValue());
+        int w = (Integer) spinW.getValue();
+        jSlSpinW.setValue(w);
+        int h = oldH;
+        if (lockRatio){
+            h = (oldH * w) / oldW; 
+            spinH.setValue(h);
+            jSlSpinH.setValue(h);
+        }
+        stream.setWidth(w);
+        stream.setHeight(h);
     }//GEN-LAST:event_spinWStateChanged
 
     private void spinHStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinHStateChanged
@@ -557,8 +591,17 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
     }//GEN-LAST:event_jSlSpinYStateChanged
 
     private void jSlSpinWStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlSpinWStateChanged
-        stream.setWidth(jSlSpinW.getValue());
-        spinW.setValue(jSlSpinW.getValue());
+        int w = (Integer) jSlSpinW.getValue();
+        spinW.setValue(w);
+        int h = oldH;
+        if (lockRatio){
+            h = (oldH * w) / oldW; 
+            spinH.setValue(h);
+            jSlSpinH.setValue(h);
+            
+        }
+        stream.setWidth(w);
+        stream.setHeight(h);
     }//GEN-LAST:event_jSlSpinWStateChanged
 
     private void jSlSpinHStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlSpinHStateChanged
@@ -618,15 +661,31 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
         }
     }//GEN-LAST:event_tglQRCodeActionPerformed
 
+    private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
+        if (jCheckBox1.isSelected()){
+            spinH.setEnabled(false);
+            jSlSpinH.setEnabled(false);
+            lockRatio = true;
+            oldW = stream.getWidth();
+            oldH = stream.getHeight();
+        } else {
+            spinH.setEnabled(true);
+            jSlSpinH.setEnabled(true);
+            lockRatio = false;
+        }
+    }//GEN-LAST:event_jCheckBox1ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnSelectColor;
     private javax.swing.JComboBox cboFonts;
+    private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JSeparator jSeparator3;
     private javax.swing.JSeparator jSeparator4;
     private javax.swing.JSeparator jSeparator5;
     private javax.swing.JSeparator jSeparator7;
+    private javax.swing.JSeparator jSeparator8;
     private javax.swing.JSlider jSlSpinH;
     private javax.swing.JSlider jSlSpinW;
     private javax.swing.JSlider jSlSpinX;
