@@ -365,7 +365,8 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
         }
         // FF = 0 ; AV = 1 ; GS = 2
         if (ffmpeg && !avconv){
-            if (outFMEbe == 0) {
+            if (outFMEbe == 0 || outFMEbe == 1) {
+                outFMEbe = 0;
                 tglFFmpeg.setSelected(true);
                 tglAVconv.setEnabled(false);
                 tglGst.setEnabled(true);
@@ -394,7 +395,8 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
                     break;
             }
         } else if (!ffmpeg && avconv){
-            if (outFMEbe == 1) {
+            if (outFMEbe == 1 || outFMEbe == 0) {
+                outFMEbe = 1;
                 tglAVconv.setSelected(true);
                 tglFFmpeg.setEnabled(false);
                 tglGst.setEnabled(true);
@@ -1382,7 +1384,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
             } 
         } catch (IOException | InterruptedException | NumberFormatException e) {
         }
-        return "ubuntu";
+        return distro;
     }
     
     @SuppressWarnings("unchecked")
