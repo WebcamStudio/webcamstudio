@@ -46,7 +46,7 @@ public class FrameBuffer {
     }
     public Frame pop(){
         while(!abort && frameCounter < 1){
-            Tools.sleep(30);
+            Tools.sleep(10);
         }
         frameCounter--;
         return buffer.get(currentIndex);

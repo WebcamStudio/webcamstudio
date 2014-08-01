@@ -285,11 +285,17 @@
             <Component class="javax.swing.JToggleButton" name="tglLockRatio">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/webcamstudio/resources/tango/LockButton.png"/>
+                  <Image iconType="3" name="/webcamstudio/resources/tango/LockButton-open_small.png"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Aspect Ratio"/>
+                <Property name="text" type="java.lang.String" value=" Aspect Ratio"/>
                 <Property name="toolTipText" type="java.lang.String" value="Lock Mixer Aspect Ratio"/>
                 <Property name="name" type="java.lang.String" value="tglLockRatio" noResource="true"/>
+                <Property name="rolloverIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/webcamstudio/resources/tango/LockButton-open_small.png"/>
+                </Property>
+                <Property name="selectedIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/webcamstudio/resources/tango/LockButton-close_small.png"/>
+                </Property>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="tglLockRatioActionPerformed"/>

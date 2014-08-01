@@ -10,17 +10,28 @@
  */
 package webcamstudio.components;
 
+import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
+import javax.swing.Painter;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.UIDefaults;
+import javax.swing.UIManager;
+import webcamstudio.streams.SourceAudioSource;
 import webcamstudio.streams.SourceImage;
 import webcamstudio.streams.SourceImageGif;
 import webcamstudio.streams.SourceImageU;
 import webcamstudio.streams.SourceMovie;
-import webcamstudio.streams.SourceAudioSource;
+import webcamstudio.streams.SourceMusic;
 import webcamstudio.streams.SourceWebcam;
 import webcamstudio.streams.Stream;
 
@@ -35,6 +46,11 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener {
     Stream stream = null;
     Viewer viewer = new Viewer();
     float volume = 0;
+    BufferedImage icon = null;
+    boolean lockRatio = false;
+    boolean muted = false;
+    int oldW ;
+    int oldH ;
     
 
     /** Creates new form StreamPanel
@@ -43,6 +59,48 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener {
 
         initComponents();
         
+        oldW = stream.getWidth();
+        oldH = stream.getHeight();
+        
+        try {
+            icon = ImageIO.read(getClass().getResource("/webcamstudio/resources/tango/speaker4.png"));
+        } catch (IOException ex) {
+            Logger.getLogger(StreamPanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        UIDefaults sliderDefaults = new UIDefaults();
+        sliderDefaults.put("Slider.paintValue", true);
+        sliderDefaults.put("Slider.thumbHeight", 13);
+        sliderDefaults.put("Slider.thumbWidth", 13);
+        
+        sliderDefaults.put("Slider:SliderThumb.backgroundPainter", new Painter() {
+
+            @Override
+            public void paint(Graphics2D g, Object object, int w, int h) {
+                g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g.drawImage(icon, 0, -5, null);
+            }
+            
+        });
+        
+        sliderDefaults.put("Slider:SliderTrack.backgroundPainter", new Painter() {
+            
+            @Override
+                public void paint(Graphics2D g, Object object, int w, int h) {
+                g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g.setStroke(new BasicStroke(2f));
+                g.setColor(Color.WHITE);
+                g.drawRoundRect(0, 2, w-1, 1, 1, 1);
+            }
+
+        });
+        
+        jSlSpinV.putClientProperty("JComponent.sizeVariant", "small");
+        jSlSpinV.putClientProperty("Nimbus.Overrides",sliderDefaults);
+        jSlSpinV.putClientProperty("Nimbus.Overrides.InheritDefaults", false);
+        jSlSpinV.setOpaque(true);
+        
+        spinVolume.setVisible(false);
+        jSlSpinV.setVisible(stream.hasAudio());
         viewer.setOpaque(true);
         viewer.setVisible(true);
         viewer.setBackground(Color.black);
@@ -102,23 +160,37 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener {
             jSlSpinCW.setEnabled(false);
             spinOpacity.setEnabled(false);
             jSlSpinO.setEnabled(false);
-        }        
-        if (stream instanceof SourceWebcam) { 
+        }
+        if (stream instanceof SourceWebcam) {
+            jlbDuration.setVisible(false);
             tglAudio.setVisible(false);
+            tglVideo.setVisible(false);
             tglPause.setVisible(false);
             this.add(tglActiveStream, new org.netbeans.lib.awtextra.AbsoluteConstraints(7, 120, 110, 20));
         } else if (stream instanceof SourceAudioSource) {
+            jlbDuration.setVisible(false);
             tglAudio.setVisible(true);
             tglPause.setVisible(false);
-            this.add(tglActiveStream, new org.netbeans.lib.awtextra.AbsoluteConstraints(7, 120, 110, 20));
+            this.add(tglAudio, new org.netbeans.lib.awtextra.AbsoluteConstraints(87, 120, 30, 20));
+            this.add(tglVideo, new org.netbeans.lib.awtextra.AbsoluteConstraints(57, 120, 30, 20));
+        } else if (stream instanceof SourceMusic) {
+            tglAudio.setVisible(false);
+            tglPause.setVisible(true);
+            this.add(tglVideo, new org.netbeans.lib.awtextra.AbsoluteConstraints(57, 120, 30, 20));
         } else if (stream instanceof SourceMovie) {
             tglAudio.setVisible(true);
+            tglVideo.setVisible(false);
         } else if (stream instanceof SourceImage || stream instanceof SourceImageU || stream instanceof SourceImageGif){
+            jlbDuration.setVisible(false);
             tglAudio.setVisible(false);
             tglPause.setVisible(false);
+            tglVideo.setVisible(false);
             this.add(tglActiveStream, new org.netbeans.lib.awtextra.AbsoluteConstraints(7, 120, 110, 20));
         } else {
+            jlbDuration.setVisible(false);
             tglAudio.setVisible(false);
+            tglVideo.setVisible(false);
+            this.add(tglActiveStream, new org.netbeans.lib.awtextra.AbsoluteConstraints(7, 120, 78, 20));
         }
     }
 //    public Viewer detachViewer(){
@@ -218,7 +290,7 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener {
 
         panPreview = new javax.swing.JPanel();
         jlbDuration = new javax.swing.JLabel();
-        tglAudio = new javax.swing.JToggleButton();
+        jSlSpinV = new javax.swing.JSlider();
         spinX = new javax.swing.JSpinner();
         spinY = new javax.swing.JSpinner();
         spinW = new javax.swing.JSpinner();
@@ -232,7 +304,6 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener {
         labelW = new javax.swing.JLabel();
         labelH = new javax.swing.JLabel();
         labelO = new javax.swing.JLabel();
-        labelV = new javax.swing.JLabel();
         labelZ = new javax.swing.JLabel();
         labelCW = new javax.swing.JLabel();
         spinW1 = new javax.swing.JSpinner();
@@ -249,7 +320,6 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener {
         jSlSpinW = new javax.swing.JSlider();
         jSlSpinH = new javax.swing.JSlider();
         jSlSpinO = new javax.swing.JSlider();
-        jSlSpinV = new javax.swing.JSlider();
         jSlSpinVD = new javax.swing.JSlider();
         jSlSpinAD = new javax.swing.JSlider();
         jSlSpinSeek = new javax.swing.JSlider();
@@ -263,6 +333,10 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener {
         jSeparator5 = new javax.swing.JSeparator();
         jLabel2 = new javax.swing.JLabel();
         tglPause = new javax.swing.JToggleButton();
+        tglAudio = new javax.swing.JToggleButton();
+        jCheckBox1 = new javax.swing.JCheckBox();
+        jSeparator6 = new javax.swing.JSeparator();
+        tglVideo = new javax.swing.JToggleButton();
 
         setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
         setMaximumSize(new java.awt.Dimension(298, 440));
@@ -279,27 +353,35 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener {
         panPreview.setPreferredSize(new java.awt.Dimension(90, 60));
         panPreview.setLayout(new java.awt.BorderLayout());
 
+        jlbDuration.setBackground(java.awt.Color.black);
         jlbDuration.setFont(new java.awt.Font("Ubuntu Mono", 0, 12)); // NOI18N
         jlbDuration.setForeground(java.awt.Color.white);
         jlbDuration.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jlbDuration.setText("Sec.");
         jlbDuration.setName("jlbDuration"); // NOI18N
+        jlbDuration.setOpaque(true);
         panPreview.add(jlbDuration, java.awt.BorderLayout.PAGE_END);
 
-        tglAudio.setFont(new java.awt.Font("Ubuntu", 0, 12)); // NOI18N
-        tglAudio.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/audio-volume-muted.png"))); // NOI18N
-        tglAudio.setToolTipText("No Audio Switch (Force Only Video Source)");
-        tglAudio.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        tglAudio.setMaximumSize(new java.awt.Dimension(40, 32));
-        tglAudio.setMinimumSize(new java.awt.Dimension(0, 0));
-        tglAudio.setName("tglAudio"); // NOI18N
-        tglAudio.setPreferredSize(new java.awt.Dimension(20, 20));
-        tglAudio.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                tglAudioActionPerformed(evt);
+        jSlSpinV.setBackground(java.awt.Color.black);
+        jSlSpinV.setForeground(java.awt.Color.white);
+        jSlSpinV.setMaximum(200);
+        jSlSpinV.setToolTipText("Volume Control - Double Click to Mute/Unmute");
+        jSlSpinV.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jSlSpinV.setMaximumSize(new java.awt.Dimension(110, 30));
+        jSlSpinV.setMinimumSize(new java.awt.Dimension(110, 30));
+        jSlSpinV.setName("jSlSpinV"); // NOI18N
+        jSlSpinV.setPreferredSize(new java.awt.Dimension(110, 25));
+        jSlSpinV.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jSlSpinVMouseClicked(evt);
             }
         });
-        panPreview.add(tglAudio, java.awt.BorderLayout.PAGE_START);
+        jSlSpinV.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSlSpinVStateChanged(evt);
+            }
+        });
+        panPreview.add(jSlSpinV, java.awt.BorderLayout.PAGE_START);
 
         add(panPreview, new org.netbeans.lib.awtextra.AbsoluteConstraints(7, 7, 110, 111));
 
@@ -346,7 +428,7 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener {
                 spinOpacityStateChanged(evt);
             }
         });
-        add(spinOpacity, new org.netbeans.lib.awtextra.AbsoluteConstraints(68, 220, 50, -1));
+        add(spinOpacity, new org.netbeans.lib.awtextra.AbsoluteConstraints(68, 240, 50, -1));
 
         spinVolume.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         spinVolume.setName("spinVolume"); // NOI18N
@@ -355,7 +437,7 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener {
                 spinVolumeStateChanged(evt);
             }
         });
-        add(spinVolume, new org.netbeans.lib.awtextra.AbsoluteConstraints(68, 240, 50, -1));
+        add(spinVolume, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 7, 50, -1));
 
         tglActiveStream.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-start.png"))); // NOI18N
         tglActiveStream.setName("tglActiveStream"); // NOI18N
@@ -366,7 +448,7 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener {
                 tglActiveStreamActionPerformed(evt);
             }
         });
-        add(tglActiveStream, new org.netbeans.lib.awtextra.AbsoluteConstraints(7, 120, 80, 20));
+        add(tglActiveStream, new org.netbeans.lib.awtextra.AbsoluteConstraints(7, 120, 50, 20));
 
         spinZOrder.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         spinZOrder.setName("spinZOrder"); // NOI18N
@@ -401,12 +483,7 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener {
         labelO.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         labelO.setText(bundle.getString("OPACITY")); // NOI18N
         labelO.setName("labelO"); // NOI18N
-        add(labelO, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 230, 40, -1));
-
-        labelV.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
-        labelV.setText(bundle.getString("VOLUME")); // NOI18N
-        labelV.setName("labelV"); // NOI18N
-        add(labelV, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 250, 40, 9));
+        add(labelO, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 250, 40, -1));
 
         labelZ.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         labelZ.setText(bundle.getString("LAYER")); // NOI18N
@@ -534,11 +611,10 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener {
         add(jSlSpinCH, new org.netbeans.lib.awtextra.AbsoluteConstraints(127, 310, 150, 20));
 
         jSlSpinW.setMaximum(1920);
+        jSlSpinW.setMinimum(1);
         jSlSpinW.setSnapToTicks(true);
-        jSlSpinW.setValue(0);
         jSlSpinW.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jSlSpinW.setName("jSlSpinW"); // NOI18N
-        jSlSpinW.setOpaque(true);
         jSlSpinW.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 jSlSpinWStateChanged(evt);
@@ -551,7 +627,6 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener {
         jSlSpinH.setValue(0);
         jSlSpinH.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jSlSpinH.setName("jSlSpinH"); // NOI18N
-        jSlSpinH.setOpaque(true);
         jSlSpinH.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 jSlSpinHStateChanged(evt);
@@ -567,17 +642,7 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener {
                 jSlSpinOStateChanged(evt);
             }
         });
-        add(jSlSpinO, new org.netbeans.lib.awtextra.AbsoluteConstraints(127, 220, 150, 20));
-
-        jSlSpinV.setMaximum(200);
-        jSlSpinV.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        jSlSpinV.setName("jSlSpinV"); // NOI18N
-        jSlSpinV.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                jSlSpinVStateChanged(evt);
-            }
-        });
-        add(jSlSpinV, new org.netbeans.lib.awtextra.AbsoluteConstraints(127, 240, 150, 20));
+        add(jSlSpinO, new org.netbeans.lib.awtextra.AbsoluteConstraints(127, 240, 150, 20));
 
         jSlSpinVD.setMaximum(10000);
         jSlSpinVD.setPaintLabels(true);
@@ -644,7 +709,7 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener {
 
         jSeparator1.setName("jSeparator1"); // NOI18N
         jSeparator1.setPreferredSize(new java.awt.Dimension(48, 10));
-        add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(126, 135, 150, 10));
+        add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(126, 229, 150, 10));
 
         jSeparator2.setOrientation(javax.swing.SwingConstants.VERTICAL);
         jSeparator2.setName("jSeparator2"); // NOI18N
@@ -678,11 +743,66 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener {
         });
         add(tglPause, new org.netbeans.lib.awtextra.AbsoluteConstraints(87, 120, 30, 20));
 
+        tglAudio.setFont(new java.awt.Font("Ubuntu", 0, 12)); // NOI18N
+        tglAudio.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/audio-volume-muted.png"))); // NOI18N
+        tglAudio.setToolTipText("No Audio Switch (Force Only Video Source)");
+        tglAudio.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        tglAudio.setMaximumSize(new java.awt.Dimension(40, 32));
+        tglAudio.setMinimumSize(new java.awt.Dimension(0, 0));
+        tglAudio.setName("tglAudio"); // NOI18N
+        tglAudio.setPreferredSize(new java.awt.Dimension(29, 53));
+        tglAudio.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tglAudioActionPerformed(evt);
+            }
+        });
+        add(tglAudio, new org.netbeans.lib.awtextra.AbsoluteConstraints(57, 120, 30, 20));
+
+        jCheckBox1.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
+        jCheckBox1.setText("Lock A/R ");
+        jCheckBox1.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        jCheckBox1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/LockButton-open_small.png"))); // NOI18N
+        jCheckBox1.setName("jCheckBox1"); // NOI18N
+        jCheckBox1.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/LockButton-open_small.png"))); // NOI18N
+        jCheckBox1.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/LockButton-close_small.png"))); // NOI18N
+        jCheckBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBox1ActionPerformed(evt);
+            }
+        });
+        add(jCheckBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(61, 221, -1, -1));
+
+        jSeparator6.setName("jSeparator6"); // NOI18N
+        jSeparator6.setPreferredSize(new java.awt.Dimension(48, 10));
+        add(jSeparator6, new org.netbeans.lib.awtextra.AbsoluteConstraints(126, 135, 150, 10));
+
+        tglVideo.setFont(new java.awt.Font("Ubuntu", 0, 12)); // NOI18N
+        tglVideo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/edit-delete.png"))); // NOI18N
+        tglVideo.setToolTipText("No Video Switch (Force Only Audio Source)");
+        tglVideo.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        tglVideo.setMaximumSize(new java.awt.Dimension(40, 32));
+        tglVideo.setMinimumSize(new java.awt.Dimension(26, 30));
+        tglVideo.setName("tglVideo"); // NOI18N
+        tglVideo.setPreferredSize(new java.awt.Dimension(20, 20));
+        tglVideo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tglVideoActionPerformed(evt);
+            }
+        });
+        add(tglVideo, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 40, -1, -1));
+
         getAccessibleContext().setAccessibleDescription("");
         getAccessibleContext().setAccessibleParent(this);
     }// </editor-fold>//GEN-END:initComponents
     private void tglActiveStreamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglActiveStreamActionPerformed
         if (tglActiveStream.isSelected()) {
+            if (tglVideo.isSelected()){
+                stream.setOnlyAudio(true);
+            } else {
+                stream.setOnlyAudio(false);
+            }
+//            System.out.println("Play Volume: " + volume);
+            tglVideo.setEnabled(false);
             this.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.green));
             spinW1.setEnabled(false);
             jSlSpinCW.setEnabled(false);
@@ -709,11 +829,25 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener {
             jSlSpinAD.setEnabled(stream.hasAudio());
             spinSeek.setEnabled(stream.needSeekCTRL());
             jSlSpinSeek.setEnabled(stream.needSeekCTRL());
-            tglAudio.setEnabled(true);
+            if (tglAudio.isSelected()) {
+                tglAudio.setEnabled(true);
+            } else if (tglVideo.isSelected()) {
+                tglVideo.setEnabled(true);
+            } else {
+                tglAudio.setEnabled(true);
+                tglVideo.setEnabled(true);
+            }
             tglPause.setSelected(false);
             tglPause.setEnabled(false);
+            if (stream.getLoop()) {
+                stream.setLoop(false);
+                stream.stop();
+                stream.setLoop(true);
+                stream.setVolume(volume);
+            } else {
             stream.stop();
             stream.setVolume(volume);
+            }
         }
     }//GEN-LAST:event_tglActiveStreamActionPerformed
 
@@ -728,8 +862,18 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener {
     }//GEN-LAST:event_spinZOrderStateChanged
 
     private void spinWStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinWStateChanged
-        stream.setWidth((Integer)spinW.getValue());
-        jSlSpinW.setValue((Integer)spinW.getValue());
+        int w = (Integer) spinW.getValue();
+        jSlSpinW.setValue(w);
+        int h = oldH;
+        if (lockRatio){
+            h = (oldH * w) / oldW; 
+            spinH.setValue(h);
+            jSlSpinH.setValue(h);
+        }
+        stream.setWidth(w);
+        stream.setHeight(h);
+//        System.out.println("W: "+w);
+//        System.out.println("H: "+h);
     }//GEN-LAST:event_spinWStateChanged
 
     private void spinHStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinHStateChanged
@@ -808,8 +952,19 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener {
     }//GEN-LAST:event_jSlSpinCHStateChanged
 
     private void jSlSpinWStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlSpinWStateChanged
-        stream.setWidth(jSlSpinW.getValue());
-        spinW.setValue(jSlSpinW.getValue());
+        int w = (Integer) jSlSpinW.getValue();
+        spinW.setValue(w);
+        int h = oldH;
+        if (lockRatio){
+            h = (oldH * w) / oldW; 
+            spinH.setValue(h);
+            jSlSpinH.setValue(h);
+            
+        }
+        stream.setWidth(w);
+        stream.setHeight(h);
+//        System.out.println("W: "+w);
+//        System.out.println("H: "+h);
     }//GEN-LAST:event_jSlSpinWStateChanged
 
     private void jSlSpinHStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlSpinHStateChanged
@@ -824,7 +979,7 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener {
 
     private void jSlSpinVStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlSpinVStateChanged
         spinVolume.setValue(jSlSpinV.getValue());
-        volume = jSlSpinV.getValue();
+        volume = jSlSpinV.getValue()/100f;
     }//GEN-LAST:event_jSlSpinVStateChanged
 
     private void jSlSpinVDStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlSpinVDStateChanged
@@ -851,9 +1006,11 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener {
         if (tglAudio.isSelected()){
             stream.setHasAudio(false);
             stream.setOnlyVideo(true);
+            tglVideo.setEnabled(false);
         } else {
             stream.setHasAudio(true);
             stream.setOnlyVideo(false);
+            tglVideo.setEnabled(true);
         }
     }//GEN-LAST:event_tglAudioActionPerformed
 
@@ -868,13 +1025,129 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener {
         }
     }//GEN-LAST:event_tglPauseActionPerformed
 
+    private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
+        if (jCheckBox1.isSelected()){
+            spinH.setEnabled(false);
+            jSlSpinH.setEnabled(false);
+            lockRatio = true;
+            oldW = stream.getWidth();
+            oldH = stream.getHeight();
+        } else {
+            spinH.setEnabled(true);
+            jSlSpinH.setEnabled(true);
+            lockRatio = false;
+        }
+    }//GEN-LAST:event_jCheckBox1ActionPerformed
+
+    private void jSlSpinVMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jSlSpinVMouseClicked
+        if (evt.getClickCount() == 2 && !evt.isConsumed()) {
+            evt.consume();
+            if (muted) {
+                stream.setVolume(volume);
+//                System.out.println("Reset Volume to = "+volume);
+                jSlSpinV.setEnabled(true);
+                try {
+                icon = ImageIO.read(getClass().getResource("/webcamstudio/resources/tango/speaker4.png"));
+            } catch (IOException ex) {
+                Logger.getLogger(StreamPanel.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            UIDefaults sliderDefaults = new UIDefaults();
+            sliderDefaults.put("Slider.paintValue", true);
+            sliderDefaults.put("Slider.thumbHeight", 13);
+            sliderDefaults.put("Slider.thumbWidth", 13);
+
+            sliderDefaults.put("Slider:SliderThumb.backgroundPainter", new Painter() {
+
+                @Override
+                public void paint(Graphics2D g, Object object, int w, int h) {
+                    g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                    g.drawImage(icon, 0, -5, null);
+                }
+            });
+
+            sliderDefaults.put("Slider:SliderTrack.backgroundPainter", new Painter() {
+                @Override
+                    public void paint(Graphics2D g, Object object, int w, int h) {
+                    g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                    g.setStroke(new BasicStroke(2f));
+                    g.setColor(Color.WHITE);
+                    g.drawRoundRect(0, 2, w-1, 1, 1, 1);
+                }
+            });
+            
+            jSlSpinV.putClientProperty("JComponent.sizeVariant", "small");
+            jSlSpinV.putClientProperty("Nimbus.Overrides",sliderDefaults);
+            jSlSpinV.putClientProperty("Nimbus.Overrides.InheritDefaults", false);
+            muted = false;
+
+            } else {
+                jSlSpinV.setEnabled(false);
+                Object value = spinVolume.getValue();
+                float v = 0;
+                if (value instanceof Float){
+                    v = (Float)value;
+                } else if (value instanceof Integer){
+                    v = ((Number)value).floatValue();
+                }
+                volume = v/100f;
+//                System.out.println("Stored Volume = "+volume);
+                stream.setVolume(0);
+                try {
+                    icon = ImageIO.read(getClass().getResource("/webcamstudio/resources/tango/speaker4-mute.png"));
+                } catch (IOException ex) {
+                    Logger.getLogger(StreamPanel.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                UIDefaults sliderDefaults = new UIDefaults();
+                
+                sliderDefaults.put("Slider.paintValue", true);
+                sliderDefaults.put("Slider.thumbHeight", 13);
+                sliderDefaults.put("Slider.thumbWidth", 13);
+                sliderDefaults.put("Slider:SliderThumb.backgroundPainter", new Painter() {
+
+                    @Override
+                    public void paint(Graphics2D g, Object object, int w, int h) {
+                        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                        g.drawImage(icon, 0, -5, null);
+                    }
+                });
+
+                sliderDefaults.put("Slider:SliderTrack.backgroundPainter", new Painter() {
+                    @Override
+                        public void paint(Graphics2D g, Object object, int w, int h) {
+                        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                        g.setStroke(new BasicStroke(2f));
+                        g.setColor(Color.GRAY);
+                        g.fillRoundRect(0, 2, w-1, 2, 2, 2);
+                        g.setColor(Color.WHITE);
+                        g.drawRoundRect(0, 2, w-1, 1, 1, 1);
+                    }
+                });	
+                
+                jSlSpinV.putClientProperty("JComponent.sizeVariant", "small");
+                jSlSpinV.putClientProperty("Nimbus.Overrides",sliderDefaults);
+                jSlSpinV.putClientProperty("Nimbus.Overrides.InheritDefaults", false);
+                muted = true;
+            }
+        }
+    }//GEN-LAST:event_jSlSpinVMouseClicked
+
+    private void tglVideoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglVideoActionPerformed
+        if (tglVideo.isSelected()) {
+            tglAudio.setEnabled(false);
+        } else {
+            tglAudio.setEnabled(true);
+        }
+    }//GEN-LAST:event_tglVideoActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
     private javax.swing.JSeparator jSeparator4;
     private javax.swing.JSeparator jSeparator5;
+    private javax.swing.JSeparator jSeparator6;
     private javax.swing.JSlider jSlSpinAD;
     private javax.swing.JSlider jSlSpinCH;
     private javax.swing.JSlider jSlSpinCW;
@@ -894,7 +1167,6 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener {
     private javax.swing.JLabel labelH;
     private javax.swing.JLabel labelO;
     private javax.swing.JLabel labelSeek;
-    private javax.swing.JLabel labelV;
     private javax.swing.JLabel labelVD;
     private javax.swing.JLabel labelW;
     private javax.swing.JLabel labelX;
@@ -916,6 +1188,7 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener {
     private javax.swing.JToggleButton tglActiveStream;
     private javax.swing.JToggleButton tglAudio;
     private javax.swing.JToggleButton tglPause;
+    private javax.swing.JToggleButton tglVideo;
     // End of variables declaration//GEN-END:variables
 
     @Override

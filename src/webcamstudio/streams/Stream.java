@@ -118,6 +118,7 @@ public abstract class Stream implements Callable<Frame>{
     protected boolean protectedCam = false;
     protected boolean isOAudio = false;
     protected boolean isOVideo = false;
+    protected boolean loop = false;
     protected String ipcUser = null;
     protected String ipcPWD = null;
     protected String chNameDVB = null;
@@ -334,7 +335,14 @@ public abstract class Stream implements Callable<Frame>{
     public void setDesktopH(int desktopH) {
         this.desktopH = desktopH;
     }
-
+    
+    public void setLoop (boolean sLoop) {
+        loop = sLoop;
+    }
+    
+    public boolean getLoop () {
+        return loop;
+    }
 
     public void setListener(Listener l) {
         listener = l;

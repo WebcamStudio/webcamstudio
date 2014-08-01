@@ -46,6 +46,16 @@ public class SourceURL extends Stream {
     
     @Override
     public void stop() {
+        if (loop){
+            if (capture != null) {
+                capture.stop();
+                capture = null;
+            }
+            if (this.getBackFF()){
+                this.setComm("FF");
+            }
+            this.read();
+        } else {
         isPlaying = false;
         MasterFrameBuilder.unregister(this);
         if (capture != null) {
@@ -56,7 +66,9 @@ public class SourceURL extends Stream {
             this.setComm("FF");
         }
         isStillPicture = false;
+        }
     }
+    
     @Override
     public boolean needSeek() {
         return needSeekCTRL=false;

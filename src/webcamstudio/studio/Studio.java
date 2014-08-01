@@ -59,6 +59,7 @@ import webcamstudio.sources.effects.Mirror2;
 import webcamstudio.sources.effects.Mirror3;
 import webcamstudio.sources.effects.Mirror4;
 import webcamstudio.sources.effects.Mosaic;
+import webcamstudio.sources.effects.MotionAlpha;
 import webcamstudio.sources.effects.NoBackground;
 import webcamstudio.sources.effects.Opacity;
 import webcamstudio.sources.effects.Perspective;
@@ -551,6 +552,10 @@ public class Studio {
                 
             } else if (sClazz.endsWith("WaterFx")) {
                 effeX = new WaterFx();
+                readObjectFx(effeX, SuperChild);
+                
+            } else if (sClazz.endsWith("MotionAlpha")) {
+                effeX = new MotionAlpha();
                 readObjectFx(effeX, SuperChild);
                 
             }

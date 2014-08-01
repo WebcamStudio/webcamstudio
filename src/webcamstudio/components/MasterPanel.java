@@ -168,10 +168,12 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
             }
         });
 
-        tglLockRatio.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/LockButton.png"))); // NOI18N
-        tglLockRatio.setText("Aspect Ratio");
+        tglLockRatio.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/LockButton-open_small.png"))); // NOI18N
+        tglLockRatio.setText(" Aspect Ratio");
         tglLockRatio.setToolTipText("Lock Mixer Aspect Ratio");
         tglLockRatio.setName("tglLockRatio"); // NOI18N
+        tglLockRatio.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/LockButton-open_small.png"))); // NOI18N
+        tglLockRatio.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/LockButton-close_small.png"))); // NOI18N
         tglLockRatio.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 tglLockRatioActionPerformed(evt);

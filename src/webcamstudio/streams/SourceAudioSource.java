@@ -95,7 +95,7 @@ public class SourceAudioSource extends Stream {
 
     @Override
     public boolean hasVideo() {
-        return true;
+        return !this.isOnlyAudio();
     }
     
     @Override
@@ -104,7 +104,7 @@ public class SourceAudioSource extends Stream {
         if (capture != null) {
             f = capture.getFrame();
             if (f != null) {
-//                setAudioLevel(f);
+                setAudioLevel(f);
                 lastPreview.getGraphics().drawImage(f.getImage(), 0, 0, null);
             }
         }

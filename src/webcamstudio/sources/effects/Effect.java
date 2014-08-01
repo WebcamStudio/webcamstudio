@@ -51,6 +51,7 @@ public abstract class Effect {
         retValue.put(ComboGhost.class.getSimpleName(), new ComboGhost());
         retValue.put(WaterFx.class.getSimpleName(), new WaterFx());
         retValue.put(FaceDetectorAlpha.class.getSimpleName(), new FaceDetectorAlpha());
+        retValue.put(MotionAlpha.class.getSimpleName(), new MotionAlpha());
         retValue.put(Ghosting.class.getSimpleName(), new Ghosting());
         return retValue;
     }

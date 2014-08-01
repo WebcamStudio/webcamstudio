@@ -363,8 +363,6 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
         } else {
             cboAudioHz.setSelectedItem("44100Hz");
         }
-//        boolean ffmpeg = Screen.ffmpegDetected();
-//        boolean avconv = Screen.avconvDetected();
         // FF = 0 ; AV = 1 ; GS = 2
         if (ffmpeg && !avconv){
             if (outFMEbe == 0) {
@@ -496,13 +494,10 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
         cboAudioHz = new javax.swing.JComboBox();
         jSeparator7 = new javax.swing.JToolBar.Separator();
         lblFFmpeg3 = new javax.swing.JLabel();
-        jSeparator13 = new javax.swing.JToolBar.Separator();
         tglFFmpeg = new javax.swing.JToggleButton();
         lblFFmpeg = new javax.swing.JLabel();
-        jSeparator12 = new javax.swing.JToolBar.Separator();
         tglAVconv = new javax.swing.JToggleButton();
         lblAVconv = new javax.swing.JLabel();
-        jSeparator11 = new javax.swing.JToolBar.Separator();
         tglGst = new javax.swing.JToggleButton();
         lblGst = new javax.swing.JLabel();
         jSeparator10 = new javax.swing.JToolBar.Separator();
@@ -932,16 +927,12 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
         jSeparator7.setOpaque(true);
         mainToolbar.add(jSeparator7);
 
-        lblFFmpeg3.setFont(new java.awt.Font("Ubuntu Condensed", 0, 14)); // NOI18N
-        lblFFmpeg3.setText("OUT BackEnd:");
+        lblFFmpeg3.setBackground(new java.awt.Color(102, 102, 102));
+        lblFFmpeg3.setFont(new java.awt.Font("Ubuntu Condensed", 1, 14)); // NOI18N
+        lblFFmpeg3.setText("OUT BackEnd: ");
+        lblFFmpeg3.setToolTipText("Select Available Back-Ends");
         lblFFmpeg3.setName("lblFFmpeg3"); // NOI18N
         mainToolbar.add(lblFFmpeg3);
-
-        jSeparator13.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        jSeparator13.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
-        jSeparator13.setName("jSeparator13"); // NOI18N
-        jSeparator13.setOpaque(true);
-        mainToolbar.add(jSeparator13);
 
         tglFFmpeg.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/FFmpeg.png"))); // NOI18N
         tglFFmpeg.setToolTipText("Use FFmpeg for WS Outputs");
@@ -962,15 +953,9 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
         mainToolbar.add(tglFFmpeg);
 
         lblFFmpeg.setFont(new java.awt.Font("Ubuntu Condensed", 0, 12)); // NOI18N
-        lblFFmpeg.setText("FFmpeg");
+        lblFFmpeg.setText("FFmpeg  ");
         lblFFmpeg.setName("lblFFmpeg"); // NOI18N
         mainToolbar.add(lblFFmpeg);
-
-        jSeparator12.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        jSeparator12.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
-        jSeparator12.setName("jSeparator12"); // NOI18N
-        jSeparator12.setOpaque(true);
-        mainToolbar.add(jSeparator12);
 
         tglAVconv.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/FFmpeg.png"))); // NOI18N
         tglAVconv.setToolTipText("Use AVconv for WS Outputs");
@@ -991,15 +976,9 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
         mainToolbar.add(tglAVconv);
 
         lblAVconv.setFont(new java.awt.Font("Ubuntu Condensed", 0, 12)); // NOI18N
-        lblAVconv.setText("AVConv");
+        lblAVconv.setText("AVConv  ");
         lblAVconv.setName("lblAVconv"); // NOI18N
         mainToolbar.add(lblAVconv);
-
-        jSeparator11.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        jSeparator11.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
-        jSeparator11.setName("jSeparator11"); // NOI18N
-        jSeparator11.setOpaque(true);
-        mainToolbar.add(jSeparator11);
 
         tglGst.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/gstreamer.png"))); // NOI18N
         tglGst.setToolTipText("Use GStreamer for WS Outputs");
@@ -1020,6 +999,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
         mainToolbar.add(tglGst);
 
         lblGst.setFont(new java.awt.Font("Ubuntu Condensed", 0, 12)); // NOI18N
+        lblGst.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         lblGst.setText("GStreamer");
         lblGst.setName("lblGst"); // NOI18N
         mainToolbar.add(lblGst);
@@ -1402,7 +1382,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
             } 
         } catch (IOException | InterruptedException | NumberFormatException e) {
         }
-        return distro;
+        return "ubuntu";
     }
     
     @SuppressWarnings("unchecked")
@@ -1855,29 +1835,13 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
     }//GEN-LAST:event_btnAddIPCamActionPerformed
 
     private void tglFFmpegActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglFFmpegActionPerformed
-//        String distro = wsDistroWatch();
         if (tglFFmpeg.isSelected()){
             tglAVconv.setSelected(false);
             tglGst.setSelected(false);
-//            if (distro.toLowerCase().equals("ubuntu")){
-//                int result = JOptionPane.showConfirmDialog(this,"If you use ffmpeg Output under Ubuntu it may Crash WebcamStudio.","Warning !!!", JOptionPane.INFORMATION_MESSAGE, JOptionPane.YES_NO_CANCEL_OPTION);
-//                if (result == JOptionPane.YES_OPTION) {
-//                    outFMEbe = true;
-//                    listenerOP.resetSinks(evt);
-//                    ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "FFmpeg Outputs BkEnd Activated ...");
-//                    ResourceMonitor.getInstance().addMessage(label);
-//                } else {
-//                    outFMEbe = false;
-//                    ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "FFmpeg Outputs BkEnd Deactivated ...");
-//                    ResourceMonitor.getInstance().addMessage(label);
-//                    tglFFmpeg.setSelected(false);
-//                }
-//            } else {
-                outFMEbe = 0;
-                listenerOP.resetSinks(evt);
-                ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "FFmpeg Outputs BkEnd Activated ...");
-                ResourceMonitor.getInstance().addMessage(label);
-//            }
+            outFMEbe = 0;
+            listenerOP.resetSinks(evt);
+            ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "FFmpeg Outputs BkEnd Activated ...");
+            ResourceMonitor.getInstance().addMessage(label);
         } else {
             outFMEbe = 2;
             tglAVconv.setEnabled(avconv);
@@ -1988,25 +1952,10 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
         if (tglAVconv.isSelected()){
             tglFFmpeg.setSelected(false);
             tglGst.setSelected(false);
-//            if (distro.toLowerCase().equals("ubuntu")){
-//                int result = JOptionPane.showConfirmDialog(this,"If you use ffmpeg Output under Ubuntu it may Crash WebcamStudio.","Warning !!!", JOptionPane.INFORMATION_MESSAGE, JOptionPane.YES_NO_CANCEL_OPTION);
-//                if (result == JOptionPane.YES_OPTION) {
-//                    outFMEbe = true;
-//                    listenerOP.resetSinks(evt);
-//                    ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "FFmpeg Outputs BkEnd Activated ...");
-//                    ResourceMonitor.getInstance().addMessage(label);
-//                } else {
-//                    outFMEbe = false;
-//                    ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "FFmpeg Outputs BkEnd Deactivated ...");
-//                    ResourceMonitor.getInstance().addMessage(label);
-//                    tglFFmpeg.setSelected(false);
-//                }
-//            } else {
-                outFMEbe = 1;
-                listenerOP.resetSinks(evt);
-                ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "AVconv Outputs BkEnd Activated ...");
-                ResourceMonitor.getInstance().addMessage(label);
-//            }
+            outFMEbe = 1;
+            listenerOP.resetSinks(evt);
+            ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "AVconv Outputs BkEnd Activated ...");
+            ResourceMonitor.getInstance().addMessage(label);
         } else {
             outFMEbe = 2;
             tglFFmpeg.setEnabled(ffmpeg);
@@ -2022,25 +1971,10 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
         if (tglGst.isSelected()){
             tglFFmpeg.setSelected(false);
             tglAVconv.setSelected(false);
-//            if (distro.toLowerCase().equals("ubuntu")){
-//                int result = JOptionPane.showConfirmDialog(this,"If you use ffmpeg Output under Ubuntu it may Crash WebcamStudio.","Warning !!!", JOptionPane.INFORMATION_MESSAGE, JOptionPane.YES_NO_CANCEL_OPTION);
-//                if (result == JOptionPane.YES_OPTION) {
-//                    outFMEbe = true;
-//                    listenerOP.resetSinks(evt);
-//                    ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "FFmpeg Outputs BkEnd Activated ...");
-//                    ResourceMonitor.getInstance().addMessage(label);
-//                } else {
-//                    outFMEbe = false;
-//                    ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "FFmpeg Outputs BkEnd Deactivated ...");
-//                    ResourceMonitor.getInstance().addMessage(label);
-//                    tglFFmpeg.setSelected(false);
-//                }
-//            } else {
-                outFMEbe = 2;
-                listenerOP.resetSinks(evt);
-                ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "GStreamer Outputs BkEnd Activated ...");
-                ResourceMonitor.getInstance().addMessage(label);
-//            }
+            outFMEbe = 2;
+            listenerOP.resetSinks(evt);
+            ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "GStreamer Outputs BkEnd Activated ...");
+            ResourceMonitor.getInstance().addMessage(label);
         } else {
             if (ffmpeg && !avconv){
                 outFMEbe = 0;
@@ -2167,9 +2101,6 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JToolBar.Separator jSeparator1;
     private javax.swing.JToolBar.Separator jSeparator10;
-    private javax.swing.JToolBar.Separator jSeparator11;
-    private javax.swing.JToolBar.Separator jSeparator12;
-    private javax.swing.JToolBar.Separator jSeparator13;
     private javax.swing.JToolBar.Separator jSeparator2;
     private javax.swing.JToolBar.Separator jSeparator5;
     private javax.swing.JToolBar.Separator jSeparator6;

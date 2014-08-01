@@ -10,12 +10,21 @@
  */
 package webcamstudio.components;
 
+import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
+import javax.swing.Painter;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.UIDefaults;
 import webcamstudio.streams.Stream;
 
 
@@ -29,7 +38,11 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
     Stream stream = null;
     Viewer viewer = new Viewer();
     float volume = 0;
-    
+    BufferedImage icon = null;
+    boolean lockRatio = false;
+    boolean muted = false;
+    int oldW ;
+    int oldH ;
 
     /** Creates new form StreamPanel
      * @param stream */
@@ -37,6 +50,47 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
 
         initComponents();
         
+        oldW = stream.getWidth();
+        oldH = stream.getHeight();
+        
+        try {
+            icon = ImageIO.read(getClass().getResource("/webcamstudio/resources/tango/speaker4.png"));
+        } catch (IOException ex) {
+            Logger.getLogger(StreamPanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        UIDefaults sliderDefaults = new UIDefaults();
+        sliderDefaults.put("Slider.paintValue", true);
+        sliderDefaults.put("Slider.thumbHeight", 13);
+        sliderDefaults.put("Slider.thumbWidth", 13);
+        
+        sliderDefaults.put("Slider:SliderThumb.backgroundPainter", new Painter() {
+
+            @Override
+            public void paint(Graphics2D g, Object object, int w, int h) {
+                g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g.drawImage(icon, 0, -5, null);
+            }
+            
+        });
+        
+        sliderDefaults.put("Slider:SliderTrack.backgroundPainter", new Painter() {
+            
+            @Override
+                public void paint(Graphics2D g, Object object, int w, int h) {
+                g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g.setStroke(new BasicStroke(2f));
+                g.setColor(Color.WHITE);
+                g.drawRoundRect(0, 2, w-1, 1, 1, 1);
+            }
+
+        });
+        
+        jSlSpinV.putClientProperty("JComponent.sizeVariant", "small");
+        jSlSpinV.putClientProperty("Nimbus.Overrides",sliderDefaults);
+        jSlSpinV.putClientProperty("Nimbus.Overrides.InheritDefaults", false);
+        jSlSpinV.setOpaque(true);
+        
+        spinVolume.setVisible(false);
         viewer.setOpaque(true);
         viewer.setVisible(true);
         viewer.setBackground(Color.black);
@@ -196,6 +250,7 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
     private void initComponents() {
 
         panPreview = new javax.swing.JPanel();
+        jSlSpinV = new javax.swing.JSlider();
         spinX = new javax.swing.JSpinner();
         spinY = new javax.swing.JSpinner();
         spinW = new javax.swing.JSpinner();
@@ -209,7 +264,6 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         labelW = new javax.swing.JLabel();
         labelH = new javax.swing.JLabel();
         labelO = new javax.swing.JLabel();
-        labelV = new javax.swing.JLabel();
         labelZ = new javax.swing.JLabel();
         labelCW = new javax.swing.JLabel();
         spinW1 = new javax.swing.JSpinner();
@@ -237,7 +291,6 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         jSlSpinW = new javax.swing.JSlider();
         jSlSpinH = new javax.swing.JSlider();
         jSlSpinO = new javax.swing.JSlider();
-        jSlSpinV = new javax.swing.JSlider();
         jSlSpinVD = new javax.swing.JSlider();
         jSlSpinAD = new javax.swing.JSlider();
         jSlSpinSeek = new javax.swing.JSlider();
@@ -250,6 +303,8 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         jSeparator7 = new javax.swing.JSeparator();
         jLabel3 = new javax.swing.JLabel();
         tglPause = new javax.swing.JToggleButton();
+        jCheckBox1 = new javax.swing.JCheckBox();
+        jSeparator6 = new javax.swing.JSeparator();
 
         setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
         setMaximumSize(new java.awt.Dimension(298, 522));
@@ -265,6 +320,28 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         panPreview.setName("panPreview"); // NOI18N
         panPreview.setPreferredSize(new java.awt.Dimension(90, 60));
         panPreview.setLayout(new java.awt.BorderLayout());
+
+        jSlSpinV.setBackground(new java.awt.Color(0, 0, 0));
+        jSlSpinV.setForeground(new java.awt.Color(255, 255, 255));
+        jSlSpinV.setMaximum(200);
+        jSlSpinV.setToolTipText("Volume Control - Double Click to Mute/Unmute");
+        jSlSpinV.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jSlSpinV.setMaximumSize(new java.awt.Dimension(110, 30));
+        jSlSpinV.setMinimumSize(new java.awt.Dimension(110, 30));
+        jSlSpinV.setName("jSlSpinV"); // NOI18N
+        jSlSpinV.setPreferredSize(new java.awt.Dimension(110, 25));
+        jSlSpinV.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jSlSpinVMouseClicked(evt);
+            }
+        });
+        jSlSpinV.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSlSpinVStateChanged(evt);
+            }
+        });
+        panPreview.add(jSlSpinV, java.awt.BorderLayout.PAGE_START);
+
         add(panPreview, new org.netbeans.lib.awtextra.AbsoluteConstraints(7, 7, 110, 100));
 
         spinX.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
@@ -310,7 +387,7 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
                 spinOpacityStateChanged(evt);
             }
         });
-        add(spinOpacity, new org.netbeans.lib.awtextra.AbsoluteConstraints(68, 330, 50, -1));
+        add(spinOpacity, new org.netbeans.lib.awtextra.AbsoluteConstraints(68, 350, 50, -1));
 
         spinVolume.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         spinVolume.setName("spinVolume"); // NOI18N
@@ -319,7 +396,7 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
                 spinVolumeStateChanged(evt);
             }
         });
-        add(spinVolume, new org.netbeans.lib.awtextra.AbsoluteConstraints(68, 350, 50, -1));
+        add(spinVolume, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 10, 50, -1));
 
         tglActiveStream.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-start.png"))); // NOI18N
         tglActiveStream.setName("tglActiveStream"); // NOI18N
@@ -365,12 +442,7 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         labelO.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         labelO.setText(bundle.getString("OPACITY")); // NOI18N
         labelO.setName("labelO"); // NOI18N
-        add(labelO, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 340, 40, -1));
-
-        labelV.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
-        labelV.setText(bundle.getString("VOLUME")); // NOI18N
-        labelV.setName("labelV"); // NOI18N
-        add(labelV, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 360, 40, 9));
+        add(labelO, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 360, 40, -1));
 
         labelZ.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         labelZ.setText(bundle.getString("LAYER")); // NOI18N
@@ -576,11 +648,10 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         add(jSlSpinCH, new org.netbeans.lib.awtextra.AbsoluteConstraints(127, 420, 150, 20));
 
         jSlSpinW.setMaximum(1920);
+        jSlSpinW.setMinimum(1);
         jSlSpinW.setSnapToTicks(true);
-        jSlSpinW.setValue(0);
         jSlSpinW.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jSlSpinW.setName("jSlSpinW"); // NOI18N
-        jSlSpinW.setOpaque(true);
         jSlSpinW.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 jSlSpinWStateChanged(evt);
@@ -593,7 +664,6 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         jSlSpinH.setValue(0);
         jSlSpinH.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jSlSpinH.setName("jSlSpinH"); // NOI18N
-        jSlSpinH.setOpaque(true);
         jSlSpinH.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 jSlSpinHStateChanged(evt);
@@ -609,17 +679,7 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
                 jSlSpinOStateChanged(evt);
             }
         });
-        add(jSlSpinO, new org.netbeans.lib.awtextra.AbsoluteConstraints(127, 330, 150, 20));
-
-        jSlSpinV.setMaximum(200);
-        jSlSpinV.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        jSlSpinV.setName("jSlSpinV"); // NOI18N
-        jSlSpinV.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                jSlSpinVStateChanged(evt);
-            }
-        });
-        add(jSlSpinV, new org.netbeans.lib.awtextra.AbsoluteConstraints(127, 350, 150, 20));
+        add(jSlSpinO, new org.netbeans.lib.awtextra.AbsoluteConstraints(127, 350, 150, 20));
 
         jSlSpinVD.setMaximum(10000);
         jSlSpinVD.setPaintLabels(true);
@@ -713,6 +773,24 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         });
         add(tglPause, new org.netbeans.lib.awtextra.AbsoluteConstraints(85, 114, 30, 20));
 
+        jCheckBox1.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
+        jCheckBox1.setText("Lock A/R ");
+        jCheckBox1.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        jCheckBox1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/LockButton-open_small.png"))); // NOI18N
+        jCheckBox1.setName("jCheckBox1"); // NOI18N
+        jCheckBox1.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/LockButton-open_small.png"))); // NOI18N
+        jCheckBox1.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/LockButton-close_small.png"))); // NOI18N
+        jCheckBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBox1ActionPerformed(evt);
+            }
+        });
+        add(jCheckBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(61, 331, -1, -1));
+
+        jSeparator6.setName("jSeparator6"); // NOI18N
+        jSeparator6.setPreferredSize(new java.awt.Dimension(48, 10));
+        add(jSeparator6, new org.netbeans.lib.awtextra.AbsoluteConstraints(126, 339, 150, 10));
+
         getAccessibleContext().setAccessibleParent(this);
     }// </editor-fold>//GEN-END:initComponents
     private void tglActiveStreamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglActiveStreamActionPerformed
@@ -769,8 +847,17 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
     }//GEN-LAST:event_spinZOrderStateChanged
 
     private void spinWStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinWStateChanged
-        stream.setWidth((Integer)spinW.getValue());
-        jSlSpinW.setValue((Integer)spinW.getValue());
+        int w = (Integer) spinW.getValue();
+        jSlSpinW.setValue(w);
+        int h = oldH;
+        if (lockRatio){
+            h = (oldH * w) / oldW; 
+            spinH.setValue(h);
+            jSlSpinH.setValue(h);
+            
+        }
+        stream.setWidth(w);
+        stream.setHeight(h);
     }//GEN-LAST:event_spinWStateChanged
 
     private void spinHStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinHStateChanged
@@ -871,8 +958,17 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
     }//GEN-LAST:event_jSlSpinCHStateChanged
 
     private void jSlSpinWStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlSpinWStateChanged
-        stream.setWidth(jSlSpinW.getValue());
-        spinW.setValue(jSlSpinW.getValue());
+        int w = (Integer) jSlSpinW.getValue();
+        stream.setWidth(w);
+        spinW.setValue(w);
+        int h = oldH;
+        if (lockRatio){
+            h = (oldH * w) / oldW; 
+            spinH.setValue(h);
+            jSlSpinH.setValue(h);
+            stream.setHeight((Integer)spinH.getValue());
+        }
+        
     }//GEN-LAST:event_jSlSpinWStateChanged
 
     private void jSlSpinHStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlSpinHStateChanged
@@ -884,11 +980,6 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         stream.setOpacity(jSlSpinO.getValue());
         spinOpacity.setValue(jSlSpinO.getValue());
     }//GEN-LAST:event_jSlSpinOStateChanged
-
-    private void jSlSpinVStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlSpinVStateChanged
-        spinVolume.setValue(jSlSpinV.getValue());
-        volume = jSlSpinV.getValue();
-    }//GEN-LAST:event_jSlSpinVStateChanged
 
     private void jSlSpinVDStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlSpinVDStateChanged
         stream.setVDelay(jSlSpinVD.getValue());
@@ -921,9 +1012,122 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         }
     }//GEN-LAST:event_tglPauseActionPerformed
 
+    private void jSlSpinVMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jSlSpinVMouseClicked
+        if (evt.getClickCount() == 2 && !evt.isConsumed()) {
+            evt.consume();
+            if (muted) {
+                stream.setVolume(volume);
+//                System.out.println("Reset Volume to = "+volume);
+                jSlSpinV.setEnabled(true);
+                try {
+                    icon = ImageIO.read(getClass().getResource("/webcamstudio/resources/tango/speaker4.png"));
+                } catch (IOException ex) {
+                    Logger.getLogger(StreamPanel.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                UIDefaults sliderDefaults = new UIDefaults();
+                sliderDefaults.put("Slider.paintValue", true);
+                sliderDefaults.put("Slider.thumbHeight", 13);
+                sliderDefaults.put("Slider.thumbWidth", 13);
+
+                sliderDefaults.put("Slider:SliderThumb.backgroundPainter", new Painter() {
+
+                    @Override
+                    public void paint(Graphics2D g, Object object, int w, int h) {
+                        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                        g.drawImage(icon, 0, -5, null);
+                    }
+
+                });
+
+                sliderDefaults.put("Slider:SliderTrack.backgroundPainter", new Painter() {
+                    @Override
+                    public void paint(Graphics2D g, Object object, int w, int h) {
+                        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                        g.setStroke(new BasicStroke(2f));
+                        g.setColor(Color.WHITE);
+                        g.drawRoundRect(0, 2, w-1, 1, 1, 1);
+                    }
+                });
+
+                jSlSpinV.putClientProperty("JComponent.sizeVariant", "small");
+                jSlSpinV.putClientProperty("Nimbus.Overrides",sliderDefaults);
+                jSlSpinV.putClientProperty("Nimbus.Overrides.InheritDefaults", false);
+                muted = false;
+
+            } else {
+                jSlSpinV.setEnabled(false);
+                Object value = spinVolume.getValue();
+                float v = 0;
+                if (value instanceof Float){
+                    v = (Float)value;
+                } else if (value instanceof Integer){
+                    v = ((Number)value).floatValue();
+                }
+                volume = v/100f;
+//                System.out.println("Stored Volume = "+volume);
+                stream.setVolume(0);
+                try {
+                    icon = ImageIO.read(getClass().getResource("/webcamstudio/resources/tango/speaker4-mute.png"));
+                } catch (IOException ex) {
+                    Logger.getLogger(StreamPanel.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                UIDefaults sliderDefaults = new UIDefaults();
+
+                sliderDefaults.put("Slider.paintValue", true);
+                sliderDefaults.put("Slider.thumbHeight", 13);
+                sliderDefaults.put("Slider.thumbWidth", 13);
+                sliderDefaults.put("Slider:SliderThumb.backgroundPainter", new Painter() {
+
+                    @Override
+                    public void paint(Graphics2D g, Object object, int w, int h) {
+                        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                        g.drawImage(icon, 0, -5, null);
+                    }
+                });
+
+                sliderDefaults.put("Slider:SliderTrack.backgroundPainter", new Painter() {
+                    @Override
+                    public void paint(Graphics2D g, Object object, int w, int h) {
+                        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                        g.setStroke(new BasicStroke(2f));
+                        g.setColor(Color.GRAY);
+                        g.fillRoundRect(0, 2, w-1, 2, 2, 2);
+                        g.setColor(Color.WHITE);
+                        g.drawRoundRect(0, 2, w-1, 1, 1, 1);
+                    }
+                });
+
+                jSlSpinV.putClientProperty("JComponent.sizeVariant", "small");
+                jSlSpinV.putClientProperty("Nimbus.Overrides",sliderDefaults);
+                jSlSpinV.putClientProperty("Nimbus.Overrides.InheritDefaults", false);
+                muted = true;
+            }
+        }
+    }//GEN-LAST:event_jSlSpinVMouseClicked
+
+    private void jSlSpinVStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlSpinVStateChanged
+        spinVolume.setValue(jSlSpinV.getValue());
+        volume = jSlSpinV.getValue()/100f;
+    }//GEN-LAST:event_jSlSpinVStateChanged
+
+    private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
+        if (jCheckBox1.isSelected()){
+            spinH.setEnabled(false);
+            jSlSpinH.setEnabled(false);
+            lockRatio = true;
+            oldW = stream.getWidth();
+            oldH = stream.getHeight();
+        } else {
+            spinH.setEnabled(true);
+            jSlSpinH.setEnabled(true);
+            lockRatio = false;
+        }
+    }//GEN-LAST:event_jCheckBox1ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JSpinner bandwidth;
     private javax.swing.JSpinner frequency;
+    private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JSeparator jSeparator1;
@@ -931,6 +1135,7 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
     private javax.swing.JSeparator jSeparator3;
     private javax.swing.JSeparator jSeparator4;
     private javax.swing.JSeparator jSeparator5;
+    private javax.swing.JSeparator jSeparator6;
     private javax.swing.JSeparator jSeparator7;
     private javax.swing.JSlider jSlSpinAD;
     private javax.swing.JSlider jSlSpinCH;
@@ -952,7 +1157,6 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
     private javax.swing.JLabel labelInv;
     private javax.swing.JLabel labelO;
     private javax.swing.JLabel labelSeek;
-    private javax.swing.JLabel labelV;
     private javax.swing.JLabel labelVD1;
     private javax.swing.JLabel labelW;
     private javax.swing.JLabel labelX;
