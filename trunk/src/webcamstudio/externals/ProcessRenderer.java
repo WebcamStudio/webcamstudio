@@ -829,10 +829,12 @@ public class ProcessRenderer {
         if (capture != null) {
             capture.abort();
             capture = null;
+//            System.out.println(stream.getName()+" Capture Cleared ...");
         }
         if (exporter != null) {
             exporter.abort();
             exporter = null;
+//            System.out.println(stream.getName()+" Export Cleared ...");
         }
         if (processVideo != null) {
             processVideo.destroy();

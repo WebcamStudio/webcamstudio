@@ -276,7 +276,7 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
         mixer.setWidth(w);
         mixer.setHeight(h);
         mixer.setRate((Integer) spinFPS.getValue());
-        MasterMixer.getInstance().start();
+        mixer.start();
         for (Stream s : streamM){
             String streamName =s.getClass().getName();
 //            System.out.println("StreamName: "+streamName);

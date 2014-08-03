@@ -25,7 +25,6 @@ import javax.swing.ImageIcon;
 import javax.swing.Painter;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.UIDefaults;
-import javax.swing.UIManager;
 import webcamstudio.streams.SourceAudioSource;
 import webcamstudio.streams.SourceImage;
 import webcamstudio.streams.SourceImageGif;
@@ -143,7 +142,7 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener {
         spinSeek.setEnabled(stream.needSeekCTRL());
         jSlSpinSeek.setEnabled(stream.needSeekCTRL());
         jlbDuration.setText("Play Time "+stream.getStreamTime());
-        tglAudio.setSelected(!stream.hasAudio());
+        
         stream.setListener(this);
         if (!stream.hasVideo()){
             spinX.setEnabled(false);
@@ -192,6 +191,18 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener {
             tglVideo.setVisible(false);
             this.add(tglActiveStream, new org.netbeans.lib.awtextra.AbsoluteConstraints(7, 120, 78, 20));
         }
+        tglVideo.setSelected(stream.isOnlyAudio());
+        tglAudio.setSelected(!stream.hasAudio());
+        if (tglAudio.isSelected()) {
+                tglAudio.setEnabled(true);
+                tglVideo.setEnabled(false);
+            } else if (tglVideo.isSelected()) {
+                tglVideo.setEnabled(true);
+                tglAudio.setEnabled(false);
+            } else {
+                tglAudio.setEnabled(true);
+                tglVideo.setEnabled(true);
+            }
     }
 //    public Viewer detachViewer(){
 //        panPreview.remove(viewer);
@@ -256,6 +267,7 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener {
             spinSeek.setEnabled(false);
             jSlSpinSeek.setEnabled(false);
             tglAudio.setEnabled(false);
+            tglVideo.setEnabled(false);
             spinVolume.setEnabled(stream.hasAudio());
             jSlSpinV.setEnabled(stream.hasAudio());
             tglPause.setEnabled(true);
@@ -271,7 +283,14 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener {
             jSlSpinAD.setEnabled(stream.hasAudio());
             spinSeek.setEnabled(stream.needSeekCTRL());
             jSlSpinSeek.setEnabled(stream.needSeekCTRL());
-            tglAudio.setEnabled(true);
+            if (tglAudio.isSelected()) {
+                tglAudio.setEnabled(true);
+            } else if (tglVideo.isSelected()) {
+                tglVideo.setEnabled(true);
+            } else {
+                tglAudio.setEnabled(true);
+                tglVideo.setEnabled(true);
+            }
             spinVolume.setEnabled(stream.hasAudio());
             jSlSpinV.setEnabled(stream.hasAudio());
             tglPause.setSelected(false);
@@ -751,6 +770,8 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener {
         tglAudio.setMinimumSize(new java.awt.Dimension(0, 0));
         tglAudio.setName("tglAudio"); // NOI18N
         tglAudio.setPreferredSize(new java.awt.Dimension(29, 53));
+        tglAudio.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/audio-volume-muted.png"))); // NOI18N
+        tglAudio.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/audio-volume-selected-muted.png"))); // NOI18N
         tglAudio.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 tglAudioActionPerformed(evt);
@@ -784,6 +805,8 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener {
         tglVideo.setMinimumSize(new java.awt.Dimension(26, 30));
         tglVideo.setName("tglVideo"); // NOI18N
         tglVideo.setPreferredSize(new java.awt.Dimension(20, 20));
+        tglVideo.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/edit-delete.png"))); // NOI18N
+        tglVideo.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/edit-delete-selected.png"))); // NOI18N
         tglVideo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 tglVideoActionPerformed(evt);
@@ -1134,8 +1157,10 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener {
     private void tglVideoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglVideoActionPerformed
         if (tglVideo.isSelected()) {
             tglAudio.setEnabled(false);
+            stream.setOnlyAudio(true);
         } else {
             tglAudio.setEnabled(true);
+            stream.setOnlyAudio(false);
         }
     }//GEN-LAST:event_tglVideoActionPerformed
 

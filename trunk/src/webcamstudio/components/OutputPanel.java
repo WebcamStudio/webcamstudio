@@ -103,6 +103,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
     File f;
     SinkFile fileStream;
     SinkUDP udpStream;
+    SinkAudio audioStream;
     private boolean audioOutState = false;
     private boolean udpOutState = false;
     private boolean audioOutSwitch = false;
@@ -119,6 +120,8 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
         f = new File(userHomeDir + "/.webcamstudio/Record To File");
         udpStream = new SinkUDP();
         fileStream = new SinkFile(f);
+        audioStream = new SinkAudio();
+//        System.out.println("SinkAudio"+audioStream);
         
         tglRecordToFile.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
@@ -999,8 +1002,10 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
     public void resetSinks(ActionEvent evt) {
         fileStream.destroy();
         udpStream.destroy();
+        audioStream.destroy();
         fileStream = new SinkFile(f);
         udpStream = new SinkUDP();
+        audioStream = new SinkAudio();
         Preferences filePrefs = WebcamStudio.prefs.node("filerec");
         Preferences udpPrefs = WebcamStudio.prefs.node("udp");
         try {
@@ -1307,16 +1312,16 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
     private void tglAudioOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglAudioOutActionPerformed
         if (tglAudioOut.isSelected()) {
             audioOutState = true;
-            SinkAudio audioStream = new SinkAudio();
             audioStream.setListener(instanceSink);
             audioStream.read();
             audioOut.put("AudioOut", audioStream);
-            ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "WebcamStudio Audio to Speakers");
+            ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Master Audio to Speakers");
             labels.put("AudioOut", label);
             ResourceMonitor.getInstance().addMessage(label);
         } else {
             audioOutState = false;
             SinkAudio audioStream = audioOut.get("AudioOut");
+//            System.out.println("Killed SinkAudio"+audioStream);
             if (audioStream != null) {
                 audioStream.stop();
                 audioStream = null;

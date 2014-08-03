@@ -153,10 +153,12 @@ public class Exporter implements MasterMixer.SinkListener {
         if (stream.hasVideo()) {
             imageBuffer.abort();
             imageBuffer = null;
+//            System.out.println("imageBuffer Aborted!");
         }
         if (stream.hasAudio()) {
             audioBuffer.abort();
             audioBuffer = null;
+//            System.out.println("audioBuffer Aborted!");
         }
         System.out.println("V: " +vCounter);
         System.out.println("A: " +aCounter);
@@ -166,6 +168,7 @@ public class Exporter implements MasterMixer.SinkListener {
                 videoOutput.close();
                 videoOutput = null;
                 videoServer = null;
+//                System.out.println("Video Exporter Aborted!");
             } catch (IOException ex) {
                 Logger.getLogger(Exporter.class.getName()).log(Level.SEVERE, null, ex);
             }   
@@ -177,6 +180,7 @@ public class Exporter implements MasterMixer.SinkListener {
                     audioOutput.close();
                     audioOutput = null;
                     audioServer = null;
+//                    System.out.println("Audio Exporter Aborted!");
                 }
             } catch (IOException ex) {
                 Logger.getLogger(Exporter.class.getName()).log(Level.SEVERE, null, ex);

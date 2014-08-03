@@ -88,6 +88,12 @@
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[20, 20]"/>
             </Property>
+            <Property name="rolloverIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/webcamstudio/resources/tango/audio-volume-muted.png"/>
+            </Property>
+            <Property name="selectedIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/webcamstudio/resources/tango/audio-volume-selected-muted.png"/>
+            </Property>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="tglAudioActionPerformed"/>
@@ -109,7 +115,7 @@
             <Property name="maximum" type="int" value="200"/>
             <Property name="toolTipText" type="java.lang.String" value="Volume Control - Double Click to Mute/Unmute"/>
             <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
-              <Color id="Cursore predefinito"/>
+              <Color id="Default Cursor"/>
             </Property>
             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[110, 30]"/>
@@ -564,7 +570,7 @@
         <Property name="snapToTicks" type="boolean" value="true"/>
         <Property name="value" type="int" value="0"/>
         <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
-          <Color id="Cursore predefinito"/>
+          <Color id="Default Cursor"/>
         </Property>
         <Property name="name" type="java.lang.String" value="jSlSpinX" noResource="true"/>
       </Properties>
@@ -585,7 +591,7 @@
         <Property name="minorTickSpacing" type="int" value="1"/>
         <Property name="value" type="int" value="0"/>
         <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
-          <Color id="Cursore predefinito"/>
+          <Color id="Default Cursor"/>
         </Property>
         <Property name="inverted" type="boolean" value="true"/>
         <Property name="name" type="java.lang.String" value="jSlSpinY" noResource="true"/>
@@ -604,7 +610,7 @@
         <Property name="maximum" type="int" value="1920"/>
         <Property name="value" type="int" value="0"/>
         <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
-          <Color id="Cursore predefinito"/>
+          <Color id="Default Cursor"/>
         </Property>
         <Property name="name" type="java.lang.String" value="jSlSpinCW" noResource="true"/>
       </Properties>
@@ -622,7 +628,7 @@
         <Property name="maximum" type="int" value="1080"/>
         <Property name="value" type="int" value="0"/>
         <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
-          <Color id="Cursore predefinito"/>
+          <Color id="Default Cursor"/>
         </Property>
         <Property name="name" type="java.lang.String" value="jSlSpinCH" noResource="true"/>
       </Properties>
@@ -641,7 +647,7 @@
         <Property name="minimum" type="int" value="1"/>
         <Property name="snapToTicks" type="boolean" value="true"/>
         <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
-          <Color id="Cursore predefinito"/>
+          <Color id="Default Cursor"/>
         </Property>
         <Property name="name" type="java.lang.String" value="jSlSpinW" noResource="true"/>
       </Properties>
@@ -660,7 +666,7 @@
         <Property name="snapToTicks" type="boolean" value="true"/>
         <Property name="value" type="int" value="0"/>
         <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
-          <Color id="Cursore predefinito"/>
+          <Color id="Default Cursor"/>
         </Property>
         <Property name="name" type="java.lang.String" value="jSlSpinH" noResource="true"/>
       </Properties>
@@ -677,7 +683,7 @@
       <Properties>
         <Property name="value" type="int" value="100"/>
         <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
-          <Color id="Cursore predefinito"/>
+          <Color id="Default Cursor"/>
         </Property>
         <Property name="name" type="java.lang.String" value="jSlSpinO" noResource="true"/>
       </Properties>
@@ -696,7 +702,7 @@
         <Property name="paintLabels" type="boolean" value="true"/>
         <Property name="value" type="int" value="0"/>
         <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
-          <Color id="Cursore predefinito"/>
+          <Color id="Default Cursor"/>
         </Property>
         <Property name="name" type="java.lang.String" value="jSlSpinVD" noResource="true"/>
       </Properties>
@@ -715,7 +721,7 @@
         <Property name="paintLabels" type="boolean" value="true"/>
         <Property name="value" type="int" value="0"/>
         <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
-          <Color id="Cursore predefinito"/>
+          <Color id="Default Cursor"/>
         </Property>
         <Property name="name" type="java.lang.String" value="jSlSpinAD" noResource="true"/>
       </Properties>
@@ -734,7 +740,7 @@
         <Property name="paintLabels" type="boolean" value="true"/>
         <Property name="value" type="int" value="0"/>
         <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
-          <Color id="Cursore predefinito"/>
+          <Color id="Default Cursor"/>
         </Property>
         <Property name="name" type="java.lang.String" value="jSlSpinSeek" noResource="true"/>
       </Properties>
@@ -757,7 +763,7 @@
         <Property name="snapToTicks" type="boolean" value="true"/>
         <Property name="value" type="int" value="0"/>
         <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
-          <Color id="Cursore predefinito"/>
+          <Color id="Default Cursor"/>
         </Property>
         <Property name="name" type="java.lang.String" value="jSlSpinZOrder" noResource="true"/>
       </Properties>

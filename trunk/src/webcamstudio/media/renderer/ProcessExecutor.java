@@ -145,6 +145,7 @@ public class ProcessExecutor {
 //            Tools.sleep(50);
 //            if (process != null){
                 killUnixProcess(process);
+//                process = null;
 //            }
         } catch (Exception ex) {
             Logger.getLogger(ProcessExecutor.class.getName()).log(Level.SEVERE, null, ex);

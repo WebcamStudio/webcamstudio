@@ -271,7 +271,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
                 }
             }
         });
-
+        
         this.add(ResourceMonitor.getInstance(), BorderLayout.SOUTH);
         prefs = Preferences.userNodeForPackage(this.getClass());
         panControls.add(recorder, BorderLayout.NORTH);
@@ -282,7 +282,9 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
         initAnimations();
         initFaceDetection();
         initWebcam();
-        initAudioFFMainSW();
+        initAudioMainSW();
+        initMainOutBE();
+        listenerOP.resetSinks(null);
         loadCustomSources();
         if (cmdFile != null){
             loadAtStart(cmdFile,null);
@@ -353,7 +355,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
     }
     
     @SuppressWarnings("unchecked")
-    private void initAudioFFMainSW() {
+    private void initAudioMainSW() {
         DefaultComboBoxModel model = new DefaultComboBoxModel();
         model.addElement("22050Hz");
         model.addElement("44100Hz");
@@ -363,6 +365,9 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
         } else {
             cboAudioHz.setSelectedItem("44100Hz");
         }
+    }
+    
+    private void initMainOutBE() {
         // FF = 0 ; AV = 1 ; GS = 2
         if (ffmpeg && !avconv){
             if (outFMEbe == 0 || outFMEbe == 1) {
@@ -406,7 +411,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
                 tglGst.setSelected(true);
             }
         }
-//        System.out.println("Outffmpeg: "+outFFmpeg);
+//        System.out.println("OutFMEbe: "+outFMEbe);
     }
 
     private void loadPrefs() {
@@ -503,6 +508,9 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
         tglGst = new javax.swing.JToggleButton();
         lblGst = new javax.swing.JLabel();
         jSeparator10 = new javax.swing.JToolBar.Separator();
+        btnSysGC = new javax.swing.JButton();
+        lblClrRam = new javax.swing.JLabel();
+        jSeparator11 = new javax.swing.JToolBar.Separator();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("WebcamStudio");
@@ -555,7 +563,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
         });
         toolbar.add(btnAddFolder);
 
-        btnAddDVB.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/image-x-generic.png"))); // NOI18N
+        btnAddDVB.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/dvb.png"))); // NOI18N
         btnAddDVB.setToolTipText("Add DVB-T Stream");
         btnAddDVB.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnAddDVB.setFocusable(false);
@@ -734,7 +742,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
             .addGroup(panSourcesLayout.createSequentialGroup()
                 .addComponent(toolbar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(desktop, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
+                .addComponent(desktop, javax.swing.GroupLayout.DEFAULT_SIZE, 397, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -1011,6 +1019,32 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
         jSeparator10.setName("jSeparator10"); // NOI18N
         jSeparator10.setOpaque(true);
         mainToolbar.add(jSeparator10);
+
+        btnSysGC.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/button-small-clear.png"))); // NOI18N
+        btnSysGC.setToolTipText("Try to Clean Up some memory");
+        btnSysGC.setFocusable(false);
+        btnSysGC.setName("btnSysGC"); // NOI18N
+        btnSysGC.setOpaque(true);
+        btnSysGC.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnSysGC.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSysGCActionPerformed(evt);
+            }
+        });
+        mainToolbar.add(btnSysGC);
+
+        lblClrRam.setFont(new java.awt.Font("Ubuntu Condensed", 0, 12)); // NOI18N
+        lblClrRam.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        lblClrRam.setText("RAM");
+        lblClrRam.setToolTipText("Try to Clean Up some memory");
+        lblClrRam.setName("lblClrRam"); // NOI18N
+        mainToolbar.add(lblClrRam);
+
+        jSeparator11.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jSeparator11.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
+        jSeparator11.setName("jSeparator11"); // NOI18N
+        jSeparator11.setOpaque(true);
+        mainToolbar.add(jSeparator11);
 
         getContentPane().add(mainToolbar, java.awt.BorderLayout.PAGE_START);
 
@@ -1842,7 +1876,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
             tglGst.setSelected(false);
             outFMEbe = 0;
             listenerOP.resetSinks(evt);
-            ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "FFmpeg Outputs BkEnd Activated ...");
+            ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Switched to FFmpeg Outputs BE.");
             ResourceMonitor.getInstance().addMessage(label);
         } else {
             outFMEbe = 2;
@@ -1850,7 +1884,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
             tglGst.setEnabled(true);
             tglGst.setSelected(true);
             listenerOP.resetSinks(evt);
-            ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "GStreamer Outputs BkEnd Activated ...");
+            ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Switched to GStreamer Outputs BE.");
             ResourceMonitor.getInstance().addMessage(label);
         }
     }//GEN-LAST:event_tglFFmpegActionPerformed
@@ -1956,7 +1990,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
             tglGst.setSelected(false);
             outFMEbe = 1;
             listenerOP.resetSinks(evt);
-            ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "AVconv Outputs BkEnd Activated ...");
+            ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Switched to AVconv Outputs BE.");
             ResourceMonitor.getInstance().addMessage(label);
         } else {
             outFMEbe = 2;
@@ -1964,7 +1998,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
             tglGst.setEnabled(true);
             tglGst.setSelected(true);
             listenerOP.resetSinks(evt);
-            ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Gstreamer Outputs BkEnd Activated ...");
+            ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Switched to Gstreamer Outputs BE.");
             ResourceMonitor.getInstance().addMessage(label);
         }
     }//GEN-LAST:event_tglAVconvActionPerformed
@@ -1998,14 +2032,18 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
             
             listenerOP.resetSinks(evt);
             if (outFMEbe == 1) {
-                ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "AVconv Outputs BkEnd Activated ...");
+                ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Switched to AVconv Outputs BE.");
                 ResourceMonitor.getInstance().addMessage(label);
             } else {
-                ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "FFmpeg Outputs BkEnd Activated ...");
+                ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Switched to FFmpeg Outputs BE.");
                 ResourceMonitor.getInstance().addMessage(label);
             }
         }
     }//GEN-LAST:event_tglGstActionPerformed
+
+    private void btnSysGCActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSysGCActionPerformed
+        System.gc();
+    }//GEN-LAST:event_btnSysGCActionPerformed
     /**
      * @param args the command line arguments
      */
@@ -2095,6 +2133,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
     private javax.swing.JButton btnNewStudio;
     private javax.swing.JButton btnRefreshWebcam;
     private javax.swing.JButton btnSaveStudio;
+    private javax.swing.JButton btnSysGC;
     private javax.swing.JButton btnVideoDevInfo;
     public static javax.swing.JComboBox cboAnimations;
     private javax.swing.JComboBox cboAudioHz;
@@ -2103,11 +2142,13 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JToolBar.Separator jSeparator1;
     private javax.swing.JToolBar.Separator jSeparator10;
+    private javax.swing.JToolBar.Separator jSeparator11;
     private javax.swing.JToolBar.Separator jSeparator2;
     private javax.swing.JToolBar.Separator jSeparator5;
     private javax.swing.JToolBar.Separator jSeparator6;
     private javax.swing.JToolBar.Separator jSeparator7;
     private javax.swing.JLabel lblAVconv;
+    private javax.swing.JLabel lblClrRam;
     private javax.swing.JLabel lblFFmpeg;
     private javax.swing.JLabel lblFFmpeg3;
     private javax.swing.JLabel lblGst;

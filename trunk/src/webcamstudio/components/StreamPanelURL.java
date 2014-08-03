@@ -324,6 +324,8 @@ public class StreamPanelURL extends javax.swing.JPanel implements Stream.Listene
         tglVideo.setMinimumSize(new java.awt.Dimension(26, 30));
         tglVideo.setName("tglVideo"); // NOI18N
         tglVideo.setPreferredSize(new java.awt.Dimension(20, 20));
+        tglVideo.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/edit-delete.png"))); // NOI18N
+        tglVideo.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/edit-delete-selected.png"))); // NOI18N
         tglVideo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 tglVideoActionPerformed(evt);
@@ -735,6 +737,8 @@ public class StreamPanelURL extends javax.swing.JPanel implements Stream.Listene
         tglAudio.setMinimumSize(new java.awt.Dimension(26, 30));
         tglAudio.setName("tglAudio"); // NOI18N
         tglAudio.setPreferredSize(new java.awt.Dimension(20, 20));
+        tglAudio.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/audio-volume-muted.png"))); // NOI18N
+        tglAudio.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/audio-volume-selected-muted.png"))); // NOI18N
         tglAudio.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 tglAudioActionPerformed(evt);
