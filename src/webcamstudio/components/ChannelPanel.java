@@ -246,7 +246,13 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
+        lstChannels.setToolTipText("Double Click to play selected channel");
         lstChannels.setName("lstChannels"); // NOI18N
+        lstChannels.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lstChannelsMouseClicked(evt);
+            }
+        });
         lstChannels.addContainerListener(new java.awt.event.ContainerAdapter() {
             public void componentAdded(java.awt.event.ContainerEvent evt) {
                 lstChannelsComponentAdded(evt);
@@ -754,7 +760,11 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
                 StopCHTimer.setEnabled(inTimer);                
             }
 	}        
-    }    
+    }
+   
+    public static String getSelectedChannel() {
+        return (lstChannels.getSelectedValue().toString());
+    }
     
     private void btnSelectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSelectActionPerformed
         savePrefs();
@@ -1270,6 +1280,15 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
         ResourceMonitor.getInstance().addMessage(label);
         System.gc();
     }//GEN-LAST:event_btnStopOnlyStreamActionPerformed
+
+    private void lstChannelsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstChannelsMouseClicked
+        if (evt.getClickCount() == 2 && !evt.isConsumed()) {
+            evt.consume();
+            if (lstChannels.isEnabled()){
+                btnSelect.doClick();
+            }
+        }
+    }//GEN-LAST:event_lstChannelsMouseClicked
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -1291,7 +1310,7 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel lblChName;
-    private javax.swing.JList lstChannels;
+    private static javax.swing.JList lstChannels;
     private javax.swing.JScrollPane lstChannelsScroll;
     private javax.swing.JComboBox lstNextChannel;
     private javax.swing.JToggleButton tglRemote;

@@ -35,7 +35,7 @@ public class SourceDVB extends Stream {
     public void read() {      
         MasterFrameBuilder.register(this);
         capture = new ProcessRenderer(this, ProcessRenderer.ACTION.CAPTURE, "DVB", comm);
-        Tools.sleep(200);
+//        Tools.sleep(200);
         capture.read();
         lastPreview = new BufferedImage(captureWidth,captureHeight,BufferedImage.TYPE_INT_ARGB);
         isPlaying = true;

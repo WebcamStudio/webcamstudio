@@ -8,7 +8,6 @@ import java.awt.image.BufferedImage;
 import static webcamstudio.WebcamStudio.outFMEbe;
 import webcamstudio.externals.ProcessRenderer;
 import webcamstudio.mixers.Frame;
-//import webcamstudio.mixers.MasterMixer;
 
 /**
  *
@@ -20,6 +19,8 @@ public class SinkAudio extends Stream {
 
     public SinkAudio() {
         name = "AudioOut";
+        this.setOnlyAudio(true);
+//        System.out.println("SinkAudio outFMEbe= "+outFMEbe);
         if (outFMEbe == 0){
             this.setComm("FF");
         } else if (outFMEbe == 1) {
@@ -27,13 +28,11 @@ public class SinkAudio extends Stream {
         } else if (outFMEbe == 2) {
             this.setComm("GS");
         }
+//        System.out.println("SinkAudio BE= "+this.getComm());
     }
 
     @Override
     public void read() {
-//        rate = MasterMixer.getInstance().getRate();
-//        captureWidth = MasterMixer.getInstance().getWidth();
-//        captureHeight = MasterMixer.getInstance().getHeight();
         capture = new ProcessRenderer(this, ProcessRenderer.ACTION.OUTPUT, "spkAudioOut", comm); //"spkAudioOut"
         capture.writeCom();
     }
@@ -53,6 +52,7 @@ public class SinkAudio extends Stream {
             this.setComm("FF");
         }
     }
+    
     @Override
     public boolean needSeek() {
             return needSeekCTRL=false;

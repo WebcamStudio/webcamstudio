@@ -21,10 +21,7 @@ public class SinkUDP extends Stream {
 
     public SinkUDP() {
         name = "UDP";
-    }
-
-    @Override
-    public void read() {
+//        System.out.println("SinkUDP outFMEbe= "+outFMEbe);
         if (outFMEbe == 0){
             this.setComm("FF");
         } else if (outFMEbe == 1) {
@@ -32,6 +29,11 @@ public class SinkUDP extends Stream {
         } else if (outFMEbe == 2) {
             this.setComm("GS");
         }
+//        System.out.println("SinkUDP BE= "+this.getComm());
+    }
+
+    @Override
+    public void read() {
         rate = MasterMixer.getInstance().getRate();
         captureWidth = MasterMixer.getInstance().getWidth();
         captureHeight = MasterMixer.getInstance().getHeight();

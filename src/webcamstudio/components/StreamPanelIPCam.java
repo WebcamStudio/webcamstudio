@@ -330,6 +330,8 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
         tglAudio.setMinimumSize(new java.awt.Dimension(26, 30));
         tglAudio.setName("tglAudio"); // NOI18N
         tglAudio.setPreferredSize(new java.awt.Dimension(20, 20));
+        tglAudio.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/audio-volume-muted.png"))); // NOI18N
+        tglAudio.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/audio-volume-selected-muted.png"))); // NOI18N
         tglAudio.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 tglAudioActionPerformed(evt);

@@ -25,10 +25,6 @@ public class SinkFile extends Stream {
     public SinkFile(File f) {
         file = f;
         name = f.getName();
-    }
-
-    @Override
-    public void read() {
         if (outFMEbe == 0){
             this.setComm("FF");
         } else if (outFMEbe == 1) {
@@ -36,6 +32,10 @@ public class SinkFile extends Stream {
         } else if (outFMEbe == 2) {
             this.setComm("GS");
         }
+    }
+
+    @Override
+    public void read() {
         rate = MasterMixer.getInstance().getRate();
         captureWidth = MasterMixer.getInstance().getWidth();
         captureHeight = MasterMixer.getInstance().getHeight();
