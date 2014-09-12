@@ -70,6 +70,8 @@ import webcamstudio.components.VideoDeviceInfo;
 import webcamstudio.exporter.vloopback.VideoDevice;
 import webcamstudio.externals.ProcessRenderer;
 import webcamstudio.mixers.MasterMixer;
+import webcamstudio.mixers.PrePlayer;
+import webcamstudio.mixers.PreviewMixer;
 import webcamstudio.mixers.SystemPlayer;
 import webcamstudio.streams.SourceAudioSource;
 import webcamstudio.streams.SourceChannel;
@@ -278,6 +280,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
         
         loadPrefs();
         MasterMixer.getInstance().start();
+        PreviewMixer.getInstance().start();
         this.add(new MasterPanel(), BorderLayout.WEST);
         initAnimations();
         initFaceDetection();
@@ -422,6 +425,10 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
         MasterMixer.getInstance().setWidth(prefs.getInt("mastermixer-w", MasterMixer.getInstance().getWidth()));
         MasterMixer.getInstance().setHeight(prefs.getInt("mastermixer-h", MasterMixer.getInstance().getHeight()));
         MasterMixer.getInstance().setRate(prefs.getInt("mastermixer-r", MasterMixer.getInstance().getRate()));
+        PreviewMixer.getInstance().setWidth(prefs.getInt("mastermixer-w", MasterMixer.getInstance().getWidth()));
+        PreviewMixer.getInstance().setHeight(prefs.getInt("mastermixer-h", MasterMixer.getInstance().getHeight()));
+//        PreviewMixer.getInstance().setRate(prefs.getInt("mastermixer-r", MasterMixer.getInstance().getRate()));
+        PreviewMixer.getInstance().setRate(5);
         mainSplit.setDividerLocation(prefs.getInt("split-x", mainSplit.getDividerLocation()));
         mainSplit.setDividerLocation(prefs.getInt("split-last-x", mainSplit.getLastDividerLocation()));
         lastFolder = new File(prefs.get("lastfolder", "."));
@@ -1076,9 +1083,12 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
                 savePrefs();
                 SystemPlayer.getInstance(null).stop();
                 Tools.sleep(10);
+                PrePlayer.getPreInstance(null).stop();
+                Tools.sleep(10);
                 MasterChannels.getInstance().stopAllStream();
                 Tools.sleep(10);
                 MasterMixer.getInstance().stop();
+                PreviewMixer.getInstance().stop();
                 Tools.sleep(10);
                 System.out.println("Cleaning up ...");
                 File directory = new File(userHomeDir+"/.webcamstudio");
@@ -1098,9 +1108,12 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
             savePrefs();
             SystemPlayer.getInstance(null).stop();
             Tools.sleep(10);
+            PrePlayer.getPreInstance(null).stop();
+            Tools.sleep(10);
             MasterChannels.getInstance().stopAllStream();
             Tools.sleep(10);
             MasterMixer.getInstance().stop();
+            PreviewMixer.getInstance().stop();
             System.out.println("Thanks for using WebcamStudio ...");
             System.out.println("GoodBye!");
             System.exit(0);
@@ -1282,6 +1295,8 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
                             lastFolder = fileS.getParentFile();
                             SystemPlayer.getInstance(null).stop();
                             Tools.sleep(100);
+                            PrePlayer.getPreInstance(null).stop();
+                            Tools.sleep(100);
                             MasterChannels.getInstance().stopAllStream();
                             Tools.sleep(100);
                             listenerCP.stopChTime(sEvt);
@@ -1446,7 +1461,8 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
         FileNameExtensionFilter studioFilter = new FileNameExtensionFilter("Studio files (*.studio)", "studio");
         chooser.setFileFilter(studioFilter);
         chooser.setMultiSelectionEnabled(false);
-        chooser.setDialogTitle("Load a Studio ...");
+    //                MasterFrameBuilder.register(this);
+    chooser.setDialogTitle("Load a Studio ...");
         chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         int retval = chooser.showOpenDialog(this);
         final File file = chooser.getSelectedFile();
@@ -1459,6 +1475,9 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
                     if (file != null) {
                         lastFolder = file.getParentFile();
                         SystemPlayer.getInstance(null).stop();
+                        Tools.sleep(10);
+                        PrePlayer.getPreInstance(null).stop();
+                        Tools.sleep(10);
                         MasterChannels.getInstance().stopAllStream();
                         for (Stream s : MasterChannels.getInstance().getStreams()){              
                             s.updateStatus();
@@ -1480,6 +1499,9 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
                             }
                         } while (streamz.size()>0 || sourceCh.size()>0);
                         SystemPlayer.getInstance(null).stop();
+                        Tools.sleep(10);
+                        PrePlayer.getPreInstance(null).stop();
+                        Tools.sleep(10);
                         MasterChannels.getInstance().stopAllStream();
                         listenerCP.stopChTime(fEvt);
                         listenerCP.resetBtnStates(fEvt);
@@ -1506,6 +1528,11 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
                             MasterMixer.getInstance().setHeight(mH);
                             MasterMixer.getInstance().setRate((Integer) spinFPS.getValue());
                             MasterMixer.getInstance().start();
+                            PreviewMixer.getInstance().stop();
+                            PreviewMixer.getInstance().setWidth(mW);
+                            PreviewMixer.getInstance().setHeight(mH);
+//                            PreviewMixer.getInstance().setRate((Integer) spinFPS.getValue());
+                            PreviewMixer.getInstance().start();
                         } catch (ParserConfigurationException | SAXException | IOException | XPathExpressionException ex) {
                             Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
                         }
@@ -1620,6 +1647,9 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
         }
         if (doNew) {            
             SystemPlayer.getInstance(null).stop();
+            Tools.sleep(10);
+            PrePlayer.getPreInstance(null).stop();
+            Tools.sleep(10);
             MasterChannels.getInstance().stopAllStream();
             for (Stream s : MasterChannels.getInstance().getStreams()){
                 s.updateStatus();
@@ -1731,14 +1761,18 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
             audioFreq = 44100;
         }
         MasterMixer.getInstance().stop();
+        PreviewMixer.getInstance().stop();
         Tools.sleep(100);
         SystemPlayer.getInstance(null).stop();
+        Tools.sleep(30);
+        PrePlayer.getPreInstance(null).stop();
         Tools.sleep(30);
         MasterChannels.getInstance().stopAllStream();
         for (Stream s : streamS){
             s.updateStatus();
         }
         MasterMixer.getInstance().start();
+        PreviewMixer.getInstance().start();
         ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Overall Audio Output set to: "+audioFreq+"Hz");
         ResourceMonitor.getInstance().addMessage(label);
     }//GEN-LAST:event_cboAudioHzActionPerformed
@@ -2193,6 +2227,9 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
                     if (file != null) {
                         lastFolder = file.getParentFile();
                         SystemPlayer.getInstance(null).stop();
+                        Tools.sleep(10);
+                        PrePlayer.getPreInstance(null).stop();
+                        Tools.sleep(10);
                         MasterChannels.getInstance().stopAllStream();
                         for (Stream s : MasterChannels.getInstance().getStreams()){              
                             s.updateStatus();
@@ -2214,6 +2251,9 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
                             }
                         } while (streamz.size()>0 || sourceCh.size()>0);
                         SystemPlayer.getInstance(null).stop();
+                        Tools.sleep(10);
+                        PrePlayer.getPreInstance(null).stop();
+                        Tools.sleep(10);
                         MasterChannels.getInstance().stopAllStream();
                         listenerCP.stopChTime(fEvt);
                         listenerCP.resetBtnStates(fEvt);
@@ -2240,6 +2280,11 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
                             MasterMixer.getInstance().setHeight(mH);
                             MasterMixer.getInstance().setRate((Integer) spinFPS.getValue());
                             MasterMixer.getInstance().start();
+                            PreviewMixer.getInstance().stop();
+                            PreviewMixer.getInstance().setWidth(mW);
+                            PreviewMixer.getInstance().setHeight(mH);
+//                            PreviewMixer.getInstance().setRate((Integer) spinFPS.getValue());
+                            PreviewMixer.getInstance().start();
                         } catch (ParserConfigurationException | SAXException | IOException | XPathExpressionException ex) {
                             Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
                         }

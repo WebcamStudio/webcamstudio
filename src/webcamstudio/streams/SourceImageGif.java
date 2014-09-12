@@ -11,6 +11,7 @@ import java.net.URL;
 import webcamstudio.components.GifDecoder;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterFrameBuilder;
+import webcamstudio.mixers.PreviewFrameBuilder;
 import webcamstudio.util.Tools;
 
 /**
@@ -22,6 +23,7 @@ public class SourceImageGif extends Stream {
     BufferedImage image = null;
     boolean playing = false;
     boolean stop = true;
+//    boolean playedPreview = false;
     Frame frame = null;
     GifDecoder decoder = new GifDecoder();
     int index = 0;
@@ -74,7 +76,14 @@ public class SourceImageGif extends Stream {
             frame = new Frame(uuid, image, null);
             frame.setOutputFormat(x, y, width, height, opacity, volume);
             frame.setZOrder(zorder);
-            MasterFrameBuilder.register(this);
+            if (getPreView()){
+//                if (playedPreview) {
+                    PreviewFrameBuilder.register(this);
+//                }
+            } else {
+//                playedPreview = false;
+                MasterFrameBuilder.register(this);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -89,7 +98,13 @@ public class SourceImageGif extends Stream {
     public void stop() {
         playing=false;
         stop = true;
-        MasterFrameBuilder.unregister(this);
+        if (getPreView()){
+//            playedPreview = true;
+            PreviewFrameBuilder.unregister(this);
+//            MasterFrameBuilder.register(this);
+        } else {
+            MasterFrameBuilder.unregister(this);
+        }
     }
     @Override
     public boolean needSeek() {

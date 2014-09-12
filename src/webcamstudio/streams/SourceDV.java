@@ -9,6 +9,7 @@ import webcamstudio.externals.ProcessRenderer;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterFrameBuilder;
 import webcamstudio.mixers.MasterMixer;
+import webcamstudio.mixers.PreviewFrameBuilder;
 import webcamstudio.sources.effects.Effect;
 /**
  *
@@ -32,7 +33,11 @@ public class SourceDV extends Stream {
 
     @Override
     public void read() {      
-        MasterFrameBuilder.register(this);
+        if (getPreView()){
+            PreviewFrameBuilder.register(this);
+        } else {
+            MasterFrameBuilder.register(this);
+        }
         capture = new ProcessRenderer(this, ProcessRenderer.ACTION.CAPTURE, "DV", comm);
         capture.readCustom();
         lastPreview = new BufferedImage(captureWidth,captureHeight,BufferedImage.TYPE_INT_ARGB);
@@ -47,7 +52,11 @@ public class SourceDV extends Stream {
     @Override
     public void stop() {
         isPlaying = false;
-        MasterFrameBuilder.unregister(this);
+        if (getPreView()){
+            PreviewFrameBuilder.unregister(this);
+        } else {
+            MasterFrameBuilder.unregister(this);
+        }
         if (capture != null) {
             capture.stop();
             capture = null;

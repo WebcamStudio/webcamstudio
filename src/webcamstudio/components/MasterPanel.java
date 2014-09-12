@@ -20,11 +20,14 @@ import java.util.logging.Logger;
 import javax.sound.sampled.LineUnavailableException;
 import javax.swing.SpinnerNumberModel;
 import webcamstudio.FullScreen;
+import webcamstudio.WSPreview;
 import webcamstudio.WebcamStudio;
 import webcamstudio.channels.MasterChannels;
 import static webcamstudio.components.ChannelPanel.listenerCPOP;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterMixer;
+import webcamstudio.mixers.PrePlayer;
+import webcamstudio.mixers.PreviewMixer;
 import webcamstudio.mixers.SystemPlayer;
 import webcamstudio.streams.SourceChannel;
 import webcamstudio.streams.SourceText;
@@ -35,14 +38,17 @@ import webcamstudio.util.Tools;
  *
  * @author patrick (modified by karl)
  */
-public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkListener, FullScreen.Listener, ChannelPanel.Listener {
+public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkListener, FullScreen.Listener, ChannelPanel.Listener, WSPreview.Listener, PreviewMixer.SinkListener {
 
     protected Viewer viewer = new Viewer();
+    protected PreViewer preViewer = new PreViewer();
     private SystemPlayer player = null;
+    private PrePlayer prePlayer = null;
     private final MasterMixer mixer = MasterMixer.getInstance();
+    private final PreviewMixer preMixer = PreviewMixer.getInstance();
     MasterChannels master = MasterChannels.getInstance();
     final static public Dimension PANEL_SIZE = new Dimension(150, 400);
-    ArrayList<Stream> streamM = MasterChannels.getInstance().getStreams();   
+    ArrayList<Stream> streamM = MasterChannels.getInstance().getStreams();
     Stream stream = null;
     SourceText sTx = null;
     boolean lockRatio = false;
@@ -58,11 +64,14 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
         viewer.setOpaque(true);
         panelPreview.add(viewer, BorderLayout.CENTER);
         player = SystemPlayer.getInstance(viewer);
+        prePlayer = PrePlayer.getPreInstance(preViewer);
         mixer.register(this);
+        preMixer.register(this);
         spinFPS.setValue(MasterMixer.getInstance().getRate());
         panChannels.add(new ChannelPanel(), BorderLayout.CENTER);
         final MasterPanel instanceSinkMP = this;
         FullScreen.setListenerFS(instanceSinkMP);
+        WSPreview.setListenerPW(instanceSinkMP);
         ChannelPanel.setListenerCPMPanel(instanceSinkMP);
     }
 
@@ -91,6 +100,7 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
         btnFullScreen = new javax.swing.JButton();
         tglLockRatio = new javax.swing.JToggleButton();
         tglSound = new javax.swing.JToggleButton();
+        btnPreview = new javax.swing.JButton();
 
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("webcamstudio/Languages"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("PREVIEW"))); // NOI18N
@@ -98,14 +108,26 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
         setLayout(new java.awt.BorderLayout());
 
         panelPreview.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        panelPreview.setToolTipText("Click on the video to Hide/Unhide");
         panelPreview.setMaximumSize(new java.awt.Dimension(180, 120));
         panelPreview.setMinimumSize(new java.awt.Dimension(180, 120));
         panelPreview.setName("panelPreview"); // NOI18N
         panelPreview.setPreferredSize(new java.awt.Dimension(180, 120));
+        panelPreview.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                panelPreviewMouseClicked(evt);
+            }
+        });
         panelPreview.setLayout(new java.awt.BorderLayout());
 
         lblCurtain.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/curtain.png"))); // NOI18N
+        lblCurtain.setToolTipText("Click on the video to Hide/Unhide");
         lblCurtain.setName("lblCurtain"); // NOI18N
+        lblCurtain.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblCurtainMouseClicked(evt);
+            }
+        });
         panelPreview.add(lblCurtain, java.awt.BorderLayout.CENTER);
 
         add(panelPreview, java.awt.BorderLayout.NORTH);
@@ -189,6 +211,17 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
             }
         });
 
+        btnPreview.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/PreviewButton2.png"))); // NOI18N
+        btnPreview.setToolTipText("WebcamStudio Preview Screen");
+        btnPreview.setMinimumSize(new java.awt.Dimension(0, 0));
+        btnPreview.setName("btnPreview"); // NOI18N
+        btnPreview.setPreferredSize(new java.awt.Dimension(20, 20));
+        btnPreview.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPreviewActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout panMixerLayout = new javax.swing.GroupLayout(panMixer);
         panMixer.setLayout(panMixerLayout);
         panMixerLayout.setHorizontalGroup(
@@ -208,9 +241,12 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
                             .addComponent(spinWidth)))
                     .addComponent(btnApplyToStreams, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panMixerLayout.createSequentialGroup()
-                        .addGroup(panMixerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(tglLockRatio, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnApply, javax.swing.GroupLayout.DEFAULT_SIZE, 167, Short.MAX_VALUE))
+                        .addGroup(panMixerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(tglLockRatio, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(panMixerLayout.createSequentialGroup()
+                                .addComponent(btnApply, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnPreview, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(panMixerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(btnFullScreen, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
@@ -237,9 +273,10 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
                     .addComponent(tglLockRatio, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(tglSound, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(panMixerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                .addGroup(panMixerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(btnApply, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnFullScreen, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnFullScreen, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnPreview, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnApplyToStreams, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(69, 69, 69))
@@ -260,6 +297,11 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
         mixer.setHeight(h);
         mixer.setRate((Integer) spinFPS.getValue());
         MasterMixer.getInstance().start();
+        preMixer.stop();
+        preMixer.setWidth(w);
+        preMixer.setHeight(h);
+//        preMixer.setRate((Integer) spinFPS.getValue());
+        PreviewMixer.getInstance().start();
     }
     
     private void btnApplyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnApplyActionPerformed
@@ -273,10 +315,15 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
         int w = (Integer) spinWidth.getValue();
         int h = (Integer) spinHeight.getValue();
         mixer.stop();
+        preMixer.stop();
         mixer.setWidth(w);
+        preMixer.setWidth(w);
         mixer.setHeight(h);
+        preMixer.setHeight(h);
         mixer.setRate((Integer) spinFPS.getValue());
+//        preMixer.setRate((Integer) spinFPS.getValue());
         mixer.start();
+        preMixer.start();
         for (Stream s : streamM){
             String streamName =s.getClass().getName();
 //            System.out.println("StreamName: "+streamName);
@@ -367,6 +414,7 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
 
     private void btnFullScreenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFullScreenActionPerformed
         btnFullScreen.setEnabled(false);
+        btnPreview.setEnabled(false);
         FullScreen window = new FullScreen();
         StreamFullScreen frame = new StreamFullScreen(viewer);
         window.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
@@ -417,6 +465,46 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
             player.stop();
         }
     }//GEN-LAST:event_tglSoundActionPerformed
+
+    private void lblCurtainMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblCurtainMouseClicked
+        lblCurtain.setVisible(false);
+        viewer.setOpaque(true);
+        panelPreview.add(viewer, BorderLayout.CENTER);
+        player = SystemPlayer.getInstance(viewer);
+        this.repaint();
+        this.revalidate();
+        btnFullScreen.setEnabled(true);
+    }//GEN-LAST:event_lblCurtainMouseClicked
+
+    private void panelPreviewMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panelPreviewMouseClicked
+        panelPreview.remove(viewer);
+        lblCurtain.setOpaque(true);
+        lblCurtain.setVisible(true);
+        panelPreview.add(lblCurtain);
+        this.repaint();
+        this.revalidate();
+    }//GEN-LAST:event_panelPreviewMouseClicked
+
+    private void btnPreviewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPreviewActionPerformed
+        btnFullScreen.setEnabled(false);
+        btnPreview.setEnabled(false);
+        WSPreview window = new WSPreview();
+        WSPreviewScreen frame = new WSPreviewScreen(preViewer);
+        window.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+//        panelPreview.remove(viewer);
+//        lblCurtain.setOpaque(true);
+//        lblCurtain.setVisible(true);
+//        panelPreview.add(lblCurtain);
+        try {
+            frame.setSelected(true);
+            frame.setMaximum(true);
+        } catch (PropertyVetoException ex) {
+            Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        window.setLocationRelativeTo(WebcamStudio.cboAnimations);
+        window.setAlwaysOnTop(true);
+        window.setVisible(true);
+    }//GEN-LAST:event_btnPreviewActionPerformed
     @Override
     public void resetViewer(ActionEvent evt){
         lblCurtain.setVisible(false);
@@ -427,12 +515,14 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
         this.repaint();
         this.revalidate();
         btnFullScreen.setEnabled(true);
+        btnPreview.setEnabled(true);
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnApply;
     private javax.swing.JButton btnApplyToStreams;
     private javax.swing.JButton btnFullScreen;
+    private javax.swing.JButton btnPreview;
     private javax.swing.JLabel lblCurtain;
     private javax.swing.JLabel lblHeight;
     private javax.swing.JLabel lblHeight1;
@@ -451,6 +541,11 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
     @Override
     public void newFrame(Frame frame) {
         player.addFrame(frame);
+    }
+    
+    @Override
+    public void newPreFrame(Frame frame) {
+        prePlayer.addFrame(frame);
     }
     
     @Override

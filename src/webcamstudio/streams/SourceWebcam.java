@@ -10,6 +10,7 @@ import webcamstudio.externals.ProcessRenderer;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterFrameBuilder;
 import webcamstudio.mixers.MasterMixer;
+import webcamstudio.mixers.PreviewFrameBuilder;
 import webcamstudio.sources.effects.Effect;
 
 /**
@@ -39,7 +40,11 @@ public class SourceWebcam extends Stream {
         isPlaying=true;
         lastPreview = new BufferedImage(captureWidth,captureHeight,BufferedImage.TYPE_INT_ARGB);
         rate = MasterMixer.getInstance().getRate();
-        MasterFrameBuilder.register(this);
+        if (getPreView()){
+            PreviewFrameBuilder.register(this);
+        } else {
+            MasterFrameBuilder.register(this);
+        }
         capture = new ProcessRenderer(this, ProcessRenderer.ACTION.CAPTURE, "webcam", comm);
         capture.read();
     }
@@ -63,7 +68,11 @@ public class SourceWebcam extends Stream {
         if (this.getBackFF()){
             this.setComm("FF");
         }
-        MasterFrameBuilder.unregister(this);
+        if (getPreView()){
+            PreviewFrameBuilder.unregister(this);
+        } else {
+            MasterFrameBuilder.unregister(this);
+        }
     }
     @Override
     public boolean hasFakeVideo(){

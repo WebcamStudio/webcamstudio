@@ -10,6 +10,7 @@ import webcamstudio.externals.ProcessRenderer;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterFrameBuilder;
 import webcamstudio.mixers.MasterMixer;
+import webcamstudio.mixers.PreviewFrameBuilder;
 
 /**
  *
@@ -32,7 +33,11 @@ public class SourceCustom extends Stream {
         isPlaying = true;
         lastPreview = new BufferedImage(captureWidth, captureHeight, BufferedImage.TYPE_INT_ARGB);
         rate = MasterMixer.getInstance().getRate();
-        MasterFrameBuilder.register(this);
+        if (getPreView()){
+            PreviewFrameBuilder.register(this);
+        } else {
+            MasterFrameBuilder.register(this);
+        }
         capture = new ProcessRenderer(this, ProcessRenderer.ACTION.CAPTURE, "custom", comm);
         capture.readCustom();
     }
@@ -51,7 +56,12 @@ public class SourceCustom extends Stream {
 //        if (this.getBackFF()){
 //            this.setComm("FF");
 //        }
-        MasterFrameBuilder.unregister(this);
+        if (getPreView()){
+            PreviewFrameBuilder.unregister(this);
+//            MasterFrameBuilder.register(this);
+        } else {
+            MasterFrameBuilder.unregister(this);
+        }
     }
     @Override
     public boolean needSeek() {

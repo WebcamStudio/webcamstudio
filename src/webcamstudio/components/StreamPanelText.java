@@ -174,6 +174,7 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
         tglQRCode = new javax.swing.JToggleButton();
         jCheckBox1 = new javax.swing.JCheckBox();
         jSeparator8 = new javax.swing.JSeparator();
+        tglPreview = new javax.swing.JToggleButton();
 
         setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
         setFocusTraversalPolicyProvider(true);
@@ -470,6 +471,19 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
         jSeparator8.setPreferredSize(new java.awt.Dimension(48, 10));
         add(jSeparator8, new org.netbeans.lib.awtextra.AbsoluteConstraints(126, 249, 150, 10));
 
+        tglPreview.setFont(new java.awt.Font("Ubuntu", 0, 5)); // NOI18N
+        tglPreview.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/PreviewButton3.png"))); // NOI18N
+        tglPreview.setToolTipText("Preview Mode");
+        tglPreview.setName("tglPreview"); // NOI18N
+        tglPreview.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/PreviewButton3.png"))); // NOI18N
+        tglPreview.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/PreviewButtonSelected3.png"))); // NOI18N
+        tglPreview.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tglPreviewActionPerformed(evt);
+            }
+        });
+        add(tglPreview, new org.netbeans.lib.awtextra.AbsoluteConstraints(7, 245, 50, 20));
+
         getAccessibleContext().setAccessibleParent(this);
     }// </editor-fold>//GEN-END:initComponents
 
@@ -514,6 +528,7 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
                 this.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.green));
                 tglClock.setEnabled(false);
                 tglQRCode.setEnabled(false);
+                tglPreview.setEnabled(false);
                 if (stream.getIsQRCode()) {
                     txtContent.setText("QRCode Clock Mode.");
                     stream.updateContent("QRCode Clock Mode.");
@@ -528,6 +543,7 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
 //                System.out.println("Starting Clock ...");
             } else {
                 this.setBorder(BorderFactory.createEmptyBorder());
+                tglPreview.setEnabled(true);
                 tglClock.setEnabled(true);
                 tglQRCode.setEnabled(true);
                 time.cancel();
@@ -539,11 +555,13 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
             }
         } else {
             if (tglActiveStream.isSelected()) {
+                tglPreview.setEnabled(false);
                 tglClock.setEnabled(false);
                 tglQRCode.setEnabled(false);
                 this.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.green));
                 stream.read();
             } else {
+                tglPreview.setEnabled(true);
                 tglClock.setEnabled(true);
                 tglQRCode.setEnabled(true);
                 this.setBorder(BorderFactory.createEmptyBorder());
@@ -578,6 +596,9 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
     private void spinHStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinHStateChanged
         stream.setHeight((Integer)spinH.getValue());
         jSlSpinH.setValue((Integer)spinH.getValue());
+        if (!lockRatio){
+            oldH = stream.getHeight();
+        }
     }//GEN-LAST:event_spinHStateChanged
 
     private void jSlSpinXStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlSpinXStateChanged
@@ -607,6 +628,9 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
     private void jSlSpinHStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlSpinHStateChanged
         stream.setHeight(jSlSpinH.getValue());
         spinH.setValue(jSlSpinH.getValue());
+        if (!lockRatio){
+            oldH = stream.getHeight();
+        }
     }//GEN-LAST:event_jSlSpinHStateChanged
 
     private void spinZOrderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinZOrderStateChanged
@@ -675,6 +699,16 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
         }
     }//GEN-LAST:event_jCheckBox1ActionPerformed
 
+    private void tglPreviewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglPreviewActionPerformed
+        if (tglPreview.isSelected()) {
+            stream.setPreView(true);
+//            stream.register();
+        } else {
+//            stream.unRegister();
+            stream.setPreView(false);
+        }
+    }//GEN-LAST:event_tglPreviewActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnSelectColor;
     private javax.swing.JComboBox cboFonts;
@@ -706,6 +740,7 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
     private javax.swing.JSpinner spinZOrder;
     private javax.swing.JToggleButton tglActiveStream;
     private javax.swing.JToggleButton tglClock;
+    private javax.swing.JToggleButton tglPreview;
     private javax.swing.JToggleButton tglQRCode;
     private javax.swing.JTextField txtContent;
     private javax.swing.JFormattedTextField txtHexColor;
@@ -715,6 +750,7 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
     public void sourceUpdated(Stream stream) {
         if (stream.isPlaying()){
             this.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.green));
+            tglPreview.setEnabled(false);
             if (stream.getIsATimer()){
                 tglClock.setSelected(true);
                 txtContent.setEditable(false);
@@ -734,6 +770,7 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
             }
         } else {
             this.setBorder(BorderFactory.createEmptyBorder());
+            tglPreview.setEnabled(true);
             if (stream.getIsATimer()){
                 tglClock.setSelected(true);
                 txtContent.setEditable(false);

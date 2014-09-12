@@ -10,6 +10,7 @@ import webcamstudio.externals.ProcessRenderer;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterFrameBuilder;
 import webcamstudio.mixers.MasterMixer;
+import webcamstudio.mixers.PreviewFrameBuilder;
 
 /**
  *
@@ -32,7 +33,11 @@ public class SourceMusic extends Stream {
     @Override
     public void read() {
         isPlaying = true;
-        MasterFrameBuilder.register(this);
+        if (getPreView()){
+            PreviewFrameBuilder.register(this);
+        } else {
+            MasterFrameBuilder.register(this);
+        }
         lastPreview = new BufferedImage(captureWidth,captureHeight,BufferedImage.TYPE_INT_ARGB);
         capture = new ProcessRenderer(this, ProcessRenderer.ACTION.CAPTURE, "music", comm);
         capture.read();
@@ -56,7 +61,11 @@ public class SourceMusic extends Stream {
             this.read();
         } else {
             isPlaying = false;
-            MasterFrameBuilder.unregister(this);
+            if (getPreView()){
+                PreviewFrameBuilder.unregister(this);
+            } else {
+                MasterFrameBuilder.unregister(this);
+            }
             if (capture != null) {
                 capture.stop();
                 capture = null;

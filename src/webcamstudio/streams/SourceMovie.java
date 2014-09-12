@@ -10,6 +10,8 @@ import webcamstudio.externals.ProcessRenderer;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterFrameBuilder;
 import webcamstudio.mixers.MasterMixer;
+import webcamstudio.mixers.PreviewFrameBuilder;
+import webcamstudio.mixers.PreviewMixer;
 import webcamstudio.sources.effects.Effect;
 
 /**
@@ -32,9 +34,13 @@ public class SourceMovie extends Stream {
     @Override
     public void read() {
         isPlaying = true;
-        rate = MasterMixer.getInstance().getRate();
+//        rate = MasterMixer.getInstance().getRate();
         lastPreview = new BufferedImage(captureWidth,captureHeight,BufferedImage.TYPE_INT_ARGB);
-        MasterFrameBuilder.register(this);
+        if (getPreView()){
+            PreviewFrameBuilder.register(this);
+        } else {
+            MasterFrameBuilder.register(this);
+        }
         capture = new ProcessRenderer(this, ProcessRenderer.ACTION.CAPTURE, "movie", comm);
         capture.read();
     }
@@ -58,7 +64,11 @@ public class SourceMovie extends Stream {
             this.read();
         } else {
             isPlaying = false;
-            MasterFrameBuilder.unregister(this);
+            if (getPreView()){
+                PreviewFrameBuilder.unregister(this);
+            } else {
+                MasterFrameBuilder.unregister(this);
+            }
             if (capture != null) {
                 capture.stop();
                 capture = null;

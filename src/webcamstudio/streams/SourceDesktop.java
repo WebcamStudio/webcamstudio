@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 import webcamstudio.externals.ProcessRenderer;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterFrameBuilder;
+import webcamstudio.mixers.PreviewFrameBuilder;
 import webcamstudio.sources.effects.Effect;
 import webcamstudio.util.Screen;
 import webcamstudio.util.Tools;
@@ -54,7 +55,11 @@ public class SourceDesktop extends Stream {
         isPlaying = true;
         rate = this.getRate();
         lastPreview = new BufferedImage(captureWidth,captureHeight,BufferedImage.TYPE_INT_ARGB);
-        MasterFrameBuilder.register(this);
+        if (getPreView()){
+            PreviewFrameBuilder.register(this);
+        } else {
+            MasterFrameBuilder.register(this);
+        }
         if (os == OS.LINUX) {
             capture = new ProcessRenderer(this, ProcessRenderer.ACTION.CAPTURE, "desktop", comm);
             capture.read();
@@ -83,7 +88,11 @@ public class SourceDesktop extends Stream {
         if (this.getBackFF()){
             this.setComm("FF");
         }
-        MasterFrameBuilder.unregister(this);
+        if (getPreView()){
+            PreviewFrameBuilder.unregister(this);
+        } else {
+            MasterFrameBuilder.unregister(this);
+        }
     }
     @Override
     public boolean needSeek() {

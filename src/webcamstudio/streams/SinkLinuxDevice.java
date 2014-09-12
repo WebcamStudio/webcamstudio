@@ -80,16 +80,16 @@ public class SinkLinuxDevice extends Stream implements MasterMixer.SinkListener 
 
     @Override
     public void newFrame(Frame frame) {
-        if (frame != null) {
-            BufferedImage image = frame.getImage();
-            if (image != null) {
-                int[] imgData = ((java.awt.image.DataBufferInt) image.getRaster().getDataBuffer()).getData();
-                if (device != null) {
-                    device.write(imgData);
+            if (frame != null) {
+                BufferedImage image = frame.getImage();
+                if (image != null) {
+                    int[] imgData = ((java.awt.image.DataBufferInt) image.getRaster().getDataBuffer()).getData();
+                    if (device != null) {
+                        device.write(imgData);
+                    }
                 }
             }
         }
-    }
 
     @Override
     public void readNext() {

@@ -39,6 +39,7 @@ public class FullScreen extends javax.swing.JFrame {
     private void initComponents() {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("WS Master Mixer Screen");
         setPreferredSize(new java.awt.Dimension(400, 330));
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosed(java.awt.event.WindowEvent evt) {

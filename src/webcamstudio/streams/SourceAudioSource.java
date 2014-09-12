@@ -9,6 +9,7 @@ import webcamstudio.externals.ProcessRenderer;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterFrameBuilder;
 import webcamstudio.mixers.MasterMixer;
+import webcamstudio.mixers.PreviewFrameBuilder;
 
 /**
  *
@@ -29,7 +30,11 @@ public class SourceAudioSource extends Stream {
 
     @Override
     public void read() {
-        MasterFrameBuilder.register(this);
+        if (getPreView()){
+            PreviewFrameBuilder.register(this);
+        } else {
+            MasterFrameBuilder.register(this);
+        }
         capture = new ProcessRenderer(this, ProcessRenderer.ACTION.CAPTURE, "audiosource", comm);
         capture.read();
         lastPreview = new BufferedImage(captureWidth,captureHeight,BufferedImage.TYPE_INT_ARGB);
@@ -44,7 +49,12 @@ public class SourceAudioSource extends Stream {
     @Override
     public void stop() {
         isPlaying = false;
-        MasterFrameBuilder.unregister(this);
+        if (getPreView()){
+            PreviewFrameBuilder.unregister(this);
+//            MasterFrameBuilder.register(this);
+        } else {
+            MasterFrameBuilder.unregister(this);
+        }
         if (capture != null) {
             capture.stop();
             capture = null;

@@ -30,15 +30,18 @@ public class MasterFrameBuilder implements Runnable {
 
     private static ArrayList<Stream> streams = new ArrayList<>();// add private
     private static int fps = 0;
-
     public static synchronized void register(Stream s) {
         if (!streams.contains(s)) {
             streams.add(s);
+//            System.out.println("Register Master Stream Size: "+streams.size());
+            s.setRate(MasterMixer.getInstance().getRate());
         }
     }
 
     public static synchronized void unregister(Stream s) {
         streams.remove(s);
+//        System.out.println("UnRegister Master Stream Size: "+streams.size());
+        s.setRate(PreviewMixer.getInstance().getRate());
     }
     private Image imageF;
     private int imageX, imageY, imageW, imageH;
@@ -137,13 +140,20 @@ public class MasterFrameBuilder implements Runnable {
             try {
                 resultsT = ((ArrayList) pool.invokeAll(streams, 5, TimeUnit.SECONDS)); //modify to 10 give more time to pause
                 ArrayList<Future<Frame>> results = resultsT;
+                int i=0;
+                Frame f;
                 for (Future stream : results) {
                     if ((Frame)stream.get() != null) {
-                        Frame f = (Frame)stream.get();
-//                        if (f != null) {
-                        frames.add(f);
-//                        } 
+                        if (!streams.isEmpty()) {
+//                        if (!streams.get(i).getPreView()) {
+                            f = (Frame)stream.get();
+            //                        if (f != null) {
+                                    frames.add(f);
+        //                        } 
+//                        }
                     }
+                    }
+                    i++;
                 }
                 mixAudio(frames, targetFrame);
                 mixImages(frames, targetFrame);

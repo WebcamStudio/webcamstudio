@@ -26,6 +26,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JToggleButton;
 import webcamstudio.WebcamStudio;
 import webcamstudio.channels.MasterChannels;
+import webcamstudio.mixers.PrePlayer;
 import webcamstudio.mixers.SystemPlayer;
 import webcamstudio.remote.Listener;
 import webcamstudio.remote.WebRemote;
@@ -857,6 +858,8 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
     private void btnStopAllStreamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStopAllStreamActionPerformed
         SystemPlayer.getInstance(null).stop();
         Tools.sleep(30);
+        PrePlayer.getPreInstance(null).stop();
+        Tools.sleep(10);
         MasterChannels.getInstance().stopAllStream();
         for (Stream s : streamS){
             s.updateStatus();

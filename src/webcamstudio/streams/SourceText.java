@@ -19,6 +19,7 @@ import java.util.logging.Logger;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterFrameBuilder;
 import webcamstudio.mixers.MasterMixer;
+import webcamstudio.mixers.PreviewFrameBuilder;
 import webcamstudio.sources.effects.Effect;
 
 /**
@@ -50,8 +51,9 @@ public class SourceText extends Stream {
 
     @Override
     public void readNext() {
-        frame.setImage(image);
+        
         if (frame != null) {
+            frame.setImage(image);
             BufferedImage txImage = frame.getImage(); 
             applyEffects(txImage);
         }
@@ -290,6 +292,11 @@ public class SourceText extends Stream {
     public void read() {
         stop = false;
         isPlaying = true;
+        if (getPreView()){
+                PreviewFrameBuilder.register(this);
+            } else {
+                MasterFrameBuilder.register(this);
+            }
         this.setBackground(shape);
         try {
             updateContent(content);
@@ -297,7 +304,7 @@ public class SourceText extends Stream {
             frame.setImage(image);
             frame.setOutputFormat(x, y, width, height, opacity, volume);
             frame.setZOrder(zorder);
-            MasterFrameBuilder.register(this);
+            
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -319,7 +326,11 @@ public class SourceText extends Stream {
         stop = true;
         isPlaying = false;
         frame = null;
-        MasterFrameBuilder.unregister(this);
+        if (getPreView()){
+                PreviewFrameBuilder.unregister(this);
+            } else {
+                MasterFrameBuilder.unregister(this);
+            }
     }
     @Override
     public boolean needSeek() {
