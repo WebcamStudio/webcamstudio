@@ -26,7 +26,7 @@ public class StreamFullScreen extends javax.swing.JInternalFrame {
         StreamFullPanel p = new StreamFullPanel(viewer);
         this.setLayout(new BorderLayout());
         this.add(p, BorderLayout.CENTER);
-        this.setTitle("WS Master Mixer View");
+//        this.setTitle("WS Master Mixer View");
         this.setVisible(true);
         this.setClosable(false);
         this.setResizable(false);
@@ -44,7 +44,7 @@ public class StreamFullScreen extends javax.swing.JInternalFrame {
 
         setMaximizable(true);
         setResizable(true);
-        setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/user-desktop.png"))); // NOI18N
+        setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/view-fullscreen.png"))); // NOI18N
         setMaximumSize(new java.awt.Dimension(1280, 1024));
         setVisible(true);
 

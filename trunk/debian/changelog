@@ -1,3 +1,13 @@
+webcamstudio (0.70) unstable; urgency=low
+
+  * Fixes: Smalls and Major fixes. (https://code.google.com/p/webcamstudio/source/list)
+  * Changes: UI, some engine optimizations. (https://code.google.com/p/webcamstudio/source/list)
+  * Adds: See Builds log messages. (https://code.google.com/p/webcamstudio/source/list)
+  * Removes: See Builds log messages. (https://code.google.com/p/webcamstudio/source/list)
+  * New upstream version
+
+ -- Karl Ellis <soylent.tv@gmail.com>  Fri, 12 Sep 2014 18:41:30 +0200
+
 webcamstudio (0.65) unstable; urgency=low
 
   * Fixes: Linux 3.11 webcamstudio-module fix.

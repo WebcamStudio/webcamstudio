@@ -198,13 +198,13 @@ public class Exporter implements MasterMixer.SinkListener {
     
     @Override
     public void newFrame(Frame frame) {
-        if (stream.hasVideo()){
-            imageBuffer.push(frame.getImage());
+            if (stream.hasVideo()){
+                imageBuffer.push(frame.getImage());
+            }
+            if (stream.hasAudio()){
+                audioBuffer.push(frame.getAudioData());
+            }
         }
-        if (stream.hasAudio()){
-            audioBuffer.push(frame.getAudioData());
-        }
-    }
 
     public interface Listener {
 

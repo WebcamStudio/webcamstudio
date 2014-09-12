@@ -19,7 +19,10 @@ import java.util.logging.Logger;
 import javax.swing.Box;
 import javax.swing.JCheckBoxMenuItem;
 import static webcamstudio.WebcamStudio.wsDistroWatch;
+import webcamstudio.mixers.MasterFrameBuilder;
 import webcamstudio.mixers.MasterMixer;
+import webcamstudio.mixers.PreviewFrameBuilder;
+import webcamstudio.mixers.PreviewMixer;
 import webcamstudio.streams.SourceAudioSource;
 import webcamstudio.streams.SourceCustom;
 import webcamstudio.streams.SourceDV;
@@ -670,6 +673,8 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
 
     private void formInternalFrameClosing(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameClosing
         stream.setLoop(false);
+        PreviewFrameBuilder.unregister(stream);
+        MasterFrameBuilder.unregister(stream);
         stream.destroy();
         stream = null;
         panel = null;

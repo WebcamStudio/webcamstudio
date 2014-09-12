@@ -11,7 +11,10 @@ import java.util.concurrent.Callable;
 import webcamstudio.channels.MasterChannels;
 import webcamstudio.channels.transitions.Transition;
 import webcamstudio.mixers.Frame;
+import webcamstudio.mixers.MasterFrameBuilder;
 import webcamstudio.mixers.MasterMixer;
+import webcamstudio.mixers.PreviewFrameBuilder;
+import webcamstudio.mixers.PreviewMixer;
 import webcamstudio.sources.effects.Effect;
 /**
  *
@@ -130,6 +133,7 @@ public abstract class Stream implements Callable<Frame>{
     protected String streamTime = "N/A";
     protected String audioSource = "";
     protected String guid = "";
+    protected boolean preView = false;
 
     protected Stream() {
         MasterChannels.getInstance().register(this);
@@ -214,6 +218,12 @@ public abstract class Stream implements Callable<Frame>{
     }
     public boolean isOnlyAudio() {
         return isOAudio;
+    }
+    public void setPreView(boolean setPre) {
+        preView = setPre;
+    }
+    public boolean getPreView() {
+        return preView;
     }
     public boolean getProtected() {
         return protectedCam;
@@ -419,6 +429,14 @@ public abstract class Stream implements Callable<Frame>{
     }
     public boolean isRTMP() {
         return isRTMP;
+    }
+    public void unRegister() {
+            PreviewFrameBuilder.unregister(this);
+//            MasterFrameBuilder.register(this);
+    }
+    public void register() {
+            PreviewFrameBuilder.register(this);
+//            MasterFrameBuilder.unregister(this);
     }
     public void setIsStillPicture(boolean setIsStillPicture) {
         isStillPicture = setIsStillPicture;

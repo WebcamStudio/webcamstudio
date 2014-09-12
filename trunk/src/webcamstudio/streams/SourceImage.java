@@ -11,6 +11,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterFrameBuilder;
+import webcamstudio.mixers.PreviewFrameBuilder;
 import webcamstudio.sources.effects.Effect;
 
 /**
@@ -45,7 +46,11 @@ public class SourceImage extends Stream{
             frame.setID(uuid);
             frame.setOutputFormat(x, y, width, height, opacity, volume);
             frame.setZOrder(zorder);
-            MasterFrameBuilder.register(this);
+            if (getPreView()){
+            PreviewFrameBuilder.register(this);
+            } else {
+                MasterFrameBuilder.register(this);
+            }
         } catch(IOException e){
             e.printStackTrace();
         }
@@ -60,7 +65,11 @@ public class SourceImage extends Stream{
     public void stop() {
         playing = false;
         frame = null;
-        MasterFrameBuilder.unregister(this);
+        if (getPreView()){
+            PreviewFrameBuilder.unregister(this);
+        } else {
+            MasterFrameBuilder.unregister(this);
+        }
     }
     @Override
     public boolean needSeek() {

@@ -10,6 +10,7 @@ import webcamstudio.externals.ProcessRenderer;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterFrameBuilder;
 import webcamstudio.mixers.MasterMixer;
+import webcamstudio.mixers.PreviewFrameBuilder;
 import webcamstudio.sources.effects.Effect;
 //import webcamstudio.util.Tools;
 
@@ -35,7 +36,11 @@ public class SourceIPCam extends Stream {
         isPlaying = true;
         rate = MasterMixer.getInstance().getRate();
         lastPreview = new BufferedImage(captureWidth,captureHeight,BufferedImage.TYPE_INT_ARGB);
-        MasterFrameBuilder.register(this);
+        if (getPreView()){
+            PreviewFrameBuilder.register(this);
+        } else {
+            MasterFrameBuilder.register(this);
+        }
         capture = new ProcessRenderer(this, ProcessRenderer.ACTION.CAPTURE, "url", comm);
         capture.readCom();
     }
@@ -48,7 +53,11 @@ public class SourceIPCam extends Stream {
     @Override
     public void stop() {
         isPlaying = false;
-        MasterFrameBuilder.unregister(this);
+        if (getPreView()){
+            PreviewFrameBuilder.unregister(this);
+        } else {
+            MasterFrameBuilder.unregister(this);
+        }
         if (capture != null) {
             capture.stop();
             capture = null;

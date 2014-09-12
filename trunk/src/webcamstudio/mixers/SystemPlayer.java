@@ -27,7 +27,7 @@ public class SystemPlayer implements Runnable {
         }
         return instance;
     }
-
+    
     boolean stopMe = false;
     public boolean stopMePub = stopMe;
     private SourceDataLine source;
@@ -40,7 +40,7 @@ public class SystemPlayer implements Runnable {
     private SystemPlayer(Viewer viewer) {
         this.viewer = viewer;
     }
-
+    
     public void addFrame(Frame frame) {
         BufferedImage fImage = frame.getImage();
         viewer.setImage(fImage);

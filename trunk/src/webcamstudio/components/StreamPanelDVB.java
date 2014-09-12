@@ -52,6 +52,7 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         
         oldW = stream.getWidth();
         oldH = stream.getHeight();
+        lblCurtain.setVisible(false);
         
         try {
             icon = ImageIO.read(getClass().getResource("/webcamstudio/resources/tango/speaker4.png"));
@@ -219,7 +220,9 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
             prgNumber.setEnabled(false);
             txtChName.setEditable(false);
             tglPause.setEnabled(true);
+            tglPreview.setEnabled(false);
         } else {
+            tglPreview.setEnabled(true);
             this.setBorder(BorderFactory.createEmptyBorder());
             spinH1.setEnabled(stream.hasVideo());
             jSlSpinCH.setEnabled(stream.hasVideo());
@@ -251,6 +254,7 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
 
         panPreview = new javax.swing.JPanel();
         jSlSpinV = new javax.swing.JSlider();
+        lblCurtain = new javax.swing.JLabel();
         spinX = new javax.swing.JSpinner();
         spinY = new javax.swing.JSpinner();
         spinW = new javax.swing.JSpinner();
@@ -305,6 +309,7 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         tglPause = new javax.swing.JToggleButton();
         jCheckBox1 = new javax.swing.JCheckBox();
         jSeparator6 = new javax.swing.JSeparator();
+        tglPreview = new javax.swing.JToggleButton();
 
         setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
         setMaximumSize(new java.awt.Dimension(298, 522));
@@ -315,10 +320,16 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
 
         panPreview.setBackground(new java.awt.Color(113, 113, 113));
         panPreview.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        panPreview.setToolTipText("Click on the video to Hide/Unhide");
         panPreview.setMaximumSize(new java.awt.Dimension(90, 60));
         panPreview.setMinimumSize(new java.awt.Dimension(90, 60));
         panPreview.setName("panPreview"); // NOI18N
         panPreview.setPreferredSize(new java.awt.Dimension(90, 60));
+        panPreview.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                panPreviewMouseClicked(evt);
+            }
+        });
         panPreview.setLayout(new java.awt.BorderLayout());
 
         jSlSpinV.setBackground(new java.awt.Color(0, 0, 0));
@@ -341,6 +352,16 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
             }
         });
         panPreview.add(jSlSpinV, java.awt.BorderLayout.PAGE_START);
+
+        lblCurtain.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/curtain_small.png"))); // NOI18N
+        lblCurtain.setToolTipText("Click on the video to Hide/Unhide");
+        lblCurtain.setName("lblCurtain"); // NOI18N
+        lblCurtain.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblCurtainMouseClicked(evt);
+            }
+        });
+        panPreview.add(lblCurtain, java.awt.BorderLayout.LINE_START);
 
         add(panPreview, new org.netbeans.lib.awtextra.AbsoluteConstraints(7, 7, 110, 100));
 
@@ -791,6 +812,19 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         jSeparator6.setPreferredSize(new java.awt.Dimension(48, 10));
         add(jSeparator6, new org.netbeans.lib.awtextra.AbsoluteConstraints(126, 339, 150, 10));
 
+        tglPreview.setFont(new java.awt.Font("Ubuntu", 0, 5)); // NOI18N
+        tglPreview.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/PreviewButton3.png"))); // NOI18N
+        tglPreview.setToolTipText("Preview Mode");
+        tglPreview.setName("tglPreview"); // NOI18N
+        tglPreview.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/PreviewButton3.png"))); // NOI18N
+        tglPreview.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/PreviewButtonSelected3.png"))); // NOI18N
+        tglPreview.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tglPreviewActionPerformed(evt);
+            }
+        });
+        add(tglPreview, new org.netbeans.lib.awtextra.AbsoluteConstraints(7, 335, 50, 20));
+
         getAccessibleContext().setAccessibleParent(this);
     }// </editor-fold>//GEN-END:initComponents
     private void tglActiveStreamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglActiveStreamActionPerformed
@@ -813,9 +847,11 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
             prgNumber.setEnabled(false);
             txtChName.setEditable(false);
             tglPause.setEnabled(true);
+            tglPreview.setEnabled(false);
             stream.read();
         } else {
             this.setBorder(BorderFactory.createEmptyBorder());
+            tglPreview.setEnabled(true);
             spinW1.setEnabled(true);
             jSlSpinCH.setEnabled(stream.hasVideo());
             spinH1.setEnabled(true);
@@ -863,6 +899,9 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
     private void spinHStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinHStateChanged
         stream.setHeight((Integer)spinH.getValue());
         jSlSpinH.setValue((Integer)spinH.getValue());
+        if (!lockRatio){
+            oldH = stream.getHeight();
+        }
     }//GEN-LAST:event_spinHStateChanged
 
     private void spinXStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinXStateChanged
@@ -974,6 +1013,9 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
     private void jSlSpinHStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlSpinHStateChanged
         stream.setHeight(jSlSpinH.getValue());
         spinH.setValue(jSlSpinH.getValue());
+        if (!lockRatio){
+            oldH = stream.getHeight();
+        }
     }//GEN-LAST:event_jSlSpinHStateChanged
 
     private void jSlSpinOStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlSpinOStateChanged
@@ -1124,6 +1166,34 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         }
     }//GEN-LAST:event_jCheckBox1ActionPerformed
 
+    private void lblCurtainMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblCurtainMouseClicked
+        lblCurtain.setVisible(false);
+        //        panelPreview.remove(lblCurtain);
+        viewer.setOpaque(true);
+        panPreview.add(viewer, BorderLayout.CENTER);
+        this.repaint();
+        this.revalidate();
+    }//GEN-LAST:event_lblCurtainMouseClicked
+
+    private void panPreviewMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panPreviewMouseClicked
+        panPreview.remove(viewer);
+        lblCurtain.setOpaque(true);
+        lblCurtain.setVisible(true);
+        panPreview.add(lblCurtain);
+        this.repaint();
+        this.revalidate();
+    }//GEN-LAST:event_panPreviewMouseClicked
+
+    private void tglPreviewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglPreviewActionPerformed
+        if (tglPreview.isSelected()) {
+            stream.setPreView(true);
+//            stream.register();
+        } else {
+//            stream.unRegister();
+            stream.setPreView(false);
+        }
+    }//GEN-LAST:event_tglPreviewActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JSpinner bandwidth;
     private javax.swing.JSpinner frequency;
@@ -1164,6 +1234,7 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
     private javax.swing.JLabel labelZ;
     private javax.swing.JLabel labelfreq;
     private javax.swing.JLabel labelfreq1;
+    private javax.swing.JLabel lblCurtain;
     private javax.swing.JPanel panPreview;
     private javax.swing.JSpinner prgNumber;
     private javax.swing.JSpinner spinADelay;
@@ -1180,6 +1251,7 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
     private javax.swing.JSpinner spinZOrder;
     private javax.swing.JToggleButton tglActiveStream;
     private javax.swing.JToggleButton tglPause;
+    private javax.swing.JToggleButton tglPreview;
     private javax.swing.JTextField txtChName;
     // End of variables declaration//GEN-END:variables
 
