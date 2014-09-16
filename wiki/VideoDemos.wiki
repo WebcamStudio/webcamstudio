@@ -6,6 +6,13 @@ Here are some video demos of the WebcamStudio application, showing it in action.
 
 = Video Demos =
 
+= Entire Playlist: =
+https://www.youtube.com/watch?v=PBbHggE-068&list=PLXUBx6_jVxXvPKykQKZULzUgt_frRTYV6
+
+<wiki:video url="https://www.youtube.com/watch?v=PBbHggE-068&list=PLXUBx6_jVxXvPKykQKZULzUgt_frRTYV6" />
+
+= Single Old 0.6x Videos: =
+
 <wiki:video url="https://www.youtube.com/watch?v=NJiHoEzsoL8"/>
 
 <wiki:video url="https://www.youtube.com/watch?v=adGujG3hSQE"/>
