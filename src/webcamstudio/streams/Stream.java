@@ -11,10 +11,8 @@ import java.util.concurrent.Callable;
 import webcamstudio.channels.MasterChannels;
 import webcamstudio.channels.transitions.Transition;
 import webcamstudio.mixers.Frame;
-import webcamstudio.mixers.MasterFrameBuilder;
 import webcamstudio.mixers.MasterMixer;
 import webcamstudio.mixers.PreviewFrameBuilder;
-import webcamstudio.mixers.PreviewMixer;
 import webcamstudio.sources.effects.Effect;
 /**
  *
@@ -134,6 +132,7 @@ public abstract class Stream implements Callable<Frame>{
     protected String audioSource = "";
     protected String guid = "";
     protected boolean preView = false;
+    protected boolean isPaused = false;
 
     protected Stream() {
         MasterChannels.getInstance().register(this);
@@ -167,6 +166,12 @@ public abstract class Stream implements Callable<Frame>{
     }
     public void setComm(String sComm) {
         this.comm = sComm;
+    }
+    public boolean getisPaused() {
+        return isPaused;
+    }
+    public void setisPaused(boolean isP) {
+        this.isPaused = isP;
     }
     public boolean getIsATimer() {
         return isATimer;

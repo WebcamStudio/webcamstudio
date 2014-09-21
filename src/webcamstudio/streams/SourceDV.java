@@ -46,6 +46,7 @@ public class SourceDV extends Stream {
 
     @Override
     public void pause() {
+        isPaused = true;
         capture.pause();
     }
     
@@ -128,6 +129,7 @@ public class SourceDV extends Stream {
 
     @Override
     public void play() {
+        isPaused = false;
         capture.play();
     }
 

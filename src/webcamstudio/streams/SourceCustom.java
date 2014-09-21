@@ -44,6 +44,7 @@ public class SourceCustom extends Stream {
 
     @Override
     public void pause() {
+        isPaused = true;
         capture.pause();
     }
     
@@ -131,6 +132,7 @@ public class SourceCustom extends Stream {
 
     @Override
     public void play() {
+        isPaused = false;
         capture.play();
     }
 }

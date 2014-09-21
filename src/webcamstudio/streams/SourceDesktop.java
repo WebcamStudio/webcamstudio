@@ -46,6 +46,7 @@ public class SourceDesktop extends Stream {
 
     @Override
     public void pause() {
+        isPaused = true;
         capture.pause();
     }
     
@@ -132,11 +133,19 @@ public class SourceDesktop extends Stream {
          if (capture != null) {
             nextFrame = capture.getFrame();
             if (this.getEffects() != null) {
-                for (Effect fxD : this.getEffects()) {
-                    if (fxD.needApply() && nextFrame != null){   
-                        fxD.applyEffect(nextFrame.getImage());
+                for (int fx = 0; fx < this.getEffects().size(); fx++) {
+                    if (nextFrame != null) {
+                        Effect fxM = this.getEffects().get(fx);
+                        if (fxM.needApply()){   
+                            fxM.applyEffect(nextFrame.getImage());
+                        }
                     }
                 }
+//                for (Effect fxD : this.getEffects()) {
+//                    if (fxD.needApply() && nextFrame != null){   
+//                        fxD.applyEffect(nextFrame.getImage());
+//                    }
+//                }
             }
             if (nextFrame != null) {
                 lastPreview = nextFrame.getImage();
@@ -153,6 +162,7 @@ public class SourceDesktop extends Stream {
 
     @Override
     public void play() {
+        isPaused = false;
         capture.play();
     }
 }

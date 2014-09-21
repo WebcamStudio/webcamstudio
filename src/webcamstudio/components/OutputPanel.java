@@ -223,6 +223,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
                     ex.printStackTrace();
                 }
             }
+            
         });
     }
 
@@ -426,7 +427,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
                 if (e.getX() > getWidth()) {
                     JToggleButton button = ((JToggleButton) e.getSource());
                     if (!button.isSelected() && e.getX() > getWidth()) {
-                        System.out.println(button.getText());
+                        System.out.println(button.getText()+" removed ...");
                         SinkBroadcast broadcast = broadcasts.remove(button.getText());
                         if (broadcast != null) {
                             MasterChannels.getInstance().unregister(broadcast);
