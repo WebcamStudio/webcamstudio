@@ -145,11 +145,15 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
         public void requestStop();
         public void requestStart();
     }
+    
     static Listener listenerCPOP = null;
+    
     public static void setListenerCPOPanel(Listener l) {
         listenerCPOP = l;
     }
+    
     static Listener listenerCPMP = null;
+    
     public static void setListenerCPMPanel(Listener l) {
         listenerCPMP = l;
     }
@@ -168,7 +172,6 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
         Studio.setListener(this);
         remote = new WebRemote(this);
         loadPrefs();
-        
     }
     
     private void loadPrefs() {
@@ -568,12 +571,12 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
             StopCHTimer.setEnabled(inTimer);
             btnUpdate.setEnabled(true);
             tglRemote.setEnabled(true);
-            } else {
-                btnRemove.setEnabled(false);
-                btnSelect.setEnabled(false);
-                btnUpdate.setEnabled(false);
-                btnClearAllCh.setEnabled(false);
-                tglRemote.setEnabled(false);
+        } else {
+            btnRemove.setEnabled(false);
+            btnSelect.setEnabled(false);
+            btnUpdate.setEnabled(false);
+            btnClearAllCh.setEnabled(false);
+            tglRemote.setEnabled(false);
         }
     }//GEN-LAST:event_lstChannelsValueChanged
     @SuppressWarnings("unchecked") 
@@ -663,7 +666,8 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
         CHCurrNext.remove(removeSc);
         CHTimers.remove(a);
         ListChannels.remove(removeSc);
-    }   
+    }
+    
     @SuppressWarnings("unchecked") 
     @Override
     public void addLoadingChannel(String name) {
@@ -672,9 +676,10 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
             aModel.addElement(name);
             ListChannels.add(name);
             lstChannels.revalidate();
-       }
+        }
         lstChannels.setSelectedValue(ListChannels.get(0), true);
-    }   
+    }
+    
     @Override
     public void stopChTime(ActionEvent evt) {
         RemoteStopCHTimerActionPerformed();
@@ -807,7 +812,7 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
            String nextChannel = lstNextChannel.getSelectedItem().toString();
            int ChIndex = lstChannels.getSelectedIndex();
            CHCurrNext.set(ChIndex, nextChannel);
-           } 
+        }
     }//GEN-LAST:event_lstNextChannelActionPerformed
 
     private void ChDurationStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_ChDurationStateChanged

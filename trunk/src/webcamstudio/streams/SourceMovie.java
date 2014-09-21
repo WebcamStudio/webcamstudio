@@ -11,7 +11,6 @@ import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterFrameBuilder;
 import webcamstudio.mixers.MasterMixer;
 import webcamstudio.mixers.PreviewFrameBuilder;
-import webcamstudio.mixers.PreviewMixer;
 import webcamstudio.sources.effects.Effect;
 
 /**
@@ -47,7 +46,7 @@ public class SourceMovie extends Stream {
 
     @Override
     public void pause() {
-        isPlaying = false;
+        isPaused = true;
         capture.pause();
     }
     
@@ -134,7 +133,7 @@ public class SourceMovie extends Stream {
 
     @Override
     public void play() {
-        isPlaying = true;
+        isPaused = false;
         capture.play();
     }
 

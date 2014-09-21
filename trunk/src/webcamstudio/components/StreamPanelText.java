@@ -472,17 +472,17 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
         add(jSeparator8, new org.netbeans.lib.awtextra.AbsoluteConstraints(126, 249, 150, 10));
 
         tglPreview.setFont(new java.awt.Font("Ubuntu", 0, 5)); // NOI18N
-        tglPreview.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/PreviewButton3.png"))); // NOI18N
+        tglPreview.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/PreviewButton2.png"))); // NOI18N
         tglPreview.setToolTipText("Preview Mode");
         tglPreview.setName("tglPreview"); // NOI18N
-        tglPreview.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/PreviewButton3.png"))); // NOI18N
-        tglPreview.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/PreviewButtonSelected3.png"))); // NOI18N
+        tglPreview.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/PreviewButton2.png"))); // NOI18N
+        tglPreview.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/PreviewButtonSelected4.png"))); // NOI18N
         tglPreview.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 tglPreviewActionPerformed(evt);
             }
         });
-        add(tglPreview, new org.netbeans.lib.awtextra.AbsoluteConstraints(7, 245, 50, 20));
+        add(tglPreview, new org.netbeans.lib.awtextra.AbsoluteConstraints(7, 246, 30, 20));
 
         getAccessibleContext().setAccessibleParent(this);
     }// </editor-fold>//GEN-END:initComponents

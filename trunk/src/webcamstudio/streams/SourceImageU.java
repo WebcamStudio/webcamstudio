@@ -46,7 +46,7 @@ public class SourceImageU extends Stream {
     
     @Override
     public void pause() {
-        capture.pause();
+        // nothing here
     }
     
     @Override
@@ -108,14 +108,22 @@ public class SourceImageU extends Stream {
         if (capture != null) {
             f = capture.getFrame();
             if (this.getEffects() != null) {
-                for (Effect fxI : this.getEffects()) {
-                    if (f != null && fxI.needApply()) {
-                        fxI.applyEffect(f.getImage());
+                for (int fx = 0; fx < this.getEffects().size(); fx++) {
+                    if (f != null) {
+                        Effect fxM = this.getEffects().get(fx);
+                        if (fxM.needApply()){   
+                            fxM.applyEffect(f.getImage());
+                        }
                     }
-                }
+                }                
+//                for (Effect fxI : this.getEffects()) {
+//                    if (f != null && fxI.needApply()) {
+//                        fxI.applyEffect(f.getImage());
+//                    }
+//                }
             }
             if (f != null) {
-                setAudioLevel(f);
+//                setAudioLevel(f);
                 lastPreview.getGraphics().drawImage(f.getImage(), 0, 0, null);
             }
         }
@@ -124,6 +132,6 @@ public class SourceImageU extends Stream {
 
     @Override
     public void play() {
-        capture.play();
+        // nothing here
     }
 }

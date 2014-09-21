@@ -37,6 +37,7 @@ public class SourceChannel  {
         s.zorder = stream.zorder;
         s.name = channelName;
         s.isPlaying = stream.isPlaying();
+        s.isPaused = stream.getisPaused();
         s.capHeight = stream.captureHeight;
         s.capWidth = stream.captureWidth;
         if (stream instanceof SourceText) {
@@ -83,6 +84,7 @@ public class SourceChannel  {
         s.zorder = stream.zorder;
         s.name = channelName;
 //        s.isPlaying = stream.isPlaying();
+//        s.isPaused = stream.getisPaused();
         s.capHeight = stream.captureHeight;
         s.capWidth = stream.captureWidth;
         if (stream instanceof SourceText) {
@@ -126,6 +128,7 @@ public class SourceChannel  {
     private boolean isATimer = false;
     private boolean isQRCode = false;
     private boolean isPlaying = false;
+    private boolean isPaused = false;
     ArrayList<Effect> effects = new ArrayList<>();
     private final boolean followMouse = false;
     private final int captureX = 0;
@@ -154,13 +157,17 @@ public class SourceChannel  {
     }
     public void apply(final Stream s) {
         final SourceChannel instance = this;
+        
         new Thread(new Runnable() {
 
             @Override
             public void run() {
                 if (!s.getClass().toString().contains("Sink")){ // Don't Update SinkStreams
                     ExecutorService pool = java.util.concurrent.Executors.newCachedThreadPool();
-                    if (endTransitions != null) {
+                    
+                    s.setVolume(0);
+                    
+                    if (endTransitions != null) { 
                         for (Transition t : s.endTransitions) {
 //                            System.out.println("End Transition: "+t.getClass().getName());
                             pool.submit(t.run(instance));
@@ -170,29 +177,68 @@ public class SourceChannel  {
                             pool.awaitTermination(10, TimeUnit.SECONDS);
                         } catch (InterruptedException ex) {
                             Logger.getLogger(SourceChannel.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    }
-                    if (isPlaying) {
-                        if (!s.isPlaying()) {
-                            Tools.sleep(10);
-                            s.read();
                         }
+                    }
+                    
+                    s.zorder = getZorder();
+                    
+                    if (isPlaying) {
+                            if (!s.isPlaying()) {
+                                if (isPaused) {
+                                    Tools.sleep(10);
+                                    s.read();
+                                    Tools.sleep(100);
+                                    s.pause();
+                                } else {
+                                    Tools.sleep(10);
+                                    s.read();
+                                }
+                            } else {
+                                if (!isPaused) {
+                                    Tools.sleep(10);
+                                    s.play();
+                                } else {
+                                    s.setVolume(0);
+                                    Tools.sleep(10);
+                                    s.pause();
+                                }
+                            }
+
                         if (startTransitions != null) {
                             pool = java.util.concurrent.Executors.newCachedThreadPool();
                             for (Transition t : instance.startTransitions) {
 //                                System.out.println("Start Transition: "+t.getClass().getName());
                                 pool.submit(t.run(instance));
                             }
-                            pool.shutdown();
+                            pool.shutdown();                            
                             try {
                                 pool.awaitTermination(10, TimeUnit.SECONDS);
                             } catch (InterruptedException ex) {
                                 Logger.getLogger(SourceChannel.class.getName()).log(Level.SEVERE, null, ex);
                             }
                         }
+                        
+                        s.setVolume(volume);
+                        
                     } else {
-                        if (s.isPlaying()) {
-                            s.stop();
+                        if (s.getisPaused()) {
+                            if (isPaused) {
+                                s.setVolume(0);
+                                Tools.sleep(10);
+                                s.pause();
+                            } else {
+                                s.setVolume(volume);
+                                Tools.sleep(10);
+                                s.pause();
+                                Tools.sleep(10);
+                                s.stop();
+                            }
+                        } else {
+                            if (s.isPlaying()) {
+                                s.setVolume(volume);
+                                Tools.sleep(10);
+                                s.stop();
+                            }
                         }
                     }
 
@@ -202,7 +248,6 @@ public class SourceChannel  {
                     s.height = getHeight();
                     s.opacity = getOpacity();
                     s.volume = getVolume();
-                    s.zorder = getZorder();
                     s.captureHeight = getCapHeight();
                     s.captureWidth = getCapWidth();
                     s.effects.clear();

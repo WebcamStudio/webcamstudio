@@ -37,7 +37,8 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
 
     Stream stream = null;
     Viewer viewer = new Viewer();
-    float volume = 0;
+    private float volume = 0;
+    private float vol = 0;
     BufferedImage icon = null;
     boolean lockRatio = false;
     boolean muted = false;
@@ -52,6 +53,8 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         
         oldW = stream.getWidth();
         oldH = stream.getHeight();
+        volume = stream.getVolume();
+        vol = stream.getVolume();
         lblCurtain.setVisible(false);
         
         try {
@@ -203,6 +206,7 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         spinZOrder.setValue(stream.getZOrder());
         jSlSpinZOrder.setValue(stream.getZOrder());
         tglActiveStream.setSelected(stream.isPlaying());
+        tglPause.setSelected(stream.getisPaused());
         if (stream.isPlaying()){
             this.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.green));
             spinH1.setEnabled(false);
@@ -349,6 +353,11 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         jSlSpinV.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 jSlSpinVStateChanged(evt);
+            }
+        });
+        jSlSpinV.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                jSlSpinVFocusLost(evt);
             }
         });
         panPreview.add(jSlSpinV, java.awt.BorderLayout.PAGE_START);
@@ -813,17 +822,17 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         add(jSeparator6, new org.netbeans.lib.awtextra.AbsoluteConstraints(126, 339, 150, 10));
 
         tglPreview.setFont(new java.awt.Font("Ubuntu", 0, 5)); // NOI18N
-        tglPreview.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/PreviewButton3.png"))); // NOI18N
+        tglPreview.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/PreviewButton2.png"))); // NOI18N
         tglPreview.setToolTipText("Preview Mode");
         tglPreview.setName("tglPreview"); // NOI18N
-        tglPreview.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/PreviewButton3.png"))); // NOI18N
-        tglPreview.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/PreviewButtonSelected3.png"))); // NOI18N
+        tglPreview.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/PreviewButton2.png"))); // NOI18N
+        tglPreview.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/PreviewButtonSelected4.png"))); // NOI18N
         tglPreview.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 tglPreviewActionPerformed(evt);
             }
         });
-        add(tglPreview, new org.netbeans.lib.awtextra.AbsoluteConstraints(7, 335, 50, 20));
+        add(tglPreview, new org.netbeans.lib.awtextra.AbsoluteConstraints(7, 336, 30, 20));
 
         getAccessibleContext().setAccessibleParent(this);
     }// </editor-fold>//GEN-END:initComponents
@@ -925,8 +934,14 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         } else if (value instanceof Integer){
             v = ((Number)value).floatValue();
         }
-        stream.setVolume(v/100f);
-        volume = v/100f;        
+        if (stream.getisPaused()) {
+            if (v/100f != 0) {
+                vol = v/100f;
+            }
+        } else {
+            stream.setVolume(v/100f);
+            volume = v/100f;
+        }
     }//GEN-LAST:event_spinVolumeStateChanged
 
     private void spinW1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinW1StateChanged
@@ -1045,11 +1060,13 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
 
     private void tglPauseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglPauseActionPerformed
         if (tglPause.isSelected()){
-            volume = stream.getVolume();
             stream.setVolume(0);
+            stream.setisPaused(true);
             stream.pause();
         } else {
-            stream.setVolume(volume);
+            stream.setVolume(vol);
+            spinVolume.setValue(vol*100f);
+            stream.setisPaused(false);
             stream.play();
         }
     }//GEN-LAST:event_tglPauseActionPerformed
@@ -1149,7 +1166,9 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
 
     private void jSlSpinVStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlSpinVStateChanged
         spinVolume.setValue(jSlSpinV.getValue());
-        volume = jSlSpinV.getValue()/100f;
+        if (!stream.getisPaused()) {
+            volume = jSlSpinV.getValue()/100f;
+        }
     }//GEN-LAST:event_jSlSpinVStateChanged
 
     private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
@@ -1193,6 +1212,12 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
             stream.setPreView(false);
         }
     }//GEN-LAST:event_tglPreviewActionPerformed
+
+    private void jSlSpinVFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jSlSpinVFocusLost
+        if (jSlSpinV.getValue()/100f != 0) {
+            vol = jSlSpinV.getValue()/100f;
+        }
+    }//GEN-LAST:event_jSlSpinVFocusLost
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JSpinner bandwidth;

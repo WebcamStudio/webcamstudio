@@ -118,15 +118,24 @@ public class SourceWebcam extends Stream {
         if (capture != null) {
             f = capture.getFrame();
             if (this.getEffects() != null) {
-                for (Effect fxW : this.getEffects()) {
-                    if (f != null && fxW.needApply()) {                    
-                        fxW.applyEffect(f.getImage());
+                for (int fx = 0; fx < this.getEffects().size(); fx++) {
+                    if (f != null) {
+                        Effect fxM = this.getEffects().get(fx);
+                        if (fxM.needApply()){   
+                            fxM.applyEffect(f.getImage());
+                        }
                     }
                 }
+//                for (Effect fxW : this.getEffects()) {
+//                    if (f != null && fxW.needApply()) {                    
+//                        fxW.applyEffect(f.getImage());
+//                    }
+//                }
             }
             if (f != null) {
-                setAudioLevel(f);
-                lastPreview=f.getImage();
+//                setAudioLevel(f);
+//                lastPreview=f.getImage();
+                lastPreview.getGraphics().drawImage(f.getImage(), 0, 0, null);
             }
         }
         nextFrame=f;

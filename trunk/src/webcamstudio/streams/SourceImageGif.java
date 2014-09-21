@@ -91,7 +91,7 @@ public class SourceImageGif extends Stream {
     
     @Override
     public void pause() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
     @Override
@@ -149,6 +149,6 @@ public class SourceImageGif extends Stream {
 
     @Override
     public void play() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //Nothing Here.
     }
 }

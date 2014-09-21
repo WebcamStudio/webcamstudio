@@ -47,7 +47,7 @@ public class SourceIPCam extends Stream {
 
     @Override
     public void pause() {
-        capture.pause();
+        // Nothing Here.
     }
     
     @Override
@@ -151,7 +151,7 @@ public class SourceIPCam extends Stream {
 
     @Override
     public void play() {
-        capture.play();
+        // Nothing Here.
     }
 
 }
