@@ -83,8 +83,6 @@ public class SourceChannel  {
         s.volume = stream.volume;
         s.zorder = stream.zorder;
         s.name = channelName;
-//        s.isPlaying = stream.isPlaying();
-//        s.isPaused = stream.getisPaused();
         s.capHeight = stream.captureHeight;
         s.capWidth = stream.captureWidth;
         if (stream instanceof SourceText) {
@@ -185,21 +183,21 @@ public class SourceChannel  {
                     if (isPlaying) {
                             if (!s.isPlaying()) {
                                 if (isPaused) {
-                                    Tools.sleep(10);
+//                                    Tools.sleep(10);
                                     s.read();
                                     Tools.sleep(100);
                                     s.pause();
                                 } else {
-                                    Tools.sleep(10);
+//                                    Tools.sleep(10);
                                     s.read();
                                 }
                             } else {
                                 if (!isPaused) {
-                                    Tools.sleep(10);
+//                                    Tools.sleep(10);
                                     s.play();
                                 } else {
                                     s.setVolume(0);
-                                    Tools.sleep(10);
+//                                    Tools.sleep(10);
                                     s.pause();
                                 }
                             }
@@ -224,19 +222,19 @@ public class SourceChannel  {
                         if (s.getisPaused()) {
                             if (isPaused) {
                                 s.setVolume(0);
-                                Tools.sleep(10);
+//                                Tools.sleep(10);
                                 s.pause();
                             } else {
                                 s.setVolume(volume);
-                                Tools.sleep(10);
+//                                Tools.sleep(10);
                                 s.pause();
-                                Tools.sleep(10);
+//                                Tools.sleep(10);
                                 s.stop();
                             }
                         } else {
                             if (s.isPlaying()) {
                                 s.setVolume(volume);
-                                Tools.sleep(10);
+//                                Tools.sleep(10);
                                 s.stop();
                             }
                         }

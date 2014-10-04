@@ -1,3 +1,15 @@
+webcamstudio (0.71) unstable; urgency=low
+
+  * Fixes: Stream freeze if Stop is invoked on a paused stream activating a channel.
+  * Fixes: "Apply to Stream" Mixer Panel button doesn't set correctly the Height in all streams.
+  * Fixes: AutoDeactivate SkyCam on exit if active. (Thanks Ronnie Tucker)
+  * Changes: Cleanup Stream-Panels code and Avconv/FFmpeg command lines.
+  * Adds: Pause Symbol in iconified Sources.
+  * Adds: "WSAudioDevice" Sink Audio Device.
+  * New upstream version
+
+ -- Karl Ellis <soylent.tv@gmail.com>  Sat, 04 Oct 2014 17:20:09 +0200
+
 webcamstudio (0.70) unstable; urgency=low
 
   * Fixes: Smalls and Major fixes. (https://code.google.com/p/webcamstudio/source/list)

@@ -224,6 +224,18 @@ public class ProcessRenderer {
                     break;
                 case XID:
                     command = command.replaceAll(Tags.XID.toString(), stream.getDesktopXid() + "");
+                case WINDOWX:
+                    command = command.replaceAll(Tags.WINDOWX.toString(), stream.getWindowX() + "");
+                    break;
+                case WINDOWY:
+                    command = command.replaceAll(Tags.WINDOWY.toString(), stream.getWindowY() + "");
+                    break;
+                case WINDOWENDX:
+                    command = command.replaceAll(Tags.WINDOWENDX.toString(), stream.getWindowEndX() + "");
+                    break;
+                case WINDOWENDY:
+                    command = command.replaceAll(Tags.WINDOWENDY.toString(), stream.getWindowEndY() + "");
+                    break;
                 case GUID:
                     command = command.replaceAll(Tags.GUID.toString(), stream.getGuid() + "");
                 case VCODEC:

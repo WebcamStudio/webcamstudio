@@ -703,9 +703,15 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
         switch (stream.getPanelType()) {
             case "Panel":
                 if (jCBMoreOptions.isSelected()){
-                    this.setSize(new Dimension(this.getWidth(),443));
-                    this.revalidate();
-                    this.repaint();
+                    if (stream.needSeekCTRL()) {
+                        this.setSize(new Dimension(this.getWidth(),443));
+                        this.revalidate();
+                        this.repaint();
+                    } else {
+                        this.setSize(new Dimension(this.getWidth(),423));
+                        this.revalidate();
+                        this.repaint();
+                    }
                 } else {
                     this.setSize(new Dimension(this.getWidth(),338));
                     this.revalidate();
@@ -713,7 +719,7 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
                 }   break;
             case "PanelDVB":
                 if (jCBMoreOptions.isSelected()){
-                    this.setSize(new Dimension(this.getWidth(),553));
+                    this.setSize(new Dimension(this.getWidth(),533));
                     this.revalidate();
                     this.repaint();
                 } else {
@@ -723,7 +729,7 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
                 }   break;
             case "PanelURL":
                 if (jCBMoreOptions.isSelected()){
-                    this.setSize(new Dimension(this.getWidth(),483));
+                    this.setSize(new Dimension(this.getWidth(),463));
                     this.revalidate();
                     this.repaint();
                 } else {
@@ -733,7 +739,7 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
                 }   break;
             case "PanelIPCam":
                 if (jCBMoreOptions.isSelected()){
-                    this.setSize(new Dimension(this.getWidth(),483));
+                    this.setSize(new Dimension(this.getWidth(),463));
                     this.revalidate();
                     this.repaint();
                 } else {

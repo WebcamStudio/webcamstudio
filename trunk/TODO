@@ -1,6 +1,3 @@
 Todo:
-- Technically, ProcessRenderer should be modified to launch each existing
-process and then Capturer should read from the InputStream of the process
-instead of reading from a local TCPIP port. (Patrick Balleux)
-- Scrolling Text Feature.
-- Audio Output selector (or something similar).
+- Fix webcam count if writing errors occurs ... (Low Priority)
+- Streams Pause/Play in one button. Stop button apart.

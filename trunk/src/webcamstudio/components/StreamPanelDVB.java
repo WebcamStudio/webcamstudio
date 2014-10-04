@@ -101,41 +101,23 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         panPreview.add(viewer, BorderLayout.CENTER);
         this.stream = stream;
         spinX.setValue(stream.getX());
-        jSlSpinX.setValue(stream.getX());
         spinY.setValue(stream.getY());
-        jSlSpinY.setValue(stream.getY());
         spinW.setValue(stream.getWidth());
-        jSlSpinW.setValue(stream.getWidth());
         spinH.setValue(stream.getHeight());
-        jSlSpinH.setValue(stream.getHeight());
         spinOpacity.setModel(new SpinnerNumberModel(100, 0, 100, 1));
         spinOpacity.setValue(stream.getOpacity());
-        jSlSpinO.setValue(stream.getOpacity());
         spinVolume.setModel(new SpinnerNumberModel(50, 0, 300, 1));
         spinVolume.setValue(stream.getVolume() * 100);
-        String jSVol = spinVolume.getValue().toString().replace(".0", "");
-        int jVol = Integer.parseInt(jSVol);
-        jSlSpinV.setValue(jVol);
-        spinVolume.setEnabled(stream.hasAudio());
         jSlSpinV.setEnabled(stream.hasAudio());
         spinZOrder.setValue(stream.getZOrder());
-        jSlSpinZOrder.setValue(stream.getZOrder());
         spinH1.setValue(stream.getCaptureHeight());
-        jSlSpinCH.setValue(stream.getCaptureHeight());
         spinW1.setValue(stream.getCaptureWidth());
-        jSlSpinCW.setValue(stream.getCaptureWidth());
         spinVDelay.setValue(stream.getVDelay());
-        jSlSpinVD.setValue(stream.getVDelay());
         spinADelay.setValue(stream.getADelay());
-        jSlSpinAD.setValue(stream.getADelay());
         spinVDelay.setEnabled(stream.hasVideo());
         jSlSpinVD.setEnabled(stream.hasVideo());
         spinADelay.setEnabled(stream.hasAudio());
         jSlSpinAD.setEnabled(stream.hasAudio());
-        spinSeek.setValue(stream.getSeek());
-        jSlSpinSeek.setValue(stream.getSeek());
-        spinSeek.setEnabled(stream.needSeekCTRL());
-        jSlSpinSeek.setEnabled(stream.needSeekCTRL());
         frequency.setValue(stream.getDVBFrequency()/1000000);
         prgNumber.setValue(stream.getDVBChannelNumber());
         bandwidth.setValue(stream.getDVBBandwidth());
@@ -158,55 +140,39 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
             jSlSpinO.setEnabled(false);
         }        
     }
-//    public Viewer detachViewer(){
-//        panPreview.remove(viewer);
-//        panPreview.revalidate();
-//        return viewer;
-//    }
-//    public Viewer attachViewer(){
-//        panPreview.add(viewer, BorderLayout.CENTER);
-//        panPreview.revalidate();
-//        return viewer;
-//    }
+
     public ImageIcon getIcon(){
         ImageIcon icon = null;
         if (stream.getPreview()!=null){
             icon = new ImageIcon(stream.getPreview().getScaledInstance(32, 32, BufferedImage.SCALE_FAST));
         }
-        
         return icon;
     }
+    
     public void remove() {
         stream.stop();
         stream = null;
-
     }
 
     @Override
     public void sourceUpdated(Stream stream){
         
         spinX.setValue(stream.getX());
-        jSlSpinX.setValue(stream.getX());
         spinY.setValue(stream.getY());
-        jSlSpinY.setValue(stream.getY());
-        spinW.setValue(stream.getWidth());
-        jSlSpinW.setValue(stream.getWidth());
         spinH.setValue(stream.getHeight());
-        jSlSpinH.setValue(stream.getHeight());
+        spinW.setValue(stream.getWidth());
         spinW1.setValue(stream.getCaptureWidth());
-        jSlSpinCW.setValue(stream.getCaptureWidth());
         spinH1.setValue(stream.getCaptureHeight());
-        jSlSpinCH.setValue(stream.getCaptureHeight());
         spinOpacity.setValue(stream.getOpacity());
-        jSlSpinO.setValue(stream.getOpacity());
         spinVolume.setValue(stream.getVolume() * 100);
-        String jSVol = spinVolume.getValue().toString().replace(".0", "");
-        int jVol = Integer.parseInt(jSVol);
-        jSlSpinV.setValue(jVol);
         spinZOrder.setValue(stream.getZOrder());
-        jSlSpinZOrder.setValue(stream.getZOrder());
         tglActiveStream.setSelected(stream.isPlaying());
-        tglPause.setSelected(stream.getisPaused());
+        if (stream.isPlaying()) {
+            tglPause.setSelected(stream.getisPaused());
+        } else {
+            tglPause.setSelected(false);
+            stream.setisPaused(false);
+        }
         if (stream.isPlaying()){
             this.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.green));
             spinH1.setEnabled(false);
@@ -217,8 +183,6 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
             jSlSpinVD.setEnabled(false);
             spinADelay.setEnabled(false);
             jSlSpinAD.setEnabled(false);
-            spinSeek.setEnabled(false);
-            jSlSpinSeek.setEnabled(false);
             frequency.setEnabled(false);
             bandwidth.setEnabled(false);
             prgNumber.setEnabled(false);
@@ -236,8 +200,6 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
             jSlSpinVD.setEnabled(stream.hasVideo());
             spinADelay.setEnabled(stream.hasAudio());
             jSlSpinAD.setEnabled(stream.hasAudio());
-            spinSeek.setEnabled(stream.needSeekCTRL());
-            jSlSpinSeek.setEnabled(stream.needSeekCTRL());
             frequency.setEnabled(true);
             bandwidth.setEnabled(true);
             prgNumber.setEnabled(true);
@@ -279,8 +241,6 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         spinH1 = new javax.swing.JSpinner();
         spinVDelay = new javax.swing.JSpinner();
         spinADelay = new javax.swing.JSpinner();
-        spinSeek = new javax.swing.JSpinner();
-        labelSeek = new javax.swing.JLabel();
         frequency = new javax.swing.JSpinner();
         labelfreq = new javax.swing.JLabel();
         labelInv = new javax.swing.JLabel();
@@ -301,7 +261,6 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         jSlSpinO = new javax.swing.JSlider();
         jSlSpinVD = new javax.swing.JSlider();
         jSlSpinAD = new javax.swing.JSlider();
-        jSlSpinSeek = new javax.swing.JSlider();
         jSlSpinZOrder = new javax.swing.JSlider();
         jSeparator1 = new javax.swing.JSeparator();
         jLabel2 = new javax.swing.JLabel();
@@ -530,23 +489,6 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         });
         add(spinADelay, new org.netbeans.lib.awtextra.AbsoluteConstraints(58, 460, 60, -1));
 
-        spinSeek.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
-        spinSeek.setName("spinSeek"); // NOI18N
-        spinSeek.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                spinSeekStateChanged(evt);
-            }
-        });
-        add(spinSeek, new org.netbeans.lib.awtextra.AbsoluteConstraints(58, 480, 60, -1));
-
-        labelSeek.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
-        labelSeek.setText(bundle.getString("SEEK")); // NOI18N
-        labelSeek.setMaximumSize(new java.awt.Dimension(30, 10));
-        labelSeek.setMinimumSize(new java.awt.Dimension(30, 10));
-        labelSeek.setName("labelSeek"); // NOI18N
-        labelSeek.setPreferredSize(new java.awt.Dimension(30, 10));
-        add(labelSeek, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 490, 50, 9));
-
         frequency.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         frequency.setToolTipText("Mhz");
         frequency.setName("frequency"); // NOI18N
@@ -735,18 +677,6 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         });
         add(jSlSpinAD, new org.netbeans.lib.awtextra.AbsoluteConstraints(127, 460, 150, 20));
 
-        jSlSpinSeek.setMaximum(10000);
-        jSlSpinSeek.setPaintLabels(true);
-        jSlSpinSeek.setValue(0);
-        jSlSpinSeek.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        jSlSpinSeek.setName("jSlSpinSeek"); // NOI18N
-        jSlSpinSeek.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                jSlSpinSeekStateChanged(evt);
-            }
-        });
-        add(jSlSpinSeek, new org.netbeans.lib.awtextra.AbsoluteConstraints(127, 480, 150, 20));
-
         jSlSpinZOrder.setMajorTickSpacing(10);
         jSlSpinZOrder.setMaximum(10);
         jSlSpinZOrder.setMinimum(-10);
@@ -773,7 +703,7 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
 
         jSeparator2.setOrientation(javax.swing.SwingConstants.VERTICAL);
         jSeparator2.setName("jSeparator2"); // NOI18N
-        add(jSeparator2, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 401, 10, 99));
+        add(jSeparator2, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 401, 10, 80));
 
         jSeparator5.setOrientation(javax.swing.SwingConstants.VERTICAL);
         jSeparator5.setName("jSeparator5"); // NOI18N
@@ -850,7 +780,6 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
             jSlSpinVD.setEnabled(false);
             spinADelay.setEnabled(false);
             jSlSpinAD.setEnabled(false);
-            spinSeek.setEnabled(false);
             frequency.setEnabled(false);
             bandwidth.setEnabled(false);
             prgNumber.setEnabled(false);
@@ -869,13 +798,13 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
             jSlSpinVD.setEnabled(stream.hasVideo());
             spinADelay.setEnabled(stream.hasAudio());
             jSlSpinAD.setEnabled(stream.hasAudio());
-            spinSeek.setEnabled(stream.needSeekCTRL()); 
             frequency.setEnabled(true);
             bandwidth.setEnabled(true);
             prgNumber.setEnabled(true);
             txtChName.setEditable(true);
             tglPause.setSelected(false);
             tglPause.setEnabled(false);
+            stream.setisPaused(false);
             stream.stop();
             
         }
@@ -906,11 +835,12 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
     }//GEN-LAST:event_spinWStateChanged
 
     private void spinHStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinHStateChanged
-        stream.setHeight((Integer)spinH.getValue());
-        jSlSpinH.setValue((Integer)spinH.getValue());
+        int h = (Integer) spinH.getValue();
+        jSlSpinH.setValue(h);
         if (!lockRatio){
             oldH = stream.getHeight();
         }
+        stream.setHeight(h);
     }//GEN-LAST:event_spinHStateChanged
 
     private void spinXStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinXStateChanged
@@ -964,11 +894,6 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         jSlSpinAD.setValue((Integer)spinADelay.getValue());  
     }//GEN-LAST:event_spinADelayStateChanged
 
-    private void spinSeekStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinSeekStateChanged
-        stream.setSeek((Integer) spinSeek.getValue());
-        jSlSpinSeek.setValue((Integer)spinSeek.getValue());     
-    }//GEN-LAST:event_spinSeekStateChanged
-
     private void frequencyStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_frequencyStateChanged
         stream.setDVBFrequency((Integer) frequency.getValue()*1000000);
     }//GEN-LAST:event_frequencyStateChanged
@@ -1013,16 +938,15 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
 
     private void jSlSpinWStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlSpinWStateChanged
         int w = (Integer) jSlSpinW.getValue();
-        stream.setWidth(w);
         spinW.setValue(w);
         int h = oldH;
         if (lockRatio){
             h = (oldH * w) / oldW; 
             spinH.setValue(h);
             jSlSpinH.setValue(h);
-            stream.setHeight((Integer)spinH.getValue());
         }
-        
+        stream.setWidth(w);
+        stream.setHeight(h);       
     }//GEN-LAST:event_jSlSpinWStateChanged
 
     private void jSlSpinHStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlSpinHStateChanged
@@ -1047,11 +971,6 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         stream.setADelay(jSlSpinAD.getValue());
         spinADelay.setValue(jSlSpinAD.getValue());
     }//GEN-LAST:event_jSlSpinADStateChanged
-
-    private void jSlSpinSeekStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlSpinSeekStateChanged
-        stream.setSeek(jSlSpinSeek.getValue());
-        spinSeek.setValue(jSlSpinSeek.getValue());
-    }//GEN-LAST:event_jSlSpinSeekStateChanged
 
     private void jSlSpinZOrderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlSpinZOrderStateChanged
         stream.setZOrder(jSlSpinZOrder.getValue());
@@ -1187,7 +1106,6 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
 
     private void lblCurtainMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblCurtainMouseClicked
         lblCurtain.setVisible(false);
-        //        panelPreview.remove(lblCurtain);
         viewer.setOpaque(true);
         panPreview.add(viewer, BorderLayout.CENTER);
         this.repaint();
@@ -1206,9 +1124,7 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
     private void tglPreviewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglPreviewActionPerformed
         if (tglPreview.isSelected()) {
             stream.setPreView(true);
-//            stream.register();
         } else {
-//            stream.unRegister();
             stream.setPreView(false);
         }
     }//GEN-LAST:event_tglPreviewActionPerformed
@@ -1237,7 +1153,6 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
     private javax.swing.JSlider jSlSpinCW;
     private javax.swing.JSlider jSlSpinH;
     private javax.swing.JSlider jSlSpinO;
-    private javax.swing.JSlider jSlSpinSeek;
     private javax.swing.JSlider jSlSpinV;
     private javax.swing.JSlider jSlSpinVD;
     private javax.swing.JSlider jSlSpinW;
@@ -1251,7 +1166,6 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
     private javax.swing.JLabel labelH;
     private javax.swing.JLabel labelInv;
     private javax.swing.JLabel labelO;
-    private javax.swing.JLabel labelSeek;
     private javax.swing.JLabel labelVD1;
     private javax.swing.JLabel labelW;
     private javax.swing.JLabel labelX;
@@ -1266,7 +1180,6 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
     private javax.swing.JSpinner spinH;
     private javax.swing.JSpinner spinH1;
     private javax.swing.JSpinner spinOpacity;
-    private javax.swing.JSpinner spinSeek;
     private javax.swing.JSpinner spinVDelay;
     private javax.swing.JSpinner spinVolume;
     private javax.swing.JSpinner spinW;

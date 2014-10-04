@@ -102,8 +102,7 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
         tglSound = new javax.swing.JToggleButton();
         btnPreview = new javax.swing.JButton();
 
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("webcamstudio/Languages"); // NOI18N
-        setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("PREVIEW"))); // NOI18N
+        setBorder(javax.swing.BorderFactory.createTitledBorder("Live View"));
         setPreferredSize(new java.awt.Dimension(257, 465));
         setLayout(new java.awt.BorderLayout());
 
@@ -137,6 +136,7 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
 
         panChannels.setName("panChannels"); // NOI18N
         panChannels.setLayout(new java.awt.BorderLayout());
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("webcamstudio/Languages"); // NOI18N
         tabMixers.addTab(bundle.getString("CHANNELS"), panChannels); // NOI18N
 
         panMixer.setName("panMixer"); // NOI18N
@@ -321,7 +321,6 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
         mixer.setHeight(h);
         preMixer.setHeight(h);
         mixer.setRate((Integer) spinFPS.getValue());
-//        preMixer.setRate((Integer) spinFPS.getValue());
         mixer.start();
         preMixer.start();
         for (Stream s : streamM){
@@ -346,6 +345,7 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
         int oldCW;
         int oldCH;
         for (Stream oneStream : allStreams) {
+//            System.out.println("Processing "+oneStream.getName()+": ...");
             if (oneStream instanceof SourceText) {
                 sTx = (SourceText) oneStream;
                 oldCW = sTx.getTextCW();
@@ -381,6 +381,7 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
                 oneStream.setCaptureHeight(newH);
                 sTx.setTextCW(wi);
                 sTx.setTextCH(he);
+//                System.out.println(oneStream.getName()+" UpdateStatus !!!");
                 oneStream.updateStatus();
                 for (SourceChannel ssc : oneStream.getChannels()) {
                     ssc.setWidth(newW);
@@ -397,6 +398,7 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
                 oneStream.setY(newY);
                 oneStream.setCaptureWidth(wi);
                 oneStream.setCaptureHeight(he);
+//                System.out.println(oneStream.getName()+" UpdateStatus !!!");
                 oneStream.updateStatus();
                 for (SourceChannel ssc : oneStream.getChannels()) {
                     ssc.setWidth(newW);
@@ -491,10 +493,6 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
         WSPreview window = new WSPreview();
         WSPreviewScreen frame = new WSPreviewScreen(preViewer);
         window.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
-//        panelPreview.remove(viewer);
-//        lblCurtain.setOpaque(true);
-//        lblCurtain.setVisible(true);
-//        panelPreview.add(lblCurtain);
         try {
             frame.setSelected(true);
             frame.setMaximum(true);
@@ -508,7 +506,6 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
     @Override
     public void resetViewer(ActionEvent evt){
         lblCurtain.setVisible(false);
-//        panelPreview.remove(lblCurtain);
         viewer.setOpaque(true);
         panelPreview.add(viewer, BorderLayout.CENTER);
         player = SystemPlayer.getInstance(viewer);

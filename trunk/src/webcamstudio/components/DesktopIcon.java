@@ -10,8 +10,10 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.ImageIcon;
 import javax.swing.JInternalFrame;
 import javax.swing.JInternalFrame.JDesktopIcon;
+import org.imgscalr.Scalr;
 import webcamstudio.streams.SourceDVB;
 import webcamstudio.streams.SourceText;
 import webcamstudio.streams.SourceURL;
@@ -26,6 +28,7 @@ public class DesktopIcon extends JDesktopIcon {
     Stream stream = null;
     Viewer viewer = null;
     JInternalFrame frameDesktop = null;
+    BufferedImage imgBtn;
     public DesktopIcon(JInternalFrame f, Stream s) {
         super(f);
         frameDesktop = f;
@@ -33,6 +36,13 @@ public class DesktopIcon extends JDesktopIcon {
         this.removeAll();
         this.setLayout(new BorderLayout());
         viewer = new Viewer();
+        ImageIcon pauseIcon = new ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-play.png"));
+        imgBtn = new BufferedImage(pauseIcon.getIconWidth(), pauseIcon.getIconHeight(), BufferedImage.TYPE_INT_RGB);
+        pauseIcon.paintIcon(null, imgBtn.getGraphics(), 0, 0);
+        final int sW = s.getWidth()/3;
+        final int sH = s.getHeight()/3;
+        imgBtn = Scalr.resize(imgBtn, Scalr.Mode.FIT_EXACT, sW, sH);
+//        System.out.println("Pause W:"+sW+" - Pause H:"+sH);
         add(viewer, BorderLayout.CENTER);
         this.setToolTipText(s.getName());
         this.setVisible(true);
@@ -65,10 +75,16 @@ public class DesktopIcon extends JDesktopIcon {
                                                         java.awt.RenderingHints.VALUE_COLOR_RENDER_SPEED);
                                     gr.setRenderingHint(java.awt.RenderingHints.KEY_DITHERING,
                                                         java.awt.RenderingHints.VALUE_DITHER_DISABLE);
+                                    
                                     gr.setColor(Color.green);
                                     gr.fillRect(0,0,newImg.getWidth(),newImg.getHeight());
-                                    gr.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC_OVER, 70 / 100F));
+
+                                    gr.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC_OVER, 75 / 100F));
                                     gr.drawImage(img,0,0,null);
+                                    if (stream.getisPaused()) {
+                                        gr.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC_OVER, 100 / 100F));
+                                        gr.drawImage(imgBtn,sW,sH,null);
+                                    }
                                     img = newImg;
                                 }
                             } else {
