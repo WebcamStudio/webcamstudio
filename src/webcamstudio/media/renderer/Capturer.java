@@ -173,22 +173,22 @@ public class Capturer {
 
     public void vPause() {
         vPauseFlag = true;
-        System.out.println("VideoCapture Paused ...");
+//        System.out.println("VideoCapture Paused ...");
     }
     
     public void aPause() {
         aPauseFlag = true;
-        System.out.println("AudioCapture Paused ...");
+//        System.out.println("AudioCapture Paused ...");
     }
     
     public void vPlay() {
         vPauseFlag = false;
-        System.out.println("VideoCapture Resumed ...");
+//        System.out.println("VideoCapture Resumed ...");
     }
     
     public void aPlay() {
         aPauseFlag = false;
-        System.out.println("AudioCapture Resumed ...");
+//        System.out.println("AudioCapture Resumed ...");
     }
     public int getVideoPort() {
         return vport;

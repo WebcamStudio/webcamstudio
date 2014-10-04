@@ -42,6 +42,10 @@ public class SourceDesktop extends Stream {
         rate = this.getRate();
         desktopW = Screen.getWidth(screenID[0]);
         desktopH = Screen.getHeight(screenID[0]);
+        windowX = Screen.getX(screenID[0]);
+        windowY = Screen.getY(screenID[0]);
+        windowW = Screen.getWidth(screenID[0]);
+        windowH = Screen.getHeight(screenID[0]);
     }
 
     @Override

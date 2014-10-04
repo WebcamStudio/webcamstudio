@@ -368,6 +368,7 @@ public class SourceControlDesktop extends javax.swing.JPanel {
                 source.setDesktopN(deskList.get(i));
             }
         }
+        setWindowGeometry(source.getDesktopXid());
     }//GEN-LAST:event_jcbWindowsCapListActionPerformed
 
     private void btnRefreshWindowsListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshWindowsListActionPerformed
@@ -377,6 +378,46 @@ public class SourceControlDesktop extends javax.swing.JPanel {
     private void spinRateStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinRateStateChanged
         source.setRate((Integer)spinRate.getValue());
     }//GEN-LAST:event_spinRateStateChanged
+    
+    @SuppressWarnings("unchecked")
+    private void setWindowGeometry(String xid) {
+        Runtime rt = Runtime.getRuntime();
+        String setWinGeometry = "xwininfo -id " + xid;        
+        try {
+            Process setWindowGeometry = rt.exec(setWinGeometry);
+            Tools.sleep(10);
+            setWindowGeometry.waitFor(); //Author spoonybard896
+            BufferedReader buf = new BufferedReader(new InputStreamReader(
+            setWindowGeometry.getInputStream()));
+            String line = "";
+            while ((line = buf.readLine()) != null) {
+//                System.out.println("Windows Info: "+line);
+                line = line.replaceAll("  ", "");
+                line = line.replaceAll(" ", "");
+                if (line.contains("Absolute")) {
+                    if (line.contains("X")) {
+                        String[] value = line.split(":");
+                        source.setWindowX(Integer.parseInt(value[1]));
+                    }
+                    if (line.contains("Y")) {
+                        String[] value = line.split(":");
+                        source.setWindowY(Integer.parseInt(value[1]));
+                    }
+                }
+                if (line.contains("Width")) {
+                    String[] value = line.split(":");
+                    source.setWindowW(Integer.parseInt(value[1]));
+                }
+                if (line.contains("Height")) {
+                    String[] value = line.split(":");
+                    source.setWindowH(Integer.parseInt(value[1]));
+                }
+            }
+            System.out.println("X:" + source.getWindowX() + " Y:" + source.getWindowX() + " W:" + source.getWindowW() + " H:" + source.getWindowH());
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
     
     @SuppressWarnings("unchecked")
     private void initCapWindows() {

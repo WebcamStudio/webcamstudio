@@ -62,6 +62,7 @@ import static webcamstudio.components.MasterPanel.spinFPS;
 import static webcamstudio.components.MasterPanel.spinHeight;
 import static webcamstudio.components.MasterPanel.spinWidth;
 import webcamstudio.components.OutputPanel;
+import static webcamstudio.components.OutputPanel.execPACTL;
 import webcamstudio.components.ResourceMonitor;
 import webcamstudio.components.ResourceMonitorLabel;
 import webcamstudio.components.SourceControls;
@@ -759,7 +760,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
         panControls.setPreferredSize(new java.awt.Dimension(200, 455));
         panControls.setLayout(new java.awt.BorderLayout());
 
-        tabControls.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("PROPERTIES"))); // NOI18N
+        tabControls.setBorder(javax.swing.BorderFactory.createTitledBorder("Source Properties"));
         tabControls.setTabLayoutPolicy(javax.swing.JTabbedPane.SCROLL_TAB_LAYOUT);
         tabControls.setName("tabControls"); // NOI18N
         tabControls.setPreferredSize(new java.awt.Dimension(200, 455));
@@ -1089,6 +1090,22 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
                 Tools.sleep(10);
                 MasterMixer.getInstance().stop();
                 PreviewMixer.getInstance().stop();
+                listenerCP.stopChTime(null);
+                listenerCP.resetBtnStates(null);
+                try {
+                    execPACTL("pactl unload-module module-null-sink");
+                } catch (IOException ex) {
+                    Logger.getLogger(OutputPanel.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(OutputPanel.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                Tools.sleep(100);   
+                listenerOP.resetBtnStates(null);
+                listenerOP.resetSinks(null);
+                tabControls.removeAll();
+                tabControls.repaint();
+                Tools.sleep(300);
+                desktop.removeAll();
                 Tools.sleep(10);
                 System.out.println("Cleaning up ...");
                 File directory = new File(userHomeDir+"/.webcamstudio");

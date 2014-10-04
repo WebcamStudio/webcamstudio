@@ -102,40 +102,23 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
         panPreview.add(viewer, BorderLayout.CENTER);
         this.stream = stream;
         spinX.setValue(stream.getX());
-        jSlSpinX.setValue(stream.getX());
         spinY.setValue(stream.getY());
-        jSlSpinY.setValue(stream.getY());
         spinW.setValue(stream.getWidth());
-        jSlSpinW.setValue(stream.getWidth());
         spinH.setValue(stream.getHeight());
-        jSlSpinH.setValue(stream.getHeight());
         spinOpacity.setModel(new SpinnerNumberModel(100, 0, 100, 1));
         spinOpacity.setValue(stream.getOpacity());
-        jSlSpinO.setValue(stream.getOpacity());
         spinVolume.setModel(new SpinnerNumberModel(50, 0, 300, 1));
         spinVolume.setValue(stream.getVolume() * 100);
-        String jSVol = spinVolume.getValue().toString().replace(".0", "");
-        int jVol = Integer.parseInt(jSVol);
-        jSlSpinV.setValue(jVol);
-        spinVolume.setEnabled(stream.hasAudio());
         spinZOrder.setValue(stream.getZOrder());
-        jSlSpinZOrder.setValue(stream.getZOrder());
         spinH1.setValue(stream.getCaptureHeight());
-        jSlSpinCH.setValue(stream.getCaptureHeight());
         spinW1.setValue(stream.getCaptureWidth());
-        jSlSpinCW.setValue(stream.getCaptureWidth());
         spinVDelay.setValue(stream.getVDelay());
-        jSlSpinVD.setValue(stream.getVDelay());
         spinADelay.setValue(stream.getADelay());
-        jSlSpinAD.setValue(stream.getADelay());
         spinVDelay.setEnabled(stream.hasVideo());
         jSlSpinVD.setEnabled(stream.hasVideo());
         spinADelay.setEnabled(stream.hasAudio());
         tglAudio.setSelected(true);
         jSlSpinV.setEnabled(!tglAudio.isSelected());
-        spinSeek.setValue(stream.getSeek());
-        jSlSpinSeek.setValue(stream.getSeek());
-        spinSeek.setEnabled(stream.needSeekCTRL());
         txtWebURL.setText(stream.getWebURL());
         ckbProtected.setSelected(stream.getProtected());
         txtUser.setEnabled(stream.getProtected());
@@ -160,16 +143,7 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
             jSlSpinO.setEnabled(false);
         }        
     }
-//    public Viewer detachViewer(){
-//        panPreview.remove(viewer);
-//        panPreview.revalidate();
-//        return viewer;
-//    }
-//    public Viewer attachViewer(){
-//        panPreview.add(viewer, BorderLayout.CENTER);
-//        panPreview.revalidate();
-//        return viewer;
-//    }
+
     public ImageIcon getIcon(){
         ImageIcon icon = null;
         if (stream.getPreview()!=null){
@@ -178,35 +152,24 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
         
         return icon;
     }
+    
     public void remove() {
         stream.stop();
         stream = null;
-
     }
 
     @Override
     public void sourceUpdated(Stream stream){
         
         spinX.setValue(stream.getX());
-        jSlSpinX.setValue(stream.getX());
         spinY.setValue(stream.getY());
-        jSlSpinY.setValue(stream.getY());
-        spinW.setValue(stream.getWidth());
-        jSlSpinW.setValue(stream.getWidth());
         spinH.setValue(stream.getHeight());
-        jSlSpinH.setValue(stream.getHeight());
+        spinW.setValue(stream.getWidth());
         spinW1.setValue(stream.getCaptureWidth());
-        jSlSpinCW.setValue(stream.getCaptureWidth());
         spinH1.setValue(stream.getCaptureHeight());
-        jSlSpinCH.setValue(stream.getCaptureHeight());
         spinOpacity.setValue(stream.getOpacity());
-        jSlSpinO.setValue(stream.getOpacity());
         spinVolume.setValue(stream.getVolume() * 100);
-        String jSVol = spinVolume.getValue().toString().replace(".0", "");
-        int jVol = Integer.parseInt(jSVol);
-        jSlSpinV.setValue(jVol);
         spinZOrder.setValue(stream.getZOrder());
-        jSlSpinZOrder.setValue(stream.getZOrder());
         tglActiveStream.setSelected(stream.isPlaying());
         if (stream.isPlaying()){
             this.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.green));
@@ -218,8 +181,6 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
             jSlSpinVD.setEnabled(false);
             spinADelay.setEnabled(false);
             jSlSpinAD.setEnabled(false);
-            spinSeek.setEnabled(false);
-            jSlSpinSeek.setEnabled(false);
             txtWebURL.setEditable(false);
             tglAudio.setEnabled(false);
             tglPreview.setEnabled(false);
@@ -234,8 +195,6 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
             jSlSpinVD.setEnabled(true);
             spinADelay.setEnabled(true);
             jSlSpinAD.setEnabled(true);
-            spinSeek.setEnabled(true);
-            jSlSpinSeek.setEnabled(true);
             txtWebURL.setEditable(true);
             tglAudio.setEnabled(true);
         }
@@ -274,8 +233,6 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
         spinH1 = new javax.swing.JSpinner();
         spinVDelay = new javax.swing.JSpinner();
         spinADelay = new javax.swing.JSpinner();
-        spinSeek = new javax.swing.JSpinner();
-        labelSeek = new javax.swing.JLabel();
         labelURL = new javax.swing.JLabel();
         txtWebURL = new javax.swing.JTextField();
         jSeparator4 = new javax.swing.JSeparator();
@@ -288,7 +245,6 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
         jSlSpinO = new javax.swing.JSlider();
         jSlSpinVD = new javax.swing.JSlider();
         jSlSpinAD = new javax.swing.JSlider();
-        jSlSpinSeek = new javax.swing.JSlider();
         jSlSpinZOrder = new javax.swing.JSlider();
         jSeparator5 = new javax.swing.JSeparator();
         jSeparator3 = new javax.swing.JSeparator();
@@ -539,23 +495,6 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
         });
         add(spinADelay, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 390, 60, -1));
 
-        spinSeek.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
-        spinSeek.setName("spinSeek"); // NOI18N
-        spinSeek.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                spinSeekStateChanged(evt);
-            }
-        });
-        add(spinSeek, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 410, 50, -1));
-
-        labelSeek.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
-        labelSeek.setText(bundle.getString("SEEK")); // NOI18N
-        labelSeek.setMaximumSize(new java.awt.Dimension(30, 10));
-        labelSeek.setMinimumSize(new java.awt.Dimension(30, 10));
-        labelSeek.setName("labelSeek"); // NOI18N
-        labelSeek.setPreferredSize(new java.awt.Dimension(30, 10));
-        add(labelSeek, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 420, 50, 9));
-
         labelURL.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         labelURL.setText(bundle.getString("ENTER_CAM_URL")); // NOI18N
         labelURL.setToolTipText("");
@@ -686,18 +625,6 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
         });
         add(jSlSpinAD, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 390, 150, 20));
 
-        jSlSpinSeek.setMaximum(10000);
-        jSlSpinSeek.setPaintLabels(true);
-        jSlSpinSeek.setValue(0);
-        jSlSpinSeek.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        jSlSpinSeek.setName("jSlSpinSeek"); // NOI18N
-        jSlSpinSeek.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                jSlSpinSeekStateChanged(evt);
-            }
-        });
-        add(jSlSpinSeek, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 410, 150, 20));
-
         jSlSpinZOrder.setMajorTickSpacing(10);
         jSlSpinZOrder.setMaximum(10);
         jSlSpinZOrder.setMinimum(-10);
@@ -724,7 +651,7 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
 
         jSeparator2.setOrientation(javax.swing.SwingConstants.VERTICAL);
         jSeparator2.setName("jSeparator2"); // NOI18N
-        add(jSeparator2, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 330, 10, 99));
+        add(jSeparator2, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 330, 10, 80));
 
         labelVD.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         labelVD.setText(bundle.getString("VIDEO_DELAY")); // NOI18N
@@ -935,8 +862,6 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
             jSlSpinVD.setEnabled(false);
             spinADelay.setEnabled(false);
             jSlSpinAD.setEnabled(false);
-            spinSeek.setEnabled(false);
-            jSlSpinSeek.setEnabled(false);
             txtWebURL.setEditable(false);
             tglAudio.setEnabled(false);
             tglPreview.setEnabled(false);
@@ -956,8 +881,6 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
             jSlSpinVD.setEnabled(stream.hasVideo());
             spinADelay.setEnabled(stream.hasAudio());
             jSlSpinAD.setEnabled(stream.hasAudio());
-            spinSeek.setEnabled(stream.needSeekCTRL());
-            jSlSpinSeek.setEnabled(stream.needSeekCTRL());
             txtWebURL.setEditable(true);
             tglAudio.setEnabled(true);
             stream.stop();
@@ -989,11 +912,12 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
     }//GEN-LAST:event_spinWStateChanged
 
     private void spinHStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinHStateChanged
-        stream.setHeight((Integer)spinH.getValue());
-        jSlSpinH.setValue((Integer)spinH.getValue());
+        int h = (Integer) spinH.getValue();
+        jSlSpinH.setValue(h);
         if (!lockRatio){
             oldH = stream.getHeight();
         }
+        stream.setHeight(h);
     }//GEN-LAST:event_spinHStateChanged
 
     private void spinXStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinXStateChanged
@@ -1018,7 +942,6 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
             v = ((Number)value).floatValue();
         }
         stream.setVolume(v/100f);
-        
     }//GEN-LAST:event_spinVolumeStateChanged
 
     private void spinW1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinW1StateChanged
@@ -1040,11 +963,6 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
         stream.setADelay((Integer)spinADelay.getValue());
         jSlSpinAD.setValue((Integer)spinADelay.getValue());  
     }//GEN-LAST:event_spinADelayStateChanged
-
-    private void spinSeekStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinSeekStateChanged
-        stream.setSeek((Integer) spinSeek.getValue());
-        jSlSpinSeek.setValue((Integer)spinSeek.getValue());     
-    }//GEN-LAST:event_spinSeekStateChanged
 
     private void txtWebURLFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtWebURLFocusLost
         setToolTipText(txtWebURL.getText());
@@ -1078,7 +996,6 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
             h = (oldH * w) / oldW; 
             spinH.setValue(h);
             jSlSpinH.setValue(h);
-            
         }
         stream.setWidth(w);
         stream.setHeight(h);
@@ -1106,11 +1023,6 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
         stream.setADelay(jSlSpinAD.getValue());
         spinADelay.setValue(jSlSpinAD.getValue());
     }//GEN-LAST:event_jSlSpinADStateChanged
-
-    private void jSlSpinSeekStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlSpinSeekStateChanged
-        stream.setSeek(jSlSpinSeek.getValue());
-        spinSeek.setValue(jSlSpinSeek.getValue());
-    }//GEN-LAST:event_jSlSpinSeekStateChanged
 
     private void jSlSpinZOrderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlSpinZOrderStateChanged
         stream.setZOrder(jSlSpinZOrder.getValue());
@@ -1901,7 +1813,6 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
 
     private void lblCurtainMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblCurtainMouseClicked
         lblCurtain.setVisible(false);
-        //        panelPreview.remove(lblCurtain);
         viewer.setOpaque(true);
         panPreview.add(viewer, BorderLayout.CENTER);
         this.repaint();
@@ -1920,9 +1831,7 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
     private void tglPreviewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglPreviewActionPerformed
         if (tglPreview.isSelected()) {
             stream.setPreView(true);
-//            stream.register();
         } else {
-//            stream.unRegister();
             stream.setPreView(false);
         }
     }//GEN-LAST:event_tglPreviewActionPerformed
@@ -1947,7 +1856,6 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
     private javax.swing.JSlider jSlSpinCW;
     private javax.swing.JSlider jSlSpinH;
     private javax.swing.JSlider jSlSpinO;
-    private javax.swing.JSlider jSlSpinSeek;
     private javax.swing.JSlider jSlSpinV;
     private javax.swing.JSlider jSlSpinVD;
     private javax.swing.JSlider jSlSpinW;
@@ -1962,7 +1870,6 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
     private javax.swing.JLabel labelPTZPanel;
     private javax.swing.JLabel labelProtected;
     private javax.swing.JLabel labelPwd;
-    private javax.swing.JLabel labelSeek;
     private javax.swing.JLabel labelURL;
     private javax.swing.JLabel labelUser;
     private javax.swing.JLabel labelVD;
@@ -1976,7 +1883,6 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
     private javax.swing.JSpinner spinH;
     private javax.swing.JSpinner spinH1;
     private javax.swing.JSpinner spinOpacity;
-    private javax.swing.JSpinner spinSeek;
     private javax.swing.JSpinner spinVDelay;
     private javax.swing.JSpinner spinVolume;
     private javax.swing.JSpinner spinW;

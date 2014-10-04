@@ -66,17 +66,12 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
         cW = sTx.getTextCW();
         cH = sTx.getTextCW();
         spinX.setValue(stream.getX());
-        jSlSpinX.setValue(stream.getX());
         spinY.setValue(stream.getY());
-        jSlSpinY.setValue(stream.getY());
         spinW.setValue(stream.getWidth());
-        jSlSpinW.setValue(stream.getWidth());
         spinH.setValue(stream.getHeight());
-        jSlSpinH.setValue(stream.getHeight());
         cboFonts.setSelectedItem(stream.getFont());
         txtHexColor.setText(Integer.toHexString(stream.getColor()));
         spinZOrder.setValue(stream.getZOrder());
-        jSlSpinZOrder.setValue(stream.getZOrder());
         if (stream.getIsATimer()){
             if (stream.getIsQRCode()) {
                 txtContent.setText("QRCode Clock Mode.");
@@ -594,11 +589,12 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
     }//GEN-LAST:event_spinWStateChanged
 
     private void spinHStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinHStateChanged
-        stream.setHeight((Integer)spinH.getValue());
-        jSlSpinH.setValue((Integer)spinH.getValue());
+        int h = (Integer) spinH.getValue();
+        jSlSpinH.setValue(h);
         if (!lockRatio){
             oldH = stream.getHeight();
         }
+        stream.setHeight(h);
     }//GEN-LAST:event_spinHStateChanged
 
     private void jSlSpinXStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlSpinXStateChanged
@@ -619,7 +615,6 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
             h = (oldH * w) / oldW; 
             spinH.setValue(h);
             jSlSpinH.setValue(h);
-            
         }
         stream.setWidth(w);
         stream.setHeight(h);
@@ -702,9 +697,7 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
     private void tglPreviewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglPreviewActionPerformed
         if (tglPreview.isSelected()) {
             stream.setPreView(true);
-//            stream.register();
         } else {
-//            stream.unRegister();
             stream.setPreView(false);
         }
     }//GEN-LAST:event_tglPreviewActionPerformed
@@ -796,19 +789,14 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
             btnSelectColor.setEnabled(!(stream.getIsQRCode()));
         }
         spinX.setValue(stream.getX());
-        jSlSpinX.setValue(stream.getX());
         spinY.setValue(stream.getY());
-        jSlSpinY.setValue(stream.getY());
-        spinW.setValue(stream.getWidth());
-        jSlSpinW.setValue(stream.getWidth());
         spinH.setValue(stream.getHeight());
-        jSlSpinH.setValue(stream.getHeight());
+        spinW.setValue(stream.getWidth());
         cW = sTx.getTextCW();
         cH = sTx.getTextCH();
         cboFonts.setSelectedItem(this.stream.getFont());
         txtHexColor.setText(Integer.toHexString(this.stream.getColor()));
         spinZOrder.setValue(stream.getZOrder());
-        jSlSpinZOrder.setValue(stream.getZOrder());
         txtContent.setText(this.stream.getContent());
         tglActiveStream.setSelected(stream.isPlaying());
         tglClock.setEnabled(!stream.isPlaying());

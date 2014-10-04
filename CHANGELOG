@@ -1,3 +1,21 @@
+webcamstudio 0.71    04 Oct 2014
+
+  * Fixes: Stream freeze if Stop is invoked on a paused stream activating a channel.
+  * Fixes: "Apply to Stream" Mixer Panel button doesn't set correctly the Height in all streams.
+  * Fixes: AutoDeactivate SkyCam on exit if active. (Thanks Ronnie Tucker)
+  * Changes: Cleanup Stream-Panels code and Avconv/FFmpeg command lines.
+  * Adds: Pause Symbol in iconified Sources.
+  * Adds: "WSAudioDevice" Sink Audio Device.
+  * New upstream version
+
+webcamstudio 0.70    21 Sept 2014
+
+  * Fixes: Smalls and Major fixes. (https://code.google.com/p/webcamstudio/source/list)
+  * Changes: UI, some engine optimizations. (https://code.google.com/p/webcamstudio/source/list)
+  * Adds: See Builds log messages. (https://code.google.com/p/webcamstudio/source/list)
+  * Removes: See Builds log messages. (https://code.google.com/p/webcamstudio/source/list)
+  * New upstream version
+
 webcamstudio-0.65    01 Jan 2014
 
   * Fixes: Studios Load/Save problems
