@@ -171,7 +171,7 @@
           <Image iconType="3" name="/webcamstudio/resources/tango/media-record.png"/>
         </Property>
         <Property name="text" type="java.lang.String" value="WSAudioDevice"/>
-        <Property name="toolTipText" type="java.lang.String" value="WebcamStudio Master Audio Output"/>
+        <Property name="toolTipText" type="java.lang.String" value="WebcamStudio Master Audio Sink"/>
         <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
           <Dimension value="[135, 21]"/>
         </Property>
