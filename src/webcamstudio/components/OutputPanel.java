@@ -634,7 +634,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
 
         tglWSAudioDev.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-record.png"))); // NOI18N
         tglWSAudioDev.setText("WSAudioDevice");
-        tglWSAudioDev.setToolTipText("WebcamStudio Master Audio Output");
+        tglWSAudioDev.setToolTipText("WebcamStudio Master Audio Sink");
         tglWSAudioDev.setMinimumSize(new java.awt.Dimension(135, 21));
         tglWSAudioDev.setName("tglWSAudioDev"); // NOI18N
         tglWSAudioDev.setPreferredSize(new java.awt.Dimension(32, 28));
@@ -1376,7 +1376,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
                 } catch (IOException ex) {
                     Logger.getLogger(OutputPanel.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                Tools.sleep(200);
+                Tools.sleep(250);
                 try {
                     Process p = Runtime.getRuntime().exec("pactl list short sink-inputs");
                     InputStream in = p.getInputStream();
@@ -1521,6 +1521,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
     @Override
     public void resetButtonsStates(ActionEvent evt) {
         tglSkyCam.setEnabled(true);
+        tglWSAudioDev.setEnabled(true);
         btnSkyFlip.setEnabled(tglSkyCam.isSelected());
         camCount = 0;
         fmeCount = 0;

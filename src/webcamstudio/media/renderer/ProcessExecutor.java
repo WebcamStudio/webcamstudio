@@ -46,9 +46,9 @@ public class ProcessExecutor {
     {
     int pid = getUnixPID(process);
 //    System.out.println("Process_Pid: "+pid);
-//    Runtime rt = Runtime.getRuntime();
     String commandPids = "ps -ef | awk '{if ($3 == "+pid+") print $2;}'";
     File fileP=new File(userHomeDir+"/.webcamstudio/"+"WSBust.sh");
+    fileP.setExecutable(true);
     FileOutputStream fosV;
     DataOutputStream dosV = null;
     try {
@@ -64,7 +64,6 @@ public class ProcessExecutor {
     } catch (IOException ex) {
         Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
     }
-    fileP.setExecutable(true);
     String batchPidCommand = userHomeDir+"/.webcamstudio/"+"WSBust.sh";
     try {
         Process getChildPids = rt.exec(batchPidCommand);
@@ -127,7 +126,6 @@ public class ProcessExecutor {
         }).start();
     }
     public void execute(String[] params) throws IOException, InterruptedException {
-//        Runtime rt = Runtime.getRuntime();
         process = rt.exec(params);
         processRunning = true;
 //        readOutput(process);      
@@ -142,7 +140,6 @@ public class ProcessExecutor {
     public void destroy() {
         processRunning=false;
         try {
-//            Tools.sleep(50);
 //            if (process != null){
                 killUnixProcess(process);
 //                process = null;
@@ -153,10 +150,8 @@ public class ProcessExecutor {
     }
     public String getProcessPID(){
         try {
-//            Tools.sleep(50);
             if (process != null){
                 int parentPID = getUnixPID(process);
-//                Runtime rt = Runtime.getRuntime();
                 String commandPids = "ps -ef | awk '{if ($3 == "+parentPID+") print $2;}'";
                 File fileP=new File(userHomeDir+"/.webcamstudio/"+"WSBust.sh"); 
                 FileOutputStream fosV;
@@ -178,7 +173,6 @@ public class ProcessExecutor {
                 String batchPidCommand = userHomeDir+"/.webcamstudio/"+"WSBust.sh";
                 try {
                     Process getChildPids = rt.exec(batchPidCommand);
-//                    Tools.sleep(10);
                     getChildPids.waitFor(); //Author spoonybard896
                     BufferedReader buf = new BufferedReader(new InputStreamReader(
                     getChildPids.getInputStream()));
