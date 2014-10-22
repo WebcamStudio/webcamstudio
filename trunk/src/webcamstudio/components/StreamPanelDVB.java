@@ -331,7 +331,7 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         });
         panPreview.add(lblCurtain, java.awt.BorderLayout.LINE_START);
 
-        add(panPreview, new org.netbeans.lib.awtextra.AbsoluteConstraints(7, 7, 110, 100));
+        add(panPreview, new org.netbeans.lib.awtextra.AbsoluteConstraints(7, 7, 110, 111));
 
         spinX.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         spinX.setName("spinX"); // NOI18N
@@ -396,7 +396,7 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
                 tglActiveStreamActionPerformed(evt);
             }
         });
-        add(tglActiveStream, new org.netbeans.lib.awtextra.AbsoluteConstraints(7, 114, 78, 20));
+        add(tglActiveStream, new org.netbeans.lib.awtextra.AbsoluteConstraints(7, 124, 78, 20));
 
         spinZOrder.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         spinZOrder.setName("spinZOrder"); // NOI18N
@@ -546,12 +546,12 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
                 txtChNameFocusLost(evt);
             }
         });
-        add(txtChName, new org.netbeans.lib.awtextra.AbsoluteConstraints(7, 140, 110, 30));
+        add(txtChName, new org.netbeans.lib.awtextra.AbsoluteConstraints(7, 150, 110, 30));
 
         labelfreq1.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         labelfreq1.setText(bundle.getString("CHANNEL_NAME")); // NOI18N
         labelfreq1.setName("labelfreq1"); // NOI18N
-        add(labelfreq1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 170, 60, 10));
+        add(labelfreq1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 180, 60, 10));
 
         labelVD1.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         labelVD1.setText(bundle.getString("VIDEO_DELAY")); // NOI18N
@@ -731,7 +731,7 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
                 tglPauseActionPerformed(evt);
             }
         });
-        add(tglPause, new org.netbeans.lib.awtextra.AbsoluteConstraints(85, 114, 30, 20));
+        add(tglPause, new org.netbeans.lib.awtextra.AbsoluteConstraints(85, 124, 30, 20));
 
         jCheckBox1.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         jCheckBox1.setText("Lock A/R ");

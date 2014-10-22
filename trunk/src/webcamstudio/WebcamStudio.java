@@ -49,7 +49,11 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.Painter;
+import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
+import javax.swing.UIDefaults;
+import javax.swing.UIManager;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLStreamException;
@@ -106,6 +110,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
     public static int outFMEbe = 1;
     private final static String userHomeDir = Tools.getUserHome();
     OutputPanel recorder = new OutputPanel(this);
+    MasterPanel masterP = new MasterPanel(); 
     Frame about = new Frame();
     Frame vDevInfo = new Frame();
     Stream stream = null;
@@ -114,10 +119,12 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
     private static boolean cmdAutoStart = false;
     private static boolean cmdRemote = false;
     public static int audioFreq = 22050;
+    public static String theme = "Classic";
     ArrayList<Stream> streamS = MasterChannels.getInstance().getStreams();
     private File lastFolder = null;
     boolean ffmpeg = Screen.ffmpegDetected();
     boolean avconv = Screen.avconvDetected();
+    boolean firstRun = true;
     @SuppressWarnings("unchecked") 
     private void initFaceDetection() throws IOException {
         File dir = new File(System.getProperty("user.home"), ".webcamstudio/faces");
@@ -191,6 +198,21 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
     public WebcamStudio() throws IOException {
         
         initComponents();
+//        theme = prefs.get("theme", "Classic");
+        if (theme.equals("Dark")) {
+            // setting WS Dark Theme
+            UIManager.put("text", Color.WHITE);
+            UIManager.put("control", Color.darkGray);
+            UIManager.put("nimbusBlueGrey", Color.darkGray);
+            UIManager.put("nimbusBase", Color.darkGray);
+            UIManager.put("nimbusLightBackground", new Color(134,137,143));
+            UIManager.put("info", new Color(195,160,0));
+            UIManager.put("nimbusDisabledText", Color.black);
+            UIManager.put("nimbusSelectionBackground", Color.yellow);
+            UIManager.put("nimbusSelectedText", Color.blue);
+            UIManager.put("nimbusSelectionBackground", new Color(255,220,35));
+        }
+        
         setTitle("WebcamStudio " + Version.version);
         ImageIcon icon = new ImageIcon(this.getClass().getResource("/webcamstudio/resources/icon.png"));
         this.setIconImage(icon.getImage());
@@ -280,13 +302,29 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
         panControls.add(recorder, BorderLayout.NORTH);
         
         loadPrefs();
+        
+        if (theme.equals("Dark")) {
+            // setting WS Dark Theme
+            UIManager.put("text", Color.WHITE);
+            UIManager.put("control", Color.darkGray);
+            UIManager.put("nimbusBlueGrey", Color.darkGray);
+            UIManager.put("nimbusBase", Color.darkGray);
+            UIManager.put("nimbusLightBackground", new Color(134,137,143));
+            UIManager.put("info", new Color(195,160,0));
+            UIManager.put("nimbusDisabledText", Color.black);
+            UIManager.put("nimbusSelectionBackground", Color.yellow);
+            UIManager.put("nimbusSelectedText", Color.blue);
+            UIManager.put("nimbusSelectionBackground", new Color(255,220,35));
+        }
+        
         MasterMixer.getInstance().start();
         PreviewMixer.getInstance().start();
-        this.add(new MasterPanel(), BorderLayout.WEST);
+        this.add(masterP, BorderLayout.WEST);
         initAnimations();
         initFaceDetection();
         initWebcam();
         initAudioMainSW();
+        initThemeMainSW();
         initMainOutBE();
         listenerOP.resetSinks(null);
         loadCustomSources();
@@ -303,7 +341,8 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
         if (cmdRemote) {
             listenerCP.setRemoteOn();
         }
-    }
+        firstRun = false;
+            }
 
     private StreamDesktop getNewStreamDesktop(Stream s) {
         return new StreamDesktop(s, this);
@@ -371,6 +410,19 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
         }
     }
     
+    @SuppressWarnings("unchecked")
+    private void initThemeMainSW() {
+        DefaultComboBoxModel model = new DefaultComboBoxModel();
+        model.addElement("Classic");
+        model.addElement("Dark");
+        cboTheme.setModel(model);
+        if (theme.equals("Classic")) {
+            cboTheme.setSelectedItem("Classic");
+        } else {
+            cboTheme.setSelectedItem("Dark");
+        }
+    }
+    
     private void initMainOutBE() {
         // FF = 0 ; AV = 1 ; GS = 2
         if (ffmpeg && !avconv){
@@ -434,6 +486,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
         mainSplit.setDividerLocation(prefs.getInt("split-last-x", mainSplit.getLastDividerLocation()));
         lastFolder = new File(prefs.get("lastfolder", "."));
         audioFreq = prefs.getInt("audio-freq", audioFreq);
+        theme = prefs.get("theme", theme);
         outFMEbe = prefs.getInt("out-FME", outFMEbe);
         this.setLocation(x, y);
         this.setSize(w, h);
@@ -454,6 +507,8 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
             prefs.put("lastfolder", lastFolder.getAbsolutePath());
         }
         prefs.putInt("audio-freq", audioFreq);
+        prefs.put("theme", theme);
+        System.out.println("Theme:"+theme);
         prefs.putInt("out-FME", outFMEbe);
         recorder.savePrefs(prefs);
         try {
@@ -516,9 +571,12 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
         tglGst = new javax.swing.JToggleButton();
         lblGst = new javax.swing.JLabel();
         jSeparator10 = new javax.swing.JToolBar.Separator();
+        jLabel3 = new javax.swing.JLabel();
+        cboTheme = new javax.swing.JComboBox();
+        jSeparator11 = new javax.swing.JToolBar.Separator();
         btnSysGC = new javax.swing.JButton();
         lblClrRam = new javax.swing.JLabel();
-        jSeparator11 = new javax.swing.JToolBar.Separator();
+        jSeparator12 = new javax.swing.JToolBar.Separator();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("WebcamStudio");
@@ -953,7 +1011,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
         mainToolbar.add(lblFFmpeg3);
 
         tglFFmpeg.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/FFmpeg.png"))); // NOI18N
-        tglFFmpeg.setToolTipText("Use FFmpeg for WS Outputs");
+        tglFFmpeg.setToolTipText("Use FFmpeg Output Backend.");
         tglFFmpeg.setFocusable(false);
         tglFFmpeg.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         tglFFmpeg.setMaximumSize(new java.awt.Dimension(29, 28));
@@ -976,7 +1034,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
         mainToolbar.add(lblFFmpeg);
 
         tglAVconv.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/FFmpeg.png"))); // NOI18N
-        tglAVconv.setToolTipText("Use AVconv for WS Outputs");
+        tglAVconv.setToolTipText("Use Libav Output Backend.");
         tglAVconv.setFocusable(false);
         tglAVconv.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         tglAVconv.setMaximumSize(new java.awt.Dimension(29, 28));
@@ -994,12 +1052,12 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
         mainToolbar.add(tglAVconv);
 
         lblAVconv.setFont(new java.awt.Font("Ubuntu Condensed", 0, 12)); // NOI18N
-        lblAVconv.setText("AVConv  ");
+        lblAVconv.setText("Libav ");
         lblAVconv.setName("lblAVconv"); // NOI18N
         mainToolbar.add(lblAVconv);
 
         tglGst.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/gstreamer.png"))); // NOI18N
-        tglGst.setToolTipText("Use GStreamer for WS Outputs");
+        tglGst.setToolTipText("Use GStreamer Output Backend.");
         tglGst.setFocusable(false);
         tglGst.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         tglGst.setMaximumSize(new java.awt.Dimension(29, 28));
@@ -1028,6 +1086,28 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
         jSeparator10.setOpaque(true);
         mainToolbar.add(jSeparator10);
 
+        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/image-x-generic.png"))); // NOI18N
+        jLabel3.setToolTipText("Master Theme Selector");
+        jLabel3.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 5, 1, 1));
+        jLabel3.setName("jLabel3"); // NOI18N
+        mainToolbar.add(jLabel3);
+
+        cboTheme.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cboTheme.setToolTipText("Choose Default Theme.");
+        cboTheme.setName("cboTheme"); // NOI18N
+        cboTheme.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cboThemeActionPerformed(evt);
+            }
+        });
+        mainToolbar.add(cboTheme);
+
+        jSeparator11.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jSeparator11.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
+        jSeparator11.setName("jSeparator11"); // NOI18N
+        jSeparator11.setOpaque(true);
+        mainToolbar.add(jSeparator11);
+
         btnSysGC.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/button-small-clear.png"))); // NOI18N
         btnSysGC.setToolTipText("Try to Clean Up some memory");
         btnSysGC.setFocusable(false);
@@ -1048,11 +1128,11 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
         lblClrRam.setName("lblClrRam"); // NOI18N
         mainToolbar.add(lblClrRam);
 
-        jSeparator11.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        jSeparator11.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
-        jSeparator11.setName("jSeparator11"); // NOI18N
-        jSeparator11.setOpaque(true);
-        mainToolbar.add(jSeparator11);
+        jSeparator12.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jSeparator12.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
+        jSeparator12.setName("jSeparator12"); // NOI18N
+        jSeparator12.setOpaque(true);
+        mainToolbar.add(jSeparator12);
 
         getContentPane().add(mainToolbar, java.awt.BorderLayout.PAGE_START);
 
@@ -1080,7 +1160,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
                     close = false;
                     break;
             }
-            if (close) {            
+            if (close) {
                 savePrefs();
                 SystemPlayer.getInstance(null).stop();
                 Tools.sleep(10);
@@ -1090,8 +1170,8 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
                 Tools.sleep(10);
                 MasterMixer.getInstance().stop();
                 PreviewMixer.getInstance().stop();
-                listenerCP.stopChTime(null);
-                listenerCP.resetBtnStates(null);
+//                listenerCP.stopChTime(null);
+//                listenerCP.resetBtnStates(null);
                 try {
                     execPACTL("pactl unload-module module-null-sink");
                 } catch (IOException ex) {
@@ -1927,7 +2007,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
             tglGst.setSelected(false);
             outFMEbe = 0;
             listenerOP.resetSinks(evt);
-            ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Switched to FFmpeg Outputs BE.");
+            ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Output Backend Switched to FFmpeg.");
             ResourceMonitor.getInstance().addMessage(label);
         } else {
             outFMEbe = 2;
@@ -1935,7 +2015,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
             tglGst.setEnabled(true);
             tglGst.setSelected(true);
             listenerOP.resetSinks(evt);
-            ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Switched to GStreamer Outputs BE.");
+            ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Output Backend Switched to GStreamer.");
             ResourceMonitor.getInstance().addMessage(label);
         }
     }//GEN-LAST:event_tglFFmpegActionPerformed
@@ -2041,7 +2121,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
             tglGst.setSelected(false);
             outFMEbe = 1;
             listenerOP.resetSinks(evt);
-            ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Switched to AVconv Outputs BE.");
+            ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Output Backend Switched to Libav.");
             ResourceMonitor.getInstance().addMessage(label);
         } else {
             outFMEbe = 2;
@@ -2049,7 +2129,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
             tglGst.setEnabled(true);
             tglGst.setSelected(true);
             listenerOP.resetSinks(evt);
-            ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Switched to Gstreamer Outputs BE.");
+            ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Output Backend Switched to Gstreamer.");
             ResourceMonitor.getInstance().addMessage(label);
         }
     }//GEN-LAST:event_tglAVconvActionPerformed
@@ -2060,7 +2140,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
             tglAVconv.setSelected(false);
             outFMEbe = 2;
             listenerOP.resetSinks(evt);
-            ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "GStreamer Outputs BkEnd Activated ...");
+            ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Output Backend Switched to GStreamer.");
             ResourceMonitor.getInstance().addMessage(label);
         } else {
             if (ffmpeg && !avconv){
@@ -2083,10 +2163,10 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
             
             listenerOP.resetSinks(evt);
             if (outFMEbe == 1) {
-                ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Switched to AVconv Outputs BE.");
+                ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Output Backend Switched to Libav.");
                 ResourceMonitor.getInstance().addMessage(label);
             } else {
-                ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Switched to FFmpeg Outputs BE.");
+                ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Output Backend Switched to FFmpeg.");
                 ResourceMonitor.getInstance().addMessage(label);
             }
         }
@@ -2095,6 +2175,43 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
     private void btnSysGCActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSysGCActionPerformed
         System.gc();
     }//GEN-LAST:event_btnSysGCActionPerformed
+
+    private void cboThemeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboThemeActionPerformed
+        final String themeSW = cboTheme.getSelectedItem().toString();
+        if (themeSW.equals("Classic")) {
+            theme = "Classic";
+            ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Master Theme set to \""+theme+"\"");
+            ResourceMonitor.getInstance().addMessage(label);
+        } else {
+            theme = "Dark";
+            ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Master Theme set to \""+theme+"\"");
+            ResourceMonitor.getInstance().addMessage(label);
+        }
+        Thread wsRestart = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                restartDialog();
+            }
+        });
+        if (!firstRun) {
+            wsRestart.start();
+        }
+    }//GEN-LAST:event_cboThemeActionPerformed
+    
+    /**
+     *
+     */
+    public void restartDialog(){
+        Object[] options = {"OK"};
+        JOptionPane.showOptionDialog(this,
+        "You need to restart WebcamStudio for the changes to take effect.","Information",
+        JOptionPane.PLAIN_MESSAGE,
+        JOptionPane.INFORMATION_MESSAGE,
+        null,
+        options,
+        options[0]);
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -2128,6 +2245,8 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
+        
         //</editor-fold>
 
         /*
@@ -2188,12 +2307,15 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
     private javax.swing.JButton btnVideoDevInfo;
     public static javax.swing.JComboBox cboAnimations;
     private javax.swing.JComboBox cboAudioHz;
+    private javax.swing.JComboBox cboTheme;
     private javax.swing.JComboBox cboWebcam;
     private javax.swing.JDesktopPane desktop;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JToolBar.Separator jSeparator1;
     private javax.swing.JToolBar.Separator jSeparator10;
     private javax.swing.JToolBar.Separator jSeparator11;
+    private javax.swing.JToolBar.Separator jSeparator12;
     private javax.swing.JToolBar.Separator jSeparator2;
     private javax.swing.JToolBar.Separator jSeparator5;
     private javax.swing.JToolBar.Separator jSeparator6;

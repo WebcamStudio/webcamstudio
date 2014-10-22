@@ -116,7 +116,7 @@ public class Studio {
     public static void setListener(Studio.Listener l) {
         listener = l;
     }
-    // Studio removed, put void
+
     public static void load(File file, String loadType) throws ParserConfigurationException, SAXException, IOException, XPathExpressionException {
         Studio studio = new Studio();
         System.out.println("Loading Studio ...");
@@ -152,8 +152,8 @@ public class Studio {
             MasterMixer.getInstance().setRate(rateInt);
             System.out.println("Setting Mixer to: " + width + "X" + height + "@" + rate + "fps");
         }
-//      return studio;
     }
+    
     public static void save(File file) throws IOException, XMLStreamException, TransformerConfigurationException, TransformerException, IllegalArgumentException, IllegalAccessException {
         ArrayList<String> channels = MasterChannels.getInstance().getChannels();
         ArrayList<Stream> streams = MasterChannels.getInstance().getStreams();
