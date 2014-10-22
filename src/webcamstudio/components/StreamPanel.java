@@ -176,13 +176,15 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener {
             tglAudio.setVisible(true);
             tglVideo.setVisible(false);
         } else if (stream instanceof SourceImage || stream instanceof SourceImageU || stream instanceof SourceImageGif){
-            jlbDuration.setVisible(false);
+            jlbDuration.setText(" ");
+            jlbDuration.setVisible(!jSlSpinV.isVisible());
             tglAudio.setVisible(false);
             tglPause.setVisible(false);
             tglVideo.setVisible(false);
             this.add(tglActiveStream, new org.netbeans.lib.awtextra.AbsoluteConstraints(7, 120, 110, 20));
         } else {
-            jlbDuration.setVisible(false);
+            jlbDuration.setText(" ");
+            jlbDuration.setVisible(!jSlSpinV.isVisible());
             tglAudio.setVisible(false);
             tglVideo.setVisible(false);
             this.add(tglActiveStream, new org.netbeans.lib.awtextra.AbsoluteConstraints(7, 120, 78, 20));

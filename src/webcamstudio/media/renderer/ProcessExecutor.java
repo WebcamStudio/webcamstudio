@@ -48,7 +48,6 @@ public class ProcessExecutor {
 //    System.out.println("Process_Pid: "+pid);
     String commandPids = "ps -ef | awk '{if ($3 == "+pid+") print $2;}'";
     File fileP=new File(userHomeDir+"/.webcamstudio/"+"WSBust.sh");
-    fileP.setExecutable(true);
     FileOutputStream fosV;
     DataOutputStream dosV = null;
     try {
@@ -65,6 +64,8 @@ public class ProcessExecutor {
         Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
     }
     String batchPidCommand = userHomeDir+"/.webcamstudio/"+"WSBust.sh";
+    fileP.setExecutable(true);
+    Tools.sleep(10);
     try {
         Process getChildPids = rt.exec(batchPidCommand);
         Tools.sleep(10);

@@ -14,7 +14,7 @@ import webcamstudio.streams.Stream;
 public class WSPreview extends javax.swing.JFrame {
     Stream stream = null;
     public interface Listener {
-        public void resetViewer(java.awt.event.ActionEvent evt);    
+        public void resetPreviewer(java.awt.event.ActionEvent evt);    
     }
     static Listener listenerPW = null;
     public static void setListenerPW(Listener l) {
@@ -62,7 +62,7 @@ public class WSPreview extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
-        listenerPW.resetViewer(null);
+        listenerPW.resetPreviewer(null);
     }//GEN-LAST:event_formWindowClosed
 
     /**

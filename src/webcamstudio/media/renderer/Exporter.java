@@ -165,10 +165,12 @@ public class Exporter implements MasterMixer.SinkListener {
         if (videoServer != null && stream.hasVideo()) {
             try {
                 videoServer.close();
-                videoOutput.close();
-                videoOutput = null;
-                videoServer = null;
-//                System.out.println("Video Exporter Aborted!");
+                if (videoServer!=null){
+                    videoOutput.close();
+                    videoOutput = null;
+                    videoServer = null;
+    //                System.out.println("Video Exporter Aborted!");
+                }
             } catch (IOException ex) {
                 Logger.getLogger(Exporter.class.getName()).log(Level.SEVERE, null, ex);
             }   

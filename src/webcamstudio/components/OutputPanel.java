@@ -244,15 +244,15 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
                       
             for (String s : servicesF){
                 Preferences serviceF = filePrefs.node(s);
-                fileStream.setVbitrate(serviceF.get("vbitrate", ""));
-                fileStream.setAbitrate(serviceF.get("abitrate", ""));
+                fileStream.setVbitrate(serviceF.get("vbitrate", "1200"));
+                fileStream.setAbitrate(serviceF.get("abitrate", "128"));
             }
             
             for (String s : servicesU){
                 Preferences serviceU = udpPrefs.node(s);
-                udpStream.setVbitrate(serviceU.get("vbitrate", ""));
-                udpStream.setAbitrate(serviceU.get("abitrate", ""));
-                udpStream.setStandard(serviceU.get("standard", ""));
+                udpStream.setVbitrate(serviceU.get("vbitrate", "1200"));
+                udpStream.setAbitrate(serviceU.get("abitrate", "128"));
+                udpStream.setStandard(serviceU.get("standard", "STD"));
             }
             
             for (String s : services) {
@@ -323,9 +323,9 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
             service.put("standard", fme.getStandard());
         }
         Preferences serviceF = filePrefs.node("frecordset");
-        Preferences serviceU = udpPrefs.node("uoutset");
         serviceF.put("abitrate", fileStream.getAbitrate());
         serviceF.put("vbitrate", fileStream.getVbitrate());
+        Preferences serviceU = udpPrefs.node("uoutset");
         serviceU.put("abitrate", udpStream.getAbitrate());
         serviceU.put("vbitrate", udpStream.getVbitrate());
         serviceU.put("standard", udpStream.getStandard());
@@ -533,27 +533,22 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        tglSkyCam = new javax.swing.JToggleButton();
+        tglSkyCam = new javax.swing.JCheckBox();
         jcbV4l2loopback = new javax.swing.JCheckBox();
-        btnSkyFlip = new javax.swing.JToggleButton();
+        tglSkyFlip = new javax.swing.JCheckBox();
+        tglWSAudioDev = new javax.swing.JCheckBox();
         tglAudioOut = new javax.swing.JToggleButton();
         tglRecordToFile = new javax.swing.JToggleButton();
         tglUDP = new javax.swing.JToggleButton();
-        tglWSAudioDev = new javax.swing.JToggleButton();
 
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("webcamstudio/Languages"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("OUTPUT"))); // NOI18N
         setToolTipText(bundle.getString("DROP_OUTPUT")); // NOI18N
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.PAGE_AXIS));
 
-        tglSkyCam.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/camera-video.png"))); // NOI18N
-        tglSkyCam.setText(bundle.getString("SKYCAM")); // NOI18N
-        tglSkyCam.setToolTipText("Activate Skype/Flash Cam Compatibility");
-        tglSkyCam.setMinimumSize(new java.awt.Dimension(139, 21));
+        tglSkyCam.setText("SkyCam (Beta)");
+        tglSkyCam.setToolTipText("Activate Skype/Flash Cam Compatibility.");
         tglSkyCam.setName("tglSkyCam"); // NOI18N
-        tglSkyCam.setPreferredSize(new java.awt.Dimension(139, 28));
-        tglSkyCam.setRolloverEnabled(false);
-        tglSkyCam.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/camera-video-on.png")));
         tglSkyCam.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 tglSkyCamActionPerformed(evt);
@@ -562,7 +557,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
         add(tglSkyCam);
 
         jcbV4l2loopback.setText("V4l2loopback");
-        jcbV4l2loopback.setToolTipText("If selected SkyCam will use v4l2loopback module");
+        jcbV4l2loopback.setToolTipText("SkyCam will use v4l2loopback original module if installed");
         jcbV4l2loopback.setName("jcbV4l2loopback"); // NOI18N
         jcbV4l2loopback.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -571,22 +566,26 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
         });
         add(jcbV4l2loopback);
 
-        btnSkyFlip.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/view-refresh.png"))); // NOI18N
-        btnSkyFlip.setText("FlipSkyCam");
-        btnSkyFlip.setToolTipText("Flips SkyCam Horizontally");
-        btnSkyFlip.setEnabled(false);
-        btnSkyFlip.setMinimumSize(new java.awt.Dimension(117, 21));
-        btnSkyFlip.setName("btnSkyFlip"); // NOI18N
-        btnSkyFlip.setRolloverEnabled(false);
-        btnSkyFlip.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/view-refresh-on.png"))); // NOI18N
-        btnSkyFlip.setPreferredSize(new java.awt.Dimension(113, 21));
-        btnSkyFlip.setRolloverEnabled(false);
-        btnSkyFlip.addActionListener(new java.awt.event.ActionListener() {
+        tglSkyFlip.setText("FlipSkyCam");
+        tglSkyFlip.setToolTipText("Flips SkyCam Horizontally.");
+        tglSkyFlip.setEnabled(false);
+        tglSkyFlip.setName("tglSkyFlip"); // NOI18N
+        tglSkyFlip.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSkyFlipActionPerformed(evt);
+                tglSkyFlipActionPerformed(evt);
             }
         });
-        add(btnSkyFlip);
+        add(tglSkyFlip);
+
+        tglWSAudioDev.setText("WSAudioDevice");
+        tglWSAudioDev.setToolTipText("WebcamStudio Master Audio Sink");
+        tglWSAudioDev.setName("tglWSAudioDev"); // NOI18N
+        tglWSAudioDev.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tglWSAudioDevActionPerformed(evt);
+            }
+        });
+        add(tglWSAudioDev);
 
         tglAudioOut.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/audio-card.png"))); // NOI18N
         tglAudioOut.setText("Audio Output");
@@ -631,21 +630,6 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
             }
         });
         add(tglUDP);
-
-        tglWSAudioDev.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-record.png"))); // NOI18N
-        tglWSAudioDev.setText("WSAudioDevice");
-        tglWSAudioDev.setToolTipText("WebcamStudio Master Audio Sink");
-        tglWSAudioDev.setMinimumSize(new java.awt.Dimension(135, 21));
-        tglWSAudioDev.setName("tglWSAudioDev"); // NOI18N
-        tglWSAudioDev.setPreferredSize(new java.awt.Dimension(32, 28));
-        tglWSAudioDev.setRolloverEnabled(false);
-        tglWSAudioDev.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-stop.png"))); // NOI18N
-        tglWSAudioDev.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                tglWSAudioDevActionPerformed(evt);
-            }
-        });
-        add(tglWSAudioDev);
     }// </editor-fold>//GEN-END:initComponents
 
     private void tglRecordToFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglRecordToFileActionPerformed
@@ -694,7 +678,16 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
             if (retval == JFileChooser.APPROVE_OPTION && overWrite) {
                 fileStream.setFile(f);
                 fileStream.setListener(instanceSink);
+                // Fix lost prefs
+                if (fileStream.getVbitrate() == "") {
+                    fileStream.setVbitrate("1200");
+                }
+                if (fileStream.getAbitrate() == "") {
+                    fileStream.setAbitrate("128");
+                }
+                
                 fileStream.read();
+//                System.out.println("VBitRate: "+fileStream.getVbitrate());
                 files.put("RECORD", fileStream);
                 ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Recording to " + f.getName());
                 labels.put("RECORD", label);
@@ -724,6 +717,17 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
         if (tglUDP.isSelected()) {
             udpOutState = true;
             udpStream.setListener(instanceSink);
+            // Fix lost prefs
+            if (udpStream.getVbitrate() == "") {
+                    udpStream.setVbitrate("1200");
+                }
+            if (udpStream.getAbitrate() == "") {
+                udpStream.setAbitrate("128");
+            }
+            if (udpStream.getStandard() == "") {
+                udpStream.setStandard("STD");
+            }
+            
             udpStream.read();
             udpOut.put("UDPOut", udpStream);
             ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Unicast mpeg2 to udp://127.0.0.1:7000");
@@ -742,38 +746,38 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
         }
         
     }//GEN-LAST:event_tglUDPActionPerformed
+    
     private void repaintFMEButtons(){
         for (FME fme : fmes.values()) {
             addButtonBroadcast(fme);
         }
     }
+    
     private void repaintOuputButtons() {
         instanceSink.removeAll();
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("webcamstudio/Languages");
-       
-        tglSkyCam.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/camera-video.png"))); // NOI18N
+
         tglSkyCam.setText(bundle.getString("SKYCAM"));
-        tglSkyCam.setToolTipText("Activate Skype Cam Compatibility");
-        tglSkyCam.setName("tglSkyCam");
-        tglSkyCam.setRolloverEnabled(false);
-        tglSkyCam.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/camera-video-on.png"))); // NOI18N
-        tglSkyCam.setPreferredSize(new Dimension(32, 28));
+        tglSkyCam.setToolTipText("Activate Skype/Flash Cam Compatibility.");
+        tglSkyCam.setName("tglSkyCam"); // NOI18N
         add(tglSkyCam);
-        
+
         jcbV4l2loopback.setText("V4l2loopback");
         jcbV4l2loopback.setName("jcbV4l2loopback");
         add(jcbV4l2loopback);
-        
-        btnSkyFlip.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/view-refresh.png"))); // NOI18N
-        btnSkyFlip.setText("FlipSkyCam");
-        btnSkyFlip.setToolTipText("Flips SkyCam Horizontally");
-        btnSkyFlip.setName("btnSkyFlip");
-        btnSkyFlip.setEnabled(true);
-        btnSkyFlip.setRolloverEnabled(false);
-        btnSkyFlip.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/view-refresh-on.png"))); // NOI18N
-        btnSkyFlip.setPreferredSize(new Dimension(113, 21));
-        add(btnSkyFlip);
 
+        tglSkyFlip.setText("FlipSkyCam");
+        tglSkyFlip.setToolTipText("Flips SkyCam Horizontally.");
+        tglSkyFlip.setEnabled(false);
+        tglSkyFlip.setName("tglSkyFlip"); // NOI18N
+        tglSkyFlip.setEnabled(true);
+        add(tglSkyFlip);
+        
+        tglWSAudioDev.setText("WSAudioDevice");
+        tglWSAudioDev.setToolTipText("WebcamStudio Master Audio Sink");
+        tglWSAudioDev.setName("tglWSAudioDev"); // NOI18N
+        add(tglWSAudioDev);
+        
         tglAudioOut.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/audio-card.png"))); // NOI18N
         tglAudioOut.setText("Audio Output");
         tglAudioOut.setToolTipText("Audio to Speakers");
@@ -799,17 +803,8 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
         tglUDP.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-stop.png"))); // NOI18N
         tglUDP.setPreferredSize(new Dimension(32, 28));
         add(tglUDP);
-        
-        tglWSAudioDev.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-record.png"))); // NOI18N
-        tglWSAudioDev.setText("WSAudioDevice");
-        tglWSAudioDev.setToolTipText("WebcamStudio Master Audio Output");
-        tglWSAudioDev.setMinimumSize(new java.awt.Dimension(135, 21));
-        tglWSAudioDev.setName("tglWSAudioDev"); // NOI18N
-        tglWSAudioDev.setPreferredSize(new java.awt.Dimension(32, 28));
-        tglWSAudioDev.setRolloverEnabled(false);
-        tglWSAudioDev.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-stop.png"))); // NOI18N
-        add(tglWSAudioDev);
     }
+    
     private void paintWSCamButtons () {
         for (final VideoDevice d : VideoDevice.getInputDevices()) {
             String vdName = d.getFile().getName();
@@ -879,7 +874,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
         }
     } 
     private void repaintSkyCamButtons (){
-        final Runtime rt = Runtime.getRuntime();
+//        final Runtime rt = Runtime.getRuntime();
         for (VideoDevice d : VideoDevice.getInputDevices()) {
             String vdName = d.getFile().getName();
             if (vdName.endsWith("video21")) {
@@ -939,11 +934,11 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
                                     Tools.sleep(20);
                                     processSkyVideo.executeString(batchSkyCommC);
                                     Tools.sleep(20);
-                                } catch (                        IOException | InterruptedException ex) {
+                                } catch (IOException | InterruptedException ex) {
                                     Logger.getLogger(OutputPanel.class.getName()).log(Level.SEVERE, null, ex);
                                 }
                                 tglSkyCam.setEnabled(false);
-                                btnSkyFlip.setEnabled(false);
+                                tglSkyFlip.setEnabled(false);
                                 iSkyCamFree = false;
                                 iSkyCam = true;
 //                                System.out.println("Skype Camera on /dev/video21 ...");
@@ -978,7 +973,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
                                         if (camCount == 0 && fmeCount == 0) {
                                             tglSkyCam.setEnabled(true);
                                         }
-                                        btnSkyFlip.setEnabled(true);
+                                        tglSkyFlip.setEnabled(true);
                                         iSkyCamFree = true;    
                                     }
                                 }
@@ -1036,6 +1031,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
         fileStream.destroy();
         udpStream.destroy();
         audioStream.destroy();
+        f = new File(userHomeDir + "/.webcamstudio/Record To File");
         fileStream = new SinkFile(f);
         udpStream = new SinkUDP();
         audioStream = new SinkAudio();
@@ -1178,6 +1174,96 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
             repaint();
         }
     }
+    private void jcbV4l2loopbackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcbV4l2loopbackActionPerformed
+        if (jcbV4l2loopback.isSelected()) {
+            virtualDevice = "v4l2loopback";
+        } else {
+            virtualDevice = "webcamstudio";
+        }
+    }//GEN-LAST:event_jcbV4l2loopbackActionPerformed
+
+    private void tglAudioOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglAudioOutActionPerformed
+        
+        if (tglAudioOut.isSelected()) {
+            audioOutState = true;
+            tglWSAudioDev.setEnabled(false);
+            audioStream.setListener(instanceSink);
+            audioStream.read();
+            audioOut.put("AudioOut", audioStream);
+            ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Master Audio to Speakers");
+            labels.put("AudioOut", label);
+            ResourceMonitor.getInstance().addMessage(label);
+            if (tglWSAudioDev.isSelected()){
+                try {
+                    Process p = Runtime.getRuntime().exec("pactl list short sinks");
+                    InputStream in = p.getInputStream();
+                    InputStreamReader isr = new InputStreamReader(in);
+                    BufferedReader reader = new BufferedReader(isr);
+                    String line = reader.readLine();
+                    while (line != null) {
+                        if (line.contains("WSAudioDevice")) {
+                            String [] id = line.split("\t");
+                            System.out.println("Found WSAD: <"+id[0]+">");
+                            idWSAD = id[0];
+                        }
+                        line = reader.readLine();
+                    }
+                    in.close();
+                    isr.close();
+                    reader.close();
+                    p.destroy();
+                } catch (IOException ex) {
+                    Logger.getLogger(OutputPanel.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                Tools.sleep(250);
+                try {
+                    Process p = Runtime.getRuntime().exec("pactl list short sink-inputs");
+                    InputStream in = p.getInputStream();
+                    InputStreamReader isr = new InputStreamReader(in);
+                    BufferedReader reader = new BufferedReader(isr);
+                    String line = reader.readLine();
+                    while (line != null) {
+                        String [] id = line.split("\t");       
+                        System.out.println("Found WSOut: <"+id[0]+">"+"<"+id[1]+">");
+                        idWSOuts.add(id[0]);
+                        idDef = id[1];                                
+                        line = reader.readLine();
+                    }
+                    in.close();
+                    isr.close();
+                    reader.close();
+                    p.destroy();
+                } catch (IOException ex) {
+                    Logger.getLogger(OutputPanel.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                idWSOut = idWSOuts.get(idWSOuts.size()-1);
+                try {
+                    execPACTL("pactl move-sink-input "+idWSOut+" "+idWSAD);
+                } catch (IOException ex) {
+                    Logger.getLogger(OutputPanel.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(OutputPanel.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        } else {
+            audioOutState = false;
+            SinkAudio audioStream = audioOut.get("AudioOut");
+//            System.out.println("Killed SinkAudio"+audioStream);
+            tglWSAudioDev.setEnabled(true);
+            if (audioStream != null) {
+                audioStream.stop();
+                audioStream = null;
+                audioOut.remove("AudioOut");
+                ResourceMonitorLabel label = labels.get("AudioOut");
+                ResourceMonitor.getInstance().removeMessage(label);
+            }
+            if (tglWSAudioDev.isSelected()){
+                
+            }
+        }
+        
+    }//GEN-LAST:event_tglAudioOutActionPerformed
+
     private void tglSkyCamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglSkyCamActionPerformed
         final WaitingDialogOP waitingD = new WaitingDialogOP(wDFrame);
         waitingD.setModal(true);
@@ -1310,8 +1396,8 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
                     paintWSCamButtons ();
                     Tools.sleep(30);
                     repaintFMEButtons();
-                    btnSkyFlip.setSelected(false);
-                    btnSkyFlip.setEnabled(false);
+                    tglSkyFlip.setSelected(false);
+                    tglSkyFlip.setEnabled(false);
                     flip = false;
                     ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "SkyCam Disengaged");
                     ResourceMonitor.getInstance().addMessage(label);
@@ -1331,99 +1417,9 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
         waitingD.setVisible(true);
     }//GEN-LAST:event_tglSkyCamActionPerformed
 
-    private void btnSkyFlipActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSkyFlipActionPerformed
-        flip = btnSkyFlip.isSelected();
-    }//GEN-LAST:event_btnSkyFlipActionPerformed
-
-    private void jcbV4l2loopbackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcbV4l2loopbackActionPerformed
-        if (jcbV4l2loopback.isSelected()) {
-            virtualDevice = "v4l2loopback";
-        } else {
-            virtualDevice = "webcamstudio";
-        }
-    }//GEN-LAST:event_jcbV4l2loopbackActionPerformed
-
-    private void tglAudioOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglAudioOutActionPerformed
-        
-        if (tglAudioOut.isSelected()) {
-            audioOutState = true;
-            tglWSAudioDev.setEnabled(false);
-            audioStream.setListener(instanceSink);
-            audioStream.read();
-            audioOut.put("AudioOut", audioStream);
-            ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Master Audio to Speakers");
-            labels.put("AudioOut", label);
-            ResourceMonitor.getInstance().addMessage(label);
-            if (tglWSAudioDev.isSelected()){
-                try {
-                    Process p = Runtime.getRuntime().exec("pactl list short sinks");
-                    InputStream in = p.getInputStream();
-                    InputStreamReader isr = new InputStreamReader(in);
-                    BufferedReader reader = new BufferedReader(isr);
-                    String line = reader.readLine();
-                    while (line != null) {
-                        if (line.contains("WSAudioDevice")) {
-                            String [] id = line.split("\t");
-                            System.out.println("Found WSAD: <"+id[0]+">");
-                            idWSAD = id[0];
-                        }
-                        line = reader.readLine();
-                    }
-                    in.close();
-                    isr.close();
-                    reader.close();
-                    p.destroy();
-                } catch (IOException ex) {
-                    Logger.getLogger(OutputPanel.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                Tools.sleep(250);
-                try {
-                    Process p = Runtime.getRuntime().exec("pactl list short sink-inputs");
-                    InputStream in = p.getInputStream();
-                    InputStreamReader isr = new InputStreamReader(in);
-                    BufferedReader reader = new BufferedReader(isr);
-                    String line = reader.readLine();
-                    while (line != null) {
-                        String [] id = line.split("\t");       
-                        System.out.println("Found WSOut: <"+id[0]+">"+"<"+id[1]+">");
-                        idWSOuts.add(id[0]);
-                        idDef = id[1];                                
-                        line = reader.readLine();
-                    }
-                    in.close();
-                    isr.close();
-                    reader.close();
-                    p.destroy();
-                } catch (IOException ex) {
-                    Logger.getLogger(OutputPanel.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                idWSOut = idWSOuts.get(idWSOuts.size()-1);
-                try {
-                    execPACTL("pactl move-sink-input "+idWSOut+" "+idWSAD);
-                } catch (IOException ex) {
-                    Logger.getLogger(OutputPanel.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(OutputPanel.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        } else {
-            audioOutState = false;
-            SinkAudio audioStream = audioOut.get("AudioOut");
-//            System.out.println("Killed SinkAudio"+audioStream);
-            tglWSAudioDev.setEnabled(true);
-            if (audioStream != null) {
-                audioStream.stop();
-                audioStream = null;
-                audioOut.remove("AudioOut");
-                ResourceMonitorLabel label = labels.get("AudioOut");
-                ResourceMonitor.getInstance().removeMessage(label);
-            }
-            if (tglWSAudioDev.isSelected()){
-                
-            }
-        }
-        
-    }//GEN-LAST:event_tglAudioOutActionPerformed
+    private void tglSkyFlipActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglSkyFlipActionPerformed
+        flip = tglSkyFlip.isSelected();
+    }//GEN-LAST:event_tglSkyFlipActionPerformed
 
     private void tglWSAudioDevActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglWSAudioDevActionPerformed
         if (tglWSAudioDev.isSelected()){
@@ -1465,15 +1461,14 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JToggleButton btnSkyFlip;
     private javax.swing.JCheckBox jcbV4l2loopback;
     private javax.swing.JToggleButton tglAudioOut;
     private javax.swing.JToggleButton tglRecordToFile;
     final OutputPanel instanceSink = this;
-    private javax.swing.JToggleButton tglSkyCam;
-    // final OutputPanel instanceSink = this;
+    private javax.swing.JCheckBox tglSkyCam;
+    private javax.swing.JCheckBox tglSkyFlip;
     private javax.swing.JToggleButton tglUDP;
-    private javax.swing.JToggleButton tglWSAudioDev;
+    private javax.swing.JCheckBox tglWSAudioDev;
     // End of variables declaration//GEN-END:variables
 
     
@@ -1522,7 +1517,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
     public void resetButtonsStates(ActionEvent evt) {
         tglSkyCam.setEnabled(true);
         tglWSAudioDev.setEnabled(true);
-        btnSkyFlip.setEnabled(tglSkyCam.isSelected());
+        tglSkyFlip.setEnabled(tglSkyCam.isSelected());
         camCount = 0;
         fmeCount = 0;
         iSkyCamFree = true;
