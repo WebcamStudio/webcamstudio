@@ -4,10 +4,9 @@
  */
 package webcamstudio.sources.effects;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.awt.image.WritableRaster;
 import java.util.prefs.Preferences;
 import javax.swing.JPanel;
 import webcamstudio.sources.effects.controls.NoBackgroundControl;
@@ -18,77 +17,113 @@ import webcamstudio.sources.effects.controls.NoBackgroundControl;
  */
 public class NoBackground extends Effect {
 
-    private final com.jhlabs.image.KeyFilter filter = new com.jhlabs.image.KeyFilter();
     private BufferedImage background = null;
     private BufferedImage lastImage = null;
-    private float rThreshold = 0;
-    private float gThreshold = 0;
-    private float bThreshold = 0;
+    private int rThreshold = 0;
+    private int gThreshold = 0;
+    private int bThreshold = 0;
 
-    @Override
-    public void applyEffect(BufferedImage img) {
-        lastImage = img;
+//    @Override
+    public void applyEffectTest(BufferedImage img) {
+        lastImage = deepCopy(img);
         if (background != null) {
-            filter.setCleanImage(background);
-            filter.setDestination(background);
-            filter.setHTolerance(rThreshold);
-            filter.setSTolerance(gThreshold);
-            filter.setBTolerance(bThreshold);
-            Graphics2D buffer = img.createGraphics();
-            buffer.setRenderingHint(RenderingHints.KEY_RENDERING,
-                               RenderingHints.VALUE_RENDER_SPEED);
-            buffer.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                               RenderingHints.VALUE_ANTIALIAS_OFF);
-            buffer.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-                               RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
-            buffer.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,
-                               RenderingHints.VALUE_FRACTIONALMETRICS_OFF);
-            buffer.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING,
-                               RenderingHints.VALUE_COLOR_RENDER_SPEED);
-            buffer.setRenderingHint(RenderingHints.KEY_DITHERING,
-                               RenderingHints.VALUE_DITHER_DISABLE);
-            BufferedImage temp = filter.filter(img, null);
-            buffer.setBackground(new Color(0, 0, 0, 0));
-            buffer.clearRect(0, 0, img.getWidth(), img.getHeight());
-            buffer.drawImage(temp, 0, 0, null);
-            buffer.dispose();
+            int[] data = ((java.awt.image.DataBufferInt) img.getRaster().getDataBuffer()).getData();
+            int[] dataBG = ((java.awt.image.DataBufferInt) background.getRaster().getDataBuffer()).getData();
+            int r, g, b, c, cb;
+            for (int i = 0; i < data.length; i++) {
+                c = data[i];
+                cb = dataBG[i];
+                r = ((((c & 0x00FF0000) >> 16))) - (((cb & 0x00FF0000) >> 16));
+                g = (((c & 0x0000FF00) >> 8)) - (((cb & 0x0000FF00) >> 8));
+                b = (((c & 0x000000FF))) - ((cb & 0x000000FF));
+                if (r < 0) {
+                    r *= -1;
+                }
+                if (g < 0) {
+                    g *= -1;
+                }
+                if (b < 0) {
+                    b *= -1;
+                }
+                int rRatio = Math.abs(r) * 100 / 255;
+                int gRatio = Math.abs(g) * 100 / 255;
+                int bRatio = Math.abs(b) * 100 / 255;
+                
+                if (rRatio < rThreshold && bRatio < bThreshold && gRatio < gThreshold) {
+                    data[i] = c & 0x00FFFFFF;
+                }
+            }
         }
     }
+    
     @Override
-    public boolean needApply(){
-        return needApply=true;
+    public void applyEffect(BufferedImage img) {
+        lastImage = deepCopy(img);
+        if (background != null) {
+            int[] data = ((java.awt.image.DataBufferInt) img.getRaster().getDataBuffer()).getData();
+            int[] dataBG = ((java.awt.image.DataBufferInt) background.getRaster().getDataBuffer()).getData();
+            int r, g, b, c, cb;
+            int r1, g1, b1;
+            for (int i = 0; i < data.length; i++) {
+                c = data[i];
+                cb = dataBG[i];
+                r = (c >> 16) & 0xff;
+                g = (c >> 8) & 0xff;
+                b = c & 0xff;
+                r1 = (cb >> 16) & 0xff;
+                g1 = (cb >> 8) & 0xff;
+                b1 = cb & 0xff;
+                int rRatio = Math.abs(r1 - r) * 100 / 255;
+                int gRatio = Math.abs(g1 - g) * 100 / 255;
+                int bRatio = Math.abs(b1 - b) * 100 / 255;
+                if (rThreshold > rRatio && gThreshold > gRatio && bThreshold > bRatio) {
+                    data[i] &= 0x00FFFFFF;
+                }
+            }
+        }
     }
-    public void setRThreshold(float t) {
-        rThreshold = t/100;
-//        System.out.println("RThreshold: "+ rThreshold);
+    
+    BufferedImage deepCopy(BufferedImage bi) {
+        ColorModel cm = bi.getColorModel();
+        boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
+        WritableRaster raster = bi.copyData(null);
+        BufferedImage temp = new BufferedImage(cm, raster, isAlphaPremultiplied, null);
+        return temp;
+    }
+    
+    public void setRThreshold(int t) {
+        rThreshold = t/2;
     }
 
-    public void setGThreshold(float t) {
-        gThreshold = t/100;
-//        System.out.println("GThreshold: "+ gThreshold);
+    public void setGThreshold(int t) {
+        gThreshold = t/2;
     }
 
-    public void setBThreshold(float t) {
-        bThreshold = t/100;
-//        System.out.println("BThreshold: "+ bThreshold);
+    public void setBThreshold(int t) {
+        bThreshold = t/2;
     }
 
     public int getRThreshold() {
-        return (int)rThreshold*100;
+        return rThreshold*2;
     }
 
     public int getGThreshold() {
-        return (int) gThreshold*100;
+        return gThreshold*2;
     }
 
     public int getBThreshold() {
-        return (int) bThreshold*100;
+        return bThreshold*2;
     }
 
     public BufferedImage getLastImage() {
         return lastImage;
     }
-
+    
+    @Override
+    public boolean needApply(){
+        return needApply=true;
+    }
+    
     @Override
     public JPanel getControl() {
         return new NoBackgroundControl(this);
@@ -96,19 +131,21 @@ public class NoBackground extends Effect {
 
     @Override
     public void applyStudioConfig(Preferences prefs) {
-        prefs.putFloat("rThreshold", rThreshold);
-        prefs.putFloat("gThreshold", gThreshold);
-        prefs.putFloat("bThreshold", bThreshold);
+        prefs.putInt("rThreshold", rThreshold);
+        prefs.putInt("gThreshold", gThreshold);
+        prefs.putInt("bThreshold", bThreshold);
     }
 
     @Override
     public void loadFromStudioConfig(Preferences prefs) {
-        rThreshold = prefs.getFloat("rThreshold", rThreshold);
-        gThreshold = prefs.getFloat("gThreshold", gThreshold);
-        bThreshold = prefs.getFloat("bThreshold", bThreshold);
+        rThreshold = prefs.getInt("rThreshold", rThreshold);
+        gThreshold = prefs.getInt("gThreshold", gThreshold);
+        bThreshold = prefs.getInt("bThreshold", bThreshold);
     }
 
     public void setBackgroundImage(BufferedImage img) {
-        background = img;
+        if (img != null) {
+            background = img;
+        }
     }
 }

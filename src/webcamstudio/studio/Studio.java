@@ -61,6 +61,7 @@ import webcamstudio.sources.effects.Mirror4;
 import webcamstudio.sources.effects.Mosaic;
 import webcamstudio.sources.effects.MotionAlpha;
 import webcamstudio.sources.effects.NoBackground;
+import webcamstudio.sources.effects.Crop;
 import webcamstudio.sources.effects.Opacity;
 import webcamstudio.sources.effects.Perspective;
 import webcamstudio.sources.effects.RGB;
@@ -497,6 +498,10 @@ public class Studio {
                 effeX = new NoBackground();
                 readObjectFx(effeX, SuperChild);
                 
+            } else if (sClazz.endsWith("Crop")) {
+                effeX = new Crop();
+                readObjectFx(effeX, SuperChild);
+                
             } else if (sClazz.endsWith("Opacity")) {
                 effeX = new Opacity();
                 readObjectFx(effeX, SuperChild);
@@ -922,8 +927,8 @@ public class Studio {
                 if (multi>1) {
                     extstream.remove(dST);
                     ImgMovMus.remove("/dev/"+streamName);
-//                        System.out.println(dST+" Removed ...");
-//                        System.out.println(streamName+" Removed ...");
+//                    System.out.println(dST+" Removed ...");
+//                    System.out.println(streamName+" Removed ...");
                     multi=0;
                 }
             }
@@ -981,7 +986,6 @@ public class Studio {
             }
         }
         // Read List
-        
     }
 
     private static void readObjectFx(Effect fx, Node source) throws IllegalArgumentException, IllegalAccessException {
@@ -1035,7 +1039,6 @@ public class Studio {
             }
         }
         // Read List
-        
     }
     private static void readObjectSC (SourceChannel sc, Node source) throws IllegalArgumentException, IllegalAccessException {
         Field[] fields = sc.getClass().getDeclaredFields();
@@ -1060,9 +1063,7 @@ public class Studio {
                             field.set(sc, node.getTextContent());
                         }
                     }                       
-                    
                 }
-                
             }
         }
 
@@ -1086,7 +1087,6 @@ public class Studio {
                         }
                     }
                 }
-
             }
         }
         // Read List 

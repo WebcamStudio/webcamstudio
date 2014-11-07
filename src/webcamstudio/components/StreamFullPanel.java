@@ -39,16 +39,6 @@ public class StreamFullPanel extends javax.swing.JPanel implements MasterMixer.S
         player = SystemPlayer.getInstance(viewer);   
         
     }
-//    public Viewer detachViewer(){
-//        panPreview.remove(viewer);
-//        panPreview.revalidate();
-//        return viewer;
-//    }
-//    public Viewer attachViewer(){
-//        panPreview.add(viewer, BorderLayout.CENTER);
-//        panPreview.revalidate();
-//        return viewer;
-//    }
 
     /** This method is called from within the constructor to
      * initialize the form.

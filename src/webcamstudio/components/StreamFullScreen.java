@@ -26,7 +26,6 @@ public class StreamFullScreen extends javax.swing.JInternalFrame {
         StreamFullPanel p = new StreamFullPanel(viewer);
         this.setLayout(new BorderLayout());
         this.add(p, BorderLayout.CENTER);
-//        this.setTitle("WS Master Mixer View");
         this.setVisible(true);
         this.setClosable(false);
         this.setResizable(false);
@@ -55,7 +54,6 @@ public class StreamFullScreen extends javax.swing.JInternalFrame {
     // End of variables declaration//GEN-END:variables
 
     public interface Listener {
-
         public void selectedSource(Stream source);
     }
 }

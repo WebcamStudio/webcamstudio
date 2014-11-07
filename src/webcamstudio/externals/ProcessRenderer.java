@@ -731,7 +731,6 @@ public class ProcessRenderer {
     }
     
     public void writeCom() {
-//        final Runtime rt = Runtime.getRuntime();
         stopped = false;
         stopMe = false;
         new  Thread(new Runnable() {
@@ -784,37 +783,6 @@ public class ProcessRenderer {
         }).start();
 
     }
-//    public void write() {
-//        stopped = false;
-//        stopMe = false;
-//        new Thread(new Runnable() {
-//
-//            @Override
-//            public void run() {
-//                try {
-//                exporter = new Exporter(stream);
-//                } catch (SocketException ex) {
-//                    Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
-//                }
-//                videoPort = exporter.getVideoPort();
-//                audioPort = exporter.getAudioPort();
-//                stopped = false;
-//                String command = plugins.getProperty(plugin).replaceAll("  ", " "); //Making sure there is no double spaces
-//                command = setParameters(command);
-//                System.out.println("Command Out: "+command);
-//
-//                final String[] parms = command.split(" ");
-//                try {
-//                    processAudio = null;
-//                    processVideo.execute(parms);
-//                    //We don't need processAudio on export.  Only 1 process is required...
-//                } catch (IOException | InterruptedException e) {
-//                    Logger.getLogger(Capturer.class.getName()).log(Level.SEVERE, null, e);
-//                }
-//            }
-//        }).start();
-//
-//    }
     
     public void pause() //Author Martijn Courteaux Code
     {
@@ -877,7 +845,6 @@ public class ProcessRenderer {
     }
 
     public enum ACTION {
-
         CAPTURE, OUTPUT
     }
 }

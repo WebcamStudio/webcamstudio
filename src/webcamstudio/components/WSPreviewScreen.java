@@ -26,7 +26,6 @@ public class WSPreviewScreen extends javax.swing.JInternalFrame {
         WSPreviewPanel p = new WSPreviewPanel(viewer);
         this.setLayout(new BorderLayout());
         this.add(p, BorderLayout.CENTER);
-//        this.setTitle("WS Master Preview Screen");
         this.setVisible(true);
         this.setClosable(false);
         this.setResizable(false);

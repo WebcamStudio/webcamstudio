@@ -49,10 +49,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.Painter;
-import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
-import javax.swing.UIDefaults;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.xml.parsers.ParserConfigurationException;
@@ -110,7 +107,6 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
     public static int outFMEbe = 1;
     private final static String userHomeDir = Tools.getUserHome();
     OutputPanel recorder = new OutputPanel(this);
-    MasterPanel masterP = new MasterPanel(); 
     Frame about = new Frame();
     Frame vDevInfo = new Frame();
     Stream stream = null;
@@ -173,6 +169,12 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
         os.close();
         is.close();
     }
+
+    @Override
+    public void closeSource() {
+        lblSourceSelected.setText("");
+    }
+    
     public interface Listener {
         public void stopChTime(java.awt.event.ActionEvent evt);
         public void resetBtnStates(java.awt.event.ActionEvent evt);
@@ -198,7 +200,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
     public WebcamStudio() throws IOException {
         
         initComponents();
-//        theme = prefs.get("theme", "Classic");
+        
         if (theme.equals("Dark")) {
             // setting WS Dark Theme
             UIManager.put("text", Color.WHITE);
@@ -319,7 +321,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
         
         MasterMixer.getInstance().start();
         PreviewMixer.getInstance().start();
-        this.add(masterP, BorderLayout.WEST);
+        this.add(new MasterPanel(), BorderLayout.WEST);
         initAnimations();
         initFaceDetection();
         initWebcam();
@@ -508,7 +510,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
         }
         prefs.putInt("audio-freq", audioFreq);
         prefs.put("theme", theme);
-        System.out.println("Theme:"+theme);
+//        System.out.println("Theme:"+theme);
         prefs.putInt("out-FME", outFMEbe);
         recorder.savePrefs(prefs);
         try {
@@ -516,7 +518,6 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
         } catch (BackingStoreException ex) {
             Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
         }
-
     }
 
     /**
@@ -1383,6 +1384,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
             if (retval == JFileChooser.APPROVE_OPTION && overWrite) {
                 final WaitingDialog waitingD = new WaitingDialog(this);
                 final File fileF = file;
+                lblSourceSelected.setText("");
                 waitingD.setModal(true);
                 SwingWorker<?,?> worker = new SwingWorker<Void,Integer>(){  
                     @Override
@@ -1433,7 +1435,6 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
                 ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Error: " + ex.getMessage());
                 ResourceMonitor.getInstance().addMessage(label);
         } 
-    
     }//GEN-LAST:event_btnSaveStudioActionPerformed
     
     public static class WaitingDialog extends JDialog {
@@ -1558,8 +1559,8 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
         FileNameExtensionFilter studioFilter = new FileNameExtensionFilter("Studio files (*.studio)", "studio");
         chooser.setFileFilter(studioFilter);
         chooser.setMultiSelectionEnabled(false);
-    //                MasterFrameBuilder.register(this);
-    chooser.setDialogTitle("Load a Studio ...");
+        //                MasterFrameBuilder.register(this);
+        chooser.setDialogTitle("Load a Studio ...");
         chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         int retval = chooser.showOpenDialog(this);
         final File file = chooser.getSelectedFile();
@@ -1604,6 +1605,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
                         listenerCP.resetBtnStates(fEvt);
                         listenerOP.resetBtnStates(fEvt);
                         tabControls.removeAll();
+                        lblSourceSelected.setText("");
                         tabControls.repaint();
                         Tools.sleep(300);
                         desktop.removeAll();
@@ -1770,6 +1772,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
             listenerOP.resetBtnStates(evt);
             listenerOP.resetSinks(evt);
             tabControls.removeAll();
+            lblSourceSelected.setText("");
             tabControls.repaint();
             Tools.sleep(300);
             desktop.removeAll();
@@ -1929,7 +1932,6 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
                         Studio.ImgMovMus = null;
                         for (int t = 0; t < Studio.LText.size(); t++) {
                             SourceText text = Studio.LText.get(t);
-
 // to fix 0 channels .studio import
                             if (text.getChannels().isEmpty()) {
                                 ArrayList<String> allChan = new ArrayList<>();
@@ -2093,7 +2095,6 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
             ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Loading Cancelled!");
             ResourceMonitor.getInstance().addMessage(label);
         }
-        
     }//GEN-LAST:event_btnAddFolderActionPerformed
 
     private void btnAddDVCamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddDVCamActionPerformed
@@ -2281,9 +2282,9 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
                 }
                 c++;
             }
-            
         }
     }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton WCSAbout;
     private javax.swing.JButton btnAddAnimation;
@@ -2359,117 +2360,117 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
     
     public void loadAtStart(final File file, final java.awt.event.ActionEvent fEvt){
         final WaitingDialog waitingD = new WaitingDialog(this);
-            waitingD.setModal(true);
-            SwingWorker<?,?> worker = new SwingWorker<Void,Integer>(){  
-                @Override
-                protected Void doInBackground() throws InterruptedException{  
-                    if (file != null) {
-                        lastFolder = file.getParentFile();
-                        SystemPlayer.getInstance(null).stop();
-                        Tools.sleep(10);
-                        PrePlayer.getPreInstance(null).stop();
-                        Tools.sleep(10);
-                        MasterChannels.getInstance().stopAllStream();
-                        for (Stream s : MasterChannels.getInstance().getStreams()){              
-                            s.updateStatus();
-                        }
-                        ArrayList<Stream> streamz = MasterChannels.getInstance().getStreams();
-                        ArrayList<String> sourceCh = MasterChannels.getInstance().getChannels();
-                        do {        
-                            for (int l=0; l< streamz.size(); l++) {
-                                Stream removeS = streamz.get(l);
-                                Tools.sleep(20);
-                                removeS.destroy();
-                                removeS = null;
-                            }
-                            for (int a=0; a< sourceCh.size(); a++) {
-                                String removeSc = sourceCh.get(a);
-                                MasterChannels.getInstance().removeChannel(removeSc);
-                                Tools.sleep(20);
-                                listenerCP.removeChannels(removeSc, a);
-                            }
-                        } while (streamz.size()>0 || sourceCh.size()>0);
-                        SystemPlayer.getInstance(null).stop();
-                        Tools.sleep(10);
-                        PrePlayer.getPreInstance(null).stop();
-                        Tools.sleep(10);
-                        MasterChannels.getInstance().stopAllStream();
-                        listenerCP.stopChTime(fEvt);
-                        listenerCP.resetBtnStates(fEvt);
-                        listenerOP.resetBtnStates(fEvt);
-                        tabControls.removeAll();
-                        tabControls.repaint();
-                        Tools.sleep(300);
-                        desktop.removeAll();
-                        desktop.repaint();
-                        Tools.sleep(50);
-                        try {
-                            Studio.LText = new ArrayList<>();
-                            Studio.extstream = new ArrayList<>();
-                            Studio.ImgMovMus = new ArrayList<>();                          
-                            Studio.load(file, "load");
-                            Studio.main();
-                            spinWidth.setValue(MasterMixer.getInstance().getWidth());
-                            spinHeight.setValue(MasterMixer.getInstance().getHeight());
-                            spinFPS.setValue(MasterMixer.getInstance().getRate());
-                            int mW = (Integer) spinWidth.getValue();
-                            int mH = (Integer) spinHeight.getValue();
-                            MasterMixer.getInstance().stop();
-                            MasterMixer.getInstance().setWidth(mW);
-                            MasterMixer.getInstance().setHeight(mH);
-                            MasterMixer.getInstance().setRate((Integer) spinFPS.getValue());
-                            MasterMixer.getInstance().start();
-                            PreviewMixer.getInstance().stop();
-                            PreviewMixer.getInstance().setWidth(mW);
-                            PreviewMixer.getInstance().setHeight(mH);
-//                            PreviewMixer.getInstance().setRate((Integer) spinFPS.getValue());
-                            PreviewMixer.getInstance().start();
-                        } catch (ParserConfigurationException | SAXException | IOException | XPathExpressionException ex) {
-                            Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-// loading studio streams
-                        for (int u = 0; u < Studio.ImgMovMus.size(); u++) {
-                            Stream s = Studio.extstream.get(u);
-                            if (s != null) {
-                                StreamDesktop frame = new StreamDesktop(s, WebcamStudio.this);
-                                desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
-                            }
-                            System.out.println("Adding Source: "+s.getName());
-                        }
-                        Studio.extstream.clear();
-                        Studio.extstream = null;
-                        Studio.ImgMovMus.clear();
-                        Studio.ImgMovMus = null;
-                        for (SourceText text : Studio.LText) {
-                            if (text != null) {
-                                StreamDesktop frame = new StreamDesktop(text, WebcamStudio.this);
-                                desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
-                            }
-                            System.out.println("Adding Source: "+text.getName());
-                        }
-                        Studio.LText.clear();
-                        Studio.LText = null;
-                        Tools.sleep(300);
-// loading studio channels
-                        for (String chsc : MasterChannels.getInstance().getChannels()) {
-                            Tools.sleep(10);
-                            listenerCP.addLoadingChannel(chsc);
-                        }
-                        Studio.chanLoad.clear();
-                        listenerOP.resetSinks(fEvt);
-                        ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Studio is loaded!");
-                        ResourceMonitor.getInstance().addMessage(label);
-                        setTitle("WebcamStudio " + Version.version + " ("+file.getName()+")");
+        waitingD.setModal(true);
+        SwingWorker<?,?> worker = new SwingWorker<Void,Integer>(){  
+            @Override
+            protected Void doInBackground() throws InterruptedException{  
+                if (file != null) {
+                    lastFolder = file.getParentFile();
+                    SystemPlayer.getInstance(null).stop();
+                    Tools.sleep(10);
+                    PrePlayer.getPreInstance(null).stop();
+                    Tools.sleep(10);
+                    MasterChannels.getInstance().stopAllStream();
+                    for (Stream s : MasterChannels.getInstance().getStreams()){              
+                        s.updateStatus();
                     }
-                return null;  
-                }  
-                @Override
-                protected void done(){
-                    waitingD.dispose();
-                }  
-            }; 
-            worker.execute();
-            waitingD.toFront();
-            waitingD.setVisible(true);
+                    ArrayList<Stream> streamz = MasterChannels.getInstance().getStreams();
+                    ArrayList<String> sourceCh = MasterChannels.getInstance().getChannels();
+                    do {        
+                        for (int l=0; l< streamz.size(); l++) {
+                            Stream removeS = streamz.get(l);
+                            Tools.sleep(20);
+                            removeS.destroy();
+                            removeS = null;
+                        }
+                        for (int a=0; a< sourceCh.size(); a++) {
+                            String removeSc = sourceCh.get(a);
+                            MasterChannels.getInstance().removeChannel(removeSc);
+                            Tools.sleep(20);
+                            listenerCP.removeChannels(removeSc, a);
+                        }
+                    } while (streamz.size()>0 || sourceCh.size()>0);
+                    SystemPlayer.getInstance(null).stop();
+                    Tools.sleep(10);
+                    PrePlayer.getPreInstance(null).stop();
+                    Tools.sleep(10);
+                    MasterChannels.getInstance().stopAllStream();
+                    listenerCP.stopChTime(fEvt);
+                    listenerCP.resetBtnStates(fEvt);
+                    listenerOP.resetBtnStates(fEvt);
+                    tabControls.removeAll();
+                    tabControls.repaint();
+                    Tools.sleep(300);
+                    desktop.removeAll();
+                    desktop.repaint();
+                    Tools.sleep(50);
+                    try {
+                        Studio.LText = new ArrayList<>();
+                        Studio.extstream = new ArrayList<>();
+                        Studio.ImgMovMus = new ArrayList<>();                          
+                        Studio.load(file, "load");
+                        Studio.main();
+                        spinWidth.setValue(MasterMixer.getInstance().getWidth());
+                        spinHeight.setValue(MasterMixer.getInstance().getHeight());
+                        spinFPS.setValue(MasterMixer.getInstance().getRate());
+                        int mW = (Integer) spinWidth.getValue();
+                        int mH = (Integer) spinHeight.getValue();
+                        MasterMixer.getInstance().stop();
+                        MasterMixer.getInstance().setWidth(mW);
+                        MasterMixer.getInstance().setHeight(mH);
+                        MasterMixer.getInstance().setRate((Integer) spinFPS.getValue());
+                        MasterMixer.getInstance().start();
+                        PreviewMixer.getInstance().stop();
+                        PreviewMixer.getInstance().setWidth(mW);
+                        PreviewMixer.getInstance().setHeight(mH);
+//                            PreviewMixer.getInstance().setRate((Integer) spinFPS.getValue());
+                        PreviewMixer.getInstance().start();
+                    } catch (ParserConfigurationException | SAXException | IOException | XPathExpressionException ex) {
+                        Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+// loading studio streams
+                    for (int u = 0; u < Studio.ImgMovMus.size(); u++) {
+                        Stream s = Studio.extstream.get(u);
+                        if (s != null) {
+                            StreamDesktop frame = new StreamDesktop(s, WebcamStudio.this);
+                            desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+                        }
+                        System.out.println("Adding Source: "+s.getName());
+                    }
+                    Studio.extstream.clear();
+                    Studio.extstream = null;
+                    Studio.ImgMovMus.clear();
+                    Studio.ImgMovMus = null;
+                    for (SourceText text : Studio.LText) {
+                        if (text != null) {
+                            StreamDesktop frame = new StreamDesktop(text, WebcamStudio.this);
+                            desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+                        }
+                        System.out.println("Adding Source: "+text.getName());
+                    }
+                    Studio.LText.clear();
+                    Studio.LText = null;
+                    Tools.sleep(300);
+// loading studio channels
+                    for (String chsc : MasterChannels.getInstance().getChannels()) {
+                        Tools.sleep(10);
+                        listenerCP.addLoadingChannel(chsc);
+                    }
+                    Studio.chanLoad.clear();
+                    listenerOP.resetSinks(fEvt);
+                    ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Studio is loaded!");
+                    ResourceMonitor.getInstance().addMessage(label);
+                    setTitle("WebcamStudio " + Version.version + " ("+file.getName()+")");
+                }
+            return null;  
+            }  
+            @Override
+            protected void done(){
+                waitingD.dispose();
+            }  
+        }; 
+        worker.execute();
+        waitingD.toFront();
+        waitingD.setVisible(true);
     }
 }

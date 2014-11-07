@@ -6,10 +6,8 @@ package webcamstudio.mixers;
 
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.Stroke;
 import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
 import java.nio.ByteBuffer;
@@ -72,8 +70,6 @@ public class PreviewFrameBuilder implements Runnable {
         if (image != null) {
             Graphics2D g = image.createGraphics();
             
-//            g.setBackground(new Color(102,255,102));
-//            g.setRenderingHint(java.awt.RenderingHints.KEY_ANTIALIASING, java.awt.RenderingHints.VALUE_ANTIALIAS_ON);
             g.setRenderingHint(java.awt.RenderingHints.KEY_INTERPOLATION, java.awt.RenderingHints.VALUE_INTERPOLATION_BILINEAR);
             g.setRenderingHint(java.awt.RenderingHints.KEY_ALPHA_INTERPOLATION, java.awt.RenderingHints.VALUE_ALPHA_INTERPOLATION_SPEED);
             g.setRenderingHint(java.awt.RenderingHints.KEY_RENDERING, java.awt.RenderingHints.VALUE_RENDER_SPEED);
@@ -81,6 +77,7 @@ public class PreviewFrameBuilder implements Runnable {
             g.setRenderingHint(java.awt.RenderingHints.KEY_DITHERING, java.awt.RenderingHints.VALUE_DITHER_DISABLE);
             g.setRenderingHint(java.awt.RenderingHints.KEY_COLOR_RENDERING, java.awt.RenderingHints.VALUE_COLOR_RENDER_SPEED);
             g.clearRect(0, 0, image.getWidth(), image.getHeight());
+            
             final float dash1[] = {10.0f};
             final BasicStroke dashed =
                 new BasicStroke(5.0f,
@@ -171,14 +168,9 @@ public class PreviewFrameBuilder implements Runnable {
                 for (Future stream : results) {
                     if ((Frame)stream.get() != null) {
                         if (!preStreams.isEmpty()) {
-//                        if (preStreams.get(i).getPreView()) {
                             f = (Frame)stream.get();
-            //                        if (f != null) {
-                                    frames.add(f);
-        //                        } 
-//                        }
-                    }
-                        
+                            frames.add(f);
+                        }
                     }
                     i++;
                 }

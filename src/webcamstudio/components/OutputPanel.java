@@ -872,9 +872,9 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
                 this.revalidate();
             }
         }
-    } 
+    }
+    
     private void repaintSkyCamButtons (){
-//        final Runtime rt = Runtime.getRuntime();
         for (VideoDevice d : VideoDevice.getInputDevices()) {
             String vdName = d.getFile().getName();
             if (vdName.endsWith("video21")) {
@@ -1152,7 +1152,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
 
     @Override
     public void setRemoteOn() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        // Nothing Here
     }
     
     private static class WaitingDialogOP extends JDialog {
@@ -1261,7 +1261,6 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
                 
             }
         }
-        
     }//GEN-LAST:event_tglAudioOutActionPerformed
 
     private void tglSkyCamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglSkyCamActionPerformed

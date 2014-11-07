@@ -12,10 +12,9 @@
 package webcamstudio.sources.effects.controls;
 
 import java.awt.image.BufferedImage;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import webcamstudio.sources.effects.NoBackground;
+import webcamstudio.util.Tools;
 
 /**
  *
@@ -69,7 +68,6 @@ public class NoBackgroundControl extends javax.swing.JPanel {
         lblPreview.setName("lblPreview"); // NOI18N
 
         sliderR.setBackground(java.awt.Color.red);
-        sliderR.setMinorTickSpacing(10);
         sliderR.setPaintLabels(true);
         sliderR.setPaintTicks(true);
         sliderR.setName("sliderR"); // NOI18N
@@ -82,7 +80,6 @@ public class NoBackgroundControl extends javax.swing.JPanel {
         });
 
         sliderG.setBackground(java.awt.Color.green);
-        sliderG.setMinorTickSpacing(10);
         sliderG.setPaintLabels(true);
         sliderG.setPaintTicks(true);
         sliderG.setName("sliderG"); // NOI18N
@@ -95,7 +92,6 @@ public class NoBackgroundControl extends javax.swing.JPanel {
         });
 
         sliderB.setBackground(java.awt.Color.blue);
-        sliderB.setMinorTickSpacing(10);
         sliderB.setPaintLabels(true);
         sliderB.setPaintTicks(true);
         sliderB.setName("sliderB"); // NOI18N
@@ -151,19 +147,13 @@ public class NoBackgroundControl extends javax.swing.JPanel {
 
     private void btnSnapShotActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSnapShotActionPerformed
         effect.setBackgroundImage(null);
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(NoBackgroundControl.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        Tools.sleep(500);
         BufferedImage img = effect.getLastImage();
         if (img != null){
-        effect.setBackgroundImage(img);
-        lblPreview.setIcon(new ImageIcon(img.getScaledInstance(100, 59, BufferedImage.SCALE_FAST)));
-        
-        lblPreview.repaint();
+            effect.setBackgroundImage(img);
+            lblPreview.setIcon(new ImageIcon(img.getScaledInstance(100, 59, BufferedImage.SCALE_FAST)));
+            lblPreview.repaint();
         }
-
     }//GEN-LAST:event_btnSnapShotActionPerformed
 
     private void sliderRStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sliderRStateChanged

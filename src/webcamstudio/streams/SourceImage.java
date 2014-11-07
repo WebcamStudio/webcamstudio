@@ -8,7 +8,9 @@ package webcamstudio.streams;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import javax.imageio.ImageIO;
+import org.imgscalr.Scalr;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterFrameBuilder;
 import webcamstudio.mixers.PreviewFrameBuilder;
@@ -30,9 +32,11 @@ public class SourceImage extends Stream{
     }
     
     private void loadImage(File f) throws IOException{
-        image = ImageIO.read(f);
+        image = Scalr.resize(ImageIO.read(f), Scalr.Method.ULTRA_QUALITY, Scalr.Mode.FIT_EXACT, width, height);
+//        image = ImageIO.read(f);
         captureWidth = image.getWidth();
         captureHeight = image.getHeight();
+//        System.out.println("CapW: "+captureWidth+" CapH: "+captureHeight);
     }
     
     @Override
@@ -47,7 +51,7 @@ public class SourceImage extends Stream{
             frame.setOutputFormat(x, y, width, height, opacity, volume);
             frame.setZOrder(zorder);
             if (getPreView()){
-            PreviewFrameBuilder.register(this);
+                PreviewFrameBuilder.register(this);
             } else {
                 MasterFrameBuilder.register(this);
             }
@@ -106,22 +110,24 @@ public class SourceImage extends Stream{
     public void readNext() {
         frame.setImage(image);
         if (frame != null) {
-            if (this.getEffects() != null) {
-                for (Effect fxI : this.getEffects()) {
-                    if (fxI.needApply()){   
-                        fxI.applyEffect(frame.getImage());
+            ArrayList<Effect> allFx = this.getEffects();
+            if (allFx != null) {
+                for (int fx = 0; fx < allFx.size(); fx++) {
+                    if (frame != null) {
+                        Effect fxM = allFx.get(fx);
+                        fxM.applyEffect(frame.getImage());
                     }
                 }
             }
             frame.setOutputFormat(x, y, width, height, opacity, volume);
             frame.setZOrder(zorder);
-            nextFrame=frame;
         }
+        nextFrame=frame;
     }
 
     @Override
     public void play() {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        // nothing here.
     }
 
 }
