@@ -12,7 +12,6 @@ package webcamstudio.components;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyVetoException;
 import java.util.ArrayList;
@@ -43,8 +42,6 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
 
     protected Viewer viewer = new Viewer();
     protected PreViewer preViewer = new PreViewer();
-//    WSPreviewPanel p = new WSPreviewPanel(preViewer);
-    
     private SystemPlayer player = null;
     private PrePlayer prePlayer = null;
     private final MasterMixer mixer = MasterMixer.getInstance();
@@ -67,7 +64,6 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
         this.setVisible(true);
         viewer.setOpaque(true);
         panelPreview.add(viewer, BorderLayout.CENTER);
-//        panelPreviewer.add(preViewer, BorderLayout.CENTER);
         panelPreviewer.remove(preViewer);
         lblCurtainPre.setOpaque(true);
         lblCurtainPre.setVisible(true);
@@ -467,7 +463,6 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
 
     private void btnFullScreenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFullScreenActionPerformed
         btnFullScreen.setEnabled(false);
-//        btnPreview.setEnabled(false);
         FullScreen window = new FullScreen();
         StreamFullScreen frame = new StreamFullScreen(viewer);
         window.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
@@ -539,7 +534,6 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
     }//GEN-LAST:event_panelPreviewMouseClicked
 
     private void btnPreviewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPreviewActionPerformed
-//        btnFullScreen.setEnabled(false);
         btnPreview.setEnabled(false);
         WSPreview window = new WSPreview();
         WSPreviewScreen frame = new WSPreviewScreen(preViewer);

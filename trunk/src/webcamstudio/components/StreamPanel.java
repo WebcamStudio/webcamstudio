@@ -25,6 +25,7 @@ import javax.swing.ImageIcon;
 import javax.swing.Painter;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.UIDefaults;
+import webcamstudio.mixers.MasterMixer;
 import webcamstudio.streams.SourceAudioSource;
 import webcamstudio.streams.SourceImage;
 import webcamstudio.streams.SourceImageGif;
@@ -40,7 +41,7 @@ import webcamstudio.streams.Stream;
  *
  * @author patrick (modified by karl)
  */
-public class StreamPanel extends javax.swing.JPanel implements Stream.Listener {
+public class StreamPanel extends javax.swing.JPanel implements Stream.Listener, StreamDesktop.Listener {
 
     Stream stream = null;
     Viewer viewer = new Viewer();
@@ -585,11 +586,8 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener {
         labelSeek.setPreferredSize(new java.awt.Dimension(30, 10));
         add(labelSeek, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 380, 50, 9));
 
-        jSlSpinX.setMajorTickSpacing(10);
-        jSlSpinX.setMaximum(1920);
-        jSlSpinX.setMinimum(-1920);
-        jSlSpinX.setMinorTickSpacing(1);
-        jSlSpinX.setSnapToTicks(true);
+        jSlSpinX.setMaximum(MasterMixer.getInstance().getWidth());
+        jSlSpinX.setMinimum(- MasterMixer.getInstance().getWidth());
         jSlSpinX.setValue(0);
         jSlSpinX.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jSlSpinX.setName("jSlSpinX"); // NOI18N
@@ -600,10 +598,8 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener {
         });
         add(jSlSpinX, new org.netbeans.lib.awtextra.AbsoluteConstraints(127, 140, 150, 20));
 
-        jSlSpinY.setMajorTickSpacing(10);
-        jSlSpinY.setMaximum(1080);
-        jSlSpinY.setMinimum(-1080);
-        jSlSpinY.setMinorTickSpacing(1);
+        jSlSpinY.setMaximum(MasterMixer.getInstance().getHeight());
+        jSlSpinY.setMinimum(- MasterMixer.getInstance().getHeight());
         jSlSpinY.setValue(0);
         jSlSpinY.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jSlSpinY.setInverted(true);
@@ -637,9 +633,10 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener {
         });
         add(jSlSpinCH, new org.netbeans.lib.awtextra.AbsoluteConstraints(127, 310, 150, 20));
 
-        jSlSpinW.setMaximum(1920);
+        jSlSpinW.setMajorTickSpacing(10);
+        jSlSpinW.setMaximum(MasterMixer.getInstance().getWidth());
         jSlSpinW.setMinimum(1);
-        jSlSpinW.setSnapToTicks(true);
+        jSlSpinW.setMinorTickSpacing(1);
         jSlSpinW.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jSlSpinW.setName("jSlSpinW"); // NOI18N
         jSlSpinW.addChangeListener(new javax.swing.event.ChangeListener() {
@@ -649,9 +646,10 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener {
         });
         add(jSlSpinW, new org.netbeans.lib.awtextra.AbsoluteConstraints(127, 180, 150, 20));
 
-        jSlSpinH.setMaximum(1080);
-        jSlSpinH.setSnapToTicks(true);
-        jSlSpinH.setValue(0);
+        jSlSpinH.setMajorTickSpacing(10);
+        jSlSpinH.setMaximum(MasterMixer.getInstance().getHeight());
+        jSlSpinH.setMinimum(1);
+        jSlSpinH.setMinorTickSpacing(1);
         jSlSpinH.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jSlSpinH.setName("jSlSpinH"); // NOI18N
         jSlSpinH.addChangeListener(new javax.swing.event.ChangeListener() {
@@ -1015,7 +1013,6 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener {
             h = (oldH * w) / oldW; 
             spinH.setValue(h);
             jSlSpinH.setValue(h);
-            
         }
         stream.setWidth(w);
         stream.setHeight(h);
@@ -1097,6 +1094,8 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener {
             spinH.setEnabled(true);
             jSlSpinH.setEnabled(true);
             lockRatio = false;
+            oldW = stream.getWidth();
+            oldH = stream.getHeight();
         }
     }//GEN-LAST:event_jCheckBox1ActionPerformed
 
@@ -1293,5 +1292,15 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener {
         viewer.setImage(image);
         viewer.setAudioLevel(stream.getAudioLevelLeft(), stream.getAudioLevelRight());
         viewer.repaint();
+    }
+
+    @Override
+    public void selectedSource(Stream source) {
+        // nothing here.
+    }
+
+    @Override
+    public void closeSource() {
+        // nothing here.
     }
 }

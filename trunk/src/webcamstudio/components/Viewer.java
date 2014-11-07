@@ -27,10 +27,9 @@ public class Viewer extends javax.swing.JPanel {
     GraphicsDevice device = env.getDefaultScreenDevice();
     GraphicsConfiguration config = device.getDefaultConfiguration();
     private BufferedImage img = config.createCompatibleImage(320, 240, BufferedImage.TYPE_INT_ARGB);
-//    private BufferedImage img = new BufferedImage(320,240,BufferedImage.TYPE_INT_ARGB);
     private int audioLeft = 0;
     private int audioRight=0;
-//    private boolean play = false;
+
     /** Creates new form Viewer */
     public Viewer() {
         initComponents();

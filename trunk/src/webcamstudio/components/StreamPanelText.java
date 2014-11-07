@@ -21,6 +21,7 @@ import java.util.TimerTask;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
+import webcamstudio.mixers.MasterMixer;
 import webcamstudio.streams.SourceText;
 import webcamstudio.streams.Stream;
 import webcamstudio.util.Tools;
@@ -89,8 +90,12 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
         tglQRCode.setSelected(stream.getIsQRCode());
         stream.setListener(this);
     }
-    
 
+    @Override
+    public void closeSource() {
+        // nothing here.
+    }
+    
     class clock extends TimerTask{
         @Override
         public void run() {
@@ -330,10 +335,9 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
         add(labelH1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 230, 40, -1));
 
         jSlSpinX.setMajorTickSpacing(10);
-        jSlSpinX.setMaximum(1920);
-        jSlSpinX.setMinimum(-1920);
+        jSlSpinX.setMaximum(MasterMixer.getInstance().getWidth());
+        jSlSpinX.setMinimum(- MasterMixer.getInstance().getWidth());
         jSlSpinX.setMinorTickSpacing(1);
-        jSlSpinX.setSnapToTicks(true);
         jSlSpinX.setValue(0);
         jSlSpinX.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jSlSpinX.setName("jSlSpinX"); // NOI18N
@@ -345,9 +349,10 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
         add(jSlSpinX, new org.netbeans.lib.awtextra.AbsoluteConstraints(127, 160, 150, 20));
 
         jSlSpinY.setMajorTickSpacing(10);
-        jSlSpinY.setMaximum(1080);
-        jSlSpinY.setMinimum(-1080);
+        jSlSpinY.setMaximum(MasterMixer.getInstance().getHeight());
+        jSlSpinY.setMinimum(- MasterMixer.getInstance().getHeight());
         jSlSpinY.setMinorTickSpacing(1);
+        jSlSpinY.setToolTipText("");
         jSlSpinY.setValue(0);
         jSlSpinY.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jSlSpinY.setInverted(true);
@@ -359,9 +364,8 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
         });
         add(jSlSpinY, new org.netbeans.lib.awtextra.AbsoluteConstraints(127, 180, 150, 20));
 
-        jSlSpinW.setMaximum(1920);
+        jSlSpinW.setMaximum(MasterMixer.getInstance().getWidth());
         jSlSpinW.setMinimum(1);
-        jSlSpinW.setSnapToTicks(true);
         jSlSpinW.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jSlSpinW.setName("jSlSpinW"); // NOI18N
         jSlSpinW.addChangeListener(new javax.swing.event.ChangeListener() {
@@ -371,9 +375,8 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
         });
         add(jSlSpinW, new org.netbeans.lib.awtextra.AbsoluteConstraints(127, 200, 150, 20));
 
-        jSlSpinH.setMaximum(1080);
+        jSlSpinH.setMaximum(MasterMixer.getInstance().getHeight());
         jSlSpinH.setMinimum(1);
-        jSlSpinH.setSnapToTicks(true);
         jSlSpinH.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jSlSpinH.setName("jSlSpinH"); // NOI18N
         jSlSpinH.addChangeListener(new javax.swing.event.ChangeListener() {
@@ -691,6 +694,8 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
             spinH.setEnabled(true);
             jSlSpinH.setEnabled(true);
             lockRatio = false;
+            oldW = stream.getWidth();
+            oldH = stream.getHeight();
         }
     }//GEN-LAST:event_jCheckBox1ActionPerformed
 

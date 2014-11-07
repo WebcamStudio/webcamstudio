@@ -25,7 +25,6 @@ public class RemoteSettings extends javax.swing.JFrame {
 
     /**
      * Creates new form FMESettings
-     * @param sFile
      */
     public RemoteSettings() {
         initComponents();
@@ -58,6 +57,7 @@ public class RemoteSettings extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Remote Control Settings");
+        setResizable(false);
 
         lblRemPort.setText("Remote Port:");
 

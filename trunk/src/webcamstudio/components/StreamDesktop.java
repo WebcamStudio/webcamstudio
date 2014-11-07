@@ -22,7 +22,6 @@ import static webcamstudio.WebcamStudio.wsDistroWatch;
 import webcamstudio.mixers.MasterFrameBuilder;
 import webcamstudio.mixers.MasterMixer;
 import webcamstudio.mixers.PreviewFrameBuilder;
-import webcamstudio.mixers.PreviewMixer;
 import webcamstudio.streams.SourceAudioSource;
 import webcamstudio.streams.SourceCustom;
 import webcamstudio.streams.SourceDV;
@@ -65,6 +64,7 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
 
     public interface Listener{
         public void selectedSource(Stream source);
+        public void closeSource();
     }
     /** Creates new form StreamDesktop
      * @param s
@@ -672,6 +672,7 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_formInternalFrameIconified
 
     private void formInternalFrameClosing(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameClosing
+        listener.closeSource();
         stream.setLoop(false);
         PreviewFrameBuilder.unregister(stream);
         MasterFrameBuilder.unregister(stream);
@@ -918,11 +919,11 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
                     int deltaX = newX - oldX;
                     final int rate = stream.getRate();
                     final int totalFrames = rate * speed;
-                    int tF = rate * speed;
+//                    int tF = rate * speed;
                     for (int i = 0; i<totalFrames;i++){
                         if (runMe && stream.isPlaying()) {
                             stream.setX(oldX + i*deltaX/totalFrames);
-                            tF--;   
+//                            tF--;   
                             Tools.sleep(1000/rate);
                         } else {
                             stream.setX(oldBkX);
@@ -981,11 +982,11 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
                     }
                     final int rate = stream.getRate();
                     final int totalFrames = rate * speed;
-                    int tF = rate * speed;
+//                    int tF = rate * speed;
                     for (int i = 0; i<totalFrames;i++){
                         if (runMe) {
                             stream.setY(oldY - i*deltaY/totalFrames);
-                            tF--;
+//                            tF--;
                             Tools.sleep(1000/rate);
                         } else {
                             stream.setY(oldBkY);
@@ -1038,11 +1039,11 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
                     int deltaY = newY - oldY;
                     final int rate = stream.getRate();
                     final int totalFrames = rate * speed;
-                    int tF = rate * speed;
+//                    int tF = rate * speed;
                     for (int i = 0; i<totalFrames;i++){
                         if (runMe){
                             stream.setY(oldY+i*deltaY/totalFrames);
-                            tF--;
+//                            tF--;
                             Tools.sleep(1000/rate);
                         } else {
                             stream.setY(oldBkY);
@@ -1101,11 +1102,11 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
                     }
                     final int rate = stream.getRate();
                     final int totalFrames = rate * speed;
-                    int tF = rate * speed;
+//                    int tF = rate * speed;
                     for (int i = 0; i<totalFrames;i++){
                         if (runMe){
                             stream.setX(oldX - i*deltaX/totalFrames);
-                            tF--;   
+//                            tF--;   
                             Tools.sleep(1000/rate);
                         } else {
                             stream.setX(oldBkX);

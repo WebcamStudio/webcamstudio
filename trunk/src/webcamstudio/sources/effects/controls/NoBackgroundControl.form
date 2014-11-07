@@ -96,7 +96,6 @@
         <Property name="background" type="java.awt.Color" noResource="true" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="0" green="0" id="red" palette="1" red="ff" type="palette"/>
         </Property>
-        <Property name="minorTickSpacing" type="int" value="10"/>
         <Property name="paintLabels" type="boolean" value="true"/>
         <Property name="paintTicks" type="boolean" value="true"/>
         <Property name="name" type="java.lang.String" value="sliderR" noResource="true"/>
@@ -114,7 +113,6 @@
         <Property name="background" type="java.awt.Color" noResource="true" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="0" green="ff" id="green" palette="1" red="0" type="palette"/>
         </Property>
-        <Property name="minorTickSpacing" type="int" value="10"/>
         <Property name="paintLabels" type="boolean" value="true"/>
         <Property name="paintTicks" type="boolean" value="true"/>
         <Property name="name" type="java.lang.String" value="sliderG" noResource="true"/>
@@ -132,7 +130,6 @@
         <Property name="background" type="java.awt.Color" noResource="true" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="ff" green="0" id="blue" palette="1" red="0" type="palette"/>
         </Property>
-        <Property name="minorTickSpacing" type="int" value="10"/>
         <Property name="paintLabels" type="boolean" value="true"/>
         <Property name="paintTicks" type="boolean" value="true"/>
         <Property name="name" type="java.lang.String" value="sliderB" noResource="true"/>

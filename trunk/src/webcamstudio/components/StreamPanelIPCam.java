@@ -25,6 +25,7 @@ import javax.swing.ImageIcon;
 import javax.swing.Painter;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.UIDefaults;
+import webcamstudio.mixers.MasterMixer;
 import webcamstudio.streams.Stream;
 import webcamstudio.util.Tools;
 
@@ -516,10 +517,9 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
         add(jSeparator4, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 7, 10, 126));
 
         jSlSpinX.setMajorTickSpacing(10);
-        jSlSpinX.setMaximum(1920);
-        jSlSpinX.setMinimum(-1920);
+        jSlSpinX.setMaximum(MasterMixer.getInstance().getWidth());
+        jSlSpinX.setMinimum(- MasterMixer.getInstance().getWidth());
         jSlSpinX.setMinorTickSpacing(1);
-        jSlSpinX.setSnapToTicks(true);
         jSlSpinX.setValue(0);
         jSlSpinX.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jSlSpinX.setName("jSlSpinX"); // NOI18N
@@ -531,8 +531,8 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
         add(jSlSpinX, new org.netbeans.lib.awtextra.AbsoluteConstraints(127, 180, 150, 20));
 
         jSlSpinY.setMajorTickSpacing(10);
-        jSlSpinY.setMaximum(1080);
-        jSlSpinY.setMinimum(-1080);
+        jSlSpinY.setMaximum(MasterMixer.getInstance().getHeight());
+        jSlSpinY.setMinimum(- MasterMixer.getInstance().getHeight());
         jSlSpinY.setMinorTickSpacing(1);
         jSlSpinY.setValue(0);
         jSlSpinY.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -567,9 +567,10 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
         });
         add(jSlSpinCH, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 350, 150, 20));
 
-        jSlSpinW.setMaximum(1920);
+        jSlSpinW.setMajorTickSpacing(10);
+        jSlSpinW.setMaximum(MasterMixer.getInstance().getWidth());
         jSlSpinW.setMinimum(1);
-        jSlSpinW.setSnapToTicks(true);
+        jSlSpinW.setMinorTickSpacing(1);
         jSlSpinW.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jSlSpinW.setName("jSlSpinW"); // NOI18N
         jSlSpinW.addChangeListener(new javax.swing.event.ChangeListener() {
@@ -579,9 +580,11 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
         });
         add(jSlSpinW, new org.netbeans.lib.awtextra.AbsoluteConstraints(127, 220, 150, 20));
 
-        jSlSpinH.setMaximum(1080);
-        jSlSpinH.setSnapToTicks(true);
-        jSlSpinH.setValue(0);
+        jSlSpinH.setMajorTickSpacing(10);
+        jSlSpinH.setMaximum(MasterMixer.getInstance().getHeight());
+        jSlSpinH.setMinimum(1);
+        jSlSpinH.setMinorTickSpacing(1);
+        jSlSpinH.setToolTipText("");
         jSlSpinH.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jSlSpinH.setName("jSlSpinH"); // NOI18N
         jSlSpinH.addChangeListener(new javax.swing.event.ChangeListener() {
@@ -1800,6 +1803,8 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
             spinH.setEnabled(true);
             jSlSpinH.setEnabled(true);
             lockRatio = false;
+            oldW = stream.getWidth();
+            oldH = stream.getHeight();
         }
     }//GEN-LAST:event_jCheckBox1ActionPerformed
 
@@ -1907,5 +1912,10 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
 
     @Override
     public void selectedSource(Stream source) {
+    }
+
+    @Override
+    public void closeSource() {
+        // nothing here.
     }
 }

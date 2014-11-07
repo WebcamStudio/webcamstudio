@@ -544,10 +544,13 @@
     <Component class="javax.swing.JSlider" name="jSlSpinX">
       <Properties>
         <Property name="majorTickSpacing" type="int" value="10"/>
-        <Property name="maximum" type="int" value="1920"/>
-        <Property name="minimum" type="int" value="-1920"/>
+        <Property name="maximum" type="int" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+          <Connection code="MasterMixer.getInstance().getWidth()" type="code"/>
+        </Property>
+        <Property name="minimum" type="int" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+          <Connection code="- MasterMixer.getInstance().getWidth()" type="code"/>
+        </Property>
         <Property name="minorTickSpacing" type="int" value="1"/>
-        <Property name="snapToTicks" type="boolean" value="true"/>
         <Property name="value" type="int" value="0"/>
         <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
           <Color id="Default Cursor"/>
@@ -566,8 +569,12 @@
     <Component class="javax.swing.JSlider" name="jSlSpinY">
       <Properties>
         <Property name="majorTickSpacing" type="int" value="10"/>
-        <Property name="maximum" type="int" value="1080"/>
-        <Property name="minimum" type="int" value="-1080"/>
+        <Property name="maximum" type="int" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+          <Connection code="MasterMixer.getInstance().getHeight()" type="code"/>
+        </Property>
+        <Property name="minimum" type="int" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+          <Connection code="- MasterMixer.getInstance().getHeight()" type="code"/>
+        </Property>
         <Property name="minorTickSpacing" type="int" value="1"/>
         <Property name="value" type="int" value="0"/>
         <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
@@ -623,9 +630,12 @@
     </Component>
     <Component class="javax.swing.JSlider" name="jSlSpinW">
       <Properties>
-        <Property name="maximum" type="int" value="1920"/>
+        <Property name="majorTickSpacing" type="int" value="10"/>
+        <Property name="maximum" type="int" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+          <Connection code="MasterMixer.getInstance().getWidth()" type="code"/>
+        </Property>
         <Property name="minimum" type="int" value="1"/>
-        <Property name="snapToTicks" type="boolean" value="true"/>
+        <Property name="minorTickSpacing" type="int" value="1"/>
         <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
           <Color id="Default Cursor"/>
         </Property>
@@ -642,9 +652,13 @@
     </Component>
     <Component class="javax.swing.JSlider" name="jSlSpinH">
       <Properties>
-        <Property name="maximum" type="int" value="1080"/>
-        <Property name="snapToTicks" type="boolean" value="true"/>
-        <Property name="value" type="int" value="0"/>
+        <Property name="majorTickSpacing" type="int" value="10"/>
+        <Property name="maximum" type="int" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+          <Connection code="MasterMixer.getInstance().getHeight()" type="code"/>
+        </Property>
+        <Property name="minimum" type="int" value="1"/>
+        <Property name="minorTickSpacing" type="int" value="1"/>
+        <Property name="toolTipText" type="java.lang.String" value=""/>
         <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
           <Color id="Default Cursor"/>
         </Property>
