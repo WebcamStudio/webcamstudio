@@ -8,7 +8,6 @@ package webcamstudio.sources.effects;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-import java.util.prefs.Preferences;
 import javax.swing.JPanel;
 import webcamstudio.sources.effects.controls.ContrastControl;
 
@@ -86,16 +85,8 @@ public class Contrast extends Effect{
     }
 
     @Override
-    public void applyStudioConfig(Preferences prefs) {
-        prefs.putFloat("brightness", brightness);
-        prefs.putFloat("contrast", contrast);
-    }
-
-    @Override
-    public void loadFromStudioConfig(Preferences prefs) {
-        brightness=prefs.getFloat("brightness", brightness);
-        contrast=prefs.getFloat("contrast", contrast);
-
+    public void resetFX() {
+        // nothing here.
     }
 
 }

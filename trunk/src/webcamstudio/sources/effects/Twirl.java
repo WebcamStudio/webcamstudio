@@ -8,7 +8,6 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-import java.util.prefs.Preferences;
 import javax.swing.JPanel;
 import webcamstudio.sources.effects.controls.TwirlControl;
 
@@ -47,25 +46,13 @@ public class Twirl extends Effect {
 
     @Override
     public boolean needApply(){
-        return needApply=false;
+        return needApply=true;
     }
     @Override
     public JPanel getControl() {
         return new TwirlControl(this);
     }
-
-    @Override
-    public void applyStudioConfig(Preferences prefs) {
-        prefs.putFloat("radius",getRadius());
-        prefs.putFloat("angle",getAngle());
-    }
-
-    @Override
-    public void loadFromStudioConfig(Preferences prefs) {
-        setRadius(prefs.getFloat("radius", getRadius()));
-        setAngle(prefs.getFloat("angle", getAngle()));
-    }
-
+    
     /**
      * @return the radius
      */
@@ -95,4 +82,8 @@ public class Twirl extends Effect {
         this.angle = angle;
     }
 
+    @Override
+    public void resetFX() {
+        // nothing here.
+    }
 }

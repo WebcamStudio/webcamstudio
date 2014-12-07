@@ -50,11 +50,18 @@ public class SourceImageU extends Stream {
     }
     
     @Override
-    public void stop() {    
+    public void stop() {
+        for (int fx = 0; fx < this.getEffects().size(); fx++) {
+            Effect fxT = this.getEffects().get(fx);
+            if (fxT.getName().endsWith("Stretch") || fxT.getName().endsWith("Crop")) {
+                // do nothing.
+            } else {
+                fxT.resetFX();
+            }
+        }
         isPlaying = false;
         if (getPreView()){
             PreviewFrameBuilder.unregister(this);
-//            MasterFrameBuilder.register(this);
         } else {
             MasterFrameBuilder.unregister(this);
         }
@@ -107,23 +114,11 @@ public class SourceImageU extends Stream {
         Frame f = null;
         if (capture != null) {
             f = capture.getFrame();
-            if (this.getEffects() != null) {
-                for (int fx = 0; fx < this.getEffects().size(); fx++) {
-                    if (f != null) {
-                        Effect fxM = this.getEffects().get(fx);
-                        if (fxM.needApply()){   
-                            fxM.applyEffect(f.getImage());
-                        }
-                    }
-                }                
-//                for (Effect fxI : this.getEffects()) {
-//                    if (f != null && fxI.needApply()) {
-//                        fxI.applyEffect(f.getImage());
-//                    }
-//                }
+            if (f != null) {
+                BufferedImage img = f.getImage(); 
+                applyEffects(img);
             }
             if (f != null) {
-//                setAudioLevel(f);
                 lastPreview.getGraphics().drawImage(f.getImage(), 0, 0, null);
             }
         }

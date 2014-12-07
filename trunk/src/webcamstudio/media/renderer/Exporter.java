@@ -134,7 +134,7 @@ public class Exporter implements MasterMixer.SinkListener {
                         }
                         stream.stop();
                         stream.updateStatus();
-                        Logger.getLogger(Exporter.class.getName()).log(Level.SEVERE, null, ex);
+//                        Logger.getLogger(Exporter.class.getName()).log(Level.SEVERE, null, ex);
                     }
                     System.out.println("Audio output stopped");
                 }

@@ -12,7 +12,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.prefs.Preferences;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import org.bytedeco.javacpp.Loader;
@@ -67,14 +66,11 @@ public class FaceDetectorAlpha extends Effect {
             System.exit(1);
         }
     }
-            
-
-        
+     
    @Override
     public void applyEffect(BufferedImage img) {
         w = img.getWidth();
         h = img.getHeight();
-//        Mat dst = new Mat();
         IplImage src = IplImage.createFrom(img);
         BufferedImage temp = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
         
@@ -84,9 +80,6 @@ public class FaceDetectorAlpha extends Effect {
             Logger.getLogger(FaceDetectorAlpha.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-//        dst = detect2(src);
-//        BufferedImage temp = dst.getBufferedImage();
-               
         Graphics2D buffer = img.createGraphics();
         buffer.setRenderingHint(java.awt.RenderingHints.KEY_INTERPOLATION, 
                            java.awt.RenderingHints.VALUE_INTERPOLATION_BILINEAR);
@@ -118,16 +111,6 @@ public class FaceDetectorAlpha extends Effect {
         IplImage grayImage    = IplImage.create(width, height, IPL_DEPTH_8U, 1);
         IplImage scaledGrayImg    = cvCreateImage ( cvSize(scaleWidth , scaleHeight), grayImage.depth(), grayImage.nChannels() );
         CvMemStorage storage = CvMemStorage.create();
-//        CvMat randomR = CvMat.create(3, 3), randomAxis = CvMat.create(3, 1);
-//        // We can easily and efficiently access the elements of CvMat objects
-//        // with the set of get() and put() methods.
-//        randomAxis.put((Math.random()-0.5)/4, (Math.random()-0.5)/4, (Math.random()-0.5)/4);
-//        cvRodrigues2(randomAxis, randomR, null);
-//        double f = (width + height)/2.0;        randomR.put(0, 2, randomR.get(0, 2)*f);
-//                                                randomR.put(1, 2, randomR.get(1, 2)*f);
-//        randomR.put(2, 0, randomR.get(2, 0)/f); randomR.put(2, 1, randomR.get(2, 1)/f);
-//        System.out.println(randomR);
-//        CvPoint hatPoints = new CvPoint(3);
         cvCvtColor(grabbedImage, grayImage, CV_BGR2GRAY);
         cvResize( grayImage, scaledGrayImg );
         CvSeq faces = cvHaarDetectObjects(scaledGrayImg, classifier, storage,
@@ -136,11 +119,6 @@ public class FaceDetectorAlpha extends Effect {
         for (int i = 0; i < total; i++) {
             CvRect r = new CvRect(cvGetSeqElem(faces, i));
             int w = r.width()*width/scaleWidth, h = r.height()*height/scaleHeight, x = r.x()*width/scaleWidth, y = r.y()*height/scaleHeight;
-//            cvRectangle(grabbedImage, cvPoint(x, y), cvPoint(x+w, y+h), CvScalar.RED, 5, CV_AA, 0);
-//            hatPoints.position(0).x(x-w/10)   .y(y-h/10);
-//            hatPoints.position(1).x(x+w*11/10).y(y-h/10);
-//            hatPoints.position(2).x(x+w/2)    .y(y-h/2);
-//            cvFillConvexPoly(grabbedImage, hatPoints.position(0), 3, CvScalar.GREEN, CV_AA, 0);
             gImageBI = grabbedImage.getBufferedImage();
             Double ww = w*1.4;
             Double hh = h*1.9;
@@ -165,27 +143,13 @@ public class FaceDetectorAlpha extends Effect {
             buffer.drawImage(sSMask, xx.intValue(), yy.intValue(), null);
             buffer.dispose();
         }
-//        cvThreshold(grayImage, grayImage, 64, 255, CV_THRESH_BINARY);
-//        CvSeq contour = new CvSeq(null);
-//        cvFindContours(grayImage, storage, contour, Loader.sizeof(CvContour.class),
-//                CV_RETR_LIST, CV_CHAIN_APPROX_SIMPLE);
-//        while (contour != null && !contour.isNull()) {
-//            if (contour.elem_size() > 0) {
-//                CvSeq points = cvApproxPoly(contour, Loader.sizeof(CvContour.class),
-//                        storage, CV_POLY_APPROX_DP, cvContourPerimeter(contour)*0.02, 0);
-//                cvDrawContours(grabbedImage, points, CvScalar.BLUE, CvScalar.BLUE, -1, 1, CV_AA);
-//            }
-//            contour = contour.h_next();
-//        }
-//            cvWarpPerspective(grabbedImage, rotatedImage, randomR);
-        
         return gImageBI;
     }
     
     public BufferedImage detect2(IplImage sourceImg){
         int width  = sourceImg.width();
         int height = sourceImg.height();
-        BufferedImage gImageBI; // = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        BufferedImage gImageBI;
         int scaleWidth = 160;
         int scaleHeight = 120;
         IplImage grayImage    = IplImage.create(width, height, IPL_DEPTH_8U, 1);
@@ -196,8 +160,6 @@ public class FaceDetectorAlpha extends Effect {
         Mat grayImageMat = new Mat(scaledGrayImg);
         equalizeHist(grayImageMat, grayImageMat);
         Rect faces = new Rect();
-//        for (Rect faces : detectedFaces)
-//        faceDetector.detectMultiScale(grayImageMat, faces, 1.2, 3,0, new Size(0,0), new Size(85,85));  //, 1.1, 3,0, new Size(10,10), new Size(90,70));
         faceDetector.detectMultiScale(grayImageMat, faces);  //, 1.1, 3,0, new Size(10,10), new Size(90,70));
         int w = faces.width()*width/scaleWidth, h = faces.height()*height/scaleHeight, x = faces.x()*width/scaleWidth, y = faces.y()*height/scaleHeight;
         gImageBI = sourceImg.getBufferedImage();
@@ -223,7 +185,6 @@ public class FaceDetectorAlpha extends Effect {
                            RenderingHints.VALUE_DITHER_DISABLE);
         buffer.drawImage(sSMask, xx.intValue(), yy.intValue(), null);
         buffer.dispose();
-//    }
         return gImageBI;
     }  
 
@@ -233,7 +194,7 @@ public class FaceDetectorAlpha extends Effect {
     }
     @Override
     public boolean needApply(){
-        return needApply=false;
+        return needApply=true;
     }
     public String getFace() {
         return maskImg;
@@ -243,15 +204,6 @@ public class FaceDetectorAlpha extends Effect {
         File sImg = new File(maskImg);
         sourceMask = ImageIO.read(sImg);
         sImg = null;
-    }
-    @Override
-    public void applyStudioConfig(Preferences prefs) {
-
-    }
-
-    @Override
-    public void loadFromStudioConfig(Preferences prefs) {
-        
     }
     
     public void setHFactor (double hFact){
@@ -284,5 +236,10 @@ public class FaceDetectorAlpha extends Effect {
     
     public double getYFactor (){
         return yFactor;
+    }
+
+    @Override
+    public void resetFX() {
+        // nothing here.
     }
 }

@@ -347,7 +347,7 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
                         break;
                 }
             } else {
-                if (stream instanceof SourceWebcam || stream instanceof SourceAudioSource ||stream instanceof SourceImageU ||stream instanceof SourceImage) {
+                if (stream instanceof SourceWebcam || stream instanceof SourceAudioSource ||stream instanceof SourceImageU) {
                     jCBGStreamer.setSelected(true);
                     stream.setComm("GS");
                     jCBAVConv.setSelected(false);
@@ -368,7 +368,7 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
                 }
                 jMLoop.setVisible(false);
             }
-            if (stream instanceof SourceImageGif){
+            if (stream instanceof SourceImageGif  || stream instanceof SourceImage){
                 jMBackEnd.setVisible(false);
                 jMLoop.setVisible(false);
             }
@@ -412,8 +412,8 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
         jCBoxFosCamPtz = new javax.swing.JCheckBoxMenuItem();
         jCBoxAxisPtz = new javax.swing.JCheckBoxMenuItem();
         jCBoxWansCamPtz = new javax.swing.JCheckBoxMenuItem();
-        jCBMoreOptions = new javax.swing.JCheckBoxMenuItem();
         jCBShowSliders = new javax.swing.JCheckBoxMenuItem();
+        jCBMoreOptions = new javax.swing.JCheckBoxMenuItem();
         jMScroll = new javax.swing.JMenu();
         jCBRightToLeft = new javax.swing.JCheckBoxMenuItem();
         jCBLeftToRight = new javax.swing.JCheckBoxMenuItem();
@@ -502,6 +502,17 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
 
         jMControls.add(jMIPCBrand);
 
+        jCBShowSliders.setText("Show Control Sliders");
+        jCBShowSliders.setName("jCBShowSliders"); // NOI18N
+        jCBShowSliders.setPreferredSize(new java.awt.Dimension(177, 15));
+        jCBShowSliders.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCBShowSlidersActionPerformed(evt);
+            }
+        });
+        jMControls.add(jCBShowSliders);
+        jCBShowSliders.getAccessibleContext().setAccessibleParent(jMControls);
+
         jCBMoreOptions.setText("Show more Options");
         jCBMoreOptions.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jCBMoreOptions.setName("jCBMoreOptions"); // NOI18N
@@ -513,17 +524,6 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
         });
         jMControls.add(jCBMoreOptions);
         jCBMoreOptions.getAccessibleContext().setAccessibleParent(jMControls);
-
-        jCBShowSliders.setText("Show Control Sliders");
-        jCBShowSliders.setName("jCBShowSliders"); // NOI18N
-        jCBShowSliders.setPreferredSize(new java.awt.Dimension(177, 15));
-        jCBShowSliders.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jCBShowSlidersActionPerformed(evt);
-            }
-        });
-        jMControls.add(jCBShowSliders);
-        jCBShowSliders.getAccessibleContext().setAccessibleParent(jMControls);
 
         jMBOptions.add(jMControls);
 
@@ -919,11 +919,9 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
                     int deltaX = newX - oldX;
                     final int rate = stream.getRate();
                     final int totalFrames = rate * speed;
-//                    int tF = rate * speed;
                     for (int i = 0; i<totalFrames;i++){
                         if (runMe && stream.isPlaying()) {
                             stream.setX(oldX + i*deltaX/totalFrames);
-//                            tF--;   
                             Tools.sleep(1000/rate);
                         } else {
                             stream.setX(oldBkX);
@@ -982,11 +980,9 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
                     }
                     final int rate = stream.getRate();
                     final int totalFrames = rate * speed;
-//                    int tF = rate * speed;
                     for (int i = 0; i<totalFrames;i++){
                         if (runMe) {
                             stream.setY(oldY - i*deltaY/totalFrames);
-//                            tF--;
                             Tools.sleep(1000/rate);
                         } else {
                             stream.setY(oldBkY);
@@ -1039,11 +1035,9 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
                     int deltaY = newY - oldY;
                     final int rate = stream.getRate();
                     final int totalFrames = rate * speed;
-//                    int tF = rate * speed;
                     for (int i = 0; i<totalFrames;i++){
                         if (runMe){
                             stream.setY(oldY+i*deltaY/totalFrames);
-//                            tF--;
                             Tools.sleep(1000/rate);
                         } else {
                             stream.setY(oldBkY);
@@ -1102,11 +1096,9 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
                     }
                     final int rate = stream.getRate();
                     final int totalFrames = rate * speed;
-//                    int tF = rate * speed;
                     for (int i = 0; i<totalFrames;i++){
                         if (runMe){
                             stream.setX(oldX - i*deltaX/totalFrames);
-//                            tF--;   
                             Tools.sleep(1000/rate);
                         } else {
                             stream.setX(oldBkX);

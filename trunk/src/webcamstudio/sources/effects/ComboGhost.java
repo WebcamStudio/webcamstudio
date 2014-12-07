@@ -10,7 +10,6 @@ import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-import java.util.prefs.Preferences;
 import javax.swing.JPanel;
 import org.imgscalr.Scalr;
 import org.imgscalr.Scalr.Mode;
@@ -29,14 +28,20 @@ public class ComboGhost extends Effect {
         FastBitmap imageIn = new FastBitmap(img);
         int width  = img.getWidth();
         int height = img.getHeight();
-//        x = width/2;
-//        y = height/2;
         //Convolution process.
         Rotate.Algorithm algorithm = Rotate.Algorithm.BILINEAR;
         Rotate c = new Rotate(angle,algorithm);
         c.applyInPlace(imageIn);
         BufferedImage temp = imageIn.toBufferedImage();
-        temp = Scalr.resize(temp, Mode.AUTOMATIC, width-scale, height-scale);
+        int w = width-scale;
+        int h = height-scale;
+        if (w < 1) {
+            w = 1;
+        }
+        if (h < 1) {
+            h = 1;
+        }
+        temp = Scalr.resize(temp, Mode.AUTOMATIC, w, h);
 
         Graphics2D buffer = img.createGraphics();
         buffer.setRenderingHint(RenderingHints.KEY_INTERPOLATION, 
@@ -65,7 +70,7 @@ public class ComboGhost extends Effect {
     
     @Override
     public boolean needApply(){
-        return needApply=false;
+        return needApply=true;
     }
     @Override
     public JPanel getControl() {
@@ -73,12 +78,7 @@ public class ComboGhost extends Effect {
     }
 
     @Override
-    public void applyStudioConfig(Preferences prefs) {
-
-    }
-
-    @Override
-    public void loadFromStudioConfig(Preferences prefs) {
-        
+    public void resetFX() {
+        // nothing here.
     }
 }

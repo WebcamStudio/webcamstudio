@@ -11,7 +11,6 @@ import webcamstudio.mixers.MasterFrameBuilder;
 import webcamstudio.mixers.MasterMixer;
 import webcamstudio.mixers.PreviewFrameBuilder;
 import webcamstudio.sources.effects.Effect;
-import webcamstudio.util.Tools;
 /**
  *
  * @author karl
@@ -40,7 +39,6 @@ public class SourceDVB extends Stream {
             MasterFrameBuilder.register(this);
         }
         capture = new ProcessRenderer(this, ProcessRenderer.ACTION.CAPTURE, "DVB", comm);
-//        Tools.sleep(200);
         capture.read();
         lastPreview = new BufferedImage(captureWidth,captureHeight,BufferedImage.TYPE_INT_ARGB);
         isPlaying = true;
@@ -54,6 +52,14 @@ public class SourceDVB extends Stream {
     
     @Override
     public void stop() {
+        for (int fx = 0; fx < this.getEffects().size(); fx++) {
+            Effect fxT = this.getEffects().get(fx);
+            if (fxT.getName().endsWith("Stretch") || fxT.getName().endsWith("Crop")) {
+                // do nothing.
+            } else {
+                fxT.resetFX();
+            }
+        }
         isPlaying = false;
         if (getPreView()){
             PreviewFrameBuilder.unregister(this);
@@ -113,15 +119,10 @@ public class SourceDVB extends Stream {
         if (capture != null) {
             fDVB = capture.getFrame();
             if (fDVB != null) {
-                if (this.getEffects() != null) {
-                    for (int fx = 0; fx < this.getEffects().size(); fx++) {
-                        Effect fxT = this.getEffects().get(fx);
-                        if (fxT.needApply()){
-                            BufferedImage txImage = fDVB.getImage(); 
-                            fxT.applyEffect(txImage);
-                        }
-                    }
-                }
+                BufferedImage img = fDVB.getImage(); 
+                applyEffects(img);
+            }
+            if (fDVB != null) {
                 setAudioLevel(fDVB);
                 lastPreview.getGraphics().drawImage(fDVB.getImage(), 0, 0, null);
                 nextFrame=fDVB;

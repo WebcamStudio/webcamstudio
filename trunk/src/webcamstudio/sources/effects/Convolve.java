@@ -8,7 +8,6 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.awt.image.ConvolveOp;
 import java.awt.image.Kernel;
-import java.util.prefs.Preferences;
 import javax.swing.JPanel;
 
 /**
@@ -17,7 +16,6 @@ import javax.swing.JPanel;
  */
 public class Convolve extends Effect {
     private final Color color = new Color(-16711936);
-//    private ColorTintFilter filter = new ColorTintFilter(color, 0.3f);
 
     @Override
     public void applyEffect(BufferedImage img) {
@@ -43,12 +41,7 @@ public class Convolve extends Effect {
     }
 
     @Override
-    public void applyStudioConfig(Preferences prefs) {
-
-    }
-
-    @Override
-    public void loadFromStudioConfig(Preferences prefs) {
-        
+    public void resetFX() {
+        // nothing here.
     }
 }

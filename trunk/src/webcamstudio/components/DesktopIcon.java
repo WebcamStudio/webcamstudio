@@ -44,7 +44,7 @@ public class DesktopIcon extends JDesktopIcon {
         imgBtn = Scalr.resize(imgBtn, Scalr.Mode.FIT_EXACT, sW, sH);
 //        System.out.println("Pause W:"+sW+" - Pause H:"+sH);
         add(viewer, BorderLayout.CENTER);
-        this.setToolTipText(s.getName());
+        this.setToolTipText("Stream: " + s.getName() + " | Layer: " + s.getZOrder());
         this.setVisible(true);
         this.setSize(64, 64);
         new Thread(new Runnable() {
@@ -96,18 +96,30 @@ public class DesktopIcon extends JDesktopIcon {
                             viewer.setImage(img);
                             viewer.setAudioLevel(stream.getAudioLevelLeft(), stream.getAudioLevelRight());
                             viewer.repaint();
+                            String sTip = null;
                             if (stream instanceof SourceText){
                                 SourceText sc = (SourceText)stream;
-                                setToolTipText(sc.getContent());
-                            }
-                            if (stream instanceof SourceDVB){
+                                sTip = sc.getContent();
+                                if (sTip.length() > 10) {
+                                    setToolTipText("Text: " + sTip.substring(0, 10) + "..." + " | Layer: " + sc.getZOrder());
+                                } else {
+                                    setToolTipText("Text: " + sTip + " | Layer: " + sc.getZOrder());
+                                }
+                            }else if (stream instanceof SourceDVB){
                                 SourceDVB sD = (SourceDVB)stream;
-                                setToolTipText(sD.getChName());
-                            }
-                            if (stream instanceof SourceURL){
+                                setToolTipText("DVB: " + sD.getChName() + " | Layer: " + sD.getZOrder());
+                            } else if (stream instanceof SourceURL){
                                 SourceURL sU = (SourceURL)stream;
-                                setToolTipText(sU.getWebURL());
-                            } 
+                                sTip = sU.getWebURL();
+                                if (sTip.length() > 10) {
+                                    setToolTipText("Text: " + sTip.substring(0, 10) + "..." + " | Layer: " + sU.getZOrder());
+                                } else {
+                                    setToolTipText("Text: " + sTip + " | Layer: " + sU.getZOrder());
+                                }
+                                setToolTipText("URL: " + sTip.substring(0, 10) + "..." + " | Layer: " + sU.getZOrder());
+                            } else {
+                                setToolTipText("Stream: " + stream.getName() + " | Layer: " + stream.getZOrder());
+                            }
                         }
                         Thread.sleep(200);
                     } catch (InterruptedException ex) {

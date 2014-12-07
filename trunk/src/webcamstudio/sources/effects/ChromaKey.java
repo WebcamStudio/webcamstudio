@@ -6,7 +6,6 @@ package webcamstudio.sources.effects;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
-import java.util.prefs.Preferences;
 import javax.swing.JPanel;
 import webcamstudio.sources.effects.controls.ChromaKeyControl;
 
@@ -99,19 +98,9 @@ public class ChromaKey extends Effect {
     public boolean needApply(){
         return needApply=true;
     }
-    @Override
-    public void applyStudioConfig(Preferences prefs) {
-        prefs.putInt("rtolerance", rTolerance);
-        prefs.putInt("gtolerance", gTolerance);
-        prefs.putInt("btolerance", bTolerance);
-        prefs.putInt("color", color.getRGB());
-    }
 
     @Override
-    public void loadFromStudioConfig(Preferences prefs) {
-        rTolerance = prefs.getInt("rtolerance", rTolerance);
-        gTolerance = prefs.getInt("gtolerance", gTolerance);
-        bTolerance = prefs.getInt("btolerance", bTolerance);
-        color = new Color(prefs.getInt("color", color.getRGB()));
+    public void resetFX() {
+        // nothing here.
     }
 }

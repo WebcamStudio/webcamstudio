@@ -34,7 +34,7 @@ public class StreamFullPanel extends javax.swing.JPanel implements MasterMixer.S
         initComponents();
         viewer.setOpaque(true);
         viewer.setVisible(true);
-        viewer.setBackground(Color.red);
+        viewer.setBackground(Color.black);
         panPreview.add(viewer, BorderLayout.CENTER);
         player = SystemPlayer.getInstance(viewer);   
         

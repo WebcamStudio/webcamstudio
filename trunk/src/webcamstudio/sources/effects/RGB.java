@@ -5,7 +5,6 @@
 package webcamstudio.sources.effects;
 
 import java.awt.image.BufferedImage;
-import java.util.prefs.Preferences;
 import javax.swing.JPanel;
 import webcamstudio.sources.effects.controls.RGBControl;
 
@@ -79,17 +78,9 @@ public class RGB extends Effect {
     public boolean needApply(){
         return needApply=true;
     }
-    @Override
-    public void applyStudioConfig(Preferences prefs) {
-        prefs.putInt("rThreshold", rThreshold);
-        prefs.putInt("gThreshold", gThreshold);
-        prefs.putInt("bThreshold", bThreshold);
-    }
 
     @Override
-    public void loadFromStudioConfig(Preferences prefs) {
-        rThreshold = prefs.getInt("rThreshold", rThreshold);
-        gThreshold = prefs.getInt("gThreshold", gThreshold);
-        bThreshold = prefs.getInt("bThreshold", bThreshold);
+    public void resetFX() {
+        // nothing here.
     }
 }

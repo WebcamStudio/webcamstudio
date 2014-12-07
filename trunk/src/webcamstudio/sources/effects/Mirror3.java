@@ -8,7 +8,6 @@ package webcamstudio.sources.effects;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-import java.util.prefs.Preferences;
 import javax.swing.JPanel;
 
 /**
@@ -47,17 +46,12 @@ public class Mirror3 extends Effect{
     }
 
     @Override
-    public void applyStudioConfig(Preferences prefs) {
-
-    }
-
-    @Override
-    public void loadFromStudioConfig(Preferences prefs) {
-        
-    }
-    @Override
     public boolean needApply(){
         return needApply=true;
     }
 
+    @Override
+    public void resetFX() {
+        // nothing here.
+    }
 }

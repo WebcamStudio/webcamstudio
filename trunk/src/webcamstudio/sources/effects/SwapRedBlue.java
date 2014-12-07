@@ -5,7 +5,6 @@
 package webcamstudio.sources.effects;
 
 import java.awt.image.BufferedImage;
-import java.util.prefs.Preferences;
 import javax.swing.JPanel;
 
 /**
@@ -33,7 +32,7 @@ public class SwapRedBlue extends Effect {
 
     @Override
     public boolean needApply(){
-        return needApply=false;
+        return needApply=true;
     }
     @Override
     public JPanel getControl() {
@@ -41,12 +40,7 @@ public class SwapRedBlue extends Effect {
     }
 
     @Override
-    public void applyStudioConfig(Preferences prefs) {
-
-    }
-
-    @Override
-    public void loadFromStudioConfig(Preferences prefs) {
-        
+    public void resetFX() {
+        // nothing here.
     }
 }

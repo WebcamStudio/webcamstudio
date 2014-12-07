@@ -8,9 +8,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-import java.util.prefs.Preferences;
 import javax.swing.JPanel;
-import org.imgscalr.Scalr;
 import webcamstudio.mixers.MasterMixer;
 import webcamstudio.sources.effects.controls.CropControl;
 
@@ -47,11 +45,10 @@ public class Crop extends Effect {
                            RenderingHints.VALUE_COLOR_RENDER_SPEED);
         buffer.setRenderingHint(RenderingHints.KEY_DITHERING,
                            RenderingHints.VALUE_DITHER_DISABLE);
-//        BufferedImage temp = Scalr.crop(img,x,y,width,height);
         BufferedImage temp = filter.filter(img, null);
         buffer.setBackground(new Color(0, 0, 0, 0));
         buffer.clearRect(0, 0, w, h);
-        buffer.drawImage(temp, 0, 0, w, h, 0, 0, temp.getWidth(), temp.getHeight(), null);
+        buffer.drawImage(temp, 0, 0,null);
         buffer.dispose();
     }
 
@@ -61,24 +58,8 @@ public class Crop extends Effect {
     }
 
     @Override
-    public void applyStudioConfig(Preferences prefs) {
-        prefs.putInt("cropx", x);
-        prefs.putInt("cropy", y);
-        prefs.putInt("cropwidth", width);
-        prefs.putInt("cropheight", height);
-    }
-
-    @Override
     public boolean needApply(){
-        return needApply= false;
-    }
-    
-    @Override
-    public void loadFromStudioConfig(Preferences prefs) {
-        x = prefs.getInt("cropx", x);
-        y = prefs.getInt("cropy", y);
-        width = prefs.getInt("cropwidth", width);
-        height = prefs.getInt("cropheight", height);
+        return needApply= true;
     }
 
     /**
@@ -122,10 +103,7 @@ public class Crop extends Effect {
     public void setWidth(int width1) {
         this.width = width1;
     }
-
-    /**
-     * @return the y3
-     */
+    
     public int getHeight() {
         return height;
     }
@@ -136,4 +114,10 @@ public class Crop extends Effect {
     public void setHeight(int height1) {
         this.height = height1;
     }
+    
+    @Override
+    public void resetFX() {
+        width = MasterMixer.getInstance().getWidth();
+        height = MasterMixer.getInstance().getHeight();
     }
+}

@@ -10,6 +10,7 @@ import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterFrameBuilder;
 import webcamstudio.mixers.MasterMixer;
 import webcamstudio.mixers.PreviewFrameBuilder;
+import webcamstudio.sources.effects.Effect;
 
 /**
  *
@@ -48,10 +49,17 @@ public class SourceAudioSource extends Stream {
     
     @Override
     public void stop() {
+        for (int fx = 0; fx < this.getEffects().size(); fx++) {
+            Effect fxT = this.getEffects().get(fx);
+            if (fxT.getName().endsWith("Stretch") || fxT.getName().endsWith("Crop")) {
+                // do nothing.
+            } else {
+                fxT.resetFX();
+            }
+        }
         isPlaying = false;
         if (getPreView()){
             PreviewFrameBuilder.unregister(this);
-//            MasterFrameBuilder.register(this);
         } else {
             MasterFrameBuilder.unregister(this);
         }
@@ -113,6 +121,10 @@ public class SourceAudioSource extends Stream {
         Frame f = null;
         if (capture != null) {
             f = capture.getFrame();
+            if (f != null) {
+                BufferedImage img = f.getImage(); 
+                applyEffects(img);
+            }
             if (f != null) {
                 setAudioLevel(f);
                 lastPreview.getGraphics().drawImage(f.getImage(), 0, 0, null);

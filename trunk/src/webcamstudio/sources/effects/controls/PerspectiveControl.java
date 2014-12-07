@@ -241,22 +241,18 @@ public class PerspectiveControl extends javax.swing.JPanel {
     }//GEN-LAST:event_jSpinY3StateChanged
 
     private void jSlX1LeftStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlX1LeftStateChanged
-        effect.setX1((Integer)jSlX1Left.getValue());
         jSpinX1.setValue(jSlX1Left.getValue());
     }//GEN-LAST:event_jSlX1LeftStateChanged
 
     private void jSY1TopStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSY1TopStateChanged
-        effect.setY1((Integer)jSY1Top.getValue());
         jSpinY1.setValue(jSY1Top.getValue());
     }//GEN-LAST:event_jSY1TopStateChanged
 
     private void jSlX3RightStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlX3RightStateChanged
-        effect.setX3((Integer)jSlX3Right.getValue());
         jSpinX3.setValue(jSlX3Right.getValue());
     }//GEN-LAST:event_jSlX3RightStateChanged
 
     private void jSlY3BottomStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlY3BottomStateChanged
-        effect.setY3((Integer)jSlY3Bottom.getValue());
         jSpinY3.setValue(jSlY3Bottom.getValue());
     }//GEN-LAST:event_jSlY3BottomStateChanged
 

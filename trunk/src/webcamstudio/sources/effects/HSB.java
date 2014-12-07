@@ -8,7 +8,6 @@ package webcamstudio.sources.effects;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-import java.util.prefs.Preferences;
 import javax.swing.JPanel;
 import webcamstudio.sources.effects.controls.HSBControl;
 
@@ -49,7 +48,7 @@ public class HSB extends Effect{
     }
     @Override
     public boolean needApply(){
-        return needApply=false;
+        return needApply=true;
     }
     @Override
     public JPanel getControl() {
@@ -96,18 +95,7 @@ public class HSB extends Effect{
     }
 
     @Override
-    public void applyStudioConfig(Preferences prefs) {
-        prefs.putFloat("hFactor", hFactor);
-        prefs.putFloat("sFactor", sFactor);
-        prefs.putFloat("bFactor", bFactor);
-        
+    public void resetFX() {
+        // nothing here.
     }
-
-    @Override
-    public void loadFromStudioConfig(Preferences prefs) {
-        hFactor=prefs.getFloat("hFactor", hFactor);
-        sFactor=prefs.getFloat("sFactor", sFactor);
-        bFactor=prefs.getFloat("bFactor", bFactor);
-    }
-
 }

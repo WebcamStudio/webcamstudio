@@ -12,7 +12,12 @@ package webcamstudio.components;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
+import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.awt.image.WritableRaster;
 import java.beans.PropertyVetoException;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -23,6 +28,7 @@ import webcamstudio.FullScreen;
 import webcamstudio.WSPreview;
 import webcamstudio.WebcamStudio;
 import webcamstudio.channels.MasterChannels;
+import static webcamstudio.components.ChannelPanel.listenerCPMP;
 import static webcamstudio.components.ChannelPanel.listenerCPOP;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterMixer;
@@ -30,6 +36,7 @@ import webcamstudio.mixers.PrePlayer;
 import webcamstudio.mixers.PreviewMixer;
 import webcamstudio.mixers.SystemPlayer;
 import webcamstudio.streams.SourceChannel;
+import webcamstudio.streams.SourceImage;
 import webcamstudio.streams.SourceText;
 import webcamstudio.streams.Stream;
 import webcamstudio.util.Tools;
@@ -52,11 +59,16 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
     ArrayList<Stream> streamM = MasterChannels.getInstance().getStreams();
     Stream stream = null;
     SourceText sTx = null;
+    SourceImage sImg = null;
     boolean lockRatio = false;
+    private BufferedImage liveImg = null;
+    int opacity = 75;
+    
     
     /** Creates new form MasterPanel */
     public MasterPanel() {
         initComponents();
+        jslOpacity.setValue(75);
         lblCurtain.setVisible(false);
         spinFPS.setModel(new SpinnerNumberModel(5, 5, 30, 5));
         spinWidth.setValue(mixer.getWidth());
@@ -112,6 +124,8 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
         lblHeight2 = new javax.swing.JLabel();
         panelPreviewer = new javax.swing.JPanel();
         lblCurtainPre = new javax.swing.JLabel();
+        jslOpacity = new javax.swing.JSlider();
+        jLabel1 = new javax.swing.JLabel();
 
         setBorder(javax.swing.BorderFactory.createTitledBorder("LiVE View"));
         setPreferredSize(new java.awt.Dimension(257, 465));
@@ -295,7 +309,7 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
             }
         });
         panPreview.add(btnPreview);
-        btnPreview.setBounds(65, 153, 100, 28);
+        btnPreview.setBounds(0, 153, 28, 28);
 
         lblHeight2.setFont(new java.awt.Font("Ubuntu", 1, 14)); // NOI18N
         lblHeight2.setText(bundle.getString("FAST PREVIEW")); // NOI18N
@@ -329,6 +343,20 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
         panPreview.add(panelPreviewer);
         panelPreviewer.setBounds(0, 28, 230, 121);
 
+        jslOpacity.setName("jslOpacity"); // NOI18N
+        jslOpacity.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jslOpacityStateChanged(evt);
+            }
+        });
+        panPreview.add(jslOpacity);
+        jslOpacity.setBounds(30, 153, 198, 30);
+
+        jLabel1.setText("Fader");
+        jLabel1.setName("jLabel1"); // NOI18N
+        panPreview.add(jLabel1);
+        jLabel1.setBounds(110, 147, 40, 18);
+
         tabMixers.addTab("Preview", panPreview);
 
         add(tabMixers, java.awt.BorderLayout.CENTER);
@@ -354,11 +382,15 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
     private void btnApplyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnApplyActionPerformed
         SystemPlayer.getInstance(null).stop();
         Tools.sleep(30);
+        PrePlayer.getPreInstance(null).stop();
+        Tools.sleep(10);
         MasterChannels.getInstance().stopAllStream();
         for (Stream s : streamM){
             s.updateStatus();
         }
         Tools.sleep(30);
+        listenerCPOP.resetButtonsStates(evt);
+        ChannelPanel.btnStopOnlyStream.doClick();
         int w = (Integer) spinWidth.getValue();
         int h = (Integer) spinHeight.getValue();
         mixer.stop();
@@ -392,68 +424,94 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
         int oldCW;
         int oldCH;
         for (Stream oneStream : allStreams) {
-//            System.out.println("Processing "+oneStream.getName()+": ...");
-            if (oneStream instanceof SourceText) {
-                sTx = (SourceText) oneStream;
-                oldCW = sTx.getTextCW();
-                oldCH = sTx.getTextCH();
-            } else {
-                oldCW = oneStream.getCaptureWidth();
-                oldCH = oneStream.getCaptureHeight();
-            }
-//            System.out.println("oldCW: "+oldCW);
-//            System.out.println("oldCH: "+oldCH);
-            int oldW = oneStream.getWidth();
-//            System.out.println("oldW: "+oldW);
-            int oldH = oneStream.getHeight();
-//            System.out.println("oldH: "+oldH);
-            int oldX = oneStream.getX();
-//            System.out.println("oldX: "+oldX);
-            int oldY = oneStream.getY();
-//            System.out.println("oldY: "+oldY);
-            int newW = (oldW * wi) / oldCW;
-//            System.out.println("newW: "+newW);
-            int newH = (oldH * he) / oldCH;
-//            System.out.println("newH: "+newH);
-            int newX = (oldX * wi) / oldCW;
-//            System.out.println("newX: "+newX);
-            int newY = (oldY * he) / oldCH;
-//            System.out.println("newY: "+newY);
-            if (oneStream instanceof SourceText) {
-                oneStream.setWidth(newW);
-                oneStream.setHeight(newH);
-                oneStream.setX(newX);
-                oneStream.setY(newY);
-                oneStream.setCaptureWidth(newW);
-                oneStream.setCaptureHeight(newH);
-                sTx.setTextCW(wi);
-                sTx.setTextCH(he);
-//                System.out.println(oneStream.getName()+" UpdateStatus !!!");
-                oneStream.updateStatus();
-                for (SourceChannel ssc : oneStream.getChannels()) {
-                    ssc.setWidth(newW);
-                    ssc.setHeight(newH);
-                    ssc.setX(newX);
-                    ssc.setY(newY);
-                    ssc.setCapWidth(newW);
-                    ssc.setCapHeight(newH);
+            if (!oneStream.getClass().toString().contains("Sink")){ // Don't Update SinkStreams
+    //            System.out.println("Processing "+oneStream.getName()+": ...");
+                if (oneStream instanceof SourceText) {
+                    sTx = (SourceText) oneStream;
+                    oldCW = sTx.getTextCW();
+                    oldCH = sTx.getTextCH();
+                } else if (oneStream instanceof SourceImage) {
+                    sImg = (SourceImage) oneStream;
+                    oldCW = sImg.getImgCW();
+                    oldCH = sImg.getImgCH();
+                } else {
+                    oldCW = oneStream.getCaptureWidth();
+                    oldCH = oneStream.getCaptureHeight();
                 }
-            } else {
-                oneStream.setWidth(newW);
-                oneStream.setHeight(newH);
-                oneStream.setX(newX);
-                oneStream.setY(newY);
-                oneStream.setCaptureWidth(wi);
-                oneStream.setCaptureHeight(he);
-//                System.out.println(oneStream.getName()+" UpdateStatus !!!");
-                oneStream.updateStatus();
-                for (SourceChannel ssc : oneStream.getChannels()) {
-                    ssc.setWidth(newW);
-                    ssc.setHeight(newH);
-                    ssc.setX(newX);
-                    ssc.setY(newY);
-                    ssc.setCapWidth(wi);
-                    ssc.setCapHeight(he);
+    //            System.out.println("oldCW: "+oldCW);
+    //            System.out.println("oldCH: "+oldCH);
+                int oldW = oneStream.getWidth();
+    //            System.out.println("oldW: "+oldW);
+                int oldH = oneStream.getHeight();
+    //            System.out.println("oldH: "+oldH);
+                int oldX = oneStream.getX();
+    //            System.out.println("oldX: "+oldX);
+                int oldY = oneStream.getY();
+    //            System.out.println("oldY: "+oldY);
+                int newW = (oldW * wi) / oldCW;
+    //            System.out.println("newW: "+newW);
+                int newH = (oldH * he) / oldCH;
+    //            System.out.println("newH: "+newH);
+                int newX = (oldX * wi) / oldCW;
+    //            System.out.println("newX: "+newX);
+                int newY = (oldY * he) / oldCH;
+    //            System.out.println("newY: "+newY);
+                if (oneStream instanceof SourceText) {
+                    oneStream.setWidth(newW);
+                    oneStream.setHeight(newH);
+                    oneStream.setX(newX);
+                    oneStream.setY(newY);
+                    oneStream.setCaptureWidth(newW);
+                    oneStream.setCaptureHeight(newH);
+                    sTx.setTextCW(wi);
+                    sTx.setTextCH(he);
+    //                System.out.println(oneStream.getName()+" UpdateStatus !!!");
+                    oneStream.updateStatus();
+                    for (SourceChannel ssc : oneStream.getChannels()) {
+                        ssc.setWidth(newW);
+                        ssc.setHeight(newH);
+                        ssc.setX(newX);
+                        ssc.setY(newY);
+                        ssc.setCapWidth(newW);
+                        ssc.setCapHeight(newH);
+                    }
+                } else if (oneStream instanceof SourceImage) { 
+                    oneStream.setWidth(newW);
+                    oneStream.setHeight(newH);
+    //                System.out.println(oneStream.getName()+" Height:"+newH);
+                    oneStream.setX(newX);
+                    oneStream.setY(newY);
+                    oneStream.setCaptureWidth(newW);
+                    oneStream.setCaptureHeight(newH);
+                    sImg.setImgCW(wi);
+                    sImg.setImgCH(he);
+    //                System.out.println(oneStream.getName()+" UpdateStatus !!!");
+                    oneStream.updateStatus();
+                    for (SourceChannel ssc : oneStream.getChannels()) {
+                        ssc.setWidth(newW);
+                        ssc.setHeight(newH);
+                        ssc.setX(newX);
+                        ssc.setY(newY);
+                        ssc.setCapWidth(newW);
+                        ssc.setCapHeight(newH);
+                    }
+                } else {
+                    oneStream.setWidth(newW);
+                    oneStream.setHeight(newH);
+                    oneStream.setX(newX);
+                    oneStream.setY(newY);
+                    oneStream.setCaptureWidth(wi);
+                    oneStream.setCaptureHeight(he);
+    //                System.out.println(oneStream.getName()+" UpdateStatus !!!");
+                    oneStream.updateStatus();
+                    for (SourceChannel ssc : oneStream.getChannels()) {
+                        ssc.setWidth(newW);
+                        ssc.setHeight(newH);
+                        ssc.setX(newX);
+                        ssc.setY(newY);
+                        ssc.setCapWidth(wi);
+                        ssc.setCapHeight(he);
+                    }
                 }
             }
         }
@@ -572,6 +630,10 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
         this.revalidate();
     }//GEN-LAST:event_panelPreviewerMouseClicked
 
+    private void jslOpacityStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jslOpacityStateChanged
+        opacity = jslOpacity.getValue();
+    }//GEN-LAST:event_jslOpacityStateChanged
+
     /**
      *
      * @param evt
@@ -607,6 +669,8 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
     private javax.swing.JButton btnApplyToStreams;
     private javax.swing.JButton btnFullScreen;
     private javax.swing.JButton btnPreview;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JSlider jslOpacity;
     private javax.swing.JLabel lblCurtain;
     private javax.swing.JLabel lblCurtainPre;
     private javax.swing.JLabel lblHeight;
@@ -629,10 +693,46 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
     @Override
     public void newFrame(Frame frame) {
         player.addFrame(frame);
+        liveImg = frame.getImage();
+    }
+    
+    BufferedImage deepCopy(BufferedImage bi) {
+        if (bi != null) {
+            ColorModel cm = bi.getColorModel();
+            boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
+            WritableRaster raster = bi.copyData(null);
+            BufferedImage temp = new BufferedImage(cm, raster, isAlphaPremultiplied, null);
+            return temp;
+        } else {
+            return null;
+        }
     }
     
     @Override
     public void newPreFrame(Frame frame) {
+        BufferedImage img = deepCopy(frame.getImage());
+        BufferedImage lImg = deepCopy(liveImg);
+        if (lImg != null) {
+            Graphics2D buffer = lImg.createGraphics();
+            buffer.setRenderingHint(RenderingHints.KEY_INTERPOLATION, 
+                               RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+            buffer.setRenderingHint(RenderingHints.KEY_RENDERING,
+                               RenderingHints.VALUE_RENDER_SPEED);
+            buffer.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                               RenderingHints.VALUE_ANTIALIAS_OFF);
+            buffer.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                               RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
+            buffer.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,
+                               RenderingHints.VALUE_FRACTIONALMETRICS_OFF);
+            buffer.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING,
+                               RenderingHints.VALUE_COLOR_RENDER_SPEED);
+            buffer.setRenderingHint(RenderingHints.KEY_DITHERING,
+                               RenderingHints.VALUE_DITHER_DISABLE);
+            buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC_OVER, opacity / 100F));
+            buffer.drawImage(img, 0, 0, null);
+            buffer.dispose();
+            frame.setImage(lImg);
+        }
         prePlayer.addFrame(frame);
     }
     

@@ -14,6 +14,9 @@ import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.NoSuchElementException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import webcamstudio.mixers.Frame;
@@ -29,6 +32,7 @@ import webcamstudio.sources.effects.Effect;
 public class SourceText extends Stream {
 
     BufferedImage image = null;
+    BufferedImage txImage = null;
     boolean isPlaying = false;
     boolean stop = false;
     int bgColor = 0x000000;
@@ -52,9 +56,9 @@ public class SourceText extends Stream {
     @Override
     public void readNext() {
         
-        if (frame != null) {
+        if (frame != null && image != null) {
             frame.setImage(image);
-            BufferedImage txImage = frame.getImage(); 
+            txImage = frame.getImage(); 
             applyEffects(txImage);
         }
         if (frame != null)     {
@@ -68,7 +72,7 @@ public class SourceText extends Stream {
 
     @Override
     public void play() {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.        
+        // nothing here.
     }
 
     public void setTextCW (int tCW) {
@@ -183,16 +187,21 @@ public class SourceText extends Stream {
     public void setZOrder(int layer) {
         zorder = layer;
     }
-
+    
     @Override
-    public void updateContent(String content) {
-        boolean isTimer = this.getIsATimer();
+    public void updateContent(String content) throws NoSuchElementException {
+//        System.out.println("updateContent !!!");
+        ArrayList<String> linee = new ArrayList<>();
         Color bkgColor = new Color(bgColor);
         this.content = content;
+        
+        String[] datas = content.split("\n");
+        linee.clear();
+        for (int i = 0; i < datas.length; i++) {
+            linee.add(datas[i]);
+        }
+        
         if (this.getIsQRCode()) {
-            if (isTimer){
-                this.content = "QRCode Clock Mode.";
-            }
             captureWidth = width;
             captureHeight = height;
             if (content != null && content.length() > 0) {
@@ -214,9 +223,6 @@ public class SourceText extends Stream {
                 }
             }
         } else {
-            if (isTimer){
-                this.content = "Text Clock Mode.";
-            }
             captureWidth = width;
             captureHeight = height;
             int textHeight = captureHeight;
@@ -240,16 +246,33 @@ public class SourceText extends Stream {
             Font font = new Font(fontName, Font.PLAIN, textHeight);
             buffer.setFont(font);
             FontMetrics fm = buffer.getFontMetrics();
-            textHeight = fm.getHeight();
-            textWidth = fm.stringWidth(content);
+            textHeight = getHeight();
+            int currentLineSize = 0;
+            
+            ArrayList<Integer>lineSizes = new ArrayList<>();
+            
+            for (String line : linee) {
+                lineSizes.add(fm.stringWidth(line));
+                currentLineSize = fm.stringWidth(line);
+            }
+            if (lineSizes.size() == 1) {
+                textWidth = currentLineSize;
+            } else {
+                textWidth = Collections.max(lineSizes);
+            }
+            
             int fontSize = font.getSize();
-            while ((textHeight > captureHeight || textWidth > captureWidth) && fontSize>1){
+            while ((textHeight*linee.size() > captureHeight || textWidth > captureWidth) && fontSize>1){
                 font = new Font(fontName, Font.PLAIN, fontSize--);
                 buffer.setFont(font);
                 fm = buffer.getFontMetrics();
                 textHeight = fm.getHeight();
-                textWidth = fm.stringWidth(content);
-            }        
+                lineSizes = new ArrayList<>();
+                for (String line : linee) {
+                    lineSizes.add(fm.stringWidth(line));
+                }
+                textWidth = Collections.max(lineSizes);
+            }
             frame = new Frame(captureWidth, captureHeight, rate);
             buffer.setBackground(new Color(0,0,0,0));
             buffer.clearRect(0, 0, captureWidth, captureHeight);
@@ -273,7 +296,14 @@ public class SourceText extends Stream {
 
             buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC, 1F));
             buffer.setColor(new Color(color));
-            buffer.drawString(content, (captureWidth-textWidth)/2, captureHeight/2 + textHeight/2 - fm.getDescent());
+            int tHeight = textHeight;
+//            System.out.println("FontHeight: "+textHeight);
+            int k = (int)(textHeight*(15.0f/100.0f));
+            for (String line : linee) {
+                buffer.drawString(line, (captureWidth-textWidth)/2, tHeight - k); //
+                tHeight += textHeight;
+            }
+            tHeight = 0;
             buffer.dispose();
             if (frame != null) {
                 frame.setImage(image);
@@ -287,7 +317,7 @@ public class SourceText extends Stream {
     public String getContent() {
         return content;
     }
-
+    
     @Override
     public void read() {
         stop = false;
@@ -305,14 +335,14 @@ public class SourceText extends Stream {
             frame.setOutputFormat(x, y, width, height, opacity, volume);
             frame.setZOrder(zorder);
             
-        } catch (Exception e) {
+        } catch (NoSuchElementException e) {
             e.printStackTrace();
         }
     }
 
     @Override
     public void pause() {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.        
+        // nothing here.
     }
     
     @Override
@@ -321,6 +351,10 @@ public class SourceText extends Stream {
             Effect fxT = this.getEffects().get(fx);
             if (fxT.getName().endsWith("Shapes")){
                 fxT.setDoOne(true);
+            } else if (fxT.getName().endsWith("Stretch") || fxT.getName().endsWith("Crop")) {
+                // do nothing.
+            } else {
+                fxT.resetFX();
             }
         }
         stop = true;

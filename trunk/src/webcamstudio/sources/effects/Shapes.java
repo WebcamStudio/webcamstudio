@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.prefs.Preferences;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import org.imgscalr.Scalr;
@@ -107,14 +106,9 @@ public class Shapes extends Effect {
     public void setReverse(boolean reverse) {
         this.doReverseShapeMask = reverse;
     }
-    
-    @Override
-    public void applyStudioConfig(Preferences prefs) {
-
-    }
 
     @Override
-    public void loadFromStudioConfig(Preferences prefs) {
-        
+    public void resetFX() {
+        // nothing here.
     }
 }

@@ -8,7 +8,6 @@ package webcamstudio.sources.effects;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-import java.util.prefs.Preferences;
 import javax.swing.JPanel;
 import webcamstudio.sources.effects.controls.GainControl;
 
@@ -84,16 +83,7 @@ public class Gain extends Effect{
     }
 
     @Override
-    public void applyStudioConfig(Preferences prefs) {
-        prefs.putFloat("gain", gain);
-        prefs.putFloat("bias", bias);
+    public void resetFX() {
+        // nothing here.
     }
-
-    @Override
-    public void loadFromStudioConfig(Preferences prefs) {
-        gain=prefs.getFloat("brightness", gain);
-        bias=prefs.getFloat("contrast", bias);
-
-    }
-
 }

@@ -94,6 +94,7 @@ public class Frame {
                                java.awt.RenderingHints.VALUE_DITHER_DISABLE);
             g.setBackground(new Color(0,0,0,0));
             g.clearRect(0, 0, w, h);
+//            System.out.println("W:"+w+" H:"+h);
             g.drawImage(img, 0, 0, null);
             g.dispose();
         } 

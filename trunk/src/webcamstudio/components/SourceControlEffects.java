@@ -7,6 +7,7 @@ package webcamstudio.components;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import webcamstudio.sources.effects.Effect;
+import webcamstudio.sources.effects.Stretch;
 import webcamstudio.streams.Stream;
 
 /**
@@ -166,7 +167,12 @@ public class SourceControlEffects extends javax.swing.JPanel {
     @SuppressWarnings("unchecked") 
     private void btnAddEffectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddEffectActionPerformed
         listModel.addElement(cboEffects.getSelectedItem());
-        stream.addEffect((Effect) cboEffects.getSelectedItem());
+        Effect fx = (Effect) cboEffects.getSelectedItem();
+        if (fx instanceof Stretch) {
+            ((Stretch) fx).setWidth(stream.getWidth());
+            ((Stretch) fx).setHeight(stream.getHeight());
+        }
+        stream.addEffect(fx);
         lstEffects.revalidate();
         lstEffects.setSelectedValue(cboEffects.getSelectedItem(), true);
     }//GEN-LAST:event_btnAddEffectActionPerformed
@@ -186,6 +192,7 @@ public class SourceControlEffects extends javax.swing.JPanel {
     private void btnDeleteEffectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteEffectActionPerformed
         if (lstEffects.getSelectedValue()!=null){
             Effect e = (Effect)lstEffects.getSelectedValue();
+            e.resetFX();
             listModel.removeElement(e);
             stream.removeEffect(e);
             lstEffects.revalidate();

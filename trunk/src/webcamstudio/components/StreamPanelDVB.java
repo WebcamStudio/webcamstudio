@@ -158,6 +158,39 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
     @Override
     public void sourceUpdated(Stream stream){
         
+        int mixerW = MasterMixer.getInstance().getWidth();
+        int mixerH = MasterMixer.getInstance().getHeight();
+        
+        if (jSlSpinX.getValue() > mixerW) {
+            spinX.setValue(stream.getX());
+        }
+        jSlSpinX.setMaximum(mixerW);
+        
+        if (jSlSpinX.getValue() < - mixerW) {
+            spinX.setValue(stream.getX());
+        }
+        jSlSpinX.setMinimum(- mixerW);
+        
+        if (jSlSpinY.getValue() > mixerH) {
+            spinY.setValue(stream.getY());
+        }
+        jSlSpinY.setMaximum(mixerH);
+        
+        if (jSlSpinY.getValue() < - mixerH) {
+            spinY.setValue(stream.getY());
+        }
+        jSlSpinY.setMinimum(- mixerH);
+        
+        if (jSlSpinW.getValue() > mixerW) {
+            spinW.setValue(stream.getWidth());
+        }
+        jSlSpinW.setMaximum(mixerW);
+        
+        if (jSlSpinH.getValue() > mixerH) {
+            spinH.setValue(stream.getHeight());
+        }
+        jSlSpinH.setMaximum(mixerH);
+        
         spinX.setValue(stream.getX());
         spinY.setValue(stream.getY());
         spinH.setValue(stream.getHeight());
@@ -353,6 +386,7 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         add(spinY, new org.netbeans.lib.awtextra.AbsoluteConstraints(68, 270, 50, -1));
 
         spinW.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
+        spinW.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null, Integer.valueOf(1)));
         spinW.setName("spinW"); // NOI18N
         spinW.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
@@ -362,6 +396,7 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         add(spinW, new org.netbeans.lib.awtextra.AbsoluteConstraints(58, 290, 60, -1));
 
         spinH.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
+        spinH.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null, Integer.valueOf(1)));
         spinH.setName("spinH"); // NOI18N
         spinH.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
@@ -371,6 +406,7 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         add(spinH, new org.netbeans.lib.awtextra.AbsoluteConstraints(58, 310, 60, -1));
 
         spinOpacity.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
+        spinOpacity.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(0), Integer.valueOf(0), null, Integer.valueOf(1)));
         spinOpacity.setName("spinOpacity"); // NOI18N
         spinOpacity.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
@@ -380,6 +416,7 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         add(spinOpacity, new org.netbeans.lib.awtextra.AbsoluteConstraints(68, 350, 50, -1));
 
         spinVolume.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
+        spinVolume.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null, Integer.valueOf(1)));
         spinVolume.setName("spinVolume"); // NOI18N
         spinVolume.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
@@ -448,6 +485,7 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         add(labelCW, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 410, 50, -1));
 
         spinW1.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
+        spinW1.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null, Integer.valueOf(1)));
         spinW1.setName("spinW1"); // NOI18N
         spinW1.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
@@ -462,6 +500,7 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         add(labelCH, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 430, 60, -1));
 
         spinH1.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
+        spinH1.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null, Integer.valueOf(1)));
         spinH1.setName("spinH1"); // NOI18N
         spinH1.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
@@ -471,6 +510,7 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         add(spinH1, new org.netbeans.lib.awtextra.AbsoluteConstraints(68, 420, 50, -1));
 
         spinVDelay.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
+        spinVDelay.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(0), Integer.valueOf(0), null, Integer.valueOf(1)));
         spinVDelay.setToolTipText("Milliseconds");
         spinVDelay.setName("spinVDelay"); // NOI18N
         spinVDelay.addChangeListener(new javax.swing.event.ChangeListener() {
@@ -481,6 +521,7 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         add(spinVDelay, new org.netbeans.lib.awtextra.AbsoluteConstraints(58, 440, 60, -1));
 
         spinADelay.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
+        spinADelay.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(0), Integer.valueOf(0), null, Integer.valueOf(1)));
         spinADelay.setToolTipText("Milliseconds");
         spinADelay.setName("spinADelay"); // NOI18N
         spinADelay.addChangeListener(new javax.swing.event.ChangeListener() {
@@ -491,6 +532,7 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         add(spinADelay, new org.netbeans.lib.awtextra.AbsoluteConstraints(58, 460, 60, -1));
 
         frequency.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
+        frequency.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(0), Integer.valueOf(0), null, Integer.valueOf(1)));
         frequency.setToolTipText("Mhz");
         frequency.setName("frequency"); // NOI18N
         frequency.addChangeListener(new javax.swing.event.ChangeListener() {
@@ -511,6 +553,7 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         add(labelInv, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 240, 50, -1));
 
         bandwidth.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
+        bandwidth.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(0), Integer.valueOf(0), null, Integer.valueOf(1)));
         bandwidth.setToolTipText("(7/8)");
         bandwidth.setName("bandwidth"); // NOI18N
         bandwidth.addChangeListener(new javax.swing.event.ChangeListener() {
@@ -526,6 +569,7 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         add(labelBand, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 220, 70, -1));
 
         prgNumber.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
+        prgNumber.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(0), Integer.valueOf(0), null, Integer.valueOf(1)));
         prgNumber.setName("prgNumber"); // NOI18N
         prgNumber.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
@@ -597,8 +641,10 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         });
         add(jSlSpinY, new org.netbeans.lib.awtextra.AbsoluteConstraints(127, 270, 150, 20));
 
+        jSlSpinCW.setMajorTickSpacing(10);
         jSlSpinCW.setMaximum(1920);
-        jSlSpinCW.setValue(0);
+        jSlSpinCW.setMinimum(1);
+        jSlSpinCW.setMinorTickSpacing(1);
         jSlSpinCW.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jSlSpinCW.setName("jSlSpinCW"); // NOI18N
         jSlSpinCW.addChangeListener(new javax.swing.event.ChangeListener() {
@@ -608,8 +654,10 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         });
         add(jSlSpinCW, new org.netbeans.lib.awtextra.AbsoluteConstraints(127, 400, 150, 20));
 
+        jSlSpinCH.setMajorTickSpacing(10);
         jSlSpinCH.setMaximum(1080);
-        jSlSpinCH.setValue(0);
+        jSlSpinCH.setMinimum(1);
+        jSlSpinCH.setMinorTickSpacing(1);
         jSlSpinCH.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jSlSpinCH.setName("jSlSpinCH"); // NOI18N
         jSlSpinCH.addChangeListener(new javax.swing.event.ChangeListener() {
@@ -736,7 +784,7 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         add(tglPause, new org.netbeans.lib.awtextra.AbsoluteConstraints(85, 124, 30, 20));
 
         jCheckBox1.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
-        jCheckBox1.setText("Lock A/R ");
+        jCheckBox1.setText("Lock A/R");
         jCheckBox1.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         jCheckBox1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/LockButton-open_small.png"))); // NOI18N
         jCheckBox1.setName("jCheckBox1"); // NOI18N
@@ -747,7 +795,7 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
                 jCheckBox1ActionPerformed(evt);
             }
         });
-        add(jCheckBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(61, 331, -1, -1));
+        add(jCheckBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(64, 331, -1, -1));
 
         jSeparator6.setName("jSeparator6"); // NOI18N
         jSeparator6.setPreferredSize(new java.awt.Dimension(48, 10));
@@ -764,7 +812,7 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
                 tglPreviewActionPerformed(evt);
             }
         });
-        add(tglPreview, new org.netbeans.lib.awtextra.AbsoluteConstraints(7, 336, 30, 20));
+        add(tglPreview, new org.netbeans.lib.awtextra.AbsoluteConstraints(7, 335, 40, 20));
 
         getAccessibleContext().setAccessibleParent(this);
     }// </editor-fold>//GEN-END:initComponents
@@ -829,11 +877,9 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         if (lockRatio){
             h = (oldH * w) / oldW; 
             spinH.setValue(h);
-            jSlSpinH.setValue(h);
-            
         }
         stream.setWidth(w);
-        stream.setHeight(h);
+//        stream.setHeight(h);       
     }//GEN-LAST:event_spinWStateChanged
 
     private void spinHStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinHStateChanged
@@ -919,63 +965,43 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
     }//GEN-LAST:event_txtChNameFocusLost
 
     private void jSlSpinXStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlSpinXStateChanged
-        stream.setX(jSlSpinX.getValue());
         spinX.setValue(jSlSpinX.getValue());
     }//GEN-LAST:event_jSlSpinXStateChanged
 
     private void jSlSpinYStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlSpinYStateChanged
-        stream.setY(jSlSpinY.getValue());
         spinY.setValue(jSlSpinY.getValue());
     }//GEN-LAST:event_jSlSpinYStateChanged
 
     private void jSlSpinCWStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlSpinCWStateChanged
-        stream.setCaptureWidth(jSlSpinCW.getValue());
         spinW1.setValue(jSlSpinCW.getValue());
     }//GEN-LAST:event_jSlSpinCWStateChanged
 
     private void jSlSpinCHStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlSpinCHStateChanged
-        stream.setCaptureHeight(jSlSpinCH.getValue());
         spinH1.setValue(jSlSpinCH.getValue());
     }//GEN-LAST:event_jSlSpinCHStateChanged
 
     private void jSlSpinWStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlSpinWStateChanged
         int w = (Integer) jSlSpinW.getValue();
-        spinW.setValue(w);
-        int h = oldH;
-        if (lockRatio){
-            h = (oldH * w) / oldW; 
-            spinH.setValue(h);
-            jSlSpinH.setValue(h);
-        }
-        stream.setWidth(w);
-        stream.setHeight(h);       
+        spinW.setValue(w);   
     }//GEN-LAST:event_jSlSpinWStateChanged
 
     private void jSlSpinHStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlSpinHStateChanged
-        stream.setHeight(jSlSpinH.getValue());
         spinH.setValue(jSlSpinH.getValue());
-        if (!lockRatio){
-            oldH = stream.getHeight();
-        }
     }//GEN-LAST:event_jSlSpinHStateChanged
 
     private void jSlSpinOStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlSpinOStateChanged
-        stream.setOpacity(jSlSpinO.getValue());
         spinOpacity.setValue(jSlSpinO.getValue());
     }//GEN-LAST:event_jSlSpinOStateChanged
 
     private void jSlSpinVDStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlSpinVDStateChanged
-        stream.setVDelay(jSlSpinVD.getValue());
         spinVDelay.setValue(jSlSpinVD.getValue());
     }//GEN-LAST:event_jSlSpinVDStateChanged
 
     private void jSlSpinADStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlSpinADStateChanged
-        stream.setADelay(jSlSpinAD.getValue());
         spinADelay.setValue(jSlSpinAD.getValue());
     }//GEN-LAST:event_jSlSpinADStateChanged
 
     private void jSlSpinZOrderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlSpinZOrderStateChanged
-        stream.setZOrder(jSlSpinZOrder.getValue());
         spinZOrder.setValue(jSlSpinZOrder.getValue());
     }//GEN-LAST:event_jSlSpinZOrderStateChanged
 
@@ -1087,9 +1113,6 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
 
     private void jSlSpinVStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlSpinVStateChanged
         spinVolume.setValue(jSlSpinV.getValue());
-        if (!stream.getisPaused()) {
-            volume = jSlSpinV.getValue()/100f;
-        }
     }//GEN-LAST:event_jSlSpinVStateChanged
 
     private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed

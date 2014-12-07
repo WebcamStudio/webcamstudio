@@ -39,7 +39,7 @@ public class SourceImageGif extends Stream {
         this.name = name;
     }
 
-    private void loadImage(File f) throws IOException {
+    private void loadImage() throws IOException {
         if (file != null) {
             decoder.read(file.toURI().toURL().openStream());
         } else if (url != null) {
@@ -72,16 +72,13 @@ public class SourceImageGif extends Stream {
         playing=true;
         stop = false;
         try {
-            loadImage(file);
+            loadImage();
             frame = new Frame(uuid, image, null);
             frame.setOutputFormat(x, y, width, height, opacity, volume);
             frame.setZOrder(zorder);
             if (getPreView()){
-//                if (playedPreview) {
-                    PreviewFrameBuilder.register(this);
-//                }
+                PreviewFrameBuilder.register(this);
             } else {
-//                playedPreview = false;
                 MasterFrameBuilder.register(this);
             }
         } catch (IOException e) {
@@ -91,7 +88,7 @@ public class SourceImageGif extends Stream {
     
     @Override
     public void pause() {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        // nothing here.
     }
     
     @Override
@@ -99,13 +96,12 @@ public class SourceImageGif extends Stream {
         playing=false;
         stop = true;
         if (getPreView()){
-//            playedPreview = true;
             PreviewFrameBuilder.unregister(this);
-//            MasterFrameBuilder.register(this);
         } else {
             MasterFrameBuilder.unregister(this);
         }
     }
+
     @Override
     public boolean needSeek() {
             return needSeekCTRL=false;
@@ -142,13 +138,15 @@ public class SourceImageGif extends Stream {
     public void readNext() {
         image = decoder.getFrame(index);
         frame = new Frame(uuid, image, null);
-        frame.setOutputFormat(x, y, width, height, opacity, volume);
-        frame.setZOrder(zorder);
+        if (frame != null) {
+            frame.setOutputFormat(x, y, width, height, opacity, volume);
+            frame.setZOrder(zorder);
+        }
         nextFrame=frame;
     }
-
+    
     @Override
     public void play() {
-        //Nothing Here.
+        // nothing Here.
     }
 }

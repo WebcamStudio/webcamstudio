@@ -490,6 +490,9 @@ public abstract class Stream implements Callable<Frame>{
     public void updateContent(String content) {
     }
     
+    public void updatePNG() {
+    }
+    
     public String getContent() {
         return content;
     }
@@ -715,7 +718,7 @@ public abstract class Stream implements Callable<Frame>{
         effects.remove(e);
         e.clearEffect(e);
     }
-
+    
     public synchronized void applyEffects(BufferedImage img) {
         ArrayList<Effect> temp = new ArrayList<>();
         temp.addAll(effects);

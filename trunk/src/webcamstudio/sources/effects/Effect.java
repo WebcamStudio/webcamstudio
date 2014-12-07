@@ -37,6 +37,7 @@ public abstract class Effect {
         retValue.put(NoBackground.class.getSimpleName(), new NoBackground());
         retValue.put(RGB.class.getSimpleName(), new RGB());
         retValue.put(ZoomZoom.class.getSimpleName(), new ZoomZoom());
+        retValue.put(Stretch.class.getSimpleName(), new Stretch());
         retValue.put(SaltNPepper.class.getSimpleName(), new SaltNPepper());
         retValue.put(Edge.class.getSimpleName(), new Edge());
         retValue.put(Radar.class.getSimpleName(), new Radar());
@@ -46,8 +47,8 @@ public abstract class Effect {
         retValue.put(Weave.class.getSimpleName(), new Weave());
         retValue.put(Shapes.class.getSimpleName(), new Shapes());
         retValue.put(Marble.class.getSimpleName(), new Marble());
-        retValue.put(Green.class.getSimpleName(), new Green());
-//        retValue.put(MergeTest.class.getSimpleName(), new MergeTest());
+        retValue.put(RevealRightNFade.class.getSimpleName(), new RevealRightNFade());
+        retValue.put(RevealLeftNFade.class.getSimpleName(), new RevealLeftNFade());
         retValue.put(ComboGhost.class.getSimpleName(), new ComboGhost());
         retValue.put(Crop.class.getSimpleName(), new Crop());
         retValue.put(WaterFx.class.getSimpleName(), new WaterFx());
@@ -62,9 +63,8 @@ public abstract class Effect {
         return needApply;
     }
     public abstract void applyEffect(BufferedImage img);
-    public abstract void applyStudioConfig(java.util.prefs.Preferences prefs);
-    public abstract void loadFromStudioConfig(java.util.prefs.Preferences prefs);
     public abstract javax.swing.JPanel getControl();
+    public abstract void resetFX();
     public BufferedImage cloneImage(BufferedImage src) {
         BufferedImage tempimage = java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().createCompatibleImage(src.getWidth(), src.getHeight(), BufferedImage.TRANSLUCENT);
         Graphics2D tempbuffer = tempimage.createGraphics();
@@ -95,11 +95,11 @@ public abstract class Effect {
     }
     
     public void setShape(String shapeImg){
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        // nothing here.
     }
-
+    
     public void setDoOne(boolean b) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        // nothing here.
     }
     
     public void clearEffect(Effect e) {

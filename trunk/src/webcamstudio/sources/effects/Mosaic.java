@@ -8,7 +8,6 @@ package webcamstudio.sources.effects;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-import java.util.prefs.Preferences;
 import javax.swing.JPanel;
 import webcamstudio.sources.effects.controls.MosaicControl;
 
@@ -73,14 +72,9 @@ public class Mosaic extends Effect {
     public boolean needApply(){
         return needApply=true;
     }
-    @Override
-    public void applyStudioConfig(Preferences prefs) {
-        prefs.putInt("nbsquare",nbSquaresWidthHeight);
-    }
 
     @Override
-    public void loadFromStudioConfig(Preferences prefs) {
-        nbSquaresWidthHeight=prefs.getInt("nbsquare",nbSquaresWidthHeight);
+    public void resetFX() {
+        // nothing here.
     }
-
 }

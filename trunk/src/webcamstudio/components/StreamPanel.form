@@ -187,6 +187,12 @@
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Tahoma" size="8" style="0"/>
         </Property>
+        <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
+          <SpinnerModel initial="1" minimum="1" numberType="java.lang.Integer" stepSize="1" type="number"/>
+        </Property>
+        <Property name="inputVerifier" type="javax.swing.InputVerifier" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+          <Connection component="jSlSpinW" name="getInputVerifier" type="method"/>
+        </Property>
         <Property name="name" type="java.lang.String" value="spinW" noResource="true"/>
       </Properties>
       <Events>
@@ -202,6 +208,9 @@
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Tahoma" size="8" style="0"/>
+        </Property>
+        <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
+          <SpinnerModel initial="1" minimum="1" numberType="java.lang.Integer" stepSize="1" type="number"/>
         </Property>
         <Property name="name" type="java.lang.String" value="spinH" noResource="true"/>
       </Properties>
@@ -219,6 +228,9 @@
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Tahoma" size="8" style="0"/>
         </Property>
+        <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
+          <SpinnerModel initial="0" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
+        </Property>
         <Property name="name" type="java.lang.String" value="spinOpacity" noResource="true"/>
       </Properties>
       <Events>
@@ -234,6 +246,9 @@
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Tahoma" size="8" style="0"/>
+        </Property>
+        <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
+          <SpinnerModel initial="1" minimum="1" numberType="java.lang.Integer" stepSize="1" type="number"/>
         </Property>
         <Property name="name" type="java.lang.String" value="spinVolume" noResource="true"/>
       </Properties>
@@ -408,6 +423,9 @@
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Tahoma" size="8" style="0"/>
         </Property>
+        <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
+          <SpinnerModel initial="1" minimum="1" numberType="java.lang.Integer" stepSize="1" type="number"/>
+        </Property>
         <Property name="name" type="java.lang.String" value="spinW1" noResource="true"/>
       </Properties>
       <Events>
@@ -440,6 +458,9 @@
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Tahoma" size="8" style="0"/>
         </Property>
+        <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
+          <SpinnerModel initial="1" minimum="1" numberType="java.lang.Integer" stepSize="1" type="number"/>
+        </Property>
         <Property name="name" type="java.lang.String" value="spinH1" noResource="true"/>
       </Properties>
       <Events>
@@ -455,6 +476,9 @@
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Tahoma" size="8" style="0"/>
+        </Property>
+        <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
+          <SpinnerModel initial="0" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
         </Property>
         <Property name="toolTipText" type="java.lang.String" value="Milliseconds"/>
         <Property name="name" type="java.lang.String" value="spinVDelay" noResource="true"/>
@@ -473,6 +497,9 @@
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Tahoma" size="8" style="0"/>
         </Property>
+        <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
+          <SpinnerModel initial="0" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
+        </Property>
         <Property name="toolTipText" type="java.lang.String" value="Milliseconds"/>
         <Property name="name" type="java.lang.String" value="spinADelay" noResource="true"/>
       </Properties>
@@ -489,6 +516,9 @@
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Tahoma" size="8" style="0"/>
+        </Property>
+        <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
+          <SpinnerModel initial="0" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
         </Property>
         <Property name="name" type="java.lang.String" value="spinSeek" noResource="true"/>
       </Properties>
@@ -575,8 +605,10 @@
     </Component>
     <Component class="javax.swing.JSlider" name="jSlSpinCW">
       <Properties>
+        <Property name="majorTickSpacing" type="int" value="10"/>
         <Property name="maximum" type="int" value="1920"/>
-        <Property name="value" type="int" value="0"/>
+        <Property name="minimum" type="int" value="1"/>
+        <Property name="minorTickSpacing" type="int" value="1"/>
         <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
           <Color id="Default Cursor"/>
         </Property>
@@ -593,8 +625,10 @@
     </Component>
     <Component class="javax.swing.JSlider" name="jSlSpinCH">
       <Properties>
+        <Property name="majorTickSpacing" type="int" value="10"/>
         <Property name="maximum" type="int" value="1080"/>
-        <Property name="value" type="int" value="0"/>
+        <Property name="minimum" type="int" value="1"/>
+        <Property name="minorTickSpacing" type="int" value="1"/>
         <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
           <Color id="Default Cursor"/>
         </Property>
@@ -921,7 +955,7 @@
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Tahoma" size="8" style="0"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="Lock A/R "/>
+        <Property name="text" type="java.lang.String" value="Lock A/R"/>
         <Property name="horizontalTextPosition" type="int" value="2"/>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
           <Image iconType="3" name="/webcamstudio/resources/tango/LockButton-open_small.png"/>
@@ -939,7 +973,7 @@
       </Events>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-          <AbsoluteConstraints x="61" y="221" width="-1" height="-1"/>
+          <AbsoluteConstraints x="64" y="221" width="-1" height="-1"/>
         </Constraint>
       </Constraints>
     </Component>
@@ -1014,7 +1048,7 @@
       </Events>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-          <AbsoluteConstraints x="7" y="226" width="30" height="20"/>
+          <AbsoluteConstraints x="7" y="225" width="40" height="20"/>
         </Constraint>
       </Constraints>
     </Component>
