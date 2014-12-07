@@ -123,7 +123,7 @@ public class SourceControls {
         } 
 //        else if (source instanceof SourceImageGif) {
 //            c = new SourceControlEffects(source);
-//            c.setName("Effects");
+//            c.setName("FX");
 //            comps.add(c);
 //        }
 

@@ -201,7 +201,15 @@ public class Capturer {
     private WSImage getNextImage() throws IOException {
         if (videoIn != null && !vPauseFlag) {
             image.readFully(videoIn);
-            stream.applyEffects(image);
+//            if (stream.getEffects() != null) {
+                for (int fx = 0; fx < stream.getEffects().size(); fx++) {
+                    if (stream.getEffects().get(fx).getName().equals("Ghosting") || stream.getEffects().get(fx).getName().equals("SaltNPepper")) {
+                        stream.applyEffects(image);
+                    }
+                }
+//            }
+  
+//            stream.applyEffects(image);
             return image;
         } else {
             return null;

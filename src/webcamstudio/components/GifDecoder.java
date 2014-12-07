@@ -52,8 +52,8 @@ public class GifDecoder {
 	 * File read status: Unable to open source.
 	 */
 	public static final int STATUS_OPEN_ERROR = 2;
-    protected static final int MaxStackSize = 4096;
-    // max decoder pixel stack size
+        protected static final int MaxStackSize = 4096;
+        // max decoder pixel stack size
 
 	protected BufferedInputStream in;
 	protected int status;
@@ -144,7 +144,7 @@ public class GifDecoder {
 	public int getLoopCount() {
 		return loopCount;
 	}
-
+        
 	/**
 	 * Creates new frame image from current data (and previous
 	 * frames as specified by their disposition codes).
@@ -798,7 +798,11 @@ public class GifDecoder {
 		delay = 0;
 		lct = null;
 	}
-
+        
+//        public static void cleanPicture() {
+//            lastImage = null; //needs to be static
+//        }
+        
 	/**
 	 * Skips variable length blocks up to and including
 	 * next zero length block.

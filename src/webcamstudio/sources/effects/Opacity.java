@@ -8,7 +8,6 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-import java.util.prefs.Preferences;
 import javax.swing.JPanel;
 import webcamstudio.sources.effects.controls.OpacityControl;
 
@@ -55,17 +54,13 @@ public class Opacity extends Effect {
     }
 
     @Override
-    public void applyStudioConfig(Preferences prefs) {
-        prefs.putInt("opacity", opacity);
+    public boolean needApply(){
+        return needApply=true;
     }
 
     @Override
-    public void loadFromStudioConfig(Preferences prefs) {
-        opacity=prefs.getInt("opacity", opacity);
-    }
-    @Override
-    public boolean needApply(){
-        return needApply=true;
+    public void resetFX() {
+        // nothing here.
     }
 
  

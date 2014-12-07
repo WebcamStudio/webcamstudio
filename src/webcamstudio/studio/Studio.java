@@ -43,15 +43,16 @@ import webcamstudio.sources.effects.Cartoon;
 import webcamstudio.sources.effects.ChromaKey;
 import webcamstudio.sources.effects.ComboGhost;
 import webcamstudio.sources.effects.Contrast;
+import webcamstudio.sources.effects.Crop;
 import webcamstudio.sources.effects.Edge;
 import webcamstudio.sources.effects.Effect;
 import webcamstudio.sources.effects.Emboss;
+import webcamstudio.sources.effects.FaceDetectorAlpha;
 import webcamstudio.sources.effects.FlipHorizontal;
 import webcamstudio.sources.effects.FlipVertical;
 import webcamstudio.sources.effects.Gain;
 import webcamstudio.sources.effects.Ghosting;
 import webcamstudio.sources.effects.Gray;
-import webcamstudio.sources.effects.Green;
 import webcamstudio.sources.effects.HSB;
 import webcamstudio.sources.effects.Marble;
 import webcamstudio.sources.effects.Mirror1;
@@ -61,15 +62,17 @@ import webcamstudio.sources.effects.Mirror4;
 import webcamstudio.sources.effects.Mosaic;
 import webcamstudio.sources.effects.MotionAlpha;
 import webcamstudio.sources.effects.NoBackground;
-import webcamstudio.sources.effects.Crop;
 import webcamstudio.sources.effects.Opacity;
 import webcamstudio.sources.effects.Perspective;
 import webcamstudio.sources.effects.RGB;
 import webcamstudio.sources.effects.Radar;
+import webcamstudio.sources.effects.RevealLeftNFade;
+import webcamstudio.sources.effects.RevealRightNFade;
 import webcamstudio.sources.effects.Rotation;
 import webcamstudio.sources.effects.SaltNPepper;
 import webcamstudio.sources.effects.Shapes;
 import webcamstudio.sources.effects.Sharpen;
+import webcamstudio.sources.effects.Stretch;
 import webcamstudio.sources.effects.SwapRedBlue;
 import webcamstudio.sources.effects.Twirl;
 import webcamstudio.sources.effects.WaterFx;
@@ -517,7 +520,15 @@ public class Studio {
             } else if (sClazz.endsWith("Radar")) {
                 effeX = new Radar();
                 readObjectFx(effeX, SuperChild);
-                
+            } else if (sClazz.endsWith("RevealRightNFade")) {
+                effeX = new RevealRightNFade();
+                readObjectFx(effeX, SuperChild);
+            } else if (sClazz.endsWith("RevealLeftNFade")) {
+                effeX = new RevealLeftNFade();
+                readObjectFx(effeX, SuperChild);
+            } else if (sClazz.endsWith("Stretch")) {
+                effeX = new Stretch();
+                readObjectFx(effeX, SuperChild);
             } else if (sClazz.endsWith("Rotation")) {
                 effeX = new Rotation();
                 readObjectFx(effeX, SuperChild);
@@ -538,9 +549,9 @@ public class Studio {
                 effeX = new ZoomZoom();
                 readObjectFx(effeX, SuperChild);
                 
-            } else if (sClazz.endsWith("Green")) {
-                effeX = new Green();
-                readObjectFx(effeX, SuperChild);
+//            } else if (sClazz.endsWith("Green")) {
+//                effeX = new Green();
+//                readObjectFx(effeX, SuperChild);
                 
             } else if (sClazz.endsWith("Shapes")) {
                 effeX = new Shapes();
@@ -561,6 +572,10 @@ public class Studio {
                 
             } else if (sClazz.endsWith("MotionAlpha")) {
                 effeX = new MotionAlpha();
+                readObjectFx(effeX, SuperChild);
+                
+            } else if (sClazz.endsWith("FaceDetectorAlpha")) {
+                effeX = new FaceDetectorAlpha();
                 readObjectFx(effeX, SuperChild);
                 
             }
@@ -758,7 +773,7 @@ public class Studio {
                         stream.setStreamTime(streamTime);
                     } else {
                         if (stream instanceof SourceMovie || stream instanceof SourceMusic) {
-                            WebcamStudio.durationCalc(stream, fileL);
+                            WebcamStudio.getVideoParams(stream, fileL, null);
                         }
                     }
                     stream.setLoaded(true);

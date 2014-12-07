@@ -7,7 +7,6 @@ package webcamstudio.sources.effects;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
-import java.util.prefs.Preferences;
 import javax.swing.JPanel;
 import webcamstudio.sources.effects.controls.NoBackgroundControl;
 
@@ -129,23 +128,14 @@ public class NoBackground extends Effect {
         return new NoBackgroundControl(this);
     }
 
-    @Override
-    public void applyStudioConfig(Preferences prefs) {
-        prefs.putInt("rThreshold", rThreshold);
-        prefs.putInt("gThreshold", gThreshold);
-        prefs.putInt("bThreshold", bThreshold);
-    }
-
-    @Override
-    public void loadFromStudioConfig(Preferences prefs) {
-        rThreshold = prefs.getInt("rThreshold", rThreshold);
-        gThreshold = prefs.getInt("gThreshold", gThreshold);
-        bThreshold = prefs.getInt("bThreshold", bThreshold);
-    }
-
     public void setBackgroundImage(BufferedImage img) {
         if (img != null) {
             background = img;
         }
+    }
+
+    @Override
+    public void resetFX() {
+        // nothing here.
     }
 }

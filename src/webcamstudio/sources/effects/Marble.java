@@ -8,7 +8,6 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-import java.util.prefs.Preferences;
 import javax.swing.JPanel;
 
 /**
@@ -21,7 +20,7 @@ public class Marble extends Effect {
 
     @Override
     public boolean needApply(){
-        return needApply=false;
+        return needApply=true;
     }
     @Override
     public void applyEffect(BufferedImage img) {
@@ -53,12 +52,7 @@ public class Marble extends Effect {
     }
 
     @Override
-    public void applyStudioConfig(Preferences prefs) {
-
-    }
-
-    @Override
-    public void loadFromStudioConfig(Preferences prefs) {
-        
+    public void resetFX() {
+        // nothing here.
     }
 }

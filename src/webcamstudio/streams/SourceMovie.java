@@ -33,7 +33,6 @@ public class SourceMovie extends Stream {
     @Override
     public void read() {
         isPlaying = true;
-//        rate = MasterMixer.getInstance().getRate();
         lastPreview = new BufferedImage(captureWidth,captureHeight,BufferedImage.TYPE_INT_ARGB);
         if (getPreView()){
             PreviewFrameBuilder.register(this);
@@ -62,6 +61,14 @@ public class SourceMovie extends Stream {
             }
             this.read();
         } else {
+            for (int fx = 0; fx < this.getEffects().size(); fx++) {
+                Effect fxT = this.getEffects().get(fx);
+                if (fxT.getName().endsWith("Stretch") || fxT.getName().endsWith("Crop")) {
+                    // do nothing.
+                } else {
+                    fxT.resetFX();
+                }
+            }
             isPlaying = false;
             if (getPreView()){
                 PreviewFrameBuilder.unregister(this);
@@ -113,15 +120,9 @@ public class SourceMovie extends Stream {
         Frame f = null;
         if (capture != null) {
             f = capture.getFrame();
-            if (this.getEffects() != null) {
-                for (int fx = 0; fx < this.getEffects().size(); fx++) {
-                    if (f != null) {
-                        Effect fxM = this.getEffects().get(fx);
-                        if (fxM.needApply()){   
-                            fxM.applyEffect(f.getImage());
-                        }
-                    }
-                }
+            if (f != null) {
+                BufferedImage img = f.getImage(); 
+                applyEffects(img);
             }
             if (f != null) {
                 setAudioLevel(f);

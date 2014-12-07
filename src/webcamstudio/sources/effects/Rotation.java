@@ -11,7 +11,6 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-import java.util.prefs.Preferences;
 import javax.swing.JPanel;
 import webcamstudio.sources.effects.controls.RotationControl;
 
@@ -52,7 +51,7 @@ public class Rotation extends Effect{
     }
     @Override
     public boolean needApply(){
-        return needApply=false;
+        return needApply=true;
     }
    public void setRotation(int value){
        rotation= value;
@@ -66,13 +65,7 @@ public class Rotation extends Effect{
     }
 
     @Override
-    public void applyStudioConfig(Preferences prefs) {
-        prefs.putFloat("rotation", rotation);
+    public void resetFX() {
+        // nothing here.
     }
-
-    @Override
-    public void loadFromStudioConfig(Preferences prefs) {
-        rotation = prefs.getInt("rotation", rotation);
-    }
-
 }

@@ -5,14 +5,11 @@
 package webcamstudio.streams;
 
 import java.awt.image.BufferedImage;
-//import java.io.File;
 import webcamstudio.externals.ProcessRenderer;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterFrameBuilder;
 import webcamstudio.mixers.MasterMixer;
 import webcamstudio.mixers.PreviewFrameBuilder;
-import webcamstudio.sources.effects.Effect;
-//import webcamstudio.util.Tools;
 
 /**
  *
@@ -134,13 +131,6 @@ public class SourceIPCam extends Stream {
         Frame f = null;
         if (capture != null) {
             f = capture.getFrame();
-            if (this.getEffects() != null) {
-                for (Effect fxUR : this.getEffects()) {
-                    if (f != null && fxUR.needApply()) {   
-                        fxUR.applyEffect(f.getImage());
-                    }
-                }
-            }
             if (f != null) {
                 setAudioLevel(f);
                 lastPreview.getGraphics().drawImage(f.getImage(), 0, 0, null);

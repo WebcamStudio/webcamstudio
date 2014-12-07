@@ -11,6 +11,7 @@ import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterFrameBuilder;
 import webcamstudio.mixers.MasterMixer;
 import webcamstudio.mixers.PreviewFrameBuilder;
+import webcamstudio.sources.effects.Effect;
 
 /**
  *
@@ -50,16 +51,20 @@ public class SourceCustom extends Stream {
     
     @Override
     public void stop() {
+        for (int fx = 0; fx < this.getEffects().size(); fx++) {
+            Effect fxT = this.getEffects().get(fx);
+            if (fxT.getName().endsWith("Stretch") || fxT.getName().endsWith("Crop")) {
+                // do nothing.
+            } else {
+                fxT.resetFX();
+            }
+        }
         isPlaying = false;
         if (capture != null) {
             capture.stop();
         }
-//        if (this.getBackFF()){
-//            this.setComm("FF");
-//        }
         if (getPreView()){
             PreviewFrameBuilder.unregister(this);
-//            MasterFrameBuilder.register(this);
         } else {
             MasterFrameBuilder.unregister(this);
         }
@@ -83,51 +88,22 @@ public class SourceCustom extends Stream {
     public Frame getFrame() {
         return nextFrame;
     }
-    
-//    @Override
-//    public void setFakeVideo(boolean hasIt) {
-//        this.hasFakeVideo=hasIt;
-//    }
-//    
-////    @Override
-//    public void setFakeAudio(boolean hasIt) {
-//        this.hasFakeVideo=hasIt;
-//    }
-//    
-//    @Override
-//    public boolean hasFakeVideo(){
-//        return this.hasFakeVideo;
-//    }
-//    @Override
-//    public boolean hasFakeAudio(){
-//        return this.hasFakeAudio;
-//    }
-//    @Override
-//    public boolean hasVideo() {
-//        return hasVideo;
-//    }
-//    @Override
-//    public boolean hasAudio() {
-//        return hasAudio;
-//    }
-//    @Override
-//    public void setHasAudio(boolean setHasAudio) {
-//        hasAudio = setHasAudio;
-//    }
-//    @Override
-//    public void setHasVideo(boolean setHasVideo) {
-//        hasVideo = setHasVideo;
-//    }
-//    
+
     @Override
     public void readNext() {
+        Frame f = null;
         if (capture != null) {
-            nextFrame = capture.getFrame();
-            if (nextFrame != null) {
-                setAudioLevel(nextFrame);
-                lastPreview.getGraphics().drawImage(nextFrame.getImage(), 0, 0, null);
+            f = capture.getFrame();
+            if (f != null) {
+                BufferedImage img = f.getImage(); 
+                applyEffects(img);
+            }
+            if (f != null) {
+                setAudioLevel(f);
+                lastPreview.getGraphics().drawImage(f.getImage(), 0, 0, null);
             }
         }
+        nextFrame=f;
     }
 
     @Override

@@ -84,6 +84,14 @@ public class SourceDesktop extends Stream {
 
     @Override
     public void stop() {
+        for (int fx = 0; fx < this.getEffects().size(); fx++) {
+            Effect fxT = this.getEffects().get(fx);
+            if (fxT.getName().endsWith("Stretch") || fxT.getName().endsWith("Crop")) {
+                // do nothing.
+            } else {
+                fxT.resetFX();
+            }
+        }
         stop = true;
         isPlaying = false;
         if (capture != null) {
@@ -134,34 +142,24 @@ public class SourceDesktop extends Stream {
 
     @Override
     public void readNext() {
-         if (capture != null) {
-            nextFrame = capture.getFrame();
-            if (this.getEffects() != null) {
-                for (int fx = 0; fx < this.getEffects().size(); fx++) {
-                    if (nextFrame != null) {
-                        Effect fxM = this.getEffects().get(fx);
-                        if (fxM.needApply()){   
-                            fxM.applyEffect(nextFrame.getImage());
-                        }
-                    }
-                }
-//                for (Effect fxD : this.getEffects()) {
-//                    if (fxD.needApply() && nextFrame != null){   
-//                        fxD.applyEffect(nextFrame.getImage());
-//                    }
-//                }
+        Frame f = null;
+        if (capture != null) {
+            f = capture.getFrame();
+            if (f != null) {
+                BufferedImage img = f.getImage(); 
+                applyEffects(img);
             }
-            if (nextFrame != null) {
-                lastPreview = nextFrame.getImage();
+            if (f != null) {
+                lastPreview = f.getImage();
             }
         } else if (defaultCapture != null) {
-            frame.setImage(defaultCapture.createScreenCapture(area));
-            frame.setOutputFormat(x, y, width, height, opacity, volume);
-            frame.setZOrder(zorder);
-            applyEffects(frame.getImage());
-            nextFrame=frame;
-            lastPreview = frame.getImage();
-        } 
+            f.setImage(defaultCapture.createScreenCapture(area));
+            f.setOutputFormat(x, y, width, height, opacity, volume);
+            f.setZOrder(zorder);
+            applyEffects(f.getImage());
+            lastPreview = f.getImage();
+        }
+        nextFrame=f;
     }
 
     @Override

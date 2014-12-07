@@ -5,7 +5,6 @@
 package webcamstudio.streams;
 
 import java.awt.image.BufferedImage;
-//import java.io.File;
 import webcamstudio.externals.ProcessRenderer;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterFrameBuilder;
@@ -62,6 +61,14 @@ public class SourceURL extends Stream {
             }
             this.read();
         } else {
+            for (int fx = 0; fx < this.getEffects().size(); fx++) {
+            Effect fxT = this.getEffects().get(fx);
+            if (fxT.getName().endsWith("Stretch") || fxT.getName().endsWith("Crop")) {
+                // do nothing.
+            } else {
+                fxT.resetFX();
+            }
+        }
         isPlaying = false;
         if (getPreView()){
             PreviewFrameBuilder.unregister(this);
@@ -146,12 +153,9 @@ public class SourceURL extends Stream {
         Frame f = null;
         if (capture != null) {
             f = capture.getFrame();
-            if (this.getEffects() != null) {
-                for (Effect fxUR : this.getEffects()) {
-                    if (f != null && fxUR.needApply()) {   
-                        fxUR.applyEffect(f.getImage());
-                    }
-                }
+            if (f != null) {
+                BufferedImage img = f.getImage(); 
+                applyEffects(img);
             }
             if (f != null) {
                 setAudioLevel(f);

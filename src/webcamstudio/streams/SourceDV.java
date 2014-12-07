@@ -52,6 +52,14 @@ public class SourceDV extends Stream {
     
     @Override
     public void stop() {
+        for (int fx = 0; fx < this.getEffects().size(); fx++) {
+            Effect fxT = this.getEffects().get(fx);
+            if (fxT.getName().endsWith("Stretch") || fxT.getName().endsWith("Crop")) {
+                // do nothing.
+            } else {
+                fxT.resetFX();
+            }
+        }
         isPlaying = false;
         if (getPreView()){
             PreviewFrameBuilder.unregister(this);
@@ -111,15 +119,10 @@ public class SourceDV extends Stream {
         if (capture != null) {
             fDV = capture.getFrame();
             if (fDV != null) {
-                if (this.getEffects() != null) {
-                    for (int fx = 0; fx < this.getEffects().size(); fx++) {
-                        Effect fxT = this.getEffects().get(fx);
-                        if (fxT.needApply()){
-                            BufferedImage txImage = fDV.getImage(); 
-                            fxT.applyEffect(txImage);
-                        }
-                    }
-                }
+                BufferedImage img = fDV.getImage(); 
+                applyEffects(img);
+            }
+            if (fDV != null) {
                 setAudioLevel(fDV);
                 lastPreview.getGraphics().drawImage(fDV.getImage(), 0, 0, null);
                 nextFrame=fDV;

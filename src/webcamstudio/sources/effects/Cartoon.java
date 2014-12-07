@@ -6,7 +6,6 @@ package webcamstudio.sources.effects;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.util.prefs.Preferences;
 import javax.swing.JPanel;
 import webcamstudio.sources.effects.controls.CartoonControl;
 
@@ -96,16 +95,7 @@ public class Cartoon extends Effect {
     }
 
     @Override
-    public void applyStudioConfig(Preferences prefs) {
-        prefs.putInt("scale", scale);
-        prefs.putInt("colorsplit", colorSplit);
-        prefs.putInt("contoursize", contourSize);
-    }
-
-    @Override
-    public void loadFromStudioConfig(Preferences prefs) {
-        scale = prefs.getInt("scale", scale);
-        colorSplit = prefs.getInt("colorsplit", colorSplit);
-        contourSize = prefs.getInt("contoursize", contourSize);
+    public void resetFX() {
+        // nothing here.
     }
 }

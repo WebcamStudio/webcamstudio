@@ -28,11 +28,11 @@ import org.xml.sax.SAXException;
  *
  * @author pballeux
  */
-public class VideoSourceWidget extends VideoSource {
+public class SourceWidget extends Stream {
 
     public static void main(String[] args) {
         try {
-            VideoSourceWidget source = new VideoSourceWidget(new URL("file:///home/pballeux/Desktop/widget.xml"));
+            SourceWidget source = new SourceWidget(new URL("file:///home/pballeux/Desktop/widget.xml"));
             
             System.out.println("toString: " + source.toString());
             System.out.println("Name: " + source.getName());
@@ -41,9 +41,9 @@ public class VideoSourceWidget extends VideoSource {
             System.out.println("Data URL: " + source.data.toString());
             System.out.println("Width: " + source.getCaptureWidth());
             System.out.println("Height: " + source.getCaptureHeight());
-            System.out.println("Frequency: " + source.getUpdateTimeLapse());
+//            System.out.println("Frequency: " + source.getUpdateTimeLapse());
         } catch (MalformedURLException ex) {
-            Logger.getLogger(VideoSourceWidget.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SourceWidget.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -52,19 +52,19 @@ public class VideoSourceWidget extends VideoSource {
     private String description = "";
     private TreeMap<String, String> treeValues = new TreeMap<>();
 
-    public VideoSourceWidget(URL url) {
-        location = url.toString();
-        frameRate = 1;
-        try {
-            loadXML(location, false);
-        } catch (ParserConfigurationException | SAXException | IOException ex) {
-            Logger.getLogger(VideoSourceWidget.class.getName()).log(Level.SEVERE, null, ex);
-        }
+    public SourceWidget(URL url) {
+//        location = url.toString();
+//        frameRate = 1;
+//        try {
+//            loadXML(location, false);
+//        } catch (ParserConfigurationException | SAXException | IOException ex) {
+//            Logger.getLogger(SourceWidget.class.getName()).log(Level.SEVERE, null, ex);
+//        }
 
 
     }
 
-    public VideoSourceWidget() {
+    public SourceWidget() {
     }
 
     private void loadData(String url) throws ParserConfigurationException, SAXException, IOException {
@@ -112,8 +112,8 @@ public class VideoSourceWidget extends VideoSource {
     private void loadXML(String url, boolean render) throws ParserConfigurationException, SAXException, IOException {
         if (new File(url).exists()){
             //This is  local file
-            location = new File(url).toURI().toURL().toString();
-            url=location;
+//            location = new File(url).toURI().toURL().toString();
+//            url=location;
         }
         DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
@@ -132,7 +132,7 @@ public class VideoSourceWidget extends VideoSource {
             } else if (attr.getNodeName().equalsIgnoreCase("height")) {
                 captureHeight = new Integer(attr.getTextContent());
             } else if (attr.getNodeName().equalsIgnoreCase("updatefrequency")) {
-                updateTimeLaspe = new Integer(attr.getTextContent()) * 1000 * 60;  //Value is in minutes
+//                updateTimeLaspe = new Integer(attr.getTextContent()) * 1000 * 60;  //Value is in minutes
             } else if (render && attr.getNodeName().equalsIgnoreCase("xmldataurl")) {
                 data = new URL(attr.getNodeValue());
                 loadData(data.toString());
@@ -145,7 +145,7 @@ public class VideoSourceWidget extends VideoSource {
         bgColor = new Color(color, true);
         bgColor = new Color(bgColor.getRed(), bgColor.getGreen(), bgColor.getBlue(), alpha);
         // Init image
-        tempimage = new BufferedImage(captureWidth, captureHeight, BufferedImage.TYPE_INT_ARGB);
+//        tempimage = new BufferedImage(captureWidth, captureHeight, BufferedImage.TYPE_INT_ARGB);
 
         //Go over all the items in the list
         NodeList elements = rootNode.getChildNodes();
@@ -164,17 +164,17 @@ public class VideoSourceWidget extends VideoSource {
                 drawText(item);
             }
         }
-        applyEffects(tempimage);
-        applyShape(tempimage);
-        image = tempimage;
+//        applyEffects(tempimage);
+//        applyShape(tempimage);
+//        image = tempimage;
     }
 
     private void drawImage(Node img) throws MalformedURLException, IOException {
-        Graphics2D g = tempimage.createGraphics();
-        g.setRenderingHint(java.awt.RenderingHints.KEY_INTERPOLATION, java.awt.RenderingHints.VALUE_INTERPOLATION_BICUBIC);
-        g.setRenderingHint(java.awt.RenderingHints.KEY_RENDERING, java.awt.RenderingHints.VALUE_RENDER_QUALITY);
-        g.setRenderingHint(java.awt.RenderingHints.KEY_DITHERING, java.awt.RenderingHints.VALUE_DITHER_ENABLE);
-        g.setRenderingHint(java.awt.RenderingHints.KEY_COLOR_RENDERING, java.awt.RenderingHints.VALUE_COLOR_RENDER_QUALITY);
+//        Graphics2D g = tempimage.createGraphics();
+//        g.setRenderingHint(java.awt.RenderingHints.KEY_INTERPOLATION, java.awt.RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+//        g.setRenderingHint(java.awt.RenderingHints.KEY_RENDERING, java.awt.RenderingHints.VALUE_RENDER_QUALITY);
+//        g.setRenderingHint(java.awt.RenderingHints.KEY_DITHERING, java.awt.RenderingHints.VALUE_DITHER_ENABLE);
+//        g.setRenderingHint(java.awt.RenderingHints.KEY_COLOR_RENDERING, java.awt.RenderingHints.VALUE_COLOR_RENDER_QUALITY);
         int x = 0;
         int y = 0;
         int w = 0;
@@ -196,7 +196,7 @@ public class VideoSourceWidget extends VideoSource {
         }
         if (imgURL != null) {
             BufferedImage tmp = javax.imageio.ImageIO.read(imgURL);
-            g.drawImage(tmp, x, y, x + w, y + h, 0, 0, tmp.getWidth(), tmp.getHeight(), null);
+//            g.drawImage(tmp, x, y, x + w, y + h, 0, 0, tmp.getWidth(), tmp.getHeight(), null);
         } else {
             System.out.println("Image URL = NULL");
         }
@@ -204,14 +204,14 @@ public class VideoSourceWidget extends VideoSource {
     }
 
     private void drawText(Node text) {
-        Graphics2D g = tempimage.createGraphics();
-        fontSize = 12;
+//        Graphics2D g = tempimage.createGraphics();
+//        fontSize = 12;
         int style = Font.PLAIN;
         String value = text.getTextContent();
-        g.setRenderingHint(java.awt.RenderingHints.KEY_INTERPOLATION, java.awt.RenderingHints.VALUE_INTERPOLATION_BICUBIC);
-        g.setRenderingHint(java.awt.RenderingHints.KEY_RENDERING, java.awt.RenderingHints.VALUE_RENDER_QUALITY);
-        g.setRenderingHint(java.awt.RenderingHints.KEY_DITHERING, java.awt.RenderingHints.VALUE_DITHER_ENABLE);
-        g.setRenderingHint(java.awt.RenderingHints.KEY_COLOR_RENDERING, java.awt.RenderingHints.VALUE_COLOR_RENDER_QUALITY);
+//        g.setRenderingHint(java.awt.RenderingHints.KEY_INTERPOLATION, java.awt.RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+//        g.setRenderingHint(java.awt.RenderingHints.KEY_RENDERING, java.awt.RenderingHints.VALUE_RENDER_QUALITY);
+//        g.setRenderingHint(java.awt.RenderingHints.KEY_DITHERING, java.awt.RenderingHints.VALUE_DITHER_ENABLE);
+//        g.setRenderingHint(java.awt.RenderingHints.KEY_COLOR_RENDERING, java.awt.RenderingHints.VALUE_COLOR_RENDER_QUALITY);
 
         int x = 0;
         int y = 0;
@@ -222,11 +222,11 @@ public class VideoSourceWidget extends VideoSource {
             } else if (item.getNodeName().equalsIgnoreCase("y")) {
                 y = new Integer(item.getTextContent());
             } else if (item.getNodeName().equalsIgnoreCase("color")) {
-                g.setColor(new Color(Integer.decode(item.getTextContent())));
+//                g.setColor(new Color(Integer.decode(item.getTextContent())));
             } else if (item.getNodeName().equalsIgnoreCase("fontname")) {
                 fontName = item.getTextContent();
             } else if (item.getNodeName().equalsIgnoreCase("fontsize")) {
-                fontSize = new Integer(item.getTextContent());
+//                fontSize = new Integer(item.getTextContent());
             } else if (item.getNodeName().equalsIgnoreCase("bold")) {
                 if (item.getTextContent().equalsIgnoreCase("true")) {
                     style += Font.BOLD;
@@ -235,9 +235,9 @@ public class VideoSourceWidget extends VideoSource {
                 style += Font.ITALIC;
             }
         }
-        Font font = new Font(fontName, style, fontSize);
-        g.setFont(font);
-        g.drawString(decodeValues(value), x, y);
+//        Font font = new Font(fontName, style, fontSize);
+//        g.setFont(font);
+//        g.drawString(decodeValues(value), x, y);
     }
 
     private String decodeValues(String value) {
@@ -259,62 +259,62 @@ public class VideoSourceWidget extends VideoSource {
         return retValue;
     }
 
-    @Override
+//    @Override
     public void startSource() {
-        isPlaying = true;
-        stopMe = false;
+//        isPlaying = true;
+//        stopMe = false;
         new Thread(new Runnable() {
             @Override
             public void run() {
-                try {
-                    loadXML(location, true);
-                } catch (        ParserConfigurationException | SAXException | IOException ex) {
-                    Logger.getLogger(VideoSourceWidget.class.getName()).log(Level.SEVERE, null, ex);
-                }
+//                try {
+//                    loadXML(location, true);
+//                } catch (        ParserConfigurationException | SAXException | IOException ex) {
+//                    Logger.getLogger(SourceWidget.class.getName()).log(Level.SEVERE, null, ex);
+//                }
                 long lastTimeStamp = System.currentTimeMillis();
-                while (!stopMe) {
-                    try {
-                        Thread.sleep(1000);
-                        if (updateTimeLaspe != 0 && (System.currentTimeMillis() - lastTimeStamp) > updateTimeLaspe) {
-                            loadXML(location, true);
-                            lastTimeStamp = System.currentTimeMillis();
-                        }
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(VideoSourceWidget.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (ParserConfigurationException | SAXException | IOException ex) {
-                        Logger.getLogger(VideoSourceWidget.class.getName()).log(Level.SEVERE, null, ex);
-                        stopMe = true;
-                    }
-                }
-                isPlaying = false;
+//                while (!stopMe) {
+//                    try {
+//                        Thread.sleep(1000);
+//                        if (updateTimeLaspe != 0 && (System.currentTimeMillis() - lastTimeStamp) > updateTimeLaspe) {
+//                            loadXML(location, true);
+//                            lastTimeStamp = System.currentTimeMillis();
+//                        }
+//                    } catch (InterruptedException ex) {
+//                        Logger.getLogger(SourceWidget.class.getName()).log(Level.SEVERE, null, ex);
+//                    } catch (ParserConfigurationException | SAXException | IOException ex) {
+//                        Logger.getLogger(SourceWidget.class.getName()).log(Level.SEVERE, null, ex);
+//                        stopMe = true;
+//                    }
+//                }
+//                isPlaying = false;
             }
         }).start();
     }
 
-    @Override
-    public void stopSource() {
-        stopMe = true;
-        isPlaying = false;
-    }
+//    @Override
+//    public void stopSource() {
+//        stopMe = true;
+//        isPlaying = false;
+//    }
+//
+//    @Override
+//    public boolean canUpdateSource() {
+//        return true;
+//    }
 
-    @Override
-    public boolean canUpdateSource() {
-        return true;
-    }
-
-    @Override
-    public boolean hasText() {
-        return false;
-    }
-
-    @Override
-    public boolean isPaused() {
-        return false;
-    }
+//    @Override
+//    public boolean hasText() {
+//        return false;
+//    }
+//
+//    @Override
+//    public boolean isPaused() {
+//        return false;
+//    }
 
     @Override
     public boolean isPlaying() {
-        return isPlaying;
+        return  true; //isPlaying;
     }
 
     @Override
@@ -330,19 +330,42 @@ public class VideoSourceWidget extends VideoSource {
         return "Widget: " + name;
     }
 
+//    @Override
+//    public ImageIcon getThumbnail() {
+//        ImageIcon icon = super.getCachedThumbnail();
+//        if (icon==null){
+//            icon = super.getThumbnail();
+//            try {
+//                saveThumbnail(icon);
+//            } catch (IOException ex) {
+//                Logger.getLogger(SourceWidget.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//        }
+//        return icon;
+//    }
+
     @Override
-    public ImageIcon getThumbnail() {
-        ImageIcon icon = super.getCachedThumbnail();
-        if (icon==null){
-            icon = super.getThumbnail();
-            try {
-                saveThumbnail(icon);
-            } catch (IOException ex) {
-                Logger.getLogger(VideoSourceWidget.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-        return icon;
+    public void read() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @Override
+    public void stop() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 
+    @Override
+    public boolean needSeek() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public BufferedImage getPreview() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void readNext() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

@@ -8,7 +8,6 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-import java.util.prefs.Preferences;
 import javax.swing.JPanel;
 import webcamstudio.sources.effects.controls.PerspectiveControl;
 
@@ -59,32 +58,8 @@ public class Perspective extends Effect {
     }
 
     @Override
-    public void applyStudioConfig(Preferences prefs) {
-        prefs.putFloat("x1", x1);
-        prefs.putFloat("y1", y1);
-//        prefs.putFloat("x2", x2);
-//        prefs.putFloat("y2", y2);
-        prefs.putFloat("x3", x3);
-        prefs.putFloat("y3", y3);
-//        prefs.putFloat("x4", x4);
-//        prefs.putFloat("y4", y4);
-    }
-
-    @Override
     public boolean needApply(){
-        return needApply= false;
-    }
-    @Override
-    public void loadFromStudioConfig(Preferences prefs) {
-        x1 = prefs.getFloat("x1", x1);
-        y1 = prefs.getFloat("y1", y1);
-//        x2 = prefs.getFloat("x2", x2);
-//        y2 = prefs.getFloat("y2", y2);
-        x3 = prefs.getFloat("x3", x3);
-        y3 = prefs.getFloat("y3", y3);
-//        x4 = prefs.getFloat("x4", x4);
-//        y4 = prefs.getFloat("y4", y4);
-
+        return needApply= true;
     }
 
     /**
@@ -116,34 +91,6 @@ public class Perspective extends Effect {
     }
 
     /**
-     * @return the x2
-     */
-//    public float getX2() {
-//        return x2;
-//    }
-//
-//    /**
-//     * @param x2 the x2 to set
-//     */
-//    public void setX2(float x2) {
-//        this.x2 = x2;
-//    }
-//
-//    /**
-//     * @return the y2
-//     */
-//    public float getY2() {
-//        return y2;
-//    }
-//
-//    /**
-//     * @param y2 the y2 to set
-//     */
-//    public void setY2(float y2) {
-//        this.y2 = y2;
-//    }
-
-    /**
      * @return the x3
      */
     public float getX3() {
@@ -171,31 +118,8 @@ public class Perspective extends Effect {
         this.y3 = y3;
     }
 
-    /**
-     * @return the x4
-     */
-//    public float getX4() {
-//        return x4;
-//    }
-//
-//    /**
-//     * @param x4 the x4 to set
-//     */
-//    public void setX4(float x4) {
-//        this.x4 = x4;
-//    }
-//
-//    /**
-//     * @return the y4
-//     */
-//    public float getY4() {
-//        return y4;
-//    }
-//
-//    /**
-//     * @param y4 the y4 to set
-//     */
-//    public void setY4(float y4) {
-//        this.y4 = y4;
-//    }
+    @Override
+    public void resetFX() {
+        // nothing here.
     }
+}

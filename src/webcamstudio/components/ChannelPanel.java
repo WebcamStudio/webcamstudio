@@ -1310,7 +1310,7 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
     private javax.swing.JButton btnRenameCh;
     private javax.swing.JButton btnSelect;
     private javax.swing.JButton btnStopAllStream;
-    private javax.swing.JButton btnStopOnlyStream;
+    public static javax.swing.JButton btnStopOnlyStream;
     private javax.swing.JButton btnUp;
     private javax.swing.JButton btnUpdate;
     private javax.swing.JLabel jLabel2;

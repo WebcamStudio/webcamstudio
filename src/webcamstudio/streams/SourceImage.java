@@ -8,11 +8,11 @@ package webcamstudio.streams;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import org.imgscalr.Scalr;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterFrameBuilder;
+import webcamstudio.mixers.MasterMixer;
 import webcamstudio.mixers.PreviewFrameBuilder;
 import webcamstudio.sources.effects.Effect;
 
@@ -25,18 +25,21 @@ public class SourceImage extends Stream{
     BufferedImage image = null;
     boolean playing = false;
     Frame frame = null;
+    private final MasterMixer mixer = MasterMixer.getInstance();
+    private int imgCW = mixer.getWidth();
+    private int imgCH = mixer.getHeight();
+    
     public SourceImage(File img){
         super();
-        file=img;
+        file = img;
         name = img.getName();
     }
     
     private void loadImage(File f) throws IOException{
-        image = Scalr.resize(ImageIO.read(f), Scalr.Method.ULTRA_QUALITY, Scalr.Mode.FIT_EXACT, width, height);
-//        image = ImageIO.read(f);
+        BufferedImage capImg = ImageIO.read(f);
+        image = Scalr.resize(capImg, Scalr.Method.BALANCED, Scalr.Mode.FIT_EXACT, width, height);
         captureWidth = image.getWidth();
         captureHeight = image.getHeight();
-//        System.out.println("CapW: "+captureWidth+" CapH: "+captureHeight);
     }
     
     @Override
@@ -62,11 +65,19 @@ public class SourceImage extends Stream{
 
     @Override
     public void pause() {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates. 
+        // do nothing.
     }
     
     @Override
     public void stop() {
+        for (int fx = 0; fx < this.getEffects().size(); fx++) {
+            Effect fxT = this.getEffects().get(fx);
+            if (fxT.getName().endsWith("Stretch") || fxT.getName().endsWith("Crop")) {
+                // do nothing.
+            } else {
+                fxT.resetFX();
+            }
+        }
         playing = false;
         frame = null;
         if (getPreView()){
@@ -75,6 +86,7 @@ public class SourceImage extends Stream{
             MasterFrameBuilder.unregister(this);
         }
     }
+    
     @Override
     public boolean needSeek() {
             return needSeekCTRL=false;
@@ -105,26 +117,84 @@ public class SourceImage extends Stream{
     public boolean hasVideo() {
         return true;
     }
-
+    
+    /**
+     *
+     */
     @Override
     public void readNext() {
         frame.setImage(image);
         if (frame != null) {
-            ArrayList<Effect> allFx = this.getEffects();
-            if (allFx != null) {
-                for (int fx = 0; fx < allFx.size(); fx++) {
-                    if (frame != null) {
-                        Effect fxM = allFx.get(fx);
-                        fxM.applyEffect(frame.getImage());
-                    }
-                }
-            }
+            BufferedImage img = frame.getImage(); 
+            applyEffects(img);
+        }
+        if (frame != null) {
             frame.setOutputFormat(x, y, width, height, opacity, volume);
             frame.setZOrder(zorder);
         }
         nextFrame=frame;
     }
-
+    
+    @Override
+    public void updatePNG() {
+//        System.out.println("updatePNG !!!");
+        captureWidth = width;
+        captureHeight = height;
+//        playing = true;   
+        try{
+            loadImage(file);
+            frame = new Frame(captureWidth,captureHeight,rate);
+            frame.setImage(image);
+            frame.setAudio(null);
+            frame.setID(uuid);
+            frame.setOutputFormat(x, y, width, height, opacity, volume);
+            frame.setZOrder(zorder);
+        } catch(IOException e){
+            e.printStackTrace();
+        }
+    }
+    
+    public void setImgCW (int tCW) {
+        imgCW = tCW;
+    }
+    
+    public int getImgCW(){
+        return imgCW;
+    }
+    
+    public void setImgCH(int tCH) {
+        imgCH = tCH;
+    }
+    
+    public int getImgCH(){
+        return imgCH;
+    }
+    
+    @Override
+    public void setWidth(int w) {
+        if (w < 1){
+            w = 1;
+        }
+        width = w;
+//        if (!this.getLoaded()) {
+            updatePNG();
+//        }
+//        System.out.println("W set ... "+w);
+    }
+    
+    @Override
+    public void setHeight(int h) {
+        if (h < 1){
+            h = 1;
+        }
+        height = h;
+//        if (!this.getLoaded()) {
+            updatePNG();
+//        }
+//        System.out.println("Set " + this.getName() + " To = " + this.height);
+//        System.out.println("H set ... "+h);
+    }
+    
     @Override
     public void play() {
         // nothing here.

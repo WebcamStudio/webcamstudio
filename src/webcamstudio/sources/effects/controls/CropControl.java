@@ -160,15 +160,15 @@ public class CropControl extends javax.swing.JPanel {
                     .addComponent(jslX, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addComponent(label, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 38, Short.MAX_VALUE)
                         .addComponent(jSpinX, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jSpinWidth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 6, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 38, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jslHeight, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addComponent(jslY, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
@@ -178,9 +178,9 @@ public class CropControl extends javax.swing.JPanel {
                         .addComponent(jSpinY, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jLabel6)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 38, Short.MAX_VALUE)
                         .addComponent(jSpinHeight, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(38, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -244,26 +244,22 @@ public class CropControl extends javax.swing.JPanel {
     private void jslXStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jslXStateChanged
         int x = (Integer) jslX.getValue();
         jSpinX.setValue(x);
-        effect.setX(x);
     }//GEN-LAST:event_jslXStateChanged
 
     private void jslYStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jslYStateChanged
         int y = (Integer) jslY.getValue();
         jSpinY.setValue(y);
-        effect.setY(y);
     }//GEN-LAST:event_jslYStateChanged
 
     private void jslWidthStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jslWidthStateChanged
         int w = (Integer) jslWidth.getValue();
         jSpinWidth.setValue(w);
-        effect.setWidth(w);
         
     }//GEN-LAST:event_jslWidthStateChanged
 
     private void jslHeightStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jslHeightStateChanged
         int h = (Integer) jslHeight.getValue();
         jSpinHeight.setValue(h);
-        effect.setHeight(h);
     }//GEN-LAST:event_jslHeightStateChanged
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

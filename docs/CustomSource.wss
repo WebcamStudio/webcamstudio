@@ -23,7 +23,7 @@
 # The symbol "#" before the line will tell WS to ignore that line ...
 # Uncomment the key "video/audio" to specify if the source will use two separate command for video and audio or if the source is an only audio or an only video stream. For example a only audio stream will have key "audio" uncommented equals to the avconv/ffmpeg/gstreamer/dvgrab command and the key "video" commented. A stream that will only use one command for A/V will have the key "video" containing the entire A/V command uncommanted and the key "audio=" with "avconv -v 0" (null command) uncommented.
 
-video=avconv -an -f video4linux2 -s @CWIDTHx@CHEIGHT -r @RATE -i /dev/video1 -f rawvideo -pix_fmt rgb24 -s @CWIDTHx@CHEIGHT -r @RATE tcp://127.0.0.1:@VPORT
+video=avconv -an -f video4linux2 -s @CWIDTHx@CHEIGHT -r @RATE -i /dev/video0 -f rawvideo -pix_fmt rgb24 -s @CWIDTHx@CHEIGHT -r @RATE tcp://127.0.0.1:@VPORT
 
 #audio=avconv -v 0
 

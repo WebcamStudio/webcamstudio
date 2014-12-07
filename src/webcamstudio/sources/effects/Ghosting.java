@@ -10,7 +10,6 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.prefs.Preferences;
 import javax.swing.JPanel;
 
 /**
@@ -69,10 +68,7 @@ public class Ghosting extends Effect {
     }
 
     @Override
-    public void applyStudioConfig(Preferences prefs) {
-    }
-
-    @Override
-    public void loadFromStudioConfig(Preferences prefs) { 
+    public void resetFX() {
+        // nothing here.
     }
 }

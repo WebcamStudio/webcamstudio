@@ -20,6 +20,7 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetDropEvent;
+import java.awt.image.BufferedImage;
 import java.beans.PropertyVetoException;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -41,6 +42,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
@@ -82,7 +84,9 @@ import webcamstudio.streams.SourceDV;
 import webcamstudio.streams.SourceDVB;
 import webcamstudio.streams.SourceDesktop;
 import webcamstudio.streams.SourceIPCam;
+import webcamstudio.streams.SourceImage;
 import webcamstudio.streams.SourceImageGif;
+import webcamstudio.streams.SourceImageU;
 import webcamstudio.streams.SourceMovie;
 import webcamstudio.streams.SourceMusic;
 import webcamstudio.streams.SourceText;
@@ -195,6 +199,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
 
     /**
      * Creates new form WebcamStudio
+     * @throws java.io.IOException
      */
     
     public WebcamStudio() throws IOException {
@@ -265,8 +270,8 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
                                 fileName = file.getName();
                                 Stream stream = Stream.getInstance(file);
                                 if (stream != null) {
-                                    if (stream instanceof SourceMovie || stream instanceof SourceMusic) {
-                                        durationCalc(stream, file);
+                                    if (stream instanceof SourceMovie || stream instanceof SourceMusic || stream instanceof SourceImage || stream instanceof SourceImageU || stream instanceof SourceImageGif) {
+                                        getVideoParams(stream, file, null);
                                     }
                                     ArrayList<String> allChan = new ArrayList<>();
                                     for (String scn : MasterChannels.getInstance().getChannels()){
@@ -344,7 +349,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
             listenerCP.setRemoteOn();
         }
         firstRun = false;
-            }
+    }
 
     private StreamDesktop getNewStreamDesktop(Stream s) {
         return new StreamDesktop(s, this);
@@ -1239,7 +1244,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
  
     private void btnAddTextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddTextActionPerformed
         SourceText streamTXT;
-        streamTXT = new SourceText("");
+        streamTXT = new SourceText("ws");
         ArrayList<String> allChan = new ArrayList<>();
         for (String scn : MasterChannels.getInstance().getChannels()){
             allChan.add(scn); 
@@ -1274,8 +1279,8 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
             if (file != null) {
                 Stream s = Stream.getInstance(file);
                 if (s != null) {
-                    if (s instanceof SourceMovie || s instanceof SourceMusic) {
-                        durationCalc(s, file);
+                    if (s instanceof SourceMovie || s instanceof SourceMusic || s instanceof SourceImage || s instanceof SourceImageU || s instanceof SourceImageGif) {
+                        getVideoParams(s, file, null);
                     }
                     ArrayList<String> allChan = new ArrayList<>();
                     for (String scn : MasterChannels.getInstance().getChannels()){
@@ -1304,23 +1309,29 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
     }//GEN-LAST:event_btnAddFileActionPerformed
 
     private void btnAddAnimationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddAnimationActionPerformed
-        String key = cboAnimations.getSelectedItem().toString();
-        String res = animations.getProperty(key);
-        URL url = getClass().getResource("/webcamstudio/resources/animations/" + res);
-        Stream streamAnm;
-        streamAnm = new SourceImageGif(key, url);
-        ArrayList<String> allChan = new ArrayList<>();
-        for (String scn : MasterChannels.getInstance().getChannels()){
-            allChan.add(scn); 
-        } 
-        for (String sc : allChan){
-            streamAnm.addChannel(SourceChannel.getChannel(sc, streamAnm));
-        }
-        StreamDesktop frame = new StreamDesktop(streamAnm, this);
-        desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        try {
-            frame.setSelected(true);
-        } catch (PropertyVetoException ex) {
+        try {                                                
+            String key = cboAnimations.getSelectedItem().toString();
+            String res = animations.getProperty(key);
+            URL url = getClass().getResource("/webcamstudio/resources/animations/" + res);
+            Stream streamAnm;
+            streamAnm = new SourceImageGif(key, url);
+            BufferedImage gifImage = ImageIO.read(url);
+            getVideoParams(streamAnm, null, gifImage);
+            ArrayList<String> allChan = new ArrayList<>();
+            for (String scn : MasterChannels.getInstance().getChannels()){
+                allChan.add(scn);
+            }
+            for (String sc : allChan){
+                streamAnm.addChannel(SourceChannel.getChannel(sc, streamAnm));
+            }
+            StreamDesktop frame = new StreamDesktop(streamAnm, this);
+            desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+            try {
+                frame.setSelected(true);
+            } catch (PropertyVetoException ex) {
+                Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } catch (IOException ex) {
             Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnAddAnimationActionPerformed
@@ -1456,15 +1467,12 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
         }
     } 
     
-    public static void durationCalc(Stream stream, File file) {
-        String commandDuration;
+    public static void getWebcamParams(Stream stream, VideoDevice d) {
+        String infoCmd;
         Runtime rt = Runtime.getRuntime();
-        if (Screen.avconvDetected()){
-            commandDuration = "avconv -i " + "\"" + file.getAbsolutePath() + "\"";
-        } else {
-            commandDuration = "ffmpeg -i " + "\"" + file.getAbsolutePath() + "\"";    
-        }
-        File fileD = new File(userHomeDir+"/.webcamstudio/"+"DCalc.sh");
+        infoCmd = "v4l2-ctl --get-fmt-video --device " + d.getFile();
+        System.out.println("infoCmd: "+infoCmd);
+        File fileD = new File(userHomeDir+"/.webcamstudio/"+"dSize.sh");
         FileOutputStream fosD;
         DataOutputStream dosD = null;
         try {
@@ -1476,38 +1484,175 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
         try {
             if (dosD != null) {
             dosD.writeBytes("#!/bin/bash\n");
-            dosD.writeBytes(commandDuration+"\n");
+            dosD.writeBytes(infoCmd+"\n");
             dosD.close();
             }
         } catch (IOException ex) {
             Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
         }
         fileD.setExecutable(true);
-        String batchDurationComm = userHomeDir+"/.webcamstudio/"+"DCalc.sh";
+        String batchDurationComm = userHomeDir+"/.webcamstudio/"+"dSize.sh";
         try {
-            Process duration = rt.exec(batchDurationComm);
+            Process infoP = rt.exec(batchDurationComm);
             Tools.sleep(10);
-            duration.waitFor(); //Author spoonybard896
-            InputStream lsOut = duration.getErrorStream();
+            infoP.waitFor(); //Author spoonybard896
+            InputStream lsOut = infoP.getInputStream();
             InputStreamReader isr = new InputStreamReader(lsOut);
             BufferedReader in = new BufferedReader(isr);
             String lineR;
             while ((lineR = in.readLine()) != null) {
-                if(lineR.contains("Duration:")) {
-                    lineR = lineR.replaceFirst("Duration: ", "");
+                System.out.println("lineR: "+lineR);
+                if(lineR.contains("Width")) {
                     lineR = lineR.trim();
-                    String resu = lineR.substring(0, 8);
                     String[] temp;
-                    temp = resu.split(":");
-                    int hours = Integer.parseInt(temp[0]);
-                    int minutes = Integer.parseInt(temp[1]);
-                    int seconds = Integer.parseInt(temp[2]);
-                    int totalTime = hours*3600 + minutes*60 + seconds;
-                    String strDuration = Integer.toString(totalTime);
-                    stream.setStreamTime(strDuration+"s");
+                    temp = lineR.split(":");
+                    System.out.println("Split:"+temp[0]+" Split:"+temp[1]);
+                    String Res = temp[1].replaceAll(" ", "");
+                    String[] wh;
+                    wh = Res.split("/");
+                    
+                    int w = Integer.parseInt(wh[0]);
+                    int h = Integer.parseInt(wh[1]);
+                    System.out.println("W:"+w+" H:"+h);
+                    int mixerW = MasterMixer.getInstance().getWidth();
+                    int mixerH = MasterMixer.getInstance().getHeight();
+                    int hAR = (mixerW*h)/w;
+                    int wAR = (mixerH*w)/h;
+                    if (hAR > mixerH) {
+                        hAR = mixerH;
+                        int xPos = (mixerW - wAR)/2;
+                        stream.setX(xPos);
+                        stream.setWidth(wAR);
+                    }
+                    if (w > mixerW) {
+                         int yPos = (mixerH- hAR)/2;
+                         stream.setY(yPos);
+                         stream.setHeight(hAR);
+                    } else {
+                        if (h < mixerH) {
+                            int yPos = (mixerH- hAR)/2;
+                            stream.setY(yPos);
+                        } else {
+                           hAR = mixerH;
+                        }
+                    }
+                    stream.setHeight(hAR);
                 }
-            } //Author spoonybard896
+            }
         } catch (IOException | InterruptedException | NumberFormatException e) {
+        }
+    }
+    
+    public static void getVideoParams(Stream stream, File file, BufferedImage image) {
+        if (image != null) {
+            int w = image.getWidth();
+            int h = image.getHeight();
+            int mixerW = MasterMixer.getInstance().getWidth();
+            int mixerH = MasterMixer.getInstance().getHeight();
+            int hAR = (mixerW*h)/w;
+            int wAR = (mixerH*w)/h;
+            if (hAR > mixerH) {
+                hAR = mixerH;
+                int xPos = (mixerW - wAR)/2;
+                stream.setX(xPos);
+                stream.setWidth(wAR);
+            }
+            if (w > mixerW) {
+                 int yPos = (mixerH- hAR)/2;
+                 stream.setY(yPos);
+                 stream.setHeight(hAR);
+            } else {
+                if (h < mixerH) {
+                    int yPos = (mixerH- hAR)/2;
+                    stream.setY(yPos);
+                } else {
+                   hAR = mixerH;
+                }
+            }
+            stream.setHeight(hAR);
+        } else {
+            String infoCmd;
+            Runtime rt = Runtime.getRuntime();
+            if (Screen.avconvDetected()){
+                infoCmd = "avconv -i " + "\"" + file.getAbsolutePath() + "\"";
+            } else {
+                infoCmd = "ffmpeg -i " + "\"" + file.getAbsolutePath() + "\"";    
+            }
+            File fileD = new File(userHomeDir+"/.webcamstudio/"+"DCalc.sh");
+            FileOutputStream fosD;
+            DataOutputStream dosD = null;
+            try {
+                fosD = new FileOutputStream(fileD);
+                dosD= new DataOutputStream(fosD);
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            try {
+                if (dosD != null) {
+                dosD.writeBytes("#!/bin/bash\n");
+                dosD.writeBytes(infoCmd+"\n");
+                dosD.close();
+                }
+            } catch (IOException ex) {
+                Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            fileD.setExecutable(true);
+            String batchDurationComm = userHomeDir+"/.webcamstudio/"+"DCalc.sh";
+            try {
+                Process duration = rt.exec(batchDurationComm);
+                Tools.sleep(10);
+                duration.waitFor(); //Author spoonybard896
+                InputStream lsOut = duration.getErrorStream();
+                InputStreamReader isr = new InputStreamReader(lsOut);
+                BufferedReader in = new BufferedReader(isr);
+                String lineR;
+                while ((lineR = in.readLine()) != null) {
+                    if(lineR.contains("Duration:")) {
+                        lineR = lineR.replaceFirst("Duration: ", "");
+                        lineR = lineR.trim();
+                        String resu = lineR.substring(0, 8);
+                        String[] temp;
+                        temp = resu.split(":");
+                        int hours = Integer.parseInt(temp[0]);
+                        int minutes = Integer.parseInt(temp[1]);
+                        int seconds = Integer.parseInt(temp[2]);
+                        int totalTime = hours*3600 + minutes*60 + seconds;
+                        String strDuration = Integer.toString(totalTime);
+                        stream.setStreamTime(strDuration+"s");
+                    }
+                    if (lineR.contains("Video:")) {
+                        String [] lineRParts = lineR.split(",");
+                        String [] tempNativeSize = lineRParts[2].split(" ");
+                        String [] videoNativeSize = tempNativeSize[1].split("x");
+                        int w = Integer.parseInt(videoNativeSize[0]);
+                        int h = Integer.parseInt(videoNativeSize[1]);
+                        int mixerW = MasterMixer.getInstance().getWidth();
+                        int mixerH = MasterMixer.getInstance().getHeight();
+                        int hAR = (mixerW*h)/w;
+                        int wAR = (mixerH*w)/h;
+                        if (hAR > mixerH) {
+                            hAR = mixerH;
+                            int xPos = (mixerW - wAR)/2;
+                            stream.setX(xPos);
+                            stream.setWidth(wAR);
+                        }
+                        if (w > mixerW) {
+                             int yPos = (mixerH- hAR)/2;
+                             stream.setY(yPos);
+                             stream.setHeight(hAR);
+                        } else {
+                            if (h < mixerH) {
+                                int yPos = (mixerH- hAR)/2;
+                                stream.setY(yPos);
+                            } else {
+                               hAR = mixerH;
+                            }
+                        }
+                        stream.setHeight(hAR);
+                    }
+                }
+            } catch (IOException | InterruptedException | NumberFormatException e) {
+            }
         }
     }
     
@@ -1641,6 +1786,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
                             if (s != null) {
                                 StreamDesktop frame = new StreamDesktop(s, WebcamStudio.this);
                                 desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+                                s.setLoaded(false);
                             }
                             System.out.println("Adding Source: "+s.getName());
                         }
@@ -1652,6 +1798,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
                             if (text != null) {
                                 StreamDesktop frame = new StreamDesktop(text, WebcamStudio.this);
                                 desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+                                text.setLoaded(false);
                             }
                             System.out.println("Adding Source: "+text.getName());
                         }
@@ -1705,6 +1852,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
                     for (String sc : allChan){
                         webcam.addChannel(SourceChannel.getChannel(sc, webcam));
                     }
+                    getWebcamParams(webcam, d);
                     StreamDesktop frame = new StreamDesktop(webcam, this);
                     desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
                     try {
@@ -2064,8 +2212,8 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
                         for ( File file : contents) {
                             Stream s = Stream.getInstance(file);
                             if (s != null) {
-                                if (s instanceof SourceMovie || s instanceof SourceMusic) {
-                                    durationCalc(s, file);
+                                if (s instanceof SourceMovie || s instanceof SourceMusic || s instanceof SourceImage || s instanceof SourceImageU || stream instanceof SourceImageGif) {
+                                    getVideoParams(s, file, null);
                                 }
                                 StreamDesktop frame = new StreamDesktop(s, WebcamStudio.this);
                                 desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);

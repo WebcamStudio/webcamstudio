@@ -9,8 +9,8 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.util.Random;
-import java.util.prefs.Preferences;
 import javax.swing.JPanel;
+import webcamstudio.mixers.MasterMixer;
 
 /**
  *
@@ -20,11 +20,11 @@ public class ZoomZoom extends Effect {
 
     int x = 0;
     int y = 0;
-    int w = 320;
-    int h = 240;
+    int w = MasterMixer.getInstance().getWidth();
+    int h = MasterMixer.getInstance().getHeight();
     int xDir = 1;
     int yDir = 1;
-    int zoom = 200;
+    int zoom = 1000;
     int zoomDir = 1;
     int counter = 0;
     Random random = new Random();
@@ -102,12 +102,9 @@ public class ZoomZoom extends Effect {
     public JPanel getControl() {
         return null;
     }
-
+    
     @Override
-    public void applyStudioConfig(Preferences prefs) {
-    }
-
-    @Override
-    public void loadFromStudioConfig(Preferences prefs) {
+    public void resetFX() {
+        // nothing here.
     }
 }
