@@ -28,7 +28,6 @@ import webcamstudio.FullScreen;
 import webcamstudio.WSPreview;
 import webcamstudio.WebcamStudio;
 import webcamstudio.channels.MasterChannels;
-import static webcamstudio.components.ChannelPanel.listenerCPMP;
 import static webcamstudio.components.ChannelPanel.listenerCPOP;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterMixer;
@@ -425,7 +424,7 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
         int oldCH;
         for (Stream oneStream : allStreams) {
             if (!oneStream.getClass().toString().contains("Sink")){ // Don't Update SinkStreams
-    //            System.out.println("Processing "+oneStream.getName()+": ...");
+//                System.out.println("Processing "+oneStream.getName()+": ...");
                 if (oneStream instanceof SourceText) {
                     sTx = (SourceText) oneStream;
                     oldCW = sTx.getTextCW();
@@ -438,24 +437,24 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
                     oldCW = oneStream.getCaptureWidth();
                     oldCH = oneStream.getCaptureHeight();
                 }
-    //            System.out.println("oldCW: "+oldCW);
-    //            System.out.println("oldCH: "+oldCH);
+//                System.out.println("oldCW: "+oldCW);
+//                System.out.println("oldCH: "+oldCH);
                 int oldW = oneStream.getWidth();
-    //            System.out.println("oldW: "+oldW);
+//                System.out.println("oldW: "+oldW);
                 int oldH = oneStream.getHeight();
-    //            System.out.println("oldH: "+oldH);
+//                System.out.println("oldH: "+oldH);
                 int oldX = oneStream.getX();
-    //            System.out.println("oldX: "+oldX);
+//                System.out.println("oldX: "+oldX);
                 int oldY = oneStream.getY();
-    //            System.out.println("oldY: "+oldY);
+//                System.out.println("oldY: "+oldY);
                 int newW = (oldW * wi) / oldCW;
-    //            System.out.println("newW: "+newW);
+//                System.out.println("newW: "+newW);
                 int newH = (oldH * he) / oldCH;
-    //            System.out.println("newH: "+newH);
+//                System.out.println("newH: "+newH);
                 int newX = (oldX * wi) / oldCW;
-    //            System.out.println("newX: "+newX);
+//                System.out.println("newX: "+newX);
                 int newY = (oldY * he) / oldCH;
-    //            System.out.println("newY: "+newY);
+//                System.out.println("newY: "+newY);
                 if (oneStream instanceof SourceText) {
                     oneStream.setWidth(newW);
                     oneStream.setHeight(newH);
@@ -465,7 +464,7 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
                     oneStream.setCaptureHeight(newH);
                     sTx.setTextCW(wi);
                     sTx.setTextCH(he);
-    //                System.out.println(oneStream.getName()+" UpdateStatus !!!");
+//                    System.out.println(oneStream.getName()+" UpdateStatus !!!");
                     oneStream.updateStatus();
                     for (SourceChannel ssc : oneStream.getChannels()) {
                         ssc.setWidth(newW);
@@ -478,14 +477,14 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
                 } else if (oneStream instanceof SourceImage) { 
                     oneStream.setWidth(newW);
                     oneStream.setHeight(newH);
-    //                System.out.println(oneStream.getName()+" Height:"+newH);
+//                    System.out.println(oneStream.getName()+" Height:"+newH);
                     oneStream.setX(newX);
                     oneStream.setY(newY);
                     oneStream.setCaptureWidth(newW);
                     oneStream.setCaptureHeight(newH);
                     sImg.setImgCW(wi);
                     sImg.setImgCH(he);
-    //                System.out.println(oneStream.getName()+" UpdateStatus !!!");
+//                    System.out.println(oneStream.getName()+" UpdateStatus !!!");
                     oneStream.updateStatus();
                     for (SourceChannel ssc : oneStream.getChannels()) {
                         ssc.setWidth(newW);
@@ -502,7 +501,7 @@ public class MasterPanel extends javax.swing.JPanel implements MasterMixer.SinkL
                     oneStream.setY(newY);
                     oneStream.setCaptureWidth(wi);
                     oneStream.setCaptureHeight(he);
-    //                System.out.println(oneStream.getName()+" UpdateStatus !!!");
+//                    System.out.println(oneStream.getName()+" UpdateStatus !!!");
                     oneStream.updateStatus();
                     for (SourceChannel ssc : oneStream.getChannels()) {
                         ssc.setWidth(newW);

@@ -26,6 +26,7 @@ public class ComboGhost extends Effect {
     @Override
     public void applyEffect(BufferedImage img) {
         FastBitmap imageIn = new FastBitmap(img);
+//        imageIn.toRGB();
         int width  = img.getWidth();
         int height = img.getHeight();
         //Convolution process.

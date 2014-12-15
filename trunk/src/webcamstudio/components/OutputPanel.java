@@ -44,6 +44,7 @@ import java.util.prefs.Preferences;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
+import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -1529,7 +1530,10 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
     @Override
     public void addLoadingChannel(String name) { // used addLoadingChannel to activate Output from command line.
         for (Component c : this.getComponents()) {
-            if (c instanceof JToggleButton) {
+            // At this moment this workaround. After will make the proper fix.
+            if (c instanceof JCheckBox) {
+                // Nothing here.
+            } else if (c instanceof JToggleButton) {
                 JToggleButton b = (JToggleButton) c;
                 if (b.getText().contains(name)) {
                     b.doClick();

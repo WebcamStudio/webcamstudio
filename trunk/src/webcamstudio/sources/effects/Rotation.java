@@ -25,7 +25,7 @@ public class Rotation extends Effect{
     public void applyEffect(BufferedImage img) {
         
         FastBitmap imageIn = new FastBitmap(img);
-               
+//        imageIn.toRGB();
         Rotate.Algorithm algorithm = Rotate.Algorithm.BILINEAR;
         Rotate c = new Rotate(rotation,algorithm);
         c.applyInPlace(imageIn);
@@ -46,6 +46,7 @@ public class Rotation extends Effect{
                            RenderingHints.VALUE_DITHER_DISABLE);
         buffer.setBackground(new Color(0,0,0,0));
         buffer.clearRect(0,0,img.getWidth(),img.getHeight());
+//        buffer.drawImage(temp, 0, 0, null);
         buffer.drawImage(temp, 0, 0,img.getWidth(),img.getHeight(),0,0,temp.getWidth(),temp.getHeight(),null);
         buffer.dispose();
     }

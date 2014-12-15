@@ -8,6 +8,8 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import webcamstudio.sources.effects.Effect;
 import webcamstudio.sources.effects.Stretch;
+import webcamstudio.streams.SourceImage;
+import webcamstudio.streams.SourceText;
 import webcamstudio.streams.Stream;
 
 /**
@@ -168,7 +170,7 @@ public class SourceControlEffects extends javax.swing.JPanel {
     private void btnAddEffectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddEffectActionPerformed
         listModel.addElement(cboEffects.getSelectedItem());
         Effect fx = (Effect) cboEffects.getSelectedItem();
-        if (fx instanceof Stretch) {
+        if (fx instanceof Stretch && (stream instanceof SourceText || stream instanceof SourceImage)) {
             ((Stretch) fx).setWidth(stream.getWidth());
             ((Stretch) fx).setHeight(stream.getHeight());
         }

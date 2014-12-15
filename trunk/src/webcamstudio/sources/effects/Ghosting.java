@@ -25,8 +25,9 @@ public class Ghosting extends Effect {
     public void applyEffect(BufferedImage img) {
         
         FastBitmap imageIn = new FastBitmap(img);
+        imageIn.toRGB();
         previusImagesIn.add(imageIn);
-        if (imageCount > 25){
+        if (imageCount > 8){
             previusImageIn = previusImagesIn.get(1);
             previusImagesIn.remove(0);
         } else {
@@ -50,7 +51,8 @@ public class Ghosting extends Effect {
         buffer.setRenderingHint(RenderingHints.KEY_DITHERING,
                            RenderingHints.VALUE_DITHER_DISABLE);
         
-        buffer.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 90 / 100F));
+        buffer.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 30 / 100F));
+//        buffer.drawImage(temp, 0, 0,img.getWidth(),img.getHeight(),0,0,temp.getWidth(),temp.getHeight(),null);
         buffer.drawImage(temp, 0, 0, null);
         buffer.dispose();
         imageCount ++ ;

@@ -125,6 +125,8 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
     boolean ffmpeg = Screen.ffmpegDetected();
     boolean avconv = Screen.avconvDetected();
     boolean firstRun = true;
+    static boolean autoAR = false;
+    
     @SuppressWarnings("unchecked") 
     private void initFaceDetection() throws IOException {
         File dir = new File(System.getProperty("user.home"), ".webcamstudio/faces");
@@ -188,11 +190,15 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
         public void removeChannels(String removeSc, int a);
         public void setRemoteOn();
     }
+    
     static Listener listenerCP = null;
+    
     public static void setListenerCP(Listener l) {
         listenerCP = l;
     }
+    
     static Listener listenerOP = null;
+    
     public static void setListenerOP(Listener l) {
         listenerOP = l;
     }
@@ -333,6 +339,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
         initAudioMainSW();
         initThemeMainSW();
         initMainOutBE();
+        tglAutoAR.setSelected(autoAR);
         listenerOP.resetSinks(null);
         loadCustomSources();
         if (cmdFile != null){
@@ -495,6 +502,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
         audioFreq = prefs.getInt("audio-freq", audioFreq);
         theme = prefs.get("theme", theme);
         outFMEbe = prefs.getInt("out-FME", outFMEbe);
+        autoAR = prefs.getBoolean("autoar", autoAR);
         this.setLocation(x, y);
         this.setSize(w, h);
         recorder.loadPrefs(prefs);
@@ -517,6 +525,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
         prefs.put("theme", theme);
 //        System.out.println("Theme:"+theme);
         prefs.putInt("out-FME", outFMEbe);
+        prefs.putBoolean("autoar", autoAR);
         recorder.savePrefs(prefs);
         try {
             prefs.flush();
@@ -539,6 +548,8 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
         toolbar = new javax.swing.JToolBar();
         btnAddFile = new javax.swing.JButton();
         btnAddFolder = new javax.swing.JButton();
+	tglAutoAR = new javax.swing.JToggleButton();
+        jSeparator3 = new javax.swing.JToolBar.Separator();
         btnAddDVB = new javax.swing.JButton();
         btnAddURL = new javax.swing.JButton();
         btnAddIPCam = new javax.swing.JButton();
@@ -634,6 +645,29 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
             }
         });
         toolbar.add(btnAddFolder);
+
+	tglAutoAR.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/buttonAR.png"))); // NOI18N
+        tglAutoAR.setToolTipText("Automatic A/R detection Switch.");
+        tglAutoAR.setFocusable(false);
+        tglAutoAR.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        tglAutoAR.setMaximumSize(new java.awt.Dimension(29, 28));
+        tglAutoAR.setMinimumSize(new java.awt.Dimension(25, 25));
+        tglAutoAR.setName("tglAutoAR"); // NOI18N
+        tglAutoAR.setPreferredSize(new java.awt.Dimension(28, 29));
+        tglAutoAR.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/buttonAR.png"))); // NOI18N
+        tglAutoAR.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/buttonAR-selected.png"))); // NOI18N
+        tglAutoAR.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        tglAutoAR.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tglAutoARActionPerformed(evt);
+            }
+        });
+        toolbar.add(tglAutoAR);
+
+        jSeparator3.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
+        jSeparator3.setName("jSeparator3"); // NOI18N
+        jSeparator3.setOpaque(true);
+        toolbar.add(jSeparator3);
 
         btnAddDVB.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/dvb.png"))); // NOI18N
         btnAddDVB.setToolTipText("Add DVB-T Stream");
@@ -814,7 +848,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
             .addGroup(panSourcesLayout.createSequentialGroup()
                 .addComponent(toolbar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(desktop, javax.swing.GroupLayout.DEFAULT_SIZE, 397, Short.MAX_VALUE)
+                .addComponent(desktop, javax.swing.GroupLayout.DEFAULT_SIZE, 398, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -1176,8 +1210,6 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
                 Tools.sleep(10);
                 MasterMixer.getInstance().stop();
                 PreviewMixer.getInstance().stop();
-//                listenerCP.stopChTime(null);
-//                listenerCP.resetBtnStates(null);
                 try {
                     execPACTL("pactl unload-module module-null-sink");
                 } catch (IOException ex) {
@@ -1544,32 +1576,35 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
     }
     
     public static void getVideoParams(Stream stream, File file, BufferedImage image) {
+        
         if (image != null) {
-            int w = image.getWidth();
-            int h = image.getHeight();
-            int mixerW = MasterMixer.getInstance().getWidth();
-            int mixerH = MasterMixer.getInstance().getHeight();
-            int hAR = (mixerW*h)/w;
-            int wAR = (mixerH*w)/h;
-            if (hAR > mixerH) {
-                hAR = mixerH;
-                int xPos = (mixerW - wAR)/2;
-                stream.setX(xPos);
-                stream.setWidth(wAR);
-            }
-            if (w > mixerW) {
-                 int yPos = (mixerH- hAR)/2;
-                 stream.setY(yPos);
-                 stream.setHeight(hAR);
-            } else {
-                if (h < mixerH) {
-                    int yPos = (mixerH- hAR)/2;
-                    stream.setY(yPos);
-                } else {
-                   hAR = mixerH;
+            if (autoAR) {
+                int w = image.getWidth();
+                int h = image.getHeight();
+                int mixerW = MasterMixer.getInstance().getWidth();
+                int mixerH = MasterMixer.getInstance().getHeight();
+                int hAR = (mixerW*h)/w;
+                int wAR = (mixerH*w)/h;
+                if (hAR > mixerH) {
+                    hAR = mixerH;
+                    int xPos = (mixerW - wAR)/2;
+                    stream.setX(xPos);
+                    stream.setWidth(wAR);
                 }
+                if (w > mixerW) {
+                     int yPos = (mixerH- hAR)/2;
+                     stream.setY(yPos);
+                     stream.setHeight(hAR);
+                } else {
+                    if (h < mixerH) {
+                        int yPos = (mixerH- hAR)/2;
+                        stream.setY(yPos);
+                    } else {
+                       hAR = mixerH;
+                    }
+                }
+                stream.setHeight(hAR);
             }
-            stream.setHeight(hAR);
         } else {
             String infoCmd;
             Runtime rt = Runtime.getRuntime();
@@ -1620,35 +1655,37 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
                         String strDuration = Integer.toString(totalTime);
                         stream.setStreamTime(strDuration+"s");
                     }
-                    if (lineR.contains("Video:")) {
-                        String [] lineRParts = lineR.split(",");
-                        String [] tempNativeSize = lineRParts[2].split(" ");
-                        String [] videoNativeSize = tempNativeSize[1].split("x");
-                        int w = Integer.parseInt(videoNativeSize[0]);
-                        int h = Integer.parseInt(videoNativeSize[1]);
-                        int mixerW = MasterMixer.getInstance().getWidth();
-                        int mixerH = MasterMixer.getInstance().getHeight();
-                        int hAR = (mixerW*h)/w;
-                        int wAR = (mixerH*w)/h;
-                        if (hAR > mixerH) {
-                            hAR = mixerH;
-                            int xPos = (mixerW - wAR)/2;
-                            stream.setX(xPos);
-                            stream.setWidth(wAR);
-                        }
-                        if (w > mixerW) {
-                             int yPos = (mixerH- hAR)/2;
-                             stream.setY(yPos);
-                             stream.setHeight(hAR);
-                        } else {
-                            if (h < mixerH) {
-                                int yPos = (mixerH- hAR)/2;
-                                stream.setY(yPos);
-                            } else {
-                               hAR = mixerH;
+                    if (autoAR) {
+                        if (lineR.contains("Video:")) {
+                            String [] lineRParts = lineR.split(",");
+                            String [] tempNativeSize = lineRParts[2].split(" ");
+                            String [] videoNativeSize = tempNativeSize[1].split("x");
+                            int w = Integer.parseInt(videoNativeSize[0]);
+                            int h = Integer.parseInt(videoNativeSize[1]);
+                            int mixerW = MasterMixer.getInstance().getWidth();
+                            int mixerH = MasterMixer.getInstance().getHeight();
+                            int hAR = (mixerW*h)/w;
+                            int wAR = (mixerH*w)/h;
+                            if (hAR > mixerH) {
+                                hAR = mixerH;
+                                int xPos = (mixerW - wAR)/2;
+                                stream.setX(xPos);
+                                stream.setWidth(wAR);
                             }
+                            if (w > mixerW) {
+                                 int yPos = (mixerH- hAR)/2;
+                                 stream.setY(yPos);
+                                 stream.setHeight(hAR);
+                            } else {
+                                if (h < mixerH) {
+                                    int yPos = (mixerH- hAR)/2;
+                                    stream.setY(yPos);
+                                } else {
+                                   hAR = mixerH;
+                                }
+                            }
+                            stream.setHeight(hAR);
                         }
-                        stream.setHeight(hAR);
                     }
                 }
             } catch (IOException | InterruptedException | NumberFormatException e) {
@@ -1704,7 +1741,6 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
         FileNameExtensionFilter studioFilter = new FileNameExtensionFilter("Studio files (*.studio)", "studio");
         chooser.setFileFilter(studioFilter);
         chooser.setMultiSelectionEnabled(false);
-        //                MasterFrameBuilder.register(this);
         chooser.setDialogTitle("Load a Studio ...");
         chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         int retval = chooser.showOpenDialog(this);
@@ -1780,7 +1816,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
                         } catch (ParserConfigurationException | SAXException | IOException | XPathExpressionException ex) {
                             Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
                         }
-// loading studio streams
+                        // loading studio streams
                         for (int u = 0; u < Studio.ImgMovMus.size(); u++) {
                             Stream s = Studio.extstream.get(u);
                             if (s != null) {
@@ -1805,7 +1841,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
                         Studio.LText.clear();
                         Studio.LText = null;
                         Tools.sleep(300);
-// loading studio channels
+                        // loading studio channels
                         for (String chsc : MasterChannels.getInstance().getChannels()) {
                             Tools.sleep(10);
                             listenerCP.addLoadingChannel(chsc);
@@ -2058,7 +2094,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
                             Stream s = Studio.extstream.get(u);
                             if (s != null) {
 //                            System.out.println("Stream Ch: "+s.getChannels());
-// to fix 0 channels .studio import
+                                // to fix 0 channels .studio import
                                 if (s.getChannels().isEmpty()) {
                                     ArrayList<String> allChan = new ArrayList<>();
                                     for (String scn : MasterChannels.getInstance().getChannels()){
@@ -2080,7 +2116,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
                         Studio.ImgMovMus = null;
                         for (int t = 0; t < Studio.LText.size(); t++) {
                             SourceText text = Studio.LText.get(t);
-// to fix 0 channels .studio import
+                            // to fix 0 channels .studio import
                             if (text.getChannels().isEmpty()) {
                                 ArrayList<String> allChan = new ArrayList<>();
                                 for (String scn : MasterChannels.getInstance().getChannels()){
@@ -2347,6 +2383,14 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
         }
     }//GEN-LAST:event_cboThemeActionPerformed
     
+    private void tglAutoARActionPerformed(java.awt.event.ActionEvent evt) {                                          
+        if (tglAutoAR.isSelected()) {
+            autoAR = true;
+        } else {
+            autoAR = false;
+        }
+    }                                         
+    
     /**
      *
      */
@@ -2466,6 +2510,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
     private javax.swing.JToolBar.Separator jSeparator11;
     private javax.swing.JToolBar.Separator jSeparator12;
     private javax.swing.JToolBar.Separator jSeparator2;
+    private javax.swing.JToolBar.Separator jSeparator3;
     private javax.swing.JToolBar.Separator jSeparator5;
     private javax.swing.JToolBar.Separator jSeparator6;
     private javax.swing.JToolBar.Separator jSeparator7;
@@ -2481,6 +2526,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
     private javax.swing.JPanel panSources;
     public static javax.swing.JTabbedPane tabControls;
     private javax.swing.JToggleButton tglAVconv;
+    private javax.swing.JToggleButton tglAutoAR;
     private javax.swing.JToggleButton tglFFmpeg;
     private javax.swing.JToggleButton tglGst;
     private javax.swing.JToolBar toolbar;
