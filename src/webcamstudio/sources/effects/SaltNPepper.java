@@ -22,6 +22,7 @@ public class SaltNPepper extends Effect {
     @Override
     public void applyEffect(BufferedImage img) {
         FastBitmap imageIn = new FastBitmap(img);
+        imageIn.toRGB();
         SaltAndPepperNoise sAndpNoise = new SaltAndPepperNoise();
         sAndpNoise.applyInPlace(imageIn);
         BufferedImage temp = imageIn.toBufferedImage();
@@ -43,7 +44,7 @@ public class SaltNPepper extends Effect {
         buffer.dispose();
 
     }
-
+    
     @Override
     public JPanel getControl() {
         return null;

@@ -115,17 +115,17 @@ public class SourceDV extends Stream {
     }
     @Override
     public void readNext() {
-        Frame fDV = null;
+        Frame f = null;
         if (capture != null) {
-            fDV = capture.getFrame();
-            if (fDV != null) {
-                BufferedImage img = fDV.getImage(); 
+            f = capture.getFrame();
+            if (f != null) {
+                BufferedImage img = f.getImage(); 
                 applyEffects(img);
             }
-            if (fDV != null) {
-                setAudioLevel(fDV);
-                lastPreview.getGraphics().drawImage(fDV.getImage(), 0, 0, null);
-                nextFrame=fDV;
+            if (f != null) {
+                setAudioLevel(f);
+                lastPreview.getGraphics().drawImage(f.getImage(), 0, 0, null);
+                nextFrame=f;
             }
         }
     }
