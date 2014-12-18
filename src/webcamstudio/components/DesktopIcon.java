@@ -14,6 +14,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JInternalFrame;
 import javax.swing.JInternalFrame.JDesktopIcon;
 import org.imgscalr.Scalr;
+import webcamstudio.mixers.MasterMixer;
 import webcamstudio.streams.SourceDVB;
 import webcamstudio.streams.SourceText;
 import webcamstudio.streams.SourceURL;
@@ -39,9 +40,9 @@ public class DesktopIcon extends JDesktopIcon {
         ImageIcon pauseIcon = new ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-play.png"));
         imgBtn = new BufferedImage(pauseIcon.getIconWidth(), pauseIcon.getIconHeight(), BufferedImage.TYPE_INT_RGB);
         pauseIcon.paintIcon(null, imgBtn.getGraphics(), 0, 0);
-        final int sW = s.getWidth()/3;
-        final int sH = s.getHeight()/3;
-        imgBtn = Scalr.resize(imgBtn, Scalr.Mode.FIT_EXACT, sW, sH);
+        final int mW = MasterMixer.getInstance().getWidth()/3;
+        final int mH = MasterMixer.getInstance().getHeight()/3;
+        imgBtn = Scalr.resize(imgBtn, Scalr.Mode.FIT_EXACT, mW, mH);
 //        System.out.println("Pause W:"+sW+" - Pause H:"+sH);
         add(viewer, BorderLayout.CENTER);
         this.setToolTipText("Stream: " + s.getName() + " | Layer: " + s.getZOrder());
@@ -83,7 +84,7 @@ public class DesktopIcon extends JDesktopIcon {
                                     gr.drawImage(img,0,0,null);
                                     if (stream.getisPaused()) {
                                         gr.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC_OVER, 100 / 100F));
-                                        gr.drawImage(imgBtn,sW,sH,null);
+                                        gr.drawImage(imgBtn,mW,mH,null);
                                     }
                                     img = newImg;
                                 }

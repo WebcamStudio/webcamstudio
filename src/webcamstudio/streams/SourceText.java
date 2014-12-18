@@ -56,12 +56,10 @@ public class SourceText extends Stream {
     @Override
     public void readNext() {
         
-        if (frame != null && image != null) {
+        if (isPlaying) { //frame != null && image != null &&
             frame.setImage(image);
             txImage = frame.getImage(); 
             applyEffects(txImage);
-        }
-        if (frame != null)     {
             frame.setOutputFormat(x, y, width, height, opacity, volume);
             frame.setZOrder(zorder);
             nextFrame=frame;

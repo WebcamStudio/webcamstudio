@@ -163,8 +163,6 @@ public class SourceChannel  {
                 if (!s.getClass().toString().contains("Sink")){ // Don't Update SinkStreams
                     ExecutorService pool = java.util.concurrent.Executors.newCachedThreadPool();
                     
-                    s.setVolume(0);
-                    
                     if (endTransitions != null) { 
                         for (Transition t : s.endTransitions) {
 //                            System.out.println("End Transition: "+t.getClass().getName());
@@ -181,27 +179,7 @@ public class SourceChannel  {
                     s.zorder = getZorder();
                     
                     if (isPlaying) {
-                            if (!s.isPlaying()) {
-                                if (isPaused) {
-//                                    Tools.sleep(10);
-                                    s.read();
-                                    Tools.sleep(100);
-                                    s.pause();
-                                } else {
-//                                    Tools.sleep(10);
-                                    s.read();
-                                }
-                            } else {
-                                if (!isPaused) {
-//                                    Tools.sleep(10);
-                                    s.play();
-                                } else {
-                                    s.setVolume(0);
-//                                    Tools.sleep(10);
-                                    s.pause();
-                                }
-                            }
-
+                        
                         if (startTransitions != null) {
                             pool = java.util.concurrent.Executors.newCachedThreadPool();
                             for (Transition t : instance.startTransitions) {
@@ -216,28 +194,41 @@ public class SourceChannel  {
                             }
                         }
                         
-                        s.setVolume(volume);
-                        
-                    } else {
-                        if (s.getisPaused()) {
+                        if (!s.isPlaying()) {
                             if (isPaused) {
-                                s.setVolume(0);
-//                                Tools.sleep(10);
+                                s.setisPaused(true);
+                                s.read();
+                                Tools.sleep(100);
                                 s.pause();
                             } else {
-                                s.setVolume(volume);
-//                                Tools.sleep(10);
+                                s.setisPaused(false);
+                                s.read();
+                            }
+                        } else {
+                            if (!isPaused) {
+                                s.setisPaused(false);
+                                s.play();
+                            } else {
+                                s.setisPaused(true);
                                 s.pause();
-//                                Tools.sleep(10);
+                            }
+                        }
+                    
+                    } else {
+                        
+                        if (s.getisPaused()) {
+                            if (isPaused) {
+                                s.pause();
+                            } else {
+                                s.pause();
                                 s.stop();
                             }
                         } else {
                             if (s.isPlaying()) {
-                                s.setVolume(volume);
-//                                Tools.sleep(10);
                                 s.stop();
                             }
                         }
+                        
                     }
 
                     s.x = getX();
