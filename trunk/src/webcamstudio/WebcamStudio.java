@@ -548,7 +548,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
         toolbar = new javax.swing.JToolBar();
         btnAddFile = new javax.swing.JButton();
         btnAddFolder = new javax.swing.JButton();
-	tglAutoAR = new javax.swing.JToggleButton();
+        tglAutoAR = new javax.swing.JToggleButton();
         jSeparator3 = new javax.swing.JToolBar.Separator();
         btnAddDVB = new javax.swing.JButton();
         btnAddURL = new javax.swing.JButton();
@@ -646,7 +646,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
         });
         toolbar.add(btnAddFolder);
 
-	tglAutoAR.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/buttonAR.png"))); // NOI18N
+        tglAutoAR.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/ar_button.png"))); // NOI18N
         tglAutoAR.setToolTipText("Automatic A/R detection Switch.");
         tglAutoAR.setFocusable(false);
         tglAutoAR.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -654,8 +654,8 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
         tglAutoAR.setMinimumSize(new java.awt.Dimension(25, 25));
         tglAutoAR.setName("tglAutoAR"); // NOI18N
         tglAutoAR.setPreferredSize(new java.awt.Dimension(28, 29));
-        tglAutoAR.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/buttonAR.png"))); // NOI18N
-        tglAutoAR.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/buttonAR-selected.png"))); // NOI18N
+        tglAutoAR.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/ar_button.png"))); // NOI18N
+        tglAutoAR.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/ar_button_selected.png"))); // NOI18N
         tglAutoAR.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         tglAutoAR.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1152,7 +1152,6 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
         btnSysGC.setToolTipText("Try to Clean Up some memory");
         btnSysGC.setFocusable(false);
         btnSysGC.setName("btnSysGC"); // NOI18N
-        btnSysGC.setOpaque(true);
         btnSysGC.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         btnSysGC.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

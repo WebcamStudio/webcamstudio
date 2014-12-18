@@ -57,7 +57,7 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
     Stream stream = null;
     Listener listener = null;
     private boolean runMe = true;
-    private int speed = 5; // - is faster + is slower
+    private int speed = 15; // - is faster + is slower
     AudioSource[] sourcesAudio;
     FireDevices[] fireDevices;
     String distro = wsDistroWatch();
@@ -420,6 +420,12 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
         jCBBottomToTop = new javax.swing.JCheckBoxMenuItem();
         jCBTopToBottom = new javax.swing.JCheckBoxMenuItem();
         jCBBouncingRight = new javax.swing.JCheckBoxMenuItem();
+        jMSpeed = new javax.swing.JMenu();
+        radioSpeed1 = new javax.swing.JRadioButtonMenuItem();
+        radioSpeed2 = new javax.swing.JRadioButtonMenuItem();
+        radioSpeed3 = new javax.swing.JRadioButtonMenuItem();
+        radioSpeed4 = new javax.swing.JRadioButtonMenuItem();
+        radioSpeed5 = new javax.swing.JRadioButtonMenuItem();
         jMLoop = new javax.swing.JMenu();
         jCBLoop = new javax.swing.JCheckBoxMenuItem();
         jMRefresh = new javax.swing.JMenu();
@@ -577,6 +583,57 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
             }
         });
         jMScroll.add(jCBBouncingRight);
+
+        jMSpeed.setText("Speed");
+        jMSpeed.setName("jMSpeed"); // NOI18N
+
+        radioSpeed1.setSelected(true);
+        radioSpeed1.setText("1");
+        radioSpeed1.setName("radioSpeed1"); // NOI18N
+        radioSpeed1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                radioSpeed1ActionPerformed(evt);
+            }
+        });
+        jMSpeed.add(radioSpeed1);
+
+        radioSpeed2.setText("2");
+        radioSpeed2.setName("radioSpeed2"); // NOI18N
+        radioSpeed2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                radioSpeed2ActionPerformed(evt);
+            }
+        });
+        jMSpeed.add(radioSpeed2);
+
+        radioSpeed3.setText("3");
+        radioSpeed3.setName("radioSpeed3"); // NOI18N
+        radioSpeed3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                radioSpeed3ActionPerformed(evt);
+            }
+        });
+        jMSpeed.add(radioSpeed3);
+
+        radioSpeed4.setText("4");
+        radioSpeed4.setName("radioSpeed4"); // NOI18N
+        radioSpeed4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                radioSpeed4ActionPerformed(evt);
+            }
+        });
+        jMSpeed.add(radioSpeed4);
+
+        radioSpeed5.setText("5");
+        radioSpeed5.setName("radioSpeed5"); // NOI18N
+        radioSpeed5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                radioSpeed5ActionPerformed(evt);
+            }
+        });
+        jMSpeed.add(radioSpeed5);
+
+        jMScroll.add(jMSpeed);
 
         //jMBOptions.add(Box.createHorizontalGlue());
 
@@ -1029,32 +1086,46 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
 
             @Override
             public void run() {
-                while (runMe && stream.isPlaying()){
-                    int oldY = stream.getY();
-                    int newY = MasterMixer.getInstance().getHeight(); 
-                    int deltaY = newY - oldY;
-                    final int rate = stream.getRate();
-                    final int totalFrames = rate * speed;
-                    for (int i = 0; i<totalFrames;i++){
-                        if (runMe){
-                            stream.setY(oldY+i*deltaY/totalFrames);
-                            Tools.sleep(1000/rate);
-                        } else {
-                            stream.setY(oldBkY);
-                            break;
+                if (stream.isPlaying()) {
+                    while (runMe){ //  && stream.isPlaying()
+                        int oldY = stream.getY();
+                        int newY = MasterMixer.getInstance().getHeight(); 
+                        int deltaY = newY - oldY;
+                        final int rate = stream.getRate();
+                        final int totalFrames = rate * speed;
+                        for (int i = 0; i<totalFrames;i++){
+                            if (stream != null) {
+                                if (runMe){
+                                    stream.setY(oldY+i*deltaY/totalFrames);
+                                    Tools.sleep(1000/rate);
+                                } else {
+                                    stream.setY(oldBkY);
+                                    break;
+                                }
+                            } else {
+                                runMe = false;
+                            }
                         }
-                    }
-                    oldY = -MasterMixer.getInstance().getHeight();
-                    stream.setY(oldY);  
-                    newY = oldBkY;
-                    deltaY = newY - oldY;
-                    for (int i = 0; i<totalFrames;i++){
-                        if (runMe){
-                            stream.setY(oldY+i*deltaY/totalFrames);
-                            Tools.sleep(1000/rate);
+                        oldY = -MasterMixer.getInstance().getHeight();
+                        if (stream != null) {
+                            stream.setY(oldY);
                         } else {
-                            stream.setY(oldBkY);
-                            break;
+                            runMe = false;
+                        }
+                        newY = oldBkY;
+                        deltaY = newY - oldY;
+                        for (int i = 0; i<totalFrames;i++){
+                            if (stream != null) {
+                                if (runMe){
+                                    stream.setY(oldY+i*deltaY/totalFrames);
+                                    Tools.sleep(1000/rate);
+                                } else {
+                                    stream.setY(oldBkY);
+                                    break;
+                                }
+                            } else {
+                                runMe = false;
+                            }
                         }
                     }
                 }
@@ -1190,6 +1261,46 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_jCBLoopActionPerformed
 
+    private void radioSpeed1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioSpeed1ActionPerformed
+        speed = 15;
+        radioSpeed2.setSelected(false);
+        radioSpeed3.setSelected(false);
+        radioSpeed4.setSelected(false);
+        radioSpeed5.setSelected(false);
+    }//GEN-LAST:event_radioSpeed1ActionPerformed
+
+    private void radioSpeed2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioSpeed2ActionPerformed
+        speed = 12;
+        radioSpeed1.setSelected(false);
+        radioSpeed3.setSelected(false);
+        radioSpeed4.setSelected(false);
+        radioSpeed5.setSelected(false);
+    }//GEN-LAST:event_radioSpeed2ActionPerformed
+
+    private void radioSpeed3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioSpeed3ActionPerformed
+        speed = 7;
+        radioSpeed1.setSelected(false);
+        radioSpeed2.setSelected(false);
+        radioSpeed4.setSelected(false);
+        radioSpeed5.setSelected(false);
+    }//GEN-LAST:event_radioSpeed3ActionPerformed
+
+    private void radioSpeed4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioSpeed4ActionPerformed
+        speed = 3;
+        radioSpeed1.setSelected(false);
+        radioSpeed2.setSelected(false);
+        radioSpeed3.setSelected(false);
+        radioSpeed5.setSelected(false);
+    }//GEN-LAST:event_radioSpeed4ActionPerformed
+
+    private void radioSpeed5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioSpeed5ActionPerformed
+        speed = 1;
+        radioSpeed1.setSelected(false);
+        radioSpeed2.setSelected(false);
+        radioSpeed3.setSelected(false);
+        radioSpeed4.setSelected(false);
+    }//GEN-LAST:event_radioSpeed5ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBoxMenuItem jCBAVConv;
     private javax.swing.JCheckBoxMenuItem jCBBottomToTop;
@@ -1214,5 +1325,11 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
     private javax.swing.JMenu jMLoop;
     private javax.swing.JMenu jMRefresh;
     private javax.swing.JMenu jMScroll;
+    private javax.swing.JMenu jMSpeed;
+    private javax.swing.JRadioButtonMenuItem radioSpeed1;
+    private javax.swing.JRadioButtonMenuItem radioSpeed2;
+    private javax.swing.JRadioButtonMenuItem radioSpeed3;
+    private javax.swing.JRadioButtonMenuItem radioSpeed4;
+    private javax.swing.JRadioButtonMenuItem radioSpeed5;
     // End of variables declaration//GEN-END:variables
 }

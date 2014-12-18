@@ -23,7 +23,6 @@ public class SourceImageGif extends Stream {
     BufferedImage image = null;
     boolean playing = false;
     boolean stop = true;
-//    boolean playedPreview = false;
     Frame frame = null;
     GifDecoder decoder = new GifDecoder();
     int index = 0;

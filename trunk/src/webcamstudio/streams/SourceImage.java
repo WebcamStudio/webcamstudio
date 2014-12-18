@@ -23,7 +23,7 @@ import webcamstudio.sources.effects.Effect;
 public class SourceImage extends Stream{
 
     BufferedImage image = null;
-    boolean playing = false;
+    boolean isPlaying = false;
     Frame frame = null;
     private final MasterMixer mixer = MasterMixer.getInstance();
     private int imgCW = mixer.getWidth();
@@ -44,7 +44,7 @@ public class SourceImage extends Stream{
     
     @Override
     public void read() {
-        playing = true;   
+        isPlaying = true;   
         try{
             loadImage(file);
             frame = new Frame(captureWidth,captureHeight,rate);
@@ -78,7 +78,7 @@ public class SourceImage extends Stream{
                 fxT.resetFX();
             }
         }
-        playing = false;
+        isPlaying = false;
         frame = null;
         if (getPreView()){
             PreviewFrameBuilder.unregister(this);
@@ -97,11 +97,11 @@ public class SourceImage extends Stream{
     }
     @Override
     public boolean isPlaying() {
-        return playing;
+        return isPlaying;
     }
     @Override
     public void setIsPlaying(boolean setIsPlaying) {
-        playing = setIsPlaying;
+        isPlaying = setIsPlaying;
     }
     @Override
     public BufferedImage getPreview() {
@@ -124,11 +124,12 @@ public class SourceImage extends Stream{
     @Override
     public void readNext() {
         frame.setImage(image);
-        if (frame != null) {
+//        if (frame != null) {
+        if (isPlaying) {
             BufferedImage img = frame.getImage(); 
             applyEffects(img);
-        }
-        if (frame != null) {
+//        }
+//        if (frame != null) {
             frame.setOutputFormat(x, y, width, height, opacity, volume);
             frame.setZOrder(zorder);
         }
@@ -140,7 +141,6 @@ public class SourceImage extends Stream{
 //        System.out.println("updatePNG !!!");
         captureWidth = width;
         captureHeight = height;
-//        playing = true;   
         try{
             loadImage(file);
             frame = new Frame(captureWidth,captureHeight,rate);
@@ -176,9 +176,7 @@ public class SourceImage extends Stream{
             w = 1;
         }
         width = w;
-//        if (!this.getLoaded()) {
-            updatePNG();
-//        }
+        updatePNG();
 //        System.out.println("W set ... "+w);
     }
     
@@ -188,9 +186,7 @@ public class SourceImage extends Stream{
             h = 1;
         }
         height = h;
-//        if (!this.getLoaded()) {
             updatePNG();
-//        }
 //        System.out.println("Set " + this.getName() + " To = " + this.height);
 //        System.out.println("H set ... "+h);
     }
