@@ -330,6 +330,20 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
             UIManager.put("nimbusSelectionBackground", new Color(255,220,35));
         }
         
+//        if (theme.equals("Green")) {
+//            // setting WS Dark Theme
+//            UIManager.put("text", Color.WHITE);
+//            UIManager.put("control", new Color(0,120,1));
+//            UIManager.put("nimbusBlueGrey", new Color(0,120,30));
+//            UIManager.put("nimbusBase", new Color(10,110,10));
+//            UIManager.put("nimbusLightBackground", new Color(0,150,1));
+//            UIManager.put("info", new Color(195,160,0));
+//            UIManager.put("nimbusDisabledText", Color.black);
+//            UIManager.put("nimbusSelectionBackground", Color.yellow);
+//            UIManager.put("nimbusSelectedText", Color.blue);
+//            UIManager.put("nimbusSelectionBackground", new Color(255,220,35));
+//        }
+        
         MasterMixer.getInstance().start();
         PreviewMixer.getInstance().start();
         this.add(new MasterPanel(), BorderLayout.WEST);
@@ -1820,6 +1834,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
                             Stream s = Studio.extstream.get(u);
                             if (s != null) {
                                 StreamDesktop frame = new StreamDesktop(s, WebcamStudio.this);
+                                frame.setLocation(s.getPanelX(), s.getPanelY());
                                 desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
                                 s.setLoaded(false);
                             }
@@ -1832,6 +1847,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
                         for (SourceText text : Studio.LText) {
                             if (text != null) {
                                 StreamDesktop frame = new StreamDesktop(text, WebcamStudio.this);
+                                frame.setLocation(text.getPanelX(), text.getPanelY());
                                 desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
                                 text.setLoaded(false);
                             }
@@ -2106,6 +2122,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
                                 }
 
                             StreamDesktop frame = new StreamDesktop(s, WebcamStudio.this);
+                            frame.setLocation(s.getPanelX(), s.getPanelY());
                             desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
                             }
                         }
@@ -2126,8 +2143,9 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
                                     text.addChannel(SourceChannel.getChannel(sc, text));
                                 }
                             }
-
+                            
                             StreamDesktop frame = new StreamDesktop(text, WebcamStudio.this);
+                            frame.setLocation(text.getPanelX(), text.getPanelY());
                             desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
                         }
                         Studio.LText.clear();
@@ -2381,14 +2399,18 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
             wsRestart.start();
         }
     }//GEN-LAST:event_cboThemeActionPerformed
-    
-    private void tglAutoARActionPerformed(java.awt.event.ActionEvent evt) {                                          
+
+    private void tglAutoARActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglAutoARActionPerformed
         if (tglAutoAR.isSelected()) {
             autoAR = true;
+            ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Automatic Aspect Ratio detection \"On\"");
+            ResourceMonitor.getInstance().addMessage(label);
         } else {
             autoAR = false;
+            ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Automatic Aspect Ratio detection \"Off\"");
+            ResourceMonitor.getInstance().addMessage(label);
         }
-    }                                         
+    }//GEN-LAST:event_tglAutoARActionPerformed
     
     /**
      *

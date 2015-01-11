@@ -18,6 +18,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.SpinnerNumberModel;
 import webcamstudio.mixers.MasterMixer;
 import webcamstudio.streams.SourceDesktop;
+import webcamstudio.util.Screen;
 import webcamstudio.util.Tools;
 
 /**
@@ -29,6 +30,7 @@ public class SourceControlDesktop extends javax.swing.JPanel {
     SourceDesktop source = null;
     ArrayList<String> xidList = new ArrayList<>();
     ArrayList<String> deskList = new ArrayList<>();
+    protected String[] screenID = Screen.getSources();
     /** Creates new form SourceControlDesktop
      * @param source */
     public SourceControlDesktop(SourceDesktop source) {
@@ -175,10 +177,9 @@ public class SourceControlDesktop extends javax.swing.JPanel {
         });
 
         jLabel5.setText(bundle.getString("DESKTOP_CAPTURE_NUMBER")); // NOI18N
-        jLabel5.setEnabled(false);
         jLabel5.setName("jLabel5"); // NOI18N
 
-        spinN.setEnabled(false);
+        spinN.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(0), null, Integer.valueOf(Screen.getSources().length - 1), Integer.valueOf(1)));
         spinN.setName("spinN"); // NOI18N
         spinN.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
@@ -321,7 +322,14 @@ public class SourceControlDesktop extends javax.swing.JPanel {
     }//GEN-LAST:event_spinHStateChanged
 
     private void spinNStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinNStateChanged
-//        source.setDesktopN((Integer)spinN.getValue());
+        for (int i = 0 ; i <= Screen.getSources().length - 1 ; i++) {
+            if ((Integer)spinN.getValue() == i) {
+                spinX.setValue(Screen.getX(screenID[i]));
+                spinY.setValue(Screen.getY(screenID[i]));
+                spinW.setValue(Screen.getWidth(screenID[i]));
+                spinH.setValue(Screen.getHeight(screenID[i]));
+            }
+        }
     }//GEN-LAST:event_spinNStateChanged
 
     private void jchEnableWindowsCapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jchEnableWindowsCapActionPerformed

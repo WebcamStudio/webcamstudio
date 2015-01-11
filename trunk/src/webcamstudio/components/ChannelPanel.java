@@ -56,11 +56,13 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
     int CHon =0;
     String CHNxName = null;
     int CHNextTime =0;
+    public static int timeToTimer = 0;
+    public static int totalToTimer = 0;
     int CHTimer = 0;
     private Timer CHt=new Timer();
     String CHptS= null;
     private Boolean StopCHpt=false;
-    boolean inTimer=false;
+    private static boolean inTimer=false;
     JPopupMenu remotePopup = new JPopupMenu();
     private static String remUser = "webcamstudio";
     private static String remPsw = "webcamstudio";
@@ -210,6 +212,13 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
         return remPort;
     }
 
+    public static void setInTimer (boolean inT) {
+        inTimer = inT;
+    }
+    
+    public static boolean getInTimer () {
+        return inTimer;
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -708,11 +717,12 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
             CHProgressTime.setStringPainted(true);
             CHProgressTime.setMaximum(CHpTemptime);             
             while (CHpTemptime>0 && StopCHpt==false){
+                timeToTimer = CHpTemptime;
                 CHptS = Integer.toString(CHpTemptime);
                 CHProgressTime.setValue(CHpTemptime);
                 CHProgressTime.setString(CHptS);
                 Tools.sleep(1000);
-                CHpTemptime -= 1;
+                CHpTemptime --;
             }
             UpdateCHtUITask.this.stop();
         }
@@ -733,18 +743,20 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
                  }
                  n += 1;
             }
+            totalToTimer = CHNextTime/1000;
             lstChannels.setSelectedValue(CHNxName, true);
+            master.selectChannel(CHNxName);
             String name = lstChannels.getSelectedValue().toString();
             System.out.println("Apply Select: "+name);
-            Tools.sleep(50);
-            master.selectChannel(CHNxName);
+//            master.stopTextCDown();
+            
             if (CHNextTime != 0) {
                 CHt=new Timer();
                 CHt.schedule(new TSelectActionPerformed(),CHNextTime);
                 CHNextTime = CHTimers.get(lstChannels.getSelectedIndex());
                 StopCHpt=false;
                 CHProgressTime.setValue(0);
-                CHt.schedule(new UpdateCHtUITask(),0);
+                CHt.schedule(new UpdateCHtUITask(), 0);
             } else {
                 CHt.cancel();
                 CHt.purge();
@@ -772,11 +784,12 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
     }
     
     private void btnSelectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSelectActionPerformed
-        savePrefs();
         String name = lstChannels.getSelectedValue().toString();
+        master.selectChannel(lstChannels.getSelectedValue().toString());
+        savePrefs();
         System.out.println("Apply Select: "+name);
         tglRemote.setEnabled(true);
-        master.selectChannel(name);
+        
         if (CHTimers.get(lstChannels.getSelectedIndex()) != 0) {
             inTimer=true;
             btnRenameCh.setEnabled(false);
@@ -793,8 +806,9 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
             CHt=new Timer();
             CHt.schedule(new TSelectActionPerformed(),CHTimers.get(lstChannels.getSelectedIndex()));
             CHNextTime = CHTimers.get(lstChannels.getSelectedIndex());
+            totalToTimer = CHNextTime/1000;
             StopCHpt=false;
-            CHt.schedule(new UpdateCHtUITask(),0);
+            CHt.schedule(new UpdateCHtUITask(), 0);
         }
     }//GEN-LAST:event_btnSelectActionPerformed
     
@@ -855,6 +869,7 @@ public class ChannelPanel extends javax.swing.JPanel implements WebcamStudio.Lis
     
     private void StopCHTimerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_StopCHTimerActionPerformed
         RemoteStopCHTimerActionPerformed();
+        master.stopTextCDown();
         ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Channel Timer Stopped.");
         ResourceMonitor.getInstance().addMessage(label);
     }//GEN-LAST:event_StopCHTimerActionPerformed

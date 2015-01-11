@@ -266,27 +266,22 @@ public class ProcessRenderer {
                     break;
                 case URL:
                     if (fme != null) {
-                switch (fmeName.toLowerCase()) {
-                    case "red5":
-                        command = command.replaceAll(Tags.URL.toString(), "" + fmeURL + "/" + fme.getStream());
-                        break;
-                    case "icecast":
-                        command = command.replaceAll(Tags.URL.toString(), "" + fmeURL);
-                        break;
-                    default:
-                        command = command.replaceAll(Tags.URL.toString(), "" + fmeURL + "/" + fme.getStream()); // "\""+fme.getUrl()+"/"+fme.getStream()+" live=1 flashver=FME/2.520(compatible;20FMSc201.0)"+"\""
-                        break;
-                }
+                        if (fme.getMount() != "") {
+                            command = command.replaceAll(Tags.URL.toString(), "" + fmeURL);
+                        } else {
+                            command = command.replaceAll(Tags.URL.toString(), "" + fmeURL + "/" + fme.getStream()); // "\""+fme.getUrl()+"/"+fme.getStream()+" live=1 flashver=FME/2.520(compatible;20FMSc201.0)"+"\""
+                        }
                     } else if (stream.getURL() != null) {
                         command = command.replaceAll(Tags.URL.toString(), "" + stream.getURL());
                     }
                     break;
                 case MOUNT:
-                    if (fme != null && fmeName.toLowerCase().equals("icecast")) {
+                    
+                    if (fme != null && fme.getMount() != "") {
                         command = command.replaceAll(Tags.MOUNT.toString(), "" + fme.getMount());
-                    }        
+                    }
                 case PASSWORD:
-                    if (fme != null && fmeName.toLowerCase().equals("icecast")) {
+                    if (fme != null && fme.getPassword() != "") {
                         command = command.replaceAll(Tags.PASSWORD.toString(), "" + fme.getPassword());
                     }
                 case KEYINT:
@@ -296,9 +291,9 @@ public class ProcessRenderer {
                         command = command.replaceAll(Tags.KEYINT.toString(), "" + Integer.toString(5*mixer.getRate()));
                     }
                 case PORT:
-                    if (fme != null && fmeName.toLowerCase().equals("icecast")) {
+                    if (fme != null && fme.getPort() != "") {
                         command = command.replaceAll(Tags.PORT.toString(), "" + fme.getPort());
-                    }        
+                    }
                 case APORT:
                     command = command.replaceAll(Tags.APORT.toString(), "" + audioPort);
                     break;
@@ -380,14 +375,14 @@ public class ProcessRenderer {
         return command;
     }
 
-    public Frame getFrame() {
+    public Frame getFrame() {           
         if (capture == null) {
             return null;
         } else {
             return capture.getFrame();
         }
     }
-
+    
     public void read() {
         stopped = false;
         stopMe = false;
@@ -465,7 +460,7 @@ public class ProcessRenderer {
                 } else {
                     processAudio = null;
                 }
-            }
+                }
         }).start();
     }
         

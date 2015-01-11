@@ -1,4 +1,4 @@
-WebcamStudio 0.65
+WebcamStudio 0.72
 
 =======================
         UBUNTU

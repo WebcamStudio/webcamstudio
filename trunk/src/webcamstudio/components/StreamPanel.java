@@ -372,7 +372,7 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener, 
         jLabel2 = new javax.swing.JLabel();
         tglPause = new javax.swing.JToggleButton();
         tglAudio = new javax.swing.JToggleButton();
-        jCheckBox1 = new javax.swing.JCheckBox();
+        jcbLockAR = new javax.swing.JCheckBox();
         jSeparator6 = new javax.swing.JSeparator();
         tglVideo = new javax.swing.JToggleButton();
         tglPreview = new javax.swing.JToggleButton();
@@ -831,19 +831,19 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener, 
         });
         add(tglAudio, new org.netbeans.lib.awtextra.AbsoluteConstraints(57, 120, 30, 20));
 
-        jCheckBox1.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
-        jCheckBox1.setText("Lock A/R");
-        jCheckBox1.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
-        jCheckBox1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/LockButton-open_small.png"))); // NOI18N
-        jCheckBox1.setName("jCheckBox1"); // NOI18N
-        jCheckBox1.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/LockButton-open_small.png"))); // NOI18N
-        jCheckBox1.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/LockButton-close_small.png"))); // NOI18N
-        jCheckBox1.addActionListener(new java.awt.event.ActionListener() {
+        jcbLockAR.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
+        jcbLockAR.setText("Lock A/R");
+        jcbLockAR.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        jcbLockAR.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/LockButton-open_small.png"))); // NOI18N
+        jcbLockAR.setName("jcbLockAR"); // NOI18N
+        jcbLockAR.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/LockButton-open_small.png"))); // NOI18N
+        jcbLockAR.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/LockButton-close_small.png"))); // NOI18N
+        jcbLockAR.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jCheckBox1ActionPerformed(evt);
+                jcbLockARActionPerformed(evt);
             }
         });
-        add(jCheckBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(64, 221, -1, -1));
+        add(jcbLockAR, new org.netbeans.lib.awtextra.AbsoluteConstraints(64, 221, -1, -1));
 
         jSeparator6.setName("jSeparator6"); // NOI18N
         jSeparator6.setPreferredSize(new java.awt.Dimension(48, 10));
@@ -891,7 +891,6 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener, 
             }
 //            System.out.println("Play Volume: " + volume);
             tglVideo.setEnabled(false);
-            tglPreview.setEnabled(false);
             this.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.green));
             spinW1.setEnabled(false);
             jSlSpinCW.setEnabled(false);
@@ -1109,8 +1108,8 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener, 
         }
     }//GEN-LAST:event_tglPauseActionPerformed
 
-    private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
-        if (jCheckBox1.isSelected()){
+    private void jcbLockARActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcbLockARActionPerformed
+        if (jcbLockAR.isSelected()){
             spinH.setEnabled(false);
             jSlSpinH.setEnabled(false);
             lockRatio = true;
@@ -1123,7 +1122,7 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener, 
             oldW = stream.getWidth();
             oldH = stream.getHeight();
         }
-    }//GEN-LAST:event_jCheckBox1ActionPerformed
+    }//GEN-LAST:event_jcbLockARActionPerformed
 
     private void jSlSpinVMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jSlSpinVMouseClicked
         if (evt.getClickCount() == 2 && !evt.isConsumed()) {
@@ -1249,7 +1248,7 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener, 
             stream.setPreView(true);
         } else {
             stream.setPreView(false);
-        }
+            }
     }//GEN-LAST:event_tglPreviewActionPerformed
 
     private void jSlSpinVFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jSlSpinVFocusLost
@@ -1259,7 +1258,6 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener, 
     }//GEN-LAST:event_jSlSpinVFocusLost
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
@@ -1279,6 +1277,7 @@ public class StreamPanel extends javax.swing.JPanel implements Stream.Listener, 
     private javax.swing.JSlider jSlSpinX;
     private javax.swing.JSlider jSlSpinY;
     private javax.swing.JSlider jSlSpinZOrder;
+    private javax.swing.JCheckBox jcbLockAR;
     private javax.swing.JLabel jlbDuration;
     private javax.swing.JLabel labelAD;
     private javax.swing.JLabel labelCH;

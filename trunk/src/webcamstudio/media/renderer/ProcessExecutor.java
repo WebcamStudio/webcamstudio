@@ -126,11 +126,21 @@ public class ProcessExecutor {
             }
         }).start();
     }
+    
     public void execute(String[] params) throws IOException, InterruptedException {
         process = rt.exec(params);
         processRunning = true;
 //        readOutput(process);      
     }
+    
+    // Testing console capture
+    public Process executeC(String[] params) throws IOException, InterruptedException {
+        process = rt.exec(params);
+        processRunning = true;
+        return process;
+//        readOutput(process);      
+    }
+    
     public void executeString(String params) throws IOException, InterruptedException {
         
         process = rt.exec(params);
@@ -138,6 +148,7 @@ public class ProcessExecutor {
         processRunning = true;
 //        readOutput(process);
     }
+    
     public void destroy() {
         processRunning=false;
         try {
@@ -149,6 +160,7 @@ public class ProcessExecutor {
             Logger.getLogger(ProcessExecutor.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
     public String getProcessPID(){
         try {
             if (process != null){

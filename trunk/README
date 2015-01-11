@@ -9,7 +9,7 @@ ant clean jar
 The binaries will be in the dist folder.
 
 
-WebcamStudio 0.65
+WebcamStudio 0.72
 *****************
 
 Hello and welcome to the new WebcamStudio.  This release is a buggy and unstable one, so be gentle.

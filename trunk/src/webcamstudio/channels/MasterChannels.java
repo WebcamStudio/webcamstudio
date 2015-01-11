@@ -183,6 +183,20 @@ public class MasterChannels {
         }
     }
     
+    public void stopTextCDown(){
+        for (Stream s : streams){
+            String streamName =s.getClass().getName();
+            if (!streamName.contains("Sink")){
+                if (streamName.endsWith("SourceText")) {
+                    if (s.getIsACDown()) {
+                        s.stop();
+                        s.updateStatus();
+                    } 
+                }
+            }
+        }
+    }
+    
     public void stopOnlyStream(){
         for (Stream s : streams){
             String streamName =s.getClass().getName();
