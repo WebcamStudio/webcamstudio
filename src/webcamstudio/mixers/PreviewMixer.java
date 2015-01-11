@@ -12,7 +12,7 @@ import java.util.ArrayList;
  */
 public class PreviewMixer {
     private static PreviewMixer instance = null;
-    public static int BUFFER_SIZE = 50;
+    public static int BUFFER_SIZE = 20;
 
     public static PreviewMixer getInstance() {
         if (instance==null){

@@ -40,7 +40,7 @@ public class WSPreview extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("WS Master Preview Screen");
-        setPreferredSize(new java.awt.Dimension(400, 330));
+        setPreferredSize(new java.awt.Dimension(500, 330));
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosed(java.awt.event.WindowEvent evt) {
                 formWindowClosed(evt);

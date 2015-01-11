@@ -141,13 +141,11 @@
                   <Component id="spinOutW" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="lblOH" alignment="0" min="-2" max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="lblAudioRate" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="spinAudioRate" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="spinOutH" alignment="3" min="-2" max="-2" attributes="0"/>
-                  </Group>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="lblAudioRate" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="spinAudioRate" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="spinOutH" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="lblOH" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">

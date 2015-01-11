@@ -46,23 +46,53 @@ public class SourceChannel  {
             s.capWidth = st.getTextCH();
             s.isATimer = st.getIsATimer();
             s.isQRCode = st.getIsQRCode();
-            if (st.getIsATimer()) {
-                if (st.getIsQRCode()) {
-                    s.text = "QRCode Clock Mode.";
-                    st.updateContent("QRCode Clock Mode.");
-                } else {
-                    s.text = "Text Clock Mode.";
-                    st.updateContent("Text Clock Mode.");
-                }
-            } else {
-                s.text = st.content;
-            }
+            s.isACdown = st.getIsACDown();
+            s.isPlayList = st.getPlayList();
+            s.duration = st.getDuration();
+            s.text = st.content;
             s.font = st.fontName;
             s.color = st.color;
         }
 //        System.out.println("Channel CapWidth: "+s.capWidth);
 //        System.out.println("Channel CapHeight: "+s.capHeight);
-
+        return s;
+    }
+    
+    public static SourceChannel getChannelIgnoreContent(String channelName, Stream stream) {
+        SourceChannel s = new SourceChannel();
+        s.x = stream.x;
+//        System.out.println("Channel X: "+s.x);
+        s.y = stream.y;
+//        System.out.println("Channel Y: "+s.y);
+        s.width = stream.width;
+//        System.out.println("Channel Width: "+s.width);
+        s.height = stream.height;
+//        System.out.println("Channel Height: "+s.height);
+        s.opacity = stream.opacity;
+        s.effects.addAll(stream.effects);
+        s.startTransitions.addAll(stream.startTransitions);
+        s.endTransitions.addAll(stream.endTransitions);
+        s.volume = stream.volume;
+        s.zorder = stream.zorder;
+        s.name = channelName;
+        s.isPlaying = stream.isPlaying();
+        s.isPaused = stream.getisPaused();
+        s.capHeight = stream.captureHeight;
+        s.capWidth = stream.captureWidth;
+        if (stream instanceof SourceText) {
+            SourceText st = (SourceText) stream;
+            s.capHeight = st.getTextCW();
+            s.capWidth = st.getTextCH();
+            s.isATimer = st.getIsATimer();
+            s.isQRCode = st.getIsQRCode();
+            s.isACdown = st.getIsACDown();
+            s.isPlayList = st.getPlayList();
+            s.font = st.fontName;
+            s.color = st.color;
+        }
+//        System.out.println("Channel CapWidth: "+s.capWidth);
+//        System.out.println("Channel CapHeight: "+s.capHeight);
+        System.out.println("Duration: "+s.getDuration());
         return s;
     }
     
@@ -91,25 +121,18 @@ public class SourceChannel  {
             s.capWidth = st.getTextCH();
             s.isATimer = st.getIsATimer();
             s.isQRCode = st.getIsQRCode();
-            if (st.getIsATimer()) {
-                if (st.getIsQRCode()) {
-                    s.text = "QRCode Clock Mode.";
-                    st.updateContent("QRCode Clock Mode.");
-                } else {
-                    s.text = "Text Clock Mode.";
-                    st.updateContent("Text Clock Mode.");
-                }
-            } else {
-                s.text = st.content;
-            }
+            s.isACdown = st.getIsACDown();
+            s.isPlayList = st.getPlayList();
+            s.duration = st.getDuration();
+            s.text = st.content;
             s.font = st.fontName;
             s.color = st.color;
         }
 //        System.out.println("Channel CapWidth: "+s.capWidth);
 //        System.out.println("Channel CapHeight: "+s.capHeight);
-
         return s;
     }
+    
     private int x = 0;
     private int y = 0;
     private int capWidth = 0;
@@ -125,6 +148,9 @@ public class SourceChannel  {
     private String name = "";
     private boolean isATimer = false;
     private boolean isQRCode = false;
+    private boolean isACdown = false;
+    private boolean isPlayList = false;
+    private int duration = 0;
     private boolean isPlaying = false;
     private boolean isPaused = false;
     ArrayList<Effect> effects = new ArrayList<>();
@@ -162,7 +188,6 @@ public class SourceChannel  {
             public void run() {
                 if (!s.getClass().toString().contains("Sink")){ // Don't Update SinkStreams
                     ExecutorService pool = java.util.concurrent.Executors.newCachedThreadPool();
-                    
                     if (endTransitions != null) { 
                         for (Transition t : s.endTransitions) {
 //                            System.out.println("End Transition: "+t.getClass().getName());
@@ -255,11 +280,18 @@ public class SourceChannel  {
                         SourceText st = (SourceText) s;
                         st.isATimer = getIsATimer();
                         st.isQRCode = getIsQRCode();
+                        st.isACDown = getIsACDown();
+                        st.duration = getDuration();
                         st.content = getText();
                         st.fontName = getFont();
                         st.color = getColor();
-                        st.updateContent(getText());
-                    }               
+                        st.isPlayList = getPlayList();
+                        if (st.isPlayList || st.isACDown || st.isATimer) {
+                            st.updateLineContent(getText());
+                        } else {
+                            st.updateContent(getText());
+                        }
+                    }
                     s.updateStatus();
                 }
             }
@@ -375,8 +407,24 @@ public class SourceChannel  {
         return isATimer;
     }
     
+    public boolean getPlayList() {
+        return isPlayList;
+    }
+    
     public boolean getIsQRCode() {
         return isQRCode;
+    }
+    
+    public boolean getIsACDown() {
+        return isACdown;
+    }
+    
+    public int getDuration() {
+        return duration;
+    }
+    
+    public void setDuration(int t) {
+        duration = t;
     }
     
     /**

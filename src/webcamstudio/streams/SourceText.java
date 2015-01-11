@@ -55,18 +55,17 @@ public class SourceText extends Stream {
 
     @Override
     public void readNext() {
-        
-        if (isPlaying) { //frame != null && image != null &&
+        if (image != null && isPlaying) {
             frame.setImage(image);
-            txImage = frame.getImage(); 
+            if (frame != null) {
+                txImage = frame.getImage();
+            }
             applyEffects(txImage);
             frame.setOutputFormat(x, y, width, height, opacity, volume);
             frame.setZOrder(zorder);
             nextFrame=frame;
         }
     }
-
-    
 
     @Override
     public void play() {
@@ -93,34 +92,39 @@ public class SourceText extends Stream {
     public void setX(int x){
         this.x=x;
 //        System.out.println("X set ... "+x);
-        }
+    }
+    
     @Override
     public void setY(int y){
         this.y=y;
 //        System.out.println("Y set ... "+y);
-        }
+    }
+    
     public void setBackgroundOpacity(float o){
         bgOpacity=o;
-        if (!this.isATimer) {
+        if (!this.isATimer || !this.isACDown) {
             updateContent(content);
         }
     }
+    
     public float getBackgroundOpacity(){
         return bgOpacity;
     }
     public void setBackground(Shape s) {
         shape = s;
-        if (!this.isATimer) {
+        if (!this.isATimer || !this.isACDown) {
             updateContent(content);
         }
     }
-
+    
     public Shape getBackground() {
         return shape;
     }
+    
     public void setStrBackground(String strS) {
         strShape = strS;
     }
+    
     @Override
     public void setIsPlaying(boolean setIsPlaying) {
         isPlaying = setIsPlaying;
@@ -133,21 +137,29 @@ public class SourceText extends Stream {
     @Override
     public void setWidth(int w) {
         width = w;
-        updateContent(content);
-//        System.out.println("W set ... "+w);
+        if (isPlayList) {
+            updateLineContent(content);
+        } else {
+            updateContent(content);
+//            System.out.println("W set ... "+w);
+        }
     }
     
     @Override
     public void setHeight(int h) {
         height = h;
-        updateContent(content);
-//        System.out.println("H set ... "+h);
+        if (isPlayList) {
+            updateLineContent(content);
+        } else {
+            updateContent(content);
+//            System.out.println("H set ... "+h);
+        }
     }
     
     @Override
     public void setColor(int c) {
         color = c;
-        if (!this.isATimer) {
+        if (!this.isATimer || !this.isACDown) {
             updateContent(content);
         }
     }
@@ -159,7 +171,7 @@ public class SourceText extends Stream {
 
     public void setBackGroundColor(int bgColor) {
         this.bgColor = bgColor;
-        if (!this.isATimer) {
+        if (!this.isATimer || !this.isACDown) {
             updateContent(content);
         }
     }
@@ -171,7 +183,7 @@ public class SourceText extends Stream {
     @Override
     public void setFont(String f) {
         fontName = f;
-        if (!this.isATimer) {
+        if (!this.isATimer || !this.isACDown) {
             updateContent(content);
         }
     }
@@ -185,7 +197,99 @@ public class SourceText extends Stream {
     public void setZOrder(int layer) {
         zorder = layer;
     }
-    
+    // for Clock and Timer
+    @Override
+    public void updateLineContent(String content) {
+        Color bkgColor = new Color(bgColor);
+        this.content = content;
+        if (this.getIsQRCode()) {
+            captureWidth = width;
+            captureHeight = height;
+            if (content != null && content.length() > 0) {
+                frame = new Frame(captureWidth, captureHeight, rate);
+                MultiFormatWriter w = new MultiFormatWriter();
+                image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+                BitMatrix b;
+                try {
+                    b = w.encode(content, BarcodeFormat.QR_CODE, width, height);
+                    image = com.google.zxing.client.j2se.MatrixToImageWriter.toBufferedImage(b);
+                } catch (WriterException ex) {
+                    Logger.getLogger(SourceText.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+                if (frame != null) {
+                    frame.setImage(image);
+                    frame.setOutputFormat(x, y, width, height, opacity, volume);
+                    frame.setZOrder(zorder);
+                }
+            }
+        } else {
+            captureWidth = width;
+            captureHeight = height;
+            int textHeight = captureHeight;
+            int textWidth; // = captureWidth;
+            image = new BufferedImage(captureWidth, captureHeight, BufferedImage.TYPE_INT_ARGB);
+            Graphics2D buffer = image.createGraphics();
+
+            buffer.setRenderingHint(RenderingHints.KEY_RENDERING,
+                               RenderingHints.VALUE_RENDER_SPEED);
+            buffer.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                               RenderingHints.VALUE_ANTIALIAS_OFF);
+            buffer.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,
+                               RenderingHints.VALUE_FRACTIONALMETRICS_OFF);
+            buffer.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING,
+                               RenderingHints.VALUE_COLOR_RENDER_SPEED);
+            buffer.setRenderingHint(RenderingHints.KEY_DITHERING,
+                               RenderingHints.VALUE_DITHER_DISABLE);
+            buffer.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                               RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+
+            Font font = new Font(fontName, Font.PLAIN, textHeight);
+            buffer.setFont(font);
+            FontMetrics fm = buffer.getFontMetrics();
+            textHeight = fm.getHeight();
+            textWidth = fm.stringWidth(content);
+            int fontSize = font.getSize();
+            while ((textHeight > captureHeight || textWidth > captureWidth) && fontSize>1){
+                font = new Font(fontName, Font.PLAIN, fontSize--);
+                buffer.setFont(font);
+                fm = buffer.getFontMetrics();
+                textHeight = fm.getHeight();
+                textWidth = fm.stringWidth(content);
+            }        
+            frame = new Frame(captureWidth, captureHeight, rate);
+            buffer.setBackground(new Color(0,0,0,0));
+            buffer.clearRect(0, 0, captureWidth, captureHeight);
+            switch (shape) {
+                case RECTANGLE:
+                    buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC, bgOpacity));
+                    buffer.setColor(bkgColor);
+                    buffer.fill3DRect(0, 0, captureWidth, captureHeight,true);
+                    break;
+                case OVAL:
+                    buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC, bgOpacity));
+                    buffer.setColor(bkgColor);
+                    buffer.fillOval(0, 0, captureWidth, captureHeight);
+                    break;
+                case ROUNDRECT:
+                    buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC, bgOpacity));
+                    buffer.setColor(bkgColor);
+                    buffer.fillRoundRect(0, 0, captureWidth, captureHeight,captureWidth/5,captureHeight/5);
+                    break;
+            }
+
+            buffer.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC, 1F));
+            buffer.setColor(new Color(color));
+            buffer.drawString(content, (captureWidth-textWidth)/2, captureHeight/2 + textHeight/2 - fm.getDescent());
+            buffer.dispose();
+            if (frame != null) {
+                frame.setImage(image);
+                frame.setOutputFormat(x, y, width, height, opacity, volume);
+                frame.setZOrder(zorder);
+            }
+        }
+    }
+    //  fro Text-Area
     @Override
     public void updateContent(String content) throws NoSuchElementException {
 //        System.out.println("updateContent !!!");
@@ -318,6 +422,8 @@ public class SourceText extends Stream {
     
     @Override
     public void read() {
+        boolean isTimer = this.getIsATimer();
+        boolean isACDown = this.getIsACDown();
         stop = false;
         isPlaying = true;
         if (getPreView()){
@@ -327,7 +433,11 @@ public class SourceText extends Stream {
             }
         this.setBackground(shape);
         try {
-            updateContent(content);
+            if (isTimer || isACDown) {
+                updateLineContent(content);
+            } else {
+                updateContent(content);
+            }
             frame.setID(uuid);
             frame.setImage(image);
             frame.setOutputFormat(x, y, width, height, opacity, volume);
@@ -359,10 +469,10 @@ public class SourceText extends Stream {
         isPlaying = false;
         frame = null;
         if (getPreView()){
-                PreviewFrameBuilder.unregister(this);
-            } else {
-                MasterFrameBuilder.unregister(this);
-            }
+            PreviewFrameBuilder.unregister(this);
+        } else {
+            MasterFrameBuilder.unregister(this);
+        }
     }
     @Override
     public boolean needSeek() {

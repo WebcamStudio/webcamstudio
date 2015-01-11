@@ -304,7 +304,7 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         jSeparator7 = new javax.swing.JSeparator();
         jLabel3 = new javax.swing.JLabel();
         tglPause = new javax.swing.JToggleButton();
-        jCheckBox1 = new javax.swing.JCheckBox();
+        jcbLockAR = new javax.swing.JCheckBox();
         jSeparator6 = new javax.swing.JSeparator();
         tglPreview = new javax.swing.JToggleButton();
 
@@ -783,19 +783,19 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         });
         add(tglPause, new org.netbeans.lib.awtextra.AbsoluteConstraints(85, 124, 30, 20));
 
-        jCheckBox1.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
-        jCheckBox1.setText("Lock A/R");
-        jCheckBox1.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
-        jCheckBox1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/LockButton-open_small.png"))); // NOI18N
-        jCheckBox1.setName("jCheckBox1"); // NOI18N
-        jCheckBox1.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/LockButton-open_small.png"))); // NOI18N
-        jCheckBox1.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/LockButton-close_small.png"))); // NOI18N
-        jCheckBox1.addActionListener(new java.awt.event.ActionListener() {
+        jcbLockAR.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
+        jcbLockAR.setText("Lock A/R");
+        jcbLockAR.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        jcbLockAR.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/LockButton-open_small.png"))); // NOI18N
+        jcbLockAR.setName("jcbLockAR"); // NOI18N
+        jcbLockAR.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/LockButton-open_small.png"))); // NOI18N
+        jcbLockAR.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/LockButton-close_small.png"))); // NOI18N
+        jcbLockAR.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jCheckBox1ActionPerformed(evt);
+                jcbLockARActionPerformed(evt);
             }
         });
-        add(jCheckBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(64, 331, -1, -1));
+        add(jcbLockAR, new org.netbeans.lib.awtextra.AbsoluteConstraints(64, 331, -1, -1));
 
         jSeparator6.setName("jSeparator6"); // NOI18N
         jSeparator6.setPreferredSize(new java.awt.Dimension(48, 10));
@@ -1115,8 +1115,8 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         spinVolume.setValue(jSlSpinV.getValue());
     }//GEN-LAST:event_jSlSpinVStateChanged
 
-    private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
-        if (jCheckBox1.isSelected()){
+    private void jcbLockARActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcbLockARActionPerformed
+        if (jcbLockAR.isSelected()){
             spinH.setEnabled(false);
             jSlSpinH.setEnabled(false);
             lockRatio = true;
@@ -1129,7 +1129,7 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
             oldW = stream.getWidth();
             oldH = stream.getHeight();
         }
-    }//GEN-LAST:event_jCheckBox1ActionPerformed
+    }//GEN-LAST:event_jcbLockARActionPerformed
 
     private void lblCurtainMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblCurtainMouseClicked
         lblCurtain.setVisible(false);
@@ -1165,7 +1165,6 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JSpinner bandwidth;
     private javax.swing.JSpinner frequency;
-    private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JSeparator jSeparator1;
@@ -1186,6 +1185,7 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
     private javax.swing.JSlider jSlSpinX;
     private javax.swing.JSlider jSlSpinY;
     private javax.swing.JSlider jSlSpinZOrder;
+    private javax.swing.JCheckBox jcbLockAR;
     private javax.swing.JLabel labelAD1;
     private javax.swing.JLabel labelBand;
     private javax.swing.JLabel labelCH;

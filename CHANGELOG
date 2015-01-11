@@ -1,3 +1,20 @@
+webcamstudio (0.72)    07 Dec 2014
+
+  * Fixes: Stream Stop/Play operations volume do not stay muted if selected.
+  * Fixes: Some Streams have no alpha when an Effect apply.
+  * Fixes: Crop Effect can't get the correct width and height.
+  * Fixes: SourceImage - PNG - didn't get correct image size.
+  * Fixes: "Apply to Streams" operation get incorrect W & H values. Hope now it is fixed ...
+  * Fixes: "Apply to Streams" was applied to Sinks Streams also.
+  * Changes: Text Stream-Panel Text field changed to Text area.
+  * Changes: WebcamStudio Video Device - webcamstudio.c line 512 (Updated v4l2loopback.c to compile on >= 3.18 kernel)
+  * Changes: Stream-panel spins can accept only correct ranges.
+  * Adds: RevealRightNFade, RevealLeftNFade and Stretch Effects.
+  * Adds: Live Broadcast in the previewer. Preview Fader Control.
+  * Adds: Rudimental Aspect Ratio automatic detection for Movie/Image/Gifs/Webcams Streams only.
+  * Removes: Some Unused classes.
+  * New upstream version
+
 webcamstudio 0.71    04 Oct 2014
 
   * Fixes: Stream freeze if Stop is invoked on a paused stream activating a channel.

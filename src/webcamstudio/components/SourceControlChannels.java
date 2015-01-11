@@ -40,6 +40,7 @@ public class SourceControlChannels extends javax.swing.JPanel {
         btnApplyAllCh = new javax.swing.JButton();
         btnApplyAllChSet = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
+        btnApplyAllChPos = new javax.swing.JButton();
 
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("webcamstudio/Languages"); // NOI18N
         setName(bundle.getString("CHANNELS_CTRL")); // NOI18N
@@ -73,6 +74,16 @@ public class SourceControlChannels extends javax.swing.JPanel {
         jLabel1.setText("Apply Current Stream Settings in All Channels");
         jLabel1.setName("jLabel1"); // NOI18N
 
+        btnApplyAllChPos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/chan-app5.png"))); // NOI18N
+        btnApplyAllChPos.setText("Copy Only Style & Position");
+        btnApplyAllChPos.setToolTipText("Apply Current Stream Settings except the Text Content.");
+        btnApplyAllChPos.setName("btnApplyAllChPos"); // NOI18N
+        btnApplyAllChPos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnApplyAllChPosActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -83,9 +94,9 @@ public class SourceControlChannels extends javax.swing.JPanel {
                     .addComponent(btnApplyAllCh, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnApplyAllChSet, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 372, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel1)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(btnApplyAllChPos, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 372, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -97,6 +108,8 @@ public class SourceControlChannels extends javax.swing.JPanel {
                 .addComponent(btnApplyAllCh, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnApplyAllChSet, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnApplyAllChPos, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -111,7 +124,7 @@ public class SourceControlChannels extends javax.swing.JPanel {
             source.removeChannelAt(i);
             source.addChannelAt(sch,i);
         }
-        ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, source.getName() + " Settings Applied to all Channels.");
+        ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, source.getName() + " State & Settings Settings Applied to all Channels.");
         ResourceMonitor.getInstance().addMessage(label);
     }//GEN-LAST:event_btnApplyAllChActionPerformed
 
@@ -126,13 +139,30 @@ public class SourceControlChannels extends javax.swing.JPanel {
                 source.addChannelAt(sch,i);
             }
         }
-        ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, source.getName() + " Settings Applied to all Channels.");
+        ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, source.getName() + " Only Settings Applied to all Channels.");
         ResourceMonitor.getInstance().addMessage(label);
     }//GEN-LAST:event_btnApplyAllChSetActionPerformed
+
+    private void btnApplyAllChPosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnApplyAllChPosActionPerformed
+        SourceChannel sch = null;
+        for (int i=0; i < source.getChannels().size(); i++){
+            String scName = source.getChannels().get(i).getName();
+            int oTime = source.getChannels().get(i).getDuration();
+            String oCont = source.getChannels().get(i).getText();
+            sch=SourceChannel.getChannelIgnoreContent(scName, source);
+            sch.setText(oCont);
+            sch.setDuration(oTime);
+            source.removeChannelAt(i);
+            source.addChannelAt(sch,i);
+        }
+        ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, source.getName() + " State, Style & Position Applied to all Channels.");
+        ResourceMonitor.getInstance().addMessage(label);
+    }//GEN-LAST:event_btnApplyAllChPosActionPerformed
     
     @SuppressWarnings("deprecation")     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnApplyAllCh;
+    private javax.swing.JButton btnApplyAllChPos;
     private javax.swing.JButton btnApplyAllChSet;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;

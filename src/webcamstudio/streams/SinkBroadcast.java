@@ -42,35 +42,25 @@ public class SinkBroadcast extends Stream {
         rate = MasterMixer.getInstance().getRate();
         captureWidth = MasterMixer.getInstance().getWidth();
         captureHeight = MasterMixer.getInstance().getHeight();
-        switch (name.toLowerCase()) {
-//            case "red5":
-//                if (standard.equals("STD")) {
-//                    capture = new ProcessRenderer(this,fme,"broadcastR5");
-//                } else {
-//                    capture = new ProcessRenderer(this,fme,"broadcastR5HQ");
-//                }
-//                break;
-            case "icecast":
-                if (standard.equals("STD")) {
-                    capture = new ProcessRenderer(this,fme,"iceCast");
-                } else {
-                    capture = new ProcessRenderer(this,fme,"iceCastHQ");
-                }
-                break;
-            default:
-                if (standard.equals("STD")) {
-                    capture = new ProcessRenderer(this,fme,"broadcast");
-                } else {
-                    capture = new ProcessRenderer(this,fme,"broadcastHQ");
-                }
-                break;
+        if (!"".equals(this.fme.getMount())) {
+            if (standard.equals("STD")) {
+                capture = new ProcessRenderer(this,fme,"iceCast");
+            } else {
+                capture = new ProcessRenderer(this,fme,"iceCastHQ");
+            }
+        } else {
+            if (standard.equals("STD")) {
+                capture = new ProcessRenderer(this,fme,"broadcast");
+            } else {
+                capture = new ProcessRenderer(this,fme,"broadcastHQ");
+            }
         }
         capture.writeCom();
     }
 
     @Override
     public void pause() {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        // nothing here.
     }
     
     @Override
@@ -118,11 +108,11 @@ public class SinkBroadcast extends Stream {
 
     @Override
     public void readNext() {
-        
+        // nothing here.
     }
 
     @Override
     public void play() {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        // nothing here.
     }
 }

@@ -68,6 +68,10 @@ public abstract class Stream implements Callable<Frame>{
     protected int height = mixer.getHeight();
     protected int x = 0;
     protected int y = 0;
+    protected int panelX = 0;
+    protected int panelY = 0;
+    protected boolean more = false;
+    protected boolean sliders = false;
     protected float volume = 0.5f;
     protected int opacity = 100;
     protected int rate = mixer.getRate();
@@ -113,6 +117,8 @@ public abstract class Stream implements Callable<Frame>{
     protected int chDVB = 0;
     protected int color = 0;
     protected boolean isATimer = false;
+    protected boolean isACDown = false;
+    protected boolean isPlayList = false;
     protected boolean isQRCode = false;
     protected String comm = "AV";
     protected boolean backFF = false;
@@ -133,6 +139,7 @@ public abstract class Stream implements Callable<Frame>{
     Listener listener = null;
     protected String panelType = "Panel";
     protected String streamTime = "N/A";
+    protected int duration = 0;
     protected String audioSource = "";
     protected String guid = "";
     protected boolean preView = false;
@@ -188,6 +195,30 @@ public abstract class Stream implements Callable<Frame>{
     
     public void setIsATimer(boolean tTimer) {
         this.isATimer = tTimer;
+    }
+    
+    public boolean getIsACDown() {
+        return isACDown;
+    }
+    
+    public void setIsACDown(boolean cDown) {
+        this.isACDown = cDown;
+    }
+    
+    public int getDuration() {
+        return duration;
+    }
+    
+    public void setDuration(int dur) {
+        this.duration = dur;
+    }
+    
+    public void setPlayList (boolean b) {
+        isPlayList = b;
+    }
+    
+    public boolean getPlayList() {
+        return isPlayList;
     }
     
     public boolean getIsQRCode() {
@@ -490,6 +521,9 @@ public abstract class Stream implements Callable<Frame>{
     public void updateContent(String content) {
     }
     
+    public void updateLineContent(String content) {
+    }
+    
     public void updatePNG() {
     }
     
@@ -514,6 +548,7 @@ public abstract class Stream implements Callable<Frame>{
     public int getColor() {
         return color;
     }
+    
     public abstract void read();
 
     public abstract void stop();
@@ -586,6 +621,22 @@ public abstract class Stream implements Callable<Frame>{
     
     public boolean hasVideo(){
         return hasVideo;
+    }
+    
+    public void setMore(boolean setMo) {
+        more = setMo;
+    }
+    
+    public boolean getMore(){
+        return more;
+    }
+    
+    public void setSliders(boolean setSl) {
+        sliders = setSl;
+    }
+    
+    public boolean getSliders(){
+        return sliders;
     }
     
     public void setPanelType(String sPanelType) {
@@ -874,6 +925,28 @@ public abstract class Stream implements Callable<Frame>{
         this.y = y;
     }
 
+    public int getPanelY() {
+        return panelY;
+    }
+
+    /**
+     * @param y the y to set
+     */
+    public void setPanelY(int pY) {
+        this.panelY = pY;
+    }
+    
+    public int getPanelX() {
+        return panelX;
+    }
+
+    /**
+     * @param x the x to set
+     */
+    public void setPanelX(int pX) {
+        this.panelX = pX;
+    }
+    
     /**
      * @return the volume
      */

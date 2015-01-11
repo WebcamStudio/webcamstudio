@@ -260,8 +260,8 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
                 Preferences service = fmePrefs.node(s);
                 String url = service.get("url", "");
                 String name = service.get("name", "");
-                String abitrate = service.get("abitrate", "");
-                String vbitrate = service.get("vbitrate", "");
+                String abitrate = service.get("abitrate", "512000");
+                String vbitrate = service.get("vbitrate", "96000");
                 String vcodec = service.get("vcodec", "");
                 String acodec = service.get("acodec", "");
                 String width = service.get("width", "");
@@ -271,7 +271,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
                 String password = service.get("password", "");
                 String port = service.get("port", "");
                 String keyInt = service.get("keyint", "");
-                String standard = service.get("standard", "");
+                String standard = service.get("standard", "STD");
                 // for compatibility before KeyInt
                 if ("".equals(keyInt)) {
                     keyInt = "125";
@@ -720,8 +720,8 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
             udpStream.setListener(instanceSink);
             // Fix lost prefs
             if (udpStream.getVbitrate() == "") {
-                    udpStream.setVbitrate("1200");
-                }
+                udpStream.setVbitrate("1200");
+            }
             if (udpStream.getAbitrate() == "") {
                 udpStream.setAbitrate("128");
             }
@@ -1505,12 +1505,12 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
 
     @Override
     public void updatePreview(BufferedImage image) {
-        
+        // nothing here.   
     }
 
     @Override
     public void stopChTime(ActionEvent evt) {
-        
+        // nothing here.
     }
 
     @Override

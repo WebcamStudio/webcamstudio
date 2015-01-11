@@ -299,7 +299,7 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
         ckbProtected = new javax.swing.JCheckBox();
         labelProtected = new javax.swing.JLabel();
         labelPTZPanel = new javax.swing.JLabel();
-        jCheckBox1 = new javax.swing.JCheckBox();
+        jcbLockAR = new javax.swing.JCheckBox();
         jSeparator7 = new javax.swing.JSeparator();
         tglPreview = new javax.swing.JToggleButton();
 
@@ -833,19 +833,19 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
         labelPTZPanel.setOpaque(true);
         add(labelPTZPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(126, 7, 153, 130));
 
-        jCheckBox1.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
-        jCheckBox1.setText("Lock A/R");
-        jCheckBox1.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
-        jCheckBox1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/LockButton-open_small.png"))); // NOI18N
-        jCheckBox1.setName("jCheckBox1"); // NOI18N
-        jCheckBox1.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/LockButton-open_small.png"))); // NOI18N
-        jCheckBox1.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/LockButton-close_small.png"))); // NOI18N
-        jCheckBox1.addActionListener(new java.awt.event.ActionListener() {
+        jcbLockAR.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
+        jcbLockAR.setText("Lock A/R");
+        jcbLockAR.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        jcbLockAR.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/LockButton-open_small.png"))); // NOI18N
+        jcbLockAR.setName("jcbLockAR"); // NOI18N
+        jcbLockAR.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/LockButton-open_small.png"))); // NOI18N
+        jcbLockAR.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/LockButton-close_small.png"))); // NOI18N
+        jcbLockAR.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jCheckBox1ActionPerformed(evt);
+                jcbLockARActionPerformed(evt);
             }
         });
-        add(jCheckBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(64, 261, -1, -1));
+        add(jcbLockAR, new org.netbeans.lib.awtextra.AbsoluteConstraints(64, 261, -1, -1));
 
         jSeparator7.setName("jSeparator7"); // NOI18N
         jSeparator7.setPreferredSize(new java.awt.Dimension(48, 10));
@@ -1814,8 +1814,8 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
         spinVolume.setValue(jSlSpinV.getValue());
     }//GEN-LAST:event_jSlSpinVStateChanged
 
-    private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
-        if (jCheckBox1.isSelected()){
+    private void jcbLockARActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcbLockARActionPerformed
+        if (jcbLockAR.isSelected()){
             spinH.setEnabled(false);
             jSlSpinH.setEnabled(false);
             lockRatio = true;
@@ -1828,7 +1828,7 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
             oldW = stream.getWidth();
             oldH = stream.getHeight();
         }
-    }//GEN-LAST:event_jCheckBox1ActionPerformed
+    }//GEN-LAST:event_jcbLockARActionPerformed
 
     private void tglAudioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglAudioActionPerformed
         if (tglAudio.isSelected()){
@@ -1872,7 +1872,6 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
     private javax.swing.JToggleButton btnZoomIn;
     private javax.swing.JToggleButton btnZoomOut;
     private javax.swing.JCheckBox ckbProtected;
-    private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
     private javax.swing.JSeparator jSeparator4;
@@ -1889,6 +1888,7 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
     private javax.swing.JSlider jSlSpinX;
     private javax.swing.JSlider jSlSpinY;
     private javax.swing.JSlider jSlSpinZOrder;
+    private javax.swing.JCheckBox jcbLockAR;
     private javax.swing.JLabel labelAD;
     private javax.swing.JLabel labelCH;
     private javax.swing.JLabel labelCW;
