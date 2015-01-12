@@ -286,7 +286,7 @@ public class SourceChannel  {
                         st.fontName = getFont();
                         st.color = getColor();
                         st.isPlayList = getPlayList();
-                        if (st.isPlayList || st.isACDown || st.isATimer) {
+                        if (st.isACDown || st.isATimer) {
                             st.updateLineContent(getText());
                         } else {
                             st.updateContent(getText());

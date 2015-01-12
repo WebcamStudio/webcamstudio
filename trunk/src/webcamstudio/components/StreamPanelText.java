@@ -42,8 +42,6 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
     private Timer countDown = new Timer();
     private TimerTask clockIn = new clock();
     private TimerTask cDownIn = new cDown();
-//    private int cW = 0;
-//    private int cH = 0;
     boolean lockRatio = false;
     int oldW = 1;
     int oldH = 1;
@@ -70,8 +68,6 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
         
         this.stream = stream;
         sTx = (SourceText) stream;
-//        cW = sTx.getTextCW();
-//        cH = sTx.getTextCW();
         spinX.setValue(stream.getX());
         spinY.setValue(stream.getY());
         spinW.setValue(stream.getWidth());
@@ -79,6 +75,7 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
         cboFonts.setSelectedItem(stream.getFont());
         txtHexColor.setText(Integer.toHexString(stream.getColor()));
         spinZOrder.setValue(stream.getZOrder());
+        spinDuration.setEnabled(!stream.getPlayList());
         spinDuration.setValue(stream.getDuration());
         if (stream.getIsATimer()){
             if (stream.getIsQRCode()) {
@@ -125,7 +122,7 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
                 SimpleDateFormat sdf = new SimpleDateFormat("MMM dd,yyyy HH:mm:ss");
                 Date resultdate = new Date(milliSeconds);
                 String time = sdf.format(resultdate);
-                stream.updateContent(time);
+                stream.updateLineContent(time);
                 Tools.sleep(1000);
             }
             StreamPanelText.clock.this.stop();
@@ -136,7 +133,7 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
             clockIn.cancel();
             stopClock = true;
             stream.stop();
-            System.out.println("Stopping Clock ...");
+//            System.out.println("Stopping Clock ...");
         }
         
     }
@@ -155,39 +152,6 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
     class cDown extends TimerTask{
         
         @Override
-//        public void run() {
-//            long durInt = 0;
-//            int deltaTime = stream.getDuration() * 1000;
-//            final String totalTime = getHHMMSS(deltaTime / 1000);
-//            long curTime = System.currentTimeMillis();
-//            while (!stopCDown && durInt < deltaTime){
-//                durInt = ((System.currentTimeMillis() - curTime));
-//                String duration = getHHMMSS(durInt/1000);
-//                stream.updateLineContent(duration + " / " + totalTime);
-//                Tools.sleep(100);
-//            }
-//            StreamPanelText.cDown.this.stop();
-//        }
-
-//        public void run() {
-//            int timeTo = stream.getDuration();
-//            final String totalTime = getHHMMSS(timeTo);
-//            int count = 0;
-////            int interval = 0;
-////            if (ChannelPanel.getInTimer()) {
-////                interval = 998;
-////            } else {
-////                interval = 1000;
-////            }
-//            String duration = "";
-//            while (!stopCDown && count < timeTo){
-//                duration = getHHMMSS(count);
-//                stream.updateLineContent(duration + " / " + totalTime);
-//                Tools.sleep(1000);
-//                count ++;
-//            }
-//            StreamPanelText.cDown.this.stop();
-//        }
         public void run() {
             
             if (stream.getPlayList()) {
@@ -220,7 +184,7 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
             stopCDown = true;
             stream.stop();
             stream.updateStatus();
-            System.out.println("Stopping Timer ...");
+//            System.out.println("Stopping Timer ...");
         }
     }
     
@@ -667,7 +631,6 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
                 } else {
                     lblTxtMode.setText("Text Clock Mode.");
                 }
-//                txtArea.setEditable(false);
                 stopClock=false;
                 time.schedule(clockIn, 0);
                 stream.read();
@@ -683,7 +646,7 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
                 clockIn.cancel();
                 stopClock=true;
                 stream.stop();
-                System.out.println("Stopping Timer ...");
+//                System.out.println("Stopping Clock ...");
             }
         } else if (tglCDown.isSelected()) {
             if (stream.getDuration() == 0 && !stream.getPlayList()) {
@@ -705,7 +668,6 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
                     } else {
                         lblTxtMode.setText("Timer Mode.");
                     }
-    //                txtArea.setEditable(false);
                 } else {
                     countDown.cancel();
                     countDown.purge();
@@ -808,13 +770,11 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
             } else {
                 lblTxtMode.setText("Text Clock Mode.");
             }   
-//            txtArea.setEditable(false);
             stopClock=false;
         } else {
             tglQRCode.setEnabled(true);
             tglCDown.setEnabled(true);
             stream.setIsATimer(false);
-//            txtArea.setEditable(true);
             if (stream.getIsQRCode()) {
                 lblTxtMode.setText("QR Code Mode.");
             } else {
@@ -882,18 +842,15 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
             } else {
                 lblTxtMode.setText("Timer Mode.");
             }   
-//            txtArea.setEditable(false);
             stopCDown = false;
         } else {
             tglQRCode.setEnabled(true);
             tglClock.setEnabled(true);
             stream.setIsACDown(false);
-//            txtArea.setEditable(true);
             if (stream.getIsQRCode()) {
                 lblTxtMode.setText("QR Code Mode.");
             } else {
                 lblTxtMode.setText("Text Mode.");
-//                stream.updateContent(txtArea.getText());
             }
             stopCDown = true;
         }
@@ -966,7 +923,6 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
                 time.schedule(clockIn, 0);
                 tglClock.setSelected(true);
                 tglCDown.setSelected(false);
-//                txtArea.setEditable(false);
                 System.out.println("Source Updated Starting Clock ...");
             } else if (stream.getIsACDown()) {
                 stopCDown = false;
@@ -975,7 +931,6 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
                 countDown.schedule(cDownIn, 0);
                 tglCDown.setSelected(true);
                 tglClock.setSelected(false);
-//                txtArea.setEditable(false);
                 System.out.println("Source Updated Starting Timer ...");
             } else {
                 stopCDown = true;
@@ -988,7 +943,6 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
                 clockIn.cancel();
                 tglClock.setSelected(false);
                 tglCDown.setSelected(false);
-//                txtArea.setEditable(true);
             }
         } else {
             this.setBorder(BorderFactory.createEmptyBorder());
@@ -999,20 +953,17 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
                 time.purge();
                 clockIn.cancel();
                 tglClock.setSelected(true);
-//                txtArea.setEditable(false);
-                System.out.println("Source Updated Stopping Clock ...");
+//                System.out.println("Source Updated Stopping Clock ...");
             } else if (stream.getIsACDown()) {
                 stopCDown = true;
                 countDown.cancel();
                 countDown.purge();
                 cDownIn.cancel();
                 tglCDown.setSelected(true);
-//                txtArea.setEditable(false);
-                System.out.println("Source Updated Stopping Timer ...");
+//                System.out.println("Source Updated Stopping Timer ...");
             } else {
                 tglClock.setSelected(false);
                 tglCDown.setSelected(false);
-//                txtArea.setEditable(true);
             }
         }
         if (stream.getIsQRCode()){
@@ -1064,8 +1015,6 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
         spinH.setValue(stream.getHeight());
         spinW.setValue(stream.getWidth());
         spinDuration.setValue(stream.getDuration());
-//        cW = sTx.getTextCW();
-//        cH = sTx.getTextCH();
         cboFonts.setSelectedItem(this.stream.getFont());
         txtHexColor.setText(Integer.toHexString(this.stream.getColor()));
         spinZOrder.setValue(stream.getZOrder());

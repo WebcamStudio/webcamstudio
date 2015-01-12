@@ -1934,6 +1934,7 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
 
     @Override
     public void selectedSource(Stream source) {
+        // nothing here.
     }
 
     @Override

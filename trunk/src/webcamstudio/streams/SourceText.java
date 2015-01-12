@@ -55,11 +55,9 @@ public class SourceText extends Stream {
 
     @Override
     public void readNext() {
-        if (image != null && isPlaying) {
+        if (frame != null && isPlaying) {
             frame.setImage(image);
-            if (frame != null) {
-                txImage = frame.getImage();
-            }
+            txImage = frame.getImage();
             applyEffects(txImage);
             frame.setOutputFormat(x, y, width, height, opacity, volume);
             frame.setZOrder(zorder);
@@ -102,7 +100,9 @@ public class SourceText extends Stream {
     
     public void setBackgroundOpacity(float o){
         bgOpacity=o;
-        if (!this.isATimer || !this.isACDown) {
+        if (this.isATimer || this.isACDown) {
+            updateLineContent(content);
+        } else {
             updateContent(content);
         }
     }
@@ -112,7 +112,9 @@ public class SourceText extends Stream {
     }
     public void setBackground(Shape s) {
         shape = s;
-        if (!this.isATimer || !this.isACDown) {
+        if (this.isATimer || this.isACDown) {
+            updateLineContent(content);
+        } else {
             updateContent(content);
         }
     }
@@ -137,7 +139,7 @@ public class SourceText extends Stream {
     @Override
     public void setWidth(int w) {
         width = w;
-        if (isPlayList) {
+        if (this.isATimer || this.isACDown) {
             updateLineContent(content);
         } else {
             updateContent(content);
@@ -148,7 +150,7 @@ public class SourceText extends Stream {
     @Override
     public void setHeight(int h) {
         height = h;
-        if (isPlayList) {
+        if (this.isATimer || this.isACDown) {
             updateLineContent(content);
         } else {
             updateContent(content);
@@ -159,7 +161,9 @@ public class SourceText extends Stream {
     @Override
     public void setColor(int c) {
         color = c;
-        if (!this.isATimer || !this.isACDown) {
+        if (this.isATimer || this.isACDown) {
+            updateLineContent(content);
+        } else {
             updateContent(content);
         }
     }
@@ -171,7 +175,9 @@ public class SourceText extends Stream {
 
     public void setBackGroundColor(int bgColor) {
         this.bgColor = bgColor;
-        if (!this.isATimer || !this.isACDown) {
+        if (this.isATimer || this.isACDown) {
+            updateLineContent(content);
+        } else {
             updateContent(content);
         }
     }
@@ -183,7 +189,9 @@ public class SourceText extends Stream {
     @Override
     public void setFont(String f) {
         fontName = f;
-        if (!this.isATimer || !this.isACDown) {
+        if (this.isATimer || this.isACDown) {
+            updateLineContent(content);
+        } else {
             updateContent(content);
         }
     }
@@ -289,10 +297,9 @@ public class SourceText extends Stream {
             }
         }
     }
-    //  fro Text-Area
+    //  for Text-Area
     @Override
     public void updateContent(String content) throws NoSuchElementException {
-//        System.out.println("updateContent !!!");
         ArrayList<String> linee = new ArrayList<>();
         Color bkgColor = new Color(bgColor);
         this.content = content;
