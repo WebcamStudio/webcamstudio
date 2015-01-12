@@ -330,11 +330,11 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
             UIManager.put("nimbusSelectionBackground", new Color(255,220,35));
         }
         
-//        if (theme.equals("Green")) {
+//        if (theme.equals("Dark")) {
 //            // setting WS Dark Theme
 //            UIManager.put("text", Color.WHITE);
-//            UIManager.put("control", new Color(0,120,1));
-//            UIManager.put("nimbusBlueGrey", new Color(0,120,30));
+//            UIManager.put("control", new Color(0,80,1));
+//            UIManager.put("nimbusBlueGrey", new Color(0,80,30));
 //            UIManager.put("nimbusBase", new Color(10,110,10));
 //            UIManager.put("nimbusLightBackground", new Color(0,150,1));
 //            UIManager.put("info", new Color(195,160,0));
@@ -2648,6 +2648,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
                         Stream s = Studio.extstream.get(u);
                         if (s != null) {
                             StreamDesktop frame = new StreamDesktop(s, WebcamStudio.this);
+                            frame.setLocation(s.getPanelX(), s.getPanelY());
                             desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
                         }
                         System.out.println("Adding Source: "+s.getName());
@@ -2659,6 +2660,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
                     for (SourceText text : Studio.LText) {
                         if (text != null) {
                             StreamDesktop frame = new StreamDesktop(text, WebcamStudio.this);
+                            frame.setLocation(text.getPanelX(), text.getPanelY());
                             desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
                         }
                         System.out.println("Adding Source: "+text.getName());

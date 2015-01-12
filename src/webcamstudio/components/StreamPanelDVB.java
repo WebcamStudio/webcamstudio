@@ -1229,6 +1229,7 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
     
     @Override
     public void selectedSource(Stream source) {
+        // nothing here.
     }
 
     @Override
