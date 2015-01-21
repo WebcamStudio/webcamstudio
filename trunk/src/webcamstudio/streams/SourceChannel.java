@@ -92,7 +92,7 @@ public class SourceChannel  {
         }
 //        System.out.println("Channel CapWidth: "+s.capWidth);
 //        System.out.println("Channel CapHeight: "+s.capHeight);
-        System.out.println("Duration: "+s.getDuration());
+//        System.out.println("Duration: "+s.getDuration());
         return s;
     }
     
@@ -425,6 +425,14 @@ public class SourceChannel  {
     
     public void setDuration(int t) {
         duration = t;
+    }
+    
+    public boolean getIsPlaying() {
+        return this.isPlaying;
+    }
+    
+    public void setIsPlaying(boolean b) {
+        this.isPlaying = b;
     }
     
     /**

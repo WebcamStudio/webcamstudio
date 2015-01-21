@@ -355,7 +355,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
     private void addButtonBroadcast(final FME fme) {
         final OutputPanel instanceSinkFME = this;
         JToggleButton button = new JToggleButton();
-        Dimension d = new Dimension(139,28);
+        Dimension d = new Dimension(139,22);
         button.setPreferredSize(d);
         button.setText(fme.getName());
         button.setActionCommand(fme.getUrl()+"/"+fme.getStream());
@@ -593,7 +593,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
         tglAudioOut.setToolTipText("WebcamStudio Master Audio Output");
         tglAudioOut.setMinimumSize(new java.awt.Dimension(135, 21));
         tglAudioOut.setName("tglAudioOut"); // NOI18N
-        tglAudioOut.setPreferredSize(new java.awt.Dimension(32, 28));
+        tglAudioOut.setPreferredSize(new java.awt.Dimension(32, 22));
         tglAudioOut.setRolloverEnabled(false);
         tglAudioOut.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -607,7 +607,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
         tglRecordToFile.setToolTipText("Save to FIle - Right Click for Settings");
         tglRecordToFile.setMinimumSize(new java.awt.Dimension(87, 21));
         tglRecordToFile.setName("tglRecordToFile"); // NOI18N
-        tglRecordToFile.setPreferredSize(new java.awt.Dimension(87, 28));
+        tglRecordToFile.setPreferredSize(new java.awt.Dimension(87, 22));
         tglRecordToFile.setRolloverEnabled(false);
         tglRecordToFile.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-stop.png"))); // NOI18N
         tglRecordToFile.addActionListener(new java.awt.event.ActionListener() {
@@ -622,7 +622,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
         tglUDP.setToolTipText("Stream to udp://@127.0.0.1:7000 - Right Click for Settings");
         tglUDP.setMinimumSize(new java.awt.Dimension(237, 21));
         tglUDP.setName("tglUDP"); // NOI18N
-        tglUDP.setPreferredSize(new java.awt.Dimension(237, 28));
+        tglUDP.setPreferredSize(new java.awt.Dimension(237, 22));
         tglUDP.setRolloverEnabled(false);
         tglUDP.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-stop.png"))); // NOI18N
         tglUDP.addActionListener(new java.awt.event.ActionListener() {
@@ -784,7 +784,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
         tglAudioOut.setToolTipText("Audio to Speakers");
         tglAudioOut.setName("tglAudioOut");
         tglSkyCam.setRolloverEnabled(false);
-        tglAudioOut.setPreferredSize(new Dimension(32, 28));
+        tglAudioOut.setPreferredSize(new Dimension(32, 22));
         add(tglAudioOut);
         
         tglRecordToFile.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-record.png"))); // NOI18N
@@ -793,7 +793,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
         tglRecordToFile.setName("tglRecordToFile");
         tglRecordToFile.setRolloverEnabled(false);
         tglRecordToFile.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-stop.png"))); // NOI18N
-        tglRecordToFile.setPreferredSize(new Dimension(32, 28));
+        tglRecordToFile.setPreferredSize(new Dimension(32, 22));
         add(tglRecordToFile);
 
         tglUDP.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-record.png"))); // NOI18N
@@ -802,7 +802,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
         tglUDP.setName("tglUDP"); // NOI18N
         tglUDP.setRolloverEnabled(false);
         tglUDP.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-stop.png"))); // NOI18N
-        tglUDP.setPreferredSize(new Dimension(32, 28));
+        tglUDP.setPreferredSize(new Dimension(32, 22));
         add(tglUDP);
     }
     
@@ -811,7 +811,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
             String vdName = d.getFile().getName();
             if (!vdName.endsWith("video21")) {
                 JToggleButton wsCamButton = new JToggleButton();
-                Dimension dim = new Dimension(139,28);
+                Dimension dim = new Dimension(139,22);
                 wsCamButton.setPreferredSize(dim);
                 wsCamButton.setText(d.getName());
                 wsCamButton.setActionCommand(d.getFile().getAbsolutePath());

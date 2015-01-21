@@ -634,7 +634,7 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
                 stopClock=false;
                 time.schedule(clockIn, 0);
                 stream.read();
-                System.out.println("Starting Clock ...");
+//                System.out.println("Starting Clock ...");
             } else {
                 this.setBorder(BorderFactory.createEmptyBorder());
                 tglPreview.setEnabled(true);
@@ -853,6 +853,7 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
                 lblTxtMode.setText("Text Mode.");
             }
             stopCDown = true;
+            stream.updateContent(txtArea.getText());
         }
     }//GEN-LAST:event_tglCDownActionPerformed
 
@@ -923,7 +924,7 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
                 time.schedule(clockIn, 0);
                 tglClock.setSelected(true);
                 tglCDown.setSelected(false);
-                System.out.println("Source Updated Starting Clock ...");
+//                System.out.println("Source Updated Starting Clock ...");
             } else if (stream.getIsACDown()) {
                 stopCDown = false;
                 countDown = new Timer();
@@ -931,7 +932,7 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
                 countDown.schedule(cDownIn, 0);
                 tglCDown.setSelected(true);
                 tglClock.setSelected(false);
-                System.out.println("Source Updated Starting Timer ...");
+//                System.out.println("Source Updated Starting Timer ...");
             } else {
                 stopCDown = true;
                 countDown.cancel();

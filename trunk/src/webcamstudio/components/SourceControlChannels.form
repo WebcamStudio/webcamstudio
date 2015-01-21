@@ -19,7 +19,7 @@
     <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
     <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
-    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,0,-103,0,0,1,-112"/>
+    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,0,-126,0,0,1,-112"/>
   </AuxValues>
 
   <Layout class="org.netbeans.modules.form.compat2.layouts.DesignCardLayout"/>
@@ -63,11 +63,11 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="btnApplyAllCh" min="-2" pref="28" max="-2" attributes="0"/>
+                  <Component id="btnApplyAllCh" min="-2" pref="22" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="btnApplyAllChSet" min="-2" pref="28" max="-2" attributes="0"/>
+                  <Component id="btnApplyAllChSet" min="-2" pref="22" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="btnApplyAllChPos" min="-2" pref="28" max="-2" attributes="0"/>
+                  <Component id="btnApplyAllChPos" min="-2" pref="22" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -80,7 +80,7 @@
               <Image iconType="3" name="/webcamstudio/resources/tango/chan-app4.png"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Copy State &amp; Settings"/>
-            <Property name="toolTipText" type="java.lang.String" value="Apply Current Stream Playing State and Settings."/>
+            <Property name="toolTipText" type="java.lang.String" value="Apply Current Stream Playing State , Settings &amp; Content to all Channels."/>
             <Property name="name" type="java.lang.String" value="btnApplyAllCh" noResource="true"/>
           </Properties>
           <Events>
@@ -93,7 +93,7 @@
               <Image iconType="3" name="/webcamstudio/resources/tango/chan-app3.png"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Copy Only Settings"/>
-            <Property name="toolTipText" type="java.lang.String" value="Apply Current Stream Settings except the Playing State."/>
+            <Property name="toolTipText" type="java.lang.String" value="Apply Current Stream Settings &amp; Content except the Playing State to all Channels."/>
             <Property name="name" type="java.lang.String" value="btnApplyAllChSet" noResource="true"/>
           </Properties>
           <Events>
@@ -103,7 +103,7 @@
         <Component class="javax.swing.JLabel" name="jLabel1">
           <Properties>
             <Property name="horizontalAlignment" type="int" value="0"/>
-            <Property name="text" type="java.lang.String" value="Apply Current Stream Settings in All Channels"/>
+            <Property name="text" type="java.lang.String" value="Copy Current Stream Settings in All Channels"/>
             <Property name="name" type="java.lang.String" value="jLabel1" noResource="true"/>
           </Properties>
         </Component>
@@ -113,7 +113,7 @@
               <Image iconType="3" name="/webcamstudio/resources/tango/chan-app5.png"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Copy Only Style &amp; Position"/>
-            <Property name="toolTipText" type="java.lang.String" value="Apply Current Stream Settings except the Text Content."/>
+            <Property name="toolTipText" type="java.lang.String" value="Apply Current Stream Settings except the Text Content &amp; Playing State to all Channels."/>
             <Property name="name" type="java.lang.String" value="btnApplyAllChPos" noResource="true"/>
           </Properties>
           <Events>

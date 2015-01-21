@@ -52,7 +52,7 @@ public class SourceControlChannels extends javax.swing.JPanel {
 
         btnApplyAllCh.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/chan-app4.png"))); // NOI18N
         btnApplyAllCh.setText("Copy State & Settings");
-        btnApplyAllCh.setToolTipText("Apply Current Stream Playing State and Settings.");
+        btnApplyAllCh.setToolTipText("Apply Current Stream Playing State , Settings & Content to all Channels.");
         btnApplyAllCh.setName("btnApplyAllCh"); // NOI18N
         btnApplyAllCh.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -62,7 +62,7 @@ public class SourceControlChannels extends javax.swing.JPanel {
 
         btnApplyAllChSet.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/chan-app3.png"))); // NOI18N
         btnApplyAllChSet.setText("Copy Only Settings");
-        btnApplyAllChSet.setToolTipText("Apply Current Stream Settings except the Playing State.");
+        btnApplyAllChSet.setToolTipText("Apply Current Stream Settings & Content except the Playing State to all Channels.");
         btnApplyAllChSet.setName("btnApplyAllChSet"); // NOI18N
         btnApplyAllChSet.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -71,12 +71,12 @@ public class SourceControlChannels extends javax.swing.JPanel {
         });
 
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("Apply Current Stream Settings in All Channels");
+        jLabel1.setText("Copy Current Stream Settings in All Channels");
         jLabel1.setName("jLabel1"); // NOI18N
 
         btnApplyAllChPos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/chan-app5.png"))); // NOI18N
         btnApplyAllChPos.setText("Copy Only Style & Position");
-        btnApplyAllChPos.setToolTipText("Apply Current Stream Settings except the Text Content.");
+        btnApplyAllChPos.setToolTipText("Apply Current Stream Settings except the Text Content & Playing State to all Channels.");
         btnApplyAllChPos.setName("btnApplyAllChPos"); // NOI18N
         btnApplyAllChPos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -105,11 +105,11 @@ public class SourceControlChannels extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnApplyAllCh, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnApplyAllCh, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnApplyAllChSet, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnApplyAllChSet, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnApplyAllChPos, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnApplyAllChPos, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -124,7 +124,7 @@ public class SourceControlChannels extends javax.swing.JPanel {
             source.removeChannelAt(i);
             source.addChannelAt(sch,i);
         }
-        ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, source.getName() + " State & Settings Settings Applied to all Channels.");
+        ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, source.getName() + " Playing State, Settings & Content Applied to all Channels.");
         ResourceMonitor.getInstance().addMessage(label);
     }//GEN-LAST:event_btnApplyAllChActionPerformed
 
@@ -133,13 +133,15 @@ public class SourceControlChannels extends javax.swing.JPanel {
         String selChName = ChannelPanel.getSelectedChannel();
         for (int i=0; i < source.getChannels().size(); i++){
             String scName = source.getChannels().get(i).getName();
+            boolean isPlay = source.getChannels().get(i).getIsPlaying();
             if (!selChName.equals(scName)) {
                 sch=SourceChannel.getChannelIgnorePlay(scName, source);
+                sch.setIsPlaying(isPlay);
                 source.removeChannelAt(i);
                 source.addChannelAt(sch,i);
             }
         }
-        ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, source.getName() + " Only Settings Applied to all Channels.");
+        ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, source.getName() + " only Settings & Content Applied to all Channels.");
         ResourceMonitor.getInstance().addMessage(label);
     }//GEN-LAST:event_btnApplyAllChSetActionPerformed
 
@@ -149,13 +151,15 @@ public class SourceControlChannels extends javax.swing.JPanel {
             String scName = source.getChannels().get(i).getName();
             int oTime = source.getChannels().get(i).getDuration();
             String oCont = source.getChannels().get(i).getText();
+            boolean isPlay = source.getChannels().get(i).getIsPlaying();
             sch=SourceChannel.getChannelIgnoreContent(scName, source);
             sch.setText(oCont);
             sch.setDuration(oTime);
+            sch.setIsPlaying(isPlay);
             source.removeChannelAt(i);
             source.addChannelAt(sch,i);
         }
-        ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, source.getName() + " State, Style & Position Applied to all Channels.");
+        ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, source.getName() + " only Settings Applied to all Channels.");
         ResourceMonitor.getInstance().addMessage(label);
     }//GEN-LAST:event_btnApplyAllChPosActionPerformed
     
