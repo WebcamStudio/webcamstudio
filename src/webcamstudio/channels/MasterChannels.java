@@ -183,6 +183,19 @@ public class MasterChannels {
         }
     }
     
+    public void endAllStream(){
+        for (Stream s : streams){
+            if (s.getLoop()) {
+                s.setLoop(false);
+                Tools.sleep(30);
+                s.stop();
+            } else {
+                Tools.sleep(30);
+                s.stop();
+            }
+        }
+    }
+    
     public void stopTextCDown(){
         for (Stream s : streams){
             String streamName =s.getClass().getName();

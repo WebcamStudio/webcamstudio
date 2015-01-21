@@ -330,8 +330,8 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
             UIManager.put("nimbusSelectionBackground", new Color(255,220,35));
         }
         
-//        if (theme.equals("Dark")) {
-//            // setting WS Dark Theme
+//        if (theme.equals("Green")) {
+//            // setting WS Green Theme
 //            UIManager.put("text", Color.WHITE);
 //            UIManager.put("control", new Color(0,80,1));
 //            UIManager.put("nimbusBlueGrey", new Color(0,80,30));
@@ -1219,7 +1219,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
                 Tools.sleep(10);
                 PrePlayer.getPreInstance(null).stop();
                 Tools.sleep(10);
-                MasterChannels.getInstance().stopAllStream();
+                MasterChannels.getInstance().endAllStream();
                 Tools.sleep(10);
                 MasterMixer.getInstance().stop();
                 PreviewMixer.getInstance().stop();
@@ -1258,7 +1258,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
             Tools.sleep(10);
             PrePlayer.getPreInstance(null).stop();
             Tools.sleep(10);
-            MasterChannels.getInstance().stopAllStream();
+            MasterChannels.getInstance().endAllStream();
             Tools.sleep(10);
             MasterMixer.getInstance().stop();
             PreviewMixer.getInstance().stop();
@@ -1516,7 +1516,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
         String infoCmd;
         Runtime rt = Runtime.getRuntime();
         infoCmd = "v4l2-ctl --get-fmt-video --device " + d.getFile();
-        System.out.println("infoCmd: "+infoCmd);
+//        System.out.println("infoCmd: "+infoCmd);
         File fileD = new File(userHomeDir+"/.webcamstudio/"+"dSize.sh");
         FileOutputStream fosD;
         DataOutputStream dosD = null;
@@ -1546,19 +1546,19 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
             BufferedReader in = new BufferedReader(isr);
             String lineR;
             while ((lineR = in.readLine()) != null) {
-                System.out.println("lineR: "+lineR);
+//                System.out.println("lineR: "+lineR);
                 if(lineR.contains("Width")) {
                     lineR = lineR.trim();
                     String[] temp;
                     temp = lineR.split(":");
-                    System.out.println("Split:"+temp[0]+" Split:"+temp[1]);
+//                    System.out.println("Split:"+temp[0]+" Split:"+temp[1]);
                     String Res = temp[1].replaceAll(" ", "");
                     String[] wh;
                     wh = Res.split("/");
                     
                     int w = Integer.parseInt(wh[0]);
                     int h = Integer.parseInt(wh[1]);
-                    System.out.println("W:"+w+" H:"+h);
+//                    System.out.println("W:"+w+" H:"+h);
                     int mixerW = MasterMixer.getInstance().getWidth();
                     int mixerH = MasterMixer.getInstance().getHeight();
                     int hAR = (mixerW*h)/w;
@@ -1648,6 +1648,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
             String batchDurationComm = userHomeDir+"/.webcamstudio/"+"DCalc.sh";
             try {
                 Process duration = rt.exec(batchDurationComm);
+                boolean audiofind = false;
                 Tools.sleep(10);
                 duration.waitFor(); //Author spoonybard896
                 InputStream lsOut = duration.getErrorStream();
@@ -1668,6 +1669,11 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
                         String strDuration = Integer.toString(totalTime);
                         stream.setStreamTime(strDuration+"s");
                     }
+                    
+                    if (lineR.contains("Audio:")) {
+                        audiofind = true;
+                    }
+                    
                     if (autoAR) {
                         if (lineR.contains("Video:")) {
                             String [] lineRParts = lineR.split(",");
@@ -1701,6 +1707,9 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
                         }
                     }
                 }
+//                System.out.println(audiofind);
+                stream.setOnlyVideo(!audiofind);
+                stream.setAudio(audiofind);
             } catch (IOException | InterruptedException | NumberFormatException e) {
             }
         }
@@ -1770,7 +1779,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
                         Tools.sleep(10);
                         PrePlayer.getPreInstance(null).stop();
                         Tools.sleep(10);
-                        MasterChannels.getInstance().stopAllStream();
+                        MasterChannels.getInstance().endAllStream();
                         for (Stream s : MasterChannels.getInstance().getStreams()){              
                             s.updateStatus();
                         }
@@ -1794,7 +1803,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
                         Tools.sleep(10);
                         PrePlayer.getPreInstance(null).stop();
                         Tools.sleep(10);
-                        MasterChannels.getInstance().stopAllStream();
+                        MasterChannels.getInstance().endAllStream();
                         listenerCP.stopChTime(fEvt);
                         listenerCP.resetBtnStates(fEvt);
                         listenerOP.resetBtnStates(fEvt);
@@ -1948,7 +1957,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
             Tools.sleep(10);
             PrePlayer.getPreInstance(null).stop();
             Tools.sleep(10);
-            MasterChannels.getInstance().stopAllStream();
+            MasterChannels.getInstance().endAllStream();
             for (Stream s : MasterChannels.getInstance().getStreams()){
                 s.updateStatus();
             }
@@ -2585,7 +2594,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
                     Tools.sleep(10);
                     PrePlayer.getPreInstance(null).stop();
                     Tools.sleep(10);
-                    MasterChannels.getInstance().stopAllStream();
+                    MasterChannels.getInstance().endAllStream();
                     for (Stream s : MasterChannels.getInstance().getStreams()){              
                         s.updateStatus();
                     }
@@ -2609,7 +2618,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
                     Tools.sleep(10);
                     PrePlayer.getPreInstance(null).stop();
                     Tools.sleep(10);
-                    MasterChannels.getInstance().stopAllStream();
+                    MasterChannels.getInstance().endAllStream();
                     listenerCP.stopChTime(fEvt);
                     listenerCP.resetBtnStates(fEvt);
                     listenerOP.resetBtnStates(fEvt);

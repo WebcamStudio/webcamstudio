@@ -7,6 +7,7 @@ Source: https://code.google.com/p/webcamstudio/source/checkout
 Files: *
 Copyright:	2009-2012, Patrick Balleux <patrick.balleux@gmail.com>
 			2013, WebcamStudio Team <webcamstudio@lists.launchpad.net>
+			2014-2015, WebcamStudio Team <webcamstudio@lists.launchpad.net>
 License: GPL-3.0+
 
 Files: debian/*
