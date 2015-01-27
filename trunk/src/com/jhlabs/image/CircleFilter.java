@@ -202,4 +202,9 @@ public class CircleFilter extends TransformFilter {
 		return "Distort/Circle...";
 	}
 
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

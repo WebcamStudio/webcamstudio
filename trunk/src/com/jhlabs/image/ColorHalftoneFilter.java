@@ -189,5 +189,10 @@ public class ColorHalftoneFilter extends AbstractBufferedImageOp {
 	public String toString() {
 		return "Pixellate/Color Halftone...";
 	}
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
 }
 

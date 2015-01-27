@@ -287,7 +287,7 @@ public class WarpGrid {
                 
                 for (v = 0; v < gridRows; v++) {
                     xrow[v] = splines.xGrid[i];;
-                    yrow[v] = splines.yGrid[i];;
+                    yrow[v] = splines.yGrid[i];
                     i += cols;
                 }
                 

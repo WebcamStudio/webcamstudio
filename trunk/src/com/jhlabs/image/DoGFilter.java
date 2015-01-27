@@ -38,7 +38,6 @@ public class DoGFilter extends AbstractBufferedImageOp {
 	/**
 	 * Set the radius of the kernel, and hence the amount of blur. The bigger the radius, the longer this filter will take.
      * @param radius1
-	 * @param radius the radius of the blur in pixels.
      * @min-value 0
      * @max-value 100+
      * @see #getRadius
@@ -59,7 +58,6 @@ public class DoGFilter extends AbstractBufferedImageOp {
 	/**
 	 * Set the radius of the kernel, and hence the amount of blur. The bigger the radius, the longer this filter will take.
      * @param radius2
-	 * @param radius the radius of the blur in pixels.
      * @min-value 0
      * @max-value 100+
      * @see #getRadius
@@ -166,4 +164,9 @@ public class DoGFilter extends AbstractBufferedImageOp {
 	public String toString() {
 		return "Edges/Difference of Gaussians...";
 	}
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
 }

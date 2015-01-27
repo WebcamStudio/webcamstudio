@@ -74,4 +74,9 @@ public class DiffuseFilter extends TransformFilter {
 	public String toString() {
 		return "Distort/Diffuse...";
 	}
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
 }

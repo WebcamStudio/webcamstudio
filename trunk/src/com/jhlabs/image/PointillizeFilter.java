@@ -92,5 +92,10 @@ public class PointillizeFilter extends CellularFilter {
 	public String toString() {
 		return "Stylize/Pointillize...";
 	}
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
 	
 }

@@ -139,4 +139,9 @@ catch (Exception e) {
 		return "Distort/Shear...";
 	}
 
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

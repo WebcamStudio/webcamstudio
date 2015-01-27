@@ -145,5 +145,10 @@ public class MarbleTexFilter extends PointFilter {
 	public String toString() {
 		return "Texture/Marble Texture...";
 	}
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
 	
 }

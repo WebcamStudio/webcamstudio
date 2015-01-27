@@ -284,4 +284,9 @@ public class ShadowFilter extends AbstractBufferedImageOp {
 	public String toString() {
 		return "Stylize/Drop Shadow...";
 	}
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
 }

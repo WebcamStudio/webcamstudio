@@ -131,4 +131,9 @@ public class DisplaceFilter extends TransformFilter {
 	public String toString() {
 		return "Distort/Displace...";
 	}
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
 }

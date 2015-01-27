@@ -38,4 +38,9 @@ public class BlurFilter extends ConvolveFilter {
 	public String toString() {
 		return "Blur/Simple Blur";
 	}
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
 }

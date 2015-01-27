@@ -21,7 +21,7 @@ import java.awt.image.BufferedImage;
 /**
  * A filter which produces a rubber-stamp type of effect by performing a thresholded blur.
  */
-public class StampFilter extends PointFilter {
+public final class StampFilter extends PointFilter {
 
 	private float threshold;
 	private float softness = 0;
@@ -162,4 +162,9 @@ public class StampFilter extends PointFilter {
 	public String toString() {
 		return "Stylize/Stamp...";
 	}
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
 }

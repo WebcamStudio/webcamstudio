@@ -246,6 +246,11 @@ y = tile.y + transition * tile.vy;
 		return "Transition/Shatter...";
 	}
 
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
+
     static class Tile {
 
         float x;

@@ -123,4 +123,9 @@ public class RotateFilter extends TransformFilter {
 		return "Rotate "+(int)(angle * 180 / Math.PI);
 	}
 
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

@@ -30,5 +30,10 @@ public class SolarizeFilter extends TransferFilter {
 	public String toString() {
 		return "Colors/Solarize";
 	}
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
 }
 

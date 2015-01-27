@@ -181,4 +181,9 @@ public class SwimFilter extends TransformFilter {
 	public String toString() {
 		return "Distort/Swim...";
 	}
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
 }

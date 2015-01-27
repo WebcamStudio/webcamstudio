@@ -204,4 +204,9 @@ public class FlipFilter extends AbstractBufferedImageOp {
 		}
 		return "Flip";
 	}
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
 }

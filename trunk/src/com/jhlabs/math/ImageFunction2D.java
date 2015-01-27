@@ -23,7 +23,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
 import java.awt.image.PixelGrabber;
 
-public class ImageFunction2D implements Function2D {
+public final class ImageFunction2D implements Function2D {
 
 	public final static int ZERO = 0;
 	public final static int CLAMP = 1;
@@ -71,6 +71,7 @@ public class ImageFunction2D implements Function2D {
 	/**
 	 * A convenience method for getting ARGB pixels from an image. This tries to avoid the performance
 	 * penalty of BufferedImage.getRGB unmanaging the image.
+     * @param pixels
      * @return 
 	 */
 	public int[] getRGB( BufferedImage image, int x, int y, int width, int height, int[] pixels ) {

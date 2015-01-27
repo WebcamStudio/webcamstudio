@@ -164,5 +164,10 @@ public class WarpFilter extends WholeImageFilter {
 		return "Distort/Mesh Warp...";
 	}
 
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }
 

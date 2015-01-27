@@ -15,6 +15,7 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.NoSuchElementException;
 import java.util.logging.Level;
@@ -57,11 +58,13 @@ public class SourceText extends Stream {
     public void readNext() {
         if (frame != null && isPlaying) {
             frame.setImage(image);
-            txImage = frame.getImage();
-            applyEffects(txImage);
-            frame.setOutputFormat(x, y, width, height, opacity, volume);
-            frame.setZOrder(zorder);
-            nextFrame=frame;
+            if (frame != null) {
+                txImage = frame.getImage();
+                applyEffects(txImage);
+                frame.setOutputFormat(x, y, width, height, opacity, volume);
+                frame.setZOrder(zorder);
+                nextFrame=frame;
+            }
         }
     }
 
@@ -306,9 +309,7 @@ public class SourceText extends Stream {
         
         String[] datas = content.split("\n");
         linee.clear();
-        for (int i = 0; i < datas.length; i++) {
-            linee.add(datas[i]);
-        }
+        linee.addAll(Arrays.asList(datas));
         
         if (this.getIsQRCode()) {
             captureWidth = width;

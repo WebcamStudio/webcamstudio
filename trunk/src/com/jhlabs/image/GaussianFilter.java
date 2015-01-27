@@ -34,6 +34,7 @@ public class GaussianFilter extends ConvolveFilter {
      * @param width the width of the pixel array
      * @param height the height of the pixel array
      * @param alpha whether to blur the alpha channel
+     * @param premultiply
      * @param edgeAction what to do at the edges
      * @param unpremultiply
      */
@@ -204,5 +205,10 @@ public class GaussianFilter extends ConvolveFilter {
 	public String toString() {
             return "Blur/Gaussian Blur...";
         }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
 
 }

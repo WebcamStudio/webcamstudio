@@ -83,5 +83,10 @@ public class ChromeFilter extends LightFilter {
 	public String toString() {
 		return "Effects/Chrome...";
 	}
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
 }
 

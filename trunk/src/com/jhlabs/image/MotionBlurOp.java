@@ -278,4 +278,9 @@ public class MotionBlurOp extends AbstractBufferedImageOp {
 	public String toString() {
 		return "Blur/Faster Motion Blur...";
 	}
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
 }

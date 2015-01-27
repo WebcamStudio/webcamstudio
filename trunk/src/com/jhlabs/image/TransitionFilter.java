@@ -75,13 +75,11 @@ public class TransitionFilter extends AbstractBufferedImageOp {
 		try {
 			BeanInfo info = Introspector.getBeanInfo( filter.getClass() );
             PropertyDescriptor[] pds = info.getPropertyDescriptors();
-            for ( int i = 0; i < pds.length; i++ ) {
-                PropertyDescriptor pd = pds[i];
-                if ( property.equals( pd.getName() ) ) {
-                    method = pd.getWriteMethod();
-                    break;
-                }
-            }
+                    for (PropertyDescriptor pd : pds) {
+                        if ( property.equals( pd.getName() ) ) {
+                            method = pd.getWriteMethod();
+                            break;
+                        }   }
             if ( method == null ) {
                 throw new IllegalArgumentException( "No such property in object: "+property );
                         }
@@ -197,4 +195,9 @@ public class TransitionFilter extends AbstractBufferedImageOp {
 	public String toString() {
 		return "Transitions/Transition...";
 	}
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
 }

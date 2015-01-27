@@ -42,4 +42,9 @@ public class CompoundFilter extends AbstractBufferedImageOp {
 		image = filter2.filter( image, dst );
 		return image;
 	}
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
 }

@@ -8,6 +8,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import webcamstudio.exporter.vloopback.V4L2Loopback;
 import webcamstudio.exporter.vloopback.VideoOutput;
+import static webcamstudio.exporter.vloopback.VideoOutput.RGB24;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterMixer;
 
@@ -30,7 +31,7 @@ public class SinkLinuxDevice extends Stream implements MasterMixer.SinkListener 
     public void read() {
         stop = false;
         rate = MasterMixer.getInstance().getRate();
-        device.open(file.getAbsolutePath(), width, height, VideoOutput.RGB24);
+        device.open(file.getAbsolutePath(), width, height, RGB24);
         MasterMixer.getInstance().register(this);
     }
 

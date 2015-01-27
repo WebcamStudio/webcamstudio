@@ -19,7 +19,7 @@ package com.jhlabs.image;
 /**
  * A filter to posterize an image.
  */
-public class PosterizeFilter extends PointFilter {
+public final class PosterizeFilter extends PointFilter {
 
 	private int numLevels;
 	private int[] levels;
@@ -80,6 +80,11 @@ public class PosterizeFilter extends PointFilter {
 	public String toString() {
 		return "Colors/Posterize...";
 	}
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
 
 }
 

@@ -22,7 +22,7 @@ import java.awt.image.BufferedImage;
 /**
  * A filter which simulates a lens placed over an image.
  */
-public class SphereFilter extends TransformFilter {
+public final class SphereFilter extends TransformFilter {
 
 	private float a = 0;
 	private float b = 0;
@@ -178,5 +178,10 @@ public class SphereFilter extends TransformFilter {
 	public String toString() {
 		return "Distort/Sphere...";
 	}
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
 
 }

@@ -170,6 +170,11 @@ public class FieldWarpFilter extends TransformFilter {
 		return "Distort/Field Warp...";
 	}
 
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
+
     public static class Line {
 
         public int x1;

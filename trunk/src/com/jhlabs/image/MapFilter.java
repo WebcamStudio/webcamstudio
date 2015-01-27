@@ -55,4 +55,9 @@ public class MapFilter extends TransformFilter {
 	public String toString() {
 		return "Distort/Map Coordinates...";
 	}
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
 }

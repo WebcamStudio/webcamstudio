@@ -91,7 +91,7 @@ public class CellularFunction2D implements Function2D {
 	public float evaluate(float x, float y) {
 		for (int j = 0; j < results.length; j++) {
                     results[j].distance = Float.POSITIVE_INFINITY;
-                }
+            }
 
 		int ix = (int)x;
 		int iy = (int)y;

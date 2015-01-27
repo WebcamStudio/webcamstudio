@@ -150,4 +150,9 @@ public class MirrorFilter extends AbstractBufferedImageOp {
 	public String toString() {
 		return "Effects/Mirror...";
 	}
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
 }

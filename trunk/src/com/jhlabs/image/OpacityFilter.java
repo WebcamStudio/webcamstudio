@@ -19,7 +19,7 @@ package com.jhlabs.image;
 /**
  * Sets the opacity (alpha) of every pixel in an image to a constant value.
  */
-public class OpacityFilter extends PointFilter {
+public final class OpacityFilter extends PointFilter {
 	
 	private int opacity;
 	private int opacity24;
@@ -70,6 +70,11 @@ public class OpacityFilter extends PointFilter {
 	public String toString() {
 		return "Colors/Transparency...";
 	}
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
 
 }
 

@@ -442,5 +442,10 @@ public class ConvolveFilter extends AbstractBufferedImageOp {
 	public String toString() {
             return "Blur/Convolve...";
         }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
 	
 }

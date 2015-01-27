@@ -102,7 +102,7 @@ import webcamstudio.util.Tools.OS;
  *
  * @author patrick (modified by karl)
  */
-public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
+public final class WebcamStudio extends JFrame implements StreamDesktop.Listener {
 
     public static Preferences prefs = null;
     public static Properties animations = new Properties();
@@ -143,15 +143,13 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
             faceL = faceNames.get(i).toString();
 //            System.out.println(faceL);
             File destination = new File(System.getProperty("user.home")+"/.webcamstudio/faces/"+faceL+".png");
-            InputStream is = getClass().getResourceAsStream("/webcamstudio/resources/faces/"+faceL+".png");
-            OutputStream os = new FileOutputStream(destination);
-            byte[] buffer = new byte[4096];
-            int length;
-            while ((length = is.read(buffer)) > 0) {
-                os.write(buffer, 0, length);
+            try (InputStream is = getClass().getResourceAsStream("/webcamstudio/resources/faces/"+faceL+".png"); OutputStream os = new FileOutputStream(destination)) {
+                byte[] buffer = new byte[4096];
+                int length;
+                while ((length = is.read(buffer)) > 0) {
+                    os.write(buffer, 0, length);
+                }
             }
-            os.close();
-            is.close();
         }        
         faceNames.clear();
         File destination = new File(System.getProperty("user.home")+"/.webcamstudio/faces/haarcascade_frontalface_alt2.xml");
@@ -1225,9 +1223,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
                 PreviewMixer.getInstance().stop();
                 try {
                     execPACTL("pactl unload-module module-null-sink");
-                } catch (IOException ex) {
-                    Logger.getLogger(OutputPanel.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (InterruptedException ex) {
+                } catch (IOException | InterruptedException ex) {
                     Logger.getLogger(OutputPanel.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 Tools.sleep(100);   
@@ -2437,6 +2433,7 @@ public class WebcamStudio extends JFrame implements StreamDesktop.Listener {
     
     /**
      * @param args the command line arguments
+     * @throws java.io.IOException
      */
     public static void main(String args[]) throws IOException { 
         if (System.getProperty("jna.nosys") == null) {

@@ -21,7 +21,7 @@ import java.awt.Rectangle;
 /**
  * A filter which performs a perspective distortion on an image.
  */
-public class PerspectiveFilter extends TransformFilter {
+public final class PerspectiveFilter extends TransformFilter {
 
 	private float x0, y0, x1, y1, x2, y2, x3, y3;
 	private float dx1, dy1, dx2, dy2, dx3, dy3;
@@ -185,5 +185,10 @@ public class PerspectiveFilter extends TransformFilter {
 	public String toString() {
 		return "Distort/Perspective...";
 	}
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
 }
 

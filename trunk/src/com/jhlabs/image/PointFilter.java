@@ -65,4 +65,9 @@ public abstract class PointFilter extends AbstractBufferedImageOp {
 	}
 
 	public abstract int filterRGB(int x, int y, int rgb);
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
 }

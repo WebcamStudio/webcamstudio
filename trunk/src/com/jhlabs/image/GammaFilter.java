@@ -19,7 +19,7 @@ package com.jhlabs.image;
 /**
  * A filter for changing the gamma of an image.
  */
-public class GammaFilter extends TransferFilter {
+public final class GammaFilter extends TransferFilter {
 
 	private float rGamma, gGamma, bGamma;
 
@@ -115,6 +115,11 @@ public class GammaFilter extends TransferFilter {
 	public String toString() {
 		return "Colors/Gamma...";
 	}
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
 
 }
 

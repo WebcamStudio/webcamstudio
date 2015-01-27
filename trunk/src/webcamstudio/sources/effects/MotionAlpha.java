@@ -84,13 +84,13 @@ public class MotionAlpha extends Effect {
                     //int currA = (curr >>> 24) & 0xFF;   
                     int currR = (curr >>> 16) & 0xFF;   
                     int currG = (curr >>> 8) & 0xFF;   
-                    int currB = (curr >>> 0) & 0xFF;   
+                    int currB = (curr) & 0xFF;   
                        
                     int prev = ((BufferedImage)img2).getRGB(i, j);
                     //int prevA = (prev >>> 24) & 0xFF;   
                     int prevR = (prev >>> 16) & 0xFF;   
                     int prevG = (prev >>> 8) & 0xFF;   
-                    int prevB = (prev >>> 0) & 0xFF;   
+                    int prevB = (prev) & 0xFF;   
                        
                     int diff = Math.abs(currR-prevR)   
                     + Math.abs(currG-prevG)   

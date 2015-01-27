@@ -132,4 +132,9 @@ public class HalftoneFilter extends AbstractBufferedImageOp {
 	public String toString() {
 		return "Stylize/Halftone...";
 	}
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
 }

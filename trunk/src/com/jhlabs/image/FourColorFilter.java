@@ -19,7 +19,7 @@ package com.jhlabs.image;
 /**
  * A filter which draws a gradient interpolated between four colors defined at the corners of the image.
  */
-public class FourColorFilter extends PointFilter {
+public final class FourColorFilter extends PointFilter {
 	
 	private int width;
 	private int height;
@@ -115,4 +115,9 @@ public class FourColorFilter extends PointFilter {
 	public String toString() {
 		return "Texture/Four Color Fill...";
 	}
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
 }

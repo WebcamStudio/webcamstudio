@@ -78,4 +78,9 @@ public class EqualizeFilter extends WholeImageFilter {
 	public String toString() {
 		return "Colors/Equalize";
 	}
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
 }

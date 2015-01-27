@@ -155,7 +155,6 @@ public class Noise implements Function1D, Function2D, Function3D {
      * @param x the x coordinate
      * @param y the y coordinate
      * @param z
-     * @param y the y coordinate
      * @return noise value at (x,y,z)
      */
     public static float noise3(float x, float y, float z) {
@@ -283,6 +282,7 @@ public class Noise implements Function1D, Function2D, Function3D {
      * Returns the minimum and maximum of a number of random values
      * of the given function. This is useful for making some stab at
      * normalising the function.
+     * @param minmax
      * @return 
      */
     public static float[] findRange(Function1D f, float[] minmax) {
@@ -305,6 +305,7 @@ public class Noise implements Function1D, Function2D, Function3D {
      * Returns the minimum and maximum of a number of random values
      * of the given function. This is useful for making some stab at
      * normalising the function.
+     * @param minmax
      * @return 
      */
     public static float[] findRange(Function2D f, float[] minmax) {

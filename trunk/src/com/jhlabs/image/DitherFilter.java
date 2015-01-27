@@ -277,5 +277,10 @@ public class DitherFilter extends PointFilter {
 		return "Colors/Dither...";
 	}
 
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }
 

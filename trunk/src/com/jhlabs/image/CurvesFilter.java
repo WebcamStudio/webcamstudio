@@ -62,6 +62,11 @@ public class CurvesFilter extends TransferFilter {
 		return "Colors/Curves...";
 	}
 
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
+
     public static class Curve {
 
         public float[] x;

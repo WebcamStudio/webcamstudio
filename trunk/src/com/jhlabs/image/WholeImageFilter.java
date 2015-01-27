@@ -82,5 +82,10 @@ public abstract class WholeImageFilter extends AbstractBufferedImageOp {
      * @return the output pixels
      */
 	protected abstract int[] filterPixels( int width, int height, int[] inPixels, Rectangle transformedSpace );
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
 }
 

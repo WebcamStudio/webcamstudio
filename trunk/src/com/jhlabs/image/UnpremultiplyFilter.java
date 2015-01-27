@@ -55,5 +55,10 @@ public class UnpremultiplyFilter extends PointFilter {
 	public String toString() {
 		return "Alpha/Unpremultiply";
 	}
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
 }
 

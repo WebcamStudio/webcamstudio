@@ -213,4 +213,9 @@ public class PolarFilter extends TransformFilter {
 		return "Distort/Polar Coordinates...";
 	}
 
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

@@ -151,9 +151,11 @@ public class Exporter implements MasterMixer.SinkListener {
         System.out.println("Output aborted...");
         MasterMixer.getInstance().unregister(this);
         if (stream.hasVideo()) {
-            imageBuffer.abort();
-            imageBuffer = null;
+            if (imageBuffer != null) {
+                imageBuffer.abort();
+                imageBuffer = null;
 //            System.out.println("imageBuffer Aborted!");
+            }
         }
         if (stream.hasAudio()) {
             audioBuffer.abort();
