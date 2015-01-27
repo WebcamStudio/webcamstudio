@@ -291,9 +291,9 @@ if ( bumpShape != 0 ) {
 		Vector3f n = new Vector3f();
 		Light[] lightsArray = new Light[lights.size()];
 		lights.toArray(lightsArray);
-		for (int i = 0; i < lightsArray.length; i++) {
-                    lightsArray[i].prepare(width, height);
-                }
+            for (Light lightsArray1 : lightsArray) {
+                lightsArray1.prepare(width, height);
+            }
 
 		float[][] heightWindow = new float[3][width];
 		for (int x = 0; x < width; x++) {
@@ -429,69 +429,68 @@ if ( bumpShape != 0 ) {
 		shadedColor.set(diffuseColor);
 		shadedColor.scale(material.ambientIntensity);
 
-		for (int i = 0; i < lightsArray.length; i++) {
-			Light light = lightsArray[i];
-			n.set(normal);
-			l.set(light.position);
-			if (light.type != DISTANT) {
-                            l.sub(position);
+            for (Light light : lightsArray) {
+                n.set(normal);
+                l.set(light.position);
+                if (light.type != DISTANT) {
+                    l.sub(position);
+                }
+                l.normalize();
+                float nDotL = n.dot(l);
+                if (nDotL >= 0.0) {
+                    float dDotL = 0;
+                    
+                    v.set(viewpoint);
+                    v.sub(position);
+                    v.normalize();
+                    
+                    // Spotlight
+                    if (light.type == SPOT) {
+                        dDotL = light.direction.dot(l);
+                        if (dDotL < light.cosConeAngle) {
+                            continue;
                         }
-			l.normalize();
-			float nDotL = n.dot(l);
-			if (nDotL >= 0.0) {
-				float dDotL = 0;
-				
-				v.set(viewpoint);
-				v.sub(position);
-				v.normalize();
-
-				// Spotlight
-				if (light.type == SPOT) {
-					dDotL = light.direction.dot(l);
-					if (dDotL < light.cosConeAngle) {
-                                            continue;
-                                        }
-				}
-
-				n.scale(2.0f * nDotL);
-				n.sub(l);
-				float rDotV = n.dot(v);
-
-				float rv;
-				if (rDotV < 0.0) {
-                                    rv = 0.0f;
-                                } else {
-                                    //					rv = (float)Math.pow(rDotV, material.highlight);
-                                    rv = rDotV / (material.highlight - material.highlight*rDotV + rDotV);	// Fast approximation to pow
-                                }
-
-				// Spotlight
-				if (light.type == SPOT) {
-					dDotL = light.cosConeAngle/dDotL;
-					float e = dDotL;
-					e *= e;
-					e *= e;
-					e *= e;
-					e = (float)Math.pow(dDotL, light.focus*10)*(1 - e);
-					rv *= e;
-					nDotL *= e;
-				}
-				
-				diffuse_color.set(diffuseColor);
-				diffuse_color.scale(material.diffuseReflectivity);
-				diffuse_color.x *= light.realColor.x * nDotL;
-				diffuse_color.y *= light.realColor.y * nDotL;
-				diffuse_color.z *= light.realColor.z * nDotL;
-				specular_color.set(specularColor);
-				specular_color.scale(material.specularReflectivity);
-				specular_color.x *= light.realColor.x * rv;
-				specular_color.y *= light.realColor.y * rv;
-				specular_color.z *= light.realColor.z * rv;
-				diffuse_color.add(specular_color);
-				diffuse_color.clamp( 0, 1 );
-				shadedColor.add(diffuse_color);
-			}
-		}
+                    }
+                    
+                    n.scale(2.0f * nDotL);
+                    n.sub(l);
+                    float rDotV = n.dot(v);
+                    
+                    float rv;
+                    if (rDotV < 0.0) {
+                        rv = 0.0f;
+                    } else {
+                        //					rv = (float)Math.pow(rDotV, material.highlight);
+                        rv = rDotV / (material.highlight - material.highlight*rDotV + rDotV);	// Fast approximation to pow
+                    }
+                    
+                    // Spotlight
+                    if (light.type == SPOT) {
+                        dDotL = light.cosConeAngle/dDotL;
+                        float e = dDotL;
+                        e *= e;
+                        e *= e;
+                        e *= e;
+                        e = (float)Math.pow(dDotL, light.focus*10)*(1 - e);
+                        rv *= e;
+                        nDotL *= e;
+                    }
+                    
+                    diffuse_color.set(diffuseColor);
+                    diffuse_color.scale(material.diffuseReflectivity);
+                    diffuse_color.x *= light.realColor.x * nDotL;
+                    diffuse_color.y *= light.realColor.y * nDotL;
+                    diffuse_color.z *= light.realColor.z * nDotL;
+                    specular_color.set(specularColor);
+                    specular_color.scale(material.specularReflectivity);
+                    specular_color.x *= light.realColor.x * rv;
+                    specular_color.y *= light.realColor.y * rv;
+                    specular_color.z *= light.realColor.z * rv;
+                    diffuse_color.add(specular_color);
+                    diffuse_color.clamp( 0, 1 );
+                    shadedColor.add(diffuse_color);
+                }
+            }
 		shadedColor.clamp( 0, 1 );
 		return shadedColor;
 	}
@@ -536,6 +535,11 @@ if ( bumpShape != 0 ) {
 	public String toString() {
 		return "Stylize/Light Effects...";
 	}
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
 
     /**
      * A class representing material properties.
@@ -667,7 +671,6 @@ if ( bumpShape != 0 ) {
         /**
          * Set the centre of the light in the X direction as a proportion of the image size.
              * @param x
-         * @param centreX the center
          * @see #getCentreX
          */
 		public void setCentreX(float x) {
@@ -686,7 +689,6 @@ if ( bumpShape != 0 ) {
         /**
          * Set the centre of the light in the Y direction as a proportion of the image size.
              * @param y
-         * @param centreY the center
          * @see #getCentreY
          */
 		public void setCentreY(float y) {
@@ -727,7 +729,7 @@ if ( bumpShape != 0 ) {
 		}
 		
                 @Override
-		public Object clone() {
+		public Object clone() throws CloneNotSupportedException {
 			try {
 				Light copy = (Light)super.clone();
 				return copy;
@@ -749,6 +751,11 @@ if ( bumpShape != 0 ) {
 		public String toString() {
 			return "Ambient Light";
 		}
+
+        @Override
+        public Object clone() throws CloneNotSupportedException {
+            return super.clone(); //To change body of generated methods, choose Tools | Templates.
+        }
 	}
 
 	public class PointLight extends Light {
@@ -760,6 +767,11 @@ if ( bumpShape != 0 ) {
 		public String toString() {
 			return "Point Light";
 		}
+
+        @Override
+        public Object clone() throws CloneNotSupportedException {
+            return super.clone(); //To change body of generated methods, choose Tools | Templates.
+        }
 	}
 
 	public class DistantLight extends Light {
@@ -771,6 +783,11 @@ if ( bumpShape != 0 ) {
 		public String toString() {
 			return "Distant Light";
 		}
+
+        @Override
+        public Object clone() throws CloneNotSupportedException {
+            return super.clone(); //To change body of generated methods, choose Tools | Templates.
+        }
 	}
 
 	public class SpotLight extends Light {
@@ -782,5 +799,10 @@ if ( bumpShape != 0 ) {
 		public String toString() {
 			return "Spotlight";
 		}
+
+        @Override
+        public Object clone() throws CloneNotSupportedException {
+            return super.clone(); //To change body of generated methods, choose Tools | Templates.
+        }
 	}
 }

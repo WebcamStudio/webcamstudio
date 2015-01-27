@@ -343,4 +343,9 @@ public class LensBlurFilter extends AbstractBufferedImageOp {
 	public String toString() {
 		return "Blur/Lens Blur...";
 	}
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
 }

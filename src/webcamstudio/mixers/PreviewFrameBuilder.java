@@ -30,7 +30,7 @@ import webcamstudio.util.Tools;
  */
 public class PreviewFrameBuilder implements Runnable {
 
-    private static ArrayList<Stream> preStreams = new ArrayList<>();// add private
+    private static final ArrayList<Stream> preStreams = new ArrayList<>();// add private
     private static int fps = 0;
 
     public static synchronized void register(Stream s) {
@@ -51,7 +51,7 @@ public class PreviewFrameBuilder implements Runnable {
     private boolean stopMe = false;
     private long mark = System.currentTimeMillis();
     private FrameBuffer frameBuffer = null;
-    private TreeMap<Integer, Frame> orderedFrames = new TreeMap<>();
+    private final TreeMap<Integer, Frame> orderedFrames = new TreeMap<>();
 
     public PreviewFrameBuilder(int w, int h, int r) {
         frameBuffer = new FrameBuffer(w, h, r);

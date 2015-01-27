@@ -115,7 +115,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
     private boolean fmeOutSwitch = false;
     private boolean camOutState = false;
     private boolean camOutSwitch = false;
-    private ArrayList<String> idWSOuts = new ArrayList<>();
+    private final ArrayList<String> idWSOuts = new ArrayList<>();
     private String idWSAD;
     private String idDef;
     private String idWSOut;
@@ -373,7 +373,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
                     if (fme != null){
                         fmeOutState = true;
                         String cleanBroad = checkDoubleBroad(button.getText());
-                        if (cleanBroad != "") {
+                        if (!"".equals(cleanBroad)) {
                             broadcastsOut.add(cleanBroad);
 //                            System.out.println("broadcastsOut: "+broadcastsOut);
                         }
@@ -401,11 +401,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
                     }
 //                    System.out.println("StartFMECount = "+fmeCount);
                 } else {
-                    if (fmeCount > 0) {
-                        fmeOutState = true;
-                    } else {
-                        fmeOutState = false;
-                    }
+                    fmeOutState = fmeCount > 0;
                     broadcastsOut.remove(button.getText());
                     SinkBroadcast broadcast = broadcasts.get(button.getText());
                     if (broadcast != null) {
@@ -680,10 +676,10 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
                 fileStream.setFile(f);
                 fileStream.setListener(instanceSink);
                 // Fix lost prefs
-                if (fileStream.getVbitrate() == "") {
+                if ("".equals(fileStream.getVbitrate())) {
                     fileStream.setVbitrate("1200");
                 }
-                if (fileStream.getAbitrate() == "") {
+                if ("".equals(fileStream.getAbitrate())) {
                     fileStream.setAbitrate("128");
                 }
                 
@@ -719,13 +715,13 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
             udpOutState = true;
             udpStream.setListener(instanceSink);
             // Fix lost prefs
-            if (udpStream.getVbitrate() == "") {
+            if ("".equals(udpStream.getVbitrate())) {
                 udpStream.setVbitrate("1200");
             }
-            if (udpStream.getAbitrate() == "") {
+            if ("".equals(udpStream.getAbitrate())) {
                 udpStream.setAbitrate("128");
             }
-            if (udpStream.getStandard() == "") {
+            if ("".equals(udpStream.getStandard())) {
                 udpStream.setStandard("STD");
             }
             
@@ -827,7 +823,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
                         if (button.isSelected()) {
                             camOutState = true;
                             String cleanCam = checkDoubleCam(button.getText());
-                            if (cleanCam != "") {
+                            if (!"".equals(cleanCam)) {
                                 devicesOut.add(d.getName());
                             }
                             camCount ++;
@@ -844,11 +840,7 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
                             tglSkyCam.setEnabled(false);
 //                            System.out.println("StartCamCount = "+camCount);
                         } else {
-                            if (camCount > 0) {
-                                camOutState = true;
-                            } else {
-                                camOutState = false;
-                            }
+                            camOutState = camCount > 0;
                             devicesOut.remove(d.getName());
                             SinkLinuxDevice stream = devices.get(button.getText());
                             if (stream != null) {
@@ -1061,16 +1053,8 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
 
     @Override
     public void requestReset() {
-        if (audioOutState) {
-            audioOutSwitch = true;
-        } else {
-            audioOutSwitch = false;
-        }
-        if (udpOutState) {
-            udpOutSwitch = true;
-        } else {
-            udpOutSwitch = false;
-        }
+        audioOutSwitch = audioOutState;
+        udpOutSwitch = udpOutState;
         if (fmeOutState) {
             fmeOutSwitch = true;
             fmeCount = 0;
@@ -1197,19 +1181,21 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
             if (tglWSAudioDev.isSelected()){
                 try {
                     Process p = Runtime.getRuntime().exec("pactl list short sinks");
-                    InputStream in = p.getInputStream();
-                    InputStreamReader isr = new InputStreamReader(in);
-                    BufferedReader reader = new BufferedReader(isr);
-                    String line = reader.readLine();
-                    while (line != null) {
-                        if (line.contains("WSAudioDevice")) {
-                            String [] id = line.split("\t");
-                            System.out.println("Found WSAD: <"+id[0]+">");
-                            idWSAD = id[0];
+                    InputStreamReader isr;
+                    BufferedReader reader;
+                    try (InputStream in = p.getInputStream()) {
+                        isr = new InputStreamReader(in);
+                        reader = new BufferedReader(isr);
+                        String line = reader.readLine();
+                        while (line != null) {
+                            if (line.contains("WSAudioDevice")) {
+                                String [] id = line.split("\t");
+                                System.out.println("Found WSAD: <"+id[0]+">");
+                                idWSAD = id[0];
+                            }
+                            line = reader.readLine();
                         }
-                        line = reader.readLine();
                     }
-                    in.close();
                     isr.close();
                     reader.close();
                     p.destroy();
@@ -1219,18 +1205,20 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
                 Tools.sleep(250);
                 try {
                     Process p = Runtime.getRuntime().exec("pactl list short sink-inputs");
-                    InputStream in = p.getInputStream();
-                    InputStreamReader isr = new InputStreamReader(in);
-                    BufferedReader reader = new BufferedReader(isr);
-                    String line = reader.readLine();
-                    while (line != null) {
-                        String [] id = line.split("\t");       
-                        System.out.println("Found WSOut: <"+id[0]+">"+"<"+id[1]+">");
-                        idWSOuts.add(id[0]);
-                        idDef = id[1];                                
-                        line = reader.readLine();
+                    InputStreamReader isr;
+                    BufferedReader reader;
+                    try (InputStream in = p.getInputStream()) {
+                        isr = new InputStreamReader(in);
+                        reader = new BufferedReader(isr);
+                        String line = reader.readLine();
+                        while (line != null) {
+                            String [] id = line.split("\t");
+                            System.out.println("Found WSOut: <"+id[0]+">"+"<"+id[1]+">");
+                            idWSOuts.add(id[0]);
+                            idDef = id[1];
+                            line = reader.readLine();
+                        }
                     }
-                    in.close();
                     isr.close();
                     reader.close();
                     p.destroy();
@@ -1447,13 +1435,11 @@ public class OutputPanel extends javax.swing.JPanel implements Stream.Listener, 
 //        String output;
 //        System.out.println(command);
         Process p = Runtime.getRuntime().exec(command);
-        InputStream in = p.getInputStream();
-        InputStreamReader isr = new InputStreamReader(in);
-        BufferedReader reader = new BufferedReader(isr);
-        reader.readLine();
-        reader.close();
-        isr.close();
-        in.close();
+        try (InputStream in = p.getInputStream(); InputStreamReader isr = new InputStreamReader(in)) {
+            BufferedReader reader = new BufferedReader(isr);
+            reader.readLine();
+            reader.close();
+        }
         p.waitFor();
         p.destroy();
 //        System.out.println("Output: " + output);

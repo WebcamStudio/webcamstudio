@@ -178,5 +178,10 @@ public class QuantizeFilter extends WholeImageFilter {
 	public String toString() {
 		return "Colors/Quantize...";
 	}
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
 	
 }

@@ -472,5 +472,10 @@ if (y == 100)System.out.println(fg+" "+gf+gradient);
 	public String toString() {
 		return "Texture/Sky...";
 	}
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
 	
 }

@@ -35,5 +35,10 @@ public class InvertFilter extends PointFilter {
 	public String toString() {
 		return "Colors/Invert";
 	}
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
 }
 

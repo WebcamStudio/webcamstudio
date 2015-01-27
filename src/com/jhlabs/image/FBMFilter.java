@@ -29,7 +29,7 @@ import java.util.Random;
 /**
  * A filter which produces textures from fractal Brownian motion.
  */
-public class FBMFilter extends PointFilter implements Cloneable {
+public final class FBMFilter extends PointFilter implements Cloneable {
 
 	public final static int NOISE = 0;
 	public final static int RIDGED = 1;
@@ -296,5 +296,10 @@ public class FBMFilter extends PointFilter implements Cloneable {
 	public String toString() {
 		return "Texture/Fractal Brownian Motion...";
 	}
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
 	
 }

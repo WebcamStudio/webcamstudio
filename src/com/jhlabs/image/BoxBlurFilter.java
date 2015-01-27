@@ -275,5 +275,10 @@ public class BoxBlurFilter extends AbstractBufferedImageOp {
 	public String toString() {
             return "Blur/Box Blur...";
         }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
 	
 }

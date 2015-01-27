@@ -22,7 +22,7 @@ import java.awt.geom.Point2D;
 /**
  * An experimental filter for rendering lens flares.
  */
-public class FlareFilter extends PointFilter {
+public final class FlareFilter extends PointFilter {
 
 	private final int rays = 50;
 	private float radius;
@@ -164,4 +164,9 @@ public class FlareFilter extends PointFilter {
 	public String toString() {
 		return "Stylize/Flare...";
 	}
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
 }

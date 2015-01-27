@@ -152,4 +152,9 @@ public class NoiseFilter extends PointFilter {
 	public String toString() {
 		return "Stylize/Add Noise...";
 	}
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
 }

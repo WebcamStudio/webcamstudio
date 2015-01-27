@@ -79,5 +79,10 @@ public class RGBAdjustFilter extends PointFilter {
 	public String toString() {
 		return "Colors/Adjust RGB...";
 	}
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
 }
 

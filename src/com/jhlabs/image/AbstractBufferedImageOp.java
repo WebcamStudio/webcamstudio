@@ -97,7 +97,7 @@ public abstract class AbstractBufferedImageOp implements BufferedImageOp, Clonea
     }
 
     @Override
-	public Object clone() {
+	public Object clone() throws CloneNotSupportedException {
 		try {
 			return super.clone();
 		}

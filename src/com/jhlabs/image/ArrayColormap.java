@@ -42,7 +42,7 @@ public class ArrayColormap implements Colormap, Cloneable {
 	}
 
         @Override
-	public Object clone() {
+	public Object clone() throws CloneNotSupportedException {
 		try {
 			ArrayColormap g = (ArrayColormap)super.clone();
 			g.map = map.clone();

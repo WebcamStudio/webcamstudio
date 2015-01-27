@@ -6,6 +6,7 @@ package webcamstudio.components;
 
 import java.awt.Component;
 import java.util.ArrayList;
+import webcamstudio.streams.SourceAudioSource;
 import webcamstudio.streams.SourceDV;
 import webcamstudio.streams.SourceDVB;
 import webcamstudio.streams.SourceDesktop;
@@ -13,7 +14,6 @@ import webcamstudio.streams.SourceImage;
 import webcamstudio.streams.SourceImageU;
 import webcamstudio.streams.SourceMovie;
 import webcamstudio.streams.SourceMusic;
-import webcamstudio.streams.SourceAudioSource;
 import webcamstudio.streams.SourceText;
 import webcamstudio.streams.SourceURL;
 import webcamstudio.streams.SourceWebcam;

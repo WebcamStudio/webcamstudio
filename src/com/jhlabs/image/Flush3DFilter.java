@@ -62,5 +62,10 @@ public class Flush3DFilter extends WholeImageFilter {
 		return "Stylize/Flush 3D...";
 	}
 
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }
 

@@ -112,4 +112,9 @@ public class LaplaceFilter extends AbstractBufferedImageOp {
 	public String toString() {
 		return "Edges/Laplace...";
 	}
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
 }

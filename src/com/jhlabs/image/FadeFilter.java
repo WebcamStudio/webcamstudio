@@ -142,5 +142,10 @@ public class FadeFilter extends PointFilter {
 		return "Fade...";
 	}
 
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }
 

@@ -19,7 +19,7 @@ package com.jhlabs.image;
 /**
  * A filter which performs a threshold operation on an image.
  */
-public class ThresholdFilter extends PointFilter {
+public final class ThresholdFilter extends PointFilter {
 
 	private int lowerThreshold;
 	private int lowerThreshold3;
@@ -137,4 +137,9 @@ public class ThresholdFilter extends PointFilter {
 	public String toString() {
 		return "Stylize/Threshold...";
 	}
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
 }

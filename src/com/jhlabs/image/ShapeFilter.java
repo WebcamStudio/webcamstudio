@@ -441,4 +441,9 @@ public class ShapeFilter extends WholeImageFilter {
 		return "Stylize/Shapeburst...";
 	}
 
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

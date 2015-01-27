@@ -206,5 +206,10 @@ public class WaterFilter extends TransformFilter {
 	public String toString() {
 		return "Distort/Water Ripples...";
 	}
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
 	
 }

@@ -21,7 +21,7 @@ import java.awt.Color;
 /**
  * Vector math package, converted to look similar to javax.vecmath.
  */
-public class Color4f extends Tuple4f {
+public final class Color4f extends Tuple4f {
 
 	public Color4f() {
 		this( 0, 0, 0, 0 );

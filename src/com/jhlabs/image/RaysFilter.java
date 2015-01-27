@@ -214,4 +214,9 @@ public class RaysFilter extends MotionBlurOp {
 	public String toString() {
 		return "Stylize/Rays...";
 	}
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
 }

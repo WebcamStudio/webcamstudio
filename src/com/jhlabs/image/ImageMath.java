@@ -16,6 +16,13 @@ limitations under the License.
 
 package com.jhlabs.image;
 
+//import static java.lang.Math.PI;
+import static java.lang.Math.min;
+import static java.lang.Math.min;
+import static java.lang.Math.min;
+import static java.lang.Math.min;
+import static java.lang.Math.sqrt;
+
 /**
  * A class containing static math methods useful for image processing.
  */
@@ -29,17 +36,17 @@ public class ImageMath {
     /**
      * The value of half pi as a float.
      */
-	public final static float HALF_PI = (float)Math.PI/2.0f;
+	public final static float HALF_PI = (float)PI/2.0f;
 
     /**
      * The value of quarter pi as a float.
      */
-	public final static float QUARTER_PI = (float)Math.PI/4.0f;
+	public final static float QUARTER_PI = (float)PI/4.0f;
 
     /**
      * The value of two pi as a float.
      */
-	public final static float TWO_PI = (float)Math.PI*2.0f;
+	public final static float TWO_PI = (float)PI*2.0f;
 
 	
 	// Catmull-Rom splines
@@ -169,7 +176,7 @@ public class ImageMath {
      */
 	public static float circleUp( float x) {
             x = 1-x;
-            return (float)Math.sqrt(1-x*x);
+            return (float)sqrt(1-x*x);
         }
 
     /**
@@ -178,7 +185,7 @@ public class ImageMath {
      * @return the output value
      */
     public static float circleDown(float x) {
-        return 1.0f-(float)Math.sqrt(1-x*x);
+        return 1.0f-(float)sqrt(1-x*x);
     }
 
     /**
@@ -312,6 +319,7 @@ public class ImageMath {
      * @param y the y interpolation parameter 0..1
      * @param rgb array of four ARGB values in the order NW, NE, SW, SE
      * @param se
+     * @param sw
      * @return the interpolated value
      */
     public static int bilinearInterpolate(float x, float y, int nw, int ne, int sw, int se) {
@@ -352,7 +360,6 @@ public class ImageMath {
     /**
      * Return the NTSC gray level of an RGB value.
      * @param rgb
-     * @param rgb1 the input pixel
      * @return the gray level (0-255)
      */
     public static int brightnessNTSC(int rgb) {
@@ -613,10 +620,10 @@ public class ImageMath {
                 gSum += (gIntensity * outSegment);
                 bSum += (bIntensity * outSegment);
                 dest[destIndex] =
-                        ((int)Math.min(aSum/sizfac, 255) << 24) |
-                        ((int)Math.min(rSum/sizfac, 255) << 16) |
-                        ((int)Math.min(gSum/sizfac, 255) << 8) |
-                        (int)Math.min(bSum/sizfac, 255);
+                        ((int)min(aSum/sizfac, 255) << 24) |
+                        ((int)min(rSum/sizfac, 255) << 16) |
+                        ((int)min(gSum/sizfac, 255) << 8) |
+                        (int)min(bSum/sizfac, 255);
                 destIndex += stride;
                 aSum = rSum = gSum = bSum = 0.0f;
                 inSegment -= outSegment;
@@ -630,6 +637,7 @@ public class ImageMath {
     /**
      * Premultiply a block of pixels
      * @param length
+     * @param offset
      */
     public static void premultiply(int[] p, int offset, int length) {
         length += offset;
@@ -650,6 +658,7 @@ public class ImageMath {
     /**
      * Premultiply a block of pixels
      * @param length
+     * @param offset
      */
     public static void unpremultiply(int[] p, int offset, int length) {
         length += offset;

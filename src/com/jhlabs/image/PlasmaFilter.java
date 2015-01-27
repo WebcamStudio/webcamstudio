@@ -246,5 +246,10 @@ public class PlasmaFilter extends WholeImageFilter {
 	public String toString() {
 		return "Texture/Plasma...";
 	}
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
 	
 }

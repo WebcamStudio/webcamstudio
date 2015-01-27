@@ -32,10 +32,10 @@ public class SystemPlayer implements Runnable {
     public boolean stopMePub = stopMe;
     private SourceDataLine source;
     private ExecutorService executor = null;
-    private ArrayList<byte[]> buffer = new ArrayList<byte[]>();
+    private final ArrayList<byte[]> buffer = new ArrayList<byte[]>();
     private FrameBuffer frames = null;
     private Viewer viewer = null;
-    private int aFreq = audioFreq;
+    private final int aFreq = audioFreq;
 
     private SystemPlayer(Viewer viewer) {
         this.viewer = viewer;

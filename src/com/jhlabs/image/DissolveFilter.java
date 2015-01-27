@@ -93,4 +93,9 @@ public class DissolveFilter extends PointFilter {
 	public String toString() {
 		return "Stylize/Dissolve...";
 	}
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
 }

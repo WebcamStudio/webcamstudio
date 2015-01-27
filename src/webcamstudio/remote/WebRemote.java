@@ -151,11 +151,7 @@ public class WebRemote implements Runnable {
                             } else if (req.contains("/j_security_check")){
                                 System.out.println("Requesting Remote Login...");
                                 req = listener.requestlogin(request);
-                                if (req.equals("/run") || req.equals("/stop")) {
-                                    auth = true;
-                                } else {
-                                    auth = false;
-                                }
+                                auth = req.equals("/run") || req.equals("/stop");
                             } else {
                                 req = "/login";
                             }

@@ -410,9 +410,9 @@ public class CellularFilter extends WholeImageFilter implements Function2D, Clon
 	
         @Override
 	public float evaluate(float x, float y) {
-		for (int j = 0; j < results.length; j++) {
-                    results[j].distance = Float.POSITIVE_INFINITY;
-                }
+        for (Point result : results) {
+            result.distance = Float.POSITIVE_INFINITY;
+        }
 
 		int ix = (int)x;
 		int iy = (int)y;
@@ -525,7 +525,7 @@ public class CellularFilter extends WholeImageFilter implements Function2D, Clon
 	}
 
         @Override
-	public Object clone() {
+	public Object clone() throws CloneNotSupportedException {
 		CellularFilter f = (CellularFilter)super.clone();
 		f.coefficients = coefficients.clone();
 		f.results = results.clone();

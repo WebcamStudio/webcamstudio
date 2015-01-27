@@ -31,7 +31,7 @@ import java.awt.Color;
  * <LI>HUE_CCW - interpolation of hue counter-clockwise to next knot
  * </UL>
  */
-public class Gradient extends ArrayColormap implements Cloneable {
+public final class Gradient extends ArrayColormap implements Cloneable {
 
     /**
      * Interpolate in RGB space.
@@ -132,7 +132,7 @@ public class Gradient extends ArrayColormap implements Cloneable {
 	}
 	
         @Override
-	public Object clone() {
+	public Object clone() throws CloneNotSupportedException {
 		Gradient g = (Gradient)super.clone();
 		g.map = map.clone();
 		g.xKnots = xKnots.clone();

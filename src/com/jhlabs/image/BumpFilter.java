@@ -35,4 +35,9 @@ public class BumpFilter extends ConvolveFilter {
 	public String toString() {
 		return "Blur/Emboss Edges";
 	}
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
 }

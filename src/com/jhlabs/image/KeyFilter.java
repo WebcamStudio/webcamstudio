@@ -180,4 +180,9 @@ public class KeyFilter extends AbstractBufferedImageOp {
 	public String toString() {
 		return "Keying/Key...";
 	}
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
 }

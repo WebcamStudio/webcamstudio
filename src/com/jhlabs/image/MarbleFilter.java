@@ -141,4 +141,9 @@ public class MarbleFilter extends TransformFilter {
 	public String toString() {
 		return "Distort/Marble...";
 	}
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
 }

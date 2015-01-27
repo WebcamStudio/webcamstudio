@@ -21,7 +21,7 @@ import java.awt.Rectangle;
 /**
  * A filter which uses Floyd-Steinberg error diffusion dithering to halftone an image.
  */
-public class DiffusionFilter extends WholeImageFilter {
+public final class DiffusionFilter extends WholeImageFilter {
 
 	private final static int[] diffusionMatrix = {
 	 	 0, 0, 0,
@@ -202,6 +202,11 @@ public class DiffusionFilter extends WholeImageFilter {
 	public String toString() {
 		return "Colors/Diffusion Dither...";
 	}
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
 
 }
 

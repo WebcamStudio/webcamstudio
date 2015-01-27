@@ -37,6 +37,11 @@ public class JavaLnFFilter extends PointFilter {
 		return "Stylize/Java L&F Stipple";
 	}
 
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }
 
 

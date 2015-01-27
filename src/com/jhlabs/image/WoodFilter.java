@@ -240,5 +240,10 @@ public class WoodFilter extends PointFilter {
 	public String toString() {
 		return "Texture/Wood...";
 	}
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
 	
 }

@@ -19,7 +19,7 @@ package com.jhlabs.vecmath;
 /**
  * Vector math package, converted to look similar to javax.vecmath.
  */
-public class Matrix4f {
+public final class Matrix4f {
 	public float m00, m01, m02, m03;
 	public float m10, m11, m12, m13;
 	public float m20, m21, m22, m23;

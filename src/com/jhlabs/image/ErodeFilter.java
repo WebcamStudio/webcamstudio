@@ -103,5 +103,10 @@ public class ErodeFilter extends BinaryFilter {
 		return "Binary/Erode...";
 	}
 
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }
 

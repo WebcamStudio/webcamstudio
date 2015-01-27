@@ -102,4 +102,9 @@ public class GlowFilter extends GaussianFilter {
 	public String toString() {
 		return "Blur/Glow...";
 	}
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
 }

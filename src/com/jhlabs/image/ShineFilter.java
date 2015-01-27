@@ -163,4 +163,9 @@ public class ShineFilter extends AbstractBufferedImageOp {
 	public String toString() {
 		return "Stylize/Shine...";
 	}
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
 }

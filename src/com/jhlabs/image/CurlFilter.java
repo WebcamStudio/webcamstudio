@@ -236,6 +236,11 @@ public class CurlFilter extends TransformFilter {
 		return "Distort/Curl...";
 	}
 
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
+
 /*
     public BufferedImage filter( BufferedImage src, BufferedImage dst ) {
     this.width = src.getWidth();

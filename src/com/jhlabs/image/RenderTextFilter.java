@@ -185,4 +185,9 @@ public class RenderTextFilter extends AbstractBufferedImageOp {
         g.dispose();
 		return dst;
 	}
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
 }

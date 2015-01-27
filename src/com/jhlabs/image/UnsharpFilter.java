@@ -127,4 +127,9 @@ public class UnsharpFilter extends GaussianFilter {
 	public String toString() {
 		return "Blur/Unsharp Mask...";
 	}
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
 }

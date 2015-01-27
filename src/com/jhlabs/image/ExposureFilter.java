@@ -54,5 +54,10 @@ public class ExposureFilter extends TransferFilter {
 		return "Colors/Exposure...";
 	}
 
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }
 

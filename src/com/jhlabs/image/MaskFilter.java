@@ -19,7 +19,7 @@ package com.jhlabs.image;
 /**
  * Applies a bit mask to each ARGB pixel of an image. You can use this for, say, masking out the red channel.
  */
-public class MaskFilter extends PointFilter {
+public final class MaskFilter extends PointFilter {
 
 	private int mask;
 
@@ -49,5 +49,10 @@ public class MaskFilter extends PointFilter {
 	public String toString() {
 		return "Mask";
 	}
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
 
 }

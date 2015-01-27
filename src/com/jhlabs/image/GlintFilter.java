@@ -272,4 +272,9 @@ public class GlintFilter extends AbstractBufferedImageOp {
 	public String toString() {
 		return "Effects/Glint...";
 	}
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
 }

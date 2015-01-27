@@ -129,4 +129,9 @@ public class GradientWipeFilter extends AbstractBufferedImageOp {
 	public String toString() {
 		return "Transitions/Gradient Wipe...";
 	}
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
 }

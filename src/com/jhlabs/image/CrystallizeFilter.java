@@ -87,5 +87,10 @@ public class CrystallizeFilter extends CellularFilter {
 	public String toString() {
 		return "Stylize/Crystallize...";
 	}
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
 	
 }

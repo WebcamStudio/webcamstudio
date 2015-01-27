@@ -121,4 +121,9 @@ public class CompositeFilter extends AbstractBufferedImageOp {
 	public String toString() {
 		return "Composite";
 	}
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
 }

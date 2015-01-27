@@ -187,5 +187,10 @@ public class QuiltFilter extends WholeImageFilter {
 	public String toString() {
 		return "Texture/Chaotic Quilt...";
 	}
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
 	
 }

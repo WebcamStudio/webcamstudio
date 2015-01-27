@@ -35,4 +35,9 @@ public class SharpenFilter extends ConvolveFilter {
 	public String toString() {
 		return "Blur/Sharpen";
 	}
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
 }

@@ -26,7 +26,7 @@ import java.util.ArrayList;
  * at present and could be much improved by picking the nodes to reduce more carefully 
  * (i.e. not completely at random) when I get the time.
  */
-public class OctTreeQuantizer implements Quantizer {
+public final class OctTreeQuantizer implements Quantizer {
 
 	/**
 	 * The greatest depth the tree is allowed to reach
@@ -188,33 +188,33 @@ public class OctTreeQuantizer implements Quantizer {
 		for (int level = MAX_LEVEL-1; level >= 0; level--) {
 			ArrayList v = colorList[level];
 			if (v != null && v.size() > 0) {
-				for (int j = 0; j < v.size(); j++) {
-					OctTreeNode node = (OctTreeNode)v.get(j);
-					if (node.children > 0) {
-						for (int i = 0; i < 8; i++) {
-							OctTreeNode child = node.leaf[i];
-							if (child != null) {
-								if (!child.isLeaf) {
-                                                                    System.out.println("not a leaf!");
-                                                                }
-								node.count += child.count;
-								node.totalRed += child.totalRed;
-								node.totalGreen += child.totalGreen;
-								node.totalBlue += child.totalBlue;
-								node.leaf[i] = null;
-								node.children--;
-								colors--;
-								nodes--;
-								colorList[level+1].remove(child);
-							}
-						}
-						node.isLeaf = true;
-						colors++;
-						if (colors <= numColors) {
-                                                    return;
-                                                }
-					}
-				}
+                            for (Object v1 : v) {
+                                OctTreeNode node = (OctTreeNode) v1;
+                                if (node.children > 0) {
+                                    for (int i = 0; i < 8; i++) {
+                                        OctTreeNode child = node.leaf[i];
+                                        if (child != null) {
+                                            if (!child.isLeaf) {
+                                                System.out.println("not a leaf!");
+                                            }
+                                            node.count += child.count;
+                                            node.totalRed += child.totalRed;
+                                            node.totalGreen += child.totalGreen;
+                                            node.totalBlue += child.totalBlue;
+                                            node.leaf[i] = null;
+                                            node.children--;
+                                            colors--;
+                                            nodes--;
+                                            colorList[level+1].remove(child);
+                                        }
+                                    }
+                                    node.isLeaf = true;
+                                    colors++;
+                                    if (colors <= numColors) {
+                                        return;
+                                    }
+                                }
+                            }
 			}
 		}
 

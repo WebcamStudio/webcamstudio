@@ -148,5 +148,10 @@ public class ContourFilter extends WholeImageFilter {
 		return "Stylize/Contour...";
 	}
 
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }
 
