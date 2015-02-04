@@ -10,6 +10,7 @@ import webcamstudio.streams.SourceAudioSource;
 import webcamstudio.streams.SourceDV;
 import webcamstudio.streams.SourceDVB;
 import webcamstudio.streams.SourceDesktop;
+import webcamstudio.streams.SourceIPCam;
 import webcamstudio.streams.SourceImage;
 import webcamstudio.streams.SourceImageU;
 import webcamstudio.streams.SourceMovie;
@@ -85,10 +86,10 @@ public class SourceControls {
             c = new SourceControlGSEffects(source);
             c.setName("GS FX");
             comps.add(c);
-//        } else if (source instanceof SourceIPCam) {
-//            c = new SourceControlEffects(source);
-//            c.setName("Effects");
-//            comps.add(c);
+        } else if (source instanceof SourceIPCam) {
+            c = new SourceControlEffects(source);
+            c.setName("Effects/Options");
+            comps.add(c);
         } else if (source instanceof SourceWebcam) {
             c = new SourceControlEffects(source);
             c.setName("FX");
