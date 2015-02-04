@@ -19,6 +19,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import webcamstudio.streams.SourceDesktop;
 import webcamstudio.streams.Stream;
 import webcamstudio.util.Tools;
 
@@ -34,6 +35,7 @@ public class MasterFrameBuilder implements Runnable {
         if (!streams.contains(s)) {
             streams.add(s);
 //            System.out.println("Register Master Stream Size: "+streams.size());
+            if (!(s instanceof SourceDesktop))
             s.setRate(MasterMixer.getInstance().getRate());
         }
     }

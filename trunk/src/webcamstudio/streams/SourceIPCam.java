@@ -132,6 +132,8 @@ public class SourceIPCam extends Stream {
         if (capture != null) {
             f = capture.getFrame();
             if (f != null) {
+                BufferedImage img = f.getImage(); 
+                applyEffects(img);
                 setAudioLevel(f);
                 lastPreview.getGraphics().drawImage(f.getImage(), 0, 0, null);
             }
