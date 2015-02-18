@@ -49,6 +49,7 @@ public class SourceControlDesktop extends javax.swing.JPanel {
         spinY.setValue(source.getDesktopY());
         spinW.setValue(source.getDesktopW());
         spinH.setValue(source.getDesktopH());
+        spinN.setValue(source.getDeskN());
         
         SpinnerNumberModel rateModel = new SpinnerNumberModel(source.getRate(), 1, MasterMixer.getInstance().getRate(), 1);
         spinRate.setModel(rateModel);
@@ -322,13 +323,19 @@ public class SourceControlDesktop extends javax.swing.JPanel {
     }//GEN-LAST:event_spinHStateChanged
 
     private void spinNStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinNStateChanged
-        for (int i = 0 ; i <= Screen.getSources().length - 1 ; i++) {
-            if ((Integer)spinN.getValue() == i) {
-                spinX.setValue(Screen.getX(screenID[i]));
-                spinY.setValue(Screen.getY(screenID[i]));
-                spinW.setValue(Screen.getWidth(screenID[i]));
-                spinH.setValue(Screen.getHeight(screenID[i]));
+        int deskN = (Integer)spinN.getValue();
+        if (deskN < 0) {
+            spinN.setValue(0);
+        } else {
+            for (int i = 0 ; i <= Screen.getSources().length - 1 ; i++) {
+                if ((Integer)spinN.getValue() == i) {
+                    spinX.setValue(Screen.getX(screenID[i]));
+                    spinY.setValue(Screen.getY(screenID[i]));
+                    spinW.setValue(Screen.getWidth(screenID[i]));
+                    spinH.setValue(Screen.getHeight(screenID[i]));
+                }
             }
+            source.setDeskN(deskN);
         }
     }//GEN-LAST:event_spinNStateChanged
 

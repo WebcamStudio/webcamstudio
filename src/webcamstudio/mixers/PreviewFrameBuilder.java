@@ -21,6 +21,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import webcamstudio.streams.SourceDesktop;
 import webcamstudio.streams.Stream;
 import webcamstudio.util.Tools;
 
@@ -32,11 +33,15 @@ public class PreviewFrameBuilder implements Runnable {
 
     private static final ArrayList<Stream> preStreams = new ArrayList<>();// add private
     private static int fps = 0;
+    private static int sRate = 0; 
 
     public static synchronized void register(Stream s) {
         if (!preStreams.contains(s)) {
             preStreams.add(s);
 //            System.out.println("Register Preview Stream Size: "+preStreams.size());
+            if (s instanceof SourceDesktop) {
+                sRate = s.getRate();
+            }
             s.setRate(PreviewMixer.getInstance().getRate());
         }
     }
@@ -44,7 +49,11 @@ public class PreviewFrameBuilder implements Runnable {
     public static synchronized void unregister(Stream s) {
         preStreams.remove(s);
 //        System.out.println("UnRegister Preview Stream Size: "+preStreams.size());
-        s.setRate(MasterMixer.getInstance().getRate());
+        if (s instanceof SourceDesktop) {
+            s.setRate(sRate);
+        } else {
+            s.setRate(MasterMixer.getInstance().getRate());
+        }
     }
     private Image imageF;
     private int imageX, imageY, imageW, imageH;

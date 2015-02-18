@@ -583,15 +583,27 @@ public final class WebcamStudio extends JFrame implements StreamDesktop.Listener
         btnImportStudio = new javax.swing.JButton();
         btnSaveStudio = new javax.swing.JButton();
         WCSAbout = new javax.swing.JButton();
-        jSeparator5 = new javax.swing.JToolBar.Separator();
+        jSeparator16 = new javax.swing.JToolBar.Separator();
+        filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(3, 0), new java.awt.Dimension(0, 0));
         cboWebcam = new javax.swing.JComboBox();
         btnAddWebcams = new javax.swing.JButton();
         btnRefreshWebcam = new javax.swing.JButton();
         btnVideoDevInfo = new javax.swing.JButton();
-        jSeparator6 = new javax.swing.JToolBar.Separator();
+        jSeparator17 = new javax.swing.JToolBar.Separator();
         jLabel2 = new javax.swing.JLabel();
         cboAudioHz = new javax.swing.JComboBox();
+        filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(2, 0), new java.awt.Dimension(0, 0));
+        jSeparator10 = new javax.swing.JToolBar.Separator();
+        jLabel3 = new javax.swing.JLabel();
+        cboTheme = new javax.swing.JComboBox();
+        filler3 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(2, 0), new java.awt.Dimension(0, 0));
         jSeparator7 = new javax.swing.JToolBar.Separator();
+        btnSysGC = new javax.swing.JButton();
+        lblClrRam = new javax.swing.JLabel();
+        filler5 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(2, 0), new java.awt.Dimension(0, 0));
+        jSeparator12 = new javax.swing.JToolBar.Separator();
+        filler4 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(3, 0), new java.awt.Dimension(0, 0));
+        filler7 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
         lblFFmpeg3 = new javax.swing.JLabel();
         tglFFmpeg = new javax.swing.JToggleButton();
         lblFFmpeg = new javax.swing.JLabel();
@@ -599,13 +611,8 @@ public final class WebcamStudio extends JFrame implements StreamDesktop.Listener
         lblAVconv = new javax.swing.JLabel();
         tglGst = new javax.swing.JToggleButton();
         lblGst = new javax.swing.JLabel();
-        jSeparator10 = new javax.swing.JToolBar.Separator();
-        jLabel3 = new javax.swing.JLabel();
-        cboTheme = new javax.swing.JComboBox();
-        jSeparator11 = new javax.swing.JToolBar.Separator();
-        btnSysGC = new javax.swing.JButton();
-        lblClrRam = new javax.swing.JLabel();
-        jSeparator12 = new javax.swing.JToolBar.Separator();
+        filler6 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(3, 0), new java.awt.Dimension(0, 0));
+        jSeparator13 = new javax.swing.JToolBar.Separator();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("WebcamStudio");
@@ -860,7 +867,7 @@ public final class WebcamStudio extends JFrame implements StreamDesktop.Listener
             .addGroup(panSourcesLayout.createSequentialGroup()
                 .addComponent(toolbar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(desktop, javax.swing.GroupLayout.DEFAULT_SIZE, 398, Short.MAX_VALUE)
+                .addComponent(desktop, javax.swing.GroupLayout.DEFAULT_SIZE, 390, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -884,6 +891,7 @@ public final class WebcamStudio extends JFrame implements StreamDesktop.Listener
         getContentPane().add(mainSplit, java.awt.BorderLayout.CENTER);
 
         mainToolbar.setFloatable(false);
+        mainToolbar.setMargin(new java.awt.Insets(0, 0, 0, 50));
         mainToolbar.setName("mainToolbar"); // NOI18N
 
         btnNewStudio.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/document-new.png"))); // NOI18N
@@ -967,11 +975,15 @@ public final class WebcamStudio extends JFrame implements StreamDesktop.Listener
         });
         mainToolbar.add(WCSAbout);
 
-        jSeparator5.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        jSeparator5.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
-        jSeparator5.setName("jSeparator5"); // NOI18N
-        jSeparator5.setOpaque(true);
-        mainToolbar.add(jSeparator5);
+        jSeparator16.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jSeparator16.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
+        jSeparator16.setName("jSeparator16"); // NOI18N
+        jSeparator16.setOpaque(true);
+        jSeparator16.setSeparatorSize(new java.awt.Dimension(3, 10));
+        mainToolbar.add(jSeparator16);
+
+        filler1.setName("filler1"); // NOI18N
+        mainToolbar.add(filler1);
 
         cboWebcam.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         cboWebcam.setToolTipText("Detected Video Devices");
@@ -1027,11 +1039,12 @@ public final class WebcamStudio extends JFrame implements StreamDesktop.Listener
         });
         mainToolbar.add(btnVideoDevInfo);
 
-        jSeparator6.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        jSeparator6.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
-        jSeparator6.setName("jSeparator6"); // NOI18N
-        jSeparator6.setOpaque(true);
-        mainToolbar.add(jSeparator6);
+        jSeparator17.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jSeparator17.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
+        jSeparator17.setName("jSeparator17"); // NOI18N
+        jSeparator17.setOpaque(true);
+        jSeparator17.setSeparatorSize(new java.awt.Dimension(5, 10));
+        mainToolbar.add(jSeparator17);
 
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/audio-Hz.png"))); // NOI18N
         jLabel2.setToolTipText("Master Audio Sample Rate");
@@ -1049,16 +1062,81 @@ public final class WebcamStudio extends JFrame implements StreamDesktop.Listener
         });
         mainToolbar.add(cboAudioHz);
 
+        filler2.setName("filler2"); // NOI18N
+        mainToolbar.add(filler2);
+
+        jSeparator10.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jSeparator10.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
+        jSeparator10.setName("jSeparator10"); // NOI18N
+        jSeparator10.setOpaque(true);
+        jSeparator10.setSeparatorSize(new java.awt.Dimension(5, 10));
+        mainToolbar.add(jSeparator10);
+
+        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/image-x-generic.png"))); // NOI18N
+        jLabel3.setToolTipText("Master Theme Selector");
+        jLabel3.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 5, 1, 1));
+        jLabel3.setName("jLabel3"); // NOI18N
+        mainToolbar.add(jLabel3);
+
+        cboTheme.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cboTheme.setToolTipText("Choose Default WS Theme.");
+        cboTheme.setName("cboTheme"); // NOI18N
+        cboTheme.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cboThemeActionPerformed(evt);
+            }
+        });
+        mainToolbar.add(cboTheme);
+
+        filler3.setName("filler3"); // NOI18N
+        mainToolbar.add(filler3);
+
         jSeparator7.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jSeparator7.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
         jSeparator7.setName("jSeparator7"); // NOI18N
         jSeparator7.setOpaque(true);
+        jSeparator7.setSeparatorSize(new java.awt.Dimension(5, 10));
         mainToolbar.add(jSeparator7);
+
+        btnSysGC.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/button-small-clear.png"))); // NOI18N
+        btnSysGC.setToolTipText("Try to Clean Up some memory");
+        btnSysGC.setFocusable(false);
+        btnSysGC.setName("btnSysGC"); // NOI18N
+        btnSysGC.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnSysGC.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSysGCActionPerformed(evt);
+            }
+        });
+        mainToolbar.add(btnSysGC);
+
+        lblClrRam.setFont(new java.awt.Font("Ubuntu Condensed", 0, 12)); // NOI18N
+        lblClrRam.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblClrRam.setText("RAM");
+        lblClrRam.setToolTipText("Try to Clean Up some memory");
+        lblClrRam.setName("lblClrRam"); // NOI18N
+        mainToolbar.add(lblClrRam);
+
+        filler5.setName("filler5"); // NOI18N
+        mainToolbar.add(filler5);
+
+        jSeparator12.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jSeparator12.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
+        jSeparator12.setName("jSeparator12"); // NOI18N
+        jSeparator12.setOpaque(true);
+        jSeparator12.setSeparatorSize(new java.awt.Dimension(5, 10));
+        mainToolbar.add(jSeparator12);
+
+        filler4.setName("filler4"); // NOI18N
+        mainToolbar.add(filler4);
+
+        filler7.setName("filler7"); // NOI18N
+        mainToolbar.add(filler7);
 
         lblFFmpeg3.setBackground(new java.awt.Color(102, 102, 102));
         lblFFmpeg3.setFont(new java.awt.Font("Ubuntu Condensed", 1, 14)); // NOI18N
         lblFFmpeg3.setText("OUT BackEnd: ");
-        lblFFmpeg3.setToolTipText("Select Available Back-Ends");
+        lblFFmpeg3.setToolTipText("Select Available Outputs Back-Ends");
         lblFFmpeg3.setName("lblFFmpeg3"); // NOI18N
         mainToolbar.add(lblFFmpeg3);
 
@@ -1132,58 +1210,15 @@ public final class WebcamStudio extends JFrame implements StreamDesktop.Listener
         lblGst.setName("lblGst"); // NOI18N
         mainToolbar.add(lblGst);
 
-        jSeparator10.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        jSeparator10.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
-        jSeparator10.setName("jSeparator10"); // NOI18N
-        jSeparator10.setOpaque(true);
-        mainToolbar.add(jSeparator10);
+        filler6.setName("filler6"); // NOI18N
+        mainToolbar.add(filler6);
 
-        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/image-x-generic.png"))); // NOI18N
-        jLabel3.setToolTipText("Master Theme Selector");
-        jLabel3.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 5, 1, 1));
-        jLabel3.setName("jLabel3"); // NOI18N
-        mainToolbar.add(jLabel3);
-
-        cboTheme.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        cboTheme.setToolTipText("Choose Default Theme.");
-        cboTheme.setName("cboTheme"); // NOI18N
-        cboTheme.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cboThemeActionPerformed(evt);
-            }
-        });
-        mainToolbar.add(cboTheme);
-
-        jSeparator11.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        jSeparator11.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
-        jSeparator11.setName("jSeparator11"); // NOI18N
-        jSeparator11.setOpaque(true);
-        mainToolbar.add(jSeparator11);
-
-        btnSysGC.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/button-small-clear.png"))); // NOI18N
-        btnSysGC.setToolTipText("Try to Clean Up some memory");
-        btnSysGC.setFocusable(false);
-        btnSysGC.setName("btnSysGC"); // NOI18N
-        btnSysGC.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnSysGC.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSysGCActionPerformed(evt);
-            }
-        });
-        mainToolbar.add(btnSysGC);
-
-        lblClrRam.setFont(new java.awt.Font("Ubuntu Condensed", 0, 12)); // NOI18N
-        lblClrRam.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        lblClrRam.setText("RAM");
-        lblClrRam.setToolTipText("Try to Clean Up some memory");
-        lblClrRam.setName("lblClrRam"); // NOI18N
-        mainToolbar.add(lblClrRam);
-
-        jSeparator12.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        jSeparator12.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
-        jSeparator12.setName("jSeparator12"); // NOI18N
-        jSeparator12.setOpaque(true);
-        mainToolbar.add(jSeparator12);
+        jSeparator13.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jSeparator13.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
+        jSeparator13.setName("jSeparator13"); // NOI18N
+        jSeparator13.setOpaque(true);
+        jSeparator13.setSeparatorSize(new java.awt.Dimension(5, 10));
+        mainToolbar.add(jSeparator13);
 
         getContentPane().add(mainToolbar, java.awt.BorderLayout.PAGE_START);
 
@@ -2530,16 +2565,23 @@ public final class WebcamStudio extends JFrame implements StreamDesktop.Listener
     private javax.swing.JComboBox cboTheme;
     private javax.swing.JComboBox cboWebcam;
     private javax.swing.JDesktopPane desktop;
+    private javax.swing.Box.Filler filler1;
+    private javax.swing.Box.Filler filler2;
+    private javax.swing.Box.Filler filler3;
+    private javax.swing.Box.Filler filler4;
+    private javax.swing.Box.Filler filler5;
+    private javax.swing.Box.Filler filler6;
+    private javax.swing.Box.Filler filler7;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JToolBar.Separator jSeparator1;
     private javax.swing.JToolBar.Separator jSeparator10;
-    private javax.swing.JToolBar.Separator jSeparator11;
     private javax.swing.JToolBar.Separator jSeparator12;
+    private javax.swing.JToolBar.Separator jSeparator13;
+    private javax.swing.JToolBar.Separator jSeparator16;
+    private javax.swing.JToolBar.Separator jSeparator17;
     private javax.swing.JToolBar.Separator jSeparator2;
     private javax.swing.JToolBar.Separator jSeparator3;
-    private javax.swing.JToolBar.Separator jSeparator5;
-    private javax.swing.JToolBar.Separator jSeparator6;
     private javax.swing.JToolBar.Separator jSeparator7;
     private javax.swing.JLabel lblAVconv;
     private javax.swing.JLabel lblClrRam;

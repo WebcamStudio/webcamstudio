@@ -27,6 +27,7 @@ import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterMixer;
 import webcamstudio.streams.SinkFile;
 import webcamstudio.streams.SinkUDP;
+import webcamstudio.streams.SourceDVB;
 import webcamstudio.streams.Stream;
 import webcamstudio.util.Tools;
 import webcamstudio.util.Tools.OS;
@@ -428,6 +429,16 @@ public class ProcessRenderer {
                         commandAudio = plugins.getProperty("GSaudio").replaceAll("  ", " "); //Making sure there is no double spaces
                     }
                 }
+                // fix gst-launch dvbsrc >= 1.4 "delsys" issue.
+                if (stream instanceof SourceDVB) {
+                    try {
+                        Runtime.getRuntime().exec("gst-launch-1.0 -q dvbsrc delsys=DVB-T2");
+                    } catch (IOException ex) {
+                        Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    Tools.sleep(100);
+                }
+                
                 if (commandVideo != null) {
                     commandVideo = commandVideo.replaceAll(" ", "ABCDE");
                     commandVideo = setParameters(commandVideo);
