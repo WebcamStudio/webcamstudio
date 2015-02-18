@@ -36,14 +36,15 @@ public class MasterFrameBuilder implements Runnable {
             streams.add(s);
 //            System.out.println("Register Master Stream Size: "+streams.size());
             if (!(s instanceof SourceDesktop))
-            s.setRate(MasterMixer.getInstance().getRate());
+                s.setRate(MasterMixer.getInstance().getRate());
         }
     }
 
     public static synchronized void unregister(Stream s) {
         streams.remove(s);
 //        System.out.println("UnRegister Master Stream Size: "+streams.size());
-        s.setRate(PreviewMixer.getInstance().getRate());
+        if (!(s instanceof SourceDesktop))
+            s.setRate(PreviewMixer.getInstance().getRate());
     }
     private Image imageF;
     private int imageX, imageY, imageW, imageH;

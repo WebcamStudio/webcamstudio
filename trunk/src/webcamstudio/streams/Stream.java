@@ -87,6 +87,7 @@ public abstract class Stream implements Callable<Frame>{
     protected String gsEffect = "";
     protected SourceChannel channel = new SourceChannel();
     protected String desktopN = "0";
+    protected int deskN = 0;
     protected int desktopX = 0;
     protected int desktopY = 0;
     protected int desktopW = 0;
@@ -347,6 +348,14 @@ public abstract class Stream implements Callable<Frame>{
     
     public void setDesktopN(String desktopN) {
         this.desktopN = desktopN;
+    }
+    
+    public int getDeskN() {
+        return deskN;
+    }
+    
+    public void setDeskN(int desktopN) {
+        this.deskN = desktopN;
     }
     
     public int getDesktopX() {
