@@ -21,7 +21,7 @@ import webcamstudio.sources.effects.Effect;
 public class SourceMovie extends Stream {
 
     ProcessRenderer capture = null;
-    QImage qImage = null;
+//    QImage qImage = null;
     BufferedImage lastPreview = null;
     boolean isPlaying = false;
 
@@ -35,7 +35,7 @@ public class SourceMovie extends Stream {
     @Override
     public void read() {
         isPlaying = true;
-        qImage = new QImage(captureWidth, captureHeight, QImage.Format.Format_ARGB32);
+//        qImage = new QImage(captureWidth, captureHeight, QImage.Format.Format_ARGB32);
         lastPreview = new BufferedImage(captureWidth,captureHeight,BufferedImage.TYPE_INT_ARGB);
         if (getPreView()){
             PreviewFrameBuilder.register(this);
