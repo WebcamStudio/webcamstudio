@@ -5,6 +5,7 @@ debian/wrappers/webcamstudio usr/bin
 dist/* usr/lib/webcamstudio
 
 libraries/commons-io-*.jar usr/lib/webcamstudio/lib
+libraries/AbsoluteLayout-7.0.jar usr/lib/webcamstudio/lib
 libraries/jffmpeg-*.jar usr/lib/webcamstudio/lib
 libraries/jna-*.jar usr/lib/webcamstudio/lib
 libraries/jtwitter*.jar usr/lib/webcamstudio/lib
