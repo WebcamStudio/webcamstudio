@@ -25,8 +25,7 @@ JAVA_ARGS="-Djna.nosys=true -splash:start.gif"
 
 find_java_runtime openjdk sunmin5
 
-find_jars AbsoluteLayout \
-  AppFramework \
+find_jars AppFramework \
   commons-cli \
   commons-codec \
   commons-httpclient \
