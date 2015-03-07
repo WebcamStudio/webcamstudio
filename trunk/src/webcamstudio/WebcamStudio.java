@@ -1702,7 +1702,11 @@ public final class WebcamStudio extends JFrame implements StreamDesktop.Listener
                     }
                     
                     if (lineR.contains("Audio:")) {
-                        audiofind = true;
+                        if (lineR.contains("0 channels")) {
+                            audiofind = false;
+                        } else {
+                            audiofind = true;
+                        }
                     }
                     
                     if (autoAR) {
