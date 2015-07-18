@@ -1,3 +1,45 @@
+webcamstudio (0.73) unstable; urgency=low
+
+  * Fixes: Stretch effect have to be resized only in png and text Streams.
+  * Fixes: Fixed Audio Output selection when starting from cmd line.
+  * Fixes: Transitions apply doesn't work correctly.
+  * Fixes: Pause icon in iconifed Stream-Panels appears in the wrong position.
+  * Fixes: Fixed some Scroolings rutines.
+  * Fixes: SourceText not correctly updated when in Timer or Clock mode.
+  * Fixes: Audio detection in load operations for onlyVideo files.
+  * Fixes: movie/music loop option.
+  * Fixes: Webcam LibAV command.
+  * Fixes: Restored Desktop custom framerate settings.
+  * Fixes: Gstreamer dvbsrc 1.4 workaround.
+  * Fixes: Fixed more Desktop FrameRate/ScreenNumber issues.
+  * Fixes: Fixed videos/movies Playback.
+  * Fixes: Fixed "0 channels" avconv video playback.
+  * Fixes: Fixed compiling webcamstudio (WSVideoDevice) Kernel module on 3.19 kernel.
+  * Fixes: Fixed "Only Video" Streams EOS never reached.
+  * Fixes: "Only Video" Movie Stream-Panel GUI.
+  * Fixes: Some operational commands in WS works only with Unicode UTF-8 encoding format.
+  * Fixes: Small fixes.
+  * Changes: Catalano Library partially upgraded to version 1.3/1.4.
+  * Changes: updated javaCv libraries to version 0.10.
+  * Changes: ReadNext SourceText & SourceImage changed condition.
+  * Changes: Enabled "Capture Screen Number" in StreamDesktop's SourceControls.
+  * Changes: Buffer from 50 to 20 to save up some memory.
+  * Changes: Icecast Gst command changed to vp8enc (webm) and to version 1.x.
+  * Changes: Enabled IPCam "Effects/Options" "Source Control Tab" to ba able to use MotionAlpha and FaceDetectorAlpha.
+  * Changes: DVB backend set to gstreamer 1.0 by Default.
+  * Changes: Updated webcamstudio module (WSVideoDevice) to version 1.1.2.
+  * Changes: Complete GUI redesign.
+  * Changes: Some code cleanup.
+  * Changes: Some code refactoring.
+  * Adds: Switch button to enable/disable automatic A/R detection.
+  * Adds: Scrolling speed switcher.
+  * Adds: Simple Timer Text overlay in Text Stream-Panel.
+  * Adds: Saved Studios remember Stream-Panels positions.
+  * Adds: gstreamer0.10-fluendo-mp3 and gstreamer1.0-fluendo-mp3 dependences for DVB-T playback.
+  * New upstream version
+
+ -- Karl Ellis <soylent.tv@gmail.com>  Tue, 19 May 2015 17:50:59 +0200
+
 webcamstudio (0.72) unstable; urgency=low
 
   * Fixes: Stream Stop/Play operations volume do not stay muted if selected.

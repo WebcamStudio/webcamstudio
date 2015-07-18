@@ -119,6 +119,7 @@ public class VideoDevice {
 
         if (CLibrary.INSTANCE.ioctl(deviceFD, VIDIOC_QUERYCAP, v4l2_caps) == 0) {
             version = Version.V4L2;
+//            System.out.println("Cap="+(v4l2_caps.capabilities & 3));
             if ((v4l2_caps.capabilities & 3) == 3) {
                 type = Type.InputOutput;
             } else if ((v4l2_caps.capabilities & 1) == 1) {
@@ -128,6 +129,8 @@ public class VideoDevice {
             } else {
                 type = Type.Unknown;
             }
+//            String longName = name = new String(v4l2_caps.card).trim();
+//            System.out.println("Name="+longName);
             name = new String(v4l2_caps.card).trim() + " ("+device.getName().replace("video", "")+")";
         } else if (CLibrary.INSTANCE.ioctl(deviceFD, VIDIOCGCAP, vid_caps) == 0) {
             version = Version.V4L;

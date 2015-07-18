@@ -344,7 +344,6 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
         tglActiveStream.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-start.png"))); // NOI18N
         tglActiveStream.setName("tglActiveStream"); // NOI18N
         tglActiveStream.setPreferredSize(new java.awt.Dimension(32, 20));
-        tglActiveStream.setRolloverEnabled(false);
         tglActiveStream.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-playback-stop.png"))); // NOI18N
         tglActiveStream.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -457,7 +456,7 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
                 spinZOrderStateChanged(evt);
             }
         });
-        add(spinZOrder, new org.netbeans.lib.awtextra.AbsoluteConstraints(68, 260, 50, -1));
+        add(spinZOrder, new org.netbeans.lib.awtextra.AbsoluteConstraints(68, 261, 50, -1));
 
         labelZ1.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         labelZ1.setText(bundle.getString("LAYER")); // NOI18N
@@ -465,7 +464,7 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
         labelZ1.setMinimumSize(new java.awt.Dimension(30, 10));
         labelZ1.setName("labelZ1"); // NOI18N
         labelZ1.setPreferredSize(new java.awt.Dimension(30, 10));
-        add(labelZ1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 270, 40, 9));
+        add(labelZ1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 271, 40, 9));
 
         jSlSpinZOrder.setMajorTickSpacing(10);
         jSlSpinZOrder.setMaximum(10);
@@ -512,7 +511,6 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
         add(tglQRCode, new org.netbeans.lib.awtextra.AbsoluteConstraints(7, 107, 55, 20));
 
         jcbLockAR.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
-        jcbLockAR.setText("Lock A/R");
         jcbLockAR.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         jcbLockAR.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/LockButton-open_small.png"))); // NOI18N
         jcbLockAR.setName("jcbLockAR"); // NOI18N
@@ -523,7 +521,7 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
                 jcbLockARActionPerformed(evt);
             }
         });
-        add(jcbLockAR, new org.netbeans.lib.awtextra.AbsoluteConstraints(64, 241, -1, -1));
+        add(jcbLockAR, new org.netbeans.lib.awtextra.AbsoluteConstraints(53, 210, -1, -1));
 
         jSeparator8.setName("jSeparator8"); // NOI18N
         jSeparator8.setPreferredSize(new java.awt.Dimension(48, 10));
@@ -540,7 +538,7 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
                 tglPreviewActionPerformed(evt);
             }
         });
-        add(tglPreview, new org.netbeans.lib.awtextra.AbsoluteConstraints(7, 245, 40, 20));
+        add(tglPreview, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 242, 112, 20));
 
         scrAreaTxt.setAutoscrolls(true);
         scrAreaTxt.setName("scrAreaTxt"); // NOI18N

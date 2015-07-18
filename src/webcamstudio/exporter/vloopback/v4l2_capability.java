@@ -19,6 +19,9 @@
  */
 package webcamstudio.exporter.vloopback;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  *
  * 	__u8	driver[16];	
@@ -38,6 +41,13 @@ public class v4l2_capability extends com.sun.jna.Structure {
     public int version;
     public int capabilities;
     public int[] reserved = new int[4];
+
+    @Override
+    protected List getFieldOrder() {
+        return Arrays.asList(new String[] { 
+            "bus_info", "capabilities", "card", "driver", "reserved", "version"
+        });
+    }
 
     public static class ByValue extends v4l2_capability implements com.sun.jna.Structure.ByValue {
     }

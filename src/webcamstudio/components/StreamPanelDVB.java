@@ -413,7 +413,7 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
                 spinOpacityStateChanged(evt);
             }
         });
-        add(spinOpacity, new org.netbeans.lib.awtextra.AbsoluteConstraints(68, 350, 50, -1));
+        add(spinOpacity, new org.netbeans.lib.awtextra.AbsoluteConstraints(68, 351, 50, -1));
 
         spinVolume.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         spinVolume.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null, Integer.valueOf(1)));
@@ -443,7 +443,7 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
                 spinZOrderStateChanged(evt);
             }
         });
-        add(spinZOrder, new org.netbeans.lib.awtextra.AbsoluteConstraints(68, 370, 50, -1));
+        add(spinZOrder, new org.netbeans.lib.awtextra.AbsoluteConstraints(68, 371, 50, -1));
 
         labelX.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("webcamstudio/Languages"); // NOI18N
@@ -469,7 +469,7 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         labelO.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         labelO.setText(bundle.getString("OPACITY")); // NOI18N
         labelO.setName("labelO"); // NOI18N
-        add(labelO, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 360, 40, -1));
+        add(labelO, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 361, 40, -1));
 
         labelZ.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         labelZ.setText(bundle.getString("LAYER")); // NOI18N
@@ -477,7 +477,7 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         labelZ.setMinimumSize(new java.awt.Dimension(30, 10));
         labelZ.setName("labelZ"); // NOI18N
         labelZ.setPreferredSize(new java.awt.Dimension(30, 10));
-        add(labelZ, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 380, 40, 9));
+        add(labelZ, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 381, 40, 9));
 
         labelCW.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         labelCW.setText(bundle.getString("CAPTUREWIDTH")); // NOI18N
@@ -784,7 +784,6 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         add(tglPause, new org.netbeans.lib.awtextra.AbsoluteConstraints(85, 124, 30, 20));
 
         jcbLockAR.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
-        jcbLockAR.setText("Lock A/R");
         jcbLockAR.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         jcbLockAR.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/LockButton-open_small.png"))); // NOI18N
         jcbLockAR.setName("jcbLockAR"); // NOI18N
@@ -795,7 +794,7 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
                 jcbLockARActionPerformed(evt);
             }
         });
-        add(jcbLockAR, new org.netbeans.lib.awtextra.AbsoluteConstraints(64, 331, -1, -1));
+        add(jcbLockAR, new org.netbeans.lib.awtextra.AbsoluteConstraints(43, 300, -1, -1));
 
         jSeparator6.setName("jSeparator6"); // NOI18N
         jSeparator6.setPreferredSize(new java.awt.Dimension(48, 10));
@@ -812,7 +811,7 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
                 tglPreviewActionPerformed(evt);
             }
         });
-        add(tglPreview, new org.netbeans.lib.awtextra.AbsoluteConstraints(7, 335, 40, 20));
+        add(tglPreview, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 332, 112, 20));
 
         getAccessibleContext().setAccessibleParent(this);
     }// </editor-fold>//GEN-END:initComponents

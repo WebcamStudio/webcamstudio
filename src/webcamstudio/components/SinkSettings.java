@@ -51,7 +51,7 @@ public class SinkSettings extends javax.swing.JFrame implements Stream.Listener 
     //        } else {
     //            textStream.setText(thisSinkFile.getStream());
     //        }
-            if (thisSinkFile.getVbitrate().equals("")) {
+            if (thisSinkFile.getVbitrate().isEmpty()) {
                 spinVideoRate.setValue(0);
                 spinVideoRate.setEnabled(false);
             } else {
@@ -69,7 +69,7 @@ public class SinkSettings extends javax.swing.JFrame implements Stream.Listener 
             } else {
                 spinOutH.setValue(thisSinkFile.getHeight());
             }
-            if (thisSinkFile.getAbitrate().equals("")) {
+            if (thisSinkFile.getAbitrate().isEmpty()) {
                 spinAudioRate.setValue(0);
                 spinAudioRate.setEnabled(false);
             } else {
@@ -104,7 +104,7 @@ public class SinkSettings extends javax.swing.JFrame implements Stream.Listener 
             thisSinkFile = null;
             lblName.setText(thisSinkUDP.getName());
             this.setTitle(thisSinkUDP.getName() + " Settings");
-            if (thisSinkUDP.getVbitrate().equals("")) {
+            if (thisSinkUDP.getVbitrate().isEmpty()) {
                 spinVideoRate.setValue(0);
                 spinVideoRate.setEnabled(false);
             } else {
@@ -122,7 +122,7 @@ public class SinkSettings extends javax.swing.JFrame implements Stream.Listener 
             } else {
                 spinOutH.setValue(thisSinkUDP.getHeight());
             }
-            if (thisSinkUDP.getAbitrate().equals("")) {
+            if (thisSinkUDP.getAbitrate().isEmpty()) {
                 spinAudioRate.setValue(0);
                 spinAudioRate.setEnabled(false);
             } else {
@@ -384,7 +384,7 @@ public class SinkSettings extends javax.swing.JFrame implements Stream.Listener 
 //                thisSinkFile.setStream(textStream.getText());
 //            }
 
-            if (thisSinkFile.getVbitrate().equals("")) {
+            if (thisSinkFile.getVbitrate().isEmpty()) {
 
             } else {
                 thisSinkFile.setVbitrate(Integer.toString(spinVideoRate.getValue().hashCode()));
@@ -402,7 +402,7 @@ public class SinkSettings extends javax.swing.JFrame implements Stream.Listener 
     //            thisFME.setHeight(Integer.toString(spinOutH.getValue().hashCode()));
     //        }
 
-            if (thisSinkFile.getAbitrate().equals("")) {
+            if (thisSinkFile.getAbitrate().isEmpty()) {
 
             } else {
                 thisSinkFile.setAbitrate(Integer.toString(spinAudioRate.getValue().hashCode()));
@@ -432,12 +432,12 @@ public class SinkSettings extends javax.swing.JFrame implements Stream.Listener 
 //                thisSinkFile.setKeyInt(Integer.toString(spinKeyInt.getValue().hashCode()));
 //            }
         } else {
-            if (thisSinkUDP.getVbitrate().equals("")) {
+            if (thisSinkUDP.getVbitrate().isEmpty()) {
 
             } else {
                 thisSinkUDP.setVbitrate(Integer.toString(spinVideoRate.getValue().hashCode()));
             }
-            if (thisSinkUDP.getAbitrate().equals("")) {
+            if (thisSinkUDP.getAbitrate().isEmpty()) {
 
             } else {
                 thisSinkUDP.setAbitrate(Integer.toString(spinAudioRate.getValue().hashCode()));

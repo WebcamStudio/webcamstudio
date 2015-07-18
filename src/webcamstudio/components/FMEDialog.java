@@ -6,6 +6,7 @@
 
 package webcamstudio.components;
 
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import webcamstudio.externals.FME;
 import webcamstudio.streams.Stream;
@@ -14,13 +15,14 @@ import webcamstudio.streams.Stream;
  *
  * @author karl
  */
-public class FMESettings extends javax.swing.JFrame implements Stream.Listener {
+public class FMEDialog extends javax.swing.JFrame implements Stream.Listener {
     FME thisFME;
+    static String add = "cancel";
     /**
      * Creates new form FMESettings
      * @param fme
      */
-    public FMESettings(FME fme) {
+    public FMEDialog(FME fme) {
         initComponents();
         // for now we keep this not visible
         lblOW.setVisible(false);
@@ -29,73 +31,7 @@ public class FMESettings extends javax.swing.JFrame implements Stream.Listener {
         spinOutH.setVisible(false);
         
         thisFME = fme;
-        String shortName = "";
-        String sourceName = thisFME.getName();
-        System.out.println("sourceName: "+sourceName);
-        if (sourceName.length() > 9) {
-            shortName = sourceName.substring(0, 9)+" ...";
-            System.out.println("shortName: "+shortName);
-        } else {
-            shortName = sourceName;
-        }
-        lblName.setText(shortName);
-        textURL.setText(thisFME.getUrl());
-        if (thisFME.getStream().isEmpty()) {
-            textStream.setText("");
-            textStream.setEnabled(false);
-        } else {
-            textStream.setText(thisFME.getStream());
-        }
-        if (thisFME.getVbitrate().isEmpty()) {
-            spinVideoRate.setValue(0);
-            spinVideoRate.setEnabled(false);
-        } else {
-            spinVideoRate.setValue(Integer.parseInt(thisFME.getVbitrate()));
-        }
-        if (thisFME.getWidth().isEmpty()) {
-            spinOutW.setValue(0);
-            spinOutW.setEnabled(false);
-        } else {
-            spinOutW.setValue(Integer.parseInt(thisFME.getWidth()));
-        }
-        if (thisFME.getHeight().isEmpty()) {
-            spinOutH.setValue(0);
-            spinOutH.setEnabled(false);
-        } else {
-            spinOutH.setValue(Integer.parseInt(thisFME.getHeight()));
-        }
-        if (thisFME.getAbitrate().isEmpty()) {
-            spinAudioRate.setValue(0);
-            spinAudioRate.setEnabled(false);
-        } else {
-            spinAudioRate.setValue(Integer.parseInt(thisFME.getAbitrate()));
-        }
-        if (thisFME.getMount().isEmpty()) {
-            textMount.setText("");
-            textMount.setEnabled(false);
-        } else {
-            textMount.setText(thisFME.getMount());
-        }
-        if (thisFME.getPassword().isEmpty()) {
-            textPsw.setText("");
-            textPsw.setEnabled(false);
-        } else {
-            textPsw.setText(thisFME.getPassword());
-//            System.out.println("Password: "+thisFME.getPassword());
-        }
-        if (thisFME.getPort().isEmpty()) {
-            spinPort.setValue(0);
-            spinPort.setEnabled(false);
-        } else {
-            spinPort.setValue(Integer.parseInt(thisFME.getPort()));
-        }
-        if (thisFME.getKeyInt().isEmpty()) {
-            spinKeyInt.setValue(0);
-            spinKeyInt.setEnabled(false);
-        } else {
-            spinKeyInt.setValue(Integer.parseInt(thisFME.getKeyInt()));
-        }
-        chkHQMode.setSelected(thisFME.getStandard().equals("HQ"));
+
     }
 
     /**
@@ -134,11 +70,12 @@ public class FMESettings extends javax.swing.JFrame implements Stream.Listener {
         spinOutW = new javax.swing.JSpinner();
         spinOutH = new javax.swing.JSpinner();
         chkHQMode = new javax.swing.JCheckBox();
+        textName = new javax.swing.JTextField();
 
         jLabel12.setText("jLabel12");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("FME Settings");
+        setTitle("Add FME");
         setResizable(false);
 
         lblEncode.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
@@ -177,8 +114,8 @@ public class FMESettings extends javax.swing.JFrame implements Stream.Listener {
 
         lblKeyInt.setText("KeyInt:");
 
-        lblName.setFont(new java.awt.Font("Ubuntu", 1, 24)); // NOI18N
-        lblName.setText("FMEName");
+        lblName.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
+        lblName.setText("Name");
 
         lblOW.setText("Out Width:");
         lblOW.setEnabled(false);
@@ -198,6 +135,8 @@ public class FMESettings extends javax.swing.JFrame implements Stream.Listener {
                 chkHQModeActionPerformed(evt);
             }
         });
+
+        textName.setToolTipText("");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -237,20 +176,23 @@ public class FMESettings extends javax.swing.JFrame implements Stream.Listener {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnCancel))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(lblAudioRate)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(spinAudioRate))
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(lblVideoRate)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(spinVideoRate, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(lblEncode)
+                                .addComponent(lblrtmpURL))
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(lblAudioRate)
+                                .addComponent(lblName)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(spinAudioRate))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(lblVideoRate)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(spinVideoRate, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(lblEncode)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(lblName, javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(lblrtmpURL)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
+                                .addComponent(textName, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 13, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
@@ -267,10 +209,11 @@ public class FMESettings extends javax.swing.JFrame implements Stream.Listener {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(5, 5, 5)
+                .addGap(4, 4, 4)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblName)
-                    .addComponent(chkHQMode))
+                    .addComponent(chkHQMode)
+                    .addComponent(textName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lblrtmpURL)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -320,72 +263,32 @@ public class FMESettings extends javax.swing.JFrame implements Stream.Listener {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnOKActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOKActionPerformed
-        if (thisFME.getUrl().isEmpty()) {
-            
+        if (textName.getText().isEmpty()) {
+            lblName.setForeground(Color.red);
         } else {
+            thisFME.setName(textName.getText());
             thisFME.setUrl(textURL.getText());
-        }
-        
-        if (thisFME.getStream().isEmpty()) {
-            
-        } else {
             thisFME.setStream(textStream.getText());
-        }
-        
-        if (thisFME.getVbitrate().isEmpty()) {
-
-        } else {
             thisFME.setVbitrate(Integer.toString(spinVideoRate.getValue().hashCode()));
-        }
-        
-//        if (thisFME.getWidth().equals("")) {
-//            
-//        } else {
-//            thisFME.setWidth(Integer.toString(spinOutW.getValue().hashCode()));
-//        }
-//        
-//        if (thisFME.getHeight().equals("")) {
-//            
-//        } else {
-//            thisFME.setHeight(Integer.toString(spinOutH.getValue().hashCode()));
-//        }
-        
-        if (thisFME.getAbitrate().isEmpty()) {
-
-        } else {
+    //        thisFME.setWidth(Integer.toString(spinOutW.getValue().hashCode()));
+    //        thisFME.setHeight(Integer.toString(spinOutH.getValue().hashCode()));
             thisFME.setAbitrate(Integer.toString(spinAudioRate.getValue().hashCode()));
-        }
-        
-        if (thisFME.getMount().isEmpty()) {
-            
-        } else {
             thisFME.setMount(textMount.getText());
-        }
-        
-        if (thisFME.getPassword().isEmpty()) {
 
-        } else {
             char[] password = textPsw.getPassword();
             String psw = String.valueOf(password);
             thisFME.setPassword(psw);
-//            System.out.println("Password: "+psw);
-        }
-        
-        if (thisFME.getPort().isEmpty()) {
-
-        } else {
-            thisFME.setPort(Integer.toString(spinPort.getValue().hashCode()));
-        }
-        
-        if (thisFME.getKeyInt().isEmpty()) {
-
-        } else {
+            if (spinPort.getValue().hashCode() != 0) {
+                thisFME.setPort(Integer.toString(spinPort.getValue().hashCode()));
+            }
             thisFME.setKeyInt(Integer.toString(spinKeyInt.getValue().hashCode()));
+            add = "ok";
+            this.dispose();
         }
-        this.dispose();
     }//GEN-LAST:event_btnOKActionPerformed
 
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
+        add = "cancel";
         this.dispose();
     }//GEN-LAST:event_btnCancelActionPerformed
 
@@ -422,6 +325,7 @@ public class FMESettings extends javax.swing.JFrame implements Stream.Listener {
     private javax.swing.JSpinner spinPort;
     private javax.swing.JSpinner spinVideoRate;
     private javax.swing.JTextField textMount;
+    private javax.swing.JTextField textName;
     private javax.swing.JPasswordField textPsw;
     private javax.swing.JTextField textStream;
     private javax.swing.JTextField textURL;
@@ -431,7 +335,7 @@ public class FMESettings extends javax.swing.JFrame implements Stream.Listener {
     public void sourceUpdated(Stream stream) {
         // nothing here.
     }
-
+    
     @Override
     public void updatePreview(BufferedImage image) {
         // nothing here.

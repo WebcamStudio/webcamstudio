@@ -64,6 +64,11 @@ public class FME {
         this.port = port;
         this.keyInt = keyint;   
     }
+    
+    public FME(){
+        
+    }
+ 
     private void parse(File xml) throws ParserConfigurationException, SAXException, IOException, XPathExpressionException {
         XPath path = XPathFactory.newInstance().newXPath();
         String root = "/flashmediaencoder_profile";
@@ -119,6 +124,10 @@ public class FME {
      */
     public String getName() {
         return name;
+    }
+    
+    public void setName(String n) {
+        name = n;
     }
 
     public void setStandard(String gStandard) {

@@ -17,6 +17,7 @@ abstract public class VideoOutput{
     protected static String devicePath = "/dev/video2";
     final public static int RGB24 = 1;
     final public static int UYVY = 2;
+    final public static int BGR24 = 3;
     protected static int pixFormat = 2;
     protected static boolean flipImage = false;
 
@@ -38,7 +39,7 @@ abstract public class VideoOutput{
     protected InfoListener listener = null;
     protected byte[] rgbs = null;
 
-   
+
     protected byte[] img2rgb24(int[] data) {
         if (rgbs == null || rgbs.length != data.length * 3) {
             rgbs = new byte[data.length * 3];
@@ -48,6 +49,19 @@ abstract public class VideoOutput{
             rgbs[index++] = (byte) (data[i] >> 16 & 0xFF);
             rgbs[index++] = (byte) (data[i] >> 8 & 0xFF);
             rgbs[index++] = (byte) (data[i] & 0xFF);
+        }
+        return rgbs;
+    }
+
+    protected byte[] img2bgr24(int[] data) {
+        if (rgbs == null || rgbs.length != data.length * 3) {
+            rgbs = new byte[data.length * 3];
+        }
+        int index = 0;
+        for (int i = 0; i < data.length; i++) {
+            rgbs[index++] = (byte) (data[i] & 0xFF);
+            rgbs[index++] = (byte) (data[i] >> 8 & 0xFF);
+            rgbs[index++] = (byte) (data[i] >> 16 & 0xFF);
         }
         return rgbs;
     }
@@ -72,8 +86,8 @@ abstract public class VideoOutput{
                     int Y = (int) (R * .299000 + G * .587000 + B * 0.114000);
                     int U = (int) (R * -.168736 + G * -.331264 + B * 0.500000 + 128);
                     int V = (int) (R * .500000 + G * -.418688 + B * -0.081312 + 128);
-                    
-                    
+
+
                     int arraySize = w * h;
                     int yLoc = j * w + i;
                     int uLoc = (j / 2) * (w / 2) + i / 2 + arraySize;
@@ -129,7 +143,7 @@ abstract public class VideoOutput{
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
+
         return yuvs;
     }
 

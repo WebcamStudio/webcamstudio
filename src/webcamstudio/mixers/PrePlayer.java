@@ -7,12 +7,14 @@ package webcamstudio.mixers;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
+import static java.util.concurrent.Executors.newCachedThreadPool;
 import javax.sound.sampled.AudioFormat;
+import static javax.sound.sampled.AudioSystem.getSourceDataLine;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 import static webcamstudio.WebcamStudio.audioFreq;
 import webcamstudio.components.PreViewer;
-import webcamstudio.util.Tools;
+import static webcamstudio.util.Tools.sleep;
 
 /**
  *
@@ -56,10 +58,10 @@ public class PrePlayer implements Runnable {
     public void play() throws LineUnavailableException {
         frames = new FrameBuffer(MasterMixer.getInstance().getWidth(), MasterMixer.getInstance().getHeight(), MasterMixer.getInstance().getRate());
         AudioFormat format = new AudioFormat(audioFreq, 16, 2, true, true);
-        source = javax.sound.sampled.AudioSystem.getSourceDataLine(format);
+        source = getSourceDataLine(format);
         source.open();
         source.start();
-        executor = java.util.concurrent.Executors.newCachedThreadPool();
+        executor = newCachedThreadPool();
         executor.submit(this);
         executor.shutdown();
     }
@@ -80,18 +82,18 @@ public class PrePlayer implements Runnable {
     public void stop() {
         stopMe = true;
         if (frames != null) {
-            Tools.sleep(30);
+            sleep(30);
             frames.abort();
         }
         if (source != null) {
-            Tools.sleep(30);
+            sleep(30);
             source.stop();
-            Tools.sleep(30);
+            sleep(30);
             source.close();
-            Tools.sleep(30);
+            sleep(30);
             source = null;
         }
-        Tools.sleep(20);
+        sleep(20);
         executor = null;
     }
 

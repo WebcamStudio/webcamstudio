@@ -1159,11 +1159,7 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
                             break;
                         }
                     }
-                    if ((startX+streamW) < mixerW && !toLeft) {
-                        oneWay = false;
-                    } else {
-                        oneWay = true;
-                    }
+                    oneWay = !((startX+streamW) < mixerW && !toLeft);
                 }
                 stream.setX(oldBkX);
             }

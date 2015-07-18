@@ -8,6 +8,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.io.DataInputStream;
 import java.io.IOException;
+import static java.lang.System.arraycopy;
 
 /**
  *
@@ -23,17 +24,17 @@ public class WSImage extends BufferedImage {
         super(w, h, type);
         data = ((DataBufferInt) getRaster().getDataBuffer()).getData();
         switch (super.getType()) {
-            case BufferedImage.TYPE_INT_RGB:
+            case TYPE_INT_RGB:
                 byteData = new byte[data.length * 3];
                 break;
-            case BufferedImage.TYPE_INT_ARGB:
+            case TYPE_INT_ARGB:
 
                 break;
         }
     }
 
     public void setData(int[] srcData) {
-        System.arraycopy(srcData, 0, data, 0, srcData.length);
+        arraycopy(srcData, 0, data, 0, srcData.length);
     }
   
     public void convertByte(byte[] barr) {
@@ -58,7 +59,7 @@ public class WSImage extends BufferedImage {
     public byte[] getBytes() {
         counter = 0;
         switch (super.getType()) {
-            case BufferedImage.TYPE_INT_RGB:
+            case TYPE_INT_RGB:
                 for (int i = 0; i < byteData.length; i += 3) {
                     byteData[i] = (byte) ((data[counter] >> 16) & 0xFF);
                     byteData[i + 1] = (byte) ((data[counter] >> 8) & 0xFF);
@@ -66,7 +67,7 @@ public class WSImage extends BufferedImage {
                     counter++;
                 }
                 break;
-            case BufferedImage.TYPE_INT_ARGB:
+            case TYPE_INT_ARGB:
                 for (int i = 0; i < byteData.length; i += 4) {
                     byteData[i] = (byte) ((data[counter] >> 16) & 0xFF);
                     byteData[i + 1] = (byte) ((data[counter] >> 8) & 0xFF);

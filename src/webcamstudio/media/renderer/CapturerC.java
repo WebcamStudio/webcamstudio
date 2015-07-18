@@ -26,12 +26,12 @@ import webcamstudio.util.Tools;
  */
 public class CapturerC {
 
-    private int vport = 0;
-    private int aport = 0;
+    private final int vport = 0;
+    private final int aport = 0;
     private boolean stopMe = false;
     private Stream stream;
-    private ServerSocket videoServer = null;
-    private ServerSocket audioServer = null;
+    private final ServerSocket videoServer = null;
+    private final ServerSocket audioServer = null;
     private WSImage image = null;
     private byte[] audio = null;
     private Frame frame = null;

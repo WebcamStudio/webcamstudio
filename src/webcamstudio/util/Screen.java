@@ -133,5 +133,8 @@ public class Screen {
         }
         return retValue;
     }
+
+    private Screen() {
+    }
     
 }

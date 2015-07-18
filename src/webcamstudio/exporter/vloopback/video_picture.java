@@ -20,6 +20,9 @@
 
 package webcamstudio.exporter.vloopback;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  *
  * @author pballeux
@@ -27,6 +30,13 @@ package webcamstudio.exporter.vloopback;
 public class video_picture extends com.sun.jna.Structure {
 
     public short brightness,hue,color,contrast,whiteness,depth,palette;
+
+    @Override
+    protected List getFieldOrder() {
+        return Arrays.asList(new String[] { 
+            "bus_info", "capabilities", "card", "driver", "reserved", "version"
+        });
+    }
 
     public static class ByValue extends video_picture implements com.sun.jna.Structure.ByValue {
     }

@@ -212,7 +212,7 @@
       </Events>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-          <AbsoluteConstraints x="68" y="350" width="50" height="-1"/>
+          <AbsoluteConstraints x="68" y="351" width="50" height="-1"/>
         </Constraint>
       </Constraints>
     </Component>
@@ -267,7 +267,7 @@
       </Events>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-          <AbsoluteConstraints x="68" y="370" width="50" height="-1"/>
+          <AbsoluteConstraints x="68" y="371" width="50" height="-1"/>
         </Constraint>
       </Constraints>
     </Component>
@@ -347,7 +347,7 @@
       </Properties>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-          <AbsoluteConstraints x="10" y="360" width="40" height="-1"/>
+          <AbsoluteConstraints x="10" y="361" width="40" height="-1"/>
         </Constraint>
       </Constraints>
     </Component>
@@ -372,7 +372,7 @@
       </Properties>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-          <AbsoluteConstraints x="10" y="380" width="40" height="9"/>
+          <AbsoluteConstraints x="10" y="381" width="40" height="9"/>
         </Constraint>
       </Constraints>
     </Component>
@@ -996,7 +996,6 @@
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Tahoma" size="8" style="0"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="Lock A/R"/>
         <Property name="horizontalTextPosition" type="int" value="2"/>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
           <Image iconType="3" name="/webcamstudio/resources/tango/LockButton-open_small.png"/>
@@ -1014,7 +1013,7 @@
       </Events>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-          <AbsoluteConstraints x="64" y="331" width="-1" height="-1"/>
+          <AbsoluteConstraints x="43" y="300" width="-1" height="-1"/>
         </Constraint>
       </Constraints>
     </Component>
@@ -1053,7 +1052,7 @@
       </Events>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-          <AbsoluteConstraints x="7" y="335" width="40" height="20"/>
+          <AbsoluteConstraints x="6" y="332" width="112" height="20"/>
         </Constraint>
       </Constraints>
     </Component>

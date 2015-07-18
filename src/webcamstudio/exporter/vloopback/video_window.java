@@ -19,6 +19,9 @@
  */
 package webcamstudio.exporter.vloopback;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  *
  * @author pballeux
@@ -28,6 +31,13 @@ public class video_window extends com.sun.jna.Structure {
     public int x,y,width,height,chromakey,flags;
     public com.sun.jna.Pointer clip;
     public int clipcount;
+
+    @Override
+    protected List getFieldOrder() {
+        return Arrays.asList(new String[] { 
+            "bus_info", "capabilities", "card", "driver", "reserved", "version"
+        });
+    }
 
     public static class ByValue extends video_window implements com.sun.jna.Structure.ByValue {
     }

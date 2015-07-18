@@ -4,11 +4,12 @@
  */
 package webcamstudio.externals;
 
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.net.SocketException;
@@ -267,7 +268,7 @@ public class ProcessRenderer {
                     break;
                 case URL:
                     if (fme != null) {
-                        if (fme.getMount() != "") {
+                        if (!"".equals(fme.getMount())) {
                             command = command.replaceAll(Tags.URL.toString(), "" + fmeURL);
                         } else {
                             command = command.replaceAll(Tags.URL.toString(), "" + fmeURL + "/" + fme.getStream()); // "\""+fme.getUrl()+"/"+fme.getStream()+" live=1 flashver=FME/2.520(compatible;20FMSc201.0)"+"\""
@@ -278,11 +279,11 @@ public class ProcessRenderer {
                     break;
                 case MOUNT:
                     
-                    if (fme != null && fme.getMount() != "") {
+                    if (fme != null && !"".equals(fme.getMount())) {
                         command = command.replaceAll(Tags.MOUNT.toString(), "" + fme.getMount());
                     }
                 case PASSWORD:
-                    if (fme != null && fme.getPassword() != "") {
+                    if (fme != null && !"".equals(fme.getPassword())) {
                         command = command.replaceAll(Tags.PASSWORD.toString(), "" + fme.getPassword());
                     }
                 case KEYINT:
@@ -292,7 +293,7 @@ public class ProcessRenderer {
                         command = command.replaceAll(Tags.KEYINT.toString(), "" + Integer.toString(5*mixer.getRate()));
                     }
                 case PORT:
-                    if (fme != null && fme.getPort() != "") {
+                    if (fme != null && !"".equals(fme.getPort())) {
                         command = command.replaceAll(Tags.PORT.toString(), "" + fme.getPort());
                     }
                 case APORT:
@@ -613,23 +614,23 @@ public class ProcessRenderer {
                 File fileA=new File(userHomeDir + "/.webcamstudio/WSUAud" + iD + ".sh");
                 
                 FileOutputStream fosV;
-                DataOutputStream dosV = null;
+                Writer dosV = null;
                 FileOutputStream fosA;
-                DataOutputStream dosA = null;
+                Writer dosA = null;
                 try {
                     fosV = new FileOutputStream(fileV);
-                    dosV= new DataOutputStream(fosV);
+                    dosV= new OutputStreamWriter(fosV);
                     fosA = new FileOutputStream(fileA);
-                    dosA= new DataOutputStream(fosA);
+                    dosA= new OutputStreamWriter(fosA);
                 } catch (FileNotFoundException ex) {
                     Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 try {
-                    dosV.writeBytes("#!/bin/bash\n");
-                    dosV.writeBytes(commandVideo+"\n");
+                    dosV.write("#!/bin/bash\n");
+                    dosV.write(commandVideo+"\n");
                     dosV.close();
-                    dosA.writeBytes("#!/bin/bash\n");
-                    dosA.writeBytes(commandAudio+"\n");
+                    dosA.write("#!/bin/bash\n");
+                    dosA.write(commandAudio+"\n");
                     dosA.close();
                 } catch (IOException ex) {
                     Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
@@ -693,23 +694,23 @@ public class ProcessRenderer {
                 File fileA=new File(userHomeDir + "/.webcamstudio/WSCAud" + iD + ".sh");
                 
                 FileOutputStream fosV;
-                DataOutputStream dosV = null;
+                Writer dosV = null;
                 FileOutputStream fosA;
-                DataOutputStream dosA = null;
+                Writer dosA = null;
                 try {
                     fosV = new FileOutputStream(fileV);
-                    dosV= new DataOutputStream(fosV);
+                    dosV= new OutputStreamWriter(fosV);
                     fosA = new FileOutputStream(fileA);
-                    dosA= new DataOutputStream(fosA);
+                    dosA= new OutputStreamWriter(fosA);
                 } catch (FileNotFoundException ex) {
                     Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 try {
-                    dosV.writeBytes("#!/bin/bash\n");
-                    dosV.writeBytes(commandVideo+"\n");
+                    dosV.write("#!/bin/bash\n");
+                    dosV.write(commandVideo+"\n");
                     dosV.close();
-                    dosA.writeBytes("#!/bin/bash\n");
-                    dosA.writeBytes(commandAudio+"\n");
+                    dosA.write("#!/bin/bash\n");
+                    dosA.write(commandAudio+"\n");
                     dosA.close();
                 } catch (IOException ex) {
                     Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
@@ -757,16 +758,16 @@ public class ProcessRenderer {
                 System.out.println("Command Out: "+command);
                 File file=new File(userHomeDir+"/.webcamstudio/"+"WSBro.sh");
                 FileOutputStream fos;
-                DataOutputStream dos = null;
+                Writer dos = null;
                 try {
                     fos = new FileOutputStream(file);
-                    dos= new DataOutputStream(fos);
+                    dos= new OutputStreamWriter(fos);
                 } catch (FileNotFoundException ex) {
                     Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 try {
-                    dos.writeBytes("#!/bin/bash\n");
-                    dos.writeBytes(command+"\n");
+                    dos.write("#!/bin/bash\n");
+                    dos.write(command+"\n");
                     dos.close();
                 } catch (IOException ex) {
                     Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);

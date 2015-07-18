@@ -5,7 +5,7 @@
 package webcamstudio.mixers;
 
 import java.util.ArrayList;
-import webcamstudio.util.Tools;
+import static webcamstudio.util.Tools.sleep;
 
 /**
  *
@@ -26,10 +26,10 @@ public class FrameBuffer {
     }
     public void push(Frame f){
         while (!abort && frameCounter >0) {
-            Tools.sleep(30);
+            sleep(30);
         }
         currentIndex++;
-        currentIndex = currentIndex % BUFFER_SIZE;
+        currentIndex %= BUFFER_SIZE;
         buffer.get(currentIndex).copyFrame(f); //.copyFrame(f)
         frameCounter++;
     }
@@ -40,13 +40,13 @@ public class FrameBuffer {
     }    
     public Frame getFrameToUpdate(){
         while (!abort && frameCounter >0) {
-            Tools.sleep(30);
+            sleep(30);
         }
         return buffer.get((currentIndex+1)%BUFFER_SIZE);
     }
     public Frame pop(){
         while(!abort && frameCounter < 1){
-            Tools.sleep(10);
+            sleep(10);
         }
         frameCounter--;
         return buffer.get(currentIndex);

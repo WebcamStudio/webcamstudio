@@ -56,7 +56,7 @@ public class RevealRightNFade extends Effect {
             buffer.clearRect(0, 0, w, h);
             buffer.drawImage(temp, 0, 0, w, h, 0, 0, temp.getWidth(), temp.getHeight(), null);
             buffer.dispose();
-            widthCount = widthCount + vel;
+            widthCount += vel;
         } else {
             buffer = img.createGraphics();
             buffer.setRenderingHint(RenderingHints.KEY_RENDERING,

@@ -5,13 +5,14 @@
 package webcamstudio.media.renderer;
 
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.lang.reflect.Field;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -49,16 +50,16 @@ public class ProcessExecutor {
     String commandPids = "ps -ef | awk '{if ($3 == "+pid+") print $2;}'";
     File fileP=new File(userHomeDir+"/.webcamstudio/"+"WSBust.sh");
     FileOutputStream fosV;
-    DataOutputStream dosV = null;
+    Writer dosV = null;
     try {
         fosV = new FileOutputStream(fileP);
-        dosV= new DataOutputStream(fosV);
+        dosV= new OutputStreamWriter(fosV);
     } catch (FileNotFoundException ex) {
         Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
     }
     try {
-        dosV.writeBytes("#!/bin/bash\n");
-        dosV.writeBytes(commandPids+"\n");
+        dosV.write("#!/bin/bash\n");
+        dosV.write(commandPids+"\n");
         dosV.close();
     } catch (IOException ex) {
         Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
@@ -168,16 +169,16 @@ public class ProcessExecutor {
                 String commandPids = "ps -ef | awk '{if ($3 == "+parentPID+") print $2;}'";
                 File fileP=new File(userHomeDir+"/.webcamstudio/"+"WSBust.sh"); 
                 FileOutputStream fosV;
-                DataOutputStream dosV = null;
+                Writer dosV = null;
                 try {
                     fosV = new FileOutputStream(fileP);
-                    dosV= new DataOutputStream(fosV);
+                    dosV= new OutputStreamWriter(fosV);
                 } catch (FileNotFoundException ex) {
                     Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 try {
-                    dosV.writeBytes("#!/bin/bash\n");
-                    dosV.writeBytes(commandPids+"\n");
+                    dosV.write("#!/bin/bash\n");
+                    dosV.write(commandPids+"\n");
                     dosV.close();
                 } catch (IOException ex) {
                     Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);

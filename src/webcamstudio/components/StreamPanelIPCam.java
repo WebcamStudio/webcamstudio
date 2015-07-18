@@ -834,7 +834,6 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
         add(labelPTZPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(126, 7, 153, 130));
 
         jcbLockAR.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
-        jcbLockAR.setText("Lock A/R");
         jcbLockAR.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         jcbLockAR.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/LockButton-open_small.png"))); // NOI18N
         jcbLockAR.setName("jcbLockAR"); // NOI18N
@@ -845,7 +844,7 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
                 jcbLockARActionPerformed(evt);
             }
         });
-        add(jcbLockAR, new org.netbeans.lib.awtextra.AbsoluteConstraints(64, 261, -1, -1));
+        add(jcbLockAR, new org.netbeans.lib.awtextra.AbsoluteConstraints(43, 230, -1, -1));
 
         jSeparator7.setName("jSeparator7"); // NOI18N
         jSeparator7.setPreferredSize(new java.awt.Dimension(48, 10));
@@ -862,7 +861,7 @@ public class StreamPanelIPCam extends javax.swing.JPanel implements Stream.Liste
                 tglPreviewActionPerformed(evt);
             }
         });
-        add(tglPreview, new org.netbeans.lib.awtextra.AbsoluteConstraints(7, 265, 40, 20));
+        add(tglPreview, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 262, 112, 20));
 
         getAccessibleContext().setAccessibleParent(this);
     }// </editor-fold>//GEN-END:initComponents

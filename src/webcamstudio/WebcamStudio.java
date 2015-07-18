@@ -13,6 +13,7 @@ package webcamstudio;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Font;
 import java.awt.Frame;
 import java.awt.HeadlessException;
 import java.awt.datatransfer.DataFlavor;
@@ -23,7 +24,6 @@ import java.awt.dnd.DropTargetDropEvent;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyVetoException;
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -31,7 +31,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.Reader;
+import java.io.Writer;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -46,6 +48,7 @@ import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
+import javax.swing.JDesktopPane;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -54,12 +57,15 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.plaf.ColorUIResource;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.TransformerException;
 import javax.xml.xpath.XPathExpressionException;
 import org.xml.sax.SAXException;
 import webcamstudio.channels.MasterChannels;
+import webcamstudio.components.BottomPanel;
+import webcamstudio.components.ChannelPanel;
 import webcamstudio.components.MasterPanel;
 import static webcamstudio.components.MasterPanel.spinFPS;
 import static webcamstudio.components.MasterPanel.spinHeight;
@@ -110,7 +116,8 @@ public final class WebcamStudio extends JFrame implements StreamDesktop.Listener
     // FF = 0 ; AV = 1 ; GS = 2
     public static int outFMEbe = 1;
     private final static String userHomeDir = Tools.getUserHome();
-    OutputPanel recorder = new OutputPanel(this);
+    BottomPanel bottomPanel = new BottomPanel();
+    OutputPanel recorder = new OutputPanel(bottomPanel);
     Frame about = new Frame();
     Frame vDevInfo = new Frame();
     Stream stream = null;
@@ -126,6 +133,28 @@ public final class WebcamStudio extends JFrame implements StreamDesktop.Listener
     boolean avconv = Screen.avconvDetected();
     boolean firstRun = true;
     static boolean autoAR = false;
+    private int numCameras = 0;
+    private int numVideos = 0;
+    private int numMusics = 0;
+    private int numPictures = 0;
+    private int numDVBs = 0;
+    private int numURLs = 0;
+    private int numDesktops = 0;
+    private int numTexts = 0;
+    private int numAudioIns = 0;
+    private int tabCount = 0;
+    private JLabel lblCamera = new JLabel("Cameras(0)");
+    private JLabel lblVideo = new JLabel("Videos(0)");
+    private JLabel lblMusic = new JLabel("Musics(0)");
+    private JLabel lblPicture = new JLabel("Pictures(0)");
+    private JLabel lblDVB = new JLabel("DVBs(0)");
+    private JLabel lblURL = new JLabel("URLs(0)");
+    private JLabel lblDesktop = new JLabel("Desktops(0)");
+    private JLabel lblText = new JLabel("Texts(0)");
+    private JLabel lblAudioIn = new JLabel("AudioIns(0)");
+    private Color busyTab = Color.red;
+    private Color resetTab = Color.black;
+    ArrayList<JDesktopPane> tabs = new ArrayList<>();
     
     @SuppressWarnings("unchecked") 
     private void initFaceDetection() throws IOException {
@@ -177,6 +206,100 @@ public final class WebcamStudio extends JFrame implements StreamDesktop.Listener
     @Override
     public void closeSource() {
         lblSourceSelected.setText("");
+        int tabIndex = tabSources.getSelectedIndex();
+        System.out.println("TabIndex="+tabIndex);
+        String tabTitle = tabSources.getTitleAt(tabIndex);
+        if (tabTitle.contains("Cameras")) {
+            numCameras -= 1;
+            if (numCameras > 0) {
+                lblCamera.setText("Cameras("+numCameras+")");
+            } else {
+                lblCamera.setForeground(resetTab);
+                Font font = new Font("Ubuntu", Font.PLAIN, 11);
+                lblCamera.setFont(font);
+                lblCamera.setText("Cameras("+numCameras+")");
+            }
+        } else if (tabTitle.contains("Videos")) {
+            numVideos -= 1;
+            if (numVideos > 0) {
+                lblVideo.setText("Videos("+numVideos+")");
+            } else {
+                lblVideo.setForeground(resetTab);
+                Font font = new Font("Ubuntu", Font.PLAIN, 11);
+                lblVideo.setFont(font);
+                lblVideo.setText("Videos("+numVideos+")");
+            }
+        } else if (tabTitle.contains("Musics")) {
+            numMusics -= 1;
+            if (numMusics > 0) {
+                lblMusic.setText("Musics("+numMusics+")");
+            } else {
+                lblMusic.setForeground(resetTab);
+                Font font = new Font("Ubuntu", Font.PLAIN, 11);
+                lblMusic.setFont(font);
+                lblMusic.setText("Musics("+numMusics+")");
+            }
+        } else if (tabTitle.contains("Pictures")) {
+            numPictures -= 1;
+            if (numPictures > 0) {
+                lblPicture.setText("Pictures("+numPictures+")");
+            } else {
+                lblPicture.setForeground(resetTab);
+                Font font = new Font("Ubuntu", Font.PLAIN, 11);
+                lblPicture.setFont(font);
+                lblPicture.setText("Pictures("+numPictures+")");
+            }
+        } else if (tabTitle.contains("DVBs")) {
+            numDVBs -= 1;
+            if (numDVBs > 0) {
+                lblDVB.setText("DVBs("+numDVBs+")");
+            } else {
+                lblDVB.setForeground(resetTab);
+                Font font = new Font("Ubuntu", Font.PLAIN, 11);
+                lblDVB.setFont(font);
+                lblDVB.setText("DVBs("+numDVBs+")");
+            }
+        } else if (tabTitle.contains("URLs")) {
+            numURLs -= 1;
+            if (numURLs > 0) {
+                lblURL.setText("URLs("+numURLs+")");
+            } else {
+                lblURL.setForeground(resetTab);
+                Font font = new Font("Ubuntu", Font.PLAIN, 11);
+                lblURL.setFont(font);
+                lblURL.setText("URLs("+numURLs+")");
+            }
+        } else if (tabTitle.contains("Desktops")) {
+            numDesktops -= 1;
+            if (numDesktops > 0) {
+                lblDesktop.setText("Desktops("+numDesktops+")");
+            } else {
+                lblDesktop.setForeground(resetTab);
+                Font font = new Font("Ubuntu", Font.PLAIN, 11);
+                lblDesktop.setFont(font);
+                lblDesktop.setText("Desktops("+numCameras+")");
+            }
+        } else if (tabTitle.contains("Texts")) {
+            numTexts -= 1;
+            if (numTexts > 0) {
+                lblText.setText("Texts("+numTexts+")");
+            } else {
+                lblText.setForeground(resetTab);
+                Font font = new Font("Ubuntu", Font.PLAIN, 11);
+                lblText.setFont(font);
+                lblText.setText("Texts("+numTexts+")");
+            }
+        } else if (tabTitle.contains("AudioIns")) {
+            numAudioIns -= 1;
+            if (numAudioIns > 0) {
+                lblAudioIn.setText("AudioIns("+numAudioIns+")");
+            } else {
+                lblAudioIn.setForeground(resetTab);
+                Font font = new Font("Ubuntu", Font.PLAIN, 11);
+                lblAudioIn.setFont(font);
+                lblAudioIn.setText("AudioIns("+numAudioIns+")");
+            }
+        }
     }
     
     public interface Listener {
@@ -209,27 +332,23 @@ public final class WebcamStudio extends JFrame implements StreamDesktop.Listener
     public WebcamStudio() throws IOException {
         
         initComponents();
-        
-        if (theme.equals("Dark")) {
-            // setting WS Dark Theme
-            UIManager.put("text", Color.WHITE);
-            UIManager.put("control", Color.darkGray);
-            UIManager.put("nimbusBlueGrey", Color.darkGray);
-            UIManager.put("nimbusBase", Color.darkGray);
-            UIManager.put("nimbusLightBackground", new Color(134,137,143));
-            UIManager.put("info", new Color(195,160,0));
-            UIManager.put("nimbusDisabledText", Color.black);
-            UIManager.put("nimbusSelectionBackground", Color.yellow);
-            UIManager.put("nimbusSelectedText", Color.blue);
-            UIManager.put("nimbusSelectionBackground", new Color(255,220,35));
-        }
-        
+                
         setTitle("WebcamStudio " + Version.version);
         ImageIcon icon = new ImageIcon(this.getClass().getResource("/webcamstudio/resources/icon.png"));
         this.setIconImage(icon.getImage());
         
-        desktop.setDropTarget(new DropTarget() {
-
+        tabs.add(cameraDesktop);
+        tabs.add(videoDesktop);
+        tabs.add(musicDesktop);
+        tabs.add(pictureDesktop);
+        tabs.add(dvbDesktop);
+        tabs.add(urlDesktop);
+        tabs.add(desktopDesktop);
+        tabs.add(textDesktop);
+        tabs.add(audioInDesktop);
+        
+        tabSources.setDropTarget(new DropTarget() {
+            
             @Override
             public synchronized void drop(DropTargetDropEvent evt) {
                 try {
@@ -285,7 +404,28 @@ public final class WebcamStudio extends JFrame implements StreamDesktop.Listener
                                         stream.addChannel(SourceChannel.getChannel(sc, stream));
                                     }
                                     StreamDesktop frame = getNewStreamDesktop(stream);
-                                    desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+                                    if (stream instanceof SourceMovie) {
+                                        numVideos += 1;
+                                        videoDesktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+                                        lblVideo.setForeground(busyTab);
+                                        Font font = new Font("Ubuntu", Font.BOLD, 11);
+                                        lblVideo.setFont(font);
+                                        lblVideo.setText("Videos("+numVideos+")");
+                                    } else if (stream instanceof SourceMusic) {
+                                        numMusics += 1;
+                                        musicDesktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+                                        lblMusic.setForeground(busyTab);
+                                        Font font = new Font("Ubuntu", Font.BOLD, 11);
+                                        lblMusic.setFont(font);
+                                        lblMusic.setText("Musics("+numMusics+")");
+                                    } else if (stream instanceof SourceImage || stream instanceof SourceImageU  || stream instanceof SourceImageGif) {
+                                        numPictures += 1;
+                                        pictureDesktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+                                        lblPicture.setForeground(busyTab);
+                                        Font font = new Font("Ubuntu", Font.BOLD, 11);
+                                        lblPicture.setFont(font);
+                                        lblPicture.setText("Pictures("+numPictures+")");
+                                    }
                                     frame.setLocation(evt.getLocation());
                                     try {
                                         frame.setSelected(true);
@@ -308,9 +448,7 @@ public final class WebcamStudio extends JFrame implements StreamDesktop.Listener
             }
         });
         
-        this.add(ResourceMonitor.getInstance(), BorderLayout.SOUTH);
         prefs = Preferences.userNodeForPackage(this.getClass());
-        panControls.add(recorder, BorderLayout.NORTH);
         
         loadPrefs();
         
@@ -326,8 +464,32 @@ public final class WebcamStudio extends JFrame implements StreamDesktop.Listener
             UIManager.put("nimbusSelectionBackground", Color.yellow);
             UIManager.put("nimbusSelectedText", Color.blue);
             UIManager.put("nimbusSelectionBackground", new Color(255,220,35));
+            ColorUIResource colorResource = new ColorUIResource(Color.red.darker().darker());
+            UIManager.put("nimbusOrange",colorResource);
+            busyTab = Color.red.darker();
+            resetTab = Color.WHITE;
         }
-        
+          Font font = new Font("Ubuntu", Font.PLAIN, 11);
+          lblCamera.setFont(font);
+          lblVideo.setFont(font);
+          lblMusic.setFont(font);
+          lblPicture.setFont(font);
+          lblDVB.setFont(font);
+          lblURL.setFont(font);
+          lblDesktop.setFont(font);
+          lblText.setFont(font);
+          lblAudioIn.setFont(font);
+          
+          tabSources.setTabComponentAt(0, lblCamera);
+          tabSources.setTabComponentAt(1, lblVideo);
+          tabSources.setTabComponentAt(2, lblMusic);
+          tabSources.setTabComponentAt(3, lblPicture);
+          tabSources.setTabComponentAt(4, lblDVB);
+          tabSources.setTabComponentAt(5, lblURL);
+          tabSources.setTabComponentAt(6, lblDesktop);
+          tabSources.setTabComponentAt(7, lblText);
+          tabSources.setTabComponentAt(8, lblAudioIn);
+         
 //        if (theme.equals("Green")) {
 //            // setting WS Green Theme
 //            UIManager.put("text", Color.WHITE);
@@ -344,7 +506,18 @@ public final class WebcamStudio extends JFrame implements StreamDesktop.Listener
         
         MasterMixer.getInstance().start();
         PreviewMixer.getInstance().start();
-        this.add(new MasterPanel(), BorderLayout.WEST);
+        panMaster.add(new MasterPanel(), BorderLayout.CENTER);
+        ChannelPanel trkPanel = new ChannelPanel();        
+        ResourceMonitor resMon = ResourceMonitor.getInstance();
+        trkPanel.PanelResource.add(resMon, BorderLayout.CENTER);
+        resMon.setVisible(true);
+        
+        bottomPanel.mainHorizontalSplit.setLeftComponent(trkPanel);
+        bottomPanel.mainHorizontalSplit.setRightComponent(recorder);
+        
+        mainVerticalSplit.setBottomComponent(bottomPanel);
+        
+        masterPanelSplit.setEnabled(false);
         initAnimations();
         initFaceDetection();
         initWebcam();
@@ -368,6 +541,8 @@ public final class WebcamStudio extends JFrame implements StreamDesktop.Listener
             listenerCP.setRemoteOn();
         }
         firstRun = false;
+        tabCount = tabSources.getTabCount();
+        System.out.println("Tabs="+tabCount);
     }
 
     private StreamDesktop getNewStreamDesktop(Stream s) {
@@ -385,7 +560,7 @@ public final class WebcamStudio extends JFrame implements StreamDesktop.Listener
                         SourceCustom streamCST;
                         streamCST = new SourceCustom(f);
                         StreamDesktop frame = new StreamDesktop(streamCST, this);
-                        desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+                        cameraDesktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
                         frame.setClosable(false);
                         try {
                             frame.setIcon(true);
@@ -510,6 +685,10 @@ public final class WebcamStudio extends JFrame implements StreamDesktop.Listener
         PreviewMixer.getInstance().setRate(5);
         mainSplit.setDividerLocation(prefs.getInt("split-x", mainSplit.getDividerLocation()));
         mainSplit.setDividerLocation(prefs.getInt("split-last-x", mainSplit.getLastDividerLocation()));
+        mainVerticalSplit.setDividerLocation(prefs.getInt("split-y", mainVerticalSplit.getDividerLocation()));
+        mainVerticalSplit.setDividerLocation(prefs.getInt("split-last-y", mainVerticalSplit.getLastDividerLocation()));
+        bottomPanel.mainHorizontalSplit.setDividerLocation(prefs.getInt("split-x-bottom", bottomPanel.mainHorizontalSplit.getDividerLocation()));
+        bottomPanel.mainHorizontalSplit.setDividerLocation(prefs.getInt("split-last-x-bottom", bottomPanel.mainHorizontalSplit.getLastDividerLocation()));
         lastFolder = new File(prefs.get("lastfolder", "."));
         audioFreq = prefs.getInt("audio-freq", audioFreq);
         theme = prefs.get("theme", theme);
@@ -530,6 +709,10 @@ public final class WebcamStudio extends JFrame implements StreamDesktop.Listener
         prefs.putInt("mastermixer-r", MasterMixer.getInstance().getRate());
         prefs.putInt("split-x", mainSplit.getDividerLocation());
         prefs.putInt("split-last-x", mainSplit.getLastDividerLocation());
+        prefs.putInt("split-y", mainVerticalSplit.getDividerLocation());
+        prefs.putInt("split-last-y", mainVerticalSplit.getLastDividerLocation());
+        prefs.putInt("split-x-bottom", bottomPanel.mainHorizontalSplit.getDividerLocation());
+        prefs.putInt("split-last-x-bottom", bottomPanel.mainHorizontalSplit.getLastDividerLocation());
         if (lastFolder != null) {
             prefs.put("lastfolder", lastFolder.getAbsolutePath());
         }
@@ -555,29 +738,6 @@ public final class WebcamStudio extends JFrame implements StreamDesktop.Listener
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        mainSplit = new javax.swing.JSplitPane();
-        panSources = new javax.swing.JPanel();
-        toolbar = new javax.swing.JToolBar();
-        btnAddFile = new javax.swing.JButton();
-        btnAddFolder = new javax.swing.JButton();
-        tglAutoAR = new javax.swing.JToggleButton();
-        jSeparator3 = new javax.swing.JToolBar.Separator();
-        btnAddDVB = new javax.swing.JButton();
-        btnAddURL = new javax.swing.JButton();
-        btnAddIPCam = new javax.swing.JButton();
-        btnAddDVCam = new javax.swing.JButton();
-        btnAddDesktop = new javax.swing.JButton();
-        btnAddText = new javax.swing.JButton();
-        btnAddAudioSrc = new javax.swing.JButton();
-        jSeparator1 = new javax.swing.JToolBar.Separator();
-        cboAnimations = new javax.swing.JComboBox();
-        btnAddAnimation = new javax.swing.JButton();
-        jSeparator2 = new javax.swing.JToolBar.Separator();
-        btnMinimizeAll = new javax.swing.JButton();
-        desktop = new javax.swing.JDesktopPane();
-        panControls = new javax.swing.JPanel();
-        tabControls = new javax.swing.JTabbedPane();
-        lblSourceSelected = new javax.swing.JLabel();
         mainToolbar = new javax.swing.JToolBar();
         btnNewStudio = new javax.swing.JButton();
         btnImportStudio = new javax.swing.JButton();
@@ -613,6 +773,42 @@ public final class WebcamStudio extends JFrame implements StreamDesktop.Listener
         lblGst = new javax.swing.JLabel();
         filler6 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(3, 0), new java.awt.Dimension(0, 0));
         jSeparator13 = new javax.swing.JToolBar.Separator();
+        mainVerticalSplit = new javax.swing.JSplitPane();
+        masterPanelSplit = new javax.swing.JSplitPane();
+        panMaster = new javax.swing.JPanel();
+        mainSplit = new javax.swing.JSplitPane();
+        panSources = new javax.swing.JPanel();
+        toolbar = new javax.swing.JToolBar();
+        btnAddFile = new javax.swing.JButton();
+        btnAddFolder = new javax.swing.JButton();
+        tglAutoAR = new javax.swing.JToggleButton();
+        jSeparator3 = new javax.swing.JToolBar.Separator();
+        btnAddDVB = new javax.swing.JButton();
+        btnAddURL = new javax.swing.JButton();
+        btnAddIPCam = new javax.swing.JButton();
+        btnAddDVCam = new javax.swing.JButton();
+        btnAddDesktop = new javax.swing.JButton();
+        btnAddText = new javax.swing.JButton();
+        btnAddAudioSrc = new javax.swing.JButton();
+        jSeparator1 = new javax.swing.JToolBar.Separator();
+        cboAnimations = new javax.swing.JComboBox();
+        btnAddAnimation = new javax.swing.JButton();
+        jSeparator2 = new javax.swing.JToolBar.Separator();
+        btnMinimizeTab = new javax.swing.JButton();
+        btnMinimizeAll = new javax.swing.JButton();
+        tabSources = new javax.swing.JTabbedPane();
+        cameraDesktop = new javax.swing.JDesktopPane();
+        videoDesktop = new javax.swing.JDesktopPane();
+        musicDesktop = new javax.swing.JDesktopPane();
+        pictureDesktop = new javax.swing.JDesktopPane();
+        dvbDesktop = new javax.swing.JDesktopPane();
+        urlDesktop = new javax.swing.JDesktopPane();
+        desktopDesktop = new javax.swing.JDesktopPane();
+        textDesktop = new javax.swing.JDesktopPane();
+        audioInDesktop = new javax.swing.JDesktopPane();
+        panControls = new javax.swing.JPanel();
+        tabControls = new javax.swing.JTabbedPane();
+        lblSourceSelected = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("WebcamStudio");
@@ -621,274 +817,6 @@ public final class WebcamStudio extends JFrame implements StreamDesktop.Listener
                 formWindowClosing(evt);
             }
         });
-
-        mainSplit.setDividerLocation(500);
-        mainSplit.setName("mainSplit"); // NOI18N
-        mainSplit.setOneTouchExpandable(true);
-
-        panSources.setName("panSources"); // NOI18N
-
-        toolbar.setFloatable(false);
-        toolbar.setRollover(true);
-        toolbar.setMinimumSize(new java.awt.Dimension(200, 34));
-        toolbar.setName("toolbar"); // NOI18N
-
-        btnAddFile.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/studio-add.png"))); // NOI18N
-        btnAddFile.setToolTipText("Load Media");
-        btnAddFile.setFocusable(false);
-        btnAddFile.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnAddFile.setMaximumSize(new java.awt.Dimension(29, 28));
-        btnAddFile.setMinimumSize(new java.awt.Dimension(25, 25));
-        btnAddFile.setName("btnAddFile"); // NOI18N
-        btnAddFile.setPreferredSize(new java.awt.Dimension(28, 28));
-        btnAddFile.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnAddFile.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAddFileActionPerformed(evt);
-            }
-        });
-        toolbar.add(btnAddFile);
-
-        btnAddFolder.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-add-folder.png"))); // NOI18N
-        btnAddFolder.setToolTipText("Load Media Folder");
-        btnAddFolder.setFocusable(false);
-        btnAddFolder.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnAddFolder.setMaximumSize(new java.awt.Dimension(29, 28));
-        btnAddFolder.setMinimumSize(new java.awt.Dimension(25, 25));
-        btnAddFolder.setName("btnAddFolder"); // NOI18N
-        btnAddFolder.setPreferredSize(new java.awt.Dimension(28, 28));
-        btnAddFolder.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnAddFolder.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAddFolderActionPerformed(evt);
-            }
-        });
-        toolbar.add(btnAddFolder);
-
-        tglAutoAR.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/ar_button.png"))); // NOI18N
-        tglAutoAR.setToolTipText("Automatic A/R detection Switch.");
-        tglAutoAR.setFocusable(false);
-        tglAutoAR.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        tglAutoAR.setMaximumSize(new java.awt.Dimension(29, 28));
-        tglAutoAR.setMinimumSize(new java.awt.Dimension(25, 25));
-        tglAutoAR.setName("tglAutoAR"); // NOI18N
-        tglAutoAR.setPreferredSize(new java.awt.Dimension(28, 29));
-        tglAutoAR.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/ar_button.png"))); // NOI18N
-        tglAutoAR.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/ar_button_selected.png"))); // NOI18N
-        tglAutoAR.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        tglAutoAR.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                tglAutoARActionPerformed(evt);
-            }
-        });
-        toolbar.add(tglAutoAR);
-
-        jSeparator3.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
-        jSeparator3.setName("jSeparator3"); // NOI18N
-        jSeparator3.setOpaque(true);
-        toolbar.add(jSeparator3);
-
-        btnAddDVB.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/dvb.png"))); // NOI18N
-        btnAddDVB.setToolTipText("Add DVB-T Stream");
-        btnAddDVB.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        btnAddDVB.setFocusable(false);
-        btnAddDVB.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnAddDVB.setMaximumSize(new java.awt.Dimension(29, 28));
-        btnAddDVB.setMinimumSize(new java.awt.Dimension(25, 25));
-        btnAddDVB.setName("btnAddDVB"); // NOI18N
-        btnAddDVB.setPreferredSize(new java.awt.Dimension(28, 28));
-        btnAddDVB.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnAddDVB.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAddDVBActionPerformed(evt);
-            }
-        });
-        toolbar.add(btnAddDVB);
-
-        btnAddURL.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/url5.png"))); // NOI18N
-        btnAddURL.setToolTipText("Add URL Stream");
-        btnAddURL.setFocusable(false);
-        btnAddURL.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnAddURL.setMaximumSize(new java.awt.Dimension(29, 28));
-        btnAddURL.setMinimumSize(new java.awt.Dimension(25, 25));
-        btnAddURL.setName("btnAddURL"); // NOI18N
-        btnAddURL.setPreferredSize(new java.awt.Dimension(28, 28));
-        btnAddURL.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnAddURL.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAddURLActionPerformed(evt);
-            }
-        });
-        toolbar.add(btnAddURL);
-
-        btnAddIPCam.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/ip-cam-2.png"))); // NOI18N
-        btnAddIPCam.setToolTipText("Add IPCam Stream");
-        btnAddIPCam.setFocusable(false);
-        btnAddIPCam.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnAddIPCam.setMaximumSize(new java.awt.Dimension(29, 28));
-        btnAddIPCam.setMinimumSize(new java.awt.Dimension(25, 25));
-        btnAddIPCam.setName("btnAddIPCam"); // NOI18N
-        btnAddIPCam.setPreferredSize(new java.awt.Dimension(28, 28));
-        btnAddIPCam.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnAddIPCam.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAddIPCamActionPerformed(evt);
-            }
-        });
-        toolbar.add(btnAddIPCam);
-
-        btnAddDVCam.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/Firewire.png"))); // NOI18N
-        btnAddDVCam.setToolTipText("Add DVCam Stream");
-        btnAddDVCam.setFocusable(false);
-        btnAddDVCam.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnAddDVCam.setMaximumSize(new java.awt.Dimension(29, 28));
-        btnAddDVCam.setMinimumSize(new java.awt.Dimension(25, 25));
-        btnAddDVCam.setName("btnAddDVCam"); // NOI18N
-        btnAddDVCam.setPreferredSize(new java.awt.Dimension(28, 28));
-        btnAddDVCam.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnAddDVCam.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAddDVCamActionPerformed(evt);
-            }
-        });
-        toolbar.add(btnAddDVCam);
-
-        btnAddDesktop.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/user-desktop.png"))); // NOI18N
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("webcamstudio/Languages"); // NOI18N
-        btnAddDesktop.setToolTipText(bundle.getString("DESKTOP")); // NOI18N
-        btnAddDesktop.setFocusable(false);
-        btnAddDesktop.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnAddDesktop.setMaximumSize(new java.awt.Dimension(29, 28));
-        btnAddDesktop.setMinimumSize(new java.awt.Dimension(25, 25));
-        btnAddDesktop.setName("btnAddDesktop"); // NOI18N
-        btnAddDesktop.setPreferredSize(new java.awt.Dimension(28, 28));
-        btnAddDesktop.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnAddDesktop.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAddDesktopActionPerformed(evt);
-            }
-        });
-        toolbar.add(btnAddDesktop);
-
-        btnAddText.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/accessories-text-editor.png"))); // NOI18N
-        btnAddText.setToolTipText("Text/QRCode");
-        btnAddText.setFocusable(false);
-        btnAddText.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnAddText.setMaximumSize(new java.awt.Dimension(29, 28));
-        btnAddText.setMinimumSize(new java.awt.Dimension(25, 25));
-        btnAddText.setName("btnAddText"); // NOI18N
-        btnAddText.setPreferredSize(new java.awt.Dimension(28, 28));
-        btnAddText.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnAddText.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAddTextActionPerformed(evt);
-            }
-        });
-        toolbar.add(btnAddText);
-
-        btnAddAudioSrc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/audio-volume-high.png"))); // NOI18N
-        btnAddAudioSrc.setToolTipText("AudioSource");
-        btnAddAudioSrc.setFocusable(false);
-        btnAddAudioSrc.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnAddAudioSrc.setMaximumSize(new java.awt.Dimension(29, 28));
-        btnAddAudioSrc.setMinimumSize(new java.awt.Dimension(25, 25));
-        btnAddAudioSrc.setName("btnAddAudioSrc"); // NOI18N
-        btnAddAudioSrc.setPreferredSize(new java.awt.Dimension(28, 28));
-        btnAddAudioSrc.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnAddAudioSrc.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAddAudioSrcActionPerformed(evt);
-            }
-        });
-        toolbar.add(btnAddAudioSrc);
-
-        jSeparator1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        jSeparator1.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
-        jSeparator1.setName("jSeparator1"); // NOI18N
-        jSeparator1.setOpaque(true);
-        toolbar.add(jSeparator1);
-
-        cboAnimations.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        cboAnimations.setToolTipText(bundle.getString("ANIMATIONS")); // NOI18N
-        cboAnimations.setName("cboAnimations"); // NOI18N
-        toolbar.add(cboAnimations);
-
-        btnAddAnimation.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/Anim-add.png"))); // NOI18N
-        btnAddAnimation.setToolTipText(bundle.getString("ADD_ANIMATION")); // NOI18N
-        btnAddAnimation.setFocusable(false);
-        btnAddAnimation.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnAddAnimation.setMaximumSize(new java.awt.Dimension(29, 28));
-        btnAddAnimation.setMinimumSize(new java.awt.Dimension(25, 25));
-        btnAddAnimation.setName("btnAddAnimation"); // NOI18N
-        btnAddAnimation.setPreferredSize(new java.awt.Dimension(28, 28));
-        btnAddAnimation.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnAddAnimation.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAddAnimationActionPerformed(evt);
-            }
-        });
-        toolbar.add(btnAddAnimation);
-
-        jSeparator2.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
-        jSeparator2.setName("jSeparator2"); // NOI18N
-        jSeparator2.setOpaque(true);
-        toolbar.add(jSeparator2);
-
-        btnMinimizeAll.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/go-down.png"))); // NOI18N
-        btnMinimizeAll.setToolTipText(bundle.getString("ICON_ALL")); // NOI18N
-        btnMinimizeAll.setFocusable(false);
-        btnMinimizeAll.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnMinimizeAll.setMaximumSize(new java.awt.Dimension(29, 28));
-        btnMinimizeAll.setMinimumSize(new java.awt.Dimension(25, 25));
-        btnMinimizeAll.setName("btnMinimizeAll"); // NOI18N
-        btnMinimizeAll.setPreferredSize(new java.awt.Dimension(28, 28));
-        btnMinimizeAll.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnMinimizeAll.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnMinimizeAllActionPerformed(evt);
-            }
-        });
-        toolbar.add(btnMinimizeAll);
-
-        desktop.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("SOURCES"))); // NOI18N
-        desktop.setToolTipText(bundle.getString("DROP_SOURCSE")); // NOI18N
-        desktop.setAutoscrolls(true);
-        desktop.setName("desktop"); // NOI18N
-
-        javax.swing.GroupLayout panSourcesLayout = new javax.swing.GroupLayout(panSources);
-        panSources.setLayout(panSourcesLayout);
-        panSourcesLayout.setHorizontalGroup(
-            panSourcesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(desktop)
-            .addComponent(toolbar, javax.swing.GroupLayout.DEFAULT_SIZE, 500, Short.MAX_VALUE)
-        );
-        panSourcesLayout.setVerticalGroup(
-            panSourcesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panSourcesLayout.createSequentialGroup()
-                .addComponent(toolbar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(desktop, javax.swing.GroupLayout.DEFAULT_SIZE, 390, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-
-        mainSplit.setLeftComponent(panSources);
-
-        panControls.setName("panControls"); // NOI18N
-        panControls.setPreferredSize(new java.awt.Dimension(200, 455));
-        panControls.setLayout(new java.awt.BorderLayout());
-
-        tabControls.setBorder(javax.swing.BorderFactory.createTitledBorder("Source Properties"));
-        tabControls.setTabLayoutPolicy(javax.swing.JTabbedPane.SCROLL_TAB_LAYOUT);
-        tabControls.setName("tabControls"); // NOI18N
-        tabControls.setPreferredSize(new java.awt.Dimension(200, 455));
-        panControls.add(tabControls, java.awt.BorderLayout.CENTER);
-
-        lblSourceSelected.setName("lblSourceSelected"); // NOI18N
-        panControls.add(lblSourceSelected, java.awt.BorderLayout.SOUTH);
-
-        mainSplit.setRightComponent(panControls);
-
-        getContentPane().add(mainSplit, java.awt.BorderLayout.CENTER);
 
         mainToolbar.setFloatable(false);
         mainToolbar.setMargin(new java.awt.Insets(0, 0, 0, 50));
@@ -911,6 +839,7 @@ public final class WebcamStudio extends JFrame implements StreamDesktop.Listener
         mainToolbar.add(btnNewStudio);
 
         btnLoadStudio.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/document-open.png"))); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("webcamstudio/Languages"); // NOI18N
         btnLoadStudio.setToolTipText(bundle.getString("LOAD")); // NOI18N
         btnLoadStudio.setFocusable(false);
         btnLoadStudio.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -1222,6 +1151,359 @@ public final class WebcamStudio extends JFrame implements StreamDesktop.Listener
 
         getContentPane().add(mainToolbar, java.awt.BorderLayout.PAGE_START);
 
+        mainVerticalSplit.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
+        mainVerticalSplit.setName("mainVerticalSplit"); // NOI18N
+        mainVerticalSplit.setOneTouchExpandable(true);
+
+        masterPanelSplit.setDividerSize(0);
+        masterPanelSplit.setName("masterPanelSplit"); // NOI18N
+
+        panMaster.setName("panMaster"); // NOI18N
+        panMaster.setLayout(new java.awt.BorderLayout());
+        masterPanelSplit.setLeftComponent(panMaster);
+
+        mainSplit.setDividerLocation(500);
+        mainSplit.setName("mainSplit"); // NOI18N
+        mainSplit.setOneTouchExpandable(true);
+
+        panSources.setName("panSources"); // NOI18N
+
+        toolbar.setFloatable(false);
+        toolbar.setRollover(true);
+        toolbar.setMinimumSize(new java.awt.Dimension(200, 34));
+        toolbar.setName("toolbar"); // NOI18N
+
+        btnAddFile.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/studio-add.png"))); // NOI18N
+        btnAddFile.setToolTipText("Load Media");
+        btnAddFile.setFocusable(false);
+        btnAddFile.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnAddFile.setMaximumSize(new java.awt.Dimension(29, 28));
+        btnAddFile.setMinimumSize(new java.awt.Dimension(25, 25));
+        btnAddFile.setName("btnAddFile"); // NOI18N
+        btnAddFile.setPreferredSize(new java.awt.Dimension(28, 28));
+        btnAddFile.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnAddFile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddFileActionPerformed(evt);
+            }
+        });
+        toolbar.add(btnAddFile);
+
+        btnAddFolder.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/media-add-folder.png"))); // NOI18N
+        btnAddFolder.setToolTipText("Load Media Folder");
+        btnAddFolder.setFocusable(false);
+        btnAddFolder.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnAddFolder.setMaximumSize(new java.awt.Dimension(29, 28));
+        btnAddFolder.setMinimumSize(new java.awt.Dimension(25, 25));
+        btnAddFolder.setName("btnAddFolder"); // NOI18N
+        btnAddFolder.setPreferredSize(new java.awt.Dimension(28, 28));
+        btnAddFolder.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnAddFolder.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddFolderActionPerformed(evt);
+            }
+        });
+        toolbar.add(btnAddFolder);
+
+        tglAutoAR.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/ar_button.png"))); // NOI18N
+        tglAutoAR.setToolTipText("Automatic A/R detection Switch.");
+        tglAutoAR.setFocusable(false);
+        tglAutoAR.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        tglAutoAR.setMaximumSize(new java.awt.Dimension(29, 28));
+        tglAutoAR.setMinimumSize(new java.awt.Dimension(25, 25));
+        tglAutoAR.setName("tglAutoAR"); // NOI18N
+        tglAutoAR.setPreferredSize(new java.awt.Dimension(28, 29));
+        tglAutoAR.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/ar_button.png"))); // NOI18N
+        tglAutoAR.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/ar_button_selected.png"))); // NOI18N
+        tglAutoAR.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        tglAutoAR.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tglAutoARActionPerformed(evt);
+            }
+        });
+        toolbar.add(tglAutoAR);
+
+        jSeparator3.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
+        jSeparator3.setName("jSeparator3"); // NOI18N
+        jSeparator3.setOpaque(true);
+        toolbar.add(jSeparator3);
+
+        btnAddDVB.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/dvb.png"))); // NOI18N
+        btnAddDVB.setToolTipText("Add DVB-T Stream");
+        btnAddDVB.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        btnAddDVB.setFocusable(false);
+        btnAddDVB.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnAddDVB.setMaximumSize(new java.awt.Dimension(29, 28));
+        btnAddDVB.setMinimumSize(new java.awt.Dimension(25, 25));
+        btnAddDVB.setName("btnAddDVB"); // NOI18N
+        btnAddDVB.setPreferredSize(new java.awt.Dimension(28, 28));
+        btnAddDVB.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnAddDVB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddDVBActionPerformed(evt);
+            }
+        });
+        toolbar.add(btnAddDVB);
+
+        btnAddURL.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/url5.png"))); // NOI18N
+        btnAddURL.setToolTipText("Add URL Stream");
+        btnAddURL.setFocusable(false);
+        btnAddURL.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnAddURL.setMaximumSize(new java.awt.Dimension(29, 28));
+        btnAddURL.setMinimumSize(new java.awt.Dimension(25, 25));
+        btnAddURL.setName("btnAddURL"); // NOI18N
+        btnAddURL.setPreferredSize(new java.awt.Dimension(28, 28));
+        btnAddURL.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnAddURL.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddURLActionPerformed(evt);
+            }
+        });
+        toolbar.add(btnAddURL);
+
+        btnAddIPCam.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/ip-cam-2.png"))); // NOI18N
+        btnAddIPCam.setToolTipText("Add IPCam Stream");
+        btnAddIPCam.setFocusable(false);
+        btnAddIPCam.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnAddIPCam.setMaximumSize(new java.awt.Dimension(29, 28));
+        btnAddIPCam.setMinimumSize(new java.awt.Dimension(25, 25));
+        btnAddIPCam.setName("btnAddIPCam"); // NOI18N
+        btnAddIPCam.setPreferredSize(new java.awt.Dimension(28, 28));
+        btnAddIPCam.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnAddIPCam.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddIPCamActionPerformed(evt);
+            }
+        });
+        toolbar.add(btnAddIPCam);
+
+        btnAddDVCam.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/Firewire.png"))); // NOI18N
+        btnAddDVCam.setToolTipText("Add DVCam Stream");
+        btnAddDVCam.setFocusable(false);
+        btnAddDVCam.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnAddDVCam.setMaximumSize(new java.awt.Dimension(29, 28));
+        btnAddDVCam.setMinimumSize(new java.awt.Dimension(25, 25));
+        btnAddDVCam.setName("btnAddDVCam"); // NOI18N
+        btnAddDVCam.setPreferredSize(new java.awt.Dimension(28, 28));
+        btnAddDVCam.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnAddDVCam.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddDVCamActionPerformed(evt);
+            }
+        });
+        toolbar.add(btnAddDVCam);
+
+        btnAddDesktop.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/user-desktop.png"))); // NOI18N
+        btnAddDesktop.setToolTipText(bundle.getString("DESKTOP")); // NOI18N
+        btnAddDesktop.setFocusable(false);
+        btnAddDesktop.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnAddDesktop.setMaximumSize(new java.awt.Dimension(29, 28));
+        btnAddDesktop.setMinimumSize(new java.awt.Dimension(25, 25));
+        btnAddDesktop.setName("btnAddDesktop"); // NOI18N
+        btnAddDesktop.setPreferredSize(new java.awt.Dimension(28, 28));
+        btnAddDesktop.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnAddDesktop.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddDesktopActionPerformed(evt);
+            }
+        });
+        toolbar.add(btnAddDesktop);
+
+        btnAddText.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/accessories-text-editor.png"))); // NOI18N
+        btnAddText.setToolTipText("Text/QRCode");
+        btnAddText.setFocusable(false);
+        btnAddText.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnAddText.setMaximumSize(new java.awt.Dimension(29, 28));
+        btnAddText.setMinimumSize(new java.awt.Dimension(25, 25));
+        btnAddText.setName("btnAddText"); // NOI18N
+        btnAddText.setPreferredSize(new java.awt.Dimension(28, 28));
+        btnAddText.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnAddText.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddTextActionPerformed(evt);
+            }
+        });
+        toolbar.add(btnAddText);
+
+        btnAddAudioSrc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/audio-volume-high.png"))); // NOI18N
+        btnAddAudioSrc.setToolTipText("AudioSource");
+        btnAddAudioSrc.setFocusable(false);
+        btnAddAudioSrc.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnAddAudioSrc.setMaximumSize(new java.awt.Dimension(29, 28));
+        btnAddAudioSrc.setMinimumSize(new java.awt.Dimension(25, 25));
+        btnAddAudioSrc.setName("btnAddAudioSrc"); // NOI18N
+        btnAddAudioSrc.setPreferredSize(new java.awt.Dimension(28, 28));
+        btnAddAudioSrc.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnAddAudioSrc.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddAudioSrcActionPerformed(evt);
+            }
+        });
+        toolbar.add(btnAddAudioSrc);
+
+        jSeparator1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jSeparator1.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
+        jSeparator1.setName("jSeparator1"); // NOI18N
+        jSeparator1.setOpaque(true);
+        toolbar.add(jSeparator1);
+
+        cboAnimations.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cboAnimations.setToolTipText(bundle.getString("ANIMATIONS")); // NOI18N
+        cboAnimations.setName("cboAnimations"); // NOI18N
+        toolbar.add(cboAnimations);
+
+        btnAddAnimation.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/Anim-add.png"))); // NOI18N
+        btnAddAnimation.setToolTipText(bundle.getString("ADD_ANIMATION")); // NOI18N
+        btnAddAnimation.setFocusable(false);
+        btnAddAnimation.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnAddAnimation.setMaximumSize(new java.awt.Dimension(29, 28));
+        btnAddAnimation.setMinimumSize(new java.awt.Dimension(25, 25));
+        btnAddAnimation.setName("btnAddAnimation"); // NOI18N
+        btnAddAnimation.setPreferredSize(new java.awt.Dimension(28, 28));
+        btnAddAnimation.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnAddAnimation.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddAnimationActionPerformed(evt);
+            }
+        });
+        toolbar.add(btnAddAnimation);
+
+        jSeparator2.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
+        jSeparator2.setName("jSeparator2"); // NOI18N
+        jSeparator2.setOpaque(true);
+        toolbar.add(jSeparator2);
+
+        btnMinimizeTab.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/go-down.png"))); // NOI18N
+        btnMinimizeTab.setToolTipText(bundle.getString("ICON_TAB")); // NOI18N
+        btnMinimizeTab.setFocusable(false);
+        btnMinimizeTab.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnMinimizeTab.setMaximumSize(new java.awt.Dimension(29, 28));
+        btnMinimizeTab.setMinimumSize(new java.awt.Dimension(25, 25));
+        btnMinimizeTab.setName("btnMinimizeTab"); // NOI18N
+        btnMinimizeTab.setPreferredSize(new java.awt.Dimension(28, 28));
+        btnMinimizeTab.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnMinimizeTab.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMinimizeTabActionPerformed(evt);
+            }
+        });
+        toolbar.add(btnMinimizeTab);
+
+        btnMinimizeAll.setIcon(new javax.swing.ImageIcon(getClass().getResource("/webcamstudio/resources/tango/minimize-all.png"))); // NOI18N
+        btnMinimizeAll.setToolTipText(bundle.getString("ICON_ALL")); // NOI18N
+        btnMinimizeAll.setFocusable(false);
+        btnMinimizeAll.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnMinimizeAll.setMaximumSize(new java.awt.Dimension(29, 28));
+        btnMinimizeAll.setMinimumSize(new java.awt.Dimension(25, 25));
+        btnMinimizeAll.setName("btnMinimizeAll"); // NOI18N
+        btnMinimizeAll.setPreferredSize(new java.awt.Dimension(28, 28));
+        btnMinimizeAll.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnMinimizeAll.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMinimizeAllActionPerformed(evt);
+            }
+        });
+        toolbar.add(btnMinimizeAll);
+
+        tabSources.setFont(new java.awt.Font("Noto Sans", 0, 11)); // NOI18N
+        tabSources.setName("tabSources"); // NOI18N
+
+        cameraDesktop.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("SOURCE_CAMERAS"))); // NOI18N
+        cameraDesktop.setToolTipText(bundle.getString("DROP_SOURCSE")); // NOI18N
+        cameraDesktop.setAutoscrolls(true);
+        cameraDesktop.setName("cameraDesktop"); // NOI18N
+        tabSources.addTab("Cameras(0)", cameraDesktop);
+
+        videoDesktop.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("SOURCE_VIDEOS"))); // NOI18N
+        videoDesktop.setToolTipText(bundle.getString("DROP_SOURCSE")); // NOI18N
+        videoDesktop.setAutoscrolls(true);
+        videoDesktop.setName("videoDesktop"); // NOI18N
+        tabSources.addTab("Videos(0)", videoDesktop);
+
+        musicDesktop.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("SOURCE_MUSICS"))); // NOI18N
+        musicDesktop.setToolTipText(bundle.getString("DROP_SOURCSE")); // NOI18N
+        musicDesktop.setAutoscrolls(true);
+        musicDesktop.setName("musicDesktop"); // NOI18N
+        tabSources.addTab("Musics(0)", musicDesktop);
+
+        pictureDesktop.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("SOURCE_PICTURES"))); // NOI18N
+        pictureDesktop.setToolTipText(bundle.getString("DROP_SOURCSE")); // NOI18N
+        pictureDesktop.setAutoscrolls(true);
+        pictureDesktop.setName("pictureDesktop"); // NOI18N
+        tabSources.addTab("Pictures(0)", pictureDesktop);
+
+        dvbDesktop.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("SOURCE_DVBS"))); // NOI18N
+        dvbDesktop.setToolTipText(bundle.getString("DROP_SOURCSE")); // NOI18N
+        dvbDesktop.setAutoscrolls(true);
+        dvbDesktop.setName("dvbDesktop"); // NOI18N
+        tabSources.addTab("DVBs(0)", dvbDesktop);
+
+        urlDesktop.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("SOURCE_URLS"))); // NOI18N
+        urlDesktop.setToolTipText(bundle.getString("DROP_SOURCSE")); // NOI18N
+        urlDesktop.setAutoscrolls(true);
+        urlDesktop.setName("urlDesktop"); // NOI18N
+        tabSources.addTab("URLs(0)", urlDesktop);
+
+        desktopDesktop.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("SOURCE_DESKTOPS"))); // NOI18N
+        desktopDesktop.setToolTipText(bundle.getString("DROP_SOURCSE")); // NOI18N
+        desktopDesktop.setAutoscrolls(true);
+        desktopDesktop.setName("desktopDesktop"); // NOI18N
+        tabSources.addTab("Desktops(0)", desktopDesktop);
+
+        textDesktop.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("SOURCES_TEXTS"))); // NOI18N
+        textDesktop.setToolTipText(bundle.getString("DROP_SOURCSE")); // NOI18N
+        textDesktop.setAutoscrolls(true);
+        textDesktop.setName("textDesktop"); // NOI18N
+        tabSources.addTab("Texts(0)", textDesktop);
+
+        audioInDesktop.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("SOURCE_AUDIOINS"))); // NOI18N
+        audioInDesktop.setToolTipText(bundle.getString("DROP_SOURCSE")); // NOI18N
+        audioInDesktop.setAutoscrolls(true);
+        audioInDesktop.setName("audioInDesktop"); // NOI18N
+        tabSources.addTab("AudioIns(0)", audioInDesktop);
+
+        javax.swing.GroupLayout panSourcesLayout = new javax.swing.GroupLayout(panSources);
+        panSources.setLayout(panSourcesLayout);
+        panSourcesLayout.setHorizontalGroup(
+            panSourcesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panSourcesLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(panSourcesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(toolbar, javax.swing.GroupLayout.DEFAULT_SIZE, 488, Short.MAX_VALUE)
+                    .addComponent(tabSources)))
+        );
+        panSourcesLayout.setVerticalGroup(
+            panSourcesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panSourcesLayout.createSequentialGroup()
+                .addComponent(toolbar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(tabSources, javax.swing.GroupLayout.DEFAULT_SIZE, 402, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        mainSplit.setLeftComponent(panSources);
+
+        panControls.setName("panControls"); // NOI18N
+        panControls.setPreferredSize(new java.awt.Dimension(200, 455));
+        panControls.setLayout(new java.awt.BorderLayout());
+
+        tabControls.setBorder(javax.swing.BorderFactory.createTitledBorder("Source Properties"));
+        tabControls.setTabLayoutPolicy(javax.swing.JTabbedPane.SCROLL_TAB_LAYOUT);
+        tabControls.setName("tabControls"); // NOI18N
+        tabControls.setPreferredSize(new java.awt.Dimension(200, 455));
+        panControls.add(tabControls, java.awt.BorderLayout.CENTER);
+
+        lblSourceSelected.setName("lblSourceSelected"); // NOI18N
+        panControls.add(lblSourceSelected, java.awt.BorderLayout.SOUTH);
+
+        mainSplit.setRightComponent(panControls);
+
+        masterPanelSplit.setRightComponent(mainSplit);
+
+        mainVerticalSplit.setLeftComponent(masterPanelSplit);
+
+        getContentPane().add(mainVerticalSplit, java.awt.BorderLayout.CENTER);
+
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
@@ -1267,7 +1549,7 @@ public final class WebcamStudio extends JFrame implements StreamDesktop.Listener
                 tabControls.removeAll();
                 tabControls.repaint();
                 Tools.sleep(300);
-                desktop.removeAll();
+                cameraDesktop.removeAll();
                 Tools.sleep(10);
                 System.out.println("Cleaning up ...");
                 File directory = new File(userHomeDir+"/.webcamstudio");
@@ -1310,7 +1592,12 @@ public final class WebcamStudio extends JFrame implements StreamDesktop.Listener
             streamDesk.addChannel(SourceChannel.getChannel(sc, streamDesk));
         }
         StreamDesktop frame = new StreamDesktop(streamDesk, this);
-        desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        numDesktops += 1;
+        desktopDesktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        lblDesktop.setForeground(busyTab);
+        Font font = new Font("Ubuntu", Font.BOLD, 11);
+        lblDesktop.setFont(font);
+        lblDesktop.setText("Desktops("+numDesktops+")");
         try {
             frame.setSelected(true);
         } catch (PropertyVetoException ex) {
@@ -1329,7 +1616,12 @@ public final class WebcamStudio extends JFrame implements StreamDesktop.Listener
             streamTXT.addChannel(SourceChannel.getChannel(sc, streamTXT));
         }
         StreamDesktop frame = new StreamDesktop(streamTXT, this);
-        desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        numTexts += 1;
+        textDesktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        lblText.setForeground(busyTab);
+        Font font = new Font("Ubuntu", Font.BOLD, 11);
+        lblText.setFont(font);
+        lblText.setText("Texts("+numTexts+")");
         try {
             frame.setSelected(true);
         } catch (PropertyVetoException ex) {
@@ -1366,7 +1658,28 @@ public final class WebcamStudio extends JFrame implements StreamDesktop.Listener
                         s.addChannel(SourceChannel.getChannel(sc, s));
                     }
                     StreamDesktop frame = new StreamDesktop(s, this);
-                    desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+                    if (s instanceof SourceMovie) {
+                        numVideos += 1;
+                        videoDesktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+                        lblVideo.setForeground(busyTab);
+                        Font font = new Font("Ubuntu", Font.BOLD, 11);
+                        lblVideo.setFont(font);
+                        lblVideo.setText("Videos("+numVideos+")");
+                    } else if (s instanceof SourceMusic) {
+                        numMusics += 1;
+                        musicDesktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+                        lblMusic.setForeground(busyTab);
+                        Font font = new Font("Ubuntu", Font.BOLD, 11);
+                        lblMusic.setFont(font);
+                        lblMusic.setText("Musics("+numMusics+")");
+                    } else if (s instanceof SourceImage || s instanceof SourceImageU  || s instanceof SourceImageGif) {
+                        numPictures += 1;
+                        pictureDesktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+                        lblPicture.setForeground(busyTab);
+                        Font font = new Font("Ubuntu", Font.BOLD, 11);
+                        lblPicture.setFont(font);
+                        lblPicture.setText("Pictures("+numPictures+")");
+                    }
                        
                     try {
                         frame.setSelected(true);
@@ -1401,7 +1714,12 @@ public final class WebcamStudio extends JFrame implements StreamDesktop.Listener
                 streamAnm.addChannel(SourceChannel.getChannel(sc, streamAnm));
             }
             StreamDesktop frame = new StreamDesktop(streamAnm, this);
-            desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+            numPictures += 1;
+            pictureDesktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+            lblPicture.setForeground(busyTab);
+            Font font = new Font("Ubuntu", Font.BOLD, 11);
+            lblPicture.setFont(font);
+            lblPicture.setText("Pictures("+numPictures+")");
             try {
                 frame.setSelected(true);
             } catch (PropertyVetoException ex) {
@@ -1412,8 +1730,31 @@ public final class WebcamStudio extends JFrame implements StreamDesktop.Listener
         }
     }//GEN-LAST:event_btnAddAnimationActionPerformed
 
-    private void btnMinimizeAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMinimizeAllActionPerformed
-        for (Component c : desktop.getComponents()) {
+    private void btnMinimizeTabActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMinimizeTabActionPerformed
+        JDesktopPane selectedDesktop = null;
+        int tabIndex = tabSources.getSelectedIndex();
+        
+        if (tabIndex == 0) {
+            selectedDesktop = cameraDesktop;
+        } else if (tabIndex == 1) {
+            selectedDesktop = videoDesktop;
+        } else if (tabIndex == 2) {
+            selectedDesktop = musicDesktop;
+        } else if (tabIndex == 3) {
+            selectedDesktop = pictureDesktop;
+        } else if (tabIndex == 4) {
+            selectedDesktop = dvbDesktop;
+        } else if (tabIndex == 5) {
+            selectedDesktop = urlDesktop;
+        } else if (tabIndex == 6) {
+            selectedDesktop = desktopDesktop;
+        } else if (tabIndex == 7) {
+            selectedDesktop = textDesktop;
+        } else if (tabIndex == 8) {
+            selectedDesktop = audioInDesktop;
+        }
+        
+        for (Component c : selectedDesktop.getComponents()) {
             if (c instanceof StreamDesktop) {
                 StreamDesktop d = (StreamDesktop) c;
                 try {
@@ -1424,7 +1765,8 @@ public final class WebcamStudio extends JFrame implements StreamDesktop.Listener
                 }
             }
         }
-    }//GEN-LAST:event_btnMinimizeAllActionPerformed
+        
+    }//GEN-LAST:event_btnMinimizeTabActionPerformed
 
     private void btnSaveStudioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveStudioActionPerformed
         final java.awt.event.ActionEvent sEvt = evt;
@@ -1550,26 +1892,26 @@ public final class WebcamStudio extends JFrame implements StreamDesktop.Listener
 //        System.out.println("infoCmd: "+infoCmd);
         File fileD = new File(userHomeDir+"/.webcamstudio/"+"dSize.sh");
         FileOutputStream fosD;
-        DataOutputStream dosD = null;
+        Writer dosD = null;
         try {
             fosD = new FileOutputStream(fileD);
-            dosD= new DataOutputStream(fosD);
+            dosD= new OutputStreamWriter(fosD);
         } catch (FileNotFoundException ex) {
             Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
         }
         try {
             if (dosD != null) {
-            dosD.writeBytes("#!/bin/bash\n");
-            dosD.writeBytes(infoCmd+"\n");
+            dosD.write("#!/bin/bash\n");
+            dosD.write(infoCmd+"\n");
             dosD.close();
             }
         } catch (IOException ex) {
             Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
         }
         fileD.setExecutable(true);
-        String batchDurationComm = userHomeDir+"/.webcamstudio/"+"dSize.sh";
+        String batchWCComm = userHomeDir+"/.webcamstudio/"+"dSize.sh";
         try {
-            Process infoP = rt.exec(batchDurationComm);
+            Process infoP = rt.exec(batchWCComm);
             Tools.sleep(10);
             infoP.waitFor(); //Author spoonybard896
             InputStream lsOut = infoP.getInputStream();
@@ -1657,19 +1999,20 @@ public final class WebcamStudio extends JFrame implements StreamDesktop.Listener
             } else {
                 infoCmd = "ffmpeg -i " + "\"" + file.getAbsolutePath() + "\"";    
             }
+//            System.out.println(infoCmd);
             File fileD = new File(userHomeDir+"/.webcamstudio/"+"DCalc.sh");
             FileOutputStream fosD;
-            DataOutputStream dosD = null;
+            Writer dosD = null;
             try {
                 fosD = new FileOutputStream(fileD);
-                dosD= new DataOutputStream(fosD);
+                dosD = new OutputStreamWriter(fosD);
             } catch (FileNotFoundException ex) {
                 Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
             }
             try {
                 if (dosD != null) {
-                dosD.writeBytes("#!/bin/bash\n");
-                dosD.writeBytes(infoCmd+"\n");
+                dosD.write("#!/bin/bash\n");
+                dosD.write(infoCmd+"\n");
                 dosD.close();
                 }
             } catch (IOException ex) {
@@ -1702,11 +2045,7 @@ public final class WebcamStudio extends JFrame implements StreamDesktop.Listener
                     }
                     
                     if (lineR.contains("Audio:")) {
-                        if (lineR.contains("0 channels")) {
-                            audiofind = false;
-                        } else {
-                            audiofind = true;
-                        }
+                        audiofind = !lineR.contains("0 channels");
                     }
                     
                     if (autoAR) {
@@ -1846,8 +2185,9 @@ public final class WebcamStudio extends JFrame implements StreamDesktop.Listener
                         lblSourceSelected.setText("");
                         tabControls.repaint();
                         Tools.sleep(300);
-                        desktop.removeAll();
-                        desktop.repaint();
+                        
+                        cleanDesktops();
+                                
                         Tools.sleep(50);
                         try {
                             Studio.LText = new ArrayList<>();
@@ -1879,7 +2219,63 @@ public final class WebcamStudio extends JFrame implements StreamDesktop.Listener
                             if (s != null) {
                                 StreamDesktop frame = new StreamDesktop(s, WebcamStudio.this);
                                 frame.setLocation(s.getPanelX(), s.getPanelY());
-                                desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+                                if (s instanceof SourceWebcam || s instanceof SourceIPCam || s instanceof SourceDV) {
+                                    numCameras += 1;
+                                    cameraDesktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+                                    lblCamera.setForeground(busyTab);
+                                    Font font = new Font("Ubuntu", Font.BOLD, 11);
+                                    lblCamera.setFont(font);
+                                    lblCamera.setText("Cameras("+numCameras+")");
+                                } else if (s instanceof SourceMovie) {
+                                    numVideos += 1;
+                                    videoDesktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+                                    lblVideo.setForeground(busyTab);
+                                    Font font = new Font("Ubuntu", Font.BOLD, 11);
+                                    lblVideo.setFont(font);
+                                    lblVideo.setText("Videos("+numVideos+")");
+                                } else if (s instanceof SourceMusic) {
+                                    numMusics += 1;
+                                    musicDesktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+                                    lblMusic.setForeground(busyTab);
+                                    Font font = new Font("Ubuntu", Font.BOLD, 11);
+                                    lblMusic.setFont(font);
+                                    lblMusic.setText("Musics("+numMusics+")");
+                                } else if (s instanceof SourceImage || s instanceof SourceImageU || s instanceof SourceImageGif) {
+                                    numPictures += 1;
+                                    pictureDesktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+                                    lblPicture.setForeground(busyTab);
+                                    Font font = new Font("Ubuntu", Font.BOLD, 11);
+                                    lblPicture.setFont(font);
+                                    lblPicture.setText("Pictures("+numPictures+")");
+                                } else if (s instanceof SourceDVB) {
+                                    numDVBs += 1;
+                                    dvbDesktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+                                    lblDVB.setForeground(busyTab);
+                                    Font font = new Font("Ubuntu", Font.BOLD, 11);
+                                    lblDVB.setFont(font);
+                                    lblDVB.setText("DVBs("+numDVBs+")");
+                                } else if (s instanceof SourceURL) {
+                                    numURLs += 1;
+                                    urlDesktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+                                    lblURL.setForeground(busyTab);
+                                    Font font = new Font("Ubuntu", Font.BOLD, 11);
+                                    lblURL.setFont(font);
+                                    lblURL.setText("URLs("+numURLs+")");
+                                } else if (s instanceof SourceDesktop) {
+                                    numDesktops += 1;
+                                    desktopDesktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+                                    lblDesktop.setForeground(busyTab);
+                                    Font font = new Font("Ubuntu", Font.BOLD, 11);
+                                    lblDesktop.setFont(font);
+                                    lblDesktop.setText("Desktops("+numDesktops+")");
+                                } else if (s instanceof SourceAudioSource) {
+                                    numAudioIns += 1;
+                                    audioInDesktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+                                    lblAudioIn.setForeground(busyTab);
+                                    Font font = new Font("Ubuntu", Font.BOLD, 11);
+                                    lblAudioIn.setFont(font);
+                                    lblAudioIn.setText("AudioIns("+numAudioIns+")");
+                                }
                                 s.setLoaded(false);
                             }
                             System.out.println("Adding Source: "+s.getName());
@@ -1892,7 +2288,12 @@ public final class WebcamStudio extends JFrame implements StreamDesktop.Listener
                             if (text != null) {
                                 StreamDesktop frame = new StreamDesktop(text, WebcamStudio.this);
                                 frame.setLocation(text.getPanelX(), text.getPanelY());
-                                desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+                                numTexts += 1;
+                                textDesktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+                                lblText.setForeground(busyTab);
+                                Font font = new Font("Ubuntu", Font.BOLD, 11);
+                                lblText.setFont(font);
+                                lblText.setText("Texts("+numTexts+")");
                                 text.setLoaded(false);
                             }
                             System.out.println("Adding Source: "+text.getName());
@@ -1949,7 +2350,12 @@ public final class WebcamStudio extends JFrame implements StreamDesktop.Listener
                     }
                     getWebcamParams(webcam, d);
                     StreamDesktop frame = new StreamDesktop(webcam, this);
-                    desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+                    numCameras += 1;
+                    cameraDesktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+                    lblCamera.setForeground(busyTab);
+                    Font font = new Font("Ubuntu", Font.BOLD, 11);
+                    lblCamera.setFont(font);
+                    lblCamera.setText("Cameras("+numCameras+")");
                     try {
                         frame.setSelected(true);
                     } catch (PropertyVetoException ex) {
@@ -2018,8 +2424,9 @@ public final class WebcamStudio extends JFrame implements StreamDesktop.Listener
             lblSourceSelected.setText("");
             tabControls.repaint();
             Tools.sleep(300);
-            desktop.removeAll();
-            desktop.repaint();
+            
+            cleanDesktops();
+            
             ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "New Studio Created.");
             ResourceMonitor.getInstance().addMessage(label);
             setTitle("WebcamStudio " + Version.version);
@@ -2029,7 +2436,73 @@ public final class WebcamStudio extends JFrame implements StreamDesktop.Listener
         }
         System.gc();
     }//GEN-LAST:event_btnNewStudioActionPerformed
-
+    
+    private void cleanDesktops() {
+        numCameras = 0;
+            lblCamera.setForeground(resetTab);
+            Font font = new Font("Ubuntu", Font.PLAIN, 11);
+            lblCamera.setFont(font);
+            lblCamera.setText("Cameras("+numCameras+")");
+            cameraDesktop.removeAll();
+            cameraDesktop.repaint();
+            
+            numVideos = 0;
+            lblVideo.setForeground(resetTab);
+            lblVideo.setFont(font);
+            lblVideo.setText("Videos("+numVideos+")");
+            videoDesktop.removeAll();
+            videoDesktop.repaint();
+            
+            numMusics = 0;
+            lblMusic.setForeground(resetTab);
+            lblMusic.setFont(font);
+            lblMusic.setText("Musics("+numMusics+")");
+            musicDesktop.removeAll();
+            musicDesktop.repaint();
+            
+            numPictures = 0;
+            lblPicture.setForeground(resetTab);
+            lblPicture.setFont(font);
+            lblPicture.setText("Pictures("+numPictures+")");
+            pictureDesktop.removeAll();
+            pictureDesktop.repaint();
+            
+            numDVBs = 0;
+            lblDVB.setForeground(resetTab);
+            lblDVB.setFont(font);
+            lblDVB.setText("DVBs("+numDVBs+")");
+            dvbDesktop.removeAll();
+            dvbDesktop.repaint();
+            
+            numURLs = 0;
+            lblURL.setForeground(resetTab);
+            lblURL.setFont(font);
+            lblURL.setText("URLs("+numURLs+")");
+            urlDesktop.removeAll();
+            urlDesktop.repaint();
+            
+            numDesktops = 0;
+            lblDesktop.setForeground(resetTab);
+            lblDesktop.setFont(font);
+            lblDesktop.setText("Desktops("+numDesktops+")");
+            desktopDesktop.removeAll();
+            desktopDesktop.repaint();
+            
+            numTexts = 0;
+            lblText.setForeground(resetTab);
+            lblText.setFont(font);
+            lblText.setText("Texts("+numTexts+")");
+            textDesktop.removeAll();
+            textDesktop.repaint();
+            
+            numAudioIns = 0;
+            lblAudioIn.setForeground(resetTab);
+            lblAudioIn.setFont(font);
+            lblAudioIn.setText("AudioIns("+numAudioIns+")");
+            audioInDesktop.removeAll();
+            audioInDesktop.repaint();
+    }
+    
     private void btnAddDVBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddDVBActionPerformed
         SourceDVB streamDVB;
         streamDVB = new SourceDVB();
@@ -2041,7 +2514,12 @@ public final class WebcamStudio extends JFrame implements StreamDesktop.Listener
             streamDVB.addChannel(SourceChannel.getChannel(sc, streamDVB));
         }
         StreamDesktop frame = new StreamDesktop(streamDVB, this);
-        desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        numDVBs += 1;
+        dvbDesktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        lblDVB.setForeground(busyTab);
+        Font font = new Font("Ubuntu", Font.BOLD, 11);
+        lblDVB.setFont(font);
+        lblDVB.setText("DVBs("+numDVBs+")");
         try {
             frame.setSelected(true);
         } catch (PropertyVetoException ex) {
@@ -2060,7 +2538,12 @@ public final class WebcamStudio extends JFrame implements StreamDesktop.Listener
             streamURL.addChannel(SourceChannel.getChannel(sc, streamURL));
         }
         StreamDesktop frame = new StreamDesktop(streamURL, this);
-        desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        numURLs += 1;
+        urlDesktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        lblURL.setForeground(busyTab);
+        Font font = new Font("Ubuntu", Font.BOLD, 11);
+        lblURL.setFont(font);
+        lblURL.setText("URLs("+numURLs+")");
         try {
             frame.setSelected(true);
         } catch (PropertyVetoException ex) {
@@ -2088,7 +2571,12 @@ public final class WebcamStudio extends JFrame implements StreamDesktop.Listener
             source.addChannel(SourceChannel.getChannel(sc, source));
         }
         StreamDesktop frame = new StreamDesktop(source, this);
-        desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        numAudioIns += 1;
+        audioInDesktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        lblAudioIn.setForeground(busyTab);
+        Font font = new Font("Ubuntu", Font.BOLD, 11);
+        lblAudioIn.setFont(font);
+        lblAudioIn.setText("AudioIns("+numAudioIns+")");
         try {
             frame.setSelected(true);
         } catch (PropertyVetoException ex) {
@@ -2167,7 +2655,63 @@ public final class WebcamStudio extends JFrame implements StreamDesktop.Listener
 
                             StreamDesktop frame = new StreamDesktop(s, WebcamStudio.this);
                             frame.setLocation(s.getPanelX(), s.getPanelY());
-                            desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+                            if (s instanceof SourceWebcam || s instanceof SourceIPCam || s instanceof SourceDV) {
+                                    numCameras += 1;
+                                    cameraDesktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+                                    lblCamera.setForeground(busyTab);
+                                    Font font = new Font("Ubuntu", Font.BOLD, 11);
+                                    lblCamera.setFont(font);
+                                    lblCamera.setText("Cameras("+numCameras+")");
+                                } else if (s instanceof SourceMovie) {
+                                    numVideos += 1;
+                                    videoDesktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+                                    lblVideo.setForeground(busyTab);
+                                    Font font = new Font("Ubuntu", Font.BOLD, 11);
+                                    lblVideo.setFont(font);
+                                    lblVideo.setText("Videos("+numVideos+")");
+                                } else if (s instanceof SourceMusic) {
+                                    numMusics += 1;
+                                    musicDesktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+                                    lblMusic.setForeground(busyTab);
+                                    Font font = new Font("Ubuntu", Font.BOLD, 11);
+                                    lblMusic.setFont(font);
+                                    lblMusic.setText("Musics("+numMusics+")");
+                                } else if (s instanceof SourceImage || s instanceof SourceImageU || s instanceof SourceImageGif) {
+                                    numPictures += 1;
+                                    pictureDesktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+                                    lblPicture.setForeground(busyTab);
+                                    Font font = new Font("Ubuntu", Font.BOLD, 11);
+                                    lblPicture.setFont(font);
+                                    lblPicture.setText("Pictures("+numPictures+")");
+                                } else if (s instanceof SourceDVB) {
+                                    numDVBs += 1;
+                                    dvbDesktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+                                    lblDVB.setForeground(busyTab);
+                                    Font font = new Font("Ubuntu", Font.BOLD, 11);
+                                    lblDVB.setFont(font);
+                                    lblDVB.setText("DVBs("+numDVBs+")");
+                                } else if (s instanceof SourceURL) {
+                                    numURLs += 1;
+                                    urlDesktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+                                    lblURL.setForeground(busyTab);
+                                    Font font = new Font("Ubuntu", Font.BOLD, 11);
+                                    lblURL.setFont(font);
+                                    lblURL.setText("URLs("+numURLs+")");
+                                } else if (s instanceof SourceDesktop) {
+                                    numDesktops += 1;
+                                    desktopDesktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+                                    lblDesktop.setForeground(busyTab);
+                                    Font font = new Font("Ubuntu", Font.BOLD, 11);
+                                    lblDesktop.setFont(font);
+                                    lblDesktop.setText("Desktops("+numDesktops+")");
+                                } else if (s instanceof SourceAudioSource) {
+                                    numAudioIns += 1;
+                                    audioInDesktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+                                    lblAudioIn.setForeground(busyTab);
+                                    Font font = new Font("Ubuntu", Font.BOLD, 11);
+                                    lblAudioIn.setFont(font);
+                                    lblAudioIn.setText("AudioIns("+numAudioIns+")");
+                                }
                             }
                         }
                         Studio.extstream.clear();
@@ -2190,7 +2734,12 @@ public final class WebcamStudio extends JFrame implements StreamDesktop.Listener
                             
                             StreamDesktop frame = new StreamDesktop(text, WebcamStudio.this);
                             frame.setLocation(text.getPanelX(), text.getPanelY());
-                            desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+                            numTexts += 1;
+                            textDesktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+                            lblText.setForeground(busyTab);
+                            Font font = new Font("Ubuntu", Font.BOLD, 11);
+                            lblText.setFont(font);
+                            lblText.setText("Texts("+numTexts+")");
                         }
                         Studio.LText.clear();
                         Studio.LText = null;
@@ -2240,7 +2789,12 @@ public final class WebcamStudio extends JFrame implements StreamDesktop.Listener
             streamIPCam.addChannel(SourceChannel.getChannel(sc, streamIPCam));
         }
         StreamDesktop frame = new StreamDesktop(streamIPCam, this);
-        desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        numCameras += 1;
+        cameraDesktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        lblCamera.setForeground(busyTab);
+        Font font = new Font("Ubuntu", Font.BOLD, 11);
+        lblCamera.setFont(font);
+        lblCamera.setText("Cameras("+numCameras+")");
         try {
             frame.setSelected(true);
         } catch (PropertyVetoException ex) {
@@ -2313,8 +2867,21 @@ public final class WebcamStudio extends JFrame implements StreamDesktop.Listener
                                     getVideoParams(s, file, null);
                                 }
                                 StreamDesktop frame = new StreamDesktop(s, WebcamStudio.this);
-                                desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
-                                
+                                if (s instanceof SourceMovie) {
+                                    numVideos += 1;
+                                    videoDesktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+                                    lblVideo.setForeground(busyTab);
+                                    Font font = new Font("Ubuntu", Font.BOLD, 11);
+                                    lblVideo.setFont(font);
+                                    lblVideo.setText("Videos("+numVideos+")");
+                                } else if (s instanceof SourceMusic) {
+                                    numMusics += 1;
+                                    musicDesktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+                                    lblMusic.setForeground(busyTab);
+                                    Font font = new Font("Ubuntu", Font.BOLD, 11);
+                                    lblMusic.setFont(font);
+                                    lblMusic.setText("Musics("+numMusics+")");
+                                }
                             }
                         }
                         ResourceMonitorLabel label = new ResourceMonitorLabel(System.currentTimeMillis()+10000, "Media Folder Imported!");
@@ -2353,7 +2920,12 @@ public final class WebcamStudio extends JFrame implements StreamDesktop.Listener
             streamDV.addChannel(SourceChannel.getChannel(sc, streamDV));
         }
         StreamDesktop frame = new StreamDesktop(streamDV, this);
-        desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        numCameras += 1;
+        cameraDesktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        lblCamera.setForeground(busyTab);
+        Font font = new Font("Ubuntu", Font.BOLD, 11);
+        lblCamera.setFont(font);
+        lblCamera.setText("Cameras("+numCameras+")");
         try {
             frame.setSelected(true);
         } catch (PropertyVetoException ex) {
@@ -2455,6 +3027,22 @@ public final class WebcamStudio extends JFrame implements StreamDesktop.Listener
             ResourceMonitor.getInstance().addMessage(label);
         }
     }//GEN-LAST:event_tglAutoARActionPerformed
+
+    private void btnMinimizeAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMinimizeAllActionPerformed
+        for (JDesktopPane desktop : tabs) {
+            for (Component c : desktop.getComponents()) {
+                if (c instanceof StreamDesktop) {
+                    StreamDesktop d = (StreamDesktop) c;
+                    try {
+                        Tools.sleep(20);
+                        d.setIcon(true);
+                    } catch (PropertyVetoException ex) {
+                        Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+        }
+    }//GEN-LAST:event_btnMinimizeAllActionPerformed
     
     /**
      *
@@ -2545,6 +3133,7 @@ public final class WebcamStudio extends JFrame implements StreamDesktop.Listener
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton WCSAbout;
+    private javax.swing.JDesktopPane audioInDesktop;
     private javax.swing.JButton btnAddAnimation;
     private javax.swing.JButton btnAddAudioSrc;
     private javax.swing.JButton btnAddDVB;
@@ -2559,16 +3148,19 @@ public final class WebcamStudio extends JFrame implements StreamDesktop.Listener
     private javax.swing.JButton btnImportStudio;
     private final javax.swing.JButton btnLoadStudio = new javax.swing.JButton();
     private javax.swing.JButton btnMinimizeAll;
+    private javax.swing.JButton btnMinimizeTab;
     private javax.swing.JButton btnNewStudio;
     private javax.swing.JButton btnRefreshWebcam;
     private javax.swing.JButton btnSaveStudio;
     private javax.swing.JButton btnSysGC;
     private javax.swing.JButton btnVideoDevInfo;
+    private javax.swing.JDesktopPane cameraDesktop;
     public static javax.swing.JComboBox cboAnimations;
     private javax.swing.JComboBox cboAudioHz;
     private javax.swing.JComboBox cboTheme;
     private javax.swing.JComboBox cboWebcam;
-    private javax.swing.JDesktopPane desktop;
+    private javax.swing.JDesktopPane desktopDesktop;
+    private javax.swing.JDesktopPane dvbDesktop;
     private javax.swing.Box.Filler filler1;
     private javax.swing.Box.Filler filler2;
     private javax.swing.Box.Filler filler3;
@@ -2595,14 +3187,23 @@ public final class WebcamStudio extends JFrame implements StreamDesktop.Listener
     private javax.swing.JLabel lblSourceSelected;
     private javax.swing.JSplitPane mainSplit;
     private javax.swing.JToolBar mainToolbar;
+    private javax.swing.JSplitPane mainVerticalSplit;
+    private javax.swing.JSplitPane masterPanelSplit;
+    private javax.swing.JDesktopPane musicDesktop;
     private javax.swing.JPanel panControls;
+    private javax.swing.JPanel panMaster;
     private javax.swing.JPanel panSources;
+    private javax.swing.JDesktopPane pictureDesktop;
     public static javax.swing.JTabbedPane tabControls;
+    private javax.swing.JTabbedPane tabSources;
+    private javax.swing.JDesktopPane textDesktop;
     private javax.swing.JToggleButton tglAVconv;
     private javax.swing.JToggleButton tglAutoAR;
     private javax.swing.JToggleButton tglFFmpeg;
     private javax.swing.JToggleButton tglGst;
     private javax.swing.JToolBar toolbar;
+    private javax.swing.JDesktopPane urlDesktop;
+    private javax.swing.JDesktopPane videoDesktop;
     // End of variables declaration//GEN-END:variables
       
     @Override
@@ -2668,8 +3269,8 @@ public final class WebcamStudio extends JFrame implements StreamDesktop.Listener
                     tabControls.removeAll();
                     tabControls.repaint();
                     Tools.sleep(300);
-                    desktop.removeAll();
-                    desktop.repaint();
+                    cameraDesktop.removeAll();
+                    cameraDesktop.repaint();
                     Tools.sleep(50);
                     try {
                         Studio.LText = new ArrayList<>();
@@ -2690,7 +3291,7 @@ public final class WebcamStudio extends JFrame implements StreamDesktop.Listener
                         PreviewMixer.getInstance().stop();
                         PreviewMixer.getInstance().setWidth(mW);
                         PreviewMixer.getInstance().setHeight(mH);
-//                            PreviewMixer.getInstance().setRate((Integer) spinFPS.getValue());
+//                        PreviewMixer.getInstance().setRate((Integer) spinFPS.getValue());
                         PreviewMixer.getInstance().start();
                     } catch (ParserConfigurationException | SAXException | IOException | XPathExpressionException ex) {
                         Logger.getLogger(WebcamStudio.class.getName()).log(Level.SEVERE, null, ex);
@@ -2701,7 +3302,7 @@ public final class WebcamStudio extends JFrame implements StreamDesktop.Listener
                         if (s != null) {
                             StreamDesktop frame = new StreamDesktop(s, WebcamStudio.this);
                             frame.setLocation(s.getPanelX(), s.getPanelY());
-                            desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+                            cameraDesktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
                         }
                         System.out.println("Adding Source: "+s.getName());
                     }
@@ -2713,7 +3314,7 @@ public final class WebcamStudio extends JFrame implements StreamDesktop.Listener
                         if (text != null) {
                             StreamDesktop frame = new StreamDesktop(text, WebcamStudio.this);
                             frame.setLocation(text.getPanelX(), text.getPanelY());
-                            desktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
+                            cameraDesktop.add(frame, javax.swing.JLayeredPane.DEFAULT_LAYER);
                         }
                         System.out.println("Adding Source: "+text.getName());
                     }

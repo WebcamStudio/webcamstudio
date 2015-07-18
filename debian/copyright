@@ -2,7 +2,7 @@ Format-Specification: http://dep.debian.net/deps/dep5
 Upstream-Name: webcamstudio
 Upstream-Contact: WebcamStudio Team <webcamstudio@lists.launchpad.net>
 Maintainer: PhobosK <phobosk@kbfx.net>
-Source: https://code.google.com/p/webcamstudio/source/checkout
+Source: http://svn.code.sf.net/p/webcamstudio/code/trunk
 
 Files: *
 Copyright:	2009-2012, Patrick Balleux <patrick.balleux@gmail.com>

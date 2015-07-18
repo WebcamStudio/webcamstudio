@@ -39,6 +39,10 @@ import webcamstudio.components.ResourceMonitorLabel;
 public class WebRemote implements Runnable {
 
     private static int port = -1;
+
+    public static int getPort() {
+        return port;
+    }
     private ServerSocket socket = null;
     private boolean stopServer = false;
     private Listener listener = null;
@@ -48,18 +52,15 @@ public class WebRemote implements Runnable {
         listener = l;
     }
     
-    public static int getPort() {
-        return port;
-    }
-    
     public void setPort(int sPort) {
         port = sPort;
     }
-
-    public void start(){
+    
+    public void start() {
         stopServer = false;
         new Thread(this).start();
     }
+
     public void stop() {
         stopServer = true;
         if (socket != null) {
@@ -70,7 +71,7 @@ public class WebRemote implements Runnable {
             }
         }
     }
-
+    
     private int findPort() {
         boolean found = false;
         while (!found) {
@@ -124,7 +125,7 @@ public class WebRemote implements Runnable {
                         // bad request
                         errorReport(pout, connection, "400", "Bad Request",
                                 "Your browser sent a request that "
-                                + "this server could not understand.");
+                                        + "this server could not understand.");
                     } else {
                         String req = request.substring(4, request.length() - 9).trim();
                         if (req.contains("..")
@@ -208,8 +209,7 @@ public class WebRemote implements Runnable {
 //                + ":" + connection.getPort() + "] " + msg);
     }
 
-    private void errorReport(PrintStream pout, Socket connection,
-            String code, String title, String msg) {
+    private void errorReport(PrintStream pout, Socket connection, String code, String title, String msg) {
         pout.print("HTTP/1.0 " + code + " " + title + "\r\n"
                 + "\r\n"
                 + "<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">\r\n"
@@ -254,6 +254,7 @@ public class WebRemote implements Runnable {
     public void run() {
         Listen();
     }
+
 }
 
 

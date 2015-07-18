@@ -8,12 +8,12 @@ import com.sun.jna.Library;
 import com.sun.jna.Native;
 import com.sun.jna.Platform;
 import webcamstudio.InfoListener;
- 
+
 /**
  *
  * @author patrick
  */
-public class V4L2Loopback extends VideoOutput{
+public class V4L2Loopback extends VideoOutput {
 
     int width = 0;
     int height = 0;
@@ -57,20 +57,25 @@ public class V4L2Loopback extends VideoOutput{
                 case RGB24:
                     buffer = img2rgb24(data);
                     break;
+
                 case UYVY:
                     buffer = img2uyvy(data);
+                    break;
+
+                case BGR24:
+                    buffer = img2bgr24(data);
                     break;
             }
 
             int countWritten = 0;
-            countWritten = CV4l2.INSTANCE.writeData(devFD, buffer, buffer.length);            
+            countWritten = CV4l2.INSTANCE.writeData(devFD, buffer, buffer.length);
             if (countWritten != buffer.length) {
                 System.out.println("Error Writing Data - " + countWritten);
             }
         }
     }
 
-   
+
     public interface CV4l2 extends Library {
 
         CV4l2 INSTANCE = (CV4l2) Native.loadLibrary((Platform.isWindows() ? "webcamstudio" : "webcamstudio"),

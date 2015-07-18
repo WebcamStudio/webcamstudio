@@ -29,6 +29,7 @@ public class WSPreviewScreen extends javax.swing.JInternalFrame {
         this.setVisible(true);
         this.setClosable(false);
         this.setResizable(false);
+        ((javax.swing.plaf.basic.BasicInternalFrameUI)this.getUI()).setNorthPane(null);
         pack();
         
     }

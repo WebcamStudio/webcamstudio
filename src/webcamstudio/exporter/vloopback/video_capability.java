@@ -19,6 +19,9 @@
  */
 package webcamstudio.exporter.vloopback;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  *
  * @author pballeux
@@ -27,6 +30,13 @@ public class video_capability extends com.sun.jna.Structure {
 
     public byte[] name = new byte[32];
     public int type,  channels,  audios,  maxwidth,  maxheight,  minwidth,  minheight;
+
+    @Override
+    protected List getFieldOrder() {
+        return Arrays.asList(new String[] { 
+            "bus_info", "capabilities", "card", "driver", "reserved", "version"
+        });
+    }
 
     public static class ByValue extends video_capability implements com.sun.jna.Structure.ByValue {
     }

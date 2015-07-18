@@ -4,7 +4,6 @@
  */
 package webcamstudio.streams;
 
-import com.trolltech.qt.gui.QImage;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import webcamstudio.externals.ProcessRenderer;
@@ -21,7 +20,6 @@ import webcamstudio.sources.effects.Effect;
 public class SourceMovie extends Stream {
 
     ProcessRenderer capture = null;
-//    QImage qImage = null;
     BufferedImage lastPreview = null;
     boolean isPlaying = false;
 
@@ -35,7 +33,6 @@ public class SourceMovie extends Stream {
     @Override
     public void read() {
         isPlaying = true;
-//        qImage = new QImage(captureWidth, captureHeight, QImage.Format.Format_ARGB32);
         lastPreview = new BufferedImage(captureWidth,captureHeight,BufferedImage.TYPE_INT_ARGB);
         if (getPreView()){
             PreviewFrameBuilder.register(this);
@@ -128,18 +125,6 @@ public class SourceMovie extends Stream {
             }
             if (f != null) {
                 setAudioLevel(f);
-//                BufferedImage orig = f.getImage();
-//                for (int x = 0; x < orig.getWidth(); ++x) {
-//                    for (int y = 0; y < orig.getHeight(); ++y) {
-//                        qImage.setPixel(x, y, f.getImage().getRGB(x, y));
-//                    }
-//                }
-//                System.out.println("QImage Conversion ...");
-//                for (int x = 0; x < qImage.width(); ++x) {
-//                    for (int y = 0; y < qImage.height(); ++y) {
-//                        lastPreview.setRGB(x, y, qImage.pixel(x, y));
-//                    }
-//                }
                 lastPreview.getGraphics().drawImage(f.getImage(), 0, 0, null);
             }
         }

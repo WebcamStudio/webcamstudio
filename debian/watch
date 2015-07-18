@@ -2,4 +2,4 @@
 version=3
 
 # Download from googlecode.com
-https://code.google.com/p/webcamstudio/downloads/list webcamstudio_(.*)\.tar\.gz
+http://sourceforge.net/projects/webcamstudio/files/latest/download webcamstudio_(.*)\.tar\.gz

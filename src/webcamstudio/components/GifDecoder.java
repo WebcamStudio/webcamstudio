@@ -815,11 +815,12 @@ public class GifDecoder {
 
     static class GifFrame {
 
+        public BufferedImage image;
+        public int delay;
+
         GifFrame(BufferedImage im, int del) {
             image = im;
             delay = del;
         }
-        public BufferedImage image;
-        public int delay;
     }
 }

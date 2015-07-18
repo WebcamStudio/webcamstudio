@@ -4,9 +4,11 @@
  */
 package webcamstudio.mixers;
 
+import static java.lang.System.arraycopy;
 import java.util.ArrayList;
 import static webcamstudio.WebcamStudio.audioFreq;
-import webcamstudio.util.Tools;
+import static webcamstudio.mixers.MasterMixer.BUFFER_SIZE;
+import static webcamstudio.util.Tools.sleep;
 
 /**
  *
@@ -15,7 +17,7 @@ import webcamstudio.util.Tools;
 public class AudioBuffer {
 
     private final ArrayList<byte[]> buffer = new ArrayList<>();
-    private int bufferSize = MasterMixer.BUFFER_SIZE;
+    private int bufferSize = BUFFER_SIZE;
     private boolean abort = false;
     private int aFreq = audioFreq;
     int currentIndex = 0;
@@ -36,12 +38,12 @@ public class AudioBuffer {
 
     public void push(byte[] data) {
         while (!abort && (framePushed - framePopped) >= bufferSize) {
-            Tools.sleep(30);
+            sleep(30);
         }
         currentIndex++;
         currentIndex %= bufferSize;
         byte[] d = buffer.get(currentIndex);
-        System.arraycopy(data, 0, d, 0, d.length);
+        arraycopy(data, 0, d, 0, d.length);
         framePushed++;
         }
     
@@ -52,13 +54,13 @@ public class AudioBuffer {
     }    
     public byte[] getAudioToUpdate(){
         while (!abort && (framePushed - framePopped) >= bufferSize) {
-            Tools.sleep(30);
+            sleep(30);
         }
         return buffer.get((currentIndex+1)%bufferSize);
     }
     public byte[] pop() {
         while (!abort && framePopped >= framePushed) {
-            Tools.sleep(10);
+            sleep(10);
         }
         framePopped++;
         return buffer.get(currentIndex);
