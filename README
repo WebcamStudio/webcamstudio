@@ -1,5 +1,7 @@
 WebcamStudio 0.73
 
+[![Maintainers Wanted](https://img.shields.io/badge/maintainers-wanted-red.svg)](https://github.com/pickhardt/maintainers-wanted)
+
 WebcamStudio commad line:
 ------------------------
 
