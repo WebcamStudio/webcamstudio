@@ -25,6 +25,7 @@ import webcamstudio.mixers.PreviewFrameBuilder;
 import webcamstudio.streams.SourceAudioSource;
 import webcamstudio.streams.SourceCustom;
 import webcamstudio.streams.SourceDV;
+import webcamstudio.streams.SourceHDV;
 import webcamstudio.streams.SourceDVB;
 import webcamstudio.streams.SourceIPCam;
 import webcamstudio.streams.SourceImage;
@@ -73,9 +74,11 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
         listener = l;
         stream = s;
         initComponents();
-        
+
         jCBAVConv.setVisible(Screen.avconvDetected());
         jCBFFmpeg.setVisible(Screen.ffmpegDetected());
+
+        // FIXME: This input dialog setup behavior should be farmed out to the individual source modules
         if (s instanceof SourceText) {
             StreamPanelText p = new StreamPanelText((Stream)s);
             this.setLayout(new BorderLayout());
@@ -103,7 +106,7 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
             stream.setComm("GS");
             panelDVB = p;
             s.setPanelType("PanelDVB");
-        } else if (s instanceof SourceDV) {
+        } else if (s instanceof SourceDV || s instanceof SourceHDV) {
             final ArrayList<JCheckBoxMenuItem> aSMenuItem = new ArrayList<>();
             try {
                 fireDevices = FindFires.getSources();
@@ -176,7 +179,7 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
                         break;
                     case "FF":
                         jCBFFmpeg.setSelected(true);
-                        stream.setComm("FF");                        
+                        stream.setComm("FF");
                         jCBAVConv.setSelected(false);
                         jCBGStreamer.setSelected(false);
                         break;
@@ -251,7 +254,7 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
                         jCBoxFosCamPtz.setSelected(false);
                         jCBoxAxisPtz.setSelected(false);
                         break;
-                }     
+                }
             } else {
                     jCBAVConv.setSelected(false);
                     jCBFFmpeg.setSelected(false);
@@ -306,7 +309,7 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
                     }
                 }
             }
-            
+
             StreamPanel p = new StreamPanel(s);
             this.setLayout(new BorderLayout());
             this.add(p, BorderLayout.CENTER);
@@ -457,6 +460,7 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
                 formInternalFrameIconified(evt);
             }
             public void internalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {
+                formInternalFrameDeiconified(evt);
             }
             public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
                 formInternalFrameActivated(evt);
@@ -755,19 +759,19 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_formInternalFrameClosing
 
     private void formFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_formFocusGained
-        
+
     }//GEN-LAST:event_formFocusGained
 
     private void formInternalFrameActivated(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameActivated
         if (listener!=null){
             new Thread(new Runnable(){
-                
+
                 @Override
                 public void run() {
                     listener.selectedSource(stream);
                 }
             }).start();
-            
+
         }
     }//GEN-LAST:event_formInternalFrameActivated
 
@@ -924,12 +928,12 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
         final int oldBkX = stream.getX();
         runMe = true;
         if (jCBRightToLeft.isSelected()) {
-            
+
             jCBLeftToRight.setEnabled(false);
             jCBBottomToTop.setEnabled(false);
             jCBTopToBottom.setEnabled(false);
             jCBHBouncing.setEnabled(false);
-            
+
             Thread scrollRtL = new Thread(new Runnable() {
                 int deltaX = 0;
                 @Override
@@ -970,15 +974,15 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jCBRightToLeftActionPerformed
 
     private void jCBLeftToRightActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCBLeftToRightActionPerformed
-        final int oldBkX = stream.getX();      
+        final int oldBkX = stream.getX();
         runMe = true;
         if (jCBLeftToRight.isSelected()) {
-            
+
             jCBRightToLeft.setEnabled(false);
             jCBBottomToTop.setEnabled(false);
             jCBTopToBottom.setEnabled(false);
             jCBHBouncing.setEnabled(false);
-            
+
             Thread scrollRtL = new Thread(new Runnable() {
 
             @Override
@@ -1005,12 +1009,12 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
                 }
                 stream.setX(oldBkX);
             }
-        }); 
+        });
         scrollRtL.setPriority(Thread.MIN_PRIORITY);
         scrollRtL.start();
         } else {
             runMe = false;
-            stream.setX(oldBkX);            
+            stream.setX(oldBkX);
             jCBRightToLeft.setEnabled(true);
             jCBBottomToTop.setEnabled(true);
             jCBTopToBottom.setEnabled(true);
@@ -1019,10 +1023,10 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jCBLeftToRightActionPerformed
 
     private void jCBBottomToTopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCBBottomToTopActionPerformed
-        final int oldBkY = stream.getY();     
+        final int oldBkY = stream.getY();
         runMe = true;
         if (jCBBottomToTop.isSelected()) {
-            
+
             jCBLeftToRight.setEnabled(false);
             jCBRightToLeft.setEnabled(false);
             jCBTopToBottom.setEnabled(false);
@@ -1054,7 +1058,7 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
                 }
                 stream.setY(oldBkY);
             }
-        }); 
+        });
         scrollRtL.setPriority(Thread.MIN_PRIORITY);
         scrollRtL.start();
         } else {
@@ -1071,7 +1075,7 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
         final int oldBkY = stream.getY();
         runMe = true;
         if (jCBTopToBottom.isSelected()) {
-            
+
             jCBLeftToRight.setEnabled(false);
             jCBBottomToTop.setEnabled(false);
             jCBRightToLeft.setEnabled(false);
@@ -1103,7 +1107,7 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
                 }
                 stream.setY(oldBkY);
             }
-        }); 
+        });
         scrollRtL.setPriority(Thread.MIN_PRIORITY);
         scrollRtL.start();
         } else {
@@ -1119,14 +1123,14 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
     private void jCBHBouncingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCBHBouncingActionPerformed
         final int oldBkX = stream.getX();
         runMe = true;
-        
+
         if (jCBHBouncing.isSelected()) {
-            
+
             jCBLeftToRight.setEnabled(false);
             jCBBottomToTop.setEnabled(false);
             jCBTopToBottom.setEnabled(false);
             jCBRightToLeft.setEnabled(false);
-            
+
             Thread scrollRtL = new Thread(new Runnable() {
                 int deltaX = 0;
             @Override
@@ -1144,7 +1148,7 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
                             if (startX > 0 && oneWay) {
                                 toLeft = true;
                                 stream.setX(startX - speed);
-                            } 
+                            }
                             if (startX <= 0 || !oneWay) {
                                 toLeft = false;
                                 oneWay = false;
@@ -1163,7 +1167,7 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
                 }
                 stream.setX(oldBkX);
             }
-        }); 
+        });
         scrollRtL.setPriority(Thread.MIN_PRIORITY);
         scrollRtL.start();
         } else {
@@ -1279,6 +1283,19 @@ public class StreamDesktop extends javax.swing.JInternalFrame {
         stream.setMore(jCBMoreOptions.isSelected());
         stream.setSliders(jCBShowSliders.isSelected());
     }//GEN-LAST:event_formAncestorMoved
+
+    private void formInternalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameDeiconified
+        if (listener!=null){
+            new Thread(new Runnable(){
+
+                @Override
+                public void run() {
+                    listener.selectedSource(stream);
+                }
+            }).start();
+
+        }
+    }//GEN-LAST:event_formInternalFrameDeiconified
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBoxMenuItem jCBAVConv;

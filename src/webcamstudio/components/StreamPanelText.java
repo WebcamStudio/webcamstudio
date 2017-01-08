@@ -275,7 +275,7 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
         add(spinY, new org.netbeans.lib.awtextra.AbsoluteConstraints(68, 180, 50, -1));
 
         spinW.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
-        spinW.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null, Integer.valueOf(1)));
+        spinW.setModel(new javax.swing.SpinnerNumberModel(1, 1, null, 1));
         spinW.setName("spinW"); // NOI18N
         spinW.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
@@ -285,7 +285,7 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
         add(spinW, new org.netbeans.lib.awtextra.AbsoluteConstraints(68, 200, 50, -1));
 
         spinH.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
-        spinH.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null, Integer.valueOf(1)));
+        spinH.setModel(new javax.swing.SpinnerNumberModel(1, 1, null, 1));
         spinH.setName("spinH"); // NOI18N
         spinH.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
@@ -467,8 +467,8 @@ public class StreamPanelText extends javax.swing.JPanel implements Stream.Listen
         add(labelZ1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 271, 40, 9));
 
         jSlSpinZOrder.setMajorTickSpacing(10);
-        jSlSpinZOrder.setMaximum(10);
-        jSlSpinZOrder.setMinimum(-10);
+        jSlSpinZOrder.setMaximum(20);
+        jSlSpinZOrder.setMinimum(-20);
         jSlSpinZOrder.setMinorTickSpacing(1);
         jSlSpinZOrder.setPaintTicks(true);
         jSlSpinZOrder.setSnapToTicks(true);

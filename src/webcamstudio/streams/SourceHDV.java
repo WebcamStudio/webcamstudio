@@ -4,49 +4,46 @@
  */
 package webcamstudio.streams;
 
+import java.awt.Graphics;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import static webcamstudio.WebcamStudio.gsNLE;
 import webcamstudio.externals.ProcessRenderer;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterFrameBuilder;
 import webcamstudio.mixers.MasterMixer;
 import webcamstudio.mixers.PreviewFrameBuilder;
 import webcamstudio.sources.effects.Effect;
-
 /**
  *
- * @author patrick (modified by karl)
+ * @author karl
  */
-public class SourceMusic extends Stream {
+public class SourceHDV extends Stream {
 
     ProcessRenderer capture = null;
     BufferedImage lastPreview = null;
     boolean isPlaying = false;
 
-    public SourceMusic(File music) {
+    public SourceHDV() {
         super();
+        if (this.getChName() != null) {
+            name = this.getChName();
+        } else {
+            name = "HDVCam";
+        }
         rate = MasterMixer.getInstance().getRate();
-        file = music;
-        name = music.getName();
-
     }
 
     @Override
     public void read() {
+        capture = new ProcessRenderer(this, ProcessRenderer.ACTION.CAPTURE, "HDV", comm);
+        capture.readCustom();
+        lastPreview = new BufferedImage(captureWidth, captureHeight, BufferedImage.TYPE_INT_ARGB);
         isPlaying = true;
+
         if (getPreView()) {
             PreviewFrameBuilder.register(this);
         } else {
             MasterFrameBuilder.register(this);
         }
-        lastPreview = new BufferedImage(captureWidth, captureHeight, BufferedImage.TYPE_INT_ARGB);
-        if (gsNLE) {
-            capture = new ProcessRenderer(this, ProcessRenderer.ACTION.CAPTURE, "nlemusic", comm);
-        } else {
-            capture = new ProcessRenderer(this, ProcessRenderer.ACTION.CAPTURE, "music", comm);
-        }
-        capture.read();
     }
 
     @Override
@@ -57,44 +54,32 @@ public class SourceMusic extends Stream {
 
     @Override
     public void stop() {
-        if (loop) {
-            if (capture != null) {
-                capture.stop();
-                capture = null;
-            }
-            if (this.getBackFF()) {
-                this.setComm("FF");
-            }
-            this.read();
-        } else {
-            for (int fx = 0; fx < this.getEffects().size(); fx++) {
-                Effect fxT = this.getEffects().get(fx);
-                if (fxT.getName().endsWith("Stretch") || fxT.getName().endsWith("Crop")) {
-                    // do nothing.
-                } else {
-                    fxT.resetFX();
-                }
-            }
-            isPlaying = false;
-            if (getPreView()) {
-                PreviewFrameBuilder.unregister(this);
+        for (int fx = 0; fx < this.getEffects().size(); fx++) {
+            Effect fxT = this.getEffects().get(fx);
+            if (fxT.getName().endsWith("Stretch") || fxT.getName().endsWith("Crop")) {
+                // do nothing.
             } else {
-                MasterFrameBuilder.unregister(this);
-            }
-            if (capture != null) {
-                capture.stop();
-                capture = null;
-            }
-            if (this.getBackFF()) {
-                this.setComm("FF");
+                fxT.resetFX();
             }
         }
-
+        isPlaying = false;
+        if (getPreView()) {
+            PreviewFrameBuilder.unregister(this);
+        } else {
+            MasterFrameBuilder.unregister(this);
+        }
+        if (capture != null) {
+            capture.stop();
+            capture = null;
+        }
+        if (this.getBackFF()){
+            this.setComm("FF");
+        }
     }
 
     @Override
     public boolean needSeek() {
-        return needSeekCTRL = true;
+        return needSeekCTRL=false;
     }
 
     @Override
@@ -114,27 +99,26 @@ public class SourceMusic extends Stream {
 
     @Override
     public Frame getFrame() {
-
         return nextFrame;
     }
 
     @Override
-    public boolean hasFakeVideo() {
-        return true;
-    }
-
-    @Override
-    public boolean hasFakeAudio() {
-        return true;
-    }
-
-    @Override
     public boolean hasAudio() {
-        return true;
+        return false;
     }
 
     @Override
     public boolean hasVideo() {
+        return true;
+    }
+
+    @Override
+    public boolean hasFakeVideo(){
+        return true;
+    }
+
+    @Override
+    public boolean hasFakeAudio(){
         return true;
     }
 
@@ -149,10 +133,14 @@ public class SourceMusic extends Stream {
             }
             if (f != null) {
                 setAudioLevel(f);
-                lastPreview.getGraphics().drawImage(f.getImage(), 0, 0, null);
+
+                Graphics g = lastPreview.getGraphics();
+                g.drawImage(f.getImage(), 0, 0, null);
+                g.dispose();
+
+                nextFrame = f;
             }
         }
-        nextFrame = f;
     }
 
     @Override
@@ -160,4 +148,5 @@ public class SourceMusic extends Stream {
         isPaused = false;
         capture.play();
     }
+
 }

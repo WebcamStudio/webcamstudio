@@ -22,7 +22,7 @@ include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/class/ant.mk
 include /usr/share/cdbs/1/rules/utils.mk
 
-JAVA_HOME := /usr/lib/jvm/default-java
+JAVA_HOME := /usr/lib/jvm/java-8-openjdk-$(DEB_BUILD_ARCH)
 DEB_ANT_BUILD_TARGET := jar
 DEB_JARS := AppFramework \
   commons-cli \

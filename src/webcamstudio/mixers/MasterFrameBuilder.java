@@ -5,9 +5,14 @@
 package webcamstudio.mixers;
 
 import static java.awt.AlphaComposite.SRC_OVER;
+import static java.awt.AlphaComposite.SRC;
 import static java.awt.AlphaComposite.getInstance;
+import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.GraphicsEnvironment;
+import java.awt.GraphicsConfiguration;
 import java.awt.Image;
+import java.awt.image.VolatileImage;
 import static java.awt.RenderingHints.KEY_ALPHA_INTERPOLATION;
 import static java.awt.RenderingHints.KEY_COLOR_RENDERING;
 import static java.awt.RenderingHints.KEY_DITHERING;
@@ -29,6 +34,7 @@ import java.nio.ShortBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.TreeMap;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import static java.util.concurrent.Executors.newCachedThreadPool;
@@ -82,33 +88,43 @@ public class MasterFrameBuilder implements Runnable {
     }
 
     private void mixImages(Collection<Frame> frames, Frame targetFrame) {
+        // This is sort of a hack to allow multiple frames to have the same ZOrder...
+        // It drives me nuts when I activate a source and it makes another one with the same Z-Order disappear...   ---GEC
+        int count = 0;
         for (Frame f : frames) {
-            orderedFrames.put(f.getZOrder(), f);
+            orderedFrames.put(((f.getZOrder() * 128) + count), f);
+            count++;
         }
+
+        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        GraphicsConfiguration gc = ge.getDefaultScreenDevice().getDefaultConfiguration();
 
         BufferedImage image = targetFrame.getImage();
         if (image != null) {
             Graphics2D g = image.createGraphics();
-//            g.setBackground(new Color(0, 0, 0, 0));
-//            g.setRenderingHint(java.awt.RenderingHints.KEY_ANTIALIASING, java.awt.RenderingHints.VALUE_ANTIALIAS_ON);
+            int width = image.getWidth();
+            int height = image.getHeight();
+
             g.setRenderingHint(KEY_INTERPOLATION, VALUE_INTERPOLATION_BILINEAR);
             g.setRenderingHint(KEY_ALPHA_INTERPOLATION, VALUE_ALPHA_INTERPOLATION_SPEED);
             g.setRenderingHint(KEY_RENDERING, VALUE_RENDER_SPEED);
             g.setRenderingHint(KEY_FRACTIONALMETRICS, VALUE_FRACTIONALMETRICS_OFF);
             g.setRenderingHint(KEY_DITHERING, VALUE_DITHER_DISABLE);
             g.setRenderingHint(KEY_COLOR_RENDERING, VALUE_COLOR_RENDER_SPEED);
-            g.clearRect(0, 0, image.getWidth(), image.getHeight());
+            g.setBackground(new Color(0, 0, 0, 0));
+            g.clearRect(0, 0, width, height);
+
             for (Frame f : orderedFrames.values()) {
                 imageF = f.getImage();
                 imageX = f.getX();
                 imageY = f.getY();
                 imageW = f.getWidth();
                 imageH = f.getHeight();
+
                 g.setComposite(getInstance(SRC_OVER, f.getOpacity() / 100F));
                 g.drawImage(imageF, imageX, imageY, imageW, imageH, null);
             }
             g.dispose();
-
         }
         orderedFrames.clear();
     }
@@ -132,7 +148,7 @@ public class MasterFrameBuilder implements Runnable {
                     }
                     float mix = buffer.get() * (volume);
                     outputBuffer.mark();
-                    if (outputBuffer.position()< outputBuffer.limit()){ //25fps IOException                     
+                    if (outputBuffer.position() < outputBuffer.limit()){ //25fps IOException
                         mix += outputBuffer.get();
                     }
                     outputBuffer.reset();
@@ -141,7 +157,7 @@ public class MasterFrameBuilder implements Runnable {
                     } else if (mix < MIN_VALUE) {
                         mix = MIN_VALUE;
                     }
-                    if (outputBuffer.position()< outputBuffer.limit()){ //25fps IOException                          
+                    if (outputBuffer.position() < outputBuffer.limit()){ //25fps IOException
                         outputBuffer.put((short) mix);
                     }
                 }
@@ -155,54 +171,96 @@ public class MasterFrameBuilder implements Runnable {
     public void run() throws NullPointerException{
         stopMe = false;
         ArrayList<Frame> frames = new ArrayList<>();
-        ArrayList<Future<Frame>> resultsT = new ArrayList<>();
         mark = System.currentTimeMillis();
         int r = MasterMixer.getInstance().getRate();
         long frameDelay = 1000 / r;
         long timeCode = currentTimeMillis();
-        ExecutorService pool = newCachedThreadPool();
+        long frameNum = 0;
         while (!stopMe) {
             timeCode += frameDelay;
             Frame targetFrame = frameBuffer.getFrameToUpdate();
             frames.clear();
-            try {
-                resultsT = ((ArrayList) pool.invokeAll(streams, 5, SECONDS)); //modify to 10 give more time to pause
+
+            long captureTime = 0;
+            long captureStartTime = System.nanoTime();
+
+            // threaded capture mode runs frame capture for each source in a different thread
+            // In principle it should be better but the overhead of threading appears to be more trouble than it's worth.
+            boolean threadedCaptureMode = true;
+            ExecutorService pool = newCachedThreadPool();
+            if (threadedCaptureMode) {
+                ArrayList<Future<Frame>> resultsT = new ArrayList<>();
+
+                try {
+                    resultsT = ((ArrayList)pool.invokeAll(streams, 5, SECONDS));
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(MasterFrameBuilder.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 ArrayList<Future<Frame>> results = resultsT;
+
                 int i=0;
                 Frame f;
                 for (Future stream : results) {
-                    if ((Frame)stream.get() != null) {
-                        if (!streams.isEmpty()) {
-//                        if (!streams.get(i).getPreView()) {
-                            f = (Frame)stream.get();
-            //                        if (f != null) {
-                                    frames.add(f);
-        //                        } 
-//                        }
+                    try {
+                        f = (Frame)stream.get();
+
+                        if (f != null) {
+                            frames.add(f);
+                        }
+                    } catch (CancellationException | InterruptedException | ExecutionException ex) {
+                        Logger.getLogger(MasterFrameBuilder.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    }
-                    i++;
                 }
+            } else {
+            for (int i = 0; i < streams.size(); i++) {
+                Frame f;
+
+                try {
+                    Stream s = streams.get(i);
+                    f = s.call();
+
+                    // Due to race conditions when sources start up, a source may not really be ready to operate by the time it's active in MasterFrameBuilder. (Ultimately that should probably be fixed)
+                    // For that reason, we guard against (f == null) here, so streams
+                    if (f != null) {
+                        frames.add(f);
+                    }
+                }
+                catch (Exception e)
+                {}
+            }
+            }
+
+            long now = currentTimeMillis();
+            captureTime = (now - captureStartTime);
+
+            long sleepTime = (timeCode - now);
+
+            // Drop frames if we're running behind - but no more than half of them
+//            if ((sleepTime > 0) || ((frameNum % 2) != 0)) {
+                fps++;
+
                 mixAudio(frames, targetFrame);
                 mixImages(frames, targetFrame);
                 targetFrame = null;
                 frameBuffer.doneUpdate();
                 MasterMixer.getInstance().setCurrentFrame(frameBuffer.pop());
-                fps++;
-                float delta = currentTimeMillis() - mark;
-                if (delta >= 1000) {
-                    mark = System.currentTimeMillis();
-                    MasterMixer.getInstance().setFPS(fps / (delta / 1000F));
-                    fps = 0;
-                }
-                long sleepTime = timeCode - currentTimeMillis();
-                if (sleepTime > 0) {
-                    sleep(sleepTime + 10);
-                }
-            } catch (InterruptedException | ExecutionException ex) {
-                Logger.getLogger(MasterFrameBuilder.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+
+            float delta = (now - mark);
+            if (delta >= 1000) {
+                mark = now;
+                MasterMixer.getInstance().setFPS(fps / (delta / 1000F));
+                fps = 0;
             }
 
+            //System.out.println("Capture time: " + (captureTime / 1000000.0) + "ms");
+            //System.out.println("Timecode: " + timeCode + ", now: " + now + ", diff: " + sleepTime);
+
+            if (sleepTime > 0) {
+                sleep(sleepTime);
+            }
+
+            frameNum++;
         }
     }
 }

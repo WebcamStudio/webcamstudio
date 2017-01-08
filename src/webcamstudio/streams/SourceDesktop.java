@@ -36,7 +36,21 @@ public class SourceDesktop extends Stream {
     Rectangle area = null;
     BufferedImage lastPreview = null;
     protected String[] screenID = Screen.getSources();
-    
+
+    protected String desktopN = "0";
+    protected int deskN = 0;
+    protected int desktopX = 0;
+    protected int desktopY = 0;
+    protected int desktopW = 0;
+    protected int desktopH = 0;
+    protected int windowX = 0;
+    protected int windowY = 0;
+    protected int windowW = 0;
+    protected int windowH = 0;
+    protected String desktopXid = "";
+    protected String elementXid = "";
+    protected boolean singleWindow = false;
+
     public SourceDesktop() {
         super();
         name = "Desktop";
@@ -54,7 +68,7 @@ public class SourceDesktop extends Stream {
         isPaused = true;
         capture.pause();
     }
-    
+
     @Override
     public void read() {
         stop = false;
@@ -147,7 +161,7 @@ public class SourceDesktop extends Stream {
         if (capture != null) {
             f = capture.getFrame();
             if (f != null) {
-                BufferedImage img = f.getImage(); 
+                BufferedImage img = f.getImage();
                 applyEffects(img);
             }
             if (f != null) {
@@ -167,5 +181,164 @@ public class SourceDesktop extends Stream {
     public void play() {
         isPaused = false;
         capture.play();
+    }
+
+    public String getDesktopN() {
+        return desktopN;
+    }
+
+    public void setDesktopN(String desktopN) {
+        this.desktopN = desktopN;
+    }
+
+    public int getDeskN() {
+        return deskN;
+    }
+
+    public void setDeskN(int desktopN) {
+        this.deskN = desktopN;
+    }
+
+    public int getDesktopX() {
+        return desktopX;
+    }
+
+    public String getDesktopXid() {
+        return desktopXid;
+    }
+
+    public void setDesktopXid(String dXid) {
+        this.desktopXid = dXid;
+    }
+
+    public String getElementXid() {
+        return elementXid;
+    }
+
+    public void setElementXid(String eXid) {
+        this.elementXid = eXid;
+    }
+
+    public boolean getSingleWindow() {
+        return singleWindow;
+    }
+
+    public void setSingleWindow(boolean sWin) {
+        this.singleWindow = sWin;
+    }
+
+    /**
+     * @param desktopX the desktopX to set
+     */
+    public void setDesktopX(int desktopX) {
+        this.desktopX = desktopX;
+    }
+
+    /**
+     * @return the desktopY
+     */
+    public int getDesktopY() {
+        return desktopY;
+    }
+
+    /**
+     * @param desktopY the desktopY to set
+     */
+    public void setDesktopY(int desktopY) {
+        this.desktopY = desktopY;
+    }
+
+    public int getDesktopEndX(){
+        return desktopX + desktopW - 1;
+    }
+
+    public int getDesktopEndY(){
+        return desktopY + desktopH - 1;
+    }
+
+    /**
+     * @return the desktopW
+     */
+    public int getDesktopW() {
+        return desktopW;
+    }
+
+    /**
+     * @param desktopW the desktopW to set
+     */
+    public void setDesktopW(int desktopW) {
+        this.desktopW = desktopW;
+    }
+
+    /**
+     * @return the desktopH
+     */
+    public int getDesktopH() {
+        return desktopH;
+    }
+
+    /**
+     * @param desktopH the desktopH to set
+     */
+    public void setDesktopH(int desktopH) {
+        this.desktopH = desktopH;
+    }
+
+    public void setWindowX(int windowX) {
+        this.windowX = windowX;
+    }
+
+    public int getWindowX() {
+        return this.windowX;
+    }
+
+    /**
+     * @param windowY
+     */
+    public void setWindowY(int windowY) {
+        this.windowY = windowY;
+    }
+
+    /**
+     * @return the desktopY
+     */
+    public int getWindowY() {
+        return this.windowY;
+    }
+
+    public int getWindowEndX(){
+        return windowX + windowW - 1;
+    }
+
+    public int getWindowEndY(){
+        return windowY + windowH - 1;
+    }
+
+    /**
+     * @return the desktopW
+     */
+    public int getWindowW() {
+        return windowW;
+    }
+
+    /**
+     * @param windowW
+     */
+    public void setWindowW(int windowW) {
+        this.windowW = windowW;
+    }
+
+    /**
+     * @return the desktopH
+     */
+    public int getWindowH() {
+        return windowH;
+    }
+
+    /**
+     * @param windowH
+     */
+    public void setWindowH(int windowH) {
+        this.windowH = windowH;
     }
 }

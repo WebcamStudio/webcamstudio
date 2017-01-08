@@ -43,7 +43,7 @@
 # define kstrtoul strict_strtoul
 #endif
 
-#define WEBCAMSTUDIO_VERSION_CODE KERNEL_VERSION(1,1,4)
+#define WEBCAMSTUDIO_VERSION_CODE KERNEL_VERSION(1,1,5)
 
 
 MODULE_DESCRIPTION("WebcamStudio virtual video device");
@@ -1241,6 +1241,7 @@ static int vidioc_enum_fmt_out(struct file *file, void *fh, struct v4l2_fmtdesc 
 	} else {
 		__u32 format;
 		/* fill in a dummy format */
+                /* coverity[unsigned_compare] */
 		if (f->index < 0 || f->index >= FORMATS)
 			return -EINVAL;
 
@@ -1420,6 +1421,7 @@ static int vidioc_g_parm(struct file *file, void *priv, struct v4l2_streamparm *
 static int vidioc_s_parm(struct file *file, void *priv, struct v4l2_streamparm *parm)
 {
 	struct webcamstudio_device *dev;
+	int err=0;
 	MARK();
 
 	dev = webcamstudio_getdevice(file);
@@ -1429,10 +1431,12 @@ static int vidioc_s_parm(struct file *file, void *priv, struct v4l2_streamparm *
 
 	switch (parm->type) {
 	case V4L2_BUF_TYPE_VIDEO_CAPTURE:
-		set_timeperframe(dev, &parm->parm.capture.timeperframe);
+                if ((err=set_timeperframe(dev, &parm->parm.capture.timeperframe)) < 0)
+		  return err;
 		break;
 	case V4L2_BUF_TYPE_VIDEO_OUTPUT:
-		set_timeperframe(dev, &parm->parm.capture.timeperframe);
+                if ((err=set_timeperframe(dev, &parm->parm.capture.timeperframe)) < 0)
+		  return err;
 		break;
 	default:
 		return -1;
@@ -1871,7 +1875,11 @@ static int vidioc_qbuf(struct file *file, void *private_data, struct v4l2_buffer
 		return 0;
 	case V4L2_BUF_TYPE_VIDEO_OUTPUT:
 		dprintkrw("output QBUF pos: %d index: %d\n", dev->write_position, index);
-		do_gettimeofday(&b->buffer.timestamp);
+		if (buf->timestamp.tv_sec == 0 && buf->timestamp.tv_usec == 0)
+			do_gettimeofday(&b->buffer.timestamp);
+		else
+			b->buffer.timestamp = buf->timestamp;
+		b->buffer.bytesused = buf->bytesused;
 		set_done(b);
 		buffer_written(dev, b);
 		wake_up_all(&dev->read_event);

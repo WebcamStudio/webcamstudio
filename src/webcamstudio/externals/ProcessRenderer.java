@@ -36,15 +36,32 @@ import webcamstudio.util.Tools.OS;
 /**
  *
  * @author patrick (modified by karl)
+ *
+ * ProcessRenderer is used to execute external commands which produce
+ * audio or video streams, and to manage the process of reading those
+ * streams.
+ *
+ * ProcessRenderer first tries to load a .properties file defining the
+ * command to be run. This will either be a file in the application
+ * JAR selected by the caller's choice of plugin, or a user
+ * .properties file in ~/.webcamstudio
+ *
+ * Next ProcessRenderer replaces parameter markers in the command
+ * string with parameter values obtained from the associated Stream
+ *
+ * Finally, ProcessRenderer launches the command process, and (in the
+ * case of sources) launches a Capturer to read the data from the
+ * process output.
  */
 public class ProcessRenderer {
 
     final static String RES_CAP = "capture_OS.properties";
     final static String RES_OUT = "output_OS.properties";
     private final static String userHomeDir = Tools.getUserHome();
-    public static String pidOutput;    
+    public static String pidOutput;
 
-    public static int getUnixPID(Process process) throws Exception { //Author Martijn Courteaux Code
+    //Author Martijn Courteaux Code
+    public static int getUnixPID(Process process) throws Exception {
         System.out.println("Process_GetUnixPid: "+process.getClass().getName());
         if (process.getClass().getName().equals("java.lang.UNIXProcess")) {
             Class cl = process.getClass();
@@ -56,12 +73,12 @@ public class ProcessRenderer {
             throw new IllegalArgumentException("Needs to be a UNIXProcess");
         }
     }
-    
+
     java.io.DataInput input = null;
     boolean stopMe = false;
     boolean stopped = true;
     private Properties plugins = null;
-    String plugin = "";
+    String plugin = "";    // Used to select the .properties file containing command strings
     String oPlug = "output";
     String audioPulseInput = "";
     int videoPort = 0;
@@ -79,11 +96,11 @@ public class ProcessRenderer {
 
     public ProcessRenderer(Stream s, ACTION action, String plugin, String bkEnd) {
         stream = s;
-//        System.out.println("BackEnd:"+bkEnd);
+        // System.out.println("BackEnd:"+bkEnd);
         String distro = wsDistroWatch();
         if (bkEnd.equals("FF")) {
-            if (action == OUTPUT){
-//                System.out.println("Action Output - BackEnd FF !!!");
+            if (action == OUTPUT) {
+                //System.out.println("Action Output - BackEnd FF !!!");
                 this.oPlug = "ffmpeg_output";
                 this.plugin = plugin;
             } else {
@@ -92,7 +109,7 @@ public class ProcessRenderer {
                 s.setComm("AV");
             }
         } else {
-            if (action == OUTPUT){
+            if (action == OUTPUT) {
                 if (bkEnd.equals("AV")) {
                     this.oPlug = "output";
                     this.plugin = plugin;
@@ -101,7 +118,7 @@ public class ProcessRenderer {
                     this.plugin = plugin;
                 }
             } else {
-                if (distro.toLowerCase().equals("ubuntu")){
+                if (distro.toLowerCase().equals("ubuntu")) {
                     this.plugin = plugin;
                 } else if ("AV".equals(bkEnd) && plugin.equals("audiosource")) {
                     this.plugin = "av_" + plugin;
@@ -125,10 +142,11 @@ public class ProcessRenderer {
                 Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        processVideo = new ProcessExecutor(s.getName());        
-        processAudio = new ProcessExecutor(s.getName());
 
+        processVideo = new ProcessExecutor(s.getName());
+        processAudio = new ProcessExecutor(s.getName());
     }
+
     public ProcessRenderer(Stream s, FME fme, String plugin) {
         stream = s;
         this.plugin = plugin;
@@ -150,7 +168,6 @@ public class ProcessRenderer {
         }
         processVideo = new ProcessExecutor(s.getName());
         processAudio = new ProcessExecutor(s.getName());
-        
     }
 
     private String translateTag(String value) {
@@ -162,17 +179,27 @@ public class ProcessRenderer {
     }
 
     private URL getResource(ACTION a) throws MalformedURLException {
-
         File userSettings = null;
+
         switch (a) {
             case CAPTURE:
                 userSettings = new File(new File(userHomeDir + "/.webcamstudio"), RES_CAP.replaceAll("OS", Tools.getOSName()));
                 break;
+
             case OUTPUT:
                 userSettings = new File(new File(userHomeDir + "/.webcamstudio"), RES_OUT.replaceAll("OS", Tools.getOSName()));
                 break;
         }
+
         URL res = null;
+        // FIXME: It seems what we've provided here is a way for the
+        // user to override all the supplied source properties files
+        // with ONE file:
+        // So if I create
+        // ~/.webcamstudio/capture_linux.properties and run WCS,
+        // any source I try to launch will use the settings from that
+        // file and there will be no difference between the different
+        // types of sources...  right?   ---GEC
         if (userSettings.exists()) {
             res = userSettings.toURI().toURL();
         } else {
@@ -182,11 +209,14 @@ public class ProcessRenderer {
                     path = "/webcamstudio/externals/OS/sources/" + plugin + ".properties";
                     path = path.replaceAll("OS", Tools.getOSName());
                     break;
+
                 case OUTPUT:
                     path = "/webcamstudio/externals/OS/outputs/"+ oPlug +".properties";
                     path = path.replaceAll("OS", Tools.getOSName());
                     break;
             }
+
+            // Pull back-end properties file from JAR or installation directory
             res = ProcessRenderer.class.getResource(path);
         }
 //        System.out.println("Resource Used: " + res.toString());
@@ -197,59 +227,85 @@ public class ProcessRenderer {
         String command = cmd;
         String fmeName = null;
         String fmeURL = null;
+
         if (fme != null) {
             fmeName = fme.getName();
             fmeURL = fme.getUrl();
         }
+
+        /* TODO: Replace this with a more elegant system. For instance:
+           1: Add to Stream a call which provides all the tags and associated command string text for the stream
+           2: Merge the data obtained in a call to (1) with a set of command parameters defined here (such as videoPort, etc.)
+           3: Loop through the constructed list of parameters to perform the substitutions
+           As a result ProcessRenderer will no longer need to switch through an exhaustive list of parameters supported by different Streams
+           ---GEC
+        */
         for (Tags tag : Tags.values()) {
             switch (tag) {
                 case DESKTOPN:
                     command = command.replaceAll(Tags.DESKTOPN.toString(), stream.getDesktopN() + "");
                     break;
+
                 case DESKTOPX:
                     command = command.replaceAll(Tags.DESKTOPX.toString(), stream.getDesktopX() + "");
                     break;
+
                 case DESKTOPY:
                     command = command.replaceAll(Tags.DESKTOPY.toString(), stream.getDesktopY() + "");
                     break;
+
                 case DESKTOPENDX:
                     command = command.replaceAll(Tags.DESKTOPENDX.toString(), stream.getDesktopEndX() + "");
                     break;
+
                 case DESKTOPENDY:
                     command = command.replaceAll(Tags.DESKTOPENDY.toString(), stream.getDesktopEndY() + "");
                     break;
+
                 case DESKTOPW:
                     command = command.replaceAll(Tags.DESKTOPW.toString(), stream.getDesktopW() + "");
                     break;
+
                 case DESKTOPH:
                     command = command.replaceAll(Tags.DESKTOPH.toString(), stream.getDesktopH() + "");
                     break;
+
                 case XID:
                     command = command.replaceAll(Tags.XID.toString(), stream.getDesktopXid() + "");
+                    break;
+
                 case WINDOWX:
                     command = command.replaceAll(Tags.WINDOWX.toString(), stream.getWindowX() + "");
                     break;
+
                 case WINDOWY:
                     command = command.replaceAll(Tags.WINDOWY.toString(), stream.getWindowY() + "");
                     break;
+
                 case WINDOWENDX:
                     command = command.replaceAll(Tags.WINDOWENDX.toString(), stream.getWindowEndX() + "");
                     break;
+
                 case WINDOWENDY:
                     command = command.replaceAll(Tags.WINDOWENDY.toString(), stream.getWindowEndY() + "");
                     break;
+
                 case GUID:
                     command = command.replaceAll(Tags.GUID.toString(), stream.getGuid() + "");
+                    break;
+
                 case VCODEC:
                     if (fme != null) {
                         command = command.replaceAll(Tags.VCODEC.toString(), translateTag(fme.getVcodec()));
                     }
                     break;
+
                 case ACODEC:
                     if (fme != null) {
                         command = command.replaceAll(Tags.ACODEC.toString(), translateTag(fme.getAcodec()));
                     }
                     break;
+
                 case VBITRATE:
                     if (fme != null) {
                         command = command.replaceAll(Tags.VBITRATE.toString(), fme.getVbitrate());
@@ -258,6 +314,7 @@ public class ProcessRenderer {
                         command = command.replaceAll(Tags.VBITRATE.toString(), stream.getVbitrate());
                     }
                     break;
+
                 case ABITRATE:
                     if (fme != null) {
                         command = command.replaceAll(Tags.ABITRATE.toString(), fme.getAbitrate());
@@ -266,6 +323,7 @@ public class ProcessRenderer {
                         command = command.replaceAll(Tags.ABITRATE.toString(), stream.getAbitrate());
                     }
                     break;
+
                 case URL:
                     if (fme != null) {
                         if (!"".equals(fme.getMount())) {
@@ -277,34 +335,45 @@ public class ProcessRenderer {
                         command = command.replaceAll(Tags.URL.toString(), "" + stream.getURL());
                     }
                     break;
+
                 case MOUNT:
-                    
                     if (fme != null && !"".equals(fme.getMount())) {
                         command = command.replaceAll(Tags.MOUNT.toString(), "" + fme.getMount());
                     }
+                    break;
+
                 case PASSWORD:
                     if (fme != null && !"".equals(fme.getPassword())) {
                         command = command.replaceAll(Tags.PASSWORD.toString(), "" + fme.getPassword());
                     }
+                    break;
+
                 case KEYINT:
                     if (fme != null) {
                         command = command.replaceAll(Tags.KEYINT.toString(), "" + fme.getKeyInt());
                     } else {
                         command = command.replaceAll(Tags.KEYINT.toString(), "" + Integer.toString(5*mixer.getRate()));
                     }
+                    break;
+
                 case PORT:
                     if (fme != null && !"".equals(fme.getPort())) {
                         command = command.replaceAll(Tags.PORT.toString(), "" + fme.getPort());
                     }
+                    break;
+
                 case APORT:
                     command = command.replaceAll(Tags.APORT.toString(), "" + audioPort);
                     break;
+
                 case CHEIGHT:
                     command = command.replaceAll(Tags.CHEIGHT.toString(), "" + stream.getCaptureHeight());
                     break;
+
                 case CWIDTH:
                     command = command.replaceAll(Tags.CWIDTH.toString(), "" + stream.getCaptureWidth());
                     break;
+
                 case FILE:
                     if (stream.getFile() != null) {
                         if (Tools.getOS() == OS.WINDOWS) {
@@ -314,7 +383,7 @@ public class ProcessRenderer {
                                 command = command.replaceAll(Tags.FILE.toString(), "" + stream.getFile().getAbsolutePath().replace(userHomeDir+"/", "") + "");
                             } else {
                                 String sFile = stream.getFile().getAbsolutePath().replaceAll(" ", "\\ ");
-                                if (stream instanceof SinkFile){
+                                if (stream instanceof SinkFile) {
                                     sFile = sFile.replaceAll(" ", "_");
                                 }
                                 command = command.replaceAll(Tags.FILE.toString(), "" + sFile + "");
@@ -322,24 +391,31 @@ public class ProcessRenderer {
                         }
                     }
                     break;
+
                 case OHEIGHT:
                     command = command.replaceAll(Tags.OHEIGHT.toString(), "" + stream.getHeight());
                     break;
+
                 case OWIDTH:
                     command = command.replaceAll(Tags.OWIDTH.toString(), "" + stream.getWidth());
                     break;
+
                 case RATE:
                     command = command.replaceAll(Tags.RATE.toString(), "" + stream.getRate());
                     break;
+
                 case SEEK:
                     command = command.replaceAll(Tags.SEEK.toString(), "" + stream.getSeek());
                     break;
+
                 case VPORT:
                     command = command.replaceAll(Tags.VPORT.toString(), "" + videoPort);
                     break;
+
                 case GSEFFECT:
                     command = command.replaceAll(Tags.GSEFFECT.toString(), "" + stream.getGSEffect());
                     break;
+
                 case WEBURL:
                     if (stream.getProtected() && "wanscam".equals(stream.getPtzBrand())) {
                         String soloURL = stream.getWebURL().replace("http://", "");
@@ -351,24 +427,36 @@ public class ProcessRenderer {
                     } else {
                         command = command.replaceAll(Tags.WEBURL.toString(), "\""+stream.getWebURL()+"\"");
                     }
+                    break;
+
                 case BW:
                     command = command.replaceAll(Tags.BW.toString(), "" + stream.getDVBBandwidth());
+                    break;
+
                 case DVBFREQ:
                     command = command.replaceAll(Tags.DVBFREQ.toString(), "" + stream.getDVBFrequency());
+                    break;
+
                 case DVBCH:
                     command = command.replaceAll(Tags.DVBCH.toString(), "" + stream.getDVBChannelNumber());
+                    break;
+
                 case FREQ:
                     command = command.replaceAll(Tags.FREQ.toString(), "" + frequency);
                     break;
+
                 case BITSIZE:
                     command = command.replaceAll(Tags.BITSIZE.toString(), "" + bitSize);
                     break;
+
                 case CHANNELS:
                     command = command.replaceAll(Tags.CHANNELS.toString(), "" + channels);
                     break;
+
                 case AUDIOSRC:
-                    command = command.replaceAll(Tags.AUDIOSRC.toString(), "" + stream.getAudioSource() + "");
+                    command = command.replaceAll(Tags.AUDIOSRC.toString(), "" + stream.getAudioSource());
                     break;
+
                 case PAUDIOSRC:
                     command = command.replaceAll(Tags.PAUDIOSRC.toString(), "" + audioPulseInput);
                     break;
@@ -377,14 +465,14 @@ public class ProcessRenderer {
         return command;
     }
 
-    public Frame getFrame() {           
+    public Frame getFrame() {
         if (capture == null) {
             return null;
         } else {
             return capture.getFrame();
         }
     }
-    
+
     public void read() {
         stopped = false;
         stopMe = false;
@@ -405,8 +493,8 @@ public class ProcessRenderer {
                 String commandAudio = null;
                 // System.out.println(plugins.keySet().toString());
                 if (stream.hasVideo()) {
-                    if ("AV".equals(stream.getComm())){                        
-                        commandVideo = plugins.getProperty("AVvideo").replaceAll("  ", " "); //Making sure there is no double spaces 
+                    if ("AV".equals(stream.getComm())) {
+                        commandVideo = plugins.getProperty("AVvideo").replaceAll("  ", " "); //Making sure there is no double spaces
                     } else {
                         if (!"".equals(stream.getGSEffect())) {
                             if (!"".equals(stream.getDesktopXid())) {
@@ -424,7 +512,7 @@ public class ProcessRenderer {
                     }
                 }
                 if (stream.hasAudio()) {
-                    if ("AV".equals(stream.getComm())){
+                    if ("AV".equals(stream.getComm())) {
                         commandAudio = plugins.getProperty("AVaudio").replaceAll("  ", " "); //Making sure there is no double spaces
                     } else {
                         commandAudio = plugins.getProperty("GSaudio").replaceAll("  ", " "); //Making sure there is no double spaces
@@ -439,14 +527,17 @@ public class ProcessRenderer {
                     }
                     Tools.sleep(100);
                 }
-                
+
                 if (commandVideo != null) {
+                    // FIXME: This "ABCDE" business is kind of crap,
+                    // and using String.split() to split arguments means we have no way to put a space in a command argument. ---GEC
                     commandVideo = commandVideo.replaceAll(" ", "ABCDE");
                     commandVideo = setParameters(commandVideo);
                     String[] parmsVideo = commandVideo.split("ABCDE");
+
                     try {
                         for (String p : parmsVideo) {
-                            cmdVideo = cmdVideo + p + " ";                            
+                            cmdVideo = cmdVideo + p + " ";
                         }
                         System.out.print("CommandVideo: "+cmdVideo+"\n");
                         processVideo.execute(parmsVideo);
@@ -456,6 +547,7 @@ public class ProcessRenderer {
                 } else {
                     processVideo = null;
                 }
+
                 if (commandAudio != null) {
                     commandAudio = commandAudio.replaceAll(" ", "ABCDE");
                     commandAudio = setParameters(commandAudio);
@@ -472,10 +564,10 @@ public class ProcessRenderer {
                 } else {
                     processAudio = null;
                 }
-                }
+            }
         }).start();
     }
-        
+
     public void readCom() {
         stopped = false;
         stopMe = false;
@@ -484,8 +576,8 @@ public class ProcessRenderer {
 
             @Override
             public void run() {
-                
-                if (stream.isIPCam()){
+
+                if (stream.isIPCam()) {
                     stream.setVideo(true);
                 }
                 capture = new Capturer(stream);
@@ -495,13 +587,13 @@ public class ProcessRenderer {
                 } else {
                     videoPort = capture.getVideoPort();
                 }
-               
+
                 if (stream.hasAudio()) {
                     audioPort = capture.getAudioPort();
                 } else {
                     processAudio = null;
                 }
-                
+
                 String commandVideo = null;
                 String commandAudio = null;
                 if (stream.hasVideo() && stream.isIPCam()) {
@@ -536,7 +628,7 @@ public class ProcessRenderer {
                             commandVideo = plugins.getProperty("GSvideoUDP").replaceAll("  ", " "); //Making sure there is no double spaces
                         }
                     } else {
-                        if ("AV".equals(stream.getComm())){   
+                        if ("AV".equals(stream.getComm())) {
                             if (!stream.isOnlyAudio()) {
                                 if (stream.hasVideo()) {
                                     commandVideo = plugins.getProperty("AVvideo").replaceAll("  ", " "); //Making sure there is no double spaces
@@ -595,7 +687,7 @@ public class ProcessRenderer {
                             commandAudio = plugins.getProperty("AVRTMPaudio").replaceAll("  ", " ");
                         }
                     } else {
-                        if ("AV".equals(stream.getComm())){
+                        if ("AV".equals(stream.getComm())) {
                             commandAudio = plugins.getProperty("AVaudio").replaceAll("  ", " "); //Making sure there is no double spaces
                         } else {
                             commandAudio = plugins.getProperty("GSaudio").replaceAll("  ", " "); //Making sure there is no double spaces
@@ -612,16 +704,16 @@ public class ProcessRenderer {
                 System.out.println("CommandAudio: "+commandAudio);
                 File fileV=new File(userHomeDir + "/.webcamstudio/WSUVid" + iD + ".sh");
                 File fileA=new File(userHomeDir + "/.webcamstudio/WSUAud" + iD + ".sh");
-                
+
                 FileOutputStream fosV;
                 Writer dosV = null;
                 FileOutputStream fosA;
                 Writer dosA = null;
                 try {
                     fosV = new FileOutputStream(fileV);
-                    dosV= new OutputStreamWriter(fosV);
+                    dosV = new OutputStreamWriter(fosV);
                     fosA = new FileOutputStream(fileA);
-                    dosA= new OutputStreamWriter(fosA);
+                    dosA = new OutputStreamWriter(fosA);
                 } catch (FileNotFoundException ex) {
                     Logger.getLogger(ProcessRenderer.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -650,9 +742,9 @@ public class ProcessRenderer {
                     Logger.getLogger(Capturer.class.getName()).log(Level.SEVERE, null, e);
                 }
             }
-        }).start();    
+        }).start();
     }
-    
+
     public void readCustom() {
         stopped = false;
         stopMe = false;
@@ -660,7 +752,7 @@ public class ProcessRenderer {
         new Thread(new Runnable() {
 
             @Override
-            public void run() {  
+            public void run() {
                 stream.setVideo(plugins.containsKey("video"));
                 stream.setAudio(plugins.containsKey("audio"));
                 stream.setFakeVideo(stream.hasVideo());
@@ -676,8 +768,8 @@ public class ProcessRenderer {
                 }
                 String commandVideo = null;
                 String commandAudio = null;
-                if (stream.hasVideo()) {    
-                    commandVideo = plugins.getProperty("video").replaceAll("  ", " "); //Making sure there is no double spaces 
+                if (stream.hasVideo()) {
+                    commandVideo = plugins.getProperty("video").replaceAll("  ", " "); //Making sure there is no double spaces
                 }
                 if (stream.hasAudio()) {
                     commandAudio = plugins.getProperty("audio").replaceAll("  ", " "); //Making sure there is no double spaces
@@ -690,9 +782,9 @@ public class ProcessRenderer {
                 }
                 System.out.println("CommandVideo: "+commandVideo);
                 System.out.println("CommandAudio: "+commandAudio);
-                File fileV=new File(userHomeDir + "/.webcamstudio/WSCVid" + iD + ".sh");
-                File fileA=new File(userHomeDir + "/.webcamstudio/WSCAud" + iD + ".sh");
-                
+                File fileV = new File(userHomeDir + "/.webcamstudio/WSCVid" + iD + ".sh");
+                File fileA = new File(userHomeDir + "/.webcamstudio/WSCAud" + iD + ".sh");
+
                 FileOutputStream fosV;
                 Writer dosV = null;
                 FileOutputStream fosA;
@@ -736,7 +828,7 @@ public class ProcessRenderer {
             }
         }).start();
     }
-    
+
     public void writeCom() {
         stopped = false;
         stopMe = false;
@@ -790,7 +882,7 @@ public class ProcessRenderer {
         }).start();
 
     }
-    
+
     public void pause() //Author Martijn Courteaux Code
     {
         if (processVideo != null) {
@@ -800,7 +892,7 @@ public class ProcessRenderer {
             capture.aPause();
         }
     }
-    
+
     public void play() {
         if (processVideo != null) {
             capture.vPlay();
@@ -809,7 +901,7 @@ public class ProcessRenderer {
             capture.aPlay();
         }
     }
-    
+
     public void stop() {
         stopMe = true;
         stopped = true;

@@ -8,9 +8,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import webcamstudio.exporter.vloopback.V4L2Loopback;
 import webcamstudio.exporter.vloopback.VideoOutput;
-import static webcamstudio.exporter.vloopback.VideoOutput.RGB24;
 import static webcamstudio.exporter.vloopback.VideoOutput.UYVY;
-import static webcamstudio.exporter.vloopback.VideoOutput.BGR24;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterMixer;
 

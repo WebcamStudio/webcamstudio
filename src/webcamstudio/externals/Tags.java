@@ -9,7 +9,7 @@ package webcamstudio.externals;
  * @author patrick (modified by karl)
  */
 public enum Tags {
-   
+
         OWIDTH("@OWIDTH"),
         OHEIGHT("@OHEIGHT"),
         CWIDTH("@CWIDTH"),
@@ -54,14 +54,14 @@ public enum Tags {
         XID ("@XID"),
         GUID ("@GUID"),
         GSEFFECT ("@GSEFFECT");
-        
+
     private String name = "";
     private Tags(String name) {
         this.name = name;
     }
         @Override
     public String toString() {
-    return name;
+            return name;
     }
-}    
+}
 

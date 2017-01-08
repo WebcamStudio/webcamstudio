@@ -386,7 +386,7 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         add(spinY, new org.netbeans.lib.awtextra.AbsoluteConstraints(68, 270, 50, -1));
 
         spinW.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
-        spinW.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null, Integer.valueOf(1)));
+        spinW.setModel(new javax.swing.SpinnerNumberModel(1, 1, null, 1));
         spinW.setName("spinW"); // NOI18N
         spinW.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
@@ -396,7 +396,7 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         add(spinW, new org.netbeans.lib.awtextra.AbsoluteConstraints(58, 290, 60, -1));
 
         spinH.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
-        spinH.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null, Integer.valueOf(1)));
+        spinH.setModel(new javax.swing.SpinnerNumberModel(1, 1, null, 1));
         spinH.setName("spinH"); // NOI18N
         spinH.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
@@ -406,7 +406,7 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         add(spinH, new org.netbeans.lib.awtextra.AbsoluteConstraints(58, 310, 60, -1));
 
         spinOpacity.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
-        spinOpacity.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(0), Integer.valueOf(0), null, Integer.valueOf(1)));
+        spinOpacity.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1));
         spinOpacity.setName("spinOpacity"); // NOI18N
         spinOpacity.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
@@ -416,7 +416,7 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         add(spinOpacity, new org.netbeans.lib.awtextra.AbsoluteConstraints(68, 351, 50, -1));
 
         spinVolume.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
-        spinVolume.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null, Integer.valueOf(1)));
+        spinVolume.setModel(new javax.swing.SpinnerNumberModel(1, 1, null, 1));
         spinVolume.setName("spinVolume"); // NOI18N
         spinVolume.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
@@ -485,7 +485,7 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         add(labelCW, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 410, 50, -1));
 
         spinW1.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
-        spinW1.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null, Integer.valueOf(1)));
+        spinW1.setModel(new javax.swing.SpinnerNumberModel(1, 1, null, 1));
         spinW1.setName("spinW1"); // NOI18N
         spinW1.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
@@ -500,7 +500,7 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         add(labelCH, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 430, 60, -1));
 
         spinH1.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
-        spinH1.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null, Integer.valueOf(1)));
+        spinH1.setModel(new javax.swing.SpinnerNumberModel(1, 1, null, 1));
         spinH1.setName("spinH1"); // NOI18N
         spinH1.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
@@ -510,7 +510,7 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         add(spinH1, new org.netbeans.lib.awtextra.AbsoluteConstraints(68, 420, 50, -1));
 
         spinVDelay.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
-        spinVDelay.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(0), Integer.valueOf(0), null, Integer.valueOf(1)));
+        spinVDelay.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1));
         spinVDelay.setToolTipText("Milliseconds");
         spinVDelay.setName("spinVDelay"); // NOI18N
         spinVDelay.addChangeListener(new javax.swing.event.ChangeListener() {
@@ -521,7 +521,7 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         add(spinVDelay, new org.netbeans.lib.awtextra.AbsoluteConstraints(58, 440, 60, -1));
 
         spinADelay.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
-        spinADelay.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(0), Integer.valueOf(0), null, Integer.valueOf(1)));
+        spinADelay.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1));
         spinADelay.setToolTipText("Milliseconds");
         spinADelay.setName("spinADelay"); // NOI18N
         spinADelay.addChangeListener(new javax.swing.event.ChangeListener() {
@@ -532,7 +532,7 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         add(spinADelay, new org.netbeans.lib.awtextra.AbsoluteConstraints(58, 460, 60, -1));
 
         frequency.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
-        frequency.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(0), Integer.valueOf(0), null, Integer.valueOf(1)));
+        frequency.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1));
         frequency.setToolTipText("Mhz");
         frequency.setName("frequency"); // NOI18N
         frequency.addChangeListener(new javax.swing.event.ChangeListener() {
@@ -553,7 +553,7 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         add(labelInv, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 240, 50, -1));
 
         bandwidth.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
-        bandwidth.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(0), Integer.valueOf(0), null, Integer.valueOf(1)));
+        bandwidth.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1));
         bandwidth.setToolTipText("(7/8)");
         bandwidth.setName("bandwidth"); // NOI18N
         bandwidth.addChangeListener(new javax.swing.event.ChangeListener() {
@@ -569,7 +569,7 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         add(labelBand, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 220, 70, -1));
 
         prgNumber.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
-        prgNumber.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(0), Integer.valueOf(0), null, Integer.valueOf(1)));
+        prgNumber.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1));
         prgNumber.setName("prgNumber"); // NOI18N
         prgNumber.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
@@ -728,8 +728,8 @@ public class StreamPanelDVB extends javax.swing.JPanel implements Stream.Listene
         add(jSlSpinAD, new org.netbeans.lib.awtextra.AbsoluteConstraints(127, 460, 150, 20));
 
         jSlSpinZOrder.setMajorTickSpacing(10);
-        jSlSpinZOrder.setMaximum(10);
-        jSlSpinZOrder.setMinimum(-10);
+        jSlSpinZOrder.setMaximum(20);
+        jSlSpinZOrder.setMinimum(-20);
         jSlSpinZOrder.setMinorTickSpacing(1);
         jSlSpinZOrder.setPaintTicks(true);
         jSlSpinZOrder.setSnapToTicks(true);

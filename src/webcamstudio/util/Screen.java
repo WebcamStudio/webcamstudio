@@ -114,6 +114,26 @@ public class Screen {
         return retValue;
     }
     
+    public static boolean nleDetected(){
+        boolean retValue = false;
+        Process p = null;
+        try {
+            
+            p = Runtime.getRuntime().exec("gst-inspect-1.0 nleurisource");
+            p.waitFor();
+//            System.out.println(p.exitValue());
+            retValue = p.exitValue() == 0;
+        } catch (IOException | InterruptedException ex) {
+//            System.err.println(ex.getMessage());
+        } finally {
+            if (p != null){
+                p.destroy();
+                p=null;
+            }
+        }
+        return retValue;
+    }
+    
     public static boolean ffmpegDetected(){
         boolean retValue = false;
         Process p = null;

@@ -4,6 +4,7 @@
  */
 package webcamstudio.streams;
 
+import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import webcamstudio.externals.ProcessRenderer;
@@ -40,7 +41,7 @@ public class SourceWebcam extends Stream {
         isPlaying=true;
         lastPreview = new BufferedImage(captureWidth,captureHeight,BufferedImage.TYPE_INT_ARGB);
         rate = MasterMixer.getInstance().getRate();
-        if (getPreView()){
+        if (getPreView()) {
             PreviewFrameBuilder.register(this);
         } else {
             MasterFrameBuilder.register(this);
@@ -48,17 +49,17 @@ public class SourceWebcam extends Stream {
         capture = new ProcessRenderer(this, ProcessRenderer.ACTION.CAPTURE, "webcam", comm);
         capture.read();
     }
-    
+
     @Override
     public void pause() {
         capture.pause();
     }
-    
+
     @Override
     public void play() {
         capture.play();
     }
-    
+
     @Override
     public void stop() {
         for (int fx = 0; fx < this.getEffects().size(); fx++) {
@@ -76,7 +77,7 @@ public class SourceWebcam extends Stream {
         if (this.getBackFF()){
             this.setComm("FF");
         }
-        if (getPreView()){
+        if (getPreView()) {
             PreviewFrameBuilder.unregister(this);
         } else {
             MasterFrameBuilder.unregister(this);
@@ -126,11 +127,13 @@ public class SourceWebcam extends Stream {
         if (capture != null) {
             f = capture.getFrame();
             if (f != null) {
-                BufferedImage img = f.getImage(); 
+                BufferedImage img = f.getImage();
                 applyEffects(img);
             }
             if (f != null) {
-                lastPreview.getGraphics().drawImage(f.getImage(), 0, 0, null);
+                Graphics g = lastPreview.getGraphics();
+
+                g.drawImage(f.getImage(), 0, 0, null);
             }
         }
         nextFrame=f;

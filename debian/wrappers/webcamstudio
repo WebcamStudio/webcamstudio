@@ -23,8 +23,6 @@ fi
 JAVA_CLASSPATH="${INSTALLDIR}/*:${INSTALLDIR}/lib/*"
 JAVA_ARGS="-Djna.nosys=true -splash:start.gif"
 
-find_java_runtime openjdk sunmin5
-
 find_jars AppFramework \
   commons-cli \
   commons-codec \

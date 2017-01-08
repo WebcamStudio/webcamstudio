@@ -6,6 +6,7 @@ package webcamstudio.streams;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
+import static webcamstudio.WebcamStudio.gsNLE;
 import webcamstudio.externals.ProcessRenderer;
 import webcamstudio.mixers.Frame;
 import webcamstudio.mixers.MasterFrameBuilder;
@@ -39,7 +40,11 @@ public class SourceMovie extends Stream {
         } else {
             MasterFrameBuilder.register(this);
         }
-        capture = new ProcessRenderer(this, ProcessRenderer.ACTION.CAPTURE, "movie", comm);
+        if (gsNLE && comm.equals("GS")) {
+            capture = new ProcessRenderer(this, ProcessRenderer.ACTION.CAPTURE, "nlemovie", comm);
+        } else {
+            capture = new ProcessRenderer(this, ProcessRenderer.ACTION.CAPTURE, "movie", comm);
+        }
         capture.read();
     }
 
