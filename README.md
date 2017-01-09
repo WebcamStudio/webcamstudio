@@ -31,11 +31,13 @@ $ java -jar WebcamStudio.jar /home/karl/Videos/Test.studio -o UDP -autoplay -rem
 Install on Ubuntu
 -----------------
 
+### From PPA
 In Ubuntu you can install the latest WS build using the WebcamStudio PPA:
 
 https://launchpad.net/~webcamstudio/+archive/webcamstudio-dailybuilds
 
-**If you want to manually install WebcamStudio from this archive, follow these steps:**
+### Manual install
+If you want to manually install WebcamStudio from this archive, follow these steps:
 
 **1)** First make sure you have at least Java 7 installed (better the Oracle one) and that it is the default one.
 
@@ -71,20 +73,20 @@ In 32-bit machines, you have to remove the x86-64 JavaCV libraries, and add the 
 
 You can find the x86 libraries in the `Opencv-Natives/x86` folder.
 
-**To run WebcamStudio latest version:**
-
-**1)** Navigate to the multidistro archive extracted folder, where `WebcamStudio.jar` is. In a terminal, type:
-
-```bash
-$ java -jar WebcamStudio.jar
-```
-
-If you want to use `FFmpeg` backend in Ubuntu 14.04/14.10, you need to install `FFmpeg` first. Open a terminal and type:
+**5)** If you want to use `FFmpeg` backend in Ubuntu 14.04/14.10, you need to install `FFmpeg` first. Open a terminal and type:
 
 ```bash
 sudo add-apt-respository ppa:mc3man/trusty-media
 sudo apt-get update
 sudo apt-get install ffmpeg
+```
+
+**To run WebcamStudio latest version:**
+
+Navigate to the multidistro archive extracted folder, where `WebcamStudio.jar` is. In a terminal, type:
+
+```bash
+$ java -jar WebcamStudio.jar
 ```
 
 Install on OPENSUSE/FEDORA
