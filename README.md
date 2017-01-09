@@ -21,7 +21,7 @@ To specify the Output you will use the first name of the device (Case Sensitive)
 ```
 [ WSVideoDevice - UDP - Ustream - IceCast - Audio - ...]
 ```
-Naturally you must have the related button already added to WS.
+Naturally you must have the related button already added to Webcam Studio.
 
 Example command line:
 ```bash
@@ -133,7 +133,7 @@ Gstreamer dependencies for WebcamStudio
 
 ### Fedora:
 
-> **Note:** You can skip gnonlin 0.10 build because WS uses only 1.x version now, but if you need it ...
+> **Note:** You can skip gnonlin 0.10 build because Webcam Studio uses only 1.x version now, but if you need it ...
 
 Install these packages:
 ```bash
@@ -334,7 +334,7 @@ Naturally for all streams and outputs you can't select `avconv` backend (It will
 
 If you want you can compile [`libAV`](http://libav.org/download.html) from source.
 
-For WS to work, please use these libAV `./configure` settings:
+For Webcam Studio to work, please use these libAV `./configure` settings:
 ```bash
 $ ./configure --enable-gpl --enable-nonfree --enable-pthreads --enable-libx264 --enable-libfaac --enable-libmp3lame --enable-version3 --enable-librtmp --enable-x11grab --enable-libpulse
 ```
@@ -362,77 +362,88 @@ Run `gst-inspect-1.0` (you may have to install `gstreamer-utils`).
 
 This should register all installed plugins.
 
-========================
-      ARCH/MANJARO
-========================
- 
-This is no more necessary because WS uses gnonlin 1.x, but maybe useful:
 
-- Compile [gnonlin](http://gstreamer.freedesktop.org/src/gnonlin/) from source 0.10.17 ... 
+Install on ARCH/MANJARO
+-----------------------
+ 
+This is no more necessary because Webcam Studio uses `gnonlin` 1.x, but maybe useful:
+
+- Compile [`gnonlin`](http://gstreamer.freedesktop.org/src/gnonlin/) from source 0.10.17 ... 
 - Once `sudo make install` is done, copy the gnonlin libs from `usr/local/lib/gstreamer` to `usr/lib/gstreamer` in Manjaro Linux ...
 
 First of all do the following in a terminal:
 
-```basg
+```bash
 $ sudo /bin/rm -f /var/lib/pacman/db.lck
  
 $ sudo pacman -Syu
 ```
  
-Then to have the correct visualization install Ubuntu fonts:
+Then to make Webcam Studio display correctly, install Ubuntu fonts:
  
-<Step 1> Download the fonts from: http://font.ubuntu.com/resources/
+**Step 1:** Download the fonts from: http://font.ubuntu.com/resources/  
 ( Download the Ubuntu Font Family › (1.5MB) )
  
-<Step 2> Unzip the fonts and rename them to your liking I renamed mine to "ubuntu".
+**Step 2** Unzip the fonts and rename them to your liking I renamed mine to "ubuntu".
  
-<Step 3> Open Terminal and type the following:
+**Step 3** Open Terminal and type the following:
+```bash
 $ su -
-# cd Downloads
-# cp -R ubuntu /usr/share/fonts/
- 
-<Step 4>
-I used the GUI "Package Manager":
- 
-install "dkms" from AUR
-Install "linux316-headers" from AUR
-Install "gnonlin" from AUR.
-Install "wmctrl" package to enable single desktop window capture.
-Install "dvgrab" package to enable firewire device capture.
- 
-- Compile webcamstudio-module-111 (Shipped in this archive (vloopback folder)) and modprobe it:
-Navigate where the vloopback folder is extracted and from a terminal type:
+$ cd Downloads
+$ cp -R ubuntu /usr/share/fonts/
+```
+
+**Step 4:**  
+Install `dkms` from AUR.  
+Install `linux316-headers` from AUR.  
+Install `gnonlin` from AUR.  
+Install `wmctrl` package to enable single desktop window capture.  
+Install `dvgrab` package to enable firewire device capture.  
+
+You can use a graphical Package Manager.
+
+Compile `webcamstudio-module-111` (Shipped in this archive in `vloopback` folder) and `modprobe` it:
+
+Navigate where the `vloopback` folder is extracted, and from a terminal type:
+```bash
 $ make
 $ sudo make install
 $ sudo modprobe webcamstudio
+```
+
+**Step 5:**
+For SkyCam install `gksu` from AUR.
  
-<Step 5>
-For SkyCam install "gksu" from AUR.
- 
-<Step 6>
-Install libwebcamstudio:
-For x64:
-From folder WS_libx64 (Shipped in the zip file) Copy libwebcamstudio.so in /usr/lib64 (or your user libs folder ...)
+**Step 6:** Install `libwebcamstudio`:
+
+**For x64:**  
+From folder `WS_libx64` (Shipped in the zip file) Copy `libwebcamstudio.so` to `/usr/lib64` (or your user libs folder ...)
 or
-For x86:
-From folder WS_libx86 (Shipped in the zip file) Copy libwebcamstudio.so in /usr/lib
+**For x86:**  
+From folder `WS_libx86` (Shipped in the zip file) Copy `libwebcamstudio.so` to `/usr/lib`
  
-<Step 7> FaceDetectorAlpha (necessary step)
-To enable FaceDetector Effect in 32bit machines you have to remove the x86-64 JavaCV libraries and add the x86 ones in the "lib" folder.
+**Step 7:** FaceDetectorAlpha (necessary step)
+
+To enable FaceDetector Effect in 32-bit machines, you have to remove the x86-64 JavaCV libraries, and add the x86 ones to the `lib` folder.
+
 The libraries are:
-ffmpeg-linux-x86_64.jar replace with ffmpeg-linux-x86.jar
-opencv-linux-x86_64.jar replace with opencv-linux-x86.jar
-You can find the x86 libraries in the "Opencv-Natives/x86" folder.
+
+`ffmpeg-linux-x86_64.jar` replace with `ffmpeg-linux-x86.jar`  
+`opencv-linux-x86_64.jar` replace with `opencv-linux-x86.jar`
+
+You can find the x86 libraries in the `Opencv-Natives/x86` folder.
  
-Finally navigate where WebcamStudio.jar is and type from a terminal:
+Finally navigate where `WebcamStudio.jar` is located, and type from a terminal:
+```bash
 $ java -jar WebcamStudio.jar
- 
-Naturally for all streams and outputs you can't select "avconv" backend (It will be hided) if you didn't compile Avconv.
+```
+
+Naturally for all streams and outputs you can't select `avconv` backend (It will be hided) if you didn't compile Avconv.
 If you want you can compile libAV from sources. "http://libav.org/download.html"
-For WS to work, please use this libAV ./configure settings:
- 
+For Webcam Studio to work, please use this libAV ./configure settings:
+```bash
 $./configure --enable-gpl --enable-nonfree --enable-pthreads --enable-libx264 --enable-libfaac --enable-libmp3lame --enable-version3 --enable-librtmp --enable-x11grab --enable-libpulse
- 
+```
 
 ===
 Have a nice day.
