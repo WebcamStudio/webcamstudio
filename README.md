@@ -2,7 +2,7 @@
 
 [![Maintainers Wanted](https://img.shields.io/badge/maintainers-wanted-red.svg)](https://github.com/pickhardt/maintainers-wanted)
 
-We are searching for someone to hand over. For any suggestions, comments or others please write to: `soylent.tv@gmail.com`
+We are searching for someone to hand over. For any questions, suggestions and comments, please write to: `soylent.tv@gmail.com`
 
 
 WebcamStudio command line
@@ -62,20 +62,18 @@ From folder `WS_libx64` (Shipped in this archive) Copy `libwebcamstudio.so` to `
 **For x86:**  
 From folder `WS_libx86` (Shipped in this archive) Copy `libwebcamstudio.so` to `/usr/lib`
 
-4) WebcamStudio also uses JavaCV for some operations, and because this library differs from 32- to 64-bit versions, you have to make sure to use the correct ones (necessary step):
+**4)** WebcamStudio also uses JavaCV for some operations, and because this library differs from 32- to 64-bit versions, you have to make sure to use the correct ones **(very important)**:
 
 In 32-bit machines, you have to remove the x86-64 JavaCV libraries, and add the x86 ones in the `lib` folder of the extracted multidistro archive.
 
-The libraries are:
-
-1) Replace `ffmpeg-linux-x86_64.jar` with `ffmpeg-linux-x86.jar`  
-2) Replace `opencv-linux-x86_64.jar` with `opencv-linux-x86.jar`
+1. Replace `ffmpeg-linux-x86_64.jar` with `ffmpeg-linux-x86.jar`  
+2. Replace `opencv-linux-x86_64.jar` with `opencv-linux-x86.jar`
 
 You can find the x86 libraries in the `Opencv-Natives/x86` folder.
 
 **To run WebcamStudio latest version:**
 
-1) Navigate to the multidistro archive extracted folder, where `WebcamStudio.jar` is and in a terminal type:
+**1)** Navigate to the multidistro archive extracted folder, where `WebcamStudio.jar` is. In a terminal, type:
 
 ```bash
 $ java -jar WebcamStudio.jar
@@ -106,8 +104,7 @@ $ sudo zypper update
 
 ### Fedora:
 
-Add RPM Fusion Free / nonFree:
-http://rpmfusion.org/Configuration
+Add RPM Fusion Free / nonFree: http://rpmfusion.org/Configuration
 
 After adding the repository, open a terminal and with root privileges run:
 ```bash
@@ -119,9 +116,9 @@ $ yum update
 **Step 1:** Download the fonts from: http://font.ubuntu.com/resources/  
 ( Download the Ubuntu Font Family › (1.5MB) )
 
-**Step 2:** Unzip the fonts and rename the folder to your liking (I renamed mine to "ubuntu").
+**Step 2:** Unzip the fonts and rename the folder to whatever name like. I renamed mine to `ubuntu`.
 
-**Step 3:** Open Terminal and type the following:
+**Step 3:** Install these fonts. Open Terminal and type the following:
 ```bash
 $ su -
 $ cd Downloads
@@ -136,18 +133,18 @@ Gstreamer dependencies for WebcamStudio
 
 > **Note:** You can skip gnonlin 0.10 build because WS uses only 1.x version now, but if you need it ...
 
-Compile gnonlin from source 0.10.17 ... "http://gstreamer.freedesktop.org/src/gnonlin/"
-Prior to give the first `./configure` or `./configure --build=x86_64` command you have to install with root privileges:
-
+Install these packages:
 ```bash
 $ yum install glib2-devel gstreamer-devel gstreamer-plugins-base-devel gcc
 ```
 
+Compile [`gnonlin`](http://gstreamer.freedesktop.org/src/gnonlin/) from source 0.10.17 by `./configure` or `./configure --build=x86_64`
+
 Run `make` command.
 
-Finally run `sudo make install` and when is done,
+Finally run `sudo make install` to install `gnonlin`.
 
-copy the gnonlin libs from `usr/local/lib/gstreamer-0.10` to `usr/lib64/gstreamer-010` in Fedora 20 64-Bit ...
+Copy the `gnonlin` libs from `usr/local/lib/gstreamer-0.10` to `usr/lib64/gstreamer-010` in Fedora 20 64-bit ...
 
 I think that for 32-bit the destination is `usr/lib/gstreamer-010`.
 
@@ -192,8 +189,8 @@ $ yum install gstreamer1.x86_64 gstreamer1-libav.x86_64 gstreamer1-plugins-bad-f
 
 ### OpenSuse:
 
-> **Note:** You can skip gnonlin 0.10 because WS uses only 1.x version now. But if you want you can install it from:
-> 
+> **Note:** You can skip `gnonlin` 0.10 configuration, because Webcam Studio uses only 1.x version now.
+> If you want you can install it from:
 > http://download.opensuse.org/repositories/openSUSE:/13.1/standard/x86_64/gstreamer-0_10-plugin-gnonlin-0.10.17-17.1.3.x86_64.rpm
 
 The following Dependences are needed (installed via Yast2):
@@ -268,7 +265,7 @@ $ yum install kernel-headers kernel-devel
 
 ... and compile `webcamstudio-module-111` (Shipped in this archive `vloopback`) with `make` & `sudo make install`.
 
-Later modprobe it with `sudo modprobe webcamstudio`.
+At last, `modprobe` it with `sudo modprobe webcamstudio`.
 
 ---------
 OpenSuse:
@@ -279,12 +276,10 @@ Later modprobe it with `sudo modprobe webcamstudio`.
 
 **Step 8:** Install `libwebcamstudio`:
 
-**For x64:**
-
+**For x64:**  
 From folder `WS_libx64` (Shipped in this archive) Copy `libwebcamstudio.so` to `/usr/lib64` (or your user libs folder ...)
 
-**For x86:**
-
+**For x86:**  
 From folder `WS_libx86` (Shipped in this archive) Copy `libwebcamstudio.so` to `/usr/lib`
 
 **Step 9:** SkyCam:
@@ -317,8 +312,8 @@ In 32bit machines, to enable FaceDetector Effect, you have to remove the x86-64 
 
 The libraries are:
 
-`ffmpeg-linux-x86_64.jar` replace with `ffmpeg-linux-x86.jar`  
-`opencv-linux-x86_64.jar` replace with `opencv-linux-x86.jar`
+`ffmpeg-linux-x86_64.jar`, replace it with `ffmpeg-linux-x86.jar`.  
+`opencv-linux-x86_64.jar`, replace it with `opencv-linux-x86.jar`.
 
 You can find the x86 libraries in the `Opencv-Natives/x86` folder.
 
