@@ -37,28 +37,29 @@ https://launchpad.net/~webcamstudio/+archive/webcamstudio-dailybuilds
 
 **If you want to manually install WebcamStudio from this archive, follow these steps:**
 
-1) First make sure you have at least Java 7 installed (better the Oracle ...) and that it is the default one.
-2) Download the archive and extract it where you want.
+**1)** First make sure you have at least Java 7 installed (better the Oracle one) and that it is the default one.
+
+**2)** Download the archive and extract it where you want.
 
 **If you don't have the virtual webcam installed:**
 
-A) Unpack "webcamstudio-module-112.tar.bz2", navigate to the extracted folder, open a terminal and compile it:
+Unpack `webcamstudio-module-112.tar.bz2`, navigate to the extracted folder, open a terminal and compile it:
 ```bash
 $ make
 $ sudo make install
 ```
 
-B) `modprobe` the webcamstudio module:
+Then `modprobe` the webcamstudio module:
 ```bash
 $ sudo modprobe webcamstudio
 ```
 
-3) Make sure that you have the `libwebcamstudio.so` library in your (64bit) `/usr/lib64` or (32bit) `/usr/lib` folder. If you don't have it:
+**3)** Make sure that you have the `libwebcamstudio.so` library in your (64bit) `/usr/lib64` or (32bit) `/usr/lib` folder. If you don't have it:
 
-**For x64:**
+**For x64:**  
 From folder `WS_libx64` (Shipped in this archive) Copy `libwebcamstudio.so` to `/usr/lib64` (or your user libs folder ...)
 
-**For x86:**
+**For x86:**  
 From folder `WS_libx86` (Shipped in this archive) Copy `libwebcamstudio.so` to `/usr/lib`
 
 4) WebcamStudio also uses JavaCV for some operations, and because this library differs from 32- to 64-bit versions, you have to make sure to use the correct ones (necessary step):
