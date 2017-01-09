@@ -1,67 +1,71 @@
-WebcamStudio 0.73
+# WebcamStudio 0.73
 
 [![Maintainers Wanted](https://img.shields.io/badge/maintainers-wanted-red.svg)](https://github.com/pickhardt/maintainers-wanted)
 
-WebcamStudio commad line:
-------------------------
-
+WebcamStudio command line
+--------------------------
+```
 webcamstudio [.studio file] -o [Output] -autoplay -remote
+```
+| Parameter        | Description |
+| ---------        | ----------- |
+| `[.studio file]` | The studio file that will be automatically loaded at start. |
+| `-o [Output]`    | The Output button that will be enabled automatically at start. |
+| `-autoplay`      | Will automatically start the first channel of the .studio file. |
+| `-remote`        | Will automatically enable the Remote-Control at start. |
 
-[.studio file] --> The studio file that will be automatically loaded at start.
-
-- o [Output] --> The Output button that will be enabled automatically at start.
 To specify the Output you will use the first name of the device (Case Sensitive):
-Ex:
+```
 [ WSVideoDevice - UDP - Ustream - IceCast - Audio - ...]
+```
 Naturally you must have the related button already added to WS.
 
-- autoplay --> Will automatically start the first channel of the .studio file.
-
-- remote --> Will automatically enable the Remote-Control at start.
-
-Ex:
-
+Example command line:
+```bash
 $ java -jar WebcamStudio.jar /home/karl/Videos/Test.studio -o UDP -autoplay -remote
+```
 
-=======================
-        UBUNTU
-=======================
+Install on Ubuntu
+-----------------
+
 In Ubuntu you can install the latest WS build using the WebcamStudio PPA:
-"https://launchpad.net/~webcamstudio/+archive/webcamstudio-dailybuilds"
 
-If you want to manually install WebcamStudio from this archive follow this steps:
----------------------------------------------------------------
+https://launchpad.net/~webcamstudio/+archive/webcamstudio-dailybuilds
+
+**If you want to manually install WebcamStudio from this archive, follow these steps:**
+
 1) First make sure you have at least Java 7 installed (better the Oracle ...) and that it is the default one.
 2) Download the archive and extract it where you want.
 
-If you don't have the virtual webcam installed:
------------------------------------------------
-A) Unpack "webcamstudio-module-112.tar.bz2", navigate to the extracted folder, open a terminal and compile it:
+**If you don't have the virtual webcam installed:**
 
+A) Unpack "webcamstudio-module-112.tar.bz2", navigate to the extracted folder, open a terminal and compile it:
+```bash
 $ make
 $ sudo make install
+```
 
-B) modprobe the webcamstudio module:
-
+B) `modprobe` the webcamstudio module:
+```bash
 $ sudo modprobe webcamstudio
------------------------------------------------
+```
 
-3) Control that you have the "libwebcamstudio.so" library in your (64bit) /usr/lib64 or (32bit) /usr/lib folder and If you don't have it:
+3) Make sure that you have the `libwebcamstudio.so` library in your (64bit) `/usr/lib64` or (32bit) `/usr/lib` folder. If you don't have it:
 
-For x64:
------------
-From folder WS_libx64 (Shipped in this archive) Copy "libwebcamstudio.so" in /usr/lib64 (or your user libs folder ...)
+**For x64:**
+From folder `WS_libx64` (Shipped in this archive) Copy `libwebcamstudio.so` to `/usr/lib64` (or your user libs folder ...)
 
-For x86:
------------
-From folder WS_libx86 (Shipped in this archive) Copy "libwebcamstudio.so" in /usr/lib
+**For x86:**
+From folder `WS_libx86` (Shipped in this archive) Copy `libwebcamstudio.so` to `/usr/lib`
 
-4) WebcamStudio also uses JavaCV for some operations, and because this library differs from 32 to 64bit versions, you have to make sure to use the correct ones (necessary step):
+4) WebcamStudio also uses JavaCV for some operations, and because this library differs from 32- to 64-bit versions, you have to make sure to use the correct ones (necessary step):
 
-In 32bit machines you have to remove the x86-64 JavaCV libraries and add the x86 ones in the "lib" folder of the extracted multidistro archive.
+In 32bit machines, you have to remove the x86-64 JavaCV libraries, and add the x86 ones in the `lib` folder of the extracted multidistro archive.
+
 The libraries are:
 1) Replace "ffmpeg-linux-x86_64.jar" with "ffmpeg-linux-x86.jar"
 2) Replace "opencv-linux-x86_64.jar" with "opencv-linux-x86.jar"
+
 You can find the x86 libraries in the "Opencv-Natives/x86" folder.
 
 To run WebcamStudio latest version:
