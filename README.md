@@ -77,7 +77,7 @@ You can find the x86 libraries in the `Opencv-Natives/x86` folder.
 $ java -jar WebcamStudio.jar
 ```
 
-If you want to use FFmpeg backend in Ubuntu 14.04/14.10 open a terminal and type:
+If you want to use `FFmpeg` backend in Ubuntu 14.04/14.10, you need to install `FFmpeg` first. Open a terminal and type:
 
 ```bash
 sudo add-apt-respository ppa:mc3man/trusty-media
@@ -88,7 +88,7 @@ sudo apt-get install ffmpeg
 Install on OPENSUSE/FEDORA
 --------------------------
 
-## OpenSuse:
+### OpenSuse:
 
 If not done yet, add Packman repository from
 ```
@@ -100,7 +100,7 @@ $ sudo zypper refresh
 $ sudo zypper update
 ```
 
-## Fedora:
+### Fedora:
 
 Add RPM Fusion Free / nonFree:
 http://rpmfusion.org/Configuration
@@ -110,7 +110,7 @@ After adding the repository, open a terminal and with root privileges run:
 $ yum update
 ```
 
-## For Both:
+### For Both:
 
 **Step 1:** Download the fonts from: http://font.ubuntu.com/resources/  
 ( Download the Ubuntu Font Family › (1.5MB) )
@@ -128,7 +128,7 @@ $ cp -R ubuntu /usr/share/fonts/
 Gstreamer dependencies for WebcamStudio
 ---------------------------------------
 
-## Fedora:
+### Fedora:
 
 > **Note:** You can skip gnonlin 0.10 build because WS uses only 1.x version now, but if you need it ...
 
@@ -166,6 +166,7 @@ Then from a terminal type:
 ```bash
 $ yum install gstreamer.x86_64 gstreamer-ffmpeg.x86_64 gstreamer-plugins-bad.x86_64 gstreamer-plugins-bad-free.x86_64 gstreamer-plugins-bad-free-extras.x86_64 gstreamer-plugins-bad-nonfree.x86_64 gstreamer-plugins-base.x86_64 gstreamer-plugins-espeak.x86_64 gstreamer-plugins-good.x86_64 gstreamer-plugins-ugly.x86_64 gstreamer-tools.x86_64
 ```
+
 ```
 gstreamer1.x86_64                         1.2.3-1.fc20    @updates              
 gstreamer1-libav.x86_64                   1.2.3-1.fc20    @rpmfusion-free-updates
@@ -179,12 +180,13 @@ gstreamer1-plugins-good-extras.x86_64     1.2.3-2.fc20    @updates
 gstreamer1-plugins-ugly.x86_64            1.2.3-1.fc20    @rpmfusion-free-updates
 gnonlin.x86_64				  1.2.0-1.fc20    @updates
 ```
+
 Then from a terminal type:
 ```bash
 $ yum install gstreamer1.x86_64 gstreamer1-libav.x86_64 gstreamer1-plugins-bad-free.x86_64 gstreamer1-plugins-bad-free-extras.x86_64 gstreamer1-plugins-bad-freeworld.x86_64 gstreamer1-plugins-base.x86_64 gstreamer1-plugins-base-tools.x86_64 gstreamer1-plugins-good.x86_64 gstreamer1-plugins-good-extras.x86_64 gstreamer1-plugins-ugly.x86_64 gnonlin.x86_64
 ```
 
-## OpenSuse:
+### OpenSuse:
 
 > **Note:** You can skip gnonlin 0.10 because WS uses only 1.x version now. But if you want you can install it from:
 > 
@@ -230,6 +232,7 @@ i | gstreamer-plugins-ugly-orig-addon                    | GStrea-> | package
 i | gstreamer-utils                                      | Stream-> | package
 --+------------------------------------------------------+----------+-----------
 ```
+
 **Step 5:** Install `ffmpeg`, `dvgrab` and `pavucontrol`.
 
 -------
