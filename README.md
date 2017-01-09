@@ -2,6 +2,9 @@
 
 [![Maintainers Wanted](https://img.shields.io/badge/maintainers-wanted-red.svg)](https://github.com/pickhardt/maintainers-wanted)
 
+We are searching for someone to hand over. For any suggestions, comments or others please write to: `soylent.tv@gmail.com`
+
+
 WebcamStudio command line
 --------------------------
 ```
@@ -404,10 +407,7 @@ For WS to work, please use this libAV ./configure settings:
  
 $./configure --enable-gpl --enable-nonfree --enable-pthreads --enable-libx264 --enable-libfaac --enable-libmp3lame --enable-version3 --enable-librtmp --enable-x11grab --enable-libpulse
  
-********************************************************
-For any suggestions, comments or others please write to:
-soylent.tv@gmail.com
-********************************************************
- 
+
+===
 Have a nice day.
 karl.
