@@ -148,7 +148,7 @@ Finally run `sudo make install` and when is done,
 
 copy the gnonlin libs from `usr/local/lib/gstreamer-0.10` to `usr/lib64/gstreamer-010` in Fedora 20 64-Bit ...
 
-I think that for 32Bit the destination is "usr/lib/gstreamer-010".
+I think that for 32-bit the destination is `usr/lib/gstreamer-010`.
 
 **The following Dependences are needed:**
 ```
@@ -241,100 +241,127 @@ i | gstreamer-utils                                      | Stream-> | package
 -------
 Fedora:
 -------
-# yum install ffmpeg ffmpeg-libs gstreamer-ffmpeg dvgrab pavucontrol
-
+```bash
+$ yum install ffmpeg ffmpeg-libs gstreamer-ffmpeg dvgrab pavucontrol
+```
 ---------
 OpenSuse:
 ---------
-Install ffmpeg and pavucontrol from packman repo (Yast2).
+Install `ffmpeg` and `pavucontrol` from packman repo (Yast2).
 
-<Step 6> In both OpenSuse and Fedora install "wmctrl" package to enable single desktop window capture.
+**Step 6:** In both OpenSuse and Fedora, install `wmctrl` package to enable single desktop window capture.
 
-<Step 7> Extract Webcamstudio-module-112 archive (will create vloopback folder):
+**Step 7:** Extract `Webcamstudio-module-112` archive (will create `vloopback` folder):
 
 ------- 
 Fedora:
 -------
-Install kernel-devel:
+Install `kernel-devel`:
+```bash
+$ yum install kernel-headers kernel-devel
+```
 
-# yum install kernel-headers kernel-devel
-
-... and if you have issues look here:
-
-https://github.com/lwfinger/rtl8188eu/issues/98
+.. and if you have issues, refer to here: https://github.com/lwfinger/rtl8188eu/issues/98
 
 ... and look that the build link the correct current kernel (I had to reboot because my running kernel was 3.17 with buld link broken, and the correct one was to 3.18)
 
-... and compile webcamstudio-module-111 (Shipped in this archive "vloopback") with "make" & "sudo make install".
-Later modprobe it with "sudo modprobe webcamstudio".
+... and compile `webcamstudio-module-111` (Shipped in this archive `vloopback`) with `make` & `sudo make install`.
+
+Later modprobe it with `sudo modprobe webcamstudio`.
 
 ---------
 OpenSuse:
 ---------
-install "kernel-source" and "gcc" from Yast2 ... and compile webcamstudio-module-111 (Shipped in this archive "vloopback") with "make" & "sudo make install".
-Later modprobe it with "sudo modprobe webcamstudio".
+Install `kernel-source` and `gcc` from Yast2 ... and compile `webcamstudio-module-111` (Shipped in this archive `vloopback`) with `make` & `sudo make install`.
 
-<Step 8> Install libwebcamstudio:
---------
-For x64:
---------
-From folder WS_libx64 (Shipped in this archive) Copy libwebcamstudio.so in /usr/lib64 (or your user libs folder ...)
---------
-For x86:
---------
-From folder WS_libx86 (Shipped in this archive) Copy libwebcamstudio.so in /usr/lib
+Later modprobe it with `sudo modprobe webcamstudio`.
 
-<Step 9> SkyCam:
-To use SkyCam you have to link "gksu" command to your existing gui-sudo installed Package.
-For example if you have "gnomesu" or or "kdesu" installed, open a terminal and type:
+**Step 8:** Install `libwebcamstudio`:
+
+**For x64:**
+
+From folder `WS_libx64` (Shipped in this archive) Copy `libwebcamstudio.so` to `/usr/lib64` (or your user libs folder ...)
+
+**For x86:**
+
+From folder `WS_libx86` (Shipped in this archive) Copy `libwebcamstudio.so` to `/usr/lib`
+
+**Step 9:** SkyCam:
+
+To use SkyCam, you have to link `gksu` command to your existing `gui-sudo` installed Package.
+
+For example, if you have `gnomesu` or or `kdesu` installed, open a terminal and type:
+```bash
 $ sudo ln -s /usr/bin/gnomesu /usr/bin/gksu
+```
 or
+```bash
 $ sudo ln -s /usr/bin/kdesu /usr/bin/gksu
+```
+
 -------
 Fedora:
 -------
-There is "gksu-polkit":
-# yum install gksu-polkit
-# ln -s /usr/bin/gksu-polkit /usr/bin/gksu
+There is a `gksu-polkit` package:
+```bash
+$ yum install gksu-polkit
+$ ln -s /usr/bin/gksu-polkit /usr/bin/gksu
+```
 
-<Step 10> FaceDetectorAlpha (necessary step):
+**Step 10:** FaceDetectorAlpha (necessary step):
+
 In x86-64bit machine you are already set-up.
-In 32bit machines to enable FaceDetector Effect you have to remove the x86-64 JavaCV libraries and add the x86 ones in the "lib" folder.
+
+In 32bit machines, to enable FaceDetector Effect, you have to remove the x86-64 **JavaCV** libraries and add the x86 ones in the `lib` folder.
 
 The libraries are:
-ffmpeg-linux-x86_64.jar replace with ffmpeg-linux-x86.jar
-opencv-linux-x86_64.jar replace with opencv-linux-x86.jar
-You can find the x86 libraries in the "Opencv-Natives/x86" folder.
 
-<Step 11> Finally navigate where WebcamStudio.jar is and type from a terminal (tested to work on Opensuse 13.2):
+`ffmpeg-linux-x86_64.jar` replace with `ffmpeg-linux-x86.jar`  
+`opencv-linux-x86_64.jar` replace with `opencv-linux-x86.jar`
 
+You can find the x86 libraries in the `Opencv-Natives/x86` folder.
+
+**Step 11:** Finally navigate where WebcamStudio.jar is and type from a terminal (tested to work on Opensuse 13.2):
+
+```bash
 $ java -jar WebcamStudio.jar
+```
 
-... or if this not works (tested on Fedora 21):
-
+... or if this does not work (tested on Fedora 21):
+```bash
 $ /usr/java/default/bin/java -jar WebcamStudio.jar
+```
 
-Naturally for all streams and outputs you can't select "avconv" backend (It will be hided) if you didn't compile Avconv.
-If you want you can compile libAV from sources. "http://libav.org/download.html"
-For WS to work, please use this libAV ./configure settings:
+Naturally for all streams and outputs you can't select `avconv` backend (It will be hided) if you didn't compile `avconv`.
 
-$./configure --enable-gpl --enable-nonfree --enable-pthreads --enable-libx264 --enable-libfaac --enable-libmp3lame --enable-version3 --enable-librtmp --enable-x11grab --enable-libpulse
+If you want you can compile [`libAV`](http://libav.org/download.html) from source.
+
+For WS to work, please use these libAV `./configure` settings:
+```bash
+$ ./configure --enable-gpl --enable-nonfree --enable-pthreads --enable-libx264 --enable-libfaac --enable-libmp3lame --enable-version3 --enable-librtmp --enable-x11grab --enable-libpulse
+```
 
 TroubleShooting:
 ---------------
-Opensuse:
-First be sure that all gstreamer packages have "packman" as vendor.
-To pass all packages to packman do:
 
+### Opensuse:
+First be sure that all `gstreamer` packages have `packman` as vendor.
+To pass all packages to packman do:
+```bash
 $ sudo zypper dup --from packman
+```
 
 If the gstreamer backend doesn't work, maybe the codec cache is corrput.
 I found the solution in this forum:
+
 http://forums.opensuse.org/showthread.php/492716-openSUSE-13-1%28GNOME%29-codec-problem-mp4v-mpga-h264-mp4a/page3
 
 And in particolar:
-Remove ~/.cache/gstreamer-1.0/ if it exists.
-Run "gst-inspect-1.0" (you may have to install "gstreamer-utils").
+
+Remove `~/.cache/gstreamer-1.0/` if it exists.
+
+Run `gst-inspect-1.0` (you may have to install `gstreamer-utils`).
+
 This should register all installed plugins.
 
 ========================
@@ -342,16 +369,17 @@ This should register all installed plugins.
 ========================
  
 This is no more necessary because WS uses gnonlin 1.x, but maybe useful:
---------------------------------------------------------------------------------------------------------
-Compile gnonlin from source 0.10.17 ... "http://gstreamer.freedesktop.org/src/gnonlin/"
-Once "sudo make install" is done, copy the gnonlin libs from "usr/local/lib/gstreamer" to
-"usr/lib/gstreamer" in Manjaro Linux ...
----------------------------------------------------------------------------------------------------------
+
+- Compile [gnonlin](http://gstreamer.freedesktop.org/src/gnonlin/) from source 0.10.17 ... 
+- Once `sudo make install` is done, copy the gnonlin libs from `usr/local/lib/gstreamer` to `usr/lib/gstreamer` in Manjaro Linux ...
+
 First of all do the following in a terminal:
- 
+
+```basg
 $ sudo /bin/rm -f /var/lib/pacman/db.lck
  
 $ sudo pacman -Syu
+```
  
 Then to have the correct visualization install Ubuntu fonts:
  
