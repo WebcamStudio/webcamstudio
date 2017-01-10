@@ -39,9 +39,9 @@ https://launchpad.net/~webcamstudio/+archive/webcamstudio-dailybuilds
 ### Manual install
 If you want to manually install WebcamStudio from this archive, follow these steps:
 
-**1)** First make sure you have at least Java 7 installed (better the Oracle one) and that it is the default one.
+**Install Java Runtime:** First make sure you have at least Java 7 installed (better the Oracle one) and that it is the default one.
 
-**2)** Download the archive and extract it where you want.
+**Download the source:** Download the archive and extract it where you want.
 
 **If you don't have the virtual webcam installed:**
 
@@ -56,15 +56,15 @@ Then `modprobe` the webcamstudio module:
 $ sudo modprobe webcamstudio
 ```
 
-**3)** Make sure that you have the `libwebcamstudio.so` library in your (64bit) `/usr/lib64` or (32bit) `/usr/lib` folder. If you don't have it:
+**Install `libwebcamstudio.so`:** Make sure that you have the `libwebcamstudio.so` library in your (64bit) `/usr/lib64` or (32bit) `/usr/lib` folder. If you don't have it:
 
-**For x64:**  
+*For x64:*  
 From folder `WS_libx64` (Shipped in this archive) Copy `libwebcamstudio.so` to `/usr/lib64` (or your user libs folder ...)
 
-**For x86:**  
+*For x86:*  
 From folder `WS_libx86` (Shipped in this archive) Copy `libwebcamstudio.so` to `/usr/lib`
 
-**4)** WebcamStudio also uses JavaCV for some operations, and because this library differs from 32- to 64-bit versions, you have to make sure to use the correct ones **(very important)**:
+**Configure JavaCV:** WebcamStudio also uses JavaCV for some operations, and because this library differs from 32- to 64-bit versions, you have to make sure to use the correct ones **(very important)**:
 
 In 32-bit machines, you have to remove the x86-64 JavaCV libraries, and add the x86 ones in the `lib` folder of the extracted multidistro archive.
 
@@ -73,7 +73,7 @@ In 32-bit machines, you have to remove the x86-64 JavaCV libraries, and add the 
 
 You can find the x86 libraries in the `Opencv-Natives/x86` folder.
 
-**5)** If you want to use `FFmpeg` backend in Ubuntu 14.04/14.10, you need to install `FFmpeg` first. Open a terminal and type:
+**Install FFmpeg:** If you want to use `FFmpeg` backend in Ubuntu 14.04/14.10, you need to install `FFmpeg` first. Open a terminal and type:
 
 ```bash
 sudo add-apt-respository ppa:mc3man/trusty-media
@@ -115,18 +115,21 @@ $ yum update
 
 ### For Both:
 
-**Step 1:** Download the fonts from: http://font.ubuntu.com/resources/  
-( Download the Ubuntu Font Family › (1.5MB) )
+**Download Ubuntu fonts:**
 
-**Step 2:** Unzip the fonts and rename the folder to whatever name like. I renamed mine to `ubuntu`.
+1. Download the fonts from: http://font.ubuntu.com/resources/  
+   ( Download the Ubuntu Font Family › (1.5MB) )
 
-**Step 3:** Install these fonts. Open Terminal and type the following:
-```bash
-$ su -
-$ cd Downloads
-$ cp -R ubuntu /usr/share/fonts/
-```
-**Step 4:** Install `gstreamer-0.10/gstreamer-1.0` with almost all plugins.
+2. Unzip the fonts and rename the folder to whatever name like. I renamed mine to `ubuntu`.
+
+3. Install these fonts. Open Terminal and type the following:
+   ```bash
+   $ su -
+   $ cd Downloads
+   $ cp -R ubuntu /usr/share/fonts/
+   ```
+
+**Install GStreamer:** Install `gstreamer-0.10/gstreamer-1.0` with almost all plugins.
 
 Gstreamer dependencies for WebcamStudio
 ---------------------------------------
@@ -438,13 +441,14 @@ Finally navigate where `WebcamStudio.jar` is located, and type from a terminal:
 $ java -jar WebcamStudio.jar
 ```
 
-Naturally for all streams and outputs you can't select `avconv` backend (It will be hided) if you didn't compile Avconv.
-If you want you can compile libAV from sources. "http://libav.org/download.html"
-For Webcam Studio to work, please use this libAV ./configure settings:
+Naturally for all streams and outputs you can't select `avconv` backend (It will be hided) if you didn't have `avconv` compiled correctly.
+If you want you can compile [`libAV`](http://libav.org/download.html) from sources.
+For Webcam Studio to work, please use these libAV `./configure` settings:
 ```bash
 $./configure --enable-gpl --enable-nonfree --enable-pthreads --enable-libx264 --enable-libfaac --enable-libmp3lame --enable-version3 --enable-librtmp --enable-x11grab --enable-libpulse
 ```
 
 ===
 Have a nice day.
+
 karl.
