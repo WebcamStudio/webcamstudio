@@ -39,9 +39,11 @@ https://launchpad.net/~webcamstudio/+archive/webcamstudio-dailybuilds
 ### Manual install
 If you want to manually install WebcamStudio from this archive, follow these steps:
 
-**Install Java Runtime:** First make sure you have at least Java 7 installed (better the Oracle one) and that it is the default one.
+**Install Java Runtime:**  
+First make sure you have at least Java 7 installed (better the Oracle one) and that it is the default one.
 
-**Download the source:** Download the archive and extract it where you want.
+**Download the source:**  
+Download the archive and extract it where you want.
 
 **If you don't have the virtual webcam installed:**
 
@@ -56,7 +58,9 @@ Then `modprobe` the webcamstudio module:
 $ sudo modprobe webcamstudio
 ```
 
-**Install `libwebcamstudio.so`:** Make sure that you have the `libwebcamstudio.so` library in your (64bit) `/usr/lib64` or (32bit) `/usr/lib` folder. If you don't have it:
+**Install `libwebcamstudio.so`:**
+
+Make sure that you have the `libwebcamstudio.so` library in your (64bit) `/usr/lib64` or (32bit) `/usr/lib` folder. If you don't have it:
 
 *For x64:*  
 From folder `WS_libx64` (Shipped in this archive) Copy `libwebcamstudio.so` to `/usr/lib64` (or your user libs folder ...)
@@ -64,7 +68,9 @@ From folder `WS_libx64` (Shipped in this archive) Copy `libwebcamstudio.so` to `
 *For x86:*  
 From folder `WS_libx86` (Shipped in this archive) Copy `libwebcamstudio.so` to `/usr/lib`
 
-**Configure JavaCV:** WebcamStudio also uses JavaCV for some operations, and because this library differs from 32- to 64-bit versions, you have to make sure to use the correct ones **(very important)**:
+**Configure JavaCV:**
+
+WebcamStudio also uses JavaCV for some operations, and because this library differs from 32- to 64-bit versions, you have to make sure to use the correct ones **(very important)**:
 
 In 32-bit machines, you have to remove the x86-64 JavaCV libraries, and add the x86 ones in the `lib` folder of the extracted multidistro archive.
 
@@ -73,7 +79,9 @@ In 32-bit machines, you have to remove the x86-64 JavaCV libraries, and add the 
 
 You can find the x86 libraries in the `Opencv-Natives/x86` folder.
 
-**Install FFmpeg:** If you want to use `FFmpeg` backend in Ubuntu 14.04/14.10, you need to install `FFmpeg` first. Open a terminal and type:
+**Install FFmpeg:**
+
+If you want to use `FFmpeg` backend in Ubuntu 14.04/14.10, you need to install `FFmpeg` first. Open a terminal and type:
 
 ```bash
 sudo add-apt-respository ppa:mc3man/trusty-media
